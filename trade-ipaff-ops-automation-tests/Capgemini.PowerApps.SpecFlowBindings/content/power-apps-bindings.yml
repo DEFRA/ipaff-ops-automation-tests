@@ -1,0 +1,8 @@
+url: 
+useProfiles: false
+browserOptions: 
+  browserType: Chrome
+users: 
+  - username: 
+    password:
+    alias:

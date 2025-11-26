@@ -1,0 +1,22 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)driver.js">
+      <Link>driver.js</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="$(ProjectDir)power-apps-bindings.yml">
+      <Link>power-apps-bindings.yml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+  </ItemGroup>
+
+  <UsingTask TaskName="Capgemini.PowerApps.SpecFlowBindings.MSBuild.ExtendDataFiles" AssemblyFile="$(MSBuildThisFileDirectory)/Capgemini.PowerApps.SpecFlowBindings.MSBuild/Capgemini.PowerApps.SpecFlowBindings.MSBuild.dll" />
+  <Target Name="CompileDataFiles" AfterTargets="Build">
+    <ItemGroup>
+      <DataFiles Include="Data\**\*.json" Visible="true" />
+    </ItemGroup>
+    <ExtendDataFiles Include="@(DataFiles)" DestinationFolder="$(OutputPath)Data" />
+  </Target>
+</Project>
