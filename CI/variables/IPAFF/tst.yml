@@ -1,0 +1,10 @@
+variables:
+ Environment: 'tst'
+ EnvLogin: 'RpEpGk13QYA8TKHaKZeRFmu7WSdMOhVk'      
+ FilterTestCategory : 'TestCategory=Regression'
+ IDCOMSUrl: 'https://defra-trade-plants-tst.crm4.dynamics.com'
+ IDCOMSUser: ''
+ IDOMSUserAlias: ''
+ SecretsFilter: 'IPAFFIDCOMSAutomation'
+ IsLiveUserAccount: false
+ IsAccessibilityEnabled: ${{ parameters.isAccessibilityEnabled }}
