@@ -1,0 +1,38 @@
+trigger:
+- master
+- dev
+- feature/*
+- task/*
+- release/*
+
+pool:
+    name: 'DEFRA-TRD'
+
+variables:
+  BuildConfiguration: Release
+
+steps:
+
+  - task: DotNetCoreCLI@2
+    displayName: Restore for $(BuildConfiguration)
+    inputs:
+      command: 'restore'
+      noCache: true
+      projects: '**/Defra.UI.Tests.csproj'
+      feedsToUse: 'config'
+      includeNuGetOrg: true
+      nugetConfigPath: $(Build.SourcesDirectory)/Defra.UI.Tests/NuGet.Config
+  
+  - task: DotNetCoreCLI@2
+    displayName: publish for $(BuildConfiguration)
+    inputs:
+      command: publish
+      publishWebProjects: false
+      projects: '**/Defra.UI.Tests.csproj'
+      arguments: --no-restore --configuration $(BuildConfiguration) -o $(Build.ArtifactStagingDirectory)
+  
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      ArtifactName: 'drop'
+      publishLocation: 'Container'

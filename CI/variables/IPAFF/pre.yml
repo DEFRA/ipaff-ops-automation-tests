@@ -1,0 +1,10 @@
+variables:
+ Environment: 'pre'
+ EnvLogin: 'TeZvzAsx8usMhsCVqGG203Iity63qjaT'
+ FilterTestCategory : 'TestCategory=Regression' 
+ IDCOMSUrl: 'https://defra-trade-plants-preprod.crm4.dynamics.com'
+ IDCOMSUser: 'nagarajan.subbiah@defra.onmicrosoft.com'
+ IDOMSUserAlias: 'Nagarajan Subbiah'
+ SecretsFilter: 'IPAFFIDCOMSAutomation'
+ IsLiveUserAccount: false
+ IsAccessibilityEnabled: ${{ parameters.isAccessibilityEnabled }}
