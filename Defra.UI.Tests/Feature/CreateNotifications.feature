@@ -1,4 +1,5 @@
-﻿Feature: Create Notification
+﻿@Regression
+Feature: Create Notification
 
 Create a notification with the different types
 
