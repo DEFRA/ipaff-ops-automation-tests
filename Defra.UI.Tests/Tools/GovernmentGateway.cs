@@ -79,7 +79,7 @@ namespace Defra.UI.Tests.Tools
         {
             if (_cachedValue == null)
             {
-                var user = userObject?.GetUser("IPAFF", checker);
+                var user = userObject?.GetUser("IPAFF");
 
                 _cachedValue = new LoginDetails
                 {

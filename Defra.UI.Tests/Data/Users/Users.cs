@@ -18,7 +18,7 @@ namespace Defra.UI.Tests.Data.Users
     
     public interface IUserObject
     {
-        User GetUser(string application, string checker="");
+        User GetUser(string application);
     }
 
     internal class UserObject : IUserObject
@@ -29,7 +29,7 @@ namespace Defra.UI.Tests.Data.Users
         private readonly object _lock = new object();
 
 
-        public User GetUser(string application, string checker="")
+        public User GetUser(string application)
         {
             User? user;
 
@@ -45,7 +45,7 @@ namespace Defra.UI.Tests.Data.Users
                 var settings = builder.Build();
                 var usersList = settings.GetSection("Users").Get<List<User>>();
 
-                user = usersList?.FirstOrDefault(item => item.Checker == checker) ?? new User();
+                user = usersList?.FirstOrDefault() ?? new User();
             }
 
             return user ?? new User { };

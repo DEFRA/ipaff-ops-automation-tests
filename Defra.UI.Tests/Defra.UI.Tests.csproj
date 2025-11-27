@@ -114,10 +114,10 @@
     </SpecFlowFeatureFiles>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Steps\" />
-  </ItemGroup>
-	
+	<ItemGroup>
+		<Folder Include="Steps\" />
+	</ItemGroup>
+
 
 
 </Project>

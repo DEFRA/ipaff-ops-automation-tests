@@ -7,7 +7,6 @@ namespace Defra.UI.Tests.Tools
     {
         public UrlBuilder Default();
         public string BuildApp();
-        public string BuildCom();
         public UrlBuilder Add(string segment);
     }
 
@@ -22,7 +21,6 @@ namespace Defra.UI.Tests.Tools
         private IList<string> segments;
         private bool hasTrailingSlash;
         private string BaseApplicationUrl = null;
-        private string BaseComplianceUrl = null;
         public UrlBuilder Add(string segment)
         {
             if (segment == null)
@@ -58,31 +56,8 @@ namespace Defra.UI.Tests.Tools
             return path;
         }
 
-        public string BuildCom()
-        {
-            string path = null;
-            if (segments.Count > 0)
-            {
-                path = string.Join("/", segments);
-
-                if (segments.Count > 0 && hasTrailingSlash)
-                {
-                    path += "/";
-                }
-                path = BaseComplianceUrl + "/" + path;
-            }
-            else
-            {
-                path = BaseComplianceUrl;
-            }
-            return path;
-        }
-
         public UrlBuilder Default()
         {
-
-            BaseComplianceUrl = ConfigSetup.BaseConfiguration.TestConfiguration.ComplianceUrl;
-
             BaseApplicationUrl = ConfigSetup.BaseConfiguration.TestConfiguration.ApplicationUrl;
 
             return this;
