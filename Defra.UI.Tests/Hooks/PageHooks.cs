@@ -36,7 +36,30 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<HomePage, IHomePage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<EmailSignUpPage, IEmailSignUpPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<GovernmentGatewayTypePage, IGovernmentGatewayTypePage>());
-            
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<YourImportNotificationsPage, IYourImportNotificationsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<AboutConsignmentPage, IAboutConsignmentPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<OriginOfProductPage, IOriginOfProductPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<OriginOfImportPage, IOriginOfImportPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CommodityPage, ICommodityPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ReasonForImportPage, IReasonForImportPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<RiskCategoryPage, IRiskCategoryPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<NotificationHubPage, INotificationHubPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<AdditionalDetailsPage, IAdditionalDetailsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<AccompanyingDocumentsPage, IAccompanyingDocumentsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ApprovedEstablishmentPage, IApprovedEstablishmentPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<AddressesPage, IAddressesPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SearchExistingConsignorPage, ISearchExistingConsignorPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SearchExistingConsigneePage, ISearchExistingConsigneePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SearchExistingDestinationPage, ISearchExistingDestinationPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<PortOfEntryPage, IPortOfEntryPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<GoodsMovementServicesPage, IGoodsMovementServicesPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ContactDetailsPage, IContactDetailsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<NominatedContactsPage, INominatedContactsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ContactAddressPage, IContactAddressPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<BillingDetailsPage, IBillingDetailsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ReviewYourNotificationPage, IReviewYourNotificationPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<DeclarationPage, IDeclarationPage>());
+
             //Read Email
             _objectContainer.RegisterInstanceAs(GetBaseWithScenarioContext<FetchCodeFromEmail, IFetchCodeFromEmail>());
         }

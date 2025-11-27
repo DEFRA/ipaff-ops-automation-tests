@@ -5,6 +5,8 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
 using SeleniumExtras.WaitHelpers;
+using Microsoft.Dynamics365.UIAutomation.Browser;
+using System.Collections.ObjectModel;
 
 namespace Defra.UI.Tests.Pages.Classes
 {
@@ -17,7 +19,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement PageHeading => _driver.WaitForElement(By.XPath("//h1[@class='govuk-heading-xl']"), true);
         private IWebElement UserId => _driver.FindElement(By.Id("user_id"));
         private IWebElement Password => _driver.FindElement(By.Id("password"));
-        private IWebElement SignIn => _driver.WaitForElement(By.Id("continue"));
+        private IWebElement btnSignIn => _driver.WaitForElement(By.Id("continue"), true);
+        private By signInConfirmBy => By.XPath("//h1[contains(@class,'govuk-heading-xl')]");
         private By SignInConfirmBy => By.CssSelector("[href='/User/OSignOut']");
         private IWebElement CreateSignInDetails => _driver.WaitForElement(By.XPath("//a[contains(text(),'Create sign in')]"));
         private IWebElement SignOutGCConfirmMessage => _driver.WaitForElement(By.CssSelector("h1.govuk-heading-xl"));
@@ -30,6 +33,9 @@ namespace Defra.UI.Tests.Pages.Classes
         public IWebElement lnkPetsTravelPortal => _driver.WaitForElement(By.XPath("//a[normalize-space(text())='Taking a pet from Great Britain to Northern Ireland']"), true);
         private IReadOnlyCollection<IWebElement> lblErrorMessages => _driver.WaitForElements(By.XPath("//div[@class='govuk-error-summary__body']//a"));
         private IWebElement signOut => _driver.WaitForElement(By.Id("link-sign-out"));
+        private IReadOnlyCollection<IWebElement> rdoLoginTypes => _driver.WaitForElements(By.ClassName("govuk-radios__label"));
+        private IWebElement btnContinue => _driver.WaitForElement(By.Id("continueReplacement"));
+        private IWebElement txtLoging => _driver.WaitForElement(By.XPath("//input[@id='password']"), true);
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -49,11 +55,37 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             UserId.SendKeys(userName);
             Password.SendKeys(password);
-            _driver.WaitForElementCondition(ExpectedConditions.ElementToBeClickable(SignIn)).Click();
+            _driver.WaitForElementCondition(ExpectedConditions.ElementToBeClickable(btnSignIn)).Click();
             return _driver.WaitForElement(SignInConfirmBy).Enabled;
         }
 
         public void ClickCreateSignInDetailsLink() => CreateSignInDetails.Click();
+
+        public void SignIn(string userName, string password)
+        {
+            UserId.SendKeys(userName);
+            Password.SendKeys(password);
+            _driver.WaitForElementCondition(ExpectedConditions.ElementToBeClickable(btnSignIn)).Click();
+            _driver.WaitForElement(signInConfirmBy);
+        }
+
+        public void EnterPassword()
+        {
+            try
+            {
+                if (_driver.IsVisible(By.Id("continue")))
+                {
+                    btnSignIn.Click();
+                }
+            }
+            catch
+            {
+
+            }
+            _driver.Wait(2);
+            txtLoging.SendKeys(ConfigSetup.BaseConfiguration.TestConfiguration.EnvLogin);
+            btnContinue.Click();
+        }
 
         public void ClickSignedOut()
         {
@@ -101,16 +133,17 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             UserId.SendKeys(userName);
             Password.SendKeys(password);
-            _driver.WaitForElementCondition(ExpectedConditions.ElementToBeClickable(SignIn)).Click();
+            _driver.WaitForElementCondition(ExpectedConditions.ElementToBeClickable(btnSignIn)).Click();
         }
 
         public void ClickPetsTravelApplicationPortalLink()
         {
             lnkPetsTravelPortal.Click();
         }
+
         public void ClickSignInButton()
         {
-            SignIn.Click();
+            btnSignIn.Click();
         }
 
         public bool IsError(string errorMessage)
