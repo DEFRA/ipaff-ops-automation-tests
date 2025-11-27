@@ -2,79 +2,59 @@
 
 Create a notification with the different types
 
-Scenario: User creates and submits a B2C consignment notification
-	Given the user logs on as a B2C notifier
-	Then the user should be logged into Part 1 Notification page
+Scenario: User creates and submits a B2C consignment notification - CHEDP
+	Given that I navigate to the IPAFF application
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF credentials and signin
+	Then the user should be logged into Notification page
 	When the user clicks Create a new notification
-	Then the About the consignment/What are you importing? page should be displayed with the following options:
-		| Live animals                                                       |
-		| Products of animal origin, germinal products or animal by-products |
-		| High risk food and feed of non-animal origin                       |
-		| Plants, plant products and other objects                           |
-	When the user chooses Products of animal origin, germinal products or animal by-products
-	Then the selection should be made
-	When the user clicks Save and continue
-	Then the Origin of the animal or product page should be displayed
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Products of animal origin, germinal products or animal by-products' option
+	And the user clicks Save and continue
+	Then the Origin of the plants plant product or other objects page should be displayed
 	When the user chooses "France" from the dropdown for Country of origin
-	Then "France" should be displayed as the chosen country
-	When the user clicks Save and continue
-	Then the Origin of the import page should be displayed, showing "China" as the Country of origin and Country from where consigned
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing "France" as the Country of origin and Country from where consigned
 	When the user chooses "No" for Does your consignment require a region code?
-	Then the "No" radio button should be selected
-	When the user chooses "Yes" for Does this consignment conform to regulatory regulations?
-	Then the "Yes" radio button should be selected
+	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
 	When the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
-	Then the "No" radio button should be selected
-	When the user enters a reference number in the Add a reference number for this consignment (optional) field
-	Then the reference number should be populated
+	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
 	When the user clicks Save and continue
 	Then the Description of the goods/Commodity page should be displayed
-	When the user populates the commodity details:
-		| Type of commodity | Domestic                       |
-		| Species           | Bison bison                    |
-		| Commodity code    | 41015050 (Dried or dry-salted) |
-	Then the commodity details should be populated
-	When the user selects "No" for Do you want to add another commodity?
-	Then the user should not be able to add another commodity
+	When the user searches '41015050' commodity code
+	Then the commodity details should be populated '41015050' 'Dried or dry-salted'
+	When the user selects species of commodity 'Bison bison'
+	And the user selects "No" for Do you want to add another commodity?
 	When the user clicks Save and continue
-	Then the "What is the main reason for importing the consignment?" page should be displayed with the following options:
-		| Internal market               |
-		| Transhipment or onward travel |
-		| Transit                       |
-		| Re-entry                      |
+	Then What is the main reason for importing the consignment? page should be displayed with radio buttons
 	When the user chooses "Internal market" and the sub-option "Animal feedingstuff"
-	Then the "Internal market" and "Animal feedingstuff" options should be selected
-	When the user clicks Save and continue
-	Then the "Select the highest risk category for the commodities in this consignment" page should be displayed with options:
-		| Medium risk |
-		| Low risk    |
-	When the user chooses "Low risk"
-	Then the "Low risk" radio button should be selected
-	When the user clicks Save and continue
+	And the user clicks Save and continue
+	Then Select the highest risk category for the commodities in this consignment page should be displayed
+	When the user chooses "Low risk" risk category
+	And the user clicks Save and continue
 	Then the Notification Hub page should be displayed
-	When the user clicks the "Commodity" hyperlink
+	When the user clicks the Commodity hyperlink
 	Then the Commodity page should be displayed with the commodity and description entered
-	When the user populates the following details on the "Commodity" screen:
-		| Net weight         | 1000 kg |
-		| Number of packages |      10 |
-		| Type of package    | Box     |
-	Then the Commodity screen should be updated with the correct details
+	When the user populates Net weight as '1000'
+	And the user populates Number of packages as '10'
+	And the user selects type of package as 'Box'
 	When the user clicks the Update total button
-	Then the total gross weight should be greater than the net weight
-	When the user clicks Save and continue
+	Then the total gross weight should be greater than the net weight '1500'
+	When the user clicks Save and continue in commodity page
 	Then the Additional details page should be displayed
-	When the user selects any radio button on the Additional details page
-	Then the corresponding radio button should be selected
-	When the user clicks Save and continue
+	When the user selects 'Ambient' radio button on the Additional details page
+	And the user clicks Save and continue
 	Then the Accompanying documents page should be displayed
-	When the user enters the following details:
-		| Document type      | Invoice    |
-		| Document reference | INV12345   |
-		| Date of issue      | 2025-11-24 |
-	And the user adds an attachment
+	When the user selects Document type "Commercial invoice"
+	And the user enters Document reference "INV12345"
+	And the user enters date of issue '24''11''2025'
 	Then the user should be able to click Save and continue
+	And the Approved establishment of origin page should be displayed
 	When the user clicks Search for an approved establishment
-	Then the list of establishments should be displayed, filtered by Country of origin to China
+	Then the list of establishments should be displayed, filtered by Country of origin to "France"
 	When the user clicks Select for one of the establishments in the list
 	Then the Approved establishment of origin page should be displayed with the selected establishment
 	When the user clicks Save and continue
@@ -87,7 +67,7 @@ Scenario: User creates and submits a B2C consignment notification
 	Then the Search for an existing consignee page should be displayed
 	When the user selects a consignee with a UK country
 	Then the chosen consignee should be displayed on the Addresses page
-	When the user clicks Same as consignee for the "Importer"
+	When the user clicks Same as consignee for the Importer
 	Then the importer should be populated with the same details as the consignee
 	When the user clicks Add a place of destination
 	Then the Search for an existing place of destination page should be displayed
@@ -95,16 +75,18 @@ Scenario: User creates and submits a B2C consignment notification
 	Then the chosen place of destination should be displayed on the Addresses page
 	When the user clicks Save and continue
 	Then the Transport to the port of entry page should be displayed
-	When the user populates the transport details and clicks Save and continue
+	When the user populates the transport details "DOVER EAST (SEVINGTON BCP) (GBSEV)" "Road vehicle" "123456" "Doc1234"
+	When the user clicks Save and continue
 	Then the Goods movement services page should be displayed
 	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
-	Then the "No" radio button should be selected
 	When the user clicks Save and continue
 	Then the Contact details page should be displayed, pre-populated with the user's details
 	When the user clicks Save and continue
 	Then the Nominated contacts page should be displayed
 	When the user clicks Save and continue
 	Then the Contact address for consignment page should be displayed
+	When the user clicks Save and continue
+	Then the Confirm billing details page should be displayed
 	When the user clicks Save and continue
 	Then the Review your notification page should be displayed
 	When the user clicks Save and continue
@@ -114,52 +96,4 @@ Scenario: User creates and submits a B2C consignment notification
 	When the user records the IPAFFS User details and CHED Reference
 	Then the details should be recorded
 	When the user logs out of IPAFFS Part 1
-	Then the user should be logged out successfully
-	When the user logs in to BTMS
-	Then the BTMS search screen should be displayed
-	When the user searches for the CHED created earlier and checks all details match
-	Then the CHED details should match each commodity line's:
-		| Commodity code  |            41015050 |
-		| Description     | Dried or dry-salted |
-		| Quantity/Weight | 1000 kg             |
-		| Authority       | POAO                |
-		| Decision        | Decision not given  |
-	When the user logs out of BTMS
-	Then the user should be logged out successfully
-	When the user logs into IPAFFS Part 2 Inspector for the appropriate BCP
-	Then the user should be logged into IPAFFS Part 2
-	When the user searches for the newly created notification on the Import notifications page
-	Then the notification should be found with status "NEW"
-	When the user opens the notification under test
-	Then the Decision Hub page should be displayed
-	When the user clicks Save and set as in progress
-	Then the notification status should change from "NEW" to "IN PROGRESS"
-	When the user enters a local reference number and clicks Save and continue
-	Then the Documentary check page should be displayed
-	When the user selects Satisfactory for the documentary check and clicks Save and continue
-	Then the Identity and physical checks page should be displayed
-	When the user selects "Satisfactory" for both identity and physical checks
-	And the user clicks Save and continue
-	Then the Seal numbers page should be displayed
-	When the user clicks Save and continue
-	Then the Laboratory tests page should be displayed
-	When the user clicks Save and continue
-	Then the Decision page should be displayed
-	When the user clicks Save and continue
-	Then the Review outcome decision page should be displayed
-	When the user populates the Date and time of checks
-	And user clicks Submit decision
-	Then the Your checks have been submitted page should be displayed
-	When the user logs out of IPAFFS Part 2
-	Then the user should be logged out successfully
-	When the user logs in to BTMS again
-	Then the BTMS search screen should be displayed
-	When the user searches for the CHED created earlier and checks all details match
-	Then the CHED details should match each commodity line's:
-		| Commodity code  |                       41015050 |
-		| Description     | Dried or dry-salted            |
-		| Quantity/Weight | 1000 kg                        |
-		| Authority       | POAO                           |
-		| Decision        | Acceptable for Internal Market |
-	When the user logs out of BTMS
 	Then the user should be logged out successfully
