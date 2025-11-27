@@ -44,25 +44,25 @@ parameters:
 
 resources:
   repositories:
-    - repository: niptsopsprovingrepo
+    - repository: ipaffopsprovingrepo
       type: github
-      name: DEFRA/nipts-pts-ops-automation-tests
+      name: DEFRA/ipaff-ops-automation-tests
       ref: $(Build.SourceBranch)
       endpoint: DEFRA
 
 stages:
   
-  - stage: PETS_OPS_AP_E2E
-    displayName: PETS_OPS_AP_E2E
+  - stage: IPAFF_OPS_E2E
+    displayName: IPAFF_OPS_E2E
 
     variables:
-    - template: 'variables/AP/${{parameters.environment}}.yml'
+    - template: 'variables/IPAFF/${{parameters.environment}}.yml'
 
     jobs:
     
     - template: run-test-template.yml
       parameters:
-        jobName: PETS_OPS_AP_E2E
+        jobName: IPAFF_OPS_E2E
         environment: ${{ parameters.environment}}
         branchName: $(Build.SourceBranch)
         seleniumGrid: ${{parameters.seleniumGrid}}  
@@ -74,7 +74,7 @@ stages:
         isEmulationEnabled: ${{parameters.isEmulationEnabled}}
         emulateDeviceInfo: ${{parameters.emulateDeviceInfo}}
         isAccessibilityEnabled: ${{ parameters.isAccessibilityEnabled }}
-        application: 'AP'
+        application: 'IPAFF'
         dependsOn: ''
 
 

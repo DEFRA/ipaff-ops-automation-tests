@@ -46,7 +46,7 @@ jobs:
       name: 'DEFRA-TRD'
 
   variables:
-    - group: 'NIPTSPREPROD'
+    - group: 'IPAFFPREPROD'
     - template: 'variables/${{parameters.application}}/global.yml'
       parameters:
         environment: ${{parameters.environment}}
@@ -58,7 +58,7 @@ jobs:
         target:  ${{parameters.target}}
         isEmulationEnabled:  ${{parameters.isEmulationEnabled}}
         emulateDeviceInfo:  ${{parameters.emulateDeviceInfo}}
-        idcomsPassword: '$(PetsIDCOMSCredential)'
+        idcomsPassword: '$(IPAFFIDCOMSCredential)'
         isAccessibilityEnabled: ${{parameters.isAccessibilityEnabled}}
     - name: FilterTestCases
       ${{ if eq(parameters.filterTestCases, '') }}:
@@ -72,7 +72,7 @@ jobs:
       inputs:
         buildType: 'specific'
         project: '023a3c95-20fd-49b4-b068-4706843ba0d7'
-        pipeline: '8452'
+        pipeline: '10233'
         buildVersionToDownload: 'latestFromBranch'
         branchName: ${{ parameters.branchName }}
         downloadType: 'single'
