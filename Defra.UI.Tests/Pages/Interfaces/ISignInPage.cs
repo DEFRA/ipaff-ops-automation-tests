@@ -5,6 +5,7 @@
         public bool IsPageLoaded();
         public bool IsSignedIn(string userName, string password);
         public void ClickCreateSignInDetailsLink();
+        void SignIn(string userName, string password);
         public void ClickSignedOut();
         public bool IsSignedOut();
         public bool IsSuccessfullySignedOut();
@@ -14,5 +15,6 @@
         void ClickSignInButton();
         bool IsError(string errorMessage);
         bool IsSignedOutFromYourDefraAccountPage();
+        void EnterPassword();
     }
 }
