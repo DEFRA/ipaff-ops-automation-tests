@@ -321,9 +321,16 @@ jobs:
     - task: PublishPipelineArtifact@0
       displayName: 'Publish Screenshots'
       inputs:
-          testResultsFiles: 'TestFailures*.png'
+          testResultsFiles: '*.png'
           artifactName: ${{ parameters.jobName }}_$(System.StageName)
-          targetPath: '$(System.DefaultWorkingDirectory)/Defra.UI.Tests/TestResults/'
+          targetPath: '$(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/Screenshots'
+
+    - task: PublishPipelineArtifact@0
+      displayName: 'Publish Html Report'
+      inputs:
+          testResultsFiles: 'TestExecutionReport_*.html'
+          artifactName: ${{ parameters.jobName }}_$(System.StageName)
+          targetPath: '$(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/'
 
     - task: PublishTestResults@2
       displayName: 'Publish Test Results'
