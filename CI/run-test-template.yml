@@ -318,22 +318,22 @@ jobs:
           artifactName: TestExecution_${{ parameters.jobName }}
           targetPath: '$(System.DefaultWorkingDirectory)/Defra.UI.Tests/TestExecution_${{ parameters.jobName }}.json'
     
-    - script: |
-        mkdir -p $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/Screenshots
-        mkdir -p $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports
+    # - script: |
+    #     mkdir -p $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/Screenshots
+    #     mkdir -p $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports
 
-        cp $(System.DefaultWorkingDirectory)/Defra.UI.Tests/*.png \
-            $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/Screenshots/
+    #     cp $(System.DefaultWorkingDirectory)/Defra.UI.Tests/*.png \
+    #         $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/Screenshots/
 
-        cp $(System.DefaultWorkingDirectory)/Defra.UI.Tests/TestExecutionReport_*.html \
-            $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/
-      displayName: 'Copy reports and screenshots'
+    #     cp $(System.DefaultWorkingDirectory)/Defra.UI.Tests/TestExecutionReport_*.html \
+    #         $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/
+    #   displayName: 'Copy reports and screenshots'
 
-    - task: PublishPipelineArtifact@0
-      displayName: 'Publish Html Report and screenshots'
-      inputs:
-          artifactName: ${{ parameters.jobName }}_TestReport
-          targetPath: '$(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/'
+    # - task: PublishPipelineArtifact@0
+    #   displayName: 'Publish Html Report and screenshots'
+    #   inputs:
+    #       artifactName: ${{ parameters.jobName }}_TestReport
+    #       targetPath: '$(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/'
 
     - task: PublishTestResults@2
       displayName: 'Publish Test Results'
