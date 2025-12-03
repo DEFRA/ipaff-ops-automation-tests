@@ -11,11 +11,12 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects
 
-        private IWebElement PageHeading => _driver.WaitForElement(By.Id("header"), true);
+        private IWebElement PageHeading => _driver.WaitForElement(By.XPath("//h1[normalize-space()='How do you want to sign in?']"));
 
         private IReadOnlyCollection<IWebElement> rdoLoginTypes => _driver.WaitForElements(By.ClassName("govuk-radios__label"));
 
         private IWebElement btnContinue => _driver.WaitForElement(By.Id("continueReplacement"));
+        private IWebElement btnSignIn => _driver.WaitForElement(By.XPath("//button[normalize-space()='Sign in'] | //a[normalize-space()='Sign in']"));
 
         #endregion Page Objects
 
@@ -35,11 +36,13 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             if (rdoLoginTypes.Count > 0)
             {
-                if (loginType.ToUpper().Contains("SIGN IN WITH GOV UK ONE LOGIN"))
+                if (loginType.ToUpper().Contains("SIGN IN WITH GOV UK ONE LOGIN")
+                    || loginType.ToUpper().Contains("DEFRA SINGLE SIGN-ON"))
                 {
                     rdoLoginTypes.ElementAt(0)?.Click();
                 }
-                else if (loginType.ToUpper().Contains("SIGN IN WITH GOVERNMENT GATEWAY"))
+                else if (loginType.ToUpper().Contains("SIGN IN WITH GOVERNMENT GATEWAY")
+                    || loginType.ToUpper().Contains("GOVERNMENT GATEWAY"))
                 {
                     rdoLoginTypes.ElementAt(1)?.Click();
                 }
@@ -49,6 +52,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickContinueButton()
         {
             btnContinue.Click();
+        }
+
+        public void ClickSignInButton()
+        {
+            btnSignIn.Click();
         }
     }
 }

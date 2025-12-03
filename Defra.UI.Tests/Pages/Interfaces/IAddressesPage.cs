@@ -13,5 +13,6 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void ClickImporterSameAsConsignee();
         void ClickAddDestination();
         bool VerifySelectedDestination();
+        string GetSelectedImporter();
     }
 }

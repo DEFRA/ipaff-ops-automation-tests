@@ -2,12 +2,8 @@
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
-using SeleniumExtras.WaitHelpers;
-using Microsoft.Dynamics365.UIAutomation.Browser;
-using System.Collections.ObjectModel;
-using Defra.Trade.Plants.SpecFlowBindings.Helpers;
+
 
 namespace Defra.UI.Tests.Pages.Classes
 {
@@ -17,7 +13,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IObjectContainer _objectContainer;
 
         #region Page Objects
-        private IWebElement primaryTitle => _driver.WaitForElement(By.XPath("//*[@id='page-primary-title']"), true);
+        private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"));
         private IWebElement rdoMediumRisk => _driver.FindElement(By.XPath("//*[@id='risk-category']/following-sibling::label"));
         private IWebElement rdoLowRisk => _driver.FindElement(By.XPath("//*[@id='risk-category-2']/following-sibling::label")); 
         #endregion

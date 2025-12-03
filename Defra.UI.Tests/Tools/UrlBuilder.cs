@@ -6,6 +6,7 @@ namespace Defra.UI.Tests.Tools
     public interface IUrlBuilder
     {
         public UrlBuilder Default();
+        public UrlBuilder BTMSDefault();
         public string BuildApp();
         public UrlBuilder Add(string segment);
     }
@@ -21,6 +22,7 @@ namespace Defra.UI.Tests.Tools
         private IList<string> segments;
         private bool hasTrailingSlash;
         private string BaseApplicationUrl = null;
+        private string BaseBTMSApplicationUrl = null;
         public UrlBuilder Add(string segment)
         {
             if (segment == null)
@@ -56,9 +58,36 @@ namespace Defra.UI.Tests.Tools
             return path;
         }
 
+        public string BuildBTMSApp()
+        {
+            string path = null;
+            if (segments.Count > 0)
+            {
+                path = string.Join("/", segments);
+
+                if (segments.Count > 0 && hasTrailingSlash)
+                {
+                    path += "/";
+                }
+                path = BaseBTMSApplicationUrl + "/" + path;
+            }
+            else
+            {
+                path = BaseBTMSApplicationUrl;
+            }
+            return path;
+        }
+
         public UrlBuilder Default()
         {
             BaseApplicationUrl = ConfigSetup.BaseConfiguration.TestConfiguration.ApplicationUrl;
+
+            return this;
+        }
+
+        public UrlBuilder BTMSDefault()
+        {
+            BaseBTMSApplicationUrl = ConfigSetup.BaseConfiguration.TestConfiguration.BTMSApplicationUrl;
 
             return this;
         }
