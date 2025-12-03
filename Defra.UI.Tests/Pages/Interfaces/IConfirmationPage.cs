@@ -1,0 +1,12 @@
+﻿using OpenQA.Selenium;
+
+namespace Defra.UI.Tests.Pages.Interfaces
+{
+    public interface IConfirmationPage
+    {
+        bool VerifyInitialAssessmentPage();
+        string GetCHEDReference();
+        string GetCustomsDeclarationReference();
+        string GetCustomsDocumentCode();
+    }
+}

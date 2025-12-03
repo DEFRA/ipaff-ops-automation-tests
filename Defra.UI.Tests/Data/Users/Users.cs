@@ -12,13 +12,13 @@ namespace Defra.UI.Tests.Data.Users
         public string LoginInfo { get; set; }
         public string Environment { get; set; }
         public bool HomePage { get; set; }
-        public string Checker {  get; set; }
+        public string Role {  get; set; }
 
     }
     
     public interface IUserObject
     {
-        User GetUser(string application);
+        User GetUser(string application, string role);
     }
 
     internal class UserObject : IUserObject
@@ -29,7 +29,7 @@ namespace Defra.UI.Tests.Data.Users
         private readonly object _lock = new object();
 
 
-        public User GetUser(string application)
+        public User GetUser(string application, string role)
         {
             User? user;
 
@@ -45,7 +45,7 @@ namespace Defra.UI.Tests.Data.Users
                 var settings = builder.Build();
                 var usersList = settings.GetSection("Users").Get<List<User>>();
 
-                user = usersList?.FirstOrDefault() ?? new User();
+                user = usersList?.FirstOrDefault(x => x.Role.Equals(role)) ?? new User();
             }
 
             return user ?? new User { };

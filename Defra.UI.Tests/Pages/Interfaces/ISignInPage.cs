@@ -3,7 +3,6 @@
     public interface ISignInPage
     {
         public bool IsPageLoaded();
-        public bool IsSignedIn(string userName, string password);
         public void ClickCreateSignInDetailsLink();
         void SignIn(string userName, string password);
         public void ClickSignedOut();

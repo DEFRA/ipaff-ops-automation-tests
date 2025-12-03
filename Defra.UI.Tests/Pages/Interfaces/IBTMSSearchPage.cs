@@ -2,9 +2,9 @@
 
 namespace Defra.UI.Tests.Pages.Interfaces
 {
-    public interface IDeclarationPage
-    { 
+    public interface IBTMSSearchPage
+    {
         bool IsPageLoaded();
-        void ClickSubmitNotification();
+        void SearchForChed(string chedRef);
     }
 }
