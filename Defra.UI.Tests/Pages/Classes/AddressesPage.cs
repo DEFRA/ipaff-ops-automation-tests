@@ -2,13 +2,7 @@
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
-using SeleniumExtras.WaitHelpers;
-using Microsoft.Dynamics365.UIAutomation.Browser;
-using System.Collections.ObjectModel;
-using Defra.Trade.Plants.SpecFlowBindings.Helpers;
-using Faker;
 
 namespace Defra.UI.Tests.Pages.Classes
 {
@@ -18,8 +12,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IObjectContainer _objectContainer;
 
         #region Page Objects
-        private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
-        private IWebElement secondaryTitle => _driver.WaitForElement(By.Id("page-secondary-title"), true);
+        private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"));
+        private IWebElement secondaryTitle => _driver.WaitForElement(By.Id("page-secondary-title"));
         private IWebElement lnkAddConsignor => _driver.WaitForElement(By.LinkText("Add a consignor or exporter"));
         private IWebElement lnkAddConsignee => _driver.WaitForElement(By.LinkText("Add a consignee"));
         private IWebElement selectedConsignor => _driver.WaitForElement(By.XPath("//*[@id='traders-table-consignor']//td[1]"));
@@ -27,6 +21,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement selectedDestination => _driver.WaitForElement(By.XPath("//*[@id='traders-table-place-of-destination']//td[1]"));
         private IWebElement lnksameAsConsignee => _driver.WaitForElement(By.Id("populate-importer"));
         private IWebElement lnkAddDestination => _driver.WaitForElement(By.LinkText("Add a place of destination"));
+        private IWebElement selectedImporterName => _driver.WaitForElement(By.XPath("//*[@id='traders-table-importer']//td[1]"));
+        private IWebElement selectedImporterAddress => _driver.WaitForElement(By.XPath("//*[@id='traders-table-importer']//td[2]"));
+        private IWebElement selectedImporterCountry => _driver.WaitForElement(By.XPath("//*[@id='traders-table-importer']//td[3]"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -65,6 +62,14 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickImporterSameAsConsignee()
         {
             lnksameAsConsignee.Click();
+        }
+        public string GetSelectedImporter()
+        {
+            var importerName = selectedImporterName.Text.Trim();
+            var importerAddress = selectedImporterAddress.Text.Trim();
+            var importerCountry = selectedImporterCountry.Text.Trim();
+            var importerDetails = importerName + "\n" + importerAddress + "," + importerCountry;
+            return importerDetails;
         }
 
         public void ClickAddDestination() 

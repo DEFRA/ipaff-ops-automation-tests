@@ -1,11 +1,9 @@
 ﻿using Reqnroll.BoDi;
-using Defra.UI.Tests.Data.Users;
-using Defra.UI.Tests.Tools;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using Reqnroll;
-using Defra.UI.Tests.Pages.Classes;
 using Defra.UI.Tests.Pages.Interfaces;
+using Defra.UI.Tests.Pages.Classes;
 
 namespace Defra.UI.Tests.Steps.CP
 {
@@ -13,14 +11,15 @@ namespace Defra.UI.Tests.Steps.CP
     public class SearchExistingConsigneeSteps
     {
         private readonly IObjectContainer _objectContainer;
+        private readonly ScenarioContext _scenarioContext;
 
-        private IWebDriver? _driver => _objectContainer.IsRegistered<IWebDriver>() ? _objectContainer.Resolve<IWebDriver>() : null;
         private ISearchExistingConsigneePage? searchExistingConsigneePage => _objectContainer.IsRegistered<ISearchExistingConsigneePage>() ? _objectContainer.Resolve<ISearchExistingConsigneePage>() : null;
 
 
-        public SearchExistingConsigneeSteps(IObjectContainer container)
+        public SearchExistingConsigneeSteps(ScenarioContext context, IObjectContainer container)
         {
             _objectContainer = container;
+            _scenarioContext = context;
         }
 
 
@@ -33,6 +32,7 @@ namespace Defra.UI.Tests.Steps.CP
         [When("the user selects a consignee with a UK country")]
         public void WhenTheUserSelectsAConsigneeWithAUKCountry()
         {
+            _scenarioContext.Add("ConsigneeDetails", searchExistingConsigneePage.GetSelectedConsignee());
             searchExistingConsigneePage?.ClickSelect();
         }
     }

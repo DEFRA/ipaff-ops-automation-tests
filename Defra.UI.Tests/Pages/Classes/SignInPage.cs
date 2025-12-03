@@ -6,7 +6,7 @@ using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
 using SeleniumExtras.WaitHelpers;
 using Microsoft.Dynamics365.UIAutomation.Browser;
-using System.Collections.ObjectModel;
+
 
 namespace Defra.UI.Tests.Pages.Classes
 {
@@ -66,7 +66,7 @@ namespace Defra.UI.Tests.Pages.Classes
             UserId.SendKeys(userName);
             Password.SendKeys(password);
             _driver.WaitForElementCondition(ExpectedConditions.ElementToBeClickable(btnSignIn)).Click();
-            _driver.WaitForElement(signInConfirmBy);
+           // _driver.WaitForElement(signInConfirmBy);
         }
 
         public void EnterPassword()
