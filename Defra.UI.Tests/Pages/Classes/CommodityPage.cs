@@ -86,14 +86,14 @@ namespace Defra.UI.Tests.Pages.Classes
             return txtEnteredCommodityValue.Text.Contains(code)
                 && txtEnteredCommodityDesc.Text.Contains(description);
         }
-  
+
         public void EnterNetWeight(string weight)
         { 
             txtNetWeight.Click(); 
             txtNetWeight.Clear(); 
             txtNetWeight.SendKeys(weight); 
         }
-        
+
         public void EnterNumberOfPackages(string packages)
         {
             txtNumberOfPackages.Click(); 

@@ -51,14 +51,6 @@ namespace Defra.UI.Tests.Pages.Classes
             return PageHeading.Text.Contains("Sign in using Government Gateway");
         }
 
-        public bool IsSignedIn(string userName, string password)
-        {
-            UserId.SendKeys(userName);
-            Password.SendKeys(password);
-            _driver.WaitForElementCondition(ExpectedConditions.ElementToBeClickable(btnSignIn)).Click();
-            return _driver.WaitForElement(SignInConfirmBy).Enabled;
-        }
-
         public void ClickCreateSignInDetailsLink() => CreateSignInDetails.Click();
 
         public void SignIn(string userName, string password)

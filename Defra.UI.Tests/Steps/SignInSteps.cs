@@ -1,12 +1,11 @@
-﻿using Reqnroll.BoDi;
+﻿using AventStack.ExtentReports.Gherkin.Model;
 using Defra.UI.Tests.Data.Users;
+using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using Reqnroll;
-using Defra.UI.Tests.Pages.Interfaces;
-using AventStack.ExtentReports.Gherkin.Model;
-using DocumentFormat.OpenXml.Presentation;
+using Reqnroll.BoDi;
 
 namespace Defra.UI.Tests.Steps.CP
 {
