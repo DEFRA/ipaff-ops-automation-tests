@@ -1,11 +1,11 @@
-﻿using Reqnroll.BoDi;
+﻿using AventStack.ExtentReports.Gherkin.Model;
 using Defra.UI.Tests.Data.Users;
+using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using Reqnroll;
-using Defra.UI.Tests.Pages.Classes;
-using Defra.UI.Tests.Pages.Interfaces;
+using Reqnroll.BoDi;
 
 namespace Defra.UI.Tests.Steps.CP
 {
@@ -35,6 +35,13 @@ namespace Defra.UI.Tests.Steps.CP
             _driver?.Navigate().GoToUrl(url);
         }
 
+        [When(@"the user navigate to the BTMS application")]
+        public void GivenTheUserINavigateToTheBTMSApplication()
+        {
+            var url = urlBuilder.BTMSDefault().BuildBTMSApp();
+            _driver?.Navigate().GoToUrl(url);
+        }
+
         [When(@"I click signin button on port checker application")]
         [Given(@"I click signin button on port checker application")]
         public void GivenIClickSigninButtonOnPortCheckerApplication()
@@ -60,6 +67,7 @@ namespace Defra.UI.Tests.Steps.CP
             governmentGatewayTypePage?.ClickContinueButton();
         }
 
+        [Then(@"I should redirected to the BTMS Sign in using Government Gateway page")]
         [Then(@"I should redirected to the IPAFF Sign in using Government Gateway page")]
         public void ThenIShouldRedirectedToTheIPAFFSignInUsingGovernmentGatewayPage()
         {
@@ -69,7 +77,7 @@ namespace Defra.UI.Tests.Steps.CP
         [When(@"I have provided the IPAFF credentials and signin")]
         public void WhenIHaveProvidedTheIPAFFCredentialsAndSignin()
         {
-            var jsonData = UserObject?.GetUser("IPAFF");
+            var jsonData = UserObject?.GetUser("IPAFF","User");
             var userObject = new User
             {
                 UserName = jsonData.UserName,
@@ -79,11 +87,30 @@ namespace Defra.UI.Tests.Steps.CP
             _signInPage?.SignIn(userObject.UserName, userObject.Credential);
         }
 
+        [When(@"I have provided the BTMS credentials and signin")]
+        public void WhenIHaveProvidedTheBTMSCredentialsAndSignin()
+        {
+            var jsonData = UserObject?.GetUser("IPAFF", "BTMS");
+            var userObject = new User
+            {
+                UserName = jsonData.UserName,
+                Credential = jsonData.Credential
+            };
+
+            _signInPage?.SignIn(userObject.UserName, userObject.Credential);
+        }
 
         [When(@"I have provided the password for prototype research page")]
         public void WhenIHaveProvidedThePasswordForPrototypeResearchPage()
         {
             _signInPage?.EnterPassword();
         }
+
+        [Then("I click Sign in button")]
+        public void ThenIClickSignInButton()
+        {
+            governmentGatewayTypePage?.ClickSignInButton();
+        }
+
     }
 }

@@ -1,12 +1,9 @@
 ﻿using Reqnroll.BoDi;
-using Defra.UI.Tests.Data.Users;
-using Defra.UI.Tests.Tools;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using Reqnroll;
-using Defra.UI.Tests.Pages.Classes;
 using Defra.UI.Tests.Pages.Interfaces;
-using DocumentFormat.OpenXml.Drawing.Charts;
+
 
 namespace Defra.UI.Tests.Steps.CP
 {
@@ -16,9 +13,7 @@ namespace Defra.UI.Tests.Steps.CP
         private readonly IObjectContainer _objectContainer;
         private readonly ScenarioContext _scenarioContext;
 
-        private IWebDriver? _driver => _objectContainer.IsRegistered<IWebDriver>() ? _objectContainer.Resolve<IWebDriver>() : null;
         private IAccompanyingDocumentsPage? accompanyingDocumentsPage => _objectContainer.IsRegistered<IAccompanyingDocumentsPage>() ? _objectContainer.Resolve<IAccompanyingDocumentsPage>() : null;
-
 
         public AccompanyingDocumentsSteps(ScenarioContext context, IObjectContainer container)
         {
@@ -52,7 +47,8 @@ namespace Defra.UI.Tests.Steps.CP
         public void WhenTheUserEntersDateOfIssue(string day, string month, string year)
         {
             accompanyingDocumentsPage?.EnterDateOfIssue(day, month, year);
-            var dateofIssue = day + " " + month + " " + year;
+            string monthName = new DateTime(2000, int.Parse(month), 1).ToString("MMMM");
+            var dateofIssue = day + " " + monthName + " " + year;
              _scenarioContext.Add("DateOfIssue", dateofIssue);
         }
     }

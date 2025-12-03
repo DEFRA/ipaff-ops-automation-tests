@@ -1,11 +1,8 @@
 ﻿using Reqnroll.BoDi;
-using Defra.UI.Tests.Data.Users;
-using Defra.UI.Tests.Tools;
 using NUnit.Framework;
-using OpenQA.Selenium;
 using Reqnroll;
-using Defra.UI.Tests.Pages.Classes;
 using Defra.UI.Tests.Pages.Interfaces;
+using Defra.UI.Tests.Pages.Classes;
 
 namespace Defra.UI.Tests.Steps.CP
 {
@@ -13,14 +10,15 @@ namespace Defra.UI.Tests.Steps.CP
     public class ApprovedEstablishmentSteps
     {
         private readonly IObjectContainer _objectContainer;
+        private readonly ScenarioContext _scenarioContext;
 
-        private IWebDriver? _driver => _objectContainer.IsRegistered<IWebDriver>() ? _objectContainer.Resolve<IWebDriver>() : null;
         private IApprovedEstablishmentPage? approvedEstablishmentPage => _objectContainer.IsRegistered<IApprovedEstablishmentPage>() ? _objectContainer.Resolve<IApprovedEstablishmentPage>() : null;
 
 
-        public ApprovedEstablishmentSteps(IObjectContainer container)
+        public ApprovedEstablishmentSteps(ScenarioContext context, IObjectContainer container)
         {
             _objectContainer = container;
+            _scenarioContext = context;
         }
 
 
@@ -45,13 +43,19 @@ namespace Defra.UI.Tests.Steps.CP
         [When("the user clicks Select for one of the establishments in the list")]
         public void WhenTheUserClicksSelectForOneOfTheEstablishmentsInTheList()
         {
+            _scenarioContext.Add("EstablishmentListFirstName", approvedEstablishmentPage.GetEstablishmentListFirstName());
             approvedEstablishmentPage?.ClickSelectEstablishment();
         }
 
         [Then("the Approved establishment of origin page should be displayed with the selected establishment")]
         public void ThenTheApprovedEstablishmentOfOriginPageShouldBeDisplayedWithTheSelectedEstablishment()
         {
-            approvedEstablishmentPage?.VerifySelectedEstablismentName();
+            var establishmentListFirstName = _scenarioContext.Get<string>("EstablishmentListFirstName");
+            approvedEstablishmentPage?.VerifySelectedEstablismentName(establishmentListFirstName);
+            _scenarioContext.Add("ApprovedEstablishmentName", approvedEstablishmentPage.GetSubtotalNetWeight());
+            _scenarioContext.Add("ApprovedEstablishmentCountry", approvedEstablishmentPage.GetSubtotalPackages());
+            _scenarioContext.Add("ApprovedEstablishmentType", approvedEstablishmentPage.GetTotalNetWeight());
+            _scenarioContext.Add("ApprovedEstablishmentApprovalNum", approvedEstablishmentPage.GetTotalPackages());
         }
 
     }

@@ -4,10 +4,6 @@ using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
-using SeleniumExtras.WaitHelpers;
-using Microsoft.Dynamics365.UIAutomation.Browser;
-using System.Collections.ObjectModel;
-using Defra.Trade.Plants.SpecFlowBindings.Helpers;
 
 namespace Defra.UI.Tests.Pages.Classes
 {
@@ -17,12 +13,17 @@ namespace Defra.UI.Tests.Pages.Classes
         private IObjectContainer _objectContainer;
 
         #region Page Objects
-        private IWebElement primaryTitle => _driver.WaitForElement(By.XPath("//*[@id='page-primary-title']"), true);
-        private IWebElement secondaryTitle => _driver.WaitForElement(By.XPath("//*[@id='page-secondary-title']"), true);
+        private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"));
+        private IWebElement secondaryTitle => _driver.WaitForElement(By.Id("page-secondary-title"));
         private IWebElement lnkSearchForApproved => _driver.WaitForElement(By.Name("add-establishment"));
         private IWebElement countryDropdown => _driver.WaitForElement(By.Id("establishment-country-code"));
         private IWebElement lnkSelectEstablishment => _driver.WaitForElement(By.Id("select-establishment-1"));
+        private IWebElement establishmentSearchResultFirstName => _driver.WaitForElement(By.XPath("//*[@id='establishments-search-results-row-1']/td[1]"));
         private IWebElement selectedEstablishment => _driver.WaitForElement(By.XPath("//*[@id='establishments-row-1']/td[1]"));
+        private IWebElement txtapprovedEstablishmentCountry => _driver.WaitForElement(By.XPath("//*[@id='establishments-row-1']/td[2]"));
+        private IWebElement txtapprovedEstablishmentType => _driver.WaitForElement(By.XPath("//*[@id='establishments-row-1']/td[3]"));
+        private IWebElement txtapprovedEstablishmentApprovalNum => _driver.WaitForElement(By.XPath("//*[@id='establishments-row-1']/td[4]"));
+
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -50,14 +51,39 @@ namespace Defra.UI.Tests.Pages.Classes
             return actual.Equals(country);
         }
 
+        public string GetEstablishmentListFirstName()
+        {
+            return establishmentSearchResultFirstName.Text.Trim();
+        }
+
         public void ClickSelectEstablishment() 
         { 
             lnkSelectEstablishment.Click(); 
         }
 
-        public bool VerifySelectedEstablismentName()
+        public bool VerifySelectedEstablismentName(string establishmentListFirstName)
         {
-            return selectedEstablishment.Text.Trim().Equals("CHARRADE MARCEL ETS");
+            return selectedEstablishment.Text.Trim().Equals(establishmentListFirstName);
+        }
+
+        public string GetSubtotalNetWeight()
+        {
+            return selectedEstablishment.Text.Trim();
+        }
+
+        public string GetSubtotalPackages()
+        {
+            return txtapprovedEstablishmentCountry.Text.Trim();
+        }
+
+        public string GetTotalNetWeight()
+        {
+            return txtapprovedEstablishmentType.Text.Trim();
+        }
+
+        public string GetTotalPackages()
+        {
+            return txtapprovedEstablishmentApprovalNum.Text.Trim();
         }
     }
 }
