@@ -51,7 +51,7 @@ Scenario: User creates and submits a B2C consignment notification - CHEDP
 	Then the Accompanying documents page should be displayed
 	When the user selects Document type "Commercial invoice"
 	And the user enters Document reference "INV12345"
-	And the user enters date of issue '24''11''2025'
+	And the user enters date of issue "24/11/2025"
 	Then the user should be able to click Save and continue
 	And the Approved establishment of origin page should be displayed
 	When the user clicks Search for an approved establishment
