@@ -1,13 +1,14 @@
-﻿using Defra.UI.Tests.Configuration;
+﻿using AventStack.ExtentReports.Gherkin.Model;
+using Defra.Trade.Plants.SpecFlowBindings.Helpers;
+using Defra.UI.Tests.Configuration;
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
+using Microsoft.Dynamics365.UIAutomation.Browser;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
 using SeleniumExtras.WaitHelpers;
-using Microsoft.Dynamics365.UIAutomation.Browser;
 using System.Collections.ObjectModel;
-using Defra.Trade.Plants.SpecFlowBindings.Helpers;
 
 namespace Defra.UI.Tests.Pages.Classes
 {
@@ -19,6 +20,7 @@ namespace Defra.UI.Tests.Pages.Classes
         #region Page Objects
         private IWebElement primaryTitle => _driver.WaitForElement(By.XPath("//*[@id='page-primary-title']"), true);
         private IWebElement lnkCommodity => _driver.WaitForElement(By.XPath("//*[@id='commodity-details-link']"));
+        private IWebElement lnkCountriesConsignmentTravel => _driver.WaitForElement(By.XPath("//a[contains(text(), 'Countries the consignment will travel through')]"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -36,6 +38,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickCommodityLink()
         {
             lnkCommodity.Click();
+        }
+
+        public void ClickCountriesTheConsignmentWillTravelThroughLink()
+        {
+            lnkCountriesConsignmentTravel.Click();
         }
     }
 }

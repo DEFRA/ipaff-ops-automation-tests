@@ -82,6 +82,12 @@ namespace Defra.UI.Tests.Steps.CP
             _scenarioContext.Add("NetWeight", weight);
         }
 
+        [When("the user populates Number of animals as {string}")]
+        public void WhenTheUserPopulatesNumberOfAnimalsAs(string quantity)
+        {
+            commodityPage?.EnterNumberOfAnimals(quantity);
+            _scenarioContext.Add("NumberOfAnimals", quantity);
+        }
 
         [When("the user populates Number of packages as {string}")]
         public void WhenTheUserPopulatesNumberOfPackagesAs(string packages)
@@ -116,6 +122,13 @@ namespace Defra.UI.Tests.Steps.CP
         public void WhenTheUserClicksSaveAndContinueInCommodityPage()
         {
             commodityPage?.ClickSaveAndContinue();
+        }
+
+        [When("the user populates the Ear tag as {string}")]
+        public void WhenTheUserPopulatesTheEarTagAs(string earTag)
+        {
+            commodityPage?.EnterEarTag(earTag);
+            _scenarioContext.Add("EarTag", earTag);
         }
     }
 }

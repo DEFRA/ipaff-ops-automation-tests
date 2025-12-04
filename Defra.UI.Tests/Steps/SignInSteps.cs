@@ -79,6 +79,18 @@ namespace Defra.UI.Tests.Steps.CP
             _signInPage?.SignIn(userObject.UserName, userObject.Credential);
         }
 
+        [When("I sign in as a Notifier")]
+        public void WhenISignInAsANotifier()
+        {
+            var jsonData = UserObject?.GetUser("IPAFF");
+            var userObject = new User
+            {
+                UserName = jsonData.UserName,
+                Credential = jsonData.Credential
+            };
+
+            _signInPage?.SignIn(userObject.UserName, userObject.Credential);
+        }
 
         [When(@"I have provided the password for prototype research page")]
         public void WhenIHaveProvidedThePasswordForPrototypeResearchPage()

@@ -18,6 +18,10 @@ namespace Defra.UI.Tests.Pages.Classes
         #region Page Objects
         private IWebElement PageHeading => _driver.WaitForElement(By.XPath("//h1[@id='page-primary-title']"), true);
         private IWebElement lnkCreateNotification => _driver.WaitForElement(By.LinkText("Create a new notification"));
+        private IWebElement txtCertificateNumber => _driver.FindElement(By.Id("certificate-number"));
+        private IWebElement notificationCount => _driver.FindElement(By.Id("notification-count"));
+        private IWebElement GetNotificationReferenceInList(string chedRef) => _driver.FindElement(By.XPath($"//dd[@id='reference-number-0' and contains(text(), '{chedRef}')]"));
+        private IWebElement GetShowNotificationLink(string chedRef) => _driver.FindElement(By.Id($"show-certificate-{chedRef}"));
 
         #endregion
 
@@ -36,6 +40,62 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickCreateNotification()
         {
             lnkCreateNotification.Click();
+        }
+
+        public void SearchForNotification(string notificationNumber)
+        {
+            txtCertificateNumber.Clear();
+            txtCertificateNumber.SendKeys(notificationNumber);
+            txtCertificateNumber.SendKeys(Keys.Enter);
+        }
+
+        public bool VerifyNotificationInList(string chedReference)
+        {
+            try
+            {
+                return notificationCount.Text.Equals("1") &&
+                       GetNotificationReferenceInList(chedReference).Displayed;
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
+        }
+
+        public void ClickShowNotification(string chedReference)
+        {
+            GetShowNotificationLink(chedReference).Click();
+        }
+
+        public bool VerifyCertificateInNewTab()
+        {
+            var windowHandles = _driver.WindowHandles;
+            if (windowHandles.Count > 1)
+            {
+                _driver.SwitchTo().Window(windowHandles.Last());
+                return _driver.Url.Contains("/certificate/pdf");
+            }
+            return false;
+        }
+
+        public bool VerifyDataInCertificate(string chedReference)
+        {
+            return _driver.Url.Contains($"/{chedReference}/certificate/pdf");
+        }
+
+        public void ClosePDFBrowserTab()
+        {
+            var windowHandles = _driver.WindowHandles;
+            if (windowHandles.Count > 1)
+            {
+                _driver.Close();
+                _driver.SwitchTo().Window(windowHandles.First());
+            }
+        }
+
+        public bool VerifyBrowserTabClosed()
+        {
+            return _driver.WindowHandles.Count == 1;
         }
     }
 }

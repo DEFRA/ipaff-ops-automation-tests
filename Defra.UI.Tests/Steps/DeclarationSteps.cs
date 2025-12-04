@@ -33,42 +33,16 @@ namespace Defra.UI.Tests.Steps.CP
             Assert.True(declarationPage?.IsPageLoaded(), "Declaration page not loaded");
         }
 
+        [When("the user ticks the checkbox to declare that the information is true and correct")]
+        public void WhenTheUserTicksTheCheckboxToDeclareThatTheInformationIsTrueAndCorrect()
+        {
+            declarationPage?.CheckDeclarationAgreement();
+        }
+
         [When("the user clicks Submit notification")]
         public void WhenTheUserClicksSubmitNotification()
         {
             declarationPage?.ClickSubmitNotification();
-        }
-
-        [Then("the Confirmation page should be displayed with the initial risk assessment")]
-        public void ThenTheConfirmationPageShouldBeDisplayedWithTheInitialRiskAssessment()
-        {
-            Assert.True(declarationPage?.VerifyInitialAssessmentPage(),"Initial rist assessment page not loaded");
-        }
-
-        [When("the user records the IPAFFS User details and CHED Reference")]
-        public void WhenTheUserRecordsTheIPAFFSUserDetailsAndCHEDReference()
-        {
-            _scenarioContext.Add("CHEDReference", declarationPage.GetCHEDReference());
-            _scenarioContext.Add("CustomsDeclarationReference", declarationPage.GetCustomsDeclarationReference());
-            _scenarioContext.Add("CustomsDocumentCode", declarationPage.GetCustomsDocumentCode());
-        }
-
-        [Then("the details should be recorded")]
-        public void ThenTheDetailsShouldBeRecorded()
-        {
-            //No Implementation
-        }
-
-        [When("the user logs out of IPAFFS Part {int}")]
-        public void WhenTheUserLogsOutOfIPAFFSPart(int partNumber)
-        {
-            declarationPage?.SignedOut();
-        }
-
-        [Then("the user should be logged out successfully")]
-        public void ThenTheUserShouldBeLoggedOutSuccessfully()
-        {
-            Assert.True(declarationPage?.VerifySignedOutPage(), "Signed out page not loaded");
         }
     }
 }
