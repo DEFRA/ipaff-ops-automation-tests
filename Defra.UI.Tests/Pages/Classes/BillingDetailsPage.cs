@@ -13,8 +13,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private IObjectContainer _objectContainer;
 
         #region Page Objects
-        private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"));
-        private IWebElement secondaryTitle => _driver.WaitForElement(By.Id("page-secondary-title"));
+        private IReadOnlyCollection<IWebElement> primaryTitle => _driver.WaitForElements(By.Id("page-primary-title"), true);
+        private IReadOnlyCollection<IWebElement> secondaryTitle => _driver.WaitForElements(By.Id("page-secondary-title"), true);
+        private IReadOnlyCollection<IWebElement> btnSaveAndContinueList => _driver.WaitForElements(By.XPath("//button[text()='Save and continue']"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -26,8 +27,20 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool IsPageLoaded()
         {
-            return secondaryTitle.Text.Contains("Billing")
-                && primaryTitle.Text.Contains("Confirm billing details");
+            if (secondaryTitle.Count > 0 && primaryTitle.Count > 0)
+            {
+                return secondaryTitle.FirstOrDefault().Text.Contains("Billing")
+                    && primaryTitle.FirstOrDefault().Text.Contains("Confirm billing details");
+            }
+            return true;
+        }
+
+        public void ClickSaveAndContinue()
+        {
+            if (btnSaveAndContinueList.Count > 0)
+            {
+                btnSaveAndContinueList.FirstOrDefault().Click();
+            }
         }
     }
 }

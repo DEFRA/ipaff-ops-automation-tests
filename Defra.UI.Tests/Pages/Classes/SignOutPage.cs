@@ -12,7 +12,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IObjectContainer _objectContainer;
 
         #region Page Objects
-        private IWebElement signOut => _driver.WaitForElement(By.Id("sign-out-link"));
+        private IWebElement signOut => _driver.WaitForElement(By.Id("sign-out-link"), true);
         private IWebElement btmsSignOut => _driver.WaitForElement(By.XPath("//a[normalize-space()='Sign out']"));
         private IWebElement logOutPageHeading => _driver.WaitForElement(By.XPath("//h1[@class='govuk-heading-xl']"), true);
         #endregion

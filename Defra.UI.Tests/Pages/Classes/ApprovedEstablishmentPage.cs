@@ -13,8 +13,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IObjectContainer _objectContainer;
 
         #region Page Objects
-        private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"));
-        private IWebElement secondaryTitle => _driver.WaitForElement(By.Id("page-secondary-title"));
+        private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
+        private IWebElement secondaryTitle => _driver.WaitForElement(By.Id("page-secondary-title"), true);
         private IWebElement lnkSearchForApproved => _driver.WaitForElement(By.Name("add-establishment"));
         private IWebElement countryDropdown => _driver.WaitForElement(By.Id("establishment-country-code"));
         private IWebElement lnkSelectEstablishment => _driver.WaitForElement(By.Id("select-establishment-1"));

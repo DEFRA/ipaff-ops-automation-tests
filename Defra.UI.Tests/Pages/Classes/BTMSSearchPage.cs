@@ -12,7 +12,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IObjectContainer _objectContainer;
 
         #region Page Objects
-        private IWebElement primaryTitle => _driver.WaitForElement(By.XPath("//h1[@class='govuk-label-wrapper']"));
+        private IWebElement primaryTitle => _driver.WaitForElement(By.XPath("//h1[@class='govuk-label-wrapper']"), true);
         private IWebElement txtCHEDRefInput => _driver.WaitForElement(By.Id("search-term"));
         private IWebElement btnSearch => _driver.WaitForElement(By.XPath("//button[@class='btms-submit-search']"));     
         #endregion

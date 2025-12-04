@@ -88,7 +88,7 @@ Scenario: User creates and submits a B2C consignment notification - CHEDP
 	Then the Contact address for consignment page should be displayed
 	When the user clicks Save and continue
 	#Then the Confirm billing details page should be displayed
-	#When the user clicks Save and continue
+	#When the user clicks Save and continue in billing details page
 	Then the Review your notification page should be displayed
 	And the user verifies all the data displayed in review page
 	When the user clicks Save and continue
@@ -112,6 +112,56 @@ Scenario: User creates and submits a B2C consignment notification - CHEDP
 	Then the BTMS search screen should be displayed
 	When the user searches for the CHED created earlier
 	Then the BTMS search result screen should be displayed
-	And the user checks commodity code, description, quantity, authority and decision
+	And the user checks commodity code "41015050", description "Bison bison", quantity "1000", authority "POAO" and decision "Decision not given"
+	When the user logs out of BTMS
+	Then the user should be logged out successfully
+	When I navigate to the IPAFF Inspector application
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF Inspector credentials and signin
+	Then the user should be logged into Import notifications page
+	When the user searches for the newly created notification on the Import notifications page
+	Then the user clicks the notificaiton found with status "NEW"
+	Then the Decision Hub page should be displayed
+	When the user clicks Save and set as in progress
+	Then the notification status should change from "NEW" to "IN PROGRESS"
+	When the user clicks Local reference number link in Record checks
+	Then Local reference number page should be displayed
+	When the user enters a local reference number and clicks Save and continue
+	Then the Documentary check page should be displayed
+	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
+	Then the Identity and physical checks page should be displayed
+	When the user selects "Satisfactory" under "Full identity check" in identity check
+	And the user selects "Satisfactory" for physical check
+	And the user clicks Save and continue
+	Then the Seal numbers page should be displayed
+	When the user clicks Save and continue
+	Then the Laboratory tests page should be displayed
+	When the user clicks Save and continue
+	Then the Decision page should be displayed
+	When the user clicks Save and continue
+	Then the Review outcome decision page should be displayed
+	#And the user verifies all the data displayed in review outcome decision page
+	When the user populates the Date and time of checks
+	And user clicks Submit decision
+	Then the Your checks have been submitted page should be displayed
+	When the user logs out of IPAFFS Part 2
+	Then the user should be logged out successfully
+	When the user navigate to the BTMS application
+	Then I click Sign in button
+	And I should see type of Gateway login page
+	And I have selected "Government Gateway" as login type
+	And I click Sign in button
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the BTMS Sign in using Government Gateway page
+	When I have provided the BTMS credentials and signin
+	Then the BTMS search screen should be displayed
+	When the user searches for the CHED created earlier
+	Then the BTMS search result screen should be displayed
+	And the user checks commodity code "41015050", description "Bison bison", quantity "1000", authority "POAO" and decision "Acceptable for Internal Market" after the decision given
 	When the user logs out of BTMS
 	Then the user should be logged out successfully

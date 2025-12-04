@@ -13,7 +13,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IObjectContainer _objectContainer;
 
         #region Page Objects
-        private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"));
+        private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
         private IWebElement rdoMediumRisk => _driver.FindElement(By.XPath("//*[@id='risk-category']/following-sibling::label"));
         private IWebElement rdoLowRisk => _driver.FindElement(By.XPath("//*[@id='risk-category-2']/following-sibling::label")); 
         #endregion

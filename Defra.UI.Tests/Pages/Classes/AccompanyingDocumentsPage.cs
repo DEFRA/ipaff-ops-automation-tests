@@ -13,8 +13,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IObjectContainer _objectContainer;
 
         #region Page Objects
-        private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"));
-        private IWebElement secondaryTitle => _driver.WaitForElement(By.Id("page-secondary-title"));
+        private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
+        private IWebElement secondaryTitle => _driver.WaitForElement(By.Id("page-secondary-title"), true);
         private IWebElement ddlDocumentType => _driver.WaitForElement(By.Name("document-type"));
         private IWebElement txtDocumentReference => _driver.WaitForElement(By.Name("document-reference"));
         private IWebElement txtDay => _driver.WaitForElement(By.Name("document-issue-date-day"));

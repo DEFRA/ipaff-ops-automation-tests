@@ -12,8 +12,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IObjectContainer _objectContainer;
 
         #region Page Objects
-        private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"));
-        private IWebElement secondaryTitle => _driver.WaitForElement(By.Id("page-secondary-title"));
+        private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
+        private IWebElement secondaryTitle => _driver.WaitForElement(By.Id("page-secondary-title"), true);
         private IWebElement optLiveAnimals => _driver.WaitForElement(By.XPath("//*[@id='cert-type']/following-sibling::label"));
         private IWebElement optProductsAnimalOrigin => _driver.WaitForElement(By.XPath("//*[@id='cert-type-2']/following-sibling::label"));
         private IWebElement optHighRiskFoodFeed => _driver.WaitForElement(By.XPath("//*[@id='cert-type-3']/following-sibling::label"));

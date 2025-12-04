@@ -13,8 +13,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IObjectContainer _objectContainer;
 
         #region Page Objects
-        private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"));
-        private IWebElement secondaryTitle => _driver.WaitForElement(By.Id("page-secondary-title"));
+        private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
+        private IWebElement secondaryTitle => _driver.WaitForElement(By.Id("page-secondary-title"), true);
         private IWebElement txtPortOfEntry => _driver.WaitForElement(By.Id("bcp"));
         private IWebElement optTransportMode => _driver.WaitForElement(By.XPath("//*[@class='govuk-form-group  ']/select"));
         private IWebElement txtTransportId => _driver.WaitForElement(By.Id("identification"));
