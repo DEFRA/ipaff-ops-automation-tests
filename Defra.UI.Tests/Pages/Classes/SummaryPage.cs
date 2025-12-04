@@ -38,6 +38,13 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtConsigneeDetails => _driver.WaitForElement(By.Id("consignee"));
         private IWebElement txtImporterDetails => _driver.WaitForElement(By.Id("importer"));
         private IWebElement txtplaceOfDestination => _driver.WaitForElement(By.Id("final-destination"));
+
+        //Inspector
+        private IWebElement txtBCPRefNum => _driver.WaitForElement(By.XPath("//*[@id='reference-row-1']/td[1]"));
+        private IWebElement txtDocumentaryChk => _driver.WaitForElement(By.XPath("//*[@id='parttwo/consignmentcheck']/td[1]"));
+        private IWebElement txtIdentityChkType => _driver.WaitForElement(By.XPath("//*[@id='consignmentcheck/identitycheckdone']/th"));
+        private IWebElement txtIdentityChkDecision => _driver.WaitForElement(By.XPath("//*[@id='consignmentcheck/identitycheckdone']/td[1]"));
+        private IWebElement txtPhysicalChkDecision => _driver.WaitForElement(By.XPath("//*[@id='consignmentcheck/physicalcheckdone']/td[1]"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -110,6 +117,15 @@ namespace Defra.UI.Tests.Pages.Classes
             summary.ConsigneeDetails = txtConsigneeDetails.Text.Trim();
             summary.ImporterDetails = txtImporterDetails.Text.Trim();
             summary.PlaceOfDestination = txtplaceOfDestination.Text.Trim();
+
+
+            /*//Inspector Pages
+            summary.BCPRefNum = txtBCPRefNum.Text.Trim();
+            summary.DocumentaryChk = txtDocumentaryChk.Text.Trim();
+            summary.IdentityChkType = txtIdentityChkType.Text.Trim();
+            summary.IdentityChkDecision = txtIdentityChkDecision.Text.Trim();
+            summary.PhysicalChkDecision = txtPhysicalChkDecision.Text.Trim();
+*/
 
             return summary;
         }

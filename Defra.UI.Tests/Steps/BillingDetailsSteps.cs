@@ -3,6 +3,7 @@ using NUnit.Framework;
 using OpenQA.Selenium;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
+using Defra.UI.Tests.Pages.Classes;
 
 namespace Defra.UI.Tests.Steps.CP
 {
@@ -25,5 +26,12 @@ namespace Defra.UI.Tests.Steps.CP
         {
             Assert.True(billingDetailsPage?.IsPageLoaded(), "Billing Confirm billing details page not loaded");
         }
+
+        [When("the user clicks Save and continue in billing details page")]
+        public void WhenTheUserClicksSaveAndContinueInBillingDetailsPage()
+        {
+            billingDetailsPage?.ClickSaveAndContinue();
+        }
+
     }
 }

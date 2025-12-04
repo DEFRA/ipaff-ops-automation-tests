@@ -3,6 +3,8 @@ using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Pages.Classes;
+using AventStack.ExtentReports.Gherkin.Model;
+using DocumentFormat.OpenXml.Drawing.Charts;
 
 
 namespace Defra.UI.Tests.Steps.CP
@@ -25,18 +27,21 @@ namespace Defra.UI.Tests.Steps.CP
         [Then("the BTMS search result screen should be displayed")]
         public void ThenTheBTMSSearchResultScreenShouldBeDisplayed()
         {
-            Assert.True(btmsSearchResultPage?.IsPageLoaded(), "Showing result for CHED page not loaded");
+            var CHEDPREFNum = _scenarioContext.Get<string>("CHEDReference");
+            Assert.True(btmsSearchResultPage?.IsPageLoaded(CHEDPREFNum), "Showing result for CHED page not loaded");
         }
 
 
-        [Then("the user checks commodity code, description, quantity, authority and decision")]
-        public void ThenTheUserChecksCommodityCodeDescriptionQuantityAuthorityAndDecision()
+        [Then("the user checks commodity code {string}, description {string}, quantity {string}, authority {string} and decision {string}")]
+        public void ThenTheUserChecksCommodityCodeDescriptionQuantityAuthorityAndDecision(string commodityCode, string commodityDescription, string commodityQuantity, string authority, string decision)
         {
-            var commodityCode = "41015050";
-            var commodityDescription = "Bison bison";
-            var commodityQuantity = "1000";
-            var authority = "POAO";
-            var decision = "Decision not given";
+            Assert.True(btmsSearchResultPage?.ValidateBTMSSearchResult(commodityCode, commodityDescription, commodityQuantity, authority, decision));
+        }
+       
+        
+        [Then("the user checks commodity code {string}, description {string}, quantity {string}, authority {string} and decision {string} after the decision given")]
+        public void ThenTheUserChecksCommodityCodeDescriptionQuantityAuthorityAndDecisionAfterTheDecisionGiven(string commodityCode, string commodityDescription, string commodityQuantity, string authority, string decision)
+        {
             Assert.True(btmsSearchResultPage?.ValidateBTMSSearchResult(commodityCode, commodityDescription, commodityQuantity, authority, decision));
         }
 
