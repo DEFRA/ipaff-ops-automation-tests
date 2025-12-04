@@ -2,7 +2,6 @@
 using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
-using Defra.UI.Tests.Pages.Classes;
 
 
 namespace Defra.UI.Tests.Steps.CP
@@ -31,8 +30,8 @@ namespace Defra.UI.Tests.Steps.CP
         [When("the user searches for the CHED created earlier")]
         public void WhenTheUserSearchesForTheCHEDCreatedEarlierAndChecksAllDetailsMatch()
         {
-            //var chedRef = _scenarioContext.Get<string>("CHEDReference");
-            btmsSearchPage?.SearchForChed("CHEDP.GB.2025.1055883");
+            var chedRef = _scenarioContext.Get<string>("CHEDReference");
+            btmsSearchPage?.SearchForChed(chedRef);
         }
     }
 }

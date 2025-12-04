@@ -13,8 +13,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IObjectContainer _objectContainer;
 
         #region Page Objects
-        private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"));
-        private IWebElement secondaryTitle => _driver.WaitForElement(By.Id("page-secondary-title"));
+        private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
+        private IWebElement secondaryTitle => _driver.WaitForElement(By.Id("page-secondary-title"), true);
         private IWebElement rdoYesMRNNow => _driver.FindElement(By.XPath("//*[@id='ctc-question-yes']/following-sibling::label"));
         private IWebElement rdoYesMRNLater => _driver.FindElement(By.XPath("//*[@id='ctc-question-yes-add-later']/following-sibling::label"));
         private IWebElement rdoNo => _driver.FindElement(By.XPath("//*[@id='ctc-question-no']/following-sibling::label"));
