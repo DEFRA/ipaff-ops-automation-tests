@@ -53,7 +53,7 @@ namespace Defra.UI.Tests.Steps.CP
         {
             accompanyingDocumentsPage?.EnterDateOfIssue(day, month, year);
             var dateofIssue = day + " " + month + " " + year;
-             _scenarioContext.Add("DateOfIssue", dateofIssue);
+            _scenarioContext.Add("DocumentDateOfIssue", dateofIssue);
         }
     }
 }

@@ -4,6 +4,13 @@
     {
         bool IsPageLoaded();
         void ClickCreateNotification();
+        void SearchForNotification(string notificationNumber);
+        bool VerifyNotificationInList(string chedReference);
+        void ClickShowNotification(string chedReference);
+        bool VerifyCertificateInNewTab();
+        bool VerifyDataInCertificate(string chedReference);
+        void ClosePDFBrowserTab();
+        bool VerifyBrowserTabClosed();
 
     }
 }

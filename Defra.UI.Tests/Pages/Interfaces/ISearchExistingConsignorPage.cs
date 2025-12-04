@@ -7,5 +7,8 @@ namespace Defra.UI.Tests.Pages.Interfaces
     {
         bool IsPageLoaded();
         void ClickSelect();
+        string GetSelectedConsignorName();
+        string GetSelectedConsignorAddress();
+        string GetSelectedConsignorCountry();
     }
 }

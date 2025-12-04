@@ -17,5 +17,7 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void ClickUpdateTotal();
         void EnterTotalGrossWeight(string weight);
         void ClickSaveAndContinue();
+        void EnterNumberOfAnimals(string numberOfAnimals);
+        void EnterEarTag(string earTag);
     }
 }

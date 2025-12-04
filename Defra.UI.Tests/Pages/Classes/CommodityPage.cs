@@ -24,7 +24,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement btnSearch => _driver.WaitForElement(By.XPath("//button[normalize-space()='Search']"));
         private IWebElement txtCommodityCodeValue => _driver.WaitForElement(By.Id("commodity-code-value"));
         private IWebElement txtCommodityCodeDesc => _driver.WaitForElement(By.XPath("//*[@id='commodity-code-value']/following-sibling::td"));
-        private IWebElement txtCommoditySpecies => _driver.FindElement(By.XPath("//*[@id='Bison bison-checkbox']"));
+        private IWebElement txtCommoditySpecies(string species) => _driver.FindElement(By.XPath($"//input[@class='govuk-checkboxes__input' and @id='{species}-checkbox']"));
         private IWebElement rdoYesAnotherCommodity => _driver.FindElement(By.XPath("//*[@id='addCommodity']"));
         private IWebElement rdoNoAnotherCommodity => _driver.FindElement(By.XPath("//*[@id='addCommodity-2']"));
         private IWebElement txtEnteredCommodityValue => _driver.WaitForElement(By.XPath("//*[@class='govuk-table__row  ']/td[1]"));
@@ -35,6 +35,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement btnUpdateTotal => _driver.FindElement(By.XPath("//*[@class='commodity-detail-form-desktop']/div[3]//button"));
         private IWebElement txtTotalGrossWeight => _driver.FindElement(By.XPath("//*[@id='gross-weight-desktop']"));
         private IWebElement btnSaveAndContinue => _driver.WaitForElement(By.XPath("//*[@id='button-save-and-continue-desktop']"));
+        private IWebElement txtNumberOfAnimals => _driver.FindElement(By.XPath("//input[contains(@class, 'number-of-animals') and contains(@id, 'num-animals-desktop')]"));
+        private IWebElement txtEarTag => _driver.FindElement(By.XPath("//input[contains(@id, 'ear_tag')]"));
+
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -65,7 +68,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void SelectCommoditySpecies(string species)
         {
-            txtCommoditySpecies.Click();
+            txtCommoditySpecies(species).Click();
         }
 
         public void AddAnotherCommodity(string option)
@@ -118,6 +121,20 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickSaveAndContinue()
         {
             btnSaveAndContinue.Click();
+        }
+
+        public void EnterNumberOfAnimals(string quantity)
+        {
+            txtNumberOfAnimals.Click();
+            txtNumberOfAnimals.Clear();
+            txtNumberOfAnimals.SendKeys(quantity);
+        }
+
+        public void EnterEarTag(string earTag)
+        {
+            txtEarTag.Click();
+            txtEarTag.Clear();
+            txtEarTag.SendKeys(earTag);
         }
     }
 }

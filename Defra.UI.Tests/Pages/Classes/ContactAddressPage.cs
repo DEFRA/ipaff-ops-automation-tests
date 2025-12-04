@@ -19,6 +19,7 @@ namespace Defra.UI.Tests.Pages.Classes
         #region Page Objects
         private IWebElement primaryTitle => _driver.WaitForElement(By.XPath("//*[@id='page-primary-title']"), true);
         private IWebElement secondaryTitle => _driver.WaitForElement(By.XPath("//*[@id='page-secondary-title']"), true);
+        private IWebElement firstContactAddressLabel => _driver.FindElement(By.XPath("//label[contains(@for, 'branch-address')]"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -32,6 +33,16 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             return secondaryTitle.Text.Contains("Complete notification")
                 && primaryTitle.Text.Contains("Contact address for consignment");
+        }
+
+        public bool IsPageLoadedWithoutSecondaryTitle()
+        {
+            return primaryTitle.Text.Contains("Contact address for consignment");
+        }
+
+        public string GetSelectedContactAddress()
+        {
+            return firstContactAddressLabel.Text.Trim();
         }
     }
 }

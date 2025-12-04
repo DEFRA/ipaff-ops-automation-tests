@@ -20,6 +20,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement primaryTitle => _driver.WaitForElement(By.XPath("//*[@id='page-primary-title']"), true);
         private IWebElement secondaryTitle => _driver.WaitForElement(By.XPath("//*[@id='page-secondary-title']"), true);
         private IWebElement btnSelect => _driver.WaitForElement(By.XPath("//*[@id='Table-SearchResults']//button[normalize-space()='Select']"));
+        private IWebElement selectedConsigneeName => _driver.FindElement(By.XPath("//td[@class='govuk-table__cell economic-operator-name']"));
+        private IWebElement selectedConsigneeAddress => _driver.FindElement(By.XPath("//td[@class='govuk-table__cell economic-operator-address']"));
+        private IWebElement selectedConsigneeCountry => _driver.FindElement(By.XPath("//td[@class='govuk-table__cell'][not(@headers)]"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -39,6 +42,10 @@ namespace Defra.UI.Tests.Pages.Classes
         { 
             btnSelect.Click(); 
         }
+        
+        public string GetSelectedConsigneeName() => selectedConsigneeName.Text.Trim();
+        public string GetSelectedConsigneeAddress() => selectedConsigneeAddress.Text.Trim();
+        public string GetSelectedConsigneeCountry() => selectedConsigneeCountry.Text.Trim();
 
     }
 }

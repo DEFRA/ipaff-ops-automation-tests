@@ -26,6 +26,7 @@ namespace Defra.UI.Tests.Steps.CP
             _scenarioContext = context;
         }
 
+        [Then("the Origin of the animal or product page should be displayed")]
         [Then("the Origin of the plants plant product or other objects page should be displayed")]
         public void ThenTheOriginOfThePlantsPlantProductOrOtherObjectsPageShouldBeDisplayed()
         {

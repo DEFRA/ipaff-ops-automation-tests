@@ -18,6 +18,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects
         private IWebElement pageTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
+        private IWebElement chkDeclarationAgree => _driver.FindElement(By.Id("declaration-agree"));
         private IWebElement btnSubmit => _driver.WaitForElement(By.Id("accept-and-submit"));
         private IWebElement initialAssessmentTitle => _driver.WaitForElement(By.Id("risk-assessment-banner-title"));
         private IWebElement chedReference => _driver.WaitForElement(By.Id("reference-number"));
@@ -39,41 +40,14 @@ namespace Defra.UI.Tests.Pages.Classes
             return pageTitle.Text.Contains("Declaration");
         }
 
+        public void CheckDeclarationAgreement()
+        {
+            chkDeclarationAgree.Click();
+        }
 
         public void ClickSubmitNotification()
         {
             btnSubmit.Click();
-        }
-
-        public bool VerifyInitialAssessmentPage()
-        {
-            return initialAssessmentTitle.Text.Trim().Contains("Initial risk assessment");
-        }
-
-        public string GetCHEDReference()
-        {
-            return chedReference.Text.Trim();
-        }
-
-        public string GetCustomsDeclarationReference()
-        {
-            return customsDeclarationReference.Text.Trim();
-        }
-
-        public string GetCustomsDocumentCode()
-        {
-            return customsDocumentCode.Text.Trim();
-        }
-
-        public void SignedOut()
-        {
-            signOut.Click();          
-        }
-
-        public bool VerifySignedOutPage()
-        {
-             return logOutPageHeading.Text.Contains("You have signed out") 
-                || logOutPageHeading.Text.Contains("Your Defra account");
-        }
+        }        
     }
 }

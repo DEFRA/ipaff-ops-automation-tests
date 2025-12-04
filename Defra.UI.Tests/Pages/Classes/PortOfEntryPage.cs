@@ -30,6 +30,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtYear => _driver.WaitForElement(By.Id("arrival-date-year"));
         private IWebElement txtHour => _driver.WaitForElement(By.Id("arrival-time-hour"));
         private IWebElement txtMinutes => _driver.WaitForElement(By.Id("arrival-time-minutes"));
+        private IWebElement txtEstimatedJourneyTimeHour => _driver.FindElement(By.Id("estimated-journey-time-hour"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -43,6 +44,12 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             return secondaryTitle.Text.Contains("Transport")
                 && primaryTitle.Text.Contains("Transport to the port of entry");
+        }
+
+        public bool IsBCPOrPortOfEntryPageLoaded()
+        {
+            return secondaryTitle.Text.Contains("Transport")
+                && primaryTitle.Text.Contains("Transport to the BCP or Port of entry");
         }
 
         public void EnterPortOfEntry(string port)
@@ -77,6 +84,18 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             txtHour.SendKeys(hour);
             txtMinutes.SendKeys(minutes);
+        }
+
+        public void EnterEstimatedJourneyTime(string hours)
+        {
+            try
+            {
+                txtEstimatedJourneyTimeHour.SendKeys(hours);
+            }
+            catch (NoSuchElementException)
+            {
+                // Field not present (CHED-P), continue without error
+            }
         }
     }
 }
