@@ -12,8 +12,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IObjectContainer _objectContainer;
 
         #region Page Objects   
-        private IWebElement primaryTitle => _driver.WaitForElement(By.XPath("//*[@class='govuk-heading-l']"));
-        private IWebElement secondaryTitle => _driver.WaitForElement(By.XPath("//span[@class='govuk-caption-l']"));
+        private IWebElement primaryTitle => _driver.WaitForElement(By.XPath("//*[@class='govuk-heading-l']"), true);
+        private IWebElement secondaryTitle => _driver.WaitForElement(By.XPath("//span[@class='govuk-caption-l']"), true);
         private IWebElement txtItemNumber => _driver.WaitForElement(By.XPath("//*[@class='govuk-details__text']//td[1]"));
         private IWebElement txtCommodityCode => _driver.WaitForElement(By.XPath("//*[@class='govuk-details__text']//td[2]"));
         private IWebElement txtComodityDesc => _driver.WaitForElement(By.XPath("//*[@class='govuk-details__text']//td[3]"));
@@ -29,9 +29,9 @@ namespace Defra.UI.Tests.Pages.Classes
             _objectContainer = container;
         }
 
-        public bool IsPageLoaded()
+        public bool IsPageLoaded(string CHEDPREFNum)
         {
-            return primaryTitle.Text.Trim().Contains("CHEDP.GB.2025.1055883")
+            return primaryTitle.Text.Trim().Contains(CHEDPREFNum)
                 && secondaryTitle.Text.Trim().Contains("Showing result for");
         }
 

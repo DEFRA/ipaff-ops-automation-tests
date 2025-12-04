@@ -13,7 +13,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IObjectContainer _objectContainer;
 
         #region Page Objects
-        private IWebElement pageTitle => _driver.WaitForElement(By.Id("page-primary-title"));
+        private IWebElement pageTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
         private IReadOnlyCollection<IWebElement> divAboutTheConsignmentDetails => _driver.WaitForElements(By.XPath("//div[@id='document-pet-card']//dl/div"));
         #endregion
 

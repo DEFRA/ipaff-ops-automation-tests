@@ -42,6 +42,14 @@ namespace Defra.UI.Tests.Steps.CP
             _driver?.Navigate().GoToUrl(url);
         }
 
+        [When(@"I navigate to the IPAFF Inspector application")]
+        [Given(@"that I navigate to the IPAFF Inspector application")]
+        public void GivenThatINavigateToTheIPAFFInspectorApplication()
+        {
+            var url = urlBuilder.InspectorDefault().BuildInspectorApp();
+            _driver?.Navigate().GoToUrl(url);
+        }
+
         [When(@"I click signin button on port checker application")]
         [Given(@"I click signin button on port checker application")]
         public void GivenIClickSigninButtonOnPortCheckerApplication()
@@ -91,6 +99,19 @@ namespace Defra.UI.Tests.Steps.CP
         public void WhenIHaveProvidedTheBTMSCredentialsAndSignin()
         {
             var jsonData = UserObject?.GetUser("IPAFF", "BTMS");
+            var userObject = new User
+            {
+                UserName = jsonData.UserName,
+                Credential = jsonData.Credential
+            };
+
+            _signInPage?.SignIn(userObject.UserName, userObject.Credential);
+        }
+
+        [When(@"I have provided the IPAFF Inspector credentials and signin")]
+        public void WhenIHaveProvidedTheIPAFFInspectorCredentialsAndSignin()
+        {
+            var jsonData = UserObject?.GetUser("IPAFF", "Inspector");
             var userObject = new User
             {
                 UserName = jsonData.UserName,

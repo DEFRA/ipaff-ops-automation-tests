@@ -13,8 +13,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IObjectContainer _objectContainer;
 
         #region Page Objects
-        private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"));
-        private IWebElement lnkCommodity => _driver.WaitForElement(By.Id("commodity-details-link"));
+        private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
+        private IWebElement lnkCommodity => _driver.WaitForElement(By.Id("commodity-details-link"), true);
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();

@@ -11,7 +11,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects
 
-        private IWebElement PageHeading => _driver.WaitForElement(By.XPath("//h1[normalize-space()='How do you want to sign in?']"));
+        private IWebElement PageHeading => _driver.WaitForElement(By.XPath("//h1[normalize-space()='How do you want to sign in?']"), true);
 
         private IReadOnlyCollection<IWebElement> rdoLoginTypes => _driver.WaitForElements(By.ClassName("govuk-radios__label"));
 

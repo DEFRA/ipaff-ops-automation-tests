@@ -33,5 +33,12 @@
         public string ConsigneeDetails { get; set; }
         public string ImporterDetails { get; set; }
         public string PlaceOfDestination { get; set; }
+
+/*        //Inspector
+        public string BCPRefNum { get; set; }
+        public string DocumentaryChk { get; set; }
+        public string IdentityChkType { get; set; }
+        public string IdentityChkDecision { get; set; }
+        public string PhysicalChkDecision { get; set; }*/
     }
 }
