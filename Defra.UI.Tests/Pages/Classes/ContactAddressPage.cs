@@ -42,7 +42,19 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public string GetSelectedContactAddress()
         {
-            return firstContactAddressLabel.Text.Trim();
+            var fullAddress = firstContactAddressLabel.Text.Trim();
+
+            // Split by newlines to get individual address components
+            var lines = fullAddress.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+
+            // Return only the first 4 lines (street, region, city, postcode)
+            // This excludes the country which is not displayed on the review page
+            if (lines.Length >= 4)
+            {
+                return string.Join("\n", lines.Take(4).Select(l => l.Trim()));
+            }
+
+            return fullAddress;
         }
     }
 }
