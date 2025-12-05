@@ -18,6 +18,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement lnkAddConsignee => _driver.WaitForElement(By.LinkText("Add a consignee"));    
         private IWebElement lnksameAsConsignee => _driver.WaitForElement(By.Id("populate-importer"));
         private IWebElement lnkAddDestination => _driver.WaitForElement(By.LinkText("Add a place of destination"));
+        private IWebElement selectedConsignor => _driver.WaitForElement(By.XPath("//*[@id='traders-table-consignor']//td[1]"));
+        private IWebElement selectedConsignee => _driver.WaitForElement(By.XPath("//*[@id='traders-table-consignee']//td[1]"));
+        private IWebElement selectedDestination => _driver.WaitForElement(By.XPath("//*[@id='traders-table-place-of-destination']//td[1]"));
         private IWebElement selectedImporterName => _driver.WaitForElement(By.XPath("//*[@id='traders-table-importer']//td[1]"));
         private IWebElement selectedImporterAddress => _driver.WaitForElement(By.XPath("//*[@id='traders-table-importer']//td[2]"));
         private IWebElement selectedImporterCountry => _driver.WaitForElement(By.XPath("//*[@id='traders-table-importer']//td[3]"));
@@ -54,12 +57,22 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickAddConsignor() 
         { 
             lnkAddConsignor.Click(); 
-        }        
+        }
+
+        public bool VerifySelectedConsignor()
+        {
+            return selectedConsignor.Text.Trim().Equals("ABC");
+        }
 
         public void ClickAddConsignee() 
         { 
             lnkAddConsignee.Click(); 
-        }       
+        }
+
+        public bool VerifySelectedConsignee()
+        {
+            return selectedConsignee.Text.Trim().Equals("XYZ");
+        }
 
         public void ClickImporterSameAsConsignee()
         {
@@ -77,7 +90,12 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickAddDestination() 
         { 
             lnkAddDestination.Click(); 
-        }        
+        }
+
+        public bool VerifySelectedDestination()
+        {
+            return selectedDestination.Text.Trim().Equals("XYZ");
+        }
 
         public bool VerifySelectedConsignor(string name, string address, string country)
         {

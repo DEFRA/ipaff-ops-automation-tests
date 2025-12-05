@@ -20,7 +20,6 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtCommodityCodeValue => _driver.WaitForElement(By.Id("commodity-code-value"));
         private IWebElement txtCommodityCodeDesc => _driver.WaitForElement(By.XPath("//*[@id='commodity-code-value']/following-sibling::td"));
         private IWebElement txtCommodityType => _driver.FindElement(By.Id("type-select"));
-        private IWebElement txtCommoditySpecies => _driver.FindElement(By.Id("Bison bison-checkbox"));
         private IWebElement rdoYesAnotherCommodity => _driver.FindElement(By.Id("addCommodity"));
         private IWebElement rdoNoAnotherCommodity => _driver.FindElement(By.Id("addCommodity-2"));
         private IWebElement txtCommoditySpecies(string species) => _driver.FindElement(By.XPath($"//input[@class='govuk-checkboxes__input' and @id='{species}-checkbox']"));

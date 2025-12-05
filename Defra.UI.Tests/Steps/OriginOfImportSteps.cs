@@ -7,6 +7,7 @@ using Faker;
 using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
+using Reqnroll.BoDi;
 
 namespace Defra.UI.Tests.Steps.CP
 {

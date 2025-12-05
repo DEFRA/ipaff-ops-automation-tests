@@ -8,7 +8,9 @@ namespace Defra.UI.Tests.Pages.Interfaces
         bool IsPageLoaded();
         bool IsConsignorExporterConsigneeImporterandPlaceOfDestinationPageLoaded();
         void ClickAddConsignor();
+        bool VerifySelectedConsignor();
         void ClickAddConsignee();
+        bool VerifySelectedConsignee();
         void ClickImporterSameAsConsignee();
         void ClickAddDestination();
         bool VerifySelectedDestination();

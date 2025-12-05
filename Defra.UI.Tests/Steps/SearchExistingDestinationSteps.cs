@@ -26,11 +26,12 @@ namespace Defra.UI.Tests.Steps.CP
         public void ThenTheSearchForAnExistingPlaceOfDestinationPageShouldBeDisplayed()
         {
             Assert.True(searchExistingDestinationPage?.IsPageLoaded(), "Traders Search for an existing place of destination page not loaded");
-        }        
+        }
 
         [When("the user selects a place of destination with a UK country")]
         public void WhenTheUserSelectsAPlaceOfDestinationWithAUKCountry()
         {
+            _scenarioContext.Add("PlaceOfDestination", searchExistingDestinationPage.GetSelectedPlaceOfDestination());
             searchExistingDestinationPage?.ClickSelect();
         }
 

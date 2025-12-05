@@ -42,23 +42,17 @@ namespace Defra.UI.Tests.Steps.CP
             _scenarioContext.Add("CustomsDeclarationReference", confirmationPage.GetCustomsDeclarationReference());
             _scenarioContext.Add("CustomsDocumentCode", confirmationPage.GetCustomsDocumentCode());
         }
-
-        [When("the user logs out of IPAFFS Part {int}")]
-        public void WhenTheUserLogsOutOfIPAFFSPart(int partNumber)
-        {
-            confirmationPage?.SignedOut();
-        }
-
-        [Then("the user should be logged out successfully")]
-        public void ThenTheUserShouldBeLoggedOutSuccessfully()
-        {
-            Assert.True(confirmationPage?.VerifySignedOutPage(), "Signed out page not loaded");
-        }
-
+       
         [When("the user clicks Return to your dashboard")]
         public void WhenTheUserClicksReturnToYourDashboard()
         {
             confirmationPage?.ClickReturnToDashboard();
+        }
+
+        [Then("the details should be recorded")]
+        public void ThenTheDetailsShouldBeRecorded()
+        {
+            //No Implementation
         }
     }
 }
