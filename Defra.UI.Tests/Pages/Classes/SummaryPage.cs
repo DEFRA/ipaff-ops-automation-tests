@@ -118,15 +118,6 @@ namespace Defra.UI.Tests.Pages.Classes
             summary.ImporterDetails = txtImporterDetails.Text.Trim();
             summary.PlaceOfDestination = txtplaceOfDestination.Text.Trim();
 
-
-            /*//Inspector Pages
-            summary.BCPRefNum = txtBCPRefNum.Text.Trim();
-            summary.DocumentaryChk = txtDocumentaryChk.Text.Trim();
-            summary.IdentityChkType = txtIdentityChkType.Text.Trim();
-            summary.IdentityChkDecision = txtIdentityChkDecision.Text.Trim();
-            summary.PhysicalChkDecision = txtPhysicalChkDecision.Text.Trim();
-*/
-
             return summary;
         }
     }
