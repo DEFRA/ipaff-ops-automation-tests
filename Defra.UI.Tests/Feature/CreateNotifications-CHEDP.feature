@@ -87,8 +87,6 @@ Scenario: User creates and submits a B2C consignment notification - CHEDP
 	When the user clicks Save and continue
 	Then the Contact address for consignment page should be displayed
 	When the user clicks Save and continue
-	#Then the Confirm billing details page should be displayed
-	#When the user clicks Save and continue in billing details page
 	Then the Review your notification page should be displayed
 	And the user verifies all the data displayed in review page
 	When the user clicks Save and continue
@@ -143,7 +141,6 @@ Scenario: User creates and submits a B2C consignment notification - CHEDP
 	Then the Decision page should be displayed
 	When the user clicks Save and continue
 	Then the Review outcome decision page should be displayed
-	#And the user verifies all the data displayed in review outcome decision page
 	When the user populates the Date and time of checks
 	And user clicks Submit decision
 	Then the Your checks have been submitted page should be displayed

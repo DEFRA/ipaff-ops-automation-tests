@@ -33,8 +33,7 @@ namespace Defra.UI.Tests.Steps.CP
         [When("the user enters a local reference number and clicks Save and continue")]
         public void WhenTheUserEntersALocalReferenceNumberAndClicksSaveAndContinue()
         {
-            //var customDeclarionRef = _scenarioContext.Get<string>("CustomsDeclarationReference");
-            var customDeclarionRef = "GBCHD2025.1055981";
+            var customDeclarionRef = _scenarioContext.Get<string>("CustomsDeclarationReference");
             localReferenceNumberPage?.EnterLocalReferenceNumber(customDeclarionRef);
             localReferenceNumberPage?.ClickSaveAndContinue();
         }
