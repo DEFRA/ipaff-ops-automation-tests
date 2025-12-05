@@ -33,22 +33,18 @@ namespace Defra.UI.Tests.Steps.CP
         [When("the user selects any one of the displayed transporters")]
         public void WhenTheUserSelectsAnyOneOfTheDisplayedTransporters()
         {
-            Console.WriteLine("[STEP] Starting transporter selection and data capture...");
-
             var transporterName = searchExistingTranspoterPage?.GetSelectedTransporterName();
             var transporterAddress = searchExistingTranspoterPage?.GetSelectedTransporterAddress();
             var transporterCountry = searchExistingTranspoterPage?.GetSelectedTransporterCountry();
             var transporterApprovalNumber = searchExistingTranspoterPage?.GetSelectedTransporterApprovalNumber();
             var transporterType = searchExistingTranspoterPage?.GetSelectedTransporterType();
 
-            Console.WriteLine("[STEP] Adding to scenario context...");
             _scenarioContext.Add("TransporterName", transporterName);
             _scenarioContext.Add("TransporterAddress", transporterAddress);
             _scenarioContext.Add("TransporterCountry", transporterCountry);
             _scenarioContext.Add("TransporterApprovalNumber", transporterApprovalNumber);
             _scenarioContext.Add("TransporterType", transporterType);
 
-            Console.WriteLine("[STEP] Clicking Select button...");
             searchExistingTranspoterPage?.ClickSelect();
         }
     }

@@ -60,8 +60,6 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             try
             {
-                Console.WriteLine($"[VERIFY PAGE] Expected - Name: '{name}', Address: '{address}', Country: '{country}', Approval: '{approvalNumber}', Type: '{type}'");
-
                 var nameAddressCountryCell = verifyTransporterNameAddressCountry;
                 var paragraphs = nameAddressCountryCell.FindElements(By.TagName("p"));
 
@@ -72,16 +70,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
                 var displayedApprovalNumber = verifyTransporterApprovalNumber.Text.Trim();
                 var displayedType = verifyTransporterType.Text.Trim();
-
-                Console.WriteLine($"[VERIFY PAGE] Displayed - Name: '{displayedName}', Address: '{displayedAddress}', Country: '{displayedCountry}', Approval: '{displayedApprovalNumber}', Type: '{displayedType}'");
-
-                // Log individual comparisons
-                Console.WriteLine($"[VERIFY PAGE] Name Match: {displayedName.Equals(name)}");
-                Console.WriteLine($"[VERIFY PAGE] Address Match: {displayedAddress.Equals(address)}");
-                Console.WriteLine($"[VERIFY PAGE] Country Match: {displayedCountry.Equals(country)}");
-                Console.WriteLine($"[VERIFY PAGE] Approval Number Match: {displayedApprovalNumber.Equals(approvalNumber)}");
-                Console.WriteLine($"[VERIFY PAGE] Type Match: {displayedType.Equals(type)}");
-
+                
                 return displayedName.Equals(name) &&
                        displayedAddress.Equals(address) &&
                        displayedCountry.Equals(country) &&
@@ -90,7 +79,6 @@ namespace Defra.UI.Tests.Pages.Classes
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[VERIFY PAGE] Exception during verification: {ex.Message}");
                 return false;
             }
         }
