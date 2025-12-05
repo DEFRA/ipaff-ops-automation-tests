@@ -2,12 +2,7 @@
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
-using SeleniumExtras.WaitHelpers;
-using Microsoft.Dynamics365.UIAutomation.Browser;
-using System.Collections.ObjectModel;
-using Defra.Trade.Plants.SpecFlowBindings.Helpers;
 
 namespace Defra.UI.Tests.Pages.Classes
 {
@@ -22,6 +17,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement rdoAmbient => _driver.WaitForElement(By.XPath("//*[@id='productTemperature']/following-sibling::label"));
         private IWebElement rdoChilled => _driver.WaitForElement(By.XPath("//*[@id='productTemperature-2']/following-sibling::label"));
         private IWebElement rdoFrozen => _driver.WaitForElement(By.XPath("//*[@id='productTemperature-3']/following-sibling::label"));
+        private List<IWebElement> CommIntendedForRadioList => _driver.WaitForElements(By.XPath("//div[@class='govuk-radios']/div[contains(@class,'commodity-intended-for')]/label")).ToList();
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -45,6 +41,20 @@ namespace Defra.UI.Tests.Pages.Classes
                 rdoChilled.Click();
             else if (option.Equals(rdoFrozen.Text))
                 rdoFrozen.Click();
+        }
+
+        public bool SelectCommodityIntendedForRadio(string commIntendedForOption)
+        {
+            foreach(var commIntendedForRadio in CommIntendedForRadioList)
+            {
+                //commIntendedForRadio.Click();
+                if (commIntendedForRadio.Text.Contains(commIntendedForOption))
+                {
+                    ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", commIntendedForRadio);
+                    return true;
+                }        
+            }
+            return false;
         }
     }
 }

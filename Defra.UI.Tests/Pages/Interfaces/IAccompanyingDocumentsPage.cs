@@ -9,6 +9,10 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void SelectDocumentType(string type);
         void EnterDocumentReference(string reference);
         void EnterDateOfIssue(string day, string month, string year);
-        // void ClickSaveAndContinue();
+        bool IsDatePickerIconDisplayed();
+        void SelectDateFromDatePicker();
+        void ClickAddAttachmentLink();
+        void AddAccompanyingDocument(string fileName);
+        string GetFileName { get; }
     }
 }

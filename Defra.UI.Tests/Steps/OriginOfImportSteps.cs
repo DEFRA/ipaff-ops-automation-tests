@@ -26,6 +26,11 @@ namespace Defra.UI.Tests.Steps.CP
             _scenarioContext = context;
         }
 
+        [Then("the Origin of the import page should be displayed")]
+        public void ThenTheOriginOfTheImportPageShouldBeDisplayed()
+        {
+            Assert.True(originOfImportPage?.IsPageLoaded(), "About the consignment Origin of the import page not loaded");
+        }
 
         [Then("the Origin of the import page should be displayed, showing {string} as the Country of origin and Country from where consigned")]
         public void ThenTheOriginOfTheImportPageShouldBeDisplayedShowingAsTheCountryOfOriginAndCountryFromWhereConsigned(string country)
@@ -58,6 +63,12 @@ namespace Defra.UI.Tests.Steps.CP
         {
             originOfImportPage?.EnterConsignmentRefNum(refNum);
             _scenarioContext.Add("ConsignmentReferenceNumber", refNum);
+        }
+
+        [When("I click the forward button in the browser")]
+        public void WhenIClickTheForwardButtonInTheBrowser()
+        {
+            originOfImportPage?.ClickBrowserForwardButton();
         }
     }
 }

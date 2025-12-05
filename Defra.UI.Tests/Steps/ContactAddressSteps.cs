@@ -23,11 +23,16 @@ namespace Defra.UI.Tests.Steps.CP
             _objectContainer = container;
         }
 
-
         [Then("the Contact address for consignment page should be displayed")]
         public void ThenTheContactAddressForConsignmentPageShouldBeDisplayed()
         {
             Assert.True(contactAddressPage?.IsPageLoaded(), "Complete notification Contact address for consignment page not loaded");
+        }
+
+        [Then("the Contacts - Contact address for consignment page should be displayed")]
+        public void ThenTheContacts_ContactAddressForConsignmentPageShouldBeDisplayed()
+        {
+            Assert.True(contactAddressPage?.IsContactAddressForConsignmentPageLoaded(), "Complete notification Contact address for consignment page not loaded");
         }
     }
 }

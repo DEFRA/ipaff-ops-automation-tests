@@ -7,6 +7,7 @@ using Reqnroll;
 using Defra.UI.Tests.Pages.Classes;
 using Defra.UI.Tests.Pages.Interfaces;
 using DocumentFormat.OpenXml.Drawing.Charts;
+using Dynamitey.DynamicObjects;
 
 namespace Defra.UI.Tests.Steps.CP
 {
@@ -82,7 +83,6 @@ namespace Defra.UI.Tests.Steps.CP
             _scenarioContext.Add("NetWeight", weight);
         }
 
-
         [When("the user populates Number of packages as {string}")]
         public void WhenTheUserPopulatesNumberOfPackagesAs(string packages)
         {
@@ -98,6 +98,23 @@ namespace Defra.UI.Tests.Steps.CP
             _scenarioContext.Add("PackageType", type);
         }
 
+        [When("the user populates Net weight as {string} for the commodity {string}")]
+        public void WhenTheUserPopulatesNetWeightAsForTheCommodity(string netWeight, string commodityCode)
+        {
+            commodityPage?.AddNetWeightForCommodityCode(netWeight, commodityCode);
+        }
+
+        [When("the user populates Number of packages as {string} for the commodity {string}")]
+        public void WhenTheUserPopulatesNumberOfPackagesAsForTheCommodity(string numOfPackages, string commodityCode)
+        {
+            commodityPage?.AddNumOfPackagesForCommodityCode(numOfPackages, commodityCode);
+        }
+
+        [When("the user selects type of package as {string} for the commodity {string}")]
+        public void WhenTheUserSelectsTypeOfPackageAsForTheCommodity(string typeOfPackage, string commodityCode)
+        {
+            commodityPage?.SelectPackageTypeForCommodityCode(typeOfPackage, commodityCode);
+        }
 
         [When("the user clicks the Update total button")]
         public void WhenTheUserClicksTheUpdateTotalButton()
@@ -117,5 +134,53 @@ namespace Defra.UI.Tests.Steps.CP
         {
             commodityPage?.ClickSaveAndContinue();
         }
+
+        [When("I click the back button in the browser")]
+        public void WhenIClickTheBackButtonInTheBrowser()
+        {
+            commodityPage?.ClickBrowserBackButton();
+        }
+
+        [When("the user clicks the Add commodity link")]
+        public void WhenTheUserClicksTheAddCommodityLink()
+        {
+            commodityPage?.ClickAddCommodityLink();
+        }
+
+        [When("the user clicks the {string} in the parent commodity tree")]
+        public void WhenTheUserClicksTheInTheParentCommodityTree(string commodity)
+        {
+            commodityPage?.SelectCommodityInTheCommTree(commodity);
+        }
+
+        [When("the sub commodity list expands")]
+        public void WhenTheSubCommodityListExpands()
+        {
+            Assert.True(commodityPage?.IsSubCommodityListDisplayed(), "The sub commodity list is not displayed after clicking the parent commodity");
+        }
+
+        /* [When("the user clicks {string} under the parent commodity")]
+         public void WhenTheUserClicksUnderTheParentCommodity(string subCommodityItem)
+         {
+             commodityPage?.SelectCommodityInTheCommTree(subCommodityItem);
+             _scenarioContext.Add("CommodityDescription", subCommodityItem);
+         }*/
+
+        [When("the user clicks {string} {string} under the parent commodity")]
+        public void WhenTheUserClicksUnderTheParentCommodity(string additionalCommCode, string additionalcommDescription)
+        {
+            //_scenarioContext.Add("AdditionalCommodityCode", additionalCommCode);
+            //_scenarioContext.Add("AdditionalCommodityDescription", additionalcommDescription);
+            commodityPage?.SelectCommodityInTheCommTree(additionalcommDescription);
+        }
+
+        [Then("the Commodity page should be displayed")]
+        public void ThenTheCommodityPageShouldBeDisplayed()
+        {
+            Assert.True(commodityPage?.IsPageLoaded(), "Description of the goods Commodity page not loaded");
+        }
+
+
+
     }
 }

@@ -8,6 +8,7 @@ using SeleniumExtras.WaitHelpers;
 using Microsoft.Dynamics365.UIAutomation.Browser;
 using System.Collections.ObjectModel;
 using Defra.Trade.Plants.SpecFlowBindings.Helpers;
+using Defra.UI.Tests.HelperMethods;
 
 namespace Defra.UI.Tests.Pages.Classes
 {
@@ -69,6 +70,11 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             txtReferenceNumber.Click();
             txtReferenceNumber.SendKeys(refNum);
+        }
+
+        public void ClickBrowserForwardButton()
+        {
+            _driver.ClickBrowserForwardButton();
         }
     }
 }

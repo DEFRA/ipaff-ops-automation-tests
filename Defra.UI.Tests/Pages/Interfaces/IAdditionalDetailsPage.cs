@@ -6,5 +6,6 @@ namespace Defra.UI.Tests.Pages.Interfaces
     {
         bool IsPageLoaded();
         void ClickImportingProduct(string option);
+        bool SelectCommodityIntendedForRadio(string commIntendedForOption);
     }
 }

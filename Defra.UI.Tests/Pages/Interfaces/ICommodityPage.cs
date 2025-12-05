@@ -14,8 +14,15 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void EnterNetWeight(string weight);
         void EnterNumberOfPackages(string packages);
         void SelectPackageType(string type);
+        void AddNetWeightForCommodityCode(string netWeight, string commodityCode);
+        void AddNumOfPackagesForCommodityCode(string numOfPackages, string commodityCode);
+        void SelectPackageTypeForCommodityCode(string typeOfPackage, string commodityCode);
         void ClickUpdateTotal();
         void EnterTotalGrossWeight(string weight);
         void ClickSaveAndContinue();
+        void ClickBrowserBackButton();
+        void ClickAddCommodityLink();
+        bool SelectCommodityInTheCommTree(string commodity);
+        bool IsSubCommodityListDisplayed();
     }
 }

@@ -34,5 +34,11 @@ namespace Defra.UI.Tests.Steps.CP
         {
             goodsMovementServicesPage?.CTCToMoveGoods(option);
         }
+
+        [When("the user selects {string} for Will the transport use the Goods Vehicle Movement Service \\(GVMS)?")]
+        public void WhenTheUserSelectsForWillTheTransportUseTheGoodsVehicleMovementServiceGVMS(string option)
+        {
+            Assert.True(goodsMovementServicesPage?.SelectGvmsRadio(option), "GVMS radio is not selected on the goods movement services page");
+        }
     }
 }

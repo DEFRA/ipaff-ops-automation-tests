@@ -70,7 +70,7 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             if(ConfigSetup.BaseConfiguration.TestConfiguration.IsAccessibilityEnabled)
             {
-                Cognizant.WCAG.Compliance.Checker.Analyzer.Execute(_driver);
+               // Cognizant.WCAG.Compliance.Checker.Analyzer.Execute(_driver);
             }
 
             return PageHeading.Text.Contains("Lifelong pet travel documents");

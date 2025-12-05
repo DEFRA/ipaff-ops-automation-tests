@@ -42,6 +42,7 @@ namespace Defra.UI.Tests.Steps.CP
 
         [Then("the user should be able to click Save and continue")]
         [When("the user clicks Save and continue")]
+        [Then("the user clicks Save and continue")]
         public void WhenTheUserClicksSaveAndContinue()
         {
             aboutConsignmentPage?.ClickSaveAndContinue();
