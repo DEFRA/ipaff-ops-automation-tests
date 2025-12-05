@@ -48,35 +48,30 @@ namespace Defra.UI.Tests.Pages.Classes
         public string GetSelectedTransporterName()
         {
             var name = selectedTransporterName.Text.Trim();
-            Console.WriteLine($"[SEARCH PAGE] Transporter Name: '{name}'");
             return name;
         }
 
         public string GetSelectedTransporterAddress()
         {
             var address = selectedTransporterAddress.Text.Trim();
-            Console.WriteLine($"[SEARCH PAGE] Transporter Address: '{address}'");
             return address;
         }
 
         public string GetSelectedTransporterCountry()
         {
             var country = selectedTransporterCountry.Text.Trim();
-            Console.WriteLine($"[SEARCH PAGE] Transporter Country: '{country}'");
             return country;
         }
 
         public string GetSelectedTransporterApprovalNumber()
         {
             var approvalNumber = selectedTransporterApprovalNumber.Text.Trim();
-            Console.WriteLine($"[SEARCH PAGE] Transporter Approval Number: '{approvalNumber}'");
             return approvalNumber;
         }
 
         public string GetSelectedTransporterType()
         {
             var type = selectedTransporterType.Text.Trim();
-            Console.WriteLine($"[SEARCH PAGE] Transporter Type: '{type}'");
             return type;
         }
     }
