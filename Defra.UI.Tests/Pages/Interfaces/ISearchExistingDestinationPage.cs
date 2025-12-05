@@ -7,6 +7,7 @@ namespace Defra.UI.Tests.Pages.Interfaces
     {
         bool IsPageLoaded();
         void ClickSelect();
+        string GetSelectedPlaceOfDestination();
         string GetSelectedDestinationName();
         string GetSelectedDestinationAddress();
         string GetSelectedDestinationCountry();

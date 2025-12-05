@@ -34,7 +34,7 @@ namespace Defra.UI.Tests.Pages.Classes
         public ConfirmationPage(IObjectContainer container)
         {
             _objectContainer = container;
-        }        
+        }
 
         public bool VerifyInitialAssessmentPage()
         {
@@ -43,16 +43,19 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public string GetCHEDReference()
         {
+            Console.WriteLine("CHED Reference: " + chedReference.Text.Trim());
             return chedReference.Text.Trim();
         }
 
         public string GetCustomsDeclarationReference()
         {
+            Console.WriteLine("customsDeclarationReference: " + customsDeclarationReference.Text.Trim());
             return customsDeclarationReference.Text.Trim();
         }
 
         public string GetCustomsDocumentCode()
         {
+            Console.WriteLine("customsDocumentCode: " + customsDocumentCode.Text.Trim());
             return customsDocumentCode.Text.Trim();
         }
 

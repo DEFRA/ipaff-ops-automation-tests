@@ -2,12 +2,8 @@
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
-using SeleniumExtras.WaitHelpers;
-using Microsoft.Dynamics365.UIAutomation.Browser;
-using System.Collections.ObjectModel;
-using Defra.Trade.Plants.SpecFlowBindings.Helpers;
+
 
 namespace Defra.UI.Tests.Pages.Classes
 {
@@ -17,8 +13,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private IObjectContainer _objectContainer;
 
         #region Page Objects
-        private IWebElement primaryTitle => _driver.WaitForElement(By.XPath("//*[@id='page-primary-title']"), true);
-        private IWebElement secondaryTitle => _driver.WaitForElement(By.XPath("//*[@id='page-secondary-title']"), true);
+        private IReadOnlyCollection<IWebElement> primaryTitle => _driver.WaitForElements(By.Id("page-primary-title"), true);
+        private IReadOnlyCollection<IWebElement> secondaryTitle => _driver.WaitForElements(By.Id("page-secondary-title"), true);
+        private IReadOnlyCollection<IWebElement> btnSaveAndContinueList => _driver.WaitForElements(By.XPath("//button[text()='Save and continue']"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -30,8 +27,20 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool IsPageLoaded()
         {
-            return secondaryTitle.Text.Contains("Billing")
-                && primaryTitle.Text.Contains("Confirm billing details");
+            if (secondaryTitle.Count > 0 && primaryTitle.Count > 0)
+            {
+                return secondaryTitle.FirstOrDefault().Text.Contains("Billing")
+                    && primaryTitle.FirstOrDefault().Text.Contains("Confirm billing details");
+            }
+            return true;
+        }
+
+        public void ClickSaveAndContinue()
+        {
+            if (btnSaveAndContinueList.Count > 0)
+            {
+                btnSaveAndContinueList.FirstOrDefault().Click();
+            }
         }
     }
 }

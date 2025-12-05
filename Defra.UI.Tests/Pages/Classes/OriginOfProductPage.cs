@@ -4,11 +4,6 @@ using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
-using SeleniumExtras.WaitHelpers;
-using Microsoft.Dynamics365.UIAutomation.Browser;
-using System.Collections.ObjectModel;
-using Defra.Trade.Plants.SpecFlowBindings.Helpers;
-using Faker;
 
 namespace Defra.UI.Tests.Pages.Classes
 {
@@ -18,9 +13,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private IObjectContainer _objectContainer;
 
         #region Page Objects
-        private IWebElement primaryTitle => _driver.WaitForElement(By.XPath("//*[@id='page-primary-title']"), true);
-        private IWebElement secondaryTitle => _driver.WaitForElement(By.XPath("//*[@id='page-secondary-title']"), true);
-        private IWebElement drpdownCountry => _driver.WaitForElement(By.XPath("//*[@id='origin-country']"));
+        private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
+        private IWebElement secondaryTitle => _driver.WaitForElement(By.Id("page-secondary-title"), true);
+        private IWebElement drpdownCountry => _driver.WaitForElement(By.Id("origin-country"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();

@@ -59,6 +59,21 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<BillingDetailsPage, IBillingDetailsPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ReviewYourNotificationPage, IReviewYourNotificationPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<DeclarationPage, IDeclarationPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ConfirmationPage, IConfirmationPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SignOutPage, ISignOutPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<BTMSSearchPage, IBTMSSearchPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<BTMSSearchResultPage, IBTMSSearchResultPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SummaryPage, ISummaryPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<InspectorImportNotificationsPage, IInspectorImportNotificationsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<DecisionHubPage, IDecisionHubPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<LocalReferenceNumberPage, ILocalReferenceNumberPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<DocumentaryCheckPage, IDocumentaryCheckPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdentityAndPhysicalChecksPage, IIdentityAndPhysicalChecksPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SealNumbersPage, ISealNumbersPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<LaboratoryTestsPage, ILaboratoryTestsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<DecisionPage, IDecisionPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ReviewOutcomeDecisionPage, IReviewOutcomeDecisionPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ChecksSubmittedPage, IChecksSubmittedPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<AnimalIdentificationDetailsPage, IAnimalIdentificationDetailsPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<LatestHealthCertificatePage, ILatestHealthCertificatePage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<TransporterPage, ITransporterPage>());
@@ -66,7 +81,6 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SearchExistingTranspoterPage, ISearchExistingTranspoterPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CountyParishHoldingPage, ICountyParishHoldingPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CountriesConsignmentTravelPage, ICountriesConsignmentTravelPage>());
-            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ConfirmationPage, IConfirmationPage>());
 
             //Read Email
             _objectContainer.RegisterInstanceAs(GetBaseWithScenarioContext<FetchCodeFromEmail, IFetchCodeFromEmail>());

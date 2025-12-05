@@ -5,9 +5,8 @@ using Defra.UI.Tests.Tools;
 using DocumentFormat.OpenXml.Drawing.Charts;
 using Faker;
 using NUnit.Framework;
-using OpenQA.Selenium;
 using Reqnroll;
-using Reqnroll.BoDi;
+using Defra.UI.Tests.Pages.Interfaces;
 
 namespace Defra.UI.Tests.Steps.CP
 {
@@ -17,7 +16,6 @@ namespace Defra.UI.Tests.Steps.CP
         private readonly IObjectContainer _objectContainer;
         private readonly ScenarioContext _scenarioContext;
 
-        private IWebDriver? _driver => _objectContainer.IsRegistered<IWebDriver>() ? _objectContainer.Resolve<IWebDriver>() : null;
         private IOriginOfImportPage? originOfImportPage => _objectContainer.IsRegistered<IOriginOfImportPage>() ? _objectContainer.Resolve<IOriginOfImportPage>() : null;
 
 

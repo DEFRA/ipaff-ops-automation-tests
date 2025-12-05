@@ -5,7 +5,6 @@ using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using Microsoft.Dynamics365.UIAutomation.Browser;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
 using SeleniumExtras.WaitHelpers;
 using System.Collections.ObjectModel;
@@ -18,9 +17,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private IObjectContainer _objectContainer;
 
         #region Page Objects
-        private IWebElement primaryTitle => _driver.WaitForElement(By.XPath("//*[@id='page-primary-title']"), true);
-        private IWebElement lnkCommodity => _driver.WaitForElement(By.XPath("//*[@id='commodity-details-link']"));
+        private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
         private IWebElement lnkCountriesConsignmentTravel => _driver.WaitForElement(By.XPath("//a[contains(text(), 'Countries the consignment will travel through')]"));
+        private IWebElement lnkCommodity => _driver.WaitForElement(By.Id("commodity-details-link"), true);
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();

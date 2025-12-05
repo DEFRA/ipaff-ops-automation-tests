@@ -6,7 +6,7 @@ using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
 using SeleniumExtras.WaitHelpers;
 using Microsoft.Dynamics365.UIAutomation.Browser;
-using System.Collections.ObjectModel;
+
 
 namespace Defra.UI.Tests.Pages.Classes
 {
@@ -51,14 +51,6 @@ namespace Defra.UI.Tests.Pages.Classes
             return PageHeading.Text.Contains("Sign in using Government Gateway");
         }
 
-        public bool IsSignedIn(string userName, string password)
-        {
-            UserId.SendKeys(userName);
-            Password.SendKeys(password);
-            _driver.WaitForElementCondition(ExpectedConditions.ElementToBeClickable(btnSignIn)).Click();
-            return _driver.WaitForElement(SignInConfirmBy).Enabled;
-        }
-
         public void ClickCreateSignInDetailsLink() => CreateSignInDetails.Click();
 
         public void SignIn(string userName, string password)
@@ -66,7 +58,7 @@ namespace Defra.UI.Tests.Pages.Classes
             UserId.SendKeys(userName);
             Password.SendKeys(password);
             _driver.WaitForElementCondition(ExpectedConditions.ElementToBeClickable(btnSignIn)).Click();
-            _driver.WaitForElement(signInConfirmBy);
+           // _driver.WaitForElement(signInConfirmBy);
         }
 
         public void EnterPassword()

@@ -8,6 +8,7 @@ namespace Defra.UI.Tests.Pages.Interfaces
         bool IsPageLoaded();
         void EnterCommodityCode(string code);
         bool VerifyCommdityDetails(string code, string description);
+        void SelectTypeOfCommodity(string type);
         void SelectCommoditySpecies(string species);
         void AddAnotherCommodity(string option);
         bool VerifyEnteredCommdityDetails(string code, string description);
@@ -19,5 +20,9 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void ClickSaveAndContinue();
         void EnterNumberOfAnimals(string numberOfAnimals);
         void EnterEarTag(string earTag);
+        string GetSubtotalNetWeight();
+        string GetSubtotalPackages();
+        string GetTotalNetWeight();
+        string GetTotalPackages();
     }
 }
