@@ -20,12 +20,6 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement pageTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
         private IWebElement chkDeclarationAgree => _driver.FindElement(By.Id("declaration-agree"));
         private IWebElement btnSubmit => _driver.WaitForElement(By.Id("accept-and-submit"));
-        private IWebElement initialAssessmentTitle => _driver.WaitForElement(By.Id("risk-assessment-banner-title"));
-        private IWebElement chedReference => _driver.WaitForElement(By.Id("reference-number"));
-        private IWebElement customsDeclarationReference => _driver.WaitForElement(By.Id("reference-number-customs"));
-        private IWebElement customsDocumentCode => _driver.WaitForElement(By.Id("reference-number-document"));
-        private IWebElement signOut => _driver.WaitForElement(By.Id("sign-out-link"));
-        private IWebElement logOutPageHeading => _driver.WaitForElement(By.XPath("//h1[@class='govuk-heading-xl']"), true);
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();

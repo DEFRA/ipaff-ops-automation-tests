@@ -1,11 +1,9 @@
 ﻿using Reqnroll.BoDi;
-using Defra.UI.Tests.Data.Users;
-using Defra.UI.Tests.Tools;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using Reqnroll;
-using Defra.UI.Tests.Pages.Classes;
 using Defra.UI.Tests.Pages.Interfaces;
+using Defra.UI.Tests.Pages.Classes;
 
 namespace Defra.UI.Tests.Steps.CP
 {
@@ -15,7 +13,6 @@ namespace Defra.UI.Tests.Steps.CP
         private readonly IObjectContainer _objectContainer;
         private readonly ScenarioContext _scenarioContext;
 
-        private IWebDriver? _driver => _objectContainer.IsRegistered<IWebDriver>() ? _objectContainer.Resolve<IWebDriver>() : null;
         private ISearchExistingDestinationPage? searchExistingDestinationPage => _objectContainer.IsRegistered<ISearchExistingDestinationPage>() ? _objectContainer.Resolve<ISearchExistingDestinationPage>() : null;
 
 
@@ -33,6 +30,12 @@ namespace Defra.UI.Tests.Steps.CP
 
         [When("the user selects a place of destination with a UK country")]
         public void WhenTheUserSelectsAPlaceOfDestinationWithAUKCountry()
+        {
+            searchExistingDestinationPage?.ClickSelect();
+        }
+
+        [When("the user selects a place of destination")]
+        public void WhenTheUserSelectsAPlaceOfDestination()
         {
             var destinationName = searchExistingDestinationPage?.GetSelectedDestinationName();
             var destinationAddress = searchExistingDestinationPage?.GetSelectedDestinationAddress();

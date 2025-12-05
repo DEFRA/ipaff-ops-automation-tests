@@ -1,12 +1,9 @@
 ﻿using Reqnroll.BoDi;
-using Defra.UI.Tests.Data.Users;
-using Defra.UI.Tests.Tools;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using Reqnroll;
-using Defra.UI.Tests.Pages.Classes;
 using Defra.UI.Tests.Pages.Interfaces;
-using DocumentFormat.OpenXml.Drawing.Charts;
+
 
 namespace Defra.UI.Tests.Steps.CP
 {
@@ -16,7 +13,6 @@ namespace Defra.UI.Tests.Steps.CP
         private readonly IObjectContainer _objectContainer;
         private readonly ScenarioContext _scenarioContext;
 
-        private IWebDriver? _driver => _objectContainer.IsRegistered<IWebDriver>() ? _objectContainer.Resolve<IWebDriver>() : null;
         private IOriginOfProductPage? originOfProductPage => _objectContainer.IsRegistered<IOriginOfProductPage>() ? _objectContainer.Resolve<IOriginOfProductPage>() : null;
 
 

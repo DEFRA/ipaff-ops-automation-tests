@@ -2,12 +2,8 @@
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
-using SeleniumExtras.WaitHelpers;
-using Microsoft.Dynamics365.UIAutomation.Browser;
-using System.Collections.ObjectModel;
-using Defra.Trade.Plants.SpecFlowBindings.Helpers;
+
 
 namespace Defra.UI.Tests.Pages.Classes
 {
@@ -17,13 +13,12 @@ namespace Defra.UI.Tests.Pages.Classes
         private IObjectContainer _objectContainer;
 
         #region Page Objects
-        private IWebElement primaryTitle => _driver.WaitForElement(By.XPath("//*[@id='page-primary-title']"), true);
-        private IWebElement secondaryTitle => _driver.WaitForElement(By.XPath("//*[@id='page-secondary-title']"), true);
+        private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
+        private IWebElement secondaryTitle => _driver.WaitForElement(By.Id("page-secondary-title"), true);
         private IWebElement btnSelect => _driver.WaitForElement(By.XPath("//*[@id='Table-SearchResults']//button[normalize-space()='Select']"));
-        private IWebElement selectedConsignorName => _driver.FindElement(By.XPath("//td[@class='govuk-table__cell economic-operator-name']"));
-        private IWebElement selectedConsignorAddress => _driver.FindElement(By.XPath("//td[@class='govuk-table__cell economic-operator-address']"));
-        private IWebElement selectedConsignorCountry => _driver.FindElement(By.XPath("//td[@class='govuk-table__cell'][not(@headers)]"));
-
+        private IWebElement selectedConsignorName => _driver.WaitForElement(By.XPath("//*[@id='Table-SearchResults']//td[1]"));
+        private IWebElement selectedConsignorAddress => _driver.WaitForElement(By.XPath("//*[@id='Table-SearchResults']//td[2]"));
+        private IWebElement selectedConsignorCountry => _driver.WaitForElement(By.XPath("//*[@id='Table-SearchResults']//td[3]"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -37,6 +32,15 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             return secondaryTitle.Text.Contains("Traders")
                 && primaryTitle.Text.Contains("Search for an existing consignor or exporter");
+        }
+
+        public string GetSelectedConsignor()
+        {
+            var consignorName = selectedConsignorName.Text.Trim();
+            var consignorAddress = selectedConsignorAddress.Text.Trim();
+            var consignorCountry = selectedConsignorCountry.Text.Trim();
+            var consignorDetails = consignorName + "\n" + consignorAddress + "," + consignorCountry;
+            return consignorDetails;
         }
 
         public void ClickSelect() 

@@ -4,9 +4,11 @@ using Defra.UI.Tests.Tools;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using Reqnroll;
+using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Pages.Classes;
 using Defra.UI.Tests.Pages.Interfaces;
 using DocumentFormat.OpenXml.Drawing.Charts;
+
 
 namespace Defra.UI.Tests.Steps.CP
 {
@@ -29,7 +31,7 @@ namespace Defra.UI.Tests.Steps.CP
         [Then("the Confirmation page should be displayed with the initial risk assessment")]
         public void ThenTheConfirmationPageShouldBeDisplayedWithTheInitialRiskAssessment()
         {
-            Assert.True(confirmationPage?.VerifyInitialAssessmentPage(),"Initial rist assessment page not loaded");
+            Assert.True(confirmationPage?.VerifyInitialAssessmentPage(), "Initial rist assessment page not loaded");
         }
 
         [When("the user records the IPAFFS User details and CHED Reference")]
