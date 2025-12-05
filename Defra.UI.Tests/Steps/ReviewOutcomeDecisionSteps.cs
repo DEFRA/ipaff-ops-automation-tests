@@ -46,24 +46,5 @@ namespace Defra.UI.Tests.Steps.CP
         {
             reviewOutcomeDecisionPage?.ClickSubmitDecision();
         }
-
-/*        [Then("the user verifies all the data displayed in review outcome decision page")]
-        public void ThenTheUserVerifiesAllTheDataDisplayedInReviewOutcomeDecisionPage()
-        {
-            var summary = summaryPage?.GetSummaryDetails();
-            var pageName = "Review outcome decision";
-
-            var BCPReferenceNumber = _scenarioContext.Get<string>("CustomsDeclarationReference");
-            var DocumentaryCheck = _scenarioContext.Get<string>("DocumentaryCheckDecision");
-            var IdentityCheckType = _scenarioContext.Get<string>("IdentityCheckType");
-            var IdentityCheckDecision = _scenarioContext.Get<string>("IdentityCheckDecision");
-            var PhysicalCheckDecision = _scenarioContext.Get<string>("PhysicalCheckDecision");
-
-            Assert.AreEqual(BCPReferenceNumber, summary?.BCPRefNum, $"BCP Reference Number is not matching in {pageName} page!");
-            Assert.AreEqual(DocumentaryCheck, summary?.DocumentaryChk, $"Documentary Check is not matching in {pageName} page!");
-            Assert.AreEqual(IdentityCheckType, summary?.IdentityChkType, $"Identity Check Type is not matching in {pageName} page!");
-            Assert.AreEqual(IdentityCheckDecision, summary?.IdentityChkDecision, $"Identity Check Decision is not matching in {pageName} page!");
-            Assert.AreEqual(PhysicalCheckDecision, summary?.PhysicalChkDecision, $"Physical Check Decision is not matching in {pageName} page!");
-        }   */
     }
 }
