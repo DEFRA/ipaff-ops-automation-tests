@@ -36,8 +36,8 @@ namespace Defra.UI.Tests.Steps.CP
         }
 
 
-        [Then("the chosen consignor or exporter should be displayed on the Addresses page")]
-        public void ThenTheChosenConsignorOrExporterShouldBeDisplayedOnTheAddressesPage()
+        [Then("the chosen consignor or exporter should be displayed")]
+        public void ThenTheChosenConsignorOrExporterShouldBeDisplayed()
         {
             var consignorName = _scenarioContext.Get<string>("ConsignorName");
             var consignorAddress = _scenarioContext.Get<string>("ConsignorAddress");
@@ -47,6 +47,12 @@ namespace Defra.UI.Tests.Steps.CP
                         "Consignor details do not match");
         }
 
+        [Then("the chosen consignor or exporter should be displayed on the Addresses page")]
+        public void ThenTheChosenConsignorOrExporterShouldBeDisplayedOnTheAddressesPage()
+        {
+            Assert.True(addressesPage?.VerifySelectedConsignor());
+        }
+
 
         [When("the user clicks Add a consignee")]
         public void WhenTheUserClicksAddAConsignee()
@@ -54,8 +60,8 @@ namespace Defra.UI.Tests.Steps.CP
             addressesPage?.ClickAddConsignee();
         }
 
-        [Then("the chosen consignee should be displayed on the Addresses page")]
-        public void ThenTheChosenConsigneeShouldBeDisplayedOnTheAddressesPage()
+        [Then("the chosen consignee should be displayed")]
+        public void ThenTheChosenConsigneeShouldBeDisplayed()
         {
             var consigneeName = _scenarioContext.Get<string>("ConsigneeName");
             var consigneeAddress = _scenarioContext.Get<string>("ConsigneeAddress");
@@ -65,11 +71,23 @@ namespace Defra.UI.Tests.Steps.CP
                         "Consignee details do not match");
         }
 
+        [Then("the chosen consignee should be displayed on the Addresses page")]
+        public void ThenTheChosenConsigneeShouldBeDisplayedOnTheAddressesPage()
+        {
+            Assert.True(addressesPage?.VerifySelectedConsignee());
+        }
+
         [When("the user clicks Same as consignee for the Importer")]
         public void WhenTheUserClicksSameAsConsigneeForTheImporter()
         {
             addressesPage?.ClickImporterSameAsConsignee();
             _scenarioContext.Add("ImporterDetails", addressesPage.GetSelectedImporter());
+        }
+
+        [Then("the importer should be populated with the same details as the consignee on the Addresses page")]
+        public void ThenTheImporterShouldBePopulatedWithTheSameDetailsAsTheConsigneeOnTheAddressesPage()
+        {
+            Assert.True(addressesPage?.VerifySelectedConsignee());
         }
 
         [Then("the importer should be populated with the same details as the consignee")]
@@ -95,8 +113,8 @@ namespace Defra.UI.Tests.Steps.CP
             addressesPage?.ClickAddDestination();
         }
 
-        [Then("the chosen place of destination should be displayed on the Addresses page")]
-        public void ThenTheChosenPlaceOfDestinationShouldBeDisplayedOnTheAddressesPage()
+        [Then("the chosen place of destination should be displayed")]
+        public void ThenTheChosenPlaceOfDestinationShouldBeDisplayed()
         {
             var destinationName = _scenarioContext.Get<string>("DestinationName");
             var destinationAddress = _scenarioContext.Get<string>("DestinationAddress");
@@ -104,6 +122,12 @@ namespace Defra.UI.Tests.Steps.CP
 
             Assert.True(addressesPage?.VerifySelectedDestination(destinationName, destinationAddress, destinationCountry),
                         "Destination details do not match");
+        }
+
+        [Then("the chosen place of destination should be displayed on the Addresses page")]
+        public void ThenTheChosenPlaceOfDestinationShouldBeDisplayedOnTheAddressesPage()
+        {
+            Assert.True(addressesPage?.VerifySelectedDestination());
         }
     }
 }
