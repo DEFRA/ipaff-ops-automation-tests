@@ -20,7 +20,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement inputYear => _driver.WaitForElement(By.Id("date-of-checks-year"));
         private IWebElement inputHour => _driver.WaitForElement(By.Id("time-of-checks-hour"));
         private IWebElement inputMinutes => _driver.WaitForElement(By.Id("time-of-checks-minute"));
-
+        private IWebElement rdoCertifyingOfficer => _driver.FindElement(By.Id("signed-by-official"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -52,6 +52,11 @@ namespace Defra.UI.Tests.Pages.Classes
             inputHour.SendKeys(hours);
             inputMinutes.Click();
             inputMinutes.SendKeys(minutes);
+        }
+
+        public void SelectCertifyingOfficerRadioButton()
+        {
+            rdoCertifyingOfficer.Click();
         }
     }
 }
