@@ -74,6 +74,13 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<DecisionPage, IDecisionPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ReviewOutcomeDecisionPage, IReviewOutcomeDecisionPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ChecksSubmittedPage, IChecksSubmittedPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<AnimalIdentificationDetailsPage, IAnimalIdentificationDetailsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<LatestHealthCertificatePage, ILatestHealthCertificatePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<TransporterPage, ITransporterPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<TransportContactsPage, ITransportContactsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SearchExistingTranspoterPage, ISearchExistingTranspoterPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CountyParishHoldingPage, ICountyParishHoldingPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CountriesConsignmentTravelPage, ICountriesConsignmentTravelPage>());
 
             //Read Email
             _objectContainer.RegisterInstanceAs(GetBaseWithScenarioContext<FetchCodeFromEmail, IFetchCodeFromEmail>());

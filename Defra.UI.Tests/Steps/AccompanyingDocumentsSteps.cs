@@ -53,5 +53,13 @@ namespace Defra.UI.Tests.Steps.CP
             var dateofIssue = date.Day.ToString() + " " + monthName + " " + date.Year.ToString();
             _scenarioContext.Add("DateOfIssue", dateofIssue);
         }
+
+        [When("the user enters date of issue {string}{string}{string}")]
+        public void WhenTheUserEntersDateOfIssue(string day, string month, string year)
+        {
+            accompanyingDocumentsPage?.EnterDateOfIssue(day, month, year);
+            var dateofIssue = day + " " + month + " " + year;
+            _scenarioContext.Add("DocumentDateOfIssue", dateofIssue);
+        }
     }
 }

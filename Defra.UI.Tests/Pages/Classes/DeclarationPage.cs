@@ -2,8 +2,12 @@
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
-
+using SeleniumExtras.WaitHelpers;
+using Microsoft.Dynamics365.UIAutomation.Browser;
+using System.Collections.ObjectModel;
+using Defra.Trade.Plants.SpecFlowBindings.Helpers;
 
 namespace Defra.UI.Tests.Pages.Classes
 {
@@ -14,6 +18,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects
         private IWebElement pageTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
+        private IWebElement chkDeclarationAgree => _driver.FindElement(By.Id("declaration-agree"));
         private IWebElement btnSubmit => _driver.WaitForElement(By.Id("accept-and-submit"));
         #endregion
 
@@ -29,10 +34,14 @@ namespace Defra.UI.Tests.Pages.Classes
             return pageTitle.Text.Contains("Declaration");
         }
 
+        public void CheckDeclarationAgreement()
+        {
+            chkDeclarationAgree.Click();
+        }
 
         public void ClickSubmitNotification()
         {
             btnSubmit.Click();
-        }
+        }        
     }
 }

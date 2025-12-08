@@ -31,5 +31,11 @@ namespace Defra.UI.Tests.Steps.CP
         {
             notificationHubPage?.ClickCommodityLink();
         }
+
+        [When("the user clicks the Countries the consignment will travel through hyperlink")]
+        public void WhenTheUserClicksTheCountriesTheConsignmentWillTravelThroughHyperlink()
+        {
+            notificationHubPage?.ClickCountriesTheConsignmentWillTravelThroughLink();
+        }
     }
 }
