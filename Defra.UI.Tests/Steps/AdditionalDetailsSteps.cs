@@ -44,6 +44,7 @@ namespace Defra.UI.Tests.Steps.CP
         public void WhenTheUserSelectsRadioButtonUnderCommodityIntendedForOnTheAdditionalDetailsPage(string commIntendedForOption)
         {
             Assert.True(additionalDetailsPage?.SelectCommodityIntendedForRadio(commIntendedForOption), "Commodity intended for radio is not selected on the Additional details page");
+            _scenarioContext.Add("CommodityIntendedFor", commIntendedForOption);
         }
     }
 }

@@ -49,9 +49,9 @@ Scenario: User creates and submits a B2C consignment notification - CHED D
 	Then the Commodity page should be displayed
 	When the user selects "No" for Do you want to add another commodity?
 	And the user clicks Save and continue
-	When the user populates Net weight as '1000' for the commodity '100610'
-	And the user populates Number of packages as '2' for the commodity '100610'
-	And the user selects type of package as 'Box' for the commodity '100610'
+	When the user populates Net weight as '1000' for the additional commodity '100610'
+	And the user populates Number of packages as '2' for the additional commodity '100610'
+	And the user selects type of package as 'Box' for the additional commodity '100610'
 	When the user clicks the Update total button
 	Then the total gross weight should be greater than the net weight '25000'
 	When the user clicks Save and continue in commodity page

@@ -102,18 +102,42 @@ namespace Defra.UI.Tests.Steps.CP
         public void WhenTheUserPopulatesNetWeightAsForTheCommodity(string netWeight, string commodityCode)
         {
             commodityPage?.AddNetWeightForCommodityCode(netWeight, commodityCode);
+            _scenarioContext.Add("NetWeight", netWeight);
         }
 
         [When("the user populates Number of packages as {string} for the commodity {string}")]
         public void WhenTheUserPopulatesNumberOfPackagesAsForTheCommodity(string numOfPackages, string commodityCode)
         {
             commodityPage?.AddNumOfPackagesForCommodityCode(numOfPackages, commodityCode);
+            _scenarioContext.Add("NumberOfPackages", numOfPackages);
         }
 
         [When("the user selects type of package as {string} for the commodity {string}")]
         public void WhenTheUserSelectsTypeOfPackageAsForTheCommodity(string typeOfPackage, string commodityCode)
         {
             commodityPage?.SelectPackageTypeForCommodityCode(typeOfPackage, commodityCode);
+            _scenarioContext.Add("PackageType", typeOfPackage);
+        }
+
+        [When("the user populates Net weight as {string} for the additional commodity {string}")]
+        public void WhenTheUserPopulatesNetWeightAsForTheAdditionalCommodity(string netWeight, string commodityCode)
+        {
+            commodityPage?.AddNetWeightForCommodityCode(netWeight, commodityCode);
+            _scenarioContext.Add("NetWeight", netWeight);
+        }
+
+        [When("the user populates Number of packages as {string} for the additional commodity {string}")]
+        public void WhenTheUserPopulatesNumberOfPackagesAsForTheAdditionalCommodity(string numOfPackages, string commodityCode)
+        {
+            commodityPage?.AddNumOfPackagesForCommodityCode(numOfPackages, commodityCode);
+            _scenarioContext.Add("NumberOfPackages", numOfPackages);
+        }
+
+        [When("the user selects type of package as {string} for the additional commodity {string}")]
+        public void WhenTheUserSelectsTypeOfPackageAsForTheAdditionalCommodity(string typeOfPackage, string commodityCode)
+        {
+            commodityPage?.SelectPackageTypeForCommodityCode(typeOfPackage, commodityCode);
+            _scenarioContext.Add("PackageType", typeOfPackage);
         }
 
         [When("the user clicks the Update total button")]
@@ -169,8 +193,8 @@ namespace Defra.UI.Tests.Steps.CP
         [When("the user clicks {string} {string} under the parent commodity")]
         public void WhenTheUserClicksUnderTheParentCommodity(string additionalCommCode, string additionalcommDescription)
         {
-            //_scenarioContext.Add("AdditionalCommodityCode", additionalCommCode);
-            //_scenarioContext.Add("AdditionalCommodityDescription", additionalcommDescription);
+            _scenarioContext.Add("CommodityCodeAdditinalOne", additionalCommCode);
+            _scenarioContext.Add("CommodityDescriptionAdditinalOne", additionalcommDescription);
             commodityPage?.SelectCommodityInTheCommTree(additionalcommDescription);
         }
 

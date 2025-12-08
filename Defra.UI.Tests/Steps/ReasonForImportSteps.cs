@@ -45,6 +45,7 @@ namespace Defra.UI.Tests.Steps.CP
         public void WhenTheUserSelectsRadioOption(string reasonForImport)
         {
             reasonForImportPage?.SelectReasonForImport(reasonForImport);
+            _scenarioContext.Add("ReasonForImport", reasonForImport);
         }
 
         [When("the user chooses {string} and the sub-option {string}")]

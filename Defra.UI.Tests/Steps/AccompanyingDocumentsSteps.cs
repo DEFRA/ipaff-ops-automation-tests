@@ -74,6 +74,7 @@ namespace Defra.UI.Tests.Steps.CP
         {
             var filename = name + format;
             accompanyingDocumentsPage?.AddAccompanyingDocument(filename);
+            _scenarioContext.Add("AccompanyingDocName", filename);
         }
 
         [Then("the document {string} {string} is uploaded successfully")]
