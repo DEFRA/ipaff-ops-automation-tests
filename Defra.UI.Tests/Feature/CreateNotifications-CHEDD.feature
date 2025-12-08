@@ -1,9 +1,8 @@
-﻿@Regression
-Feature: Create Notification
+﻿Feature: CreateNotification CHEDD
 
-Create a notification with the different types
+Create a notification for CHEDD type
 
-Scenario: User creates and submits a B2C consignment notification - CHEDP
+Scenario: User creates and submits a B2C consignment notification - CHED D
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
@@ -13,52 +12,61 @@ Scenario: User creates and submits a B2C consignment notification - CHEDP
 	Then the user should be logged into Notification page
 	When the user clicks Create a new notification
 	Then the About the consignment/What are you importing? page should be displayed with radio buttons
-	When the user chooses 'Products of animal origin, germinal products or animal by-products' option
+	When the user chooses 'High risk food and feed of non-animal origin' option
 	And the user clicks Save and continue
 	Then the Origin of the plants plant product or other objects page should be displayed
-	When the user chooses "France" from the dropdown for Country of origin
+	When the user chooses "Australia" from the dropdown for Country of origin
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "France" as the Country of origin and Country from where consigned
-	When the user chooses "No" for Does your consignment require a region code?
-	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
-	When the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
-	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
-	When the user clicks Save and continue
-	Then the Description of the goods/Commodity page should be displayed
-	When the user searches '41015050' commodity code
-	Then the commodity details should be populated '41015050' 'Dried or dry-salted'
-	When the user selects species of commodity 'Bison bison'
-	And the user selects "No" for Do you want to add another commodity?
-	When the user clicks Save and continue
-	Then What is the main reason for importing the consignment? page should be displayed with radio buttons
-	When the user chooses "Internal market" and the sub-option "Animal feedingstuff"
+	#Should we check if CHED D is displayed here?
+	When the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
 	And the user clicks Save and continue
-	Then Select the highest risk category for the commodities in this consignment page should be displayed
-	When the user chooses "Low risk" risk category
+	Then the Description of the goods/Commodity page should be displayed
+	When I click the back button in the browser
+	Then the Origin of the import page should be displayed
+	When I click the forward button in the browser
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '12024200' commodity code
+	Then the commodity details should be populated '12024200' 'Shelled, whether or not broken'
+	When the user selects "No" for Do you want to add another commodity?
+	When the user clicks Save and continue
+	Then What is the main reason for importing the consignment? page should be displayed with radio buttons for CHEDD
+	When The user selects 'Internal market' radio option
 	And the user clicks Save and continue
 	Then the Notification Hub page should be displayed
 	When the user clicks the Commodity hyperlink
 	Then the Commodity page should be displayed with the commodity and description entered
-	When the user populates Net weight as '1000'
-	And the user populates Number of packages as '10'
-	And the user selects type of package as 'Box'
+	When the user populates Net weight as '19000'
+	And the user populates Number of packages as '1'
+	And the user selects type of package as 'Case' for the commodity '12024200'
 	When the user clicks the Update total button
-	Then the total gross weight should be greater than the net weight '1500'
+	And the user clicks the Add commodity link
+	And the user clicks the 'CEREALS' in the parent commodity tree
+	And the sub commodity list expands
+	And the user clicks '1006' 'Rice' under the parent commodity
+	And the sub commodity list expands
+	And the user clicks '100610' 'Rice in the husk (paddy or rough)' under the parent commodity
+	Then the Commodity page should be displayed
+	When the user selects "No" for Do you want to add another commodity?
+	And the user clicks Save and continue
+	When the user populates Net weight as '1000' for the commodity '100610'
+	And the user populates Number of packages as '2' for the commodity '100610'
+	And the user selects type of package as 'Box' for the commodity '100610'
+	When the user clicks the Update total button
+	Then the total gross weight should be greater than the net weight '25000'
 	When the user clicks Save and continue in commodity page
 	Then the Additional details page should be displayed
-	When the user selects 'Ambient' radio button on the Additional details page
+	When the user selects 'Human consumption' radio button under Commodity intended for on the Additional details page
+	When the user selects 'Chilled' radio button on the Additional details page
 	And the user clicks Save and continue
 	Then the Accompanying documents page should be displayed
-	When the user selects Document type "Commercial invoice"
+	When the user selects Document type "Air waybill"
 	And the user enters Document reference "INV12345"
-	And the user enters date of issue '24''11''2025'
-	Then the user should be able to click Save and continue
-	And the Approved establishment of origin page should be displayed
-	When the user clicks Search for an approved establishment
-	Then the list of establishments should be displayed, filtered by Country of origin to "France"
-	When the user clicks Select for one of the establishments in the list
-	Then the Approved establishment of origin page should be displayed with the selected establishment
-	When the user clicks Save and continue
+	And the user selects a future date from the date picker
+	And the user clicks on Add attachment link
+	And the user uploads the document 'IPAFFS Test Document' in the format '.docx'
+	Then the document 'IPAFFS Test Document' '.docx' is uploaded successfully
+	And the user clicks Save and continue
 	Then the Addresses page should be displayed
 	When the user clicks Add a consignor or exporter
 	Then the Search for an existing consignor or exporter page should be displayed
@@ -76,18 +84,17 @@ Scenario: User creates and submits a B2C consignment notification - CHEDP
 	Then the chosen place of destination should be displayed on the Addresses page
 	When the user clicks Save and continue
 	Then the Transport to the port of entry page should be displayed
-	When the user populates the transport details "DOVER EAST (SEVINGTON BCP) (GBSEV)" "Road vehicle" "123456" "Doc1234"
+	When the user populates the transport details "LONDON GATEWAY (GBLGP)" "Road vehicle" "123456" "Doc1234"
 	When the user clicks Save and continue
 	Then the Goods movement services page should be displayed
 	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
-	When the user clicks Save and continue
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user clicks Save and continue
 	Then the Contact details page should be displayed, pre-populated with the user's details
 	When the user clicks Save and continue
 	Then the Nominated contacts page should be displayed
 	When the user clicks Save and continue
-	Then the Contact address for consignment page should be displayed
-	When the user clicks Save and continue
-	Then the Confirm billing details page should be displayed
+	Then the Contacts - Contact address for consignment page should be displayed
 	When the user clicks Save and continue
 	Then the Review your notification page should be displayed
 	When the user clicks Save and continue
