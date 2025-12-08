@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using Defra.Trade.Plants.SpecFlowBindings.Helpers;
 using Defra.UI.Tests.Configuration;
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
@@ -7,10 +6,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
-<<<<<<< HEAD
 using SeleniumExtras.WaitHelpers;
-=======
->>>>>>> b9a7fde06c7a3a2654595566fc1feb42e06a309a
 
 namespace Defra.UI.Tests.Pages.Classes
 {
