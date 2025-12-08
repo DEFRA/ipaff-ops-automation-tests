@@ -15,13 +15,11 @@ namespace Defra.UI.Tests.Steps.CP
 
         private ISearchExistingConsigneePage? searchExistingConsigneePage => _objectContainer.IsRegistered<ISearchExistingConsigneePage>() ? _objectContainer.Resolve<ISearchExistingConsigneePage>() : null;
 
-
-        public SearchExistingConsigneeSteps(ScenarioContext context, IObjectContainer container)
+        public SearchExistingConsigneeSteps(IObjectContainer container, ScenarioContext scenarioContext)
         {
             _objectContainer = container;
-            _scenarioContext = context;
+            _scenarioContext = scenarioContext;
         }
-
 
         [Then("the Search for an existing consignee page should be displayed")]
         public void ThenTheSearchForAnExistingConsigneePageShouldBeDisplayed()
@@ -33,6 +31,20 @@ namespace Defra.UI.Tests.Steps.CP
         public void WhenTheUserSelectsAConsigneeWithAUKCountry()
         {
             _scenarioContext.Add("ConsigneeDetails", searchExistingConsigneePage.GetSelectedConsignee());
+            searchExistingConsigneePage?.ClickSelect();
+        }
+
+        [When("the user selects a consignee")]
+        public void WhenTheUserSelectsAConsignee()
+        {
+            var consigneeName = searchExistingConsigneePage?.GetSelectedConsigneeName();
+            var consigneeAddress = searchExistingConsigneePage?.GetSelectedConsigneeAddress();
+            var consigneeCountry = searchExistingConsigneePage?.GetSelectedConsigneeCountry();
+
+            _scenarioContext.Add("ConsigneeName", consigneeName);
+            _scenarioContext.Add("ConsigneeAddress", consigneeAddress);
+            _scenarioContext.Add("ConsigneeCountry", consigneeCountry);
+
             searchExistingConsigneePage?.ClickSelect();
         }
     }

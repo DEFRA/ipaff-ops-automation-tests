@@ -1,8 +1,13 @@
-﻿using Reqnroll.BoDi;
+﻿using Defra.UI.Tests.Data.Users;
+using Defra.UI.Tests.Pages.Classes;
+using Defra.UI.Tests.Pages.Interfaces;
+using Defra.UI.Tests.Tools;
+using DocumentFormat.OpenXml.Drawing.Charts;
+using Faker;
 using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
-
+using Reqnroll.BoDi;
 
 namespace Defra.UI.Tests.Steps.CP
 {
@@ -33,6 +38,7 @@ namespace Defra.UI.Tests.Steps.CP
         public void WhenTheUserChoosesForDoesYourConsignmentRequireARegionCode(string option)
         {
             originOfImportPage?.IsRegionOfOriginCodeNeeded(option);
+            _scenarioContext.Add("IsRegionOfOriginCodeRequired", option);
         }
 
         [When("the user chooses {string} for Does this consignment conform to regulatory regulations?")]

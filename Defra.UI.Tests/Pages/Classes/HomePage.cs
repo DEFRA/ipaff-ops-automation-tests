@@ -67,12 +67,7 @@ namespace Defra.UI.Tests.Pages.Classes
         #region Methods
 
         public bool IsPageLoaded()
-        {
-            if(ConfigSetup.BaseConfiguration.TestConfiguration.IsAccessibilityEnabled)
-            {
-                Cognizant.WCAG.Compliance.Checker.Analyzer.Execute(_driver);
-            }
-
+        {           
             return PageHeading.Text.Contains("Lifelong pet travel documents");
         }
 

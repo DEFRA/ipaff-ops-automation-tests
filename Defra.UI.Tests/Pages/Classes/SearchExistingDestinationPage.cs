@@ -18,6 +18,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement selectedPOEName => _driver.WaitForElement(By.XPath("//*[@id='Table-SearchResults']//td[1]"));
         private IWebElement selectedPOEAddress => _driver.WaitForElement(By.XPath("//*[@id='Table-SearchResults']//td[2]"));
         private IWebElement selectedPOECountry => _driver.WaitForElement(By.XPath("//*[@id='Table-SearchResults']//td[3]"));
+        private IWebElement selectedDestinationName => _driver.FindElement(By.XPath("//td[@class='govuk-table__cell economic-operator-name']"));
+        private IWebElement selectedDestinationAddress => _driver.FindElement(By.XPath("//td[@class='govuk-table__cell economic-operator-address']"));
+        private IWebElement selectedDestinationCountry => _driver.FindElement(By.XPath("//td[@class='govuk-table__cell'][not(@headers)]"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -46,5 +49,9 @@ namespace Defra.UI.Tests.Pages.Classes
         { 
             btnSelect.Click(); 
         }
+
+        public string GetSelectedDestinationName() => selectedDestinationName.Text.Trim();
+        public string GetSelectedDestinationAddress() => selectedDestinationAddress.Text.Trim();
+        public string GetSelectedDestinationCountry() => selectedDestinationCountry.Text.Trim();
     }
 }

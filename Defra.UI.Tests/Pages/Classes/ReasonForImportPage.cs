@@ -22,7 +22,11 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement rdoIMAnimalFeeding => _driver.WaitForElement(By.XPath("//*[@id='internalMarketanimal']/following-sibling::label"));
         private IWebElement rdoIMOther => _driver.WaitForElement(By.XPath("//*[@id='internalMarketother']/following-sibling::label"));
         private IWebElement rdoIMPharma => _driver.WaitForElement(By.XPath("//*[@id='internalMarketpharma']/following-sibling::label"));
-        private IWebElement rdoIMTechnicalUse => _driver.WaitForElement(By.XPath("//*[@id='internalMarkettechnical']/following-sibling::label"));
+        private IWebElement rdoIMTechnicalUse => _driver.WaitForElement(By.XPath("//*[@id='internalMarkettechnical']/following-sibling::label")); 
+        private IWebElement GetReasonRadioButton(string reasonText) =>
+            _driver.FindElement(By.XPath($"//label[contains(@class, 'govuk-radios__label') and contains(normalize-space(), '{reasonText}')]"));
+        private IWebElement GetInternalMarketSubOption(string subOptionText) =>
+            _driver.FindElement(By.XPath($"//div[contains(@id,'internalmarket-conditional')]//label[contains(@class, 'govuk-radios__label') and normalize-space()='{subOptionText}']"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -36,6 +40,12 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             return secondaryTitle.Text.Contains("About the consignment")
                 && primaryTitle.Text.Contains("What is the main reason for importing the consignment?");
+        }
+
+        public bool IsReasonForImportingAnimalsPageLoaded()
+        {
+            return secondaryTitle.Text.Contains("About the consignment")
+                && primaryTitle.Text.Contains("What is the main reason for importing the animals?");
         }
 
         public bool IsElementPresent(IWebElement element)
@@ -52,34 +62,42 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool AreImportReasonsPresent()
         {
-            return IsElementPresent(rdoInternalMarket)
-                && IsElementPresent(rdoTranshipment)
-                && IsElementPresent(rdoTransit)
-                && IsElementPresent(rdoReentry);
+            try
+            {
+                return IsElementPresent(GetReasonRadioButton("Internal market"))
+                    && IsElementPresent(GetReasonRadioButton("Transhipment or onward travel"))
+                    && IsElementPresent(GetReasonRadioButton("Transit"))
+                    && IsElementPresent(GetReasonRadioButton("Re-entry"));
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
+        }
+
+        public bool AreImportAnimalsReasonsPresent()
+        {
+            try
+            {
+                return AreImportReasonsPresent()
+                    && IsElementPresent(GetReasonRadioButton("Temporary admission horses"));
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
         }
 
         public void SelectReasonForImport(string option)
         {
-            if(option.Equals(rdoInternalMarket.Text))
-                rdoInternalMarket.Click();
-            else if (option.Equals(rdoTranshipment.Text))
-                rdoTranshipment.Click();
-            else if (option.Equals(rdoTransit.Text))
-                rdoTransit.Click();
-            else if (option.Equals(rdoReentry.Text))
-                rdoReentry.Click();
+            var reasonRadioButton = GetReasonRadioButton(option);
+            reasonRadioButton.Click();
         }
 
         public void SelectReasonForImportSubOption(string subOption)
         {
-            if (subOption.Equals(rdoIMAnimalFeeding.Text))
-                rdoIMAnimalFeeding.Click();
-            else if (subOption.Equals(rdoIMOther.Text))
-                rdoIMOther.Click();
-            else if (subOption.Equals(rdoIMPharma.Text))
-                rdoIMPharma.Click();
-            else if (subOption.Equals(rdoIMTechnicalUse.Text))
-                rdoIMTechnicalUse.Click();
-        }
+            var subOptionRadioButton = GetInternalMarketSubOption(subOption);
+            subOptionRadioButton.Click();
+        }        
     }
 }

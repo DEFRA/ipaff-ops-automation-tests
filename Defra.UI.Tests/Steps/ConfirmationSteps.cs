@@ -1,8 +1,13 @@
 ﻿using Reqnroll.BoDi;
+using Defra.UI.Tests.Data.Users;
+using Defra.UI.Tests.Tools;
 using NUnit.Framework;
+using OpenQA.Selenium;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Pages.Classes;
+using Defra.UI.Tests.Pages.Interfaces;
+using DocumentFormat.OpenXml.Drawing.Charts;
 
 
 namespace Defra.UI.Tests.Steps.CP
@@ -13,7 +18,9 @@ namespace Defra.UI.Tests.Steps.CP
         private readonly IObjectContainer _objectContainer;
         private readonly ScenarioContext _scenarioContext;
 
+        private IWebDriver? _driver => _objectContainer.IsRegistered<IWebDriver>() ? _objectContainer.Resolve<IWebDriver>() : null;
         private IConfirmationPage? confirmationPage => _objectContainer.IsRegistered<IConfirmationPage>() ? _objectContainer.Resolve<IConfirmationPage>() : null;
+
 
         public ConfirmationSteps(ScenarioContext context, IObjectContainer container)
         {
@@ -28,11 +35,18 @@ namespace Defra.UI.Tests.Steps.CP
         }
 
         [When("the user records the IPAFFS User details and CHED Reference")]
+        [Then("the user records the IPAFFS User details and CHED Reference")]
         public void WhenTheUserRecordsTheIPAFFSUserDetailsAndCHEDReference()
         {
             _scenarioContext.Add("CHEDReference", confirmationPage.GetCHEDReference());
             _scenarioContext.Add("CustomsDeclarationReference", confirmationPage.GetCustomsDeclarationReference());
             _scenarioContext.Add("CustomsDocumentCode", confirmationPage.GetCustomsDocumentCode());
+        }
+       
+        [When("the user clicks Return to your dashboard")]
+        public void WhenTheUserClicksReturnToYourDashboard()
+        {
+            confirmationPage?.ClickReturnToDashboard();
         }
 
         [Then("the details should be recorded")]

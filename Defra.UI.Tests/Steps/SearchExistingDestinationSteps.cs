@@ -16,10 +16,10 @@ namespace Defra.UI.Tests.Steps.CP
         private ISearchExistingDestinationPage? searchExistingDestinationPage => _objectContainer.IsRegistered<ISearchExistingDestinationPage>() ? _objectContainer.Resolve<ISearchExistingDestinationPage>() : null;
 
 
-        public SearchExistingDestinationSteps(ScenarioContext context, IObjectContainer container)
+        public SearchExistingDestinationSteps(IObjectContainer container, ScenarioContext scenarioContext)
         {
             _objectContainer = container;
-            _scenarioContext = context;
+            _scenarioContext = scenarioContext;
         }
 
         [Then("the Search for an existing place of destination page should be displayed")]
@@ -32,6 +32,20 @@ namespace Defra.UI.Tests.Steps.CP
         public void WhenTheUserSelectsAPlaceOfDestinationWithAUKCountry()
         {
             _scenarioContext.Add("PlaceOfDestination", searchExistingDestinationPage.GetSelectedPlaceOfDestination());
+            searchExistingDestinationPage?.ClickSelect();
+        }
+
+        [When("the user selects a place of destination")]
+        public void WhenTheUserSelectsAPlaceOfDestination()
+        {
+            var destinationName = searchExistingDestinationPage?.GetSelectedDestinationName();
+            var destinationAddress = searchExistingDestinationPage?.GetSelectedDestinationAddress();
+            var destinationCountry = searchExistingDestinationPage?.GetSelectedDestinationCountry();
+
+            _scenarioContext.Add("DestinationName", destinationName);
+            _scenarioContext.Add("DestinationAddress", destinationAddress);
+            _scenarioContext.Add("DestinationCountry", destinationCountry);
+
             searchExistingDestinationPage?.ClickSelect();
         }
     }

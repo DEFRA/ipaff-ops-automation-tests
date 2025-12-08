@@ -7,5 +7,6 @@ namespace Defra.UI.Tests.Pages.Interfaces
     {
         bool IsPageLoaded();
         void CTCToMoveGoods(string option);
+        void GVMSToMoveGoods(string option);
     }
 }

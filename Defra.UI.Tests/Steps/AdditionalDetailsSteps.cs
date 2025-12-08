@@ -28,6 +28,12 @@ namespace Defra.UI.Tests.Steps.CP
             Assert.True(additionalDetailsPage?.IsPageLoaded(), "Description of the goods Additional details page not loaded");
         }
 
+        [Then("the Additional animal details page should be displayed")]
+        public void ThenTheAdditionalAnimalDetailsPageShouldBeDisplayed()
+        {
+            Assert.True(additionalDetailsPage?.IsAdditionalAnimalDetailsPageLoaded(), "Description of the goods Additional animal details page not loaded");
+        }
+
         [When("the user selects {string} radio button on the Additional details page")]
         public void WhenTheUserSelectsAnyRadioButtonOnTheAdditionalDetailsPage(string option)
         {
@@ -40,5 +46,20 @@ namespace Defra.UI.Tests.Steps.CP
         {
             throw new PendingStepException();
         }
+
+        [When("the user selects {string} for What are the animals certified for?")]
+        public void WhenTheUserSelectsForWhatAreTheAnimalsCertifiedFor(string certificationOption)
+        {
+            additionalDetailsPage?.SelectAnimalCertification(certificationOption);
+            _scenarioContext.Add("CertificationOption", certificationOption);
+        }
+
+        [When("the user selects {string} for Does the consignment contain any unweaned animals?")]
+        public void WhenTheUserSelectsForDoesTheConsignmentContainAnyUnweanedAnimals(string unweanedAnimalsOption)
+        {
+            additionalDetailsPage?.SelectUnweanedAnimalsOption(unweanedAnimalsOption);
+            _scenarioContext.Add("UnweanedAnimalsOption", unweanedAnimalsOption);
+        }
+
     }
 }
