@@ -36,6 +36,17 @@ namespace Defra.UI.Tests.Steps.CP
         }
 
 
+        [Then("the chosen consignor or exporter should be displayed")]
+        public void ThenTheChosenConsignorOrExporterShouldBeDisplayed()
+        {
+            var consignorName = _scenarioContext.Get<string>("ConsignorName");
+            var consignorAddress = _scenarioContext.Get<string>("ConsignorAddress");
+            var consignorCountry = _scenarioContext.Get<string>("ConsignorCountry");
+
+            Assert.True(addressesPage?.VerifySelectedConsignor(consignorName, consignorAddress, consignorCountry),
+                        "Consignor details do not match");
+        }
+
         [Then("the chosen consignor or exporter should be displayed on the Addresses page")]
         public void ThenTheChosenConsignorOrExporterShouldBeDisplayedOnTheAddressesPage()
         {
@@ -47,6 +58,17 @@ namespace Defra.UI.Tests.Steps.CP
         public void WhenTheUserClicksAddAConsignee()
         {
             addressesPage?.ClickAddConsignee();
+        }
+
+        [Then("the chosen consignee should be displayed")]
+        public void ThenTheChosenConsigneeShouldBeDisplayed()
+        {
+            var consigneeName = _scenarioContext.Get<string>("ConsigneeName");
+            var consigneeAddress = _scenarioContext.Get<string>("ConsigneeAddress");
+            var consigneeCountry = _scenarioContext.Get<string>("ConsigneeCountry");
+
+            Assert.True(addressesPage?.VerifySelectedConsignee(consigneeName, consigneeAddress, consigneeCountry),
+                        "Consignee details do not match");
         }
 
         [Then("the chosen consignee should be displayed on the Addresses page")]
@@ -62,16 +84,44 @@ namespace Defra.UI.Tests.Steps.CP
             _scenarioContext.Add("ImporterDetails", addressesPage.GetSelectedImporter());
         }
 
+        [Then("the importer should be populated with the same details as the consignee on the Addresses page")]
+        public void ThenTheImporterShouldBePopulatedWithTheSameDetailsAsTheConsigneeOnTheAddressesPage()
+        {
+            Assert.True(addressesPage?.VerifySelectedConsignee());
+        }
+
         [Then("the importer should be populated with the same details as the consignee")]
         public void ThenTheImporterShouldBePopulatedWithTheSameDetailsAsTheConsignee()
         {
-            Assert.True(addressesPage?.VerifySelectedConsignee());
+            var consigneeName = _scenarioContext.Get<string>("ConsigneeName");
+            var consigneeAddress = _scenarioContext.Get<string>("ConsigneeAddress");
+            var consigneeCountry = _scenarioContext.Get<string>("ConsigneeCountry");
+
+            // Since importer uses same data as consignee, store it in context
+            _scenarioContext.Add("ImporterName", consigneeName);
+            _scenarioContext.Add("ImporterAddress", consigneeAddress);
+            _scenarioContext.Add("ImporterCountry", consigneeCountry);
+
+            // Verify importer shows same details as consignee
+            Assert.True(addressesPage?.VerifySelectedConsignee(consigneeName, consigneeAddress, consigneeCountry),
+                        "Importer details do not match consignee");
         }
 
         [When("the user clicks Add a place of destination")]
         public void WhenTheUserClicksAddAPlaceOfDestination()
         {
             addressesPage?.ClickAddDestination();
+        }
+
+        [Then("the chosen place of destination should be displayed")]
+        public void ThenTheChosenPlaceOfDestinationShouldBeDisplayed()
+        {
+            var destinationName = _scenarioContext.Get<string>("DestinationName");
+            var destinationAddress = _scenarioContext.Get<string>("DestinationAddress");
+            var destinationCountry = _scenarioContext.Get<string>("DestinationCountry");
+
+            Assert.True(addressesPage?.VerifySelectedDestination(destinationName, destinationAddress, destinationCountry),
+                        "Destination details do not match");
         }
 
         [Then("the chosen place of destination should be displayed on the Addresses page")]

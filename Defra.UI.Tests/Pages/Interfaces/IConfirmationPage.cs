@@ -8,5 +8,8 @@ namespace Defra.UI.Tests.Pages.Interfaces
         string GetCHEDReference();
         string GetCustomsDeclarationReference();
         string GetCustomsDocumentCode();
+        void SignedOut();
+        bool VerifySignedOutPage();
+        void ClickReturnToDashboard();
     }
 }

@@ -10,13 +10,14 @@ namespace Defra.UI.Tests.Steps.CP
     public class GoodsMovementServicesSteps
     {
         private readonly IObjectContainer _objectContainer;
+        private readonly ScenarioContext _scenarioContext;
 
         private IGoodsMovementServicesPage? goodsMovementServicesPage => _objectContainer.IsRegistered<IGoodsMovementServicesPage>() ? _objectContainer.Resolve<IGoodsMovementServicesPage>() : null;
 
-
-        public GoodsMovementServicesSteps(IObjectContainer container)
+        public GoodsMovementServicesSteps(ScenarioContext context, IObjectContainer container)
         {
             _objectContainer = container;
+            _scenarioContext = context;
         }
 
         [Then("the Goods movement services page should be displayed")]
@@ -29,6 +30,13 @@ namespace Defra.UI.Tests.Steps.CP
         public void WhenTheUserSelectsForAreYouUsingTheCommonTransitConventionCTC(string option)
         {
             goodsMovementServicesPage?.CTCToMoveGoods(option);
+        }
+
+        [When("the user selects {string} for Will the transport use the Goods Vehicle Movement Service \\(GVMS)?")]
+        public void WhenTheUserSelectsForWillTheTransportUseTheGoodsVehicleMovementServiceGVMS(string option)
+        {
+            goodsMovementServicesPage?.GVMSToMoveGoods(option);
+            _scenarioContext.Add("IsGVMS", option);
         }
     }
 }

@@ -27,6 +27,12 @@ namespace Defra.UI.Tests.Steps.CP
             Assert.True(declarationPage?.IsPageLoaded(), "Declaration page not loaded");
         }
 
+        [When("the user ticks the checkbox to declare that the information is true and correct")]
+        public void WhenTheUserTicksTheCheckboxToDeclareThatTheInformationIsTrueAndCorrect()
+        {
+            declarationPage?.CheckDeclarationAgreement();
+        }
+
         [When("the user clicks Submit notification")]
         public void WhenTheUserClicksSubmitNotification()
         {
