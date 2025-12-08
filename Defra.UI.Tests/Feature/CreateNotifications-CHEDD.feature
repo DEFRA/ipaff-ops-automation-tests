@@ -18,7 +18,6 @@ Scenario: User creates and submits a B2C consignment notification - CHED D
 	When the user chooses "Australia" from the dropdown for Country of origin
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "France" as the Country of origin and Country from where consigned
-	#Should we check if CHED D is displayed here?
 	When the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
 	And the user clicks Save and continue
 	Then the Description of the goods/Commodity page should be displayed
@@ -39,20 +38,20 @@ Scenario: User creates and submits a B2C consignment notification - CHED D
 	When the user populates Net weight as '19000'
 	And the user populates Number of packages as '1'
 	And the user selects type of package as 'Case' for the commodity '12024200'
-	When the user clicks the Update total button
+	#When the user clicks the Update total button
 	And the user clicks the Add commodity link
 	And the user clicks the 'CEREALS' in the parent commodity tree
 	And the sub commodity list expands
 	And the user clicks '1006' 'Rice' under the parent commodity
 	And the sub commodity list expands
-	And the user clicks '100610' 'Rice in the husk (paddy or rough)' under the parent commodity
+	And the user selects the first additional commodity '100610' 'Rice in the husk (paddy or rough)' under the parent commodity
 	Then the Commodity page should be displayed
 	When the user selects "No" for Do you want to add another commodity?
 	And the user clicks Save and continue
 	When the user populates Net weight as '1000' for the additional commodity '100610'
 	And the user populates Number of packages as '2' for the additional commodity '100610'
 	And the user selects type of package as 'Box' for the additional commodity '100610'
-	When the user clicks the Update total button
+	When the user clicks the Update total button after adding all the commodities
 	Then the total gross weight should be greater than the net weight '25000'
 	When the user clicks Save and continue in commodity page
 	Then the Additional details page should be displayed
@@ -97,6 +96,8 @@ Scenario: User creates and submits a B2C consignment notification - CHED D
 	Then the Contacts - Contact address for consignment page should be displayed
 	When the user clicks Save and continue
 	Then the Review your notification page should be displayed
+	#And the user verifies all the data displayed in review page
+	And the data presented for review matches the data entered into the notification
 	When the user clicks Save and continue
 	Then the Declaration page should be displayed
 	When the user clicks Submit notification

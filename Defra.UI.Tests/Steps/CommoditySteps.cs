@@ -124,21 +124,21 @@ namespace Defra.UI.Tests.Steps.CP
         public void WhenTheUserPopulatesNetWeightAsForTheAdditionalCommodity(string netWeight, string commodityCode)
         {
             commodityPage?.AddNetWeightForCommodityCode(netWeight, commodityCode);
-            _scenarioContext.Add("NetWeight", netWeight);
+            _scenarioContext.Add("NetWeightAdditinalOne", netWeight);
         }
 
         [When("the user populates Number of packages as {string} for the additional commodity {string}")]
         public void WhenTheUserPopulatesNumberOfPackagesAsForTheAdditionalCommodity(string numOfPackages, string commodityCode)
         {
             commodityPage?.AddNumOfPackagesForCommodityCode(numOfPackages, commodityCode);
-            _scenarioContext.Add("NumberOfPackages", numOfPackages);
+            _scenarioContext.Add("NumberOfPackagesAdditinalOne", numOfPackages);
         }
 
         [When("the user selects type of package as {string} for the additional commodity {string}")]
         public void WhenTheUserSelectsTypeOfPackageAsForTheAdditionalCommodity(string typeOfPackage, string commodityCode)
         {
             commodityPage?.SelectPackageTypeForCommodityCode(typeOfPackage, commodityCode);
-            _scenarioContext.Add("PackageType", typeOfPackage);
+            _scenarioContext.Add("PackageTypeAdditinalOne", typeOfPackage);
         }
 
         [When("the user clicks the Update total button")]
@@ -148,6 +148,13 @@ namespace Defra.UI.Tests.Steps.CP
             Thread.Sleep(2000);
             _scenarioContext.Add("SubtotalNetWeight", commodityPage.GetSubtotalNetWeight());
             _scenarioContext.Add("SubtotalPackages", commodityPage.GetSubtotalPackages());
+            _scenarioContext.Add("TotalNetWeight", commodityPage.GetTotalNetWeight());
+            _scenarioContext.Add("TotalPackages", commodityPage.GetTotalPackages());
+        }
+
+        [When("the user clicks the Update total button after adding all the commodities")]
+        public void WhenTheUserClicksTheUpdateTotalButtonAfterAddingAllTheCommodities()
+        {
             _scenarioContext.Add("TotalNetWeight", commodityPage.GetTotalNetWeight());
             _scenarioContext.Add("TotalPackages", commodityPage.GetTotalPackages());
         }
@@ -191,6 +198,12 @@ namespace Defra.UI.Tests.Steps.CP
 
         [When("the user clicks {string} {string} under the parent commodity")]
         public void WhenTheUserClicksUnderTheParentCommodity(string additionalCommCode, string additionalcommDescription)
+        {
+            commodityPage?.SelectCommodityInTheCommTree(additionalcommDescription);
+        }
+
+        [When("the user selects the first additional commodity {string} {string} under the parent commodity")]
+        public void WhenTheUserSelectsTheFirstAdditionalCommodityUnderTheParentCommodity(string additionalCommCode, string additionalcommDescription)
         {
             _scenarioContext.Add("CommodityCodeAdditinalOne", additionalCommCode);
             _scenarioContext.Add("CommodityDescriptionAdditinalOne", additionalcommDescription);
