@@ -24,7 +24,15 @@ namespace Defra.UI.Tests.Steps.CP
         [Then("the Decision page should be displayed")]
         public void ThenTheDecisionPageShouldBeDisplayed()
         {
-            Assert.True(decisionPage?.IsPageLoaded());
+            Assert.True(decisionPage?.IsPageLoaded(), "Decision page is not displayed");
+        }
+
+        [When("the user selects Acceptable for {string} {string}")]
+        public void WhenTheUserSelectsAcceptableFor(string acceptableFor, string subOption)
+        {
+            _scenarioContext.Add("AcceptableFor", acceptableFor);
+            _scenarioContext.Add("AcceptableForSubOption", subOption);
+            decisionPage?.SelectAcceptableFor(acceptableFor, subOption);
         }
     }
 }

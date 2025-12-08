@@ -9,5 +9,6 @@ namespace Defra.UI.Tests.Pages.Interfaces
         bool IsPageLoaded();
         void ClickSubmitDecision();
         void EnterCurrentDateAndTime(string day, string month, string year, string hours, string minutes);
+        void SelectCertifyingOfficerRadioButton();
     }
 }

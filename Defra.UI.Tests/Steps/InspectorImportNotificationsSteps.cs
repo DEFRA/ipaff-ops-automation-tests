@@ -41,7 +41,6 @@ namespace Defra.UI.Tests.Steps.CP
         public void ThenTheNotificationShouldBeFoundWithStatus(string status)
         {
             var chedRef = _scenarioContext.Get<string>("CHEDReference");
-            inspectorImportNotificationsPage?.SearchForChed(chedRef);
             inspectorImportNotificationsPage?.VerifyNotificationStatus(chedRef, status);
         }
     }

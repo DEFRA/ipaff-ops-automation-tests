@@ -46,5 +46,11 @@ namespace Defra.UI.Tests.Steps.CP
         {
             reviewOutcomeDecisionPage?.ClickSubmitDecision();
         }
+
+        [When("the user selects the radio button to declare that the checks have been carried out in accordance with EU law")]
+        public void WhenTheUserSelectsTheRadioButtonToDeclareChecksCarriedOutInAccordanceWithEULaw()
+        {
+            reviewOutcomeDecisionPage?.SelectCertifyingOfficerRadioButton();
+        }
     }
 }

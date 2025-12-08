@@ -27,7 +27,16 @@ namespace Defra.UI.Tests.Steps.CP
         [Then("the Seal numbers page should be displayed")]
         public void ThenTheSealNumbersPageShouldBeDisplayed()
         {
-            Assert.True(sealNumbersPage?.IsPageLoaded());
+            Assert.True(sealNumbersPage?.IsPageLoaded(), "Seal numbers page is not displayed");
+        }
+
+        [Then("{string} is pre-selected for Are new seal numbers required?")]
+        public void ThenIsPreSelectedForAreNewSealNumbersRequired(string expectedSelection)
+        {
+            if (expectedSelection.Equals("No", StringComparison.OrdinalIgnoreCase))
+            {
+                Assert.True(sealNumbersPage?.IsSealNumbersNoPreselected(), "No is not pre-selected for Are new seal numbers required?");
+            }
         }
     }
 }
