@@ -15,6 +15,7 @@ namespace Defra.UI.Tests.Pages.Classes
         #region Page Objects
         private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
         private IWebElement secondaryTitle => _driver.WaitForElement(By.Id("page-secondary-title"), true);
+        private IWebElement firstContactAddressLabel => _driver.FindElement(By.XPath("//label[contains(@for, 'branch-address')]"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -34,6 +35,28 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             return primaryTitle.Text.Contains("Contact address for consignment")
                 && secondaryTitle.Text.Contains("Contacts");
+        }
+
+        public bool IsPageLoadedWithoutSecondaryTitle()
+        {
+            return primaryTitle.Text.Contains("Contact address for consignment");
+        }
+
+        public string GetSelectedContactAddress()
+        {
+            var fullAddress = firstContactAddressLabel.Text.Trim();
+
+            // Split by newlines to get individual address components
+            var lines = fullAddress.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+
+            // Return only the first 4 lines (street, region, city, postcode)
+            // This excludes the country which is not displayed on the review page
+            if (lines.Length >= 4)
+            {
+                return string.Join("\n", lines.Take(4).Select(l => l.Trim()));
+            }
+
+            return fullAddress;
         }
     }
 }

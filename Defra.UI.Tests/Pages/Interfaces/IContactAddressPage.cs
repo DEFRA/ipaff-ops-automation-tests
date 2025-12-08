@@ -4,5 +4,7 @@
     {
         bool IsPageLoaded();
         bool IsContactAddressForConsignmentPageLoaded();
+        bool IsPageLoadedWithoutSecondaryTitle();
+        string GetSelectedContactAddress();
     }
 }

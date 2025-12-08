@@ -4,6 +4,6 @@
     {
         bool IsPageLoaded();
         void CTCToMoveGoods(string option);
-        bool SelectGvmsRadio(string option);
+        void GVMSToMoveGoods(string option);
     }
 }

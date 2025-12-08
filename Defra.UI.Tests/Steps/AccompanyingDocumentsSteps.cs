@@ -5,7 +5,6 @@ using Reqnroll;
 using Reqnroll.BoDi;
 using System.Globalization;
 
-
 namespace Defra.UI.Tests.Steps.CP
 {
     [Binding]
@@ -80,6 +79,14 @@ namespace Defra.UI.Tests.Steps.CP
         {
             var filename = name + format;
             Assert.True(accompanyingDocumentsPage?.GetFileName.Contains(filename), "The accompanying document upload has failed");
+        }
+
+        [When("the user enters date of issue {string}{string}{string}")]
+        public void WhenTheUserEntersDateOfIssue(string day, string month, string year)
+        {
+            accompanyingDocumentsPage?.EnterDateOfIssue(day, month, year);
+            var dateofIssue = day + " " + month + " " + year;
+            _scenarioContext.Add("DocumentDateOfIssue", dateofIssue);
         }
     }
 }

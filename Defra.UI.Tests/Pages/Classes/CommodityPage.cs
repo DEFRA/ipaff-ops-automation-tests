@@ -21,9 +21,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtCommodityCodeValue => _driver.WaitForElement(By.Id("commodity-code-value"));
         private IWebElement txtCommodityCodeDesc => _driver.WaitForElement(By.XPath("//*[@id='commodity-code-value']/following-sibling::td"));
         private IWebElement txtCommodityType => _driver.FindElement(By.Id("type-select"));
-        private IWebElement txtCommoditySpecies => _driver.FindElement(By.Id("Bison bison-checkbox"));
         private IWebElement rdoYesAnotherCommodity => _driver.FindElement(By.Id("addCommodity"));
         private IWebElement rdoNoAnotherCommodity => _driver.FindElement(By.Id("addCommodity-2"));
+        private IWebElement txtCommoditySpecies(string species) => _driver.FindElement(By.XPath($"//input[@class='govuk-checkboxes__input' and @id='{species}-checkbox']"));
         private IWebElement txtEnteredCommodityValue => _driver.WaitForElement(By.XPath("//*[@class='govuk-table__row  ']/td[1]"));
         private IWebElement txtEnteredCommodityDesc => _driver.WaitForElement(By.XPath("//*[@class='govuk-table__row  ']/td[2]"));
         private IWebElement txtNetWeight => _driver.FindElement(By.XPath("//*[@class='govuk-table species-table-cheda']//input[@class='govuk-input net-weight ']"));
@@ -32,6 +32,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement speciesTable => _driver.FindElement(By.XPath("//*[@class='govuk-table species-table-cheda']"));
         private List<IWebElement> commodityTreeList => _driver.WaitForElements(By.XPath("//ul[@class='commodity-tree']/li//span[@class='commodity-description-links-container']/button")).ToList();
         private List<IWebElement> parentCommodityItemList => _driver.WaitForElements(By.XPath("//div[@class='commodity-list']/ul/li")).ToList();
+        private IWebElement txtNumberOfAnimals => _driver.FindElement(By.XPath("//input[contains(@class, 'number-of-animals') and contains(@id, 'num-animals-desktop')]"));
+        private IWebElement txtEarTag => _driver.FindElement(By.XPath("//input[contains(@id, 'ear_tag')]"));
         private IWebElement btnUpdateTotal => _driver.FindElement(By.Id("update-total-desktop"));
         private IWebElement addCommodityLink => _driver.WaitForElement(By.Id("add-commodity-desktop"));
         private IWebElement txtTotalGrossWeight => _driver.FindElement(By.Id("gross-weight-desktop"));
@@ -75,7 +77,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void SelectCommoditySpecies(string species)
         {
-            txtCommoditySpecies.Click();
+            txtCommoditySpecies(species).Click();
         }
 
         public void AddAnotherCommodity(string option)
@@ -174,6 +176,20 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             return parentCommodityItemList.Count.Equals(1)
                 && commodityTreeList.Count >= 1;
+        }
+
+        public void EnterNumberOfAnimals(string quantity)
+        {
+            txtNumberOfAnimals.Click();
+            txtNumberOfAnimals.Clear();
+            txtNumberOfAnimals.SendKeys(quantity);
+        }
+
+        public void EnterEarTag(string earTag)
+        {
+            txtEarTag.Click();
+            txtEarTag.Clear();
+            txtEarTag.SendKeys(earTag);
         }
 
         public string GetSubtotalNetWeight()

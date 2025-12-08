@@ -21,6 +21,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement gvmsNoRadio => _driver.FindElement(By.XPath("//*[@id='gvms-question']/following-sibling::label"));
         private IWebElement gvmsYesRadio => _driver.FindElement(By.XPath("//*[@id='ctc-question-no']/following-sibling::label"));
         private List<IWebElement> gvmsRadioGroup => _driver.WaitForElements(By.XPath("//input[contains(@id,'gvms-question')]/following-sibling::label")).ToList();
+        private IWebElement rdoGVMSYes => _driver.FindElement(By.XPath("//*[@id='gvms-question']/following-sibling::label"));
+        private IWebElement rdoGVMSNo => _driver.FindElement(By.XPath("//*[@id='gvms-question-2']/following-sibling::label"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -46,17 +48,12 @@ namespace Defra.UI.Tests.Pages.Classes
                 rdoNo.Click();
         }
 
-        public bool SelectGvmsRadio(string option)
+        public void GVMSToMoveGoods(string option)
         {
-            foreach (var radioOption in gvmsRadioGroup)
-            {
-                if(radioOption.Text.Contains(option))
-                {
-                    ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", radioOption);
-                    return true;
-                }
-            }
-            return false;
-        } 
+            if (rdoGVMSYes.Text.Trim().Contains(option))
+                rdoGVMSYes.Click();
+            else if (rdoGVMSNo.Text.Trim().Contains(option))
+                rdoGVMSNo.Click();
+        }
     }
 }
