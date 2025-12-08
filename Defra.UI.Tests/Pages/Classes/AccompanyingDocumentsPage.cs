@@ -7,7 +7,10 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
+<<<<<<< HEAD
 using SeleniumExtras.WaitHelpers;
+=======
+>>>>>>> b9a7fde06c7a3a2654595566fc1feb42e06a309a
 
 namespace Defra.UI.Tests.Pages.Classes
 {

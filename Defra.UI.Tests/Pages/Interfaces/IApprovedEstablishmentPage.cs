@@ -9,6 +9,11 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void ClickSearchForApproved();
         bool VerifySelectedCountryOfOrigin(string country);
         void ClickSelectEstablishment();
-        bool VerifySelectedEstablismentName();
+        bool VerifySelectedEstablismentName(string establishmentListFirstName);
+        string GetSubtotalNetWeight();
+        string GetSubtotalPackages();
+        string GetTotalNetWeight();
+        string GetTotalPackages();
+        string GetEstablishmentListFirstName();
     }
 }

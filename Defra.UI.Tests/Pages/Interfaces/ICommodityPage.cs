@@ -1,13 +1,11 @@
-﻿using Faker;
-using OpenQA.Selenium;
-
-namespace Defra.UI.Tests.Pages.Interfaces
+﻿namespace Defra.UI.Tests.Pages.Interfaces
 {
     public interface ICommodityPage
     { 
         bool IsPageLoaded();
         void EnterCommodityCode(string code);
         bool VerifyCommdityDetails(string code, string description);
+        void SelectTypeOfCommodity(string type);
         void SelectCommoditySpecies(string species);
         void AddAnotherCommodity(string option);
         bool VerifyEnteredCommdityDetails(string code, string description);
@@ -24,5 +22,9 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void ClickAddCommodityLink();
         bool SelectCommodityInTheCommTree(string commodity);
         bool IsSubCommodityListDisplayed();
+        string GetSubtotalNetWeight();
+        string GetSubtotalPackages();
+        string GetTotalNetWeight();
+        string GetTotalPackages();
     }
 }

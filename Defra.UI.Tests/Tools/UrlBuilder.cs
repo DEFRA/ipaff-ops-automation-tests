@@ -6,6 +6,8 @@ namespace Defra.UI.Tests.Tools
     public interface IUrlBuilder
     {
         public UrlBuilder Default();
+        public UrlBuilder BTMSDefault();
+        public UrlBuilder InspectorDefault();
         public string BuildApp();
         public UrlBuilder Add(string segment);
     }
@@ -21,6 +23,8 @@ namespace Defra.UI.Tests.Tools
         private IList<string> segments;
         private bool hasTrailingSlash;
         private string BaseApplicationUrl = null;
+        private string BaseBTMSApplicationUrl = null;
+        private string BaseInspectorUrl = null;
         public UrlBuilder Add(string segment)
         {
             if (segment == null)
@@ -56,9 +60,63 @@ namespace Defra.UI.Tests.Tools
             return path;
         }
 
+        public string BuildBTMSApp()
+        {
+            string path = null;
+            if (segments.Count > 0)
+            {
+                path = string.Join("/", segments);
+
+                if (segments.Count > 0 && hasTrailingSlash)
+                {
+                    path += "/";
+                }
+                path = BaseBTMSApplicationUrl + "/" + path;
+            }
+            else
+            {
+                path = BaseBTMSApplicationUrl;
+            }
+            return path;
+        }
+
+        public string BuildInspectorApp()
+        {
+            string path = null;
+            if (segments.Count > 0)
+            {
+                path = string.Join("/", segments);
+
+                if (segments.Count > 0 && hasTrailingSlash)
+                {
+                    path += "/";
+                }
+                path = BaseInspectorUrl + "/" + path;
+            }
+            else
+            {
+                path = BaseInspectorUrl;
+            }
+            return path;
+        }
+
         public UrlBuilder Default()
         {
             BaseApplicationUrl = ConfigSetup.BaseConfiguration.TestConfiguration.ApplicationUrl;
+
+            return this;
+        }
+
+        public UrlBuilder BTMSDefault()
+        {
+            BaseBTMSApplicationUrl = ConfigSetup.BaseConfiguration.TestConfiguration.BTMSApplicationUrl;
+
+            return this;
+        }
+
+        public UrlBuilder InspectorDefault()
+        {
+            BaseInspectorUrl = ConfigSetup.BaseConfiguration.TestConfiguration.InspectorUrl;
 
             return this;
         }

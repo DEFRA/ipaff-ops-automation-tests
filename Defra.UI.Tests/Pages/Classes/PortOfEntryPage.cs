@@ -4,10 +4,6 @@ using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
-using SeleniumExtras.WaitHelpers;
-using Microsoft.Dynamics365.UIAutomation.Browser;
-using System.Collections.ObjectModel;
-using Defra.Trade.Plants.SpecFlowBindings.Helpers;
 
 namespace Defra.UI.Tests.Pages.Classes
 {
@@ -17,11 +13,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private IObjectContainer _objectContainer;
 
         #region Page Objects
-        private IWebElement primaryTitle => _driver.WaitForElement(By.XPath("//*[@id='page-primary-title']"), true);
-        private IWebElement secondaryTitle => _driver.WaitForElement(By.XPath("//*[@id='page-secondary-title']"), true);
-        private IWebElement btnSelect => _driver.WaitForElement(By.XPath("//*[@id='Table-SearchResults']//button[normalize-space()='Select']"));
+        private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
+        private IWebElement secondaryTitle => _driver.WaitForElement(By.Id("page-secondary-title"), true);
         private IWebElement txtPortOfEntry => _driver.WaitForElement(By.Id("bcp"));
-        private IWebElement selectPortOfEntry => _driver.WaitForElement(By.Id("bcp-select"));
         private IWebElement optTransportMode => _driver.WaitForElement(By.XPath("//*[@class='govuk-form-group  ']/select"));
         private IWebElement txtTransportId => _driver.WaitForElement(By.Id("identification"));
         private IWebElement txtTransportDocRef => _driver.WaitForElement(By.Id("document"));

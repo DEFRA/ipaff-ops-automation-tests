@@ -1,13 +1,7 @@
 ﻿using Reqnroll.BoDi;
-using Defra.UI.Tests.Data.Users;
-using Defra.UI.Tests.Tools;
 using NUnit.Framework;
-using OpenQA.Selenium;
 using Reqnroll;
-using Defra.UI.Tests.Pages.Classes;
 using Defra.UI.Tests.Pages.Interfaces;
-using DocumentFormat.OpenXml.Drawing.Charts;
-using Dynamitey.DynamicObjects;
 
 namespace Defra.UI.Tests.Steps.CP
 {
@@ -17,7 +11,6 @@ namespace Defra.UI.Tests.Steps.CP
         private readonly IObjectContainer _objectContainer;
         private readonly ScenarioContext _scenarioContext;
 
-        private IWebDriver? _driver => _objectContainer.IsRegistered<IWebDriver>() ? _objectContainer.Resolve<IWebDriver>() : null;
         private ICommodityPage? commodityPage => _objectContainer.IsRegistered<ICommodityPage>() ? _objectContainer.Resolve<ICommodityPage>() : null;
 
 
@@ -48,6 +41,14 @@ namespace Defra.UI.Tests.Steps.CP
         {
             Assert.True(commodityPage?.VerifyCommdityDetails(code,description));
             _scenarioContext.Add("CommodityDescription", description);
+        }
+
+
+        [When("the user selects the type of commodity {string}")]
+        public void WhenTheUserSelectsTheTypeOfCommodity(string type)
+        {
+            commodityPage?.SelectTypeOfCommodity(type);
+            _scenarioContext.Add("TypeOfCommodity", type);
         }
 
 
@@ -144,6 +145,11 @@ namespace Defra.UI.Tests.Steps.CP
         public void WhenTheUserClicksTheUpdateTotalButton()
         {
             commodityPage?.ClickUpdateTotal();
+            Thread.Sleep(2000);
+            _scenarioContext.Add("SubtotalNetWeight", commodityPage.GetSubtotalNetWeight());
+            _scenarioContext.Add("SubtotalPackages", commodityPage.GetSubtotalPackages());
+            _scenarioContext.Add("TotalNetWeight", commodityPage.GetTotalNetWeight());
+            _scenarioContext.Add("TotalPackages", commodityPage.GetTotalPackages());
         }
 
         [Then("the total gross weight should be greater than the net weight {string}")]
@@ -183,13 +189,6 @@ namespace Defra.UI.Tests.Steps.CP
             Assert.True(commodityPage?.IsSubCommodityListDisplayed(), "The sub commodity list is not displayed after clicking the parent commodity");
         }
 
-        /* [When("the user clicks {string} under the parent commodity")]
-         public void WhenTheUserClicksUnderTheParentCommodity(string subCommodityItem)
-         {
-             commodityPage?.SelectCommodityInTheCommTree(subCommodityItem);
-             _scenarioContext.Add("CommodityDescription", subCommodityItem);
-         }*/
-
         [When("the user clicks {string} {string} under the parent commodity")]
         public void WhenTheUserClicksUnderTheParentCommodity(string additionalCommCode, string additionalcommDescription)
         {
@@ -203,8 +202,5 @@ namespace Defra.UI.Tests.Steps.CP
         {
             Assert.True(commodityPage?.IsPageLoaded(), "Description of the goods Commodity page not loaded");
         }
-
-
-
     }
 }

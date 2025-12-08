@@ -2,12 +2,7 @@
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
-using SeleniumExtras.WaitHelpers;
-using Microsoft.Dynamics365.UIAutomation.Browser;
-using System.Collections.ObjectModel;
-using Defra.Trade.Plants.SpecFlowBindings.Helpers;
 using Defra.UI.Tests.HelperMethods;
 
 namespace Defra.UI.Tests.Pages.Classes
@@ -18,15 +13,15 @@ namespace Defra.UI.Tests.Pages.Classes
         private IObjectContainer _objectContainer;
 
         #region Page Objects
-        private IWebElement primaryTitle => _driver.FindElement(By.XPath("//*[@id='page-primary-title']"));
-        private IWebElement secondaryTitle => _driver.FindElement(By.XPath("//*[@id='page-secondary-title']"));
-        private IWebElement rdoYesRegionCode => _driver.FindElement(By.XPath("//*[@id='region-code-yes']"));
-        private IWebElement rdoNoRegionCode => _driver.FindElement(By.XPath("//*[@id='region-code-no']"));
+        private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
+        private IWebElement secondaryTitle => _driver.WaitForElement(By.Id("page-secondary-title"), true);
+        private IWebElement rdoYesRegionCode => _driver.FindElement(By.Id("region-code-yes"));
+        private IWebElement rdoNoRegionCode => _driver.FindElement(By.Id("region-code-no"));
         private IWebElement rdoYesConsignmentConform => _driver.FindElement(By.XPath("//fieldset[legend[contains(text(),'Does this consignment conform')]]//label[normalize-space(.)='Yes']"));
         private IWebElement rdoNoConsignmentConform => _driver.FindElement(By.XPath("//fieldset[legend[contains(text(),'Does this consignment conform')]]//label[normalize-space(.)='No']"));
-        private IWebElement rdoYesAfterBCP => _driver.FindElement(By.XPath("//*[@id='transport-details-required']"));
-        private IWebElement rdoNoAfterBCP => _driver.FindElement(By.XPath("//*[@id='transport-details-required-2']"));
-        private IWebElement txtReferenceNumber => _driver.FindElement(By.XPath("//*[@id='local-reference-number']"));
+        private IWebElement rdoYesAfterBCP => _driver.FindElement(By.Id("transport-details-required"));
+        private IWebElement rdoNoAfterBCP => _driver.FindElement(By.Id("transport-details-required-2"));
+        private IWebElement txtReferenceNumber => _driver.FindElement(By.Id("local-reference-number"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();

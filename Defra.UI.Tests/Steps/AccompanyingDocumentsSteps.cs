@@ -1,12 +1,10 @@
-﻿using Reqnroll.BoDi;
-using Defra.UI.Tests.Data.Users;
+﻿using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using NUnit.Framework;
-using OpenQA.Selenium;
 using Reqnroll;
-using Defra.UI.Tests.Pages.Classes;
-using Defra.UI.Tests.Pages.Interfaces;
-using DocumentFormat.OpenXml.Drawing.Charts;
+using Reqnroll.BoDi;
+using System.Globalization;
+
 
 namespace Defra.UI.Tests.Steps.CP
 {
@@ -16,9 +14,7 @@ namespace Defra.UI.Tests.Steps.CP
         private readonly IObjectContainer _objectContainer;
         private readonly ScenarioContext _scenarioContext;
 
-        private IWebDriver? _driver => _objectContainer.IsRegistered<IWebDriver>() ? _objectContainer.Resolve<IWebDriver>() : null;
         private IAccompanyingDocumentsPage? accompanyingDocumentsPage => _objectContainer.IsRegistered<IAccompanyingDocumentsPage>() ? _objectContainer.Resolve<IAccompanyingDocumentsPage>() : null;
-
 
         public AccompanyingDocumentsSteps(ScenarioContext context, IObjectContainer container)
         {
@@ -48,12 +44,14 @@ namespace Defra.UI.Tests.Steps.CP
             _scenarioContext.Add("DocumentReference", reference);
         }
 
-        [When("the user enters date of issue {string}{string}{string}")]
-        public void WhenTheUserEntersDateOfIssue(string day, string month, string year)
+        [When("the user enters date of issue {string}")]
+        public void WhenTheUserEntersDateOfIssue(string dateString)
         {
-            accompanyingDocumentsPage?.EnterDateOfIssue(day, month, year);
-            var dateofIssue = day + " " + month + " " + year;
-             _scenarioContext.Add("DateOfIssue", dateofIssue);
+            var date = Utils.ConvertToDate(dateString);
+            accompanyingDocumentsPage?.EnterDateOfIssue(date.Day.ToString(), date.Month.ToString(), date.Year.ToString());
+            var monthName = date.ToString("MMMM", CultureInfo.InvariantCulture);
+            var dateofIssue = date.Day.ToString() + " " + monthName + " " + date.Year.ToString();
+            _scenarioContext.Add("DateOfIssue", dateofIssue);
         }
 
         [When("the user selects a future date from the date picker")]

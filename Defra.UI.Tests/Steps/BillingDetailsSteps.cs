@@ -1,11 +1,9 @@
 ﻿using Reqnroll.BoDi;
-using Defra.UI.Tests.Data.Users;
-using Defra.UI.Tests.Tools;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using Reqnroll;
-using Defra.UI.Tests.Pages.Classes;
 using Defra.UI.Tests.Pages.Interfaces;
+using Defra.UI.Tests.Pages.Classes;
 
 namespace Defra.UI.Tests.Steps.CP
 {
@@ -14,7 +12,6 @@ namespace Defra.UI.Tests.Steps.CP
     {
         private readonly IObjectContainer _objectContainer;
 
-        private IWebDriver? _driver => _objectContainer.IsRegistered<IWebDriver>() ? _objectContainer.Resolve<IWebDriver>() : null;
         private IBillingDetailsPage? billingDetailsPage => _objectContainer.IsRegistered<IBillingDetailsPage>() ? _objectContainer.Resolve<IBillingDetailsPage>() : null;
 
 
@@ -29,5 +26,12 @@ namespace Defra.UI.Tests.Steps.CP
         {
             Assert.True(billingDetailsPage?.IsPageLoaded(), "Billing Confirm billing details page not loaded");
         }
+
+        [When("the user clicks Save and continue in billing details page")]
+        public void WhenTheUserClicksSaveAndContinueInBillingDetailsPage()
+        {
+            billingDetailsPage?.ClickSaveAndContinue();
+        }
+
     }
 }
