@@ -17,9 +17,6 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement rdoYesMRNNow => _driver.FindElement(By.XPath("//*[@id='ctc-question-yes']/following-sibling::label"));
         private IWebElement rdoYesMRNLater => _driver.FindElement(By.XPath("//*[@id='ctc-question-yes-add-later']/following-sibling::label"));
         private IWebElement rdoNo => _driver.FindElement(By.XPath("//*[@id='ctc-question-no']/following-sibling::label"));
-        private IWebElement gvmsNoRadio => _driver.FindElement(By.XPath("//*[@id='gvms-question']/following-sibling::label"));
-        private IWebElement gvmsYesRadio => _driver.FindElement(By.XPath("//*[@id='ctc-question-no']/following-sibling::label"));
-        private List<IWebElement> gvmsRadioGroup => _driver.WaitForElements(By.XPath("//input[contains(@id,'gvms-question')]/following-sibling::label")).ToList();
         private IWebElement rdoGVMSYes => _driver.FindElement(By.XPath("//*[@id='gvms-question']/following-sibling::label"));
         private IWebElement rdoGVMSNo => _driver.FindElement(By.XPath("//*[@id='gvms-question-2']/following-sibling::label"));
         #endregion

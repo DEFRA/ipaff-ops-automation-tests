@@ -57,7 +57,6 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             foreach (var commIntendedForRadio in commIntendedForRadioList)
             {
-                //commIntendedForRadio.Click();
                 if (commIntendedForRadio.Text.Contains(commIntendedForOption))
                 {
                     ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", commIntendedForRadio);

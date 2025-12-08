@@ -87,7 +87,6 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             try
             {
-                //Thread.Sleep(2000);
                 _driver.WaitForElementCondition(ExpectedConditions.ElementIsVisible(documentDateBy));
                 var text = documentDate.Text.Trim();
                 // Convert "1 January 2026" to "01 01 2026" format
