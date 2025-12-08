@@ -1,4 +1,5 @@
-﻿using Defra.UI.Tests.Pages.Interfaces;
+﻿using Defra.UI.Tests.Pages.Classes;
+using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using NUnit.Framework;
 using Reqnroll;
@@ -71,7 +72,7 @@ namespace Defra.UI.Tests.Steps.CP
         {
             var filename = name + format;
             accompanyingDocumentsPage?.AddAccompanyingDocument(filename);
-            _scenarioContext.Add("AccompanyingDocName", filename);
+            _scenarioContext.Add("DocumentName", filename);
         }
 
         [Then("the document {string} {string} is uploaded successfully")]
@@ -79,6 +80,10 @@ namespace Defra.UI.Tests.Steps.CP
         {
             var filename = name + format;
             Assert.True(accompanyingDocumentsPage?.GetFileName.Contains(filename), "The accompanying document upload has failed");
+
+            //The date selected from date picker gets populated only after the document is uploaded. Hence, we are adding date to scenario context after attaching the document.
+            var dateOfIssue = accompanyingDocumentsPage?.GetDocumentIssueDate();
+            _scenarioContext.Add("DocumentDateOfIssue", dateOfIssue);
         }
 
         [When("the user enters date of issue {string}{string}{string}")]

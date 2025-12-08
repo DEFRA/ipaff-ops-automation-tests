@@ -23,13 +23,15 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtDay => _driver.WaitForElement(By.Name("document-issue-date-day"));
         private IWebElement txtMonth => _driver.WaitForElement(By.Name("document-issue-date-month"));
         private IWebElement txtYear => _driver.WaitForElement(By.Name("document-issue-date-year"));
-        private IWebElement DatePickerIcon => _driver.WaitForElement(By.ClassName("date-picker__reveal__icon"));
-        private IWebElement NextMonthButton => _driver.WaitForElement(By.ClassName("date-picker__button__next-month"));
-        private IWebElement FirstDateOfTheMonth => _driver.WaitForElement(By.XPath("//td/button[text()='1']"));
-        private IWebElement AddAttachmentLink => _driver.WaitForElement(By.Id("add-attachment"));
-        private IWebElement NextButton => _driver.WaitForElement(By.Id("next-button"));
-        private IWebElement FileName => _driver.WaitForElement(By.XPath("//a[contains(@id,'attachment-view-')]"));
-        private List<IWebElement> DatePickerDateList => _driver.WaitForElements(By.XPath("//table[@class='date-picker__date-table']//tr/td")).ToList();
+        private IWebElement datePickerIcon => _driver.WaitForElement(By.ClassName("date-picker__reveal__icon"));
+        private IWebElement nextMonthButton => _driver.WaitForElement(By.ClassName("date-picker__button__next-month"));
+        private IWebElement firstDateOfTheMonth => _driver.WaitForElement(By.XPath("//td/button[text()='1']"));
+        private By documentDateBy => By.XPath("//div[contains(@id,'additional-document-date-value')]");
+        private IWebElement documentDate => _driver.WaitForElement(documentDateBy);
+        private IWebElement addAttachmentLink => _driver.WaitForElement(By.Id("add-attachment"));
+        private IWebElement nextButton => _driver.WaitForElement(By.Id("next-button"));
+        private IWebElement fileName => _driver.WaitForElement(By.XPath("//a[contains(@id,'attachment-view-')]"));
+        private List<IWebElement> datePickerDateList => _driver.WaitForElements(By.XPath("//table[@class='date-picker__date-table']//tr/td")).ToList();
 
         #endregion
 
@@ -71,24 +73,34 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool IsDatePickerIconDisplayed()
         {
-            return DatePickerIcon.Displayed;
+            return datePickerIcon.Displayed;
         }
 
         public void SelectDateFromDatePicker()
         {
-            try
-            {
-                _driver.WaitForElementCondition(ExpectedConditions.ElementToBeClickable(DatePickerIcon)).Click();
-                _driver.WaitForElementCondition(ExpectedConditions.ElementToBeClickable(NextMonthButton)).Click();
-                FirstDateOfTheMonth.Click();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Date element is not clicked: " + ex.Message);
-            }
+            _driver.WaitForElementCondition(ExpectedConditions.ElementToBeClickable(datePickerIcon)).Click();
+            _driver.WaitForElementCondition(ExpectedConditions.ElementToBeClickable(nextMonthButton)).Click();
+            firstDateOfTheMonth.Click();
         }
 
-        public void ClickAddAttachmentLink() => AddAttachmentLink.Click();
+        public string? GetDocumentIssueDate()
+        {
+            try
+            {
+                //Thread.Sleep(2000);
+                _driver.WaitForElementCondition(ExpectedConditions.ElementIsVisible(documentDateBy));
+                var text = documentDate.Text.Trim();
+                // Convert "1 January 2026" to "01 01 2026" format
+                if (DateTime.TryParse(text, out DateTime date))
+                {
+                    return date.ToString("dd MM yyyy");
+                }
+                return text;
+            }
+            catch { return null; }
+        }
+
+        public void ClickAddAttachmentLink() => addAttachmentLink.Click();
 
         public void AddAccompanyingDocument(string fileName)
         {
@@ -107,9 +119,9 @@ namespace Defra.UI.Tests.Pages.Classes
                     attachmentsLocator.SendKeys(docPath);
                 }
             }     
-            NextButton.Click();
+            nextButton.Click();
         }
 
-        public string GetFileName => FileName.Text;
+        public string GetFileName => fileName.Text;
     }
 }

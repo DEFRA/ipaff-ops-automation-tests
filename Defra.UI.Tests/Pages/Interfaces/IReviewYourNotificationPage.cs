@@ -7,6 +7,7 @@
         // About the consignment
         string? GetImportType();
         string? GetCountryOfOrigin();
+        string? GetCountryFromWhereConsigned();
         string? GetMainReasonForImport();
         string? GetPurpose();
         string? GetConsignmentReferenceNumber();
@@ -16,9 +17,19 @@
         string? GetSpecies();
         string? GetNumberOfAnimals();
         string? GetNumberOfPackages();
-
+        string? GetCommodityCodeList(int index);
+        string? GetNetWeightList(int index);
+        string? GetNumPackagesList(int index);
+        string? GetTypeOfPackagesList(int index);
+        string? GetTotalNetWeight();
+        string? GetTotalPackages();
+        string? GetTotalGrossWeight();
         // Animal details
         string? GetCertificationOption();
+
+        // Additional details
+        string? GetCommodityIntendedFor();
+        string? GetTemperature();
 
         // Documents
         string? GetHealthCertificateReference();
@@ -26,7 +37,7 @@
         string? GetAdditionalDocumentType();
         string? GetAdditionalDocumentReference();
         string? GetAdditionalDocumentDateOfIssue();
-
+        string? GetAdditionalDocName();
         // Addresses
         string? GetConsignorName();
         string? GetConsignorAddress();
@@ -46,6 +57,7 @@
         string? GetEstimatedArrivalDate();
         string? GetEstimatedArrivalTime();
         string? GetEstimatedJourneyTime();
+        string? GetCTCUsage();
         string? GetGVMSUsage();
 
         // Transporter details
