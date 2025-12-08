@@ -38,5 +38,12 @@ namespace Defra.UI.Tests.Steps.CP
             _scenarioContext.Add("MainReasonForImport", option);
             _scenarioContext.Add("Purpose", subOption);
         }
+
+        [Then("What is the main reason for importing the animals? page should be displayed with radio buttons")]
+        public void ThenWhatIsTheMainReasonForImportingTheAnimalsPageShouldBeDisplayedWithRadioButtons()
+        {
+            Assert.True(reasonForImportPage?.IsReasonForImportingAnimalsPageLoaded(), "About the consignment What is the main reason for importing the animals? page not loaded");
+            Assert.True(reasonForImportPage?.AreImportAnimalsReasonsPresent(), "Expected import options are not present on the page.");
+        }
     }
 }

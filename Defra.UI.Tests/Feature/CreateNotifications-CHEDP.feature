@@ -69,14 +69,14 @@ Scenario: User creates and submits a B2C consignment notification - CHEDP
 	When the user selects a consignee with a UK country
 	Then the chosen consignee should be displayed on the Addresses page
 	When the user clicks Same as consignee for the Importer
-	Then the importer should be populated with the same details as the consignee
+	Then the importer should be populated with the same details as the consignee on the Addresses page
 	When the user clicks Add a place of destination
 	Then the Search for an existing place of destination page should be displayed
 	When the user selects a place of destination with a UK country
 	Then the chosen place of destination should be displayed on the Addresses page
 	When the user clicks Save and continue
 	Then the Transport to the port of entry page should be displayed
-	When the user populates the transport details "BRISTOL (GBBRS)" "Road vehicle" "123456" "Doc1234"
+	When the user populates the transport details "BRISTOL (GBBRS)" "No" "Road vehicle" "123456" "Doc1234"
 	When the user clicks Save and continue
 	Then the Goods movement services page should be displayed
 	When the user selects "No" for Are you using the Common Transit Convention (CTC)?

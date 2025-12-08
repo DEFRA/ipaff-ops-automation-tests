@@ -18,6 +18,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement rdoYesMRNNow => _driver.FindElement(By.XPath("//*[@id='ctc-question-yes']/following-sibling::label"));
         private IWebElement rdoYesMRNLater => _driver.FindElement(By.XPath("//*[@id='ctc-question-yes-add-later']/following-sibling::label"));
         private IWebElement rdoNo => _driver.FindElement(By.XPath("//*[@id='ctc-question-no']/following-sibling::label"));
+        private IWebElement rdoGVMSYes => _driver.FindElement(By.XPath("//*[@id='gvms-question']/following-sibling::label"));
+        private IWebElement rdoGVMSNo => _driver.FindElement(By.XPath("//*[@id='gvms-question-2']/following-sibling::label"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -41,6 +43,14 @@ namespace Defra.UI.Tests.Pages.Classes
                 rdoYesMRNLater.Click();
             else if (rdoNo.Text.Trim().Contains(option))
                 rdoNo.Click();
+        }
+
+        public void GVMSToMoveGoods(string option)
+        {
+            if (rdoGVMSYes.Text.Trim().Contains(option))
+                rdoGVMSYes.Click();
+            else if (rdoGVMSNo.Text.Trim().Contains(option))
+                rdoGVMSNo.Click();
         }
     }
 }

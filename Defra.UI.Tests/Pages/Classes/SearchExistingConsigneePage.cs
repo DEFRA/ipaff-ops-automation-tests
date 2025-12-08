@@ -47,6 +47,10 @@ namespace Defra.UI.Tests.Pages.Classes
         { 
             btnSelect.Click(); 
         }
+        
+        public string GetSelectedConsigneeName() => selectedConsigneeName.Text.Trim();
+        public string GetSelectedConsigneeAddress() => selectedConsigneeAddress.Text.Trim();
+        public string GetSelectedConsigneeCountry() => selectedConsigneeCountry.Text.Trim();
 
     }
 }
