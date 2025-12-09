@@ -110,9 +110,7 @@ namespace Defra.UI.Tests.Steps.CP
             var mismatches = new List<string>();
 
             // About the consignment
-
-            //Below is commented as the application displays incorrect value on the review page
-            //ValidateIfExists("ImportType", reviewPage?.GetImportType(), ref allDataMatches, mismatches);
+            ValidateIfContains("ImportType", reviewPage?.GetPartOfImportType(), ref allDataMatches, mismatches);
             ValidateIfExists("CountryOfOrigin", reviewPage?.GetCountryOfOrigin(), ref allDataMatches, mismatches);
             ValidateIfExists("ContryFromWhereConsigned", reviewPage?.GetCountryFromWhereConsigned(), ref allDataMatches, mismatches);
             ValidateIfExists("ConsignmentReferenceNumber", reviewPage?.GetConsignmentReferenceNumber(), ref allDataMatches, mismatches);
@@ -185,6 +183,27 @@ namespace Defra.UI.Tests.Steps.CP
                 if (!string.IsNullOrEmpty(expectedValue))
                 {
                     var isMatch = expectedValue.Equals(reviewValue?.Trim(), StringComparison.OrdinalIgnoreCase);
+                    if (!isMatch)
+                    {
+                        allDataMatches = false;
+                        mismatches.Add($"{contextKey}: Expected '{expectedValue}', Found '{reviewValue?.Trim()}'");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
+                    }
+                }
+            }
+        }
+
+        private void ValidateIfContains(string contextKey, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
+        {
+            if (_scenarioContext.ContainsKey(contextKey))
+            {
+                var expectedValue = _scenarioContext.Get<string>(contextKey);
+                if (!string.IsNullOrEmpty(expectedValue))
+                {
+                    var isMatch = expectedValue.Contains(reviewValue?.Trim(), StringComparison.OrdinalIgnoreCase);
                     if (!isMatch)
                     {
                         allDataMatches = false;

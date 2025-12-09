@@ -6,6 +6,7 @@
 
         // About the consignment
         string? GetImportType();
+        string? GetPartOfImportType();
         string? GetCountryOfOrigin();
         string? GetCountryFromWhereConsigned();
         string? GetMainReasonForImport();

@@ -101,6 +101,22 @@ namespace Defra.UI.Tests.Pages.Classes
             try { return importType.Text.Trim(); } catch { return null; }
         }
 
+        public string? GetPartOfImportType()
+        {
+            var importTypeText = string.Empty;
+            try
+            {
+                importTypeText = importType.Text.Trim();
+                var words = importTypeText.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                return string.Join(" ", words.Take(3));
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine($"GetPartOfImportType failed: {ex}");
+                return importTypeText;
+            }
+        }
+
         public string? GetCountryOfOrigin()
         {
             try { return countryOfOrigin.Text.Trim(); } catch { return null; }
@@ -212,6 +228,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public string? GetNetWeightList(int index)
         {
+            var netWeight = string.Empty;
             try
             {
                 var allNetWeightList = GetItemsList(netWeightList);
@@ -219,20 +236,21 @@ namespace Defra.UI.Tests.Pages.Classes
                 if (allNetWeightList == null || allNetWeightList.Count == 0)
                     return null;
 
-                var netWeight = allNetWeightList[index];
-                netWeight = netWeight.Replace("kg/units", "");
+                netWeight = allNetWeightList[index];
+                netWeight = netWeight.Replace("kg/units", "").Trim();
                 return string.IsNullOrWhiteSpace(netWeight) ? null : netWeight;
             }
 
             catch (Exception ex)
             {
                 Console.WriteLine($"GetNetWeightList failed: {ex}");
-                return null;
+                return netWeight;
             }
         }
 
         public string? GetNumPackagesList(int index)
         {
+            var numOfPackage = string.Empty;
             try
             {
                 var allNumPackagesList = GetItemsList(numPackagesList);
@@ -240,19 +258,20 @@ namespace Defra.UI.Tests.Pages.Classes
                 if (allNumPackagesList == null || allNumPackagesList.Count == 0)
                     return null;
 
-                var numOfPackage = allNumPackagesList[index];
+                numOfPackage = allNumPackagesList[index];
                 return string.IsNullOrWhiteSpace(numOfPackage) ? null : numOfPackage;
             }
 
             catch (Exception ex)
             {
                 Console.WriteLine($"GetNumPackagesList failed: {ex}");
-                return null;
+                return numOfPackage;
             }
         }
 
         public string? GetTypeOfPackagesList(int index)
         {
+            var typeOfPackage = string.Empty;
             try
             {
                 var allTypeOfPackagesList = GetItemsList(typeOfPackagesList);
@@ -260,14 +279,14 @@ namespace Defra.UI.Tests.Pages.Classes
                 if (allTypeOfPackagesList == null || allTypeOfPackagesList.Count == 0)
                     return null;
 
-                var typeOfPackage = allTypeOfPackagesList[index];
+                typeOfPackage = allTypeOfPackagesList[index];
                 return string.IsNullOrWhiteSpace(typeOfPackage) ? null : typeOfPackage;
             }
 
             catch (Exception ex)
             {
                 Console.WriteLine($"GetTypeOfPackagesList failed: {ex}");
-                return null;
+                return typeOfPackage;
             }
         }
 
@@ -283,17 +302,44 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public string? GetTotalNetWeight()
         {
-            try { return totalNetWeight.Text.Replace("kg/units", "").Trim(); } catch { return null; }
+            string totalNetWeightText = string.Empty;
+            try
+            {
+                totalNetWeightText = totalNetWeight.Text.Replace("kg/units", "").Trim();
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine($"GetTotalNetWeight failed: {ex.Message}");
+            }
+            return totalNetWeightText;
         }
 
         public string? GetTotalPackages()
         {
-            try { return totalPackages.Text.Trim(); } catch { return null; }
+            string totalPackagesText = string.Empty;
+            try
+            {
+                totalPackagesText = totalPackages.Text.Trim();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"GetTotalPackages failed: {ex.Message}");
+            }
+            return totalPackagesText;
         }
 
         public string? GetTotalGrossWeight()
         {
-            try { return totalGrossWeight.Text.Replace("kg/units", "").Trim(); } catch { return null; }
+            string totalGrossWeightText = string.Empty;
+            try
+            {
+                totalGrossWeightText = totalGrossWeight.Text.Replace("kg/units", "").Trim();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"GetTotalGrossWeight failed: {ex.Message}");
+            }
+            return totalGrossWeightText;
         }
 
         // Animal details
