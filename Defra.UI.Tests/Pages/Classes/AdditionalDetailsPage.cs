@@ -17,7 +17,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement rdoAmbient => _driver.WaitForElement(By.XPath("//*[@id='productTemperature']/following-sibling::label"));
         private IWebElement rdoChilled => _driver.WaitForElement(By.XPath("//*[@id='productTemperature-2']/following-sibling::label"));
         private IWebElement rdoFrozen => _driver.WaitForElement(By.XPath("//*[@id='productTemperature-3']/following-sibling::label"));
-        private IWebElement GetAnimalCertificationRadioButton(string certificationText) =>
+        private List<IWebElement> commIntendedForRadioList => _driver.WaitForElements(By.XPath("//div[@class='govuk-radios']/div[contains(@class,'commodity-intended-for')]/label")).ToList();
+        private IWebElement getAnimalCertificationRadioButton(string certificationText) =>
             _driver.FindElement(By.XPath($"//label[@class='govuk-label govuk-radios__label' and normalize-space()='{certificationText}']"));
         private IWebElement rdoUnweanedAnimalsYes => _driver.FindElement(By.XPath("//*[@id='includingNonablactedyes']/following-sibling::label"));
         private IWebElement rdoUnweanedAnimalsNo => _driver.FindElement(By.XPath("//*[@id='includingNonAblactedno']/following-sibling::label"));
@@ -52,9 +53,22 @@ namespace Defra.UI.Tests.Pages.Classes
                 rdoFrozen.Click();
         }
 
+        public bool SelectCommodityIntendedForRadio(string commIntendedForOption)
+        {
+            foreach (var commIntendedForRadio in commIntendedForRadioList)
+            {
+                if (commIntendedForRadio.Text.Contains(commIntendedForOption))
+                {
+                    ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", commIntendedForRadio);
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public void SelectAnimalCertification(string certificationOption)
         {
-            var certificationRadioButton = GetAnimalCertificationRadioButton(certificationOption);
+            var certificationRadioButton = getAnimalCertificationRadioButton(certificationOption);
             certificationRadioButton.Click();
         }
 

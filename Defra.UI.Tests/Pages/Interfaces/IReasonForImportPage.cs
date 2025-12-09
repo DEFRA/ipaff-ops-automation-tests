@@ -7,6 +7,7 @@ namespace Defra.UI.Tests.Pages.Interfaces
     { 
         bool IsPageLoaded();
         bool AreImportReasonsPresent();
+        bool AreImportReasonsForCHEDDPreset();
         bool IsElementPresent(IWebElement element);
         void SelectReasonForImport(string option);
         void SelectReasonForImportSubOption(string subOption);

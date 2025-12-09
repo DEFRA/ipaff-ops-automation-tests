@@ -71,6 +71,13 @@ namespace Defra.UI.Tests.Hooks
 
             _objectContainer.RegisterInstanceAs(Driver);
 
+            if (ConfigSetup.BaseConfiguration.TestConfiguration.IsAccessibilityEnabled)
+            {
+                var reportPath = Path.Combine($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}", "Accessibility");
+                Console.WriteLine(reportPath);
+                //Cognizant.WCAG.Compliance.Checker.Start.Init(Driver, reportPath);
+            }
+
             _scenario = _feature.CreateNode<AventStack.ExtentReports.Gherkin.Model.Scenario>(_scenarioContext.ScenarioInfo.Title);
 
             if (isRunOnce)
