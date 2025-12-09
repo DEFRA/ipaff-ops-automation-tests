@@ -135,12 +135,16 @@ Scenario: User creates and submits a B2C consignment notification - CHEDP
 	And the user selects "Satisfactory" for physical check
 	And the user clicks Save and continue
 	Then the Seal numbers page should be displayed
+	And 'No' is pre-selected for Are new seal numbers required?
 	When the user clicks Save and continue
 	Then the Laboratory tests page should be displayed
+	And 'No' is pre-selected for Would you like to record laboratory tests?
 	When the user clicks Save and continue
 	Then the Decision page should be displayed
-	When the user clicks Save and continue
+	When the user selects Acceptable for 'Internal market' 'Animal feedingstuff'
+	And the user clicks Save and continue
 	Then the Review outcome decision page should be displayed
+	And the details reflect the information added
 	When the user populates the Date and time of checks
 	And user clicks Submit decision
 	Then the Your checks have been submitted page should be displayed

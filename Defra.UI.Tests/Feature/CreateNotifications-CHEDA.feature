@@ -117,7 +117,7 @@ Scenario: User creates and submits a B2C consignment notification - CHEDA
 	And I have selected 'Sign in with Government Gateway' as login type
 	When I click Continue button from How do you want to sign in page
 	Then I should redirected to the IPAFF Sign in using Government Gateway page
-	When I have provided the IPAFF Inspector credentials and signin
+	When I have provided the IPAFF Heathrow Inspector credentials and signin
 	Then the user should be logged into Import notifications page
 	When the user searches for the newly created notification on the Import notifications page
 	Then the user clicks the notificaiton found with status 'NEW'
@@ -132,10 +132,10 @@ Scenario: User creates and submits a B2C consignment notification - CHEDA
 	Then the Identity, physical and welfare checks page should be displayed
 	When the user selects 'Satisfactory' for Identity check
 	And the user selects 'Satisfactory' for Physical check
-	And the user selects '1' for Number of animals checked
+	And the user selects '4' for Number of animals checked
 	And the user selects 'Satisfactory' for Welfare check
 	And the user selects '25' '%' for Number of dead animals
-	And the user selects '1' 'unit' for Number of unfit animals
+	And the user selects '3' 'unit' for Number of unfit animals
 	And the user selects '0' for Number of births or abortions
 	And the user clicks Save and continue
 	Then the Seal numbers page should be displayed
@@ -154,7 +154,7 @@ Scenario: User creates and submits a B2C consignment notification - CHEDA
 	Then the chosen controlled destination should be displayed
 	When the user clicks Save and continue
 	Then the Review outcome decision page should be displayed
-	#And the details reflect the information added
+	And the details reflect the information added
 	When the user selects the radio button to declare that the checks have been carried out in accordance with EU law
 	And user clicks Submit decision
 	Then the Your checks have been submitted page should be displayed

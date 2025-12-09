@@ -35,6 +35,7 @@ namespace Defra.UI.Tests.Steps.CP
         {
             if (expectedSelection.Equals("No", StringComparison.OrdinalIgnoreCase))
             {
+                _scenarioContext.Add("AreNewSealNumbersRequired", expectedSelection);
                 Assert.True(sealNumbersPage?.IsSealNumbersNoPreselected(), "No is not pre-selected for Are new seal numbers required?");
             }
         }
