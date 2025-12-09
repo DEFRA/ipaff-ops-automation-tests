@@ -32,6 +32,7 @@ namespace Defra.UI.Tests.Steps.CP
         {
             if (expectedSelection.Equals("No", StringComparison.OrdinalIgnoreCase))
             {
+                _scenarioContext.Add("AreLaboratoryTestsRequired", expectedSelection);
                 Assert.True(laboratoryTestsPage?.IsLabTestsNoPreselected(), "No is not pre-selected for Would you like to record laboratory tests?");
             }
         }

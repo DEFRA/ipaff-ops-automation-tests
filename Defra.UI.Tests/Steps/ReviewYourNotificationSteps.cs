@@ -121,6 +121,14 @@ namespace Defra.UI.Tests.Steps.CP
                         Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
                     }
                 }
+                else
+                {
+                    Console.WriteLine($"[REVIEW VALIDATION] ⊘ {contextKey}: Skipped (empty value in context)");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[REVIEW VALIDATION] ⊘ {contextKey}: Skipped (not in context)");
             }
         }
 
