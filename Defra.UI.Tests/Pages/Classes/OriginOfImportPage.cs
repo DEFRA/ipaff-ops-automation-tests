@@ -3,7 +3,7 @@ using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
 using Reqnroll.BoDi;
-
+using Defra.UI.Tests.HelperMethods;
 
 namespace Defra.UI.Tests.Pages.Classes
 {
@@ -65,6 +65,11 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             txtReferenceNumber.Click();
             txtReferenceNumber.SendKeys(refNum);
+        }
+
+        public void ClickBrowserForwardButton()
+        {
+            _driver.ClickBrowserForwardButton();
         }
     }
 }

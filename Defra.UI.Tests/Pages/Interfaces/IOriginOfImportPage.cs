@@ -10,5 +10,6 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void IsConformToRegulatoryRequirements(string option);
         void IsItAfterBCP(string option);
         void EnterConsignmentRefNum(string refNum);
+        void ClickBrowserForwardButton();
     }
 }
