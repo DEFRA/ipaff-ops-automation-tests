@@ -108,13 +108,13 @@ namespace Defra.UI.Tests.Pages.Classes
             {
                 importTypeText = importType.Text.Trim();
                 var words = importTypeText.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                return string.Join(" ", words.Take(3));
+                importTypeText = string.Join(" ", words.Take(3)); 
             }
             catch(Exception ex)
             {
-                Console.WriteLine($"GetPartOfImportType failed: {ex}");
-                return importTypeText;
+                Console.WriteLine($"GetPartOfImportType failed: {ex}");   
             }
+            return importTypeText;
         }
 
         public string? GetCountryOfOrigin()
