@@ -2,10 +2,9 @@
 using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
-using Defra.UI.Tests.Pages.Classes;
 
 
-namespace Defra.UI.Tests.Steps.CP
+namespace Defra.UI.Tests.Steps.IPAFF
 {
     [Binding]
     public class ChecksSubmittedSteps
@@ -30,8 +29,10 @@ namespace Defra.UI.Tests.Steps.CP
             _scenarioContext.Add("Outcome", checksSubmittedPage.GetOutcome());
         }
 
-
-
-       
+        [When("the user clicks View or print CHED button")]
+        public void WhenTheUserClicksViewOrPrintCHEDButton()
+        {
+            checksSubmittedPage?.ClickViewOrPrintCHED();
+        }
     }
 }

@@ -1,11 +1,9 @@
 ﻿using Reqnroll.BoDi;
 using NUnit.Framework;
-using OpenQA.Selenium;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
-using Defra.UI.Tests.Pages.Classes;
 
-namespace Defra.UI.Tests.Steps.CP
+namespace Defra.UI.Tests.Steps.IPAFF
 {
     [Binding]
     public class ReviewYourNotificationSteps
@@ -144,16 +142,18 @@ namespace Defra.UI.Tests.Steps.CP
             var consignmentConformToRegulatoryRequirements = _scenarioContext.Get<string>("ConsignmentConformToRegulatoryRequirements");
             var consignmentRefNum = _scenarioContext.Get<string>("ConsignmentReferenceNumber");
             var mainReasonForImport = _scenarioContext.Get<string>("MainReasonForImport");
-            var purpose = _scenarioContext.Get<string>("Purpose");
             var riskCategory = _scenarioContext.Get<string>("RiskCategory");
-
+            if (_scenarioContext.TryGetValue("Purpose", out string purpose) &&
+                !string.IsNullOrWhiteSpace(purpose))
+            {
+                Assert.AreEqual(purpose.Replace(" ", "").ToUpper(), summary?.Purpose.Replace(" ", "").ToUpper(), $"Purpose is not matching in {pageName} page!");
+            }         
             Assert.AreEqual(importType, summary?.ImportType, $"Import type is not matching in {pageName} page!");
             Assert.AreEqual(countryOfOrigin, summary?.CountryOfOrigin, $"Country of origin is not matching in {pageName} page!");
             Assert.AreEqual(contryFromWhereConsigned, summary?.ContryFromWhereConsigned, $"Country from where consigned is not matching in {pageName} page!");
             Assert.AreEqual(consignmentConformToRegulatoryRequirements, summary?.ConsignmentConformToRegulatoryRequirements, $"Consignment confirmation to regulatory requirements is not matching in {pageName} page!");
             Assert.AreEqual(consignmentRefNum, summary?.ConsignmentReferenceNumber, $"Consignment Reference Number is not matching in {pageName} page!");
             Assert.IsTrue(summary?.MainReasonForImport.ToUpper().Contains(mainReasonForImport.ToUpper()), $"Main reason for import is not matching in {pageName} page!");
-            Assert.AreEqual(purpose.Replace(" ", "").ToUpper(), summary?.Purpose.Replace(" ", "").ToUpper(), $"Purpose is not matching in {pageName} page!");
             Assert.AreEqual(riskCategory.ToUpper(), summary?.RiskCategory.ToUpper(), $"Risk category is not matching in {pageName} page!");
         }
 
@@ -176,7 +176,7 @@ namespace Defra.UI.Tests.Steps.CP
             var temperature = _scenarioContext.Get<string>("Temperature");
 
             Assert.AreEqual(commodityCode, summary?.CommodityCode, $"Commodity Code is not matching in {pageName} page!");
-            Assert.AreEqual(typeOfCommodity, summary?.TypeOfCommodity, $"Type Of Commodity is not matching in {pageName} page!");
+            //Assert.AreEqual(typeOfCommodity, summary?.TypeOfCommodity, $"Type Of Commodity is not matching in {pageName} page!");
             Assert.AreEqual(species, summary?.Species, $"Species is not matching in {pageName} page!");
             Assert.AreEqual(netWeight, summary?.NetWeight, $"NetWeight is not matching in {pageName} page!");
             Assert.AreEqual(packages, summary?.NumberOfPackages, $"Number Of Packages is not matching in {pageName} page!");

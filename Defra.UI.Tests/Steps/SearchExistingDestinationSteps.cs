@@ -1,11 +1,10 @@
 ﻿using Reqnroll.BoDi;
 using NUnit.Framework;
-using OpenQA.Selenium;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
-using Defra.UI.Tests.Pages.Classes;
 
-namespace Defra.UI.Tests.Steps.CP
+
+namespace Defra.UI.Tests.Steps.IPAFF
 {
     [Binding]
     public class SearchExistingDestinationSteps

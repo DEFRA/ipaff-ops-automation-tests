@@ -8,5 +8,6 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void ClickIdentityCheckOption(string decision, string checkType);
         void ClickPhysicalCheckDecision(string decision);
         void ClickSaveAndContinue();
+        void ClickSaveAndReturn();
     }
 }

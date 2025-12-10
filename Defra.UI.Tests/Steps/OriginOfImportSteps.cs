@@ -1,15 +1,9 @@
-﻿using Defra.UI.Tests.Data.Users;
-using Defra.UI.Tests.Pages.Classes;
-using Defra.UI.Tests.Pages.Interfaces;
-using Defra.UI.Tests.Tools;
-using DocumentFormat.OpenXml.Drawing.Charts;
-using Faker;
+﻿using Defra.UI.Tests.Pages.Interfaces;
 using NUnit.Framework;
 using Reqnroll;
-using Defra.UI.Tests.Pages.Interfaces;
 using Reqnroll.BoDi;
 
-namespace Defra.UI.Tests.Steps.CP
+namespace Defra.UI.Tests.Steps.IPAFF
 {
     [Binding]
     public class OriginOfImportSteps

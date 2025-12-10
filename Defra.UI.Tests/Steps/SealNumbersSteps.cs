@@ -6,7 +6,7 @@ using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Pages.Classes;
 using System.ComponentModel;
 
-namespace Defra.UI.Tests.Steps.CP
+namespace Defra.UI.Tests.Steps.IPAFF
 {
     [Binding]
     public class SealNumbersSteps

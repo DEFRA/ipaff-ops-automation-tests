@@ -1,14 +1,10 @@
-﻿using Reqnroll.BoDi;
-using Defra.UI.Tests.Data.Users;
-using Defra.UI.Tests.Tools;
+﻿using Defra.UI.Tests.Pages.Interfaces;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using Reqnroll;
-using Defra.UI.Tests.Pages.Classes;
-using Defra.UI.Tests.Pages.Interfaces;
-using DocumentFormat.OpenXml.Drawing.Charts;
+using Reqnroll.BoDi;
 
-namespace Defra.UI.Tests.Steps.CP
+namespace Defra.UI.Tests.Steps.IPAFF
 {
     [Binding]
     public class LatestHealthCertificateSteps
@@ -39,7 +35,7 @@ namespace Defra.UI.Tests.Steps.CP
         }
 
         [When("the user enters Latest Health Certificate date of issue {string}{string}{string}")]    
-        public void WhenTheUserEntersDateOfIssue(string day, string month, string year)
+        public void WhenTheUserEntersLatestHealthCertificateDateOfIssue(string day, string month, string year)
         {
             latestHealthCertificatePage?.EnterDateOfIssue(day, month, year);
             var dateofIssue = day + " " + month + " " + year;
