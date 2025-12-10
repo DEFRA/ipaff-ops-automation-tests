@@ -5,7 +5,7 @@ using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
 
 
-namespace Defra.UI.Tests.Steps.CP
+namespace Defra.UI.Tests.Steps.IPAFF
 {
     [Binding]
     public class PortOfEntrySteps
@@ -37,11 +37,11 @@ namespace Defra.UI.Tests.Steps.CP
         [When("the user populates the transport details {string} {string} {string} {string} {string}")]
         public void WhenTheUserPopulatesTheTransportDetails(string port, string option, string mode, string transId, string DocumentRef)
         {
-            DateTime today = DateTime.Now;
-            string day = today.Day.ToString();
-            string month = today.Month.ToString();
-            string year = today.Year.ToString();
-            string formattedDate = today.ToString("dd MMM yyyy");
+            DateTime futureDate = DateTime.Now.AddDays(5);
+            string day = futureDate.Day.ToString();
+            string month = futureDate.Month.ToString();
+            string year = futureDate.Year.ToString();
+            string formattedDate = futureDate.ToString("dd MMM yyyy");
 
             string hour = "23";
             string minutes = "30";

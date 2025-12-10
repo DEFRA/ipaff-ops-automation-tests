@@ -27,6 +27,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement rdoSatisfactoryPhysicalCheck => _driver.FindElement(By.Id("physicalCheck1"));
         private IWebElement rdoNotSatisfactoryPhysicalCheck => _driver.FindElement(By.Id("physicalCheck2"));
         private IWebElement btnSaveAndContinue => _driver.FindElement(By.Id("button-save-and-continue"));
+        private IWebElement btnSaveAndReturn => _driver.FindElement(By.Id("button-save-and-return"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -86,6 +87,11 @@ namespace Defra.UI.Tests.Pages.Classes
                 rdoSatisfactoryPhysicalCheck.Click();
             else if (decision.Equals("Not Satisfactory"))
                 rdoNotSatisfactoryPhysicalCheck.Click();
+        }
+
+        public void ClickSaveAndReturn()
+        {
+            btnSaveAndReturn.Click();
         }
     }
 }

@@ -1,12 +1,10 @@
 ﻿using Reqnroll.BoDi;
 using NUnit.Framework;
-using OpenQA.Selenium;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
-using Defra.UI.Tests.Pages.Classes;
 
 
-namespace Defra.UI.Tests.Steps.CP
+namespace Defra.UI.Tests.Steps.IPAFF
 {
     [Binding]
     public class AddressesSteps
@@ -106,6 +104,24 @@ namespace Defra.UI.Tests.Steps.CP
             Assert.True(addressesPage?.VerifySelectedConsignee(consigneeName, consigneeAddress, consigneeCountry),
                         "Importer details do not match consignee");
         }
+
+        [When("the user clicks Add an importer")]
+        public void WhenTheUserClicksAddAnImporter()
+        {
+            addressesPage?.ClickAddImporter();
+        }
+
+        [Then("the chosen importer should be displayed on the Addresses page")]
+        public void ThenTheChosenImporterShouldBeDisplayedOnTheAddressesPage()
+        {
+            var importerName = _scenarioContext.Get<string>("ImporterName");
+            var importerAddress = _scenarioContext.Get<string>("ImporterAddress");
+            var importerCountry = _scenarioContext.Get<string>("ImporterCountry");
+
+            Assert.True(addressesPage?.VerifySelectedImporter(importerName, importerAddress, importerCountry),
+                        "Importer details do not match");
+        }
+
 
         [When("the user clicks Add a place of destination")]
         public void WhenTheUserClicksAddAPlaceOfDestination()

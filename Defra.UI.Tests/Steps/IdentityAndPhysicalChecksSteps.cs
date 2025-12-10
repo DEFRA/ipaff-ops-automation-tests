@@ -1,13 +1,9 @@
-﻿using Reqnroll.BoDi;
+﻿using Defra.UI.Tests.Pages.Interfaces;
 using NUnit.Framework;
-using OpenQA.Selenium;
 using Reqnroll;
-using Defra.UI.Tests.Pages.Interfaces;
-using Defra.UI.Tests.Pages.Classes;
-using System.ComponentModel;
-using DocumentFormat.OpenXml.Drawing.Charts;
+using Reqnroll.BoDi;
 
-namespace Defra.UI.Tests.Steps.CP
+namespace Defra.UI.Tests.Steps.IPAFF
 {
     [Binding]
     public class IdentityAndPhysicalChecksSteps
@@ -44,6 +40,12 @@ namespace Defra.UI.Tests.Steps.CP
         {
             _scenarioContext.Add("PhysicalCheckDecision", decision);
             identityAndPhysicalChecksPage?.ClickPhysicalCheckDecision(decision);
+        }
+
+        [When("the user clicks Save and Return")]
+        public void WhenTheUserClicksSaveAndReturn()
+        {
+            identityAndPhysicalChecksPage?.ClickSaveAndReturn();
         }
     }
 }
