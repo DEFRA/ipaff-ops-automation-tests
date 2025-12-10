@@ -13,5 +13,10 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void SelectReasonForImportSubOption(string subOption);
         bool IsReasonForImportingAnimalsPageLoaded();
         bool AreImportAnimalsReasonsPresent();
+        void SelectExitBorderControlPost(string exitBCP);
+        void EnterConsignmentLeavingDate(string day, string month, string year);
+        void EnterConsignmentLeavingTime(string hours, string minutes);
+        void SelectTransitedCountry(string transitedCountry);
+        void SelectDestinationCountry(string destinationCountry);
     }
 }

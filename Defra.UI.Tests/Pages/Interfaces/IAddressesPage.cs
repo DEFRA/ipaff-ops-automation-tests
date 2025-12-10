@@ -18,5 +18,7 @@ namespace Defra.UI.Tests.Pages.Interfaces
         bool VerifySelectedConsignor(string name, string address, string country);
         bool VerifySelectedConsignee(string name, string address, string country);
         bool VerifySelectedDestination(string name, string address, string country);
+        bool VerifySelectedImporter(string name, string address, string country);
+        void ClickAddImporter();     
     }
 }
