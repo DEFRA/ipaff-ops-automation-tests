@@ -101,6 +101,78 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(allDataMatches, $"Review page data validation failed. Mismatches: {string.Join(", ", mismatches)}");
         }
 
+        [Then("the data presented for review matches the data entered into the notification for CHED D")]
+        public void ThenTheDataPresentedForReviewMatchesTheDataEnteredIntoTheNotificationForCHEDD()
+        {
+            var allDataMatches = true;
+            var mismatches = new List<string>();
+
+            // About the consignment
+            ValidateIfContains("ImportType", reviewPage?.GetPartOfImportType(), ref allDataMatches, mismatches);
+            ValidateIfExists("CountryOfOrigin", reviewPage?.GetCountryOfOrigin(), ref allDataMatches, mismatches);
+            ValidateIfExists("ContryFromWhereConsigned", reviewPage?.GetCountryFromWhereConsigned(), ref allDataMatches, mismatches);
+            ValidateIfExists("ConsignmentReferenceNumber", reviewPage?.GetConsignmentReferenceNumber(), ref allDataMatches, mismatches);
+            ValidateIfExists("MainReasonForImport", reviewPage?.GetMainReasonForImport(), ref allDataMatches, mismatches);
+
+            ValidateIfExists("CommodityCodeFirstCommodity", reviewPage?.GetCommodityCodeList(0), ref allDataMatches, mismatches);
+            ValidateIfExists("NetWeightFirstCommodity", reviewPage?.GetNetWeightList(0), ref allDataMatches, mismatches);
+            ValidateIfExists("NumberOfPackagesFirstCommodity", reviewPage?.GetNumPackagesList(0), ref allDataMatches, mismatches);
+            ValidateIfExists("TypeOfPackageFirstCommodity", reviewPage?.GetTypeOfPackagesList(0), ref allDataMatches, mismatches);
+
+            ValidateIfExists("CommodityCodeSecondCommodity", reviewPage?.GetCommodityCodeList(1), ref allDataMatches, mismatches);
+            ValidateIfExists("NetWeightSecondCommodity", reviewPage?.GetNetWeightList(1), ref allDataMatches, mismatches);
+            ValidateIfExists("NumOfPackagesSecondCommodity", reviewPage?.GetNumPackagesList(1), ref allDataMatches, mismatches);
+            ValidateIfExists("TypeOfPackageSecondCommodity", reviewPage?.GetTypeOfPackagesList(1), ref allDataMatches, mismatches);
+
+            ValidateIfExists("TotalNetWeight", reviewPage?.GetTotalNetWeight(), ref allDataMatches, mismatches);
+            ValidateIfExists("TotalPackages", reviewPage?.GetTotalPackages(), ref allDataMatches, mismatches);
+            ValidateIfExists("TotalGrossWeight", reviewPage?.GetTotalGrossWeight(), ref allDataMatches, mismatches);
+
+            // Additional details
+            ValidateIfExists("CommodityIntendedFor", reviewPage?.GetCommodityIntendedFor(), ref allDataMatches, mismatches);
+            ValidateIfExists("Temperature", reviewPage?.GetTemperature(), ref allDataMatches, mismatches);
+
+            // Documents
+            ValidateIfExists("DocumentType", reviewPage?.GetAdditionalDocumentType(), ref allDataMatches, mismatches);
+            ValidateIfExists("DocumentReference", reviewPage?.GetAdditionalDocumentReference(), ref allDataMatches, mismatches);
+            ValidateIfExists("DocumentDateOfIssue", reviewPage?.GetAdditionalDocumentDateOfIssue(), ref allDataMatches, mismatches);
+            ValidateIfExists("DocumentName", reviewPage?.GetAdditionalDocName(), ref allDataMatches, mismatches);
+
+            // Addresses
+            ValidateIfExists("ConsignorName", reviewPage?.GetConsignorName(), ref allDataMatches, mismatches);
+            ValidateIfExists("ConsignorAddress", reviewPage?.GetConsignorAddress(), ref allDataMatches, mismatches);
+            ValidateIfExists("ConsigneeName", reviewPage?.GetConsigneeName(), ref allDataMatches, mismatches);
+            ValidateIfExists("ConsigneeAddress", reviewPage?.GetConsigneeAddress(), ref allDataMatches, mismatches);
+            ValidateIfExists("ImporterName", reviewPage?.GetImporterName(), ref allDataMatches, mismatches);
+            ValidateIfExists("ImporterAddress", reviewPage?.GetImporterAddress(), ref allDataMatches, mismatches);
+            ValidateIfExists("DestinationName", reviewPage?.GetDestinationName(), ref allDataMatches, mismatches);
+            ValidateIfExists("DestinationAddress", reviewPage?.GetDestinationAddress(), ref allDataMatches, mismatches);
+
+            // Transport details
+            ValidateIfExists("PortOfEntry", reviewPage?.GetPortOfEntry(), ref allDataMatches, mismatches);
+            ValidateIfExists("MeansOfTransport", reviewPage?.GetMeansOfTransport(), ref allDataMatches, mismatches);
+            ValidateIfExists("TransportId", reviewPage?.GetTransportId(), ref allDataMatches, mismatches);
+            ValidateIfExists("AreContainers", reviewPage?.GetContainerUsage(), ref allDataMatches, mismatches);
+            ValidateIfExists("EnterTransportDocRef", reviewPage?.GetTransportDocumentReference(), ref allDataMatches, mismatches);
+            ValidateIfExists("EstimatedArrivalDate", reviewPage?.GetEstimatedArrivalDate(), ref allDataMatches, mismatches);
+            ValidateIfExists("EstimatedArrivalTime", reviewPage?.GetEstimatedArrivalTime(), ref allDataMatches, mismatches);
+            ValidateIfExists("IsCTC", reviewPage?.GetCTCUsage(), ref allDataMatches, mismatches);
+            ValidateIfExists("IsGVMS", reviewPage?.GetGVMSUsage(), ref allDataMatches, mismatches);
+
+            // Contacts
+            ValidateIfExists("ConsignmentContactAddress", reviewPage?.GetConsignmentContactAddress(), ref allDataMatches, mismatches);
+
+            if (!allDataMatches)
+            {
+                Console.WriteLine("[REVIEW VALIDATION] Data mismatches found:");
+                foreach (var mismatch in mismatches)
+                {
+                    Console.WriteLine($"[REVIEW VALIDATION] {mismatch}");
+                }
+            }
+            Assert.True(allDataMatches, $"Review page data validation failed. Mismatches: {string.Join(", ", mismatches)}");
+        }
+
         private void ValidateIfExists(string contextKey, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
         {
             if (_scenarioContext.ContainsKey(contextKey))
@@ -109,6 +181,27 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 if (!string.IsNullOrEmpty(expectedValue))
                 {
                     var isMatch = expectedValue.Equals(reviewValue?.Trim(), StringComparison.OrdinalIgnoreCase);
+                    if (!isMatch)
+                    {
+                        allDataMatches = false;
+                        mismatches.Add($"{contextKey}: Expected '{expectedValue}', Found '{reviewValue?.Trim()}'");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
+                    }
+                }
+            }
+        }
+
+        private void ValidateIfContains(string contextKey, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
+        {
+            if (_scenarioContext.ContainsKey(contextKey))
+            {
+                var expectedValue = _scenarioContext.Get<string>(contextKey);
+                if (!string.IsNullOrEmpty(expectedValue))
+                {
+                    var isMatch = expectedValue.Contains(reviewValue?.Trim(), StringComparison.OrdinalIgnoreCase);
                     if (!isMatch)
                     {
                         allDataMatches = false;

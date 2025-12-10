@@ -29,6 +29,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserSelectsForAreYouUsingTheCommonTransitConventionCTC(string option)
         {
             goodsMovementServicesPage?.CTCToMoveGoods(option);
+            _scenarioContext.Add("IsCTC", option);
         }
 
         [When("the user selects {string} for Will the transport use the Goods Vehicle Movement Service \\(GVMS)?")]

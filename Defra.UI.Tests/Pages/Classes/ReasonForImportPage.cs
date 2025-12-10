@@ -20,6 +20,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement rdoTranshipment => _driver.WaitForElement(By.XPath("//*[@id='radio-tranship']/following-sibling::label"));
         private IWebElement rdoTransit => _driver.WaitForElement(By.XPath("//*[@id='radio-transit']/following-sibling::label"));
         private IWebElement rdoReentry => _driver.WaitForElement(By.XPath("//*[@id='radio-reimport']/following-sibling::label"));
+        private IWebElement rdoNonInternalMarket => _driver.WaitForElement(By.XPath("//*[@id='radio-noninternalmarket']/following-sibling::label"));
         private IWebElement txtExitBCP => _driver.WaitForElement(By.Name("bcp-transit-third-country"));
         private IWebElement txtTransitedCountry => _driver.WaitForElement(By.Id("transit-third-countries-last"));
         private IWebElement txtDestinationCountry => _driver.WaitForElement(By.Id("third-country-transit"));
@@ -95,6 +96,12 @@ namespace Defra.UI.Tests.Pages.Classes
             {
                 return false;
             }
+        }
+
+        public bool AreImportReasonsForCHEDDPreset()
+        {
+            return IsElementPresent(rdoInternalMarket)
+                && IsElementPresent(rdoNonInternalMarket);
         }
 
         public void SelectReasonForImport(string option)

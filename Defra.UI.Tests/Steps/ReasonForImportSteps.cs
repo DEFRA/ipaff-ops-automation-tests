@@ -30,6 +30,19 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(reasonForImportPage?.AreImportReasonsPresent(), "Expected import options are not present on the page.");
         }
 
+        [Then("What is the main reason for importing the consignment? page should be displayed with radio buttons for CHEDD")]
+        public void ThenWhatIsTheMainReasonForImportingTheConsignmentPageShouldBeDisplayedWithRadioButtonsForCHEDD()
+        {
+            Assert.True(reasonForImportPage?.IsPageLoaded(), "About the consignment What is the main reason for importing the consignment? page not loaded");
+            Assert.True(reasonForImportPage?.AreImportReasonsForCHEDDPreset(), "I port options for CHED D are not displayed on the Reason for import page");
+        }
+
+        [When("The user selects {string} radio option")]
+        public void WhenTheUserSelectsRadioOption(string reasonForImport)
+        {
+            reasonForImportPage?.SelectReasonForImport(reasonForImport);
+            _scenarioContext.Add("MainReasonForImport", reasonForImport);
+        }
 
         [When("the user chooses {string} and the sub-option {string}")]
         public void WhenTheUserChoosesAndTheSub_Option(string option, string subOption)
