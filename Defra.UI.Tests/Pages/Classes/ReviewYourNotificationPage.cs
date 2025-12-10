@@ -1,5 +1,4 @@
 ﻿using Defra.UI.Tests.Configuration;
-using Defra.UI.Tests.Contracts;
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
@@ -18,6 +17,7 @@ namespace Defra.UI.Tests.Pages.Classes
         // About the consignment
         private IWebElement importType => _driver.FindElement(By.Id("importing"));
         private IWebElement countryOfOrigin => _driver.FindElement(By.Id("country-of-origin"));
+        private IWebElement countryFromWhereConsigned => _driver.FindElement(By.XPath("//dt[text()='Country from where consigned']//following-sibling::dd"));
         private IWebElement mainReasonForImport => _driver.FindElement(By.Id("purpose-of-consignment-value"));
         private IWebElement purpose => _driver.FindElement(By.XPath("//dt[text()='Purpose in the internal market']//following-sibling::dd"));
         private IWebElement consignmentReferenceNumber => _driver.FindElement(By.XPath("//dt[text()='Consignment reference number']//following-sibling::dd"));
@@ -27,6 +27,18 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement species => _driver.FindElement(By.XPath("//table[@id='review-table-consignment-0']//tbody//tr[1]//td[1]"));
         private IWebElement numberOfAnimals => _driver.FindElement(By.XPath("//table[@id='review-consignment-total-table']//tbody//tr//td[1]"));
         private IWebElement numberOfPackages => _driver.FindElement(By.XPath("//table[@id='review-consignment-total-table']//tbody//tr//td[2]"));
+        
+        private List<IWebElement> commodityCodeList => _driver.WaitForElements(By.XPath("//table[contains(@id,'review-table-commodity-attributes')]//td[text()='Commodity code']//following-sibling::td[1]")).ToList();
+        private List<IWebElement> netWeightList => _driver.WaitForElements(By.XPath("//table[contains(@class,'data-table-commodities')]//tr/td[1]")).ToList();
+        private List<IWebElement> numPackagesList => _driver.WaitForElements(By.XPath("//table[contains(@class,'data-table-commodities')]//tr/td[2]")).ToList();
+        private List<IWebElement> typeOfPackagesList => _driver.WaitForElements(By.XPath("//table[contains(@class,'data-table-commodities')]//tr/td[3]")).ToList();
+        private IWebElement totalNetWeight => _driver.FindElement(By.XPath("//td[text()='Total net weight']//following-sibling::td[1]"));
+        private IWebElement totalPackages => _driver.FindElement(By.XPath("//td[text()='Total packages']//following-sibling::td[1]"));
+        private IWebElement totalGrossWeight => _driver.FindElement(By.XPath("//td[text()='Total gross weight ']//following-sibling::td[1]"));
+
+        //Additional details
+        private IWebElement commodityIntendedFor => _driver.FindElement(By.XPath("//dt[text()='Commodity intended for']//following-sibling::dd"));
+        private IWebElement temperature => _driver.FindElement(By.XPath("//dt[text()='Temperature']//following-sibling::dd"));
 
         // Animal details
         private IWebElement certificationOption => _driver.FindElement(By.XPath("//td[text()='Certified for']//following-sibling::td"));
@@ -37,6 +49,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement additionalDocumentType => _driver.FindElement(By.Id("veterinary-document-type-1"));
         private IWebElement additionalDocumentReference => _driver.FindElement(By.Id("veterinary-document-reference-1"));
         private IWebElement additionalDocumentDateOfIssue => _driver.FindElement(By.Id("veterinary-document-issue-date-1"));
+        private IWebElement additionalDocumentName => _driver.FindElement(By.XPath("//a[contains(@id,'attachment-view')]"));
 
         // Addresses
         private IWebElement consignorDetails => _driver.FindElement(By.Id("consignor"));
@@ -45,14 +58,15 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement destinationDetails => _driver.FindElement(By.Id("final-destination"));
 
         // Transport details
-        private IWebElement portOfEntry => _driver.FindElement(By.XPath("//th[text()='BCP or Port of entry']//following-sibling::td"));
-        private IWebElement meansOfTransport => _driver.FindElement(By.XPath("//th[text()='Means of transport to BCP or Port of entry']//following-sibling::td"));
+        private IWebElement portOfEntry => _driver.FindElement(By.XPath("//th[contains(text(),'Port of entry')]//following-sibling::td"));
+        private IWebElement meansOfTransport => _driver.FindElement(By.XPath("//th[contains(text(),'Means of transport')]//following-sibling::td"));
         private IWebElement transportId => _driver.FindElement(By.XPath("//th[text()='Transport identification']//following-sibling::td"));
         private IWebElement containerUsage => _driver.FindElement(By.Id("imported-in-containers"));
         private IWebElement transportDocumentReference => _driver.FindElement(By.XPath("//th[text()='Transport document reference']//following-sibling::td"));
         private IWebElement estimatedArrivalDate => _driver.FindElement(By.XPath("//th[text()='Estimated arrival date at BCP or Port of entry']//following-sibling::td"));
-        private IWebElement estimatedArrivalTime => _driver.FindElement(By.XPath("//th[text()='Estimated arrival time at BCP']//following-sibling::td"));
+        private IWebElement estimatedArrivalTime => _driver.FindElement(By.XPath("//th[contains(text(),'Estimated arrival time at')]//following-sibling::td"));
         private IWebElement estimatedJourneyTime => _driver.FindElement(By.XPath("//th[text()='Estimated total journey time of the animals']//following-sibling::td"));
+        private IWebElement ctcUsage => _driver.FindElement(By.XPath("//td[contains(text(),'Using the Common Transit Convention')]/following-sibling::td"));
         private IWebElement gvmsUsage => _driver.FindElement(By.Id("goods-movement-services-route"));
 
         // Transporter details
@@ -87,9 +101,30 @@ namespace Defra.UI.Tests.Pages.Classes
             try { return importType.Text.Trim(); } catch { return null; }
         }
 
+        public string? GetPartOfImportType()
+        {
+            var importTypeText = string.Empty;
+            try
+            {
+                importTypeText = importType.Text.Trim();
+                var words = importTypeText.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                importTypeText = string.Join(" ", words.Take(3)); 
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine($"GetPartOfImportType failed: {ex}");   
+            }
+            return importTypeText;
+        }
+
         public string? GetCountryOfOrigin()
         {
             try { return countryOfOrigin.Text.Trim(); } catch { return null; }
+        }
+
+        public string? GetCountryFromWhereConsigned()
+        {
+            try { return countryFromWhereConsigned.Text.Trim(); } catch { return null; }
         }
 
         public string? GetMainReasonForImport()
@@ -171,10 +206,158 @@ namespace Defra.UI.Tests.Pages.Classes
             try { return numberOfPackages.Text.Trim(); } catch { return null; }
         }
 
+        public string? GetCommodityCodeList(int index)
+        {
+            try
+            {
+                var allcommodityCodesList = GetItemsList(commodityCodeList);
+
+                if (allcommodityCodesList == null || allcommodityCodesList.Count == 0)
+                    return null;
+
+                var commCode = allcommodityCodesList[index];
+                return string.IsNullOrWhiteSpace(commCode) ? null : commCode;
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine($"GetCommodityCodeList failed: {ex}");
+                return null;
+            }
+        }
+
+        public string? GetNetWeightList(int index)
+        {
+            var netWeight = string.Empty;
+            try
+            {
+                var allNetWeightList = GetItemsList(netWeightList);
+
+                if (allNetWeightList == null || allNetWeightList.Count == 0)
+                    return null;
+
+                netWeight = allNetWeightList[index];
+                netWeight = netWeight.Replace("kg/units", "").Trim();
+                return string.IsNullOrWhiteSpace(netWeight) ? null : netWeight;
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine($"GetNetWeightList failed: {ex}");
+                return netWeight;
+            }
+        }
+
+        public string? GetNumPackagesList(int index)
+        {
+            var numOfPackage = string.Empty;
+            try
+            {
+                var allNumPackagesList = GetItemsList(numPackagesList);
+
+                if (allNumPackagesList == null || allNumPackagesList.Count == 0)
+                    return null;
+
+                numOfPackage = allNumPackagesList[index];
+                return string.IsNullOrWhiteSpace(numOfPackage) ? null : numOfPackage;
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine($"GetNumPackagesList failed: {ex}");
+                return numOfPackage;
+            }
+        }
+
+        public string? GetTypeOfPackagesList(int index)
+        {
+            var typeOfPackage = string.Empty;
+            try
+            {
+                var allTypeOfPackagesList = GetItemsList(typeOfPackagesList);
+
+                if (allTypeOfPackagesList == null || allTypeOfPackagesList.Count == 0)
+                    return null;
+
+                typeOfPackage = allTypeOfPackagesList[index];
+                return string.IsNullOrWhiteSpace(typeOfPackage) ? null : typeOfPackage;
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine($"GetTypeOfPackagesList failed: {ex}");
+                return typeOfPackage;
+            }
+        }
+
+        private List<string>? GetItemsList(List<IWebElement> inputList)
+        {
+            List<string> itemsList = new List<string>();
+            foreach (var item in inputList)
+            {
+                itemsList.Add(item.Text.Trim());
+            }
+            return itemsList;
+        }
+
+        public string? GetTotalNetWeight()
+        {
+            string totalNetWeightText = string.Empty;
+            try
+            {
+                totalNetWeightText = totalNetWeight.Text.Replace("kg/units", "").Trim();
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine($"GetTotalNetWeight failed: {ex.Message}");
+            }
+            return totalNetWeightText;
+        }
+
+        public string? GetTotalPackages()
+        {
+            string totalPackagesText = string.Empty;
+            try
+            {
+                totalPackagesText = totalPackages.Text.Trim();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"GetTotalPackages failed: {ex.Message}");
+            }
+            return totalPackagesText;
+        }
+
+        public string? GetTotalGrossWeight()
+        {
+            string totalGrossWeightText = string.Empty;
+            try
+            {
+                totalGrossWeightText = totalGrossWeight.Text.Replace("kg/units", "").Trim();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"GetTotalGrossWeight failed: {ex.Message}");
+            }
+            return totalGrossWeightText;
+        }
+
         // Animal details
         public string? GetCertificationOption()
         {
             try { return certificationOption.Text.Trim(); } catch { return null; }
+        }
+
+        //Additional details
+
+        public string? GetCommodityIntendedFor()
+        {
+            try { return commodityIntendedFor.Text.Trim(); } catch { return null; }
+        }
+
+        public string? GetTemperature()
+        {
+            try { return temperature.Text.Trim(); } catch { return null; }
         }
 
         // Documents
@@ -221,6 +404,11 @@ namespace Defra.UI.Tests.Pages.Classes
                 return text;
             }
             catch { return null; }
+        }
+
+        public string? GetAdditionalDocName()
+        {
+            return additionalDocumentName.Text.Trim();
         }
 
         // Addresses
@@ -354,6 +542,11 @@ namespace Defra.UI.Tests.Pages.Classes
                 return text.Replace(" hrs", "").Trim();
             }
             catch { return null; }
+        }
+
+        public string? GetCTCUsage()
+        {
+            try { return ctcUsage.Text.Trim(); } catch { return null; }
         }
 
         public string? GetGVMSUsage()

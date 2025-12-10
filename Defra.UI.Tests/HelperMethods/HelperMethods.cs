@@ -84,5 +84,15 @@ namespace Defra.UI.Tests.HelperMethods
 
             continueLabel.Click();
         }
+
+        public static void ClickBrowserBackButton(this IWebDriver driver)
+        {
+            driver.Navigate().Back();
+        }
+
+        public static void ClickBrowserForwardButton(this IWebDriver driver)
+        {
+            driver.Navigate().Forward();
+        }
     }
 }

@@ -41,10 +41,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext.Add("Temperature", option);
         }
 
-        [Then("the corresponding radio button should be selected")]
-        public void ThenTheCorrespondingRadioButtonShouldBeSelected()
+        [When("the user selects {string} radio button under Commodity intended for on the Additional details page")]
+        public void WhenTheUserSelectsRadioButtonUnderCommodityIntendedForOnTheAdditionalDetailsPage(string commIntendedForOption)
         {
-            throw new PendingStepException();
+            Assert.True(additionalDetailsPage?.SelectCommodityIntendedForRadio(commIntendedForOption), "Commodity intended for radio is not selected on the Additional details page");
+            _scenarioContext.Add("CommodityIntendedFor", commIntendedForOption);
         }
 
         [When("the user selects {string} for What are the animals certified for?")]

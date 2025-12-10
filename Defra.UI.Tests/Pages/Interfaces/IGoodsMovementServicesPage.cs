@@ -1,7 +1,4 @@
-﻿using OpenQA.Selenium;
-using System.Security.Cryptography;
-
-namespace Defra.UI.Tests.Pages.Interfaces
+﻿namespace Defra.UI.Tests.Pages.Interfaces
 {
     public interface IGoodsMovementServicesPage
     {

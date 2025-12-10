@@ -72,6 +72,9 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Data\Documents\IPAFFS Test Document.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="driver.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
