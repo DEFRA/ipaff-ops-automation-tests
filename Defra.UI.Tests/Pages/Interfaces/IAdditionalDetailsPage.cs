@@ -7,6 +7,7 @@ namespace Defra.UI.Tests.Pages.Interfaces
         bool IsPageLoaded();
         bool IsAdditionalAnimalDetailsPageLoaded();
         void ClickImportingProduct(string option);
+        bool SelectCommodityIntendedForRadio(string commIntendedForOption);
         void SelectAnimalCertification(string certificationOption);
         void SelectUnweanedAnimalsOption(string option);
     }

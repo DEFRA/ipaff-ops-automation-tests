@@ -31,6 +31,12 @@ namespace Defra.UI.Tests.Pages.Classes
                 && primaryTitle.Text.Contains("Contact address for consignment");
         }
 
+        public bool IsContactAddressForConsignmentPageLoaded()
+        {
+            return primaryTitle.Text.Contains("Contact address for consignment")
+                && secondaryTitle.Text.Contains("Contacts");
+        }
+
         public bool IsPageLoadedWithoutSecondaryTitle()
         {
             return primaryTitle.Text.Contains("Contact address for consignment");
