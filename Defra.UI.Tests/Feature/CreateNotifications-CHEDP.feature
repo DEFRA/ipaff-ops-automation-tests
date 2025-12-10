@@ -193,7 +193,7 @@ Scenario: User creates and submits a B2C consignment notification for Transit Re
 	When the user clicks Save and continue
 	Then What is the main reason for importing the consignment? page should be displayed with radio buttons
 	When the user chooses "Transit" and the sub-option ""
-	And the user chooses exit BCP "GATWICK (GBLGW)" time "22:00" transited country "Germany" and destination country "Qatar"
+	And the user chooses exit BCP "GATWICK (GBLGW)" transited country "Germany" and destination country "Qatar"
 	And the user clicks Save and continue
 	Then Select the highest risk category for the commodities in this consignment page should be displayed
 	When the user chooses "Medium risk" risk category

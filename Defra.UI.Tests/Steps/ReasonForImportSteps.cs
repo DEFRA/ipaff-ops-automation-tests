@@ -2,7 +2,6 @@
 using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
-using System.Globalization;
 
 
 namespace Defra.UI.Tests.Steps.IPAFF
@@ -63,22 +62,22 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext.Add("MainReasonForImport", option);
         }
 
-        [When("the user chooses exit BCP {string} time {string} transited country {string} and destination country {string}")]
-        public void WhenTheUserChoosesBCPTimeTransitedCountryAndDestinationCountry(string exitBCP, string timeString, string transitedCountry, string destinationCountry)
+        [When("the user chooses exit BCP {string} transited country {string} and destination country {string}")]
+        public void WhenTheUserChoosesBCPTransitedCountryAndDestinationCountry(string exitBCP, string transitedCountry, string destinationCountry)
         {
             reasonForImportPage?.SelectExitBorderControlPost(exitBCP);
             _scenarioContext.Add("ExitBorderControlPost", exitBCP);
 
-            DateTime futureDate = DateTime.Now.AddDays(7);
+            var futureDate = DateTime.Now.AddDays(7);
             reasonForImportPage?.EnterConsignmentLeavingDate(futureDate.Day.ToString(), futureDate.Month.ToString(), futureDate.Year.ToString());
-            var monthName = futureDate.ToString("MMMM", CultureInfo.InvariantCulture);
-            var leavingFromGBDate = futureDate.Day.ToString() + " " + monthName + " " + futureDate.Year.ToString();
+            var leavingFromGBDate = futureDate.ToString("dd MMMM yyyy");
             _scenarioContext.Add("ConsignmentLeavingFromGBDate", leavingFromGBDate);
 
-            var hours = timeString.Substring(0,2);
-            var minutes = timeString.Substring(3, 2);
+            var hours = futureDate.Hour.ToString();
+            var minutes = futureDate.Minute.ToString();
+            var formattedTime = futureDate.ToString("HH:mm");
             reasonForImportPage?.EnterConsignmentLeavingTime(hours, minutes);
-            _scenarioContext.Add("ConsignmentLeavingFromGBTime", timeString);
+            _scenarioContext.Add("ConsignmentLeavingFromGBTime", formattedTime);
 
             reasonForImportPage?.SelectTransitedCountry(transitedCountry);
             _scenarioContext.Add("TransitedCountry", transitedCountry);
