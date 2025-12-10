@@ -89,7 +89,7 @@ namespace Defra.UI.Tests.Pages.Classes
             }
         }
 
-        public bool AreImportReasonsForCHEDDPreset()
+        public bool AreImportReasonsForCHEDDPresent()
         {
             return IsElementPresent(rdoInternalMarket)
                 && IsElementPresent(rdoNonInternalMarket);
