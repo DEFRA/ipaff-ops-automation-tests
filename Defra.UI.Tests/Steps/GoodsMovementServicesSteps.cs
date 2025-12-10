@@ -38,13 +38,6 @@ namespace Defra.UI.Tests.Steps.CP
         {
             goodsMovementServicesPage?.GVMSToMoveGoods(option);
             _scenarioContext.Add("IsGVMS", option);
-        }
-
-        [When("the user selects {string} for Will the transport use the Goods Vehicle Movement Service \\(GVMS)?")]
-        public void WhenTheUserSelectsForWillTheTransportUseTheGoodsVehicleMovementServiceGVMS(string option)
-        {
-            goodsMovementServicesPage?.GVMSToMoveGoods(option);
-            _scenarioContext.Add("IsGVMS", option);
-        }
+        }       
     }
 }
