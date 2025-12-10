@@ -1,11 +1,9 @@
-﻿using Faker;
-using OpenQA.Selenium;
-
-namespace Defra.UI.Tests.Pages.Interfaces
+﻿namespace Defra.UI.Tests.Pages.Interfaces
 {
     public interface IContactAddressPage
     {
         bool IsPageLoaded();
+        bool IsContactAddressForConsignmentPageLoaded();
         bool IsPageLoadedWithoutSecondaryTitle();
         string GetSelectedContactAddress();
     }

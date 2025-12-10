@@ -4,6 +4,7 @@ using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
+using Defra.UI.Tests.HelperMethods;
 
 namespace Defra.UI.Tests.Pages.Classes
 {
@@ -28,9 +29,13 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtNetWeight => _driver.FindElement(By.XPath("//*[@class='govuk-table species-table-cheda']//input[@class='govuk-input net-weight ']"));
         private IWebElement txtNumberOfPackages => _driver.FindElement(By.XPath("//*[@class='govuk-table species-table-cheda']//input[@class='govuk-input number-of-packages ']"));
         private IWebElement ddlPackageType => _driver.FindElement(By.XPath("//*[@class='govuk-table species-table-cheda']//*[@class='govuk-select type-of-package govuk-!-width-full']"));
+        private IWebElement speciesTable => _driver.FindElement(By.XPath("//*[@class='govuk-table species-table-cheda']"));
+        private List<IWebElement> commodityTreeList => _driver.WaitForElements(By.XPath("//ul[@class='commodity-tree']/li//span[@class='commodity-description-links-container']/button")).ToList();
+        private List<IWebElement> parentCommodityItemList => _driver.WaitForElements(By.XPath("//div[@class='commodity-list']/ul/li")).ToList();
         private IWebElement txtNumberOfAnimals => _driver.FindElement(By.XPath("//input[contains(@class, 'number-of-animals') and contains(@id, 'num-animals-desktop')]"));
         private IWebElement txtEarTag => _driver.FindElement(By.XPath("//input[contains(@id, 'ear_tag')]"));
         private IWebElement btnUpdateTotal => _driver.FindElement(By.Id("update-total-desktop"));
+        private IWebElement addCommodityLink => _driver.WaitForElement(By.Id("add-commodity-desktop"));
         private IWebElement txtTotalGrossWeight => _driver.FindElement(By.Id("gross-weight-desktop"));
         private IWebElement txtSubtotalNetWeight => _driver.FindElement(By.XPath("//*[@class='govuk-table species-table-cheda']/tfoot//td[2]"));
         private IWebElement txtSubtotalPackages => _driver.FindElement(By.XPath("//*[@class='govuk-table species-table-cheda']/tfoot//td[3]"));
@@ -95,7 +100,6 @@ namespace Defra.UI.Tests.Pages.Classes
             txtNetWeight.Clear(); 
             txtNetWeight.SendKeys(weight); 
         }
-
         public void EnterNumberOfPackages(string packages)
         {
             txtNumberOfPackages.Click(); 
@@ -106,6 +110,28 @@ namespace Defra.UI.Tests.Pages.Classes
         public void SelectPackageType(string type)
         { 
             new SelectElement(ddlPackageType).SelectByText(type); 
+        }
+
+        public void AddNetWeightForCommodityCode(string netWeight, string commodityCode)
+        {
+            var netWeightSelector = "//input[@id='" + commodityCode + "-.net-weight-desktop']";
+            var netWeightElement = _driver.FindElement(By.XPath(netWeightSelector));
+            netWeightElement.SendKeys(netWeight);
+        }
+
+        public void AddNumOfPackagesForCommodityCode(string numOfPackages, string commodityCode)
+        {
+            var numOfPackageSelector = "//input[@id='" + commodityCode + "-.num-packages-desktop']";
+            var numOfPackagesElement = _driver.FindElement(By.XPath(numOfPackageSelector));
+            numOfPackagesElement.SendKeys(numOfPackages);
+        }
+
+        public void SelectPackageTypeForCommodityCode(string typeOfPackage, string commodityCode)
+        {
+            var typeOfPackageSelector = "//select[@id='" + commodityCode + "-.package-type-desktop']";
+            var typeOfPackageSelectorFull = speciesTable.FindElement(By.XPath(typeOfPackageSelector));
+            
+            new SelectElement(typeOfPackageSelectorFull).SelectByText(typeOfPackage);
         }
 
         public void ClickUpdateTotal()
@@ -123,6 +149,33 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickSaveAndContinue()
         {
             btnSaveAndContinue.Click();
+        }
+
+        public void ClickBrowserBackButton()
+        {
+            _driver.ClickBrowserBackButton();
+        }
+
+        public void ClickAddCommodityLink() => addCommodityLink.Click();
+
+        public bool SelectCommodityInTheCommTree(string commodity)
+        {
+            foreach(var comm in commodityTreeList)
+            {
+                var commText = comm.Text;
+                if (commText.Contains(commodity))
+                {
+                    ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", comm);
+                    return true;
+                }  
+            }
+            return false;
+        }
+
+        public bool IsSubCommodityListDisplayed()
+        {
+            return parentCommodityItemList.Count.Equals(1)
+                && commodityTreeList.Count >= 1;
         }
 
         public void EnterNumberOfAnimals(string quantity)
