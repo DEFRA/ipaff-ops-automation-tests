@@ -54,9 +54,11 @@ namespace Defra.UI.Tests.Steps.CP
             // Documents
             ValidateIfExists("HealthCertificateReference", reviewPage?.GetHealthCertificateReference(), ref allDataMatches, mismatches);
             ValidateIfExists("HealthCertificateDateOfIssue", reviewPage?.GetHealthCertificateDateOfIssue(), ref allDataMatches, mismatches);
+            ValidateFileNameWithTruncation("HealthCertificateFileName", reviewPage?.GetHealthCertificateFileName(), ref allDataMatches, mismatches);
             ValidateIfExists("DocumentType", reviewPage?.GetAdditionalDocumentType(), ref allDataMatches, mismatches);
             ValidateIfExists("DocumentReference", reviewPage?.GetAdditionalDocumentReference(), ref allDataMatches, mismatches);
             ValidateIfExists("DocumentDateOfIssue", reviewPage?.GetAdditionalDocumentDateOfIssue(), ref allDataMatches, mismatches);
+            ValidateFileNameWithTruncation("DocumentName", reviewPage?.GetAdditionalDocumentFileName(), ref allDataMatches, mismatches);
 
             // Addresses
             ValidateIfExists("ConsignorName", reviewPage?.GetConsignorName(), ref allDataMatches, mismatches);
@@ -138,7 +140,7 @@ namespace Defra.UI.Tests.Steps.CP
             ValidateIfExists("DocumentType", reviewPage?.GetAdditionalDocumentType(), ref allDataMatches, mismatches);
             ValidateIfExists("DocumentReference", reviewPage?.GetAdditionalDocumentReference(), ref allDataMatches, mismatches);
             ValidateIfExists("DocumentDateOfIssue", reviewPage?.GetAdditionalDocumentDateOfIssue(), ref allDataMatches, mismatches);
-            ValidateIfExists("DocumentName", reviewPage?.GetAdditionalDocName(), ref allDataMatches, mismatches);
+            ValidateFileNameWithTruncation("DocumentName", reviewPage?.GetAdditionalDocumentFileName(), ref allDataMatches, mismatches);
 
             // Addresses
             ValidateIfExists("ConsignorName", reviewPage?.GetConsignorName(), ref allDataMatches, mismatches);
@@ -191,6 +193,50 @@ namespace Defra.UI.Tests.Steps.CP
                     else
                     {
                         Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"[REVIEW VALIDATION] ⊘ {contextKey}: Skipped (empty value in context)");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[REVIEW VALIDATION] ⊘ {contextKey}: Skipped (not in context)");
+            }
+        }
+
+        private void ValidateFileNameWithTruncation(string contextKey, string? displayedFileName, ref bool allDataMatches, List<string> mismatches)
+        {
+            if (_scenarioContext.ContainsKey(contextKey))
+            {
+                var expectedFileName = _scenarioContext.Get<string>(contextKey);
+                if (!string.IsNullOrEmpty(expectedFileName))
+                {
+                    // Handle filename truncation - the UI truncates long filenames but keeps the extension
+                    var isMatch = false;
+
+                    if (!string.IsNullOrEmpty(displayedFileName))
+                    {
+                        var displayedExtension = Path.GetExtension(displayedFileName);
+                        var expectedExtension = Path.GetExtension(expectedFileName);
+
+                        var displayedNameWithoutExt = Path.GetFileNameWithoutExtension(displayedFileName);
+                        var expectedNameWithoutExt = Path.GetFileNameWithoutExtension(expectedFileName);
+
+                        // Check if extensions match and displayed name is the start of expected name (handles truncation)
+                        isMatch = displayedExtension.Equals(expectedExtension, StringComparison.OrdinalIgnoreCase) &&
+                                  expectedNameWithoutExt.StartsWith(displayedNameWithoutExt, StringComparison.OrdinalIgnoreCase);
+                    }
+
+                    if (!isMatch)
+                    {
+                        allDataMatches = false;
+                        mismatches.Add($"{contextKey}: Expected '{expectedFileName}', Found '{displayedFileName}' (with truncation handling)");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedFileName}' matches (truncated to '{displayedFileName}')");
                     }
                 }
                 else

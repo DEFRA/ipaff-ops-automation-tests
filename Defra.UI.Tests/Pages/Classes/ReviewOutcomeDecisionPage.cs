@@ -29,8 +29,10 @@ namespace Defra.UI.Tests.Pages.Classes
         // Documents
         private IWebElement healthCertificateReference => _driver.FindElement(By.Id("latest-health-document-reference"));
         private IWebElement healthCertificateDateOfIssue => _driver.FindElement(By.Id("latest-health-document-issue-date"));
+        private IWebElement healthCertificateFileName => _driver.FindElement(By.XPath("//table[@id='latest-health-document-table']//a[contains(@id,'attachment-view')]"));
         private IReadOnlyCollection<IWebElement> accompanyingDocumentsTableRows =>
             _driver.FindElements(By.XPath("//table[@id='accompanying-documents-table']//tbody//tr"));
+        private IWebElement additionalDocumentFileName => _driver.FindElement(By.XPath("//table[@id='accompanying-documents-table']//a[contains(@id,'attachment-')]"));
 
         // Decision
         private IWebElement acceptanceDecision => _driver.FindElement(By.Id("acceptance-decision"));
@@ -303,6 +305,18 @@ namespace Defra.UI.Tests.Pages.Classes
                 }
                 return null;
             }
+            catch { return null; }
+        }
+
+        public string? GetHealthCertificateFileName()
+        {
+            try { return healthCertificateFileName.Text.Trim(); }
+            catch { return null; }
+        }
+
+        public string? GetAdditionalDocumentFileName()
+        {
+            try { return additionalDocumentFileName.Text.Trim(); }
             catch { return null; }
         }
 

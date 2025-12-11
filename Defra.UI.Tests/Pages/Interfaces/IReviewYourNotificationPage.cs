@@ -38,7 +38,9 @@
         string? GetAdditionalDocumentType();
         string? GetAdditionalDocumentReference();
         string? GetAdditionalDocumentDateOfIssue();
-        string? GetAdditionalDocName();
+        string? GetHealthCertificateFileName();
+        string? GetAdditionalDocumentFileName();
+
         // Addresses
         string? GetConsignorName();
         string? GetConsignorAddress();

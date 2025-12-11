@@ -45,12 +45,18 @@ Scenario: User creates and submits a B2C consignment notification - CHEDA
 	Then the Latest Health Certificate page should be displayed
 	When the user enters Latest Health Certificate Document reference 'VHC12345'
 	And the user enters Latest Health Certificate date of issue '01''12''2025'
-	And the user clicks Save and continue
+	And the user clicks on Add attachment link on the Latest Health Certificate page
+	And the user uploads the Veterinary Health Certificate 'IPAFFS Test Health Certificate' in the format '.docx'
+	Then the Veterinary Health Certificate 'IPAFFS Test Health Certificate' '.docx' is uploaded successfully
+	When the user clicks Save and continue
 	Then the Accompanying documents page should be displayed
 	When the user selects Document type 'Commercial invoice'
 	And the user enters Document reference 'INV12345'
 	And the user enters date of issue '24''11''2025'
-	And the user clicks Save and continue	
+	And the user clicks on Add attachment link
+	And the user uploads the document 'IPAFFS Test Document' in the format '.docx'
+	Then the document 'IPAFFS Test Document' '.docx' is uploaded successfully
+	When the user clicks Save and continue	
 	Then the Addresses page should be displayed
 	When the user clicks Add a consignor or exporter
 	Then the Search for an existing consignor or exporter page should be displayed
