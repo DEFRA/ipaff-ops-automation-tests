@@ -71,8 +71,8 @@ jobs:
       displayName: TestArtifact
       inputs:
         buildType: 'specific'
-        project: '023a3c95-20fd-49b4-b068-4706843ba0d7'
-        pipeline: '10233'
+        project: '303b7da1-1c89-467e-9730-12849c222832'
+        pipeline: '10248'
         buildVersionToDownload: 'latestFromBranch'
         branchName: ${{ parameters.branchName }}
         downloadType: 'single'
