@@ -84,9 +84,11 @@ namespace Defra.UI.Tests.Steps.CP
             // Documents
             ValidateIfExists("HealthCertificateReference", reviewOutcomeDecisionPage?.GetHealthCertificateReference(), ref allDataMatches, mismatches);
             ValidateIfExists("HealthCertificateDateOfIssue", reviewOutcomeDecisionPage?.GetHealthCertificateDateOfIssue(), ref allDataMatches, mismatches);
+            ValidateFileNameWithTruncation("HealthCertificateFileName", reviewOutcomeDecisionPage?.GetHealthCertificateFileName(), ref allDataMatches, mismatches);
             ValidateIfExists("DocumentType", reviewOutcomeDecisionPage?.GetAdditionalDocumentType(), ref allDataMatches, mismatches);
             ValidateIfExists("DocumentReference", reviewOutcomeDecisionPage?.GetAdditionalDocumentReference(), ref allDataMatches, mismatches);
             ValidateIfExists("DocumentDateOfIssue", reviewOutcomeDecisionPage?.GetAdditionalDocumentDateOfIssue(), ref allDataMatches, mismatches);
+            ValidateFileNameWithTruncation("DocumentName", reviewOutcomeDecisionPage?.GetAdditionalDocumentFileName(), ref allDataMatches, mismatches);
 
             // Decision
             ValidateIfExists("AcceptableFor", reviewOutcomeDecisionPage?.GetAcceptanceDecision(), ref allDataMatches, mismatches);
@@ -192,6 +194,50 @@ namespace Defra.UI.Tests.Steps.CP
                                 : "Units";
 
             return displayValue.Equals(actual.Trim(), StringComparison.OrdinalIgnoreCase);
+        }
+
+        private void ValidateFileNameWithTruncation(string contextKey, string? displayedFileName, ref bool allDataMatches, List<string> mismatches)
+        {
+            if (_scenarioContext.ContainsKey(contextKey))
+            {
+                var expectedFileName = _scenarioContext.Get<string>(contextKey);
+                if (!string.IsNullOrEmpty(expectedFileName))
+                {
+                    // Handle filename truncation - the UI truncates long filenames but keeps the extension
+                    var isMatch = false;
+
+                    if (!string.IsNullOrEmpty(displayedFileName))
+                    {
+                        var displayedExtension = Path.GetExtension(displayedFileName);
+                        var expectedExtension = Path.GetExtension(expectedFileName);
+
+                        var displayedNameWithoutExt = Path.GetFileNameWithoutExtension(displayedFileName);
+                        var expectedNameWithoutExt = Path.GetFileNameWithoutExtension(expectedFileName);
+
+                        // Check if extensions match and displayed name is the start of expected name (handles truncation)
+                        isMatch = displayedExtension.Equals(expectedExtension, StringComparison.OrdinalIgnoreCase) &&
+                                  expectedNameWithoutExt.StartsWith(displayedNameWithoutExt, StringComparison.OrdinalIgnoreCase);
+                    }
+
+                    if (!isMatch)
+                    {
+                        allDataMatches = false;
+                        mismatches.Add($"{contextKey}: Expected '{expectedFileName}', Found '{displayedFileName}' (with truncation handling)");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[REVIEW OUTCOME VALIDATION] ✓ {contextKey}: '{expectedFileName}' matches (truncated to '{displayedFileName}')");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"[REVIEW OUTCOME VALIDATION] ⊘ {contextKey}: Skipped (empty value in context)");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[REVIEW OUTCOME VALIDATION] ⊘ {contextKey}: Skipped (not in context)");
+            }
         }
     }
 }

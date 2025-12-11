@@ -39,6 +39,8 @@ namespace Defra.UI.Tests.Pages.Interfaces
         string? GetAdditionalDocumentType();
         string? GetAdditionalDocumentReference();
         string? GetAdditionalDocumentDateOfIssue();
+        string? GetHealthCertificateFileName();
+        string? GetAdditionalDocumentFileName();
 
         // Decision
         string? GetAcceptanceDecision();
