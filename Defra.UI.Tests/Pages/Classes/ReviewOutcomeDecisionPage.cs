@@ -26,27 +26,11 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement borderControlPostReference =>
             _driver.FindElement(By.XPath("//th[text()='Border Control Post reference number']//following-sibling::td"));
 
-        // Documents
-        private IWebElement healthCertificateReference => _driver.FindElement(By.Id("latest-health-document-reference"));
-        private IWebElement healthCertificateDateOfIssue => _driver.FindElement(By.Id("latest-health-document-issue-date"));
-        private IWebElement healthCertificateFileName => _driver.FindElement(By.XPath("//table[@id='latest-health-document-table']//a[contains(@id,'attachment-view')]"));
-        private IReadOnlyCollection<IWebElement> accompanyingDocumentsTableRows =>
-            _driver.FindElements(By.XPath("//table[@id='accompanying-documents-table']//tbody//tr"));
-        private IWebElement additionalDocumentFileName => _driver.FindElement(By.XPath("//table[@id='accompanying-documents-table']//a[contains(@id,'attachment-')]"));
-
         // Decision
         private IWebElement acceptanceDecision => _driver.FindElement(By.Id("acceptance-decision"));
-        private IWebElement certifiedFor =>
-            _driver.FindElement(By.XPath("//td[@id='certified_for']//following-sibling::td"));
-        private IWebElement consignmentUse =>
-            _driver.FindElement(By.XPath("//tr[@id='decision/consignmentacceptable']//td[contains(@class, 'check-status')]"));
 
         // Seal Numbers
         private IWebElement sealNumbersStatus => _driver.FindElement(By.Id("notifications-not-found"));
-
-        // Controlled Destination
-        private IWebElement controlledDestinationDetails =>
-            _driver.FindElement(By.XPath("//tr[@id='controlled-destination']//td[@class='govuk-table__cell']"));
 
         // Helper methods for dynamic row-based elements
         private IWebElement GetReviewTableCellByRowId(string rowId) =>
@@ -55,17 +39,161 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement GetRowById(string rowId) =>
             _driver.FindElement(By.XPath($"//tr[@id='{rowId}']"));
 
-        // Helper to get check-status cell from a row
         private IWebElement GetCheckStatusCellFromRow(IWebElement row) =>
             row.FindElement(By.XPath(".//td[contains(@class, 'check-status')]"));
 
-        // Helper to get check-type header from a row
         private IWebElement GetCheckTypeHeaderFromRow(IWebElement row) =>
             row.FindElement(By.XPath(".//th[contains(@class, 'check-type')]"));
 
-        // Helper to get all table cells from a row
         private IReadOnlyCollection<IWebElement> GetTableCellsFromRow(IWebElement row) =>
             row.FindElements(By.XPath(".//td[contains(@class, 'govuk-table__cell')]"));
+        #endregion
+
+        #region Utility Methods
+
+        /// <summary>
+        /// Safely retrieves text from an element by locator, returning null if element not found.
+        /// </summary>
+        private string? SafelyGetElementTextByLocator(By locator)
+        {
+            try
+            {
+                var element = _driver.FindElement(locator);
+                return element.Text.Trim();
+            }
+            catch (NoSuchElementException)
+            {
+                return null;
+            }
+            catch (StaleElementReferenceException)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Safely retrieves text from an element, returning null if element not found.
+        /// </summary>
+        private string? SafelyGetElementText(IWebElement element)
+        {
+            try
+            {
+                return element.Text.Trim();
+            }
+            catch (NoSuchElementException)
+            {
+                return null;
+            }
+            catch (StaleElementReferenceException)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Safely retrieves text from a dynamic row by ID.
+        /// </summary>
+        private string? SafelyGetRowText(string rowId)
+        {
+            try
+            {
+                return GetReviewTableCellByRowId(rowId).Text.Trim();
+            }
+            catch (NoSuchElementException)
+            {
+                return null;
+            }
+            catch (StaleElementReferenceException)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Safely retrieves text from a row using helper method.
+        /// </summary>
+        private string? SafelyGetRowCellText(string rowId)
+        {
+            try
+            {
+                var row = GetRowById(rowId);
+                return GetCheckStatusCellFromRow(row).Text.Trim();
+            }
+            catch (NoSuchElementException)
+            {
+                return null;
+            }
+            catch (StaleElementReferenceException)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Safely retrieves text from a cell by row ID and cell index.
+        /// </summary>
+        private string? SafelyGetRowCellByIndex(string rowId, int cellIndex)
+        {
+            try
+            {
+                var row = GetRowById(rowId);
+                var cells = GetTableCellsFromRow(row);
+                return cells.Count > cellIndex ? cells.ElementAt(cellIndex).Text.Trim() : null;
+            }
+            catch (NoSuchElementException)
+            {
+                return null;
+            }
+            catch (StaleElementReferenceException)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Safely retrieves and formats date as "dd MM yyyy" by locator.
+        /// </summary>
+        private string? SafelyGetFormattedDateByLocator(By locator)
+        {
+            try
+            {
+                var element = _driver.FindElement(locator);
+                var text = element.Text.Trim();
+                if (DateTime.TryParse(text, out DateTime date))
+                {
+                    return date.ToString("dd MM yyyy");
+                }
+                return text;
+            }
+            catch (NoSuchElementException)
+            {
+                return null;
+            }
+            catch (StaleElementReferenceException)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Safely finds elements by XPath, returning empty collection if not found.
+        /// </summary>
+        private IReadOnlyCollection<IWebElement> SafelyFindElements(By locator)
+        {
+            try
+            {
+                return _driver.FindElements(locator);
+            }
+            catch (NoSuchElementException)
+            {
+                return Array.Empty<IWebElement>();
+            }
+            catch (StaleElementReferenceException)
+            {
+                return Array.Empty<IWebElement>();
+            }
+        }
+
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -107,15 +235,13 @@ namespace Defra.UI.Tests.Pages.Classes
         // Border Control Post
         public string? GetBorderControlPostReference()
         {
-            try { return borderControlPostReference.Text.Trim(); }
-            catch { return null; }
+            return SafelyGetElementText(borderControlPostReference);
         }
 
         // Checks - Documentary
         public string? GetDocumentaryCheckDecision()
         {
-            try { return GetReviewTableCellByRowId("parttwo/consignmentcheck").Text.Trim(); }
-            catch { return null; }
+            return SafelyGetRowText("parttwo/consignmentcheck");
         }
 
         // Checks - Identity (handles both CHED-A and CHED-P)
@@ -126,217 +252,200 @@ namespace Defra.UI.Tests.Pages.Classes
                 var row = GetRowById("consignmentcheck/identitycheckdone");
                 return GetCheckTypeHeaderFromRow(row).Text.Trim();
             }
-            catch { return null; }
+            catch (NoSuchElementException)
+            {
+                return null;
+            }
+            catch (StaleElementReferenceException)
+            {
+                return null;
+            }
         }
 
         public string? GetIdentityCheckDecision()
         {
-            try
-            {
-                // Try CHED-P first (consignmentcheck/identitycheckdone)
-                return GetReviewTableCellByRowId("consignmentcheck/identitycheckdone").Text.Trim();
-            }
-            catch
-            {
-                try
-                {
-                    // Fallback to CHED-A (consignmentcheck/identitycheckresult)
-                    return GetReviewTableCellByRowId("consignmentcheck/identitycheckresult").Text.Trim();
-                }
-                catch { return null; }
-            }
+            // Try CHED-P first
+            var result = SafelyGetRowText("consignmentcheck/identitycheckdone");
+            if (result != null) return result;
+
+            // Fallback to CHED-A
+            return SafelyGetRowText("consignmentcheck/identitycheckresult");
         }
 
         // Checks - Physical
         public string? GetPhysicalCheckDecision()
         {
-            try
-            {
-                // Try CHED-P first (consignmentcheck/physicalcheckdone)
-                return GetReviewTableCellByRowId("consignmentcheck/physicalcheckdone").Text.Trim();
-            }
-            catch
-            {
-                try
-                {
-                    // Fallback to CHED-A (consignmentcheck/physicalcheckresult)
-                    return GetReviewTableCellByRowId("consignmentcheck/physicalcheckresult").Text.Trim();
-                }
-                catch { return null; }
-            }
+            // Try CHED-P first
+            var result = SafelyGetRowText("consignmentcheck/physicalcheckdone");
+            if (result != null) return result;
+
+            // Fallback to CHED-A
+            return SafelyGetRowText("consignmentcheck/physicalcheckresult");
         }
 
-        // Checks - Animals
+        // Checks - Animals (CHED-A only)
         public string? GetNumberOfAnimalsChecked()
         {
-            try { return GetReviewTableCellByRowId("consignmentcheck/numberofanimalschecked").Text.Trim(); }
-            catch { return null; }
+            return SafelyGetRowText("consignmentcheck/numberofanimalschecked");
         }
 
         public string? GetWelfareCheckDecision()
         {
-            try { return GetReviewTableCellByRowId("consignmentcheck/welfarecheck").Text.Trim(); }
-            catch { return null; }
+            return SafelyGetRowText("consignmentcheck/welfarecheck");
         }
 
-        // Impact of transport - Dead Animals
+        // Impact of transport - Dead Animals (CHED-A only)
         public string? GetNumberOfDeadAnimals()
         {
-            try
-            {
-                var row = GetRowById("impactoftransportonanimals/numberofdeadanimals");
-                return GetCheckStatusCellFromRow(row).Text.Trim();
-            }
-            catch { return null; }
+            return SafelyGetRowCellText("impactoftransportonanimals/numberofdeadanimals");
         }
 
         public string? GetNumberOfDeadAnimalsUnit()
         {
-            try
-            {
-                var row = GetRowById("impactoftransportonanimals/numberofdeadanimals");
-                var cells = GetTableCellsFromRow(row);
-                return cells.Count > 1 ? cells.ElementAt(1).Text.Trim() : null;
-            }
-            catch { return null; }
+            return SafelyGetRowCellByIndex("impactoftransportonanimals/numberofdeadanimals", 1);
         }
 
-        // Impact of transport - Unfit Animals
+        // Impact of transport - Unfit Animals (CHED-A only)
         public string? GetNumberOfUnfitAnimals()
         {
-            try
-            {
-                var row = GetRowById("impactoftransportonanimals/numberofunfitanimals");
-                return GetCheckStatusCellFromRow(row).Text.Trim();
-            }
-            catch { return null; }
+            return SafelyGetRowCellText("impactoftransportonanimals/numberofunfitanimals");
         }
 
         public string? GetNumberOfUnfitAnimalsUnit()
         {
-            try
-            {
-                var row = GetRowById("impactoftransportonanimals/numberofunfitanimals");
-                var cells = GetTableCellsFromRow(row);
-                return cells.Count > 1 ? cells.ElementAt(1).Text.Trim() : null;
-            }
-            catch { return null; }
+            return SafelyGetRowCellByIndex("impactoftransportonanimals/numberofunfitanimals", 1);
         }
 
-        // Impact of transport - Births/Abortions
+        // Impact of transport - Births/Abortions (CHED-A only)
         public string? GetNumberOfBirthsOrAbortions()
         {
-            try
-            {
-                var row = GetRowById("impactoftransportonanimals/numberofbirthsorabortions");
-                return GetCheckStatusCellFromRow(row).Text.Trim();
-            }
-            catch { return null; }
+            return SafelyGetRowCellText("impactoftransportonanimals/numberofbirthsorabortions");
         }
 
         // Seal Numbers
         public string? GetSealNumbersStatus()
         {
-            try { return sealNumbersStatus.Text.Trim(); }
-            catch { return null; }
+            return SafelyGetElementText(sealNumbersStatus);
         }
 
         // Laboratory Tests
         public string? GetLaboratoryTestsRequired()
         {
-            try { return GetReviewTableCellByRowId("parttwo/laboratorytestsrequired").Text.Trim(); }
-            catch { return null; }
+            return SafelyGetRowText("parttwo/laboratorytestsrequired");
         }
 
-        // Documents
+        // Documents - Health Certificate (CHED-A only)
         public string? GetHealthCertificateReference()
         {
-            try { return healthCertificateReference.Text.Trim(); }
-            catch { return null; }
+            return SafelyGetElementTextByLocator(By.Id("latest-health-document-reference"));
         }
 
         public string? GetHealthCertificateDateOfIssue()
         {
-            try
-            {
-                var text = healthCertificateDateOfIssue.Text.Trim();
-                if (DateTime.TryParse(text, out DateTime date))
-                {
-                    return date.ToString("dd MM yyyy");
-                }
-                return text;
-            }
-            catch { return null; }
+            return SafelyGetFormattedDateByLocator(By.Id("latest-health-document-issue-date"));
         }
 
+        public string? GetHealthCertificateFileName()
+        {
+            return SafelyGetElementTextByLocator(By.XPath("//table[@id='latest-health-document-table']//a[contains(@id,'attachment-view')]"));
+        }
+
+        // Documents - Additional Documents
         public string? GetAdditionalDocumentType()
         {
             try
             {
-                var rows = accompanyingDocumentsTableRows;
-                return rows.Count > 0 ? rows.First().FindElements(By.TagName("td"))[0].Text.Trim() : null;
+                var rows = SafelyFindElements(By.XPath("//table[@id='accompanying-documents-table']//tbody//tr"));
+                if (rows.Count > 0)
+                {
+                    var cells = rows.First().FindElements(By.TagName("td"));
+                    return cells.Count > 0 ? cells[0].Text.Trim() : null;
+                }
+                return null;
             }
-            catch { return null; }
+            catch (NoSuchElementException)
+            {
+                return null;
+            }
+            catch (StaleElementReferenceException)
+            {
+                return null;
+            }
         }
 
         public string? GetAdditionalDocumentReference()
         {
             try
             {
-                var rows = accompanyingDocumentsTableRows;
-                return rows.Count > 0 ? rows.First().FindElements(By.TagName("td"))[1].Text.Trim() : null;
+                var rows = SafelyFindElements(By.XPath("//table[@id='accompanying-documents-table']//tbody//tr"));
+                if (rows.Count > 0)
+                {
+                    var cells = rows.First().FindElements(By.TagName("td"));
+                    return cells.Count > 1 ? cells[1].Text.Trim() : null;
+                }
+                return null;
             }
-            catch { return null; }
+            catch (NoSuchElementException)
+            {
+                return null;
+            }
+            catch (StaleElementReferenceException)
+            {
+                return null;
+            }
         }
 
         public string? GetAdditionalDocumentDateOfIssue()
         {
             try
             {
-                var rows = accompanyingDocumentsTableRows;
+                var rows = SafelyFindElements(By.XPath("//table[@id='accompanying-documents-table']//tbody//tr"));
                 if (rows.Count > 0)
                 {
-                    var text = rows.First().FindElements(By.TagName("td"))[2].Text.Trim();
-                    if (DateTime.TryParse(text, out DateTime date))
+                    var cells = rows.First().FindElements(By.TagName("td"));
+                    if (cells.Count > 2)
                     {
-                        return date.ToString("dd MM yyyy");
+                        var text = cells[2].Text.Trim();
+                        if (DateTime.TryParse(text, out DateTime date))
+                        {
+                            return date.ToString("dd MM yyyy");
+                        }
+                        return text;
                     }
-                    return text;
                 }
                 return null;
             }
-            catch { return null; }
-        }
-
-        public string? GetHealthCertificateFileName()
-        {
-            try { return healthCertificateFileName.Text.Trim(); }
-            catch { return null; }
+            catch (NoSuchElementException)
+            {
+                return null;
+            }
+            catch (StaleElementReferenceException)
+            {
+                return null;
+            }
         }
 
         public string? GetAdditionalDocumentFileName()
         {
-            try { return additionalDocumentFileName.Text.Trim(); }
-            catch { return null; }
+            return SafelyGetElementTextByLocator(By.XPath("//table[@id='accompanying-documents-table']//a[contains(@id,'attachment-')]"));
         }
 
         // Decision
         public string? GetAcceptanceDecision()
         {
-            try { return acceptanceDecision.Text.Trim(); }
-            catch { return null; }
+            return SafelyGetElementText(acceptanceDecision);
         }
 
+        // CHED-A specific
         public string? GetCertifiedFor()
         {
-            try { return certifiedFor.Text.Trim(); }
-            catch { return null; }
+            return SafelyGetElementTextByLocator(By.XPath("//td[@id='certified_for']//following-sibling::td"));
         }
 
+        // CHED-P specific
         public string? GetConsignmentUse()
         {
-            try { return consignmentUse.Text.Trim(); }
-            catch { return null; }
+            return SafelyGetElementTextByLocator(By.XPath("//tr[@id='decision/consignmentacceptable']//td[contains(@class, 'check-status')]"));
         }
 
         // Controlled Destination
@@ -344,39 +453,55 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             try
             {
-                var fullText = controlledDestinationDetails.Text.Trim();
+                var element = _driver.FindElement(By.XPath("//tr[@id='controlled-destination']//td[@class='govuk-table__cell']"));
+                var fullText = element.Text.Trim();
                 return ExtractNameFromText(fullText);
             }
-            catch { return null; }
+            catch (NoSuchElementException)
+            {
+                return null;
+            }
+            catch (StaleElementReferenceException)
+            {
+                return null;
+            }
         }
 
         public string? GetControlledDestinationAddress()
         {
             try
             {
-                var fullText = controlledDestinationDetails.Text.Trim();
+                var element = _driver.FindElement(By.XPath("//tr[@id='controlled-destination']//td[@class='govuk-table__cell']"));
+                var fullText = element.Text.Trim();
                 return ExtractAddressFromText(fullText);
             }
-            catch { return null; }
+            catch (NoSuchElementException)
+            {
+                return null;
+            }
+            catch (StaleElementReferenceException)
+            {
+                return null;
+            }
         }
 
         // Helper methods for text extraction
         private string ExtractNameFromText(string? fullText)
         {
             if (string.IsNullOrEmpty(fullText))
-                return "";
+                return string.Empty;
 
             var lines = fullText.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-            return lines.Length > 0 ? lines[0].Trim() : "";
+            return lines.Length > 0 ? lines[0].Trim() : string.Empty;
         }
 
         private string ExtractAddressFromText(string? fullText)
         {
             if (string.IsNullOrEmpty(fullText))
-                return "";
+                return string.Empty;
 
             var lines = fullText.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-            return lines.Length > 1 ? lines[1].Trim() : "";
+            return lines.Length > 1 ? lines[1].Trim() : string.Empty;
         }
     }
 }
