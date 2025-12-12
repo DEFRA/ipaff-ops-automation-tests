@@ -1,6 +1,4 @@
-﻿using OpenQA.Selenium;
-
-namespace Defra.UI.Tests.Pages.Interfaces
+﻿namespace Defra.UI.Tests.Pages.Interfaces
 {
     public interface ILatestHealthCertificatePage
     {
@@ -10,5 +8,6 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void ClickAddAttachmentLink();
         void AddHealthCertificate(string fileName);
         string GetFileName { get; }
+        string GetDocumentIssueDate();
     }
 }

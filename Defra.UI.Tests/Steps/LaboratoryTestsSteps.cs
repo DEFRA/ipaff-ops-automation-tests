@@ -3,7 +3,7 @@ using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;
 
-namespace Defra.UI.Tests.Steps.CP
+namespace Defra.UI.Tests.Steps.IPAFF
 {
     [Binding]
     public class LaboratoryTestsSteps

@@ -2,12 +2,10 @@
 using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
-using Defra.UI.Tests.Pages.Classes;
 using AventStack.ExtentReports.Gherkin.Model;
-using DocumentFormat.OpenXml.Drawing.Charts;
 
 
-namespace Defra.UI.Tests.Steps.CP
+namespace Defra.UI.Tests.Steps.IPAFF
 {
     [Binding]
     public class BTMSSearchResultSteps

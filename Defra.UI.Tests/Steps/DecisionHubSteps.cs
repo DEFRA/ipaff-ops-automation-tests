@@ -1,10 +1,9 @@
 ﻿using Reqnroll.BoDi;
 using NUnit.Framework;
-using OpenQA.Selenium;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
 
-namespace Defra.UI.Tests.Steps.CP
+namespace Defra.UI.Tests.Steps.IPAFF
 {
     [Binding]
     public class DecisionHubSteps
@@ -41,7 +40,25 @@ namespace Defra.UI.Tests.Steps.CP
         [When("the user clicks Local reference number link in Record checks")]
         public void WhenTheUserClicksLocalReferenceNumberLinkInRecordChecks()
         {
-            decisionHubPage?.ClickLocalReferenceNumberLink();
+            decisionHubPage?.ClickLocalRefNumLink();
+        }
+
+        [When("the user clicks Seal numbers link")]
+        public void WhenTheUserClicksSealNumbersLink()
+        {
+            decisionHubPage?.ClickSealNumbersLink();
+        }
+
+        [When("the user clicks Laboratory tests link")]
+        public void WhenTheUserClicksLaboratoryTestsLink()
+        {
+            decisionHubPage?.ClickLaboratoryTestsLink();
+        }
+
+        [When("the user clicks Decision link")]
+        public void WhenTheUserClicksDecisionLink()
+        {
+            decisionHubPage?.ClickDecisionLink();
         }
     }
 }

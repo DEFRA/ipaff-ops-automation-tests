@@ -7,10 +7,6 @@ using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
 using SeleniumExtras.WaitHelpers;
-using Microsoft.Dynamics365.UIAutomation.Browser;
-using System.Collections.ObjectModel;
-using Defra.Trade.Plants.SpecFlowBindings.Helpers;
-using Faker;
 
 namespace Defra.UI.Tests.Pages.Classes
 {
@@ -26,10 +22,11 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtDay => _driver.WaitForElement(By.Name("latest-vet-health-cert-issue-date-day"));
         private IWebElement txtMonth => _driver.WaitForElement(By.Name("latest-vet-health-cert-issue-date-month"));
         private IWebElement txtYear => _driver.WaitForElement(By.Name("latest-vet-health-cert-issue-date-year"));
-        private IWebElement addAttachmentLink => _driver.WaitForElement(By.Id("add-attachment-latest-health-cert"));
-        private IWebElement fileName => _driver.WaitForElement(By.XPath("//a[contains(@id,'attachment-view-')]"));
         private IWebElement nextButton => _driver.WaitForElement(By.Id("next-button"));
-
+        private IWebElement addAttachmentLink => _driver.WaitForElement(By.Id("add-attachment-latest-health-cert"));
+        private By documentDateBy => By.XPath("//div[contains(@id,'additional-document-date-value')]");
+        private IWebElement documentDate => _driver.WaitForElement(documentDateBy);
+        private IWebElement fileName => _driver.WaitForElement(By.XPath("//a[contains(@id,'attachment-view-')]"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -63,8 +60,6 @@ namespace Defra.UI.Tests.Pages.Classes
             txtYear.SendKeys(year);
         }
 
-        public void ClickAddAttachmentLink() => addAttachmentLink.Click();
-
         public void AddHealthCertificate(string fileName)
         {
             var attachmentsLocator = _driver.FindElement(By.XPath("//input[@id='fileUpload']"));
@@ -86,5 +81,19 @@ namespace Defra.UI.Tests.Pages.Classes
         }
 
         public string GetFileName => fileName.Text;
+
+        public void ClickAddAttachmentLink() => addAttachmentLink.Click();
+
+        public string GetDocumentIssueDate()
+        {
+            _driver.WaitForElementCondition(ExpectedConditions.ElementIsVisible(documentDateBy));
+            var text = documentDate.Text.Trim();
+            // Convert "1 January 2026" to "01 01 2026" format
+            if (DateTime.TryParse(text, out DateTime date))
+            {
+                return date.ToString("dd MM yyyy");
+            }
+            return string.Empty;
+        }
     }
 }

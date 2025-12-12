@@ -1,11 +1,10 @@
 ﻿using Reqnroll.BoDi;
 using NUnit.Framework;
-using OpenQA.Selenium;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
-using Defra.UI.Tests.Pages.Classes;
 
-namespace Defra.UI.Tests.Steps.CP
+
+namespace Defra.UI.Tests.Steps.IPAFF
 {
     [Binding]
     public class SearchExistingDestinationSteps
@@ -31,7 +30,7 @@ namespace Defra.UI.Tests.Steps.CP
         [When("the user selects a place of destination with a UK country")]
         public void WhenTheUserSelectsAPlaceOfDestinationWithAUKCountry()
         {
-            _scenarioContext.Add("PlaceOfDestination", searchExistingDestinationPage.GetSelectedPlaceOfDestination());
+            _scenarioContext.Add("PlaceOfDestinationDetails", searchExistingDestinationPage.GetSelectedPlaceOfDestination());
             searchExistingDestinationPage?.ClickSelect();
         }
 

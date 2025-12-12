@@ -1,14 +1,11 @@
-﻿using Reqnroll.BoDi;
-using Defra.UI.Tests.Data.Users;
-using Defra.UI.Tests.Tools;
+﻿using Defra.UI.Tests.Pages.Classes;
+using Defra.UI.Tests.Pages.Interfaces;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using Reqnroll;
-using Defra.UI.Tests.Pages.Classes;
-using Defra.UI.Tests.Pages.Interfaces;
-using DocumentFormat.OpenXml.Drawing.Charts;
+using Reqnroll.BoDi;
 
-namespace Defra.UI.Tests.Steps.CP
+namespace Defra.UI.Tests.Steps.IPAFF
 {
     [Binding]
     public class LatestHealthCertificateSteps
@@ -18,7 +15,7 @@ namespace Defra.UI.Tests.Steps.CP
 
         private IWebDriver? _driver => _objectContainer.IsRegistered<IWebDriver>() ? _objectContainer.Resolve<IWebDriver>() : null;
         private ILatestHealthCertificatePage? latestHealthCertificatePage => _objectContainer.IsRegistered<ILatestHealthCertificatePage>() ? _objectContainer.Resolve<ILatestHealthCertificatePage>() : null;
-
+        private IAccompanyingDocumentsPage? accompanyingDocumentsPage => _objectContainer.IsRegistered<IAccompanyingDocumentsPage>() ? _objectContainer.Resolve<IAccompanyingDocumentsPage>() : null;
         public LatestHealthCertificateSteps(ScenarioContext context, IObjectContainer container)
         {
             _objectContainer = container;
@@ -38,8 +35,8 @@ namespace Defra.UI.Tests.Steps.CP
             _scenarioContext.Add("HealthCertificateReference", reference);
         }
 
-        [When("the user enters Latest Health Certificate date of issue {string}{string}{string}")]
-        public void WhenTheUserEntersDateOfIssue(string day, string month, string year)
+        [When("the user enters Latest Health Certificate date of issue {string}{string}{string}")]    
+        public void WhenTheUserEntersLatestHealthCertificateDateOfIssue(string day, string month, string year)
         {
             latestHealthCertificatePage?.EnterDateOfIssue(day, month, year);
             var dateofIssue = day + " " + month + " " + year;
@@ -87,6 +84,31 @@ namespace Defra.UI.Tests.Steps.CP
                 isMatch,
                 $"The Veterinary Health Certificate upload has failed. Expected '{expectedFileName}', but got '{displayedFileName}'"
             );
+        }
+
+        [When("the user clicks Latest Health Certificate add attachment link")]
+        public void WhenTheUserClicksLatestHealthCertificateAddAttachmentLink()
+        {
+            latestHealthCertificatePage?.ClickAddAttachmentLink();
+        }
+
+        [When("the user uploads the Latest Health Certificate document {string} in the format {string}")]
+        public void WhenTheUserUploadsTheLatestHealthCertificateDocumentInTheFormat(string name, string format)
+        {
+            var filename = name + format;
+            accompanyingDocumentsPage?.AddAccompanyingDocument(filename);
+            _scenarioContext.Add("LatestHealthCertificateDocumentName", filename);
+        }
+
+        [Then("the Latest Health Certificate document {string} {string} is uploaded successfully")]
+        public void ThenTheLatestHealthCertificateDocumentIsUploadedSuccessfully(string name, string format)
+        {
+            var filename = name + format;
+            Assert.True(latestHealthCertificatePage?.GetFileName.Contains(filename), "The accompanying document upload has failed");
+
+            //The date selected from date picker gets populated only after the document is uploaded. Hence, we are adding date to scenario context after attaching the document.
+            var dateOfIssue = latestHealthCertificatePage?.GetDocumentIssueDate();
+            _scenarioContext.Add("LatestHealthCertificateDocumentDateOfIssue", dateOfIssue);
         }
     }
 }

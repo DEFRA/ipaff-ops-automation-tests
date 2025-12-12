@@ -16,5 +16,6 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void EnterNumberOfDeadAnimals(string numberOfDeadAnimals, string unit);
         void EnterNumberOfUnfitAnimals(string numberOfUnfitAnimals, string unit);
         void EnterNumberOfBirthsOrAbortions(string numberOfBirths);
+        void ClickSaveAndReturn();
     }
 }
