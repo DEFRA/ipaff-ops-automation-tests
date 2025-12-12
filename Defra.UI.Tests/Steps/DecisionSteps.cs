@@ -42,5 +42,22 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             Assert.True(decisionPage?.VerifyPrepopulatedTransitDetails(exitBCP, transitedCountry, destinationCountry));
         }
+
+        [When("the user selects {string} {string} in decision page")]
+        public void WhenTheUserSelectsInDecisionPage(string subOption, string decision)
+        {
+            decisionPage?.SelectDecision(subOption, decision);
+            _scenarioContext.Add("RefusalDecision", subOption);
+        }
+
+        [When("the user enters currendate in decision page")]
+        public void WhenTheUserEntersCurrendateInDecisionPage()
+        {
+            var currentDate = DateTime.Now;
+            var day = currentDate.Day.ToString();
+            var month = currentDate.Month.ToString();
+            var year = currentDate.Year.ToString();
+            decisionPage?.EnterCurrentDateInDecisionPage(day, month, year);
+        }
     }
 }

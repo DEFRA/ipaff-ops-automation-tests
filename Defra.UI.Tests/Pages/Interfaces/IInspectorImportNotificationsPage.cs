@@ -4,6 +4,8 @@
     {
         bool IsPageLoaded();
         void SearchForChed(string chedRef);
+        bool VerifyNotificationIsPresent(string chedRef);
         void VerifyNotificationStatus(string chedRef, string status);
+        void ClickViewCHED();
     }
 }

@@ -1,4 +1,5 @@
-﻿using Defra.UI.Tests.Pages.Interfaces;
+﻿using Defra.UI.Tests.Pages.Classes;
+using Defra.UI.Tests.Pages.Interfaces;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using Reqnroll;
@@ -14,7 +15,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
         private IWebDriver? _driver => _objectContainer.IsRegistered<IWebDriver>() ? _objectContainer.Resolve<IWebDriver>() : null;
         private ILatestHealthCertificatePage? latestHealthCertificatePage => _objectContainer.IsRegistered<ILatestHealthCertificatePage>() ? _objectContainer.Resolve<ILatestHealthCertificatePage>() : null;
-
+        private IAccompanyingDocumentsPage? accompanyingDocumentsPage => _objectContainer.IsRegistered<IAccompanyingDocumentsPage>() ? _objectContainer.Resolve<IAccompanyingDocumentsPage>() : null;
         public LatestHealthCertificateSteps(ScenarioContext context, IObjectContainer container)
         {
             _objectContainer = container;
@@ -42,11 +43,29 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext.Add("HealthCertificateDateOfIssue", dateofIssue);
         }
 
-        [When("the user adds Latest Health Certificate attachment")]
-        public void WhenTheUserAddsLatestHealthCertificateAttachment()
+        [When("the user clicks Latest Health Certificate add attachment link")]
+        public void WhenTheUserClicksLatestHealthCertificateAddAttachmentLink()
         {
-            throw new PendingStepException();
+            latestHealthCertificatePage?.ClickAddAttachmentLink();
         }
 
+        [When("the user uploads the Latest Health Certificate document {string} in the format {string}")]
+        public void WhenTheUserUploadsTheLatestHealthCertificateDocumentInTheFormat(string name, string format)
+        {
+            var filename = name + format;
+            accompanyingDocumentsPage?.AddAccompanyingDocument(filename);
+            _scenarioContext.Add("LatestHealthCertificateDocumentName", filename);
+        }
+
+        [Then("the Latest Health Certificate document {string} {string} is uploaded successfully")]
+        public void ThenTheLatestHealthCertificateDocumentIsUploadedSuccessfully(string name, string format)
+        {
+            var filename = name + format;
+            Assert.True(latestHealthCertificatePage?.GetFileName.Contains(filename), "The accompanying document upload has failed");
+
+            //The date selected from date picker gets populated only after the document is uploaded. Hence, we are adding date to scenario context after attaching the document.
+            var dateOfIssue = latestHealthCertificatePage?.GetDocumentIssueDate();
+            _scenarioContext.Add("LatestHealthCertificateDocumentDateOfIssue", dateOfIssue);
+        }
     }
 }
