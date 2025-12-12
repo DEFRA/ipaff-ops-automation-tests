@@ -16,6 +16,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement lnkSaveAndSetAsInProgress => _driver.WaitForElement(By.Id("set-in-progress"));
         private IWebElement txtUpdatedStatus => _driver.WaitForElement(By.Id("Status-Label"));
         private IWebElement lnkLocalRefNum => _driver.WaitForElement(By.XPath("//a[normalize-space()='Local reference number']"));
+        private IWebElement lnkSealNumbers => _driver.WaitForElement(By.XPath("//a[normalize-space()='Seal numbers']"));
+        private IWebElement lnkLaboratoryTests => _driver.WaitForElement(By.XPath("//a[normalize-space()='Laboratory tests']"));
+        private IWebElement lnkDecision => _driver.WaitForElement(By.Id("button-decision-notification"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -40,9 +43,24 @@ namespace Defra.UI.Tests.Pages.Classes
             return txtUpdatedStatus.Text.Trim().Equals(statusInProgress);
         }
 
-        public void ClickLocalReferenceNumberLink()
+        public void ClickLocalRefNumLink()
         {
             lnkLocalRefNum.Click();
+        }
+
+        public void ClickSealNumbersLink()
+        {
+            lnkSealNumbers.Click();
+        }
+
+        public void ClickLaboratoryTestsLink()
+        {
+            lnkLaboratoryTests.Click();
+        }
+
+        public void ClickDecisionLink()
+        {
+            lnkDecision.Click();
         }
     }
 }

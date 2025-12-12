@@ -8,6 +8,7 @@ namespace Defra.UI.Tests.Pages.Interfaces
         string GetCHEDReferenceWithVersion();
         string GetOutcome();
         bool IsViewOrPrintCHEDButtonDisplayed();
+        void ClickReturnToYourDashboard();
         void ClickViewOrPrintCHED();
     }
 }

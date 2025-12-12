@@ -34,6 +34,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtNumberOfUnfitAnimals => _driver.FindElement(By.Id("number-of-unfit-animals"));
         private IWebElement ddlNumberOfUnfitAnimalsUnit => _driver.FindElement(By.Id("number-of-unfit-animals-unit"));
         private IWebElement txtNumberOfBirthsOrAbortions => _driver.FindElement(By.Id("number-of-birth-or-abortion"));
+        private IWebElement btnSaveAndReturn => _driver.FindElement(By.Id("button-save-and-return"));
+
         // Dynamic elements
         private IWebElement GetIdentityCheckRadioButton(string decision) =>
             _driver.FindElement(
@@ -188,6 +190,11 @@ namespace Defra.UI.Tests.Pages.Classes
                 txtNumberOfBirthsOrAbortions.Clear();
                 txtNumberOfBirthsOrAbortions.SendKeys(numberOfBirths);
             }
+        }
+
+        public void ClickSaveAndReturn()
+        {
+            btnSaveAndReturn.Click();
         }
     }
 }

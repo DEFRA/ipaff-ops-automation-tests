@@ -6,7 +6,8 @@ using Reqnroll;
 using Reqnroll.BoDi;
 using System.Globalization;
 
-namespace Defra.UI.Tests.Steps.CP
+
+namespace Defra.UI.Tests.Steps.IPAFF
 {
     [Binding]
     public class AccompanyingDocumentsSteps
