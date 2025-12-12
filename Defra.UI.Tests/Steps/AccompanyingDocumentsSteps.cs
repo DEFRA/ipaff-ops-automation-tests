@@ -79,7 +79,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the document {string} {string} is uploaded successfully")]
         public void ThenTheDocumentIsUploadedSuccessfully(string name, string format)
         {
-            var expectedFileName = _scenarioContext.Get<string>("DocumentName");
+            var expectedFileName = name + format;
             var displayedFileName = accompanyingDocumentsPage?.GetFileName;
 
             // Handle filename truncation - the UI truncates long filenames but keeps the extension
