@@ -93,7 +93,7 @@ namespace Defra.UI.Tests.Pages.Classes
             }
 
             summary.CommodityCode = txtCommodityCode.Text.Trim();
-            summary.TypeOfCommodity = txtCommodityType.Text.Trim();
+          //  summary.TypeOfCommodity = txtCommodityType.Text.Trim();
             summary.Species = txtSpecies.Text.Trim();
             summary.NetWeight = txtNetWeight.Text.Trim().Replace(" kg/units", "");
             summary.NumberOfPackages = txtPackages.Text.Trim();

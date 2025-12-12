@@ -1,13 +1,9 @@
 ﻿using Reqnroll.BoDi;
 using NUnit.Framework;
-using OpenQA.Selenium;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
-using Defra.UI.Tests.Pages.Classes;
-using System.ComponentModel;
-using DocumentFormat.OpenXml.Drawing.Charts;
 
-namespace Defra.UI.Tests.Steps.CP
+namespace Defra.UI.Tests.Steps.IPAFF
 {
     [Binding]
     public class DocumentaryCheckSteps
@@ -28,10 +24,11 @@ namespace Defra.UI.Tests.Steps.CP
         [Then("the Documentary check page should be displayed")]
         public void ThenTheDocumentaryCheckPageShouldBeDisplayed()
         {
-            Assert.True(documentaryCheckPage?.IsPageLoaded());
+            Assert.True(documentaryCheckPage?.IsPageLoaded(), "Documentary check page is not displayed");
         }
 
 
+        [When("the user selects {string} for the Documentary check and clicks Save and continue")]
         [When("the user selects {string} for the documentary check and clicks Save and continue")]
         public void WhenTheUserSelectsForTheDocumentaryCheckAndClicksSaveAndContinue(string decision)
         {

@@ -1,12 +1,9 @@
 ﻿using Reqnroll.BoDi;
 using NUnit.Framework;
-using OpenQA.Selenium;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
-using Defra.UI.Tests.Pages.Classes;
-using System.ComponentModel;
 
-namespace Defra.UI.Tests.Steps.CP
+namespace Defra.UI.Tests.Steps.IPAFF
 {
     [Binding]
     public class LocalReferenceNumberSteps
@@ -34,6 +31,7 @@ namespace Defra.UI.Tests.Steps.CP
         public void WhenTheUserEntersALocalReferenceNumberAndClicksSaveAndContinue()
         {
             var customDeclarionRef = _scenarioContext.Get<string>("CustomsDeclarationReference");
+            _scenarioContext.Add("BorderControlPostReference", customDeclarionRef);
             localReferenceNumberPage?.EnterLocalReferenceNumber(customDeclarionRef);
             localReferenceNumberPage?.ClickSaveAndContinue();
         }

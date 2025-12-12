@@ -7,6 +7,9 @@ namespace Defra.UI.Tests.Pages.Interfaces
         bool IsPageLoaded();
         void ClickSaveAndSetAsInProgress();
         bool VerifyStatusUpdate(string stausNew, string statusInProgress);
-        void ClickLocalReferenceNumberLink();
+        void ClickLocalRefNumLink();
+        void ClickSealNumbersLink();
+        void ClickLaboratoryTestsLink();
+        void ClickDecisionLink();
     }
 }
