@@ -32,6 +32,22 @@ namespace Defra.UI.Tests.Pages.Classes
         // Seal Numbers
         private IWebElement sealNumbersStatus => _driver.FindElement(By.Id("notifications-not-found"));
 
+        // Health Certificate Locators (CHED-A only)
+        private By healthCertificateReferenceBy => By.Id("latest-health-document-reference");
+        private By healthCertificateDateOfIssueBy => By.Id("latest-health-document-issue-date");
+        private By healthCertificateFileNameBy => By.XPath("//table[@id='latest-health-document-table']//a[contains(@id,'attachment-view')]");
+
+        // Decision Locators (CHED-specific)
+        private By certifiedForBy => By.XPath("//td[@id='certified_for']//following-sibling::td");
+        private By consignmentUseBy => By.XPath("//tr[@id='decision/consignmentacceptable']//td[contains(@class, 'check-status')]");
+
+        // Additional Documents Locators
+        private By accompanyingDocumentsTableRowsBy => By.XPath("//table[@id='accompanying-documents-table']//tbody//tr");
+        private By additionalDocumentFileNameBy => By.XPath("//table[@id='accompanying-documents-table']//a[contains(@id,'attachment-')]");
+
+        // Controlled Destination Locator
+        private By controlledDestinationDetailsBy => By.XPath("//tr[@id='controlled-destination']//td[@class='govuk-table__cell']");
+
         // Helper methods for dynamic row-based elements
         private IWebElement GetReviewTableCellByRowId(string rowId) =>
             _driver.FindElement(By.XPath($"//tr[@id='{rowId}']//td[contains(@class, 'check-status')]"));
@@ -176,7 +192,7 @@ namespace Defra.UI.Tests.Pages.Classes
         }
 
         /// <summary>
-        /// Safely finds elements by XPath, returning empty collection if not found.
+        /// Safely finds elements by locator, returning empty collection if not found.
         /// </summary>
         private IReadOnlyCollection<IWebElement> SafelyFindElements(By locator)
         {
@@ -191,6 +207,67 @@ namespace Defra.UI.Tests.Pages.Classes
             catch (StaleElementReferenceException)
             {
                 return Array.Empty<IWebElement>();
+            }
+        }
+
+        /// <summary>
+        /// Safely retrieves text from a specific cell in a table row collection.
+        /// </summary>
+        private string? SafelyGetTableCellText(By tableLocator, int rowIndex, int cellIndex)
+        {
+            try
+            {
+                var rows = SafelyFindElements(tableLocator);
+                if (rows.Count > rowIndex)
+                {
+                    var cells = rows.ElementAt(rowIndex).FindElements(By.TagName("td"));
+                    if (cells.Count > cellIndex)
+                    {
+                        return cells[cellIndex].Text.Trim();
+                    }
+                }
+                return null;
+            }
+            catch (NoSuchElementException)
+            {
+                return null;
+            }
+            catch (StaleElementReferenceException)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Safely retrieves and formats a date from a specific cell in a table row collection.
+        /// </summary>
+        private string? SafelyGetTableCellDateText(By tableLocator, int rowIndex, int cellIndex)
+        {
+            try
+            {
+                var rows = SafelyFindElements(tableLocator);
+                if (rows.Count > rowIndex)
+                {
+                    var cells = rows.ElementAt(rowIndex).FindElements(By.TagName("td"));
+                    if (cells.Count > cellIndex)
+                    {
+                        var text = cells[cellIndex].Text.Trim();
+                        if (DateTime.TryParse(text, out DateTime date))
+                        {
+                            return date.ToString("dd MM yyyy");
+                        }
+                        return text;
+                    }
+                }
+                return null;
+            }
+            catch (NoSuchElementException)
+            {
+                return null;
+            }
+            catch (StaleElementReferenceException)
+            {
+                return null;
             }
         }
 
@@ -337,97 +414,38 @@ namespace Defra.UI.Tests.Pages.Classes
         // Documents - Health Certificate (CHED-A only)
         public string? GetHealthCertificateReference()
         {
-            return SafelyGetElementTextByLocator(By.Id("latest-health-document-reference"));
+            return SafelyGetElementTextByLocator(healthCertificateReferenceBy);
         }
 
         public string? GetHealthCertificateDateOfIssue()
         {
-            return SafelyGetFormattedDateByLocator(By.Id("latest-health-document-issue-date"));
+            return SafelyGetFormattedDateByLocator(healthCertificateDateOfIssueBy);
         }
 
         public string? GetHealthCertificateFileName()
         {
-            return SafelyGetElementTextByLocator(By.XPath("//table[@id='latest-health-document-table']//a[contains(@id,'attachment-view')]"));
+            return SafelyGetElementTextByLocator(healthCertificateFileNameBy);
         }
 
         // Documents - Additional Documents
         public string? GetAdditionalDocumentType()
         {
-            try
-            {
-                var rows = SafelyFindElements(By.XPath("//table[@id='accompanying-documents-table']//tbody//tr"));
-                if (rows.Count > 0)
-                {
-                    var cells = rows.First().FindElements(By.TagName("td"));
-                    return cells.Count > 0 ? cells[0].Text.Trim() : null;
-                }
-                return null;
-            }
-            catch (NoSuchElementException)
-            {
-                return null;
-            }
-            catch (StaleElementReferenceException)
-            {
-                return null;
-            }
+            return SafelyGetTableCellText(accompanyingDocumentsTableRowsBy, 0, 0);
         }
 
         public string? GetAdditionalDocumentReference()
         {
-            try
-            {
-                var rows = SafelyFindElements(By.XPath("//table[@id='accompanying-documents-table']//tbody//tr"));
-                if (rows.Count > 0)
-                {
-                    var cells = rows.First().FindElements(By.TagName("td"));
-                    return cells.Count > 1 ? cells[1].Text.Trim() : null;
-                }
-                return null;
-            }
-            catch (NoSuchElementException)
-            {
-                return null;
-            }
-            catch (StaleElementReferenceException)
-            {
-                return null;
-            }
+            return SafelyGetTableCellText(accompanyingDocumentsTableRowsBy, 0, 1);
         }
 
         public string? GetAdditionalDocumentDateOfIssue()
         {
-            try
-            {
-                var rows = SafelyFindElements(By.XPath("//table[@id='accompanying-documents-table']//tbody//tr"));
-                if (rows.Count > 0)
-                {
-                    var cells = rows.First().FindElements(By.TagName("td"));
-                    if (cells.Count > 2)
-                    {
-                        var text = cells[2].Text.Trim();
-                        if (DateTime.TryParse(text, out DateTime date))
-                        {
-                            return date.ToString("dd MM yyyy");
-                        }
-                        return text;
-                    }
-                }
-                return null;
-            }
-            catch (NoSuchElementException)
-            {
-                return null;
-            }
-            catch (StaleElementReferenceException)
-            {
-                return null;
-            }
+            return SafelyGetTableCellDateText(accompanyingDocumentsTableRowsBy, 0, 2);
         }
 
         public string? GetAdditionalDocumentFileName()
         {
-            return SafelyGetElementTextByLocator(By.XPath("//table[@id='accompanying-documents-table']//a[contains(@id,'attachment-')]"));
+            return SafelyGetElementTextByLocator(additionalDocumentFileNameBy);
         }
 
         // Decision
@@ -439,13 +457,13 @@ namespace Defra.UI.Tests.Pages.Classes
         // CHED-A specific
         public string? GetCertifiedFor()
         {
-            return SafelyGetElementTextByLocator(By.XPath("//td[@id='certified_for']//following-sibling::td"));
+            return SafelyGetElementTextByLocator(certifiedForBy);
         }
 
         // CHED-P specific
         public string? GetConsignmentUse()
         {
-            return SafelyGetElementTextByLocator(By.XPath("//tr[@id='decision/consignmentacceptable']//td[contains(@class, 'check-status')]"));
+            return SafelyGetElementTextByLocator(consignmentUseBy);
         }
 
         // Controlled Destination
@@ -453,7 +471,7 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             try
             {
-                var element = _driver.FindElement(By.XPath("//tr[@id='controlled-destination']//td[@class='govuk-table__cell']"));
+                var element = _driver.FindElement(controlledDestinationDetailsBy);
                 var fullText = element.Text.Trim();
                 return ExtractNameFromText(fullText);
             }
@@ -471,7 +489,7 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             try
             {
-                var element = _driver.FindElement(By.XPath("//tr[@id='controlled-destination']//td[@class='govuk-table__cell']"));
+                var element = _driver.FindElement(controlledDestinationDetailsBy);
                 var fullText = element.Text.Trim();
                 return ExtractAddressFromText(fullText);
             }
