@@ -7,5 +7,8 @@ namespace Defra.UI.Tests.Pages.Interfaces
         bool IsPageLoaded();
         string GetCHEDReferenceWithVersion();
         string GetOutcome();
+        bool IsViewOrPrintCHEDButtonDisplayed();
+        void ClickReturnToYourDashboard();
+        void ClickViewOrPrintCHED();
     }
 }

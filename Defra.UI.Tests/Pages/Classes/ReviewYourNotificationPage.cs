@@ -46,10 +46,11 @@ namespace Defra.UI.Tests.Pages.Classes
         // Documents
         private IWebElement healthCertificateReference => _driver.FindElement(By.Id("latest-health-document-reference"));
         private IWebElement healthCertificateDateOfIssue => _driver.FindElement(By.Id("latest-health-document-issue-date"));
+        private IWebElement healthCertificateFileName => _driver.FindElement(By.XPath("//table[@id='latest-health-certificate-table']//a[contains(@id,'attachment-view')]"));
         private IWebElement additionalDocumentType => _driver.FindElement(By.Id("veterinary-document-type-1"));
         private IWebElement additionalDocumentReference => _driver.FindElement(By.Id("veterinary-document-reference-1"));
         private IWebElement additionalDocumentDateOfIssue => _driver.FindElement(By.Id("veterinary-document-issue-date-1"));
-        private IWebElement additionalDocumentName => _driver.FindElement(By.XPath("//a[contains(@id,'attachment-view')]"));
+        private IWebElement additionalDocumentFileName => _driver.FindElement(By.XPath("//table[@id='additional-documents-table']//a[contains(@id,'attachment-view')]"));
 
         // Addresses
         private IWebElement consignorDetails => _driver.FindElement(By.Id("consignor"));
@@ -406,9 +407,14 @@ namespace Defra.UI.Tests.Pages.Classes
             catch { return null; }
         }
 
-        public string? GetAdditionalDocName()
+        public string? GetHealthCertificateFileName()
         {
-            return additionalDocumentName.Text.Trim();
+            try { return healthCertificateFileName.Text.Trim(); } catch { return null; }
+        }
+
+        public string? GetAdditionalDocumentFileName()
+        {
+            try { return additionalDocumentFileName.Text.Trim(); } catch { return null; }
         }
 
         // Addresses

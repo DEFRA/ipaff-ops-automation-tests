@@ -16,6 +16,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement chedReference => _driver.WaitForElement(By.Id("reference-number"));
         private IWebElement chedReferenceVersion => _driver.WaitForElement(By.Id("cved-version-number"));
         private IWebElement outcomeValue => _driver.WaitForElement(By.XPath("//*[@class='govuk-!-font-weight-bold']"));
+        private IWebElement btnViewOrPrintCHED => _driver.WaitForElement(By.Id("print"));
+        private IWebElement lnkReturnToDashboard => _driver.FindElement(By.Id("return-to-home-page"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -44,5 +46,26 @@ namespace Defra.UI.Tests.Pages.Classes
             return outcomeValue.Text.Trim();
         }
 
+        public bool IsViewOrPrintCHEDButtonDisplayed()
+        {
+            try
+            {
+                return btnViewOrPrintCHED.Displayed;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public void ClickViewOrPrintCHED()
+        {
+            btnViewOrPrintCHED.Click();
+        }
+
+        public void ClickReturnToYourDashboard()
+        {
+            lnkReturnToDashboard.Click();
+        }
     }
 }

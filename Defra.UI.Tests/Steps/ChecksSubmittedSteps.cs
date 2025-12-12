@@ -2,10 +2,9 @@
 using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
-using Defra.UI.Tests.Pages.Classes;
 
 
-namespace Defra.UI.Tests.Steps.CP
+namespace Defra.UI.Tests.Steps.IPAFF
 {
     [Binding]
     public class ChecksSubmittedSteps
@@ -28,10 +27,25 @@ namespace Defra.UI.Tests.Steps.CP
             Assert.True(checksSubmittedPage?.IsPageLoaded(), "Yours checks have been submitted page not loaded");
             _scenarioContext.Add("CHEDReferenceWithVersion", checksSubmittedPage.GetCHEDReferenceWithVersion());
             _scenarioContext.Add("Outcome", checksSubmittedPage.GetOutcome());
+            Assert.True(checksSubmittedPage?.IsViewOrPrintCHEDButtonDisplayed(), "View or print CHED button is not displayed");
         }
 
+        [When("the user clicks View or print CHED button")]
+        public void WhenTheUserClicksViewOrPrintCHEDButton()
+        {
+            checksSubmittedPage?.ClickViewOrPrintCHED();
+        }
 
+        [When("the user clicks return to you dashboard link")]
+        public void WhenTheUserClicksReturnToYouDashboardLink()
+        {
+            checksSubmittedPage?.ClickReturnToYourDashboard();
+        }
 
-       
+        [When("the user clicks View or print CHED")]
+        public void WhenTheUserClicksViewOrPrintCHED()
+        {
+            checksSubmittedPage?.ClickViewOrPrintCHED();
+        }
     }
 }

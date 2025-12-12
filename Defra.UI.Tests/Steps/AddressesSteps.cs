@@ -1,12 +1,11 @@
 ﻿using Reqnroll.BoDi;
 using NUnit.Framework;
-using OpenQA.Selenium;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
-using Defra.UI.Tests.Pages.Classes;
+using AventStack.ExtentReports.Gherkin.Model;
 
 
-namespace Defra.UI.Tests.Steps.CP
+namespace Defra.UI.Tests.Steps.IPAFF
 {
     [Binding]
     public class AddressesSteps
@@ -107,6 +106,24 @@ namespace Defra.UI.Tests.Steps.CP
                         "Importer details do not match consignee");
         }
 
+        [When("the user clicks Add an importer")]
+        public void WhenTheUserClicksAddAnImporter()
+        {
+            addressesPage?.ClickAddImporter();
+        }
+
+        [Then("the chosen importer should be displayed on the Addresses page")]
+        public void ThenTheChosenImporterShouldBeDisplayedOnTheAddressesPage()
+        {
+            var importerName = _scenarioContext.Get<string>("ImporterName");
+            var importerAddress = _scenarioContext.Get<string>("ImporterAddress");
+            var importerCountry = _scenarioContext.Get<string>("ImporterCountry");
+
+            Assert.True(addressesPage?.VerifySelectedImporter(importerName, importerAddress, importerCountry),
+                        "Importer details do not match");
+        }
+
+
         [When("the user clicks Add a place of destination")]
         public void WhenTheUserClicksAddAPlaceOfDestination()
         {
@@ -121,13 +138,22 @@ namespace Defra.UI.Tests.Steps.CP
             var destinationCountry = _scenarioContext.Get<string>("DestinationCountry");
 
             Assert.True(addressesPage?.VerifySelectedDestination(destinationName, destinationAddress, destinationCountry),
-                        "Destination details do not match");
+            "Destination details do not match");
         }
 
+        [Then ("the place of destination should be populated with the same details as the consignee on the Addresses page")]
         [Then("the chosen place of destination should be displayed on the Addresses page")]
         public void ThenTheChosenPlaceOfDestinationShouldBeDisplayedOnTheAddressesPage()
         {
             Assert.True(addressesPage?.VerifySelectedDestination());
         }
+
+        [When("the user clicks Same as consignee for Place of destination")]
+        public void WhenTheUserClicksSameAsConsigneeForPlaceOfDestination()
+        {
+            addressesPage?.ClickPlaceOfDestinationSameAsConsignee();
+            _scenarioContext.Add("PlaceOfDestinationDetails", addressesPage.GetSelectedPlaceOfDestination());
+        }
+
     }
 }

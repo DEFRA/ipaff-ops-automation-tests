@@ -1,11 +1,9 @@
 ﻿using Reqnroll.BoDi;
 using NUnit.Framework;
-using OpenQA.Selenium;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
-using Defra.UI.Tests.Pages.Classes;
 
-namespace Defra.UI.Tests.Steps.CP
+namespace Defra.UI.Tests.Steps.IPAFF
 {
     [Binding]
     public class InspectorImportNotificationsSteps
@@ -22,7 +20,7 @@ namespace Defra.UI.Tests.Steps.CP
             _scenarioContext = context;
         }
 
-
+        [Then ("the Import notifications dashboard page should be displayed")]
         [Then("the user should be logged into Import notifications page")]
         public void ThenTheUserShouldBeLoggedIntoImportNotificationsPage()
         {
@@ -30,6 +28,8 @@ namespace Defra.UI.Tests.Steps.CP
         }
 
 
+        [When("the user searches for the CHED number")]
+        [When("user searches for the import notification after decision submission")]
         [When("the user searches for the newly created notification on the Import notifications page")]
         public void WhenTheUserSearchesForTheNewlyCreatedNotificationOnTheImportNotificationsPage()
         {
@@ -42,8 +42,28 @@ namespace Defra.UI.Tests.Steps.CP
         public void ThenTheNotificationShouldBeFoundWithStatus(string status)
         {
             var chedRef = _scenarioContext.Get<string>("CHEDReference");
-            inspectorImportNotificationsPage?.SearchForChed(chedRef);
             inspectorImportNotificationsPage?.VerifyNotificationStatus(chedRef, status);
+        }
+
+
+        [Then("the notification should be present in the list of part {int} dashboard")]
+        public void ThenTheNotificationShouldBePresentInTheListOfPartDashboard(int p0)
+        {
+            var chedRef = _scenarioContext.Get<string>("CHEDReference");
+            inspectorImportNotificationsPage?.SearchForChed(chedRef);
+            Assert.True(inspectorImportNotificationsPage?.VerifyNotificationIsPresent(chedRef));
+        }
+
+        [When("the user clicks View CHED link")]
+        public void WhenTheUserClicksViewCHEDLink()
+        {
+            inspectorImportNotificationsPage?.ClickViewCHED();
+        }
+
+        [When("the user clicks Record control in Dashboard page")]
+        public void WhenTheUserClicksRecordControlInDashboardPage()
+        {
+            inspectorImportNotificationsPage?.ClickRecordControl();
         }
     }
 }
