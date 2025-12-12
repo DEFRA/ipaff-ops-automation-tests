@@ -499,3 +499,9 @@ Scenario: User creates and submits a B2C consignment notification for Transhipme
 	When the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
+	When the user clicks Record control in Dashboard page
+	Then the Consignments requiring control page should be displayed
+	When the user searches for the CHED number
+	Then the notification should be found with the status "Rejected"
+	When the user logs out of IPAFFS Part 2
+	Then the user should be logged out successfully
