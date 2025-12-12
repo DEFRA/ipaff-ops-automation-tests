@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
+using AventStack.ExtentReports.Gherkin.Model;
 
 
 namespace Defra.UI.Tests.Steps.IPAFF
@@ -137,13 +138,22 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var destinationCountry = _scenarioContext.Get<string>("DestinationCountry");
 
             Assert.True(addressesPage?.VerifySelectedDestination(destinationName, destinationAddress, destinationCountry),
-                        "Destination details do not match");
+            "Destination details do not match");
         }
 
+        [Then ("the place of destination should be populated with the same details as the consignee on the Addresses page")]
         [Then("the chosen place of destination should be displayed on the Addresses page")]
         public void ThenTheChosenPlaceOfDestinationShouldBeDisplayedOnTheAddressesPage()
         {
             Assert.True(addressesPage?.VerifySelectedDestination());
         }
+
+        [When("the user clicks Same as consignee for Place of destination")]
+        public void WhenTheUserClicksSameAsConsigneeForPlaceOfDestination()
+        {
+            addressesPage?.ClickPlaceOfDestinationSameAsConsignee();
+            _scenarioContext.Add("PlaceOfDestinationDetails", addressesPage.GetSelectedPlaceOfDestination());
+        }
+
     }
 }

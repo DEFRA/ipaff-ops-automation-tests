@@ -19,6 +19,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement btnSearch => _driver.WaitForElement(By.Id("search-notifications"));
         private IWebElement lnkChedRefNumSearcResult => _driver.WaitForElement(By.XPath("//*[normalize-space()='Reference Number']//following-sibling::dd"));
         private IWebElement lnkChedStatusSearcResult => _driver.WaitForElement(By.XPath("//*[normalize-space()='CHED status']//following-sibling::dd"));
+        private IWebElement lnkViewCHED => _driver.FindElement(By.XPath("//a[normalize-space()='View CHED']"));
+        private IWebElement lnkRecordControl => _driver.FindElement(By.Id("control-dashboard-nav"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -49,6 +51,21 @@ namespace Defra.UI.Tests.Pages.Classes
             {
                 lnkChedRefNumSearcResult.Click();
             }
+        }
+
+        public bool VerifyNotificationIsPresent(string chedRef)
+        {
+            return lnkChedRefNumSearcResult.Text.Trim().Contains(chedRef);
+        }
+
+        public void ClickViewCHED()
+        {
+            lnkViewCHED.Click();
+        }
+
+        public void ClickRecordControl()
+        {
+            lnkRecordControl.Click();
         }
     }
 }
