@@ -37,6 +37,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             goodsMovementServicesPage?.GVMSToMoveGoods(option);
             _scenarioContext.Add("IsGVMS", option);
-        }
+        }       
     }
 }

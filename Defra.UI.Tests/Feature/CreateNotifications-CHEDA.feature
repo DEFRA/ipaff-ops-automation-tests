@@ -45,12 +45,18 @@ Scenario: User creates and submits a B2C consignment notification - CHEDA
 	Then the Latest Health Certificate page should be displayed
 	When the user enters Latest Health Certificate Document reference 'VHC12345'
 	And the user enters Latest Health Certificate date of issue '01''12''2025'
-	And the user clicks Save and continue
+	And the user clicks on Add attachment link on the Latest Health Certificate page
+	And the user uploads the Veterinary Health Certificate 'IPAFFS Test Health Certificate' in the format '.docx'
+	Then the Veterinary Health Certificate 'IPAFFS Test Health Certificate' '.docx' is uploaded successfully
+	When the user clicks Save and continue
 	Then the Accompanying documents page should be displayed
 	When the user selects Document type 'Commercial invoice'
 	And the user enters Document reference 'INV12345'
 	And the user enters date of issue '24''11''2025'
-	And the user clicks Save and continue	
+	And the user clicks on Add attachment link
+	And the user uploads the document 'IPAFFS Test Document' in the format '.docx'
+	Then the document 'IPAFFS Test Document' '.docx' is uploaded successfully
+	When the user clicks Save and continue	
 	Then the Addresses page should be displayed
 	When the user clicks Add a consignor or exporter
 	Then the Search for an existing consignor or exporter page should be displayed
@@ -111,4 +117,57 @@ Scenario: User creates and submits a B2C consignment notification - CHEDA
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 1
+	Then the user should be logged out successfully
+	When I navigate to the IPAFF Inspector application
+	Then I should see type of Gateway login page
+	And I have selected 'Sign in with Government Gateway' as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF Heathrow Inspector credentials and signin
+	Then the user should be logged into Import notifications page
+	When the user searches for the newly created notification on the Import notifications page
+	Then the user clicks the notificaiton found with status 'NEW'
+	And the Decision Hub page should be displayed
+	When the user clicks Save and set as in progress
+	Then the notification status should change from 'NEW' to 'IN PROGRESS'
+	When the user clicks Local reference number link in Record checks
+	Then Local reference number page should be displayed
+	When the user enters a local reference number and clicks Save and continue
+	Then the Documentary check page should be displayed
+	When the user selects 'Satisfactory' for the Documentary check and clicks Save and continue
+	Then the Identity, physical and welfare checks page should be displayed
+	When the user selects 'Satisfactory' for Identity check
+	And the user selects 'Satisfactory' for Physical check
+	And the user selects '4' for Number of animals checked
+	And the user selects 'Satisfactory' for Welfare check
+	And the user selects '25' '%' for Number of dead animals
+	And the user selects '3' 'unit' for Number of unfit animals
+	And the user selects '0' for Number of births or abortions
+	And the user clicks Save and continue
+	Then the Seal numbers page should be displayed
+	And 'No' is pre-selected for Are new seal numbers required?
+	When the user clicks Save and continue
+	Then the Laboratory tests page should be displayed
+	And 'No' is pre-selected for Would you like to record laboratory tests?
+	When the user clicks Save and continue
+	Then the Decision page should be displayed
+	When the user selects Acceptable for 'Internal market' 'Approved bodies'
+	And the user clicks Save and continue
+	Then the Select a controlled destination page should be displayed
+	When the user clicks Add a controlled destination
+	Then the Search for an existing controlled destination page should be displayed
+	When the user selects a controlled destination
+	Then the chosen controlled destination should be displayed
+	When the user clicks Save and continue
+	Then the Review outcome decision page should be displayed
+	And the details reflect the information added
+	When the user selects the radio button to declare that the checks have been carried out in accordance with EU law
+	And user clicks Submit decision
+	Then the Your checks have been submitted page should be displayed
+	When the user clicks View or print CHED
+	Then the certificate should be displayed in a new browser tab
+	When the user checks that the data in the certificate matches the data entered into the notification
+	And the user closes the PDF browser tab
+	Then the browser tab is closed
+	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully

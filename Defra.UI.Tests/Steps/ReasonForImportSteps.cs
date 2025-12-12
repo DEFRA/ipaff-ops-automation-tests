@@ -33,7 +33,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void ThenWhatIsTheMainReasonForImportingTheConsignmentPageShouldBeDisplayedWithRadioButtonsForCHEDD()
         {
             Assert.True(reasonForImportPage?.IsPageLoaded(), "About the consignment What is the main reason for importing the consignment? page not loaded");
-            Assert.True(reasonForImportPage?.AreImportReasonsForCHEDDPreset(), "I port options for CHED D are not displayed on the Reason for import page");
+            Assert.True(reasonForImportPage?.AreImportReasonsForCHEDDPresent(), "I port options for CHED D are not displayed on the Reason for import page");
         }
 
         [When("The user selects {string} radio option")]
