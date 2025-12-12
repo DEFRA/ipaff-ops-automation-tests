@@ -62,5 +62,10 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             btnViewOrPrintCHED.Click();
         }
+
+        public void ClickReturnToYourDashboard()
+        {
+            lnkReturnToDashboard.Click();
+        }
     }
 }
