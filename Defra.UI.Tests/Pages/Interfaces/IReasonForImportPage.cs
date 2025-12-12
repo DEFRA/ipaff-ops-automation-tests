@@ -18,5 +18,6 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void EnterConsignmentLeavingTime(string hours, string minutes);
         void SelectTransitedCountry(string transitedCountry);
         void SelectDestinationCountry(string destinationCountry);
+        void SelectTranshipmentDestination(string transhipmentCountry);
     }
 }

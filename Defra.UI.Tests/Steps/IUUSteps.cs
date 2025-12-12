@@ -3,7 +3,7 @@ using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
 
-namespace Defra.UI.Tests.Steps.CP
+namespace Defra.UI.Tests.Steps.IPAFFS
 {
     [Binding]
     public class IUUSteps

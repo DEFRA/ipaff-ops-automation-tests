@@ -24,6 +24,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtExitBCP => _driver.WaitForElement(By.Name("bcp-transit-third-country"));
         private IWebElement txtTransitedCountry => _driver.WaitForElement(By.Id("transit-third-countries-last"));
         private IWebElement txtDestinationCountry => _driver.WaitForElement(By.Id("third-country-transit"));
+        private IWebElement txtTranshipmentDestination => _driver.FindElement(By.Id("third-country-transhipment"));
         private IWebElement rdoIMAnimalFeeding => _driver.WaitForElement(By.XPath("//*[@id='internalMarketanimal']/following-sibling::label"));
         private IWebElement rdoIMOther => _driver.WaitForElement(By.XPath("//*[@id='internalMarketother']/following-sibling::label"));
         private IWebElement rdoIMPharma => _driver.WaitForElement(By.XPath("//*[@id='internalMarketpharma']/following-sibling::label"));
@@ -147,6 +148,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public void SelectDestinationCountry(string destinationCountry)
         {
             new SelectElement(txtDestinationCountry).SelectByText(destinationCountry);
+        }
+
+        public void SelectTranshipmentDestination(string transhipmentCountry)
+        {
+            new SelectElement(txtTranshipmentDestination).SelectByText(transhipmentCountry);
         }
     }
 }
