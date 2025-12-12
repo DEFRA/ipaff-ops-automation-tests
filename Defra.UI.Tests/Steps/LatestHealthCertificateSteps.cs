@@ -28,7 +28,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(latestHealthCertificatePage?.IsPageLoaded(), "Latest Health Certificate page not loaded");
         }
 
-        [When("the user enters Latest Health Certificate Document reference {string}")]    
+        [When("the user enters Latest Health Certificate Document reference {string}")]
         public void WhenTheUserEntersDocumentReference(string reference)
         {
             latestHealthCertificatePage?.EnterDocumentReference(reference);
@@ -41,6 +41,49 @@ namespace Defra.UI.Tests.Steps.IPAFF
             latestHealthCertificatePage?.EnterDateOfIssue(day, month, year);
             var dateofIssue = day + " " + month + " " + year;
             _scenarioContext.Add("HealthCertificateDateOfIssue", dateofIssue);
+        }
+
+        [When("the user clicks on Add attachment link on the Latest Health Certificate page")]
+        public void WhenTheUserClicksOnAddAttachmentLinkOnTheLatestHealthCertificatePage()
+        {
+            latestHealthCertificatePage?.ClickAddAttachmentLink();
+        }
+
+        [When("the user uploads the Veterinary Health Certificate {string} in the format {string}")]
+        public void WhenTheUserUploadsTheVeterinaryHealthCertificateInTheFormat(string name, string format)
+        {
+            var filename = name + format;
+            latestHealthCertificatePage?.AddHealthCertificate(filename);
+            _scenarioContext.Add("HealthCertificateFileName", filename);
+        }
+
+        [Then("the Veterinary Health Certificate {string} {string} is uploaded successfully")]
+        public void ThenTheVeterinaryHealthCertificateIsUploadedSuccessfully(string name, string format)
+        {
+            var expectedFileName = _scenarioContext.Get<string>("HealthCertificateFileName");
+            var displayedFileName = latestHealthCertificatePage?.GetFileName;
+
+            // Handle filename truncation - the UI truncates long filenames but keeps the extension
+            // Based on observed behaviour: "IPAFFS Test Health Certificate.docx" becomes "IPAFFS Test Health Cer.docx"
+            var isMatch = false;
+
+            if (!string.IsNullOrEmpty(displayedFileName) && !string.IsNullOrEmpty(expectedFileName))
+            {
+                var displayedExtension = Path.GetExtension(displayedFileName);
+                var expectedExtension = Path.GetExtension(expectedFileName);
+
+                var displayedNameWithoutExt = Path.GetFileNameWithoutExtension(displayedFileName);
+                var expectedNameWithoutExt = Path.GetFileNameWithoutExtension(expectedFileName);
+
+                // Check if extensions match and displayed name is the start of expected name (handles truncation)
+                isMatch = displayedExtension.Equals(expectedExtension, StringComparison.OrdinalIgnoreCase) &&
+                          expectedNameWithoutExt.StartsWith(displayedNameWithoutExt, StringComparison.OrdinalIgnoreCase);
+            }
+
+            Assert.True(
+                isMatch,
+                $"The Veterinary Health Certificate upload has failed. Expected '{expectedFileName}', but got '{displayedFileName}'"
+            );
         }
 
         [When("the user clicks Latest Health Certificate add attachment link")]

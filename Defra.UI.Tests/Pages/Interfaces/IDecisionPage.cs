@@ -9,5 +9,6 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void SelectDecision(string subOption, string decision);
         bool VerifyPrepopulatedTransitDetails(string exitBCP, string transitedCountry, string destinationCountry);
         bool VerifyTransitRadioButtonPrePopulated();
+        void SelectAcceptableFor(string acceptableFor, string subOption);
     }
 }

@@ -13,6 +13,8 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects
         private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
+        private IWebElement rdoSealNumbersYes => _driver.FindElement(By.Id("radio-container-seals-yes"));
+        private IWebElement rdoSealNumbersNo => _driver.FindElement(By.Id("radio-container-seals-no"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -25,6 +27,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public bool IsPageLoaded()
         {
             return primaryTitle.Text.Contains("Seal numbers");
+        }
+
+        public bool IsSealNumbersNoPreselected()
+        {
+            return rdoSealNumbersNo.GetAttribute("checked") != null;
         }
     }
 }
