@@ -26,5 +26,11 @@ namespace Defra.UI.Tests.Steps.CP
         {
             Assert.True(laboratoryTestsPage?.IsPageLoaded());
         }
+
+        [When("the user select {string} radio button on the Laboratory tests page")]
+        public void WhenISelectRadioButtonOnTheLaboratoryTestsPage(string labTestsOption)
+        {
+            laboratoryTestsPage?.SelectLabTestsRadio(labTestsOption);
+        }
     }
 }

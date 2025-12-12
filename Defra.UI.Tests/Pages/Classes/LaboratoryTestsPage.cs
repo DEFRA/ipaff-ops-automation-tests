@@ -13,6 +13,8 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects
         private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
+        private IWebElement labTestsRadio(string labTestsOption) => _driver.FindElement(By.XPath($"//input[@class='govuk-radios__input']/following-sibling::label[contains(text(),'{labTestsOption}')]"));
+
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -25,6 +27,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public bool IsPageLoaded()
         {
             return primaryTitle.Text.Contains("Laboratory tests");
+        }
+
+        public void SelectLabTestsRadio(string labTestsOption)
+        {
+            labTestsRadio(labTestsOption).Click();
         }
     }
 }

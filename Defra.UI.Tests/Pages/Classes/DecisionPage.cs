@@ -13,6 +13,9 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects
         private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
+        private IWebElement acceptableForRadio(string acceptableForRadioOption) => _driver.FindElement(By.XPath($"//label[contains(text(),'{acceptableForRadioOption}')]/preceding-sibling::input"));
+        private IWebElement internalMarketSubRadio(string internalMarketSubOption) => _driver.FindElement(By.XPath($"//label[contains(text(),'{internalMarketSubOption}')]/preceding-sibling::input"));
+
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -25,6 +28,16 @@ namespace Defra.UI.Tests.Pages.Classes
         public bool IsPageLoaded()
         {
             return primaryTitle.Text.Contains("Decision");
+        }
+
+        public bool IsAcceptableForRadioSelected(string acceptableForRadioOption)
+        {
+            return acceptableForRadio(acceptableForRadioOption).GetAttribute("aria-expanded").Contains("true");
+        }
+
+        public bool IsInternalMarketSubRadioSelected(string internalMarketSubOption)
+        {
+            return internalMarketSubRadio(internalMarketSubOption).GetAttribute("checked") != null;
         }
     }
 }

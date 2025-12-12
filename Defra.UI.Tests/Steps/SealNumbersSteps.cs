@@ -23,11 +23,16 @@ namespace Defra.UI.Tests.Steps.CP
             _scenarioContext = context;
         }
 
-
         [Then("the Seal numbers page should be displayed")]
         public void ThenTheSealNumbersPageShouldBeDisplayed()
         {
             Assert.True(sealNumbersPage?.IsPageLoaded());
+        }
+
+        [When("the user select {string} radio button on the Seal numbers page")]
+        public void WhenISelectRadioButtonOnTheSealNumbersPage(string sealNum)
+        {
+            sealNumbersPage?.SelectSealNumRadio(sealNum);
         }
     }
 }
