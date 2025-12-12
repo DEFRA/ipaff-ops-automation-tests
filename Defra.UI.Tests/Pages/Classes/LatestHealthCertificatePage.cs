@@ -2,13 +2,8 @@
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
 using SeleniumExtras.WaitHelpers;
-using Microsoft.Dynamics365.UIAutomation.Browser;
-using System.Collections.ObjectModel;
-using Defra.Trade.Plants.SpecFlowBindings.Helpers;
-using Faker;
 
 namespace Defra.UI.Tests.Pages.Classes
 {
@@ -64,20 +59,16 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public string GetFileName => fileName.Text;
 
-        public string? GetDocumentIssueDate()
+        public string GetDocumentIssueDate()
         {
-            try
+            _driver.WaitForElementCondition(ExpectedConditions.ElementIsVisible(documentDateBy));
+            var text = documentDate.Text.Trim();
+            // Convert "1 January 2026" to "01 01 2026" format
+            if (DateTime.TryParse(text, out DateTime date))
             {
-                _driver.WaitForElementCondition(ExpectedConditions.ElementIsVisible(documentDateBy));
-                var text = documentDate.Text.Trim();
-                // Convert "1 January 2026" to "01 01 2026" format
-                if (DateTime.TryParse(text, out DateTime date))
-                {
-                    return date.ToString("dd MM yyyy");
-                }
-                return text;
+                return date.ToString("dd MM yyyy");
             }
-            catch { return null; }
+            return string.Empty;
         }
     }
 }

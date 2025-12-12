@@ -28,6 +28,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
 
+        [When("the user searches for the CHED number")]
         [When("user searches for the import notification after decision submission")]
         [When("the user searches for the newly created notification on the Import notifications page")]
         public void WhenTheUserSearchesForTheNewlyCreatedNotificationOnTheImportNotificationsPage()
@@ -59,5 +60,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
             inspectorImportNotificationsPage?.ClickViewCHED();
         }
 
+        [When("the user clicks Record control in Dashboard page")]
+        public void WhenTheUserClicksRecordControlInDashboardPage()
+        {
+            inspectorImportNotificationsPage?.ClickRecordControl();
+        }
     }
 }

@@ -70,27 +70,23 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void SelectDecision(string subOption, string decision)
         {
-            if (decision.Equals("Transhipment / Onward travel"))
-                rdoTranshipment.Click();
-            else if (decision.Equals("Transit"))
-                rdoTransit.Click();
-            else if (decision.Equals("Channelled"))
-                rdoChannelled.Click();
-            else if (decision.Equals("Internal market"))
-                rdoInternalMarket.Click();
-            else if (decision.Equals("Specific warehouse procedure"))
-                rdoSpecificWarehouse.Click();
-            else if (decision.Equals("Not acceptable"))
+            switch (decision)
             {
-                rdoNotAcceptable.Click();
-                if(subOption.Equals("Destruction"))
-                    rdoDestruction.Click();
-                else if (subOption.Equals("Re-dispatching"))
-                    rdoReDispatching.Click();
-                else if (subOption.Equals("Transformation"))
-                    rdoTransformation.Click();
-                else if (subOption.Equals("Other"))
-                    rdoOther.Click();
+                case "Transhipment / Onward travel": rdoTranshipment.Click(); break;
+                case "Transit": rdoTransit.Click(); break;
+                case "Channelled": rdoChannelled.Click(); break;
+                case "Internal market": rdoInternalMarket.Click(); break;
+                case "Specific warehouse procedure": rdoSpecificWarehouse.Click(); break;
+                case "Not acceptable":
+                    rdoNotAcceptable.Click();
+                    switch (subOption)
+                    {
+                        case "Destruction": rdoDestruction.Click(); break;
+                        case "Re-dispatching": rdoReDispatching.Click(); break;
+                        case "Transformation": rdoTransformation.Click(); break;
+                        case "Other": rdoOther.Click(); break;
+                    }
+                    break;
             }
         }
 
