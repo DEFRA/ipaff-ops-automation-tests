@@ -18,6 +18,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement lnkAddConsignee => _driver.WaitForElement(By.LinkText("Add a consignee"));
         private IWebElement lnkAddImporter => _driver.WaitForElement(By.LinkText("Add an importer"));
         private IWebElement lnksameAsConsignee => _driver.WaitForElement(By.Id("populate-importer"));
+        private IWebElement lnksameAsConsigneePlaceOfDestination => _driver.FindElement(By.Id("populate-place-of-destination"));
         private IWebElement lnkAddDestination => _driver.WaitForElement(By.LinkText("Add a place of destination"));
         private IWebElement selectedConsignor => _driver.WaitForElement(By.XPath("//*[@id='traders-table-consignor']//td[1]"));
         private IWebElement selectedConsignee => _driver.WaitForElement(By.XPath("//*[@id='traders-table-consignee']//td[1]"));
@@ -129,6 +130,20 @@ namespace Defra.UI.Tests.Pages.Classes
             return verifyConsigneeName.Text.Trim().Equals(name) &&
                    verifyConsigneeAddress.Text.Trim().Equals(address) &&
                    verifyConsigneeCountry.Text.Trim().Equals(country);
+        }
+
+        public void ClickPlaceOfDestinationSameAsConsignee()
+        {
+            lnksameAsConsigneePlaceOfDestination.Click();
+        }
+
+        public string GetSelectedPlaceOfDestination()
+        {
+            var destinationName = verifyDestinationName.Text.Trim();
+            var destinationAddress = verifyDestinationAddress.Text.Trim();
+            var destinationCountry = verifyDestinationCountry.Text.Trim();
+            var destinationDetails = destinationName + "\n" + destinationAddress + "," + destinationCountry;
+            return destinationDetails;
         }
     }
 }

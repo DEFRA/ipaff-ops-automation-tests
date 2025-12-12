@@ -34,5 +34,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             checksSubmittedPage?.ClickViewOrPrintCHED();
         }
+
+        [When("the user clicks return to you dashboard link")]
+        public void WhenTheUserClicksReturnToYouDashboardLink()
+        {
+            checksSubmittedPage?.ClickReturnToYourDashboard();
+        }
+
     }
 }

@@ -24,7 +24,10 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtDay => _driver.WaitForElement(By.Name("latest-vet-health-cert-issue-date-day"));
         private IWebElement txtMonth => _driver.WaitForElement(By.Name("latest-vet-health-cert-issue-date-month"));
         private IWebElement txtYear => _driver.WaitForElement(By.Name("latest-vet-health-cert-issue-date-year"));
-
+        private IWebElement addAttachmentLink => _driver.WaitForElement(By.Id("add-attachment-latest-health-cert"));
+        private By documentDateBy => By.XPath("//div[contains(@id,'additional-document-date-value')]");
+        private IWebElement documentDate => _driver.WaitForElement(documentDateBy);
+        private IWebElement fileName => _driver.WaitForElement(By.XPath("//a[contains(@id,'attachment-view-')]"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -55,6 +58,26 @@ namespace Defra.UI.Tests.Pages.Classes
             txtMonth.SendKeys(month);
             txtYear.Click();
             txtYear.SendKeys(year);
+        }
+
+        public void ClickAddAttachmentLink() => addAttachmentLink.Click();
+
+        public string GetFileName => fileName.Text;
+
+        public string? GetDocumentIssueDate()
+        {
+            try
+            {
+                _driver.WaitForElementCondition(ExpectedConditions.ElementIsVisible(documentDateBy));
+                var text = documentDate.Text.Trim();
+                // Convert "1 January 2026" to "01 01 2026" format
+                if (DateTime.TryParse(text, out DateTime date))
+                {
+                    return date.ToString("dd MM yyyy");
+                }
+                return text;
+            }
+            catch { return null; }
         }
     }
 }

@@ -92,5 +92,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(reasonForImportPage?.IsReasonForImportingAnimalsPageLoaded(), "About the consignment What is the main reason for importing the animals? page not loaded");
             Assert.True(reasonForImportPage?.AreImportAnimalsReasonsPresent(), "Expected import options are not present on the page.");
         }
+
+        [When("the user chooses destination country {string}")]
+        public void WhenTheUserChoosesDestinationCountry(string transhipmentCountry)
+        {
+            reasonForImportPage?.SelectTranshipmentDestination(transhipmentCountry);
+            _scenarioContext.Add("TranshipmentDestinationCountry", transhipmentCountry);
+        }
+
     }
 }
