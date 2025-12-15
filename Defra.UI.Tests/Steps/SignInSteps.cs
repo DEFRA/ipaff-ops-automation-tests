@@ -1,4 +1,5 @@
 ﻿using AventStack.ExtentReports.Gherkin.Model;
+using Defra.UI.Tests.Configuration;
 using Defra.UI.Tests.Data.Users;
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
@@ -50,6 +51,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _driver?.Navigate().GoToUrl(url);
         }
 
+        [Given(@"I navigate to the PIMS application")]
+        [When(@"I navigate to the PIMS application")]
+        public void GivenINavigateToThePIMSApplication()
+        {
+            var url = urlBuilder.PIMSDefault().BuildPIMSApp();
+            _driver?.Navigate().GoToUrl(url);
+        }
+
         [When(@"I click signin button on port checker application")]
         [Given(@"I click signin button on port checker application")]
         public void GivenIClickSigninButtonOnPortCheckerApplication()
@@ -85,7 +94,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When(@"I have provided the IPAFF credentials and signin")]
         public void WhenIHaveProvidedTheIPAFFCredentialsAndSignin()
         {
-            var jsonData = UserObject?.GetUser("IPAFF","User");
+            var jsonData = UserObject?.GetUser("IPAFF", "User");
             var userObject = new User
             {
                 UserName = jsonData.UserName,
@@ -119,6 +128,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
             };
 
             _signInPage?.SignIn(userObject.UserName, userObject.Credential);
+        }
+
+        [When(@"I have provided the PIMS credentials and signin")]
+        public void WhenIHaveProvidedThePIMSCredentialsAndSignin()
+        {         
+            _signInPage?.SignInToDynamics(ConfigSetup.BaseConfiguration.TestConfiguration.PIMSUsername, ConfigSetup.BaseConfiguration.TestConfiguration.PIMSPassword);
         }
 
         [When("I have provided the IPAFF Heathrow Inspector credentials and signin")]

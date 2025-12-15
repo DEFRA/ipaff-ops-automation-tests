@@ -59,6 +59,8 @@ jobs:
         isEmulationEnabled:  ${{parameters.isEmulationEnabled}}
         emulateDeviceInfo:  ${{parameters.emulateDeviceInfo}}
         idcomsPassword: '$(IPAFFIDCOMSCredential)'
+        pimsUsername: '$(PIMS_USERNAME)'
+        pimsPassword: '$(PIMS_PASSWORD)'
         isAccessibilityEnabled: ${{parameters.isAccessibilityEnabled}}
     - name: FilterTestCases
       ${{ if eq(parameters.filterTestCases, '') }}:
