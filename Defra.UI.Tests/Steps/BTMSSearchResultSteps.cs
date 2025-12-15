@@ -43,6 +43,19 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(btmsSearchResultPage?.ValidateBTMSSearchResult(commodityCode, commodityDescription, commodityQuantity, authority, decision));
         }
 
+        [Then("the user validates the commodity code {string}, description {string}, quantity {string}, authority {string} and decision {string} for commodity {string} after the decision is given")]
+        public void ThenTheUserValidatesTheCommodityCodeDescriptionQuantityAuthorityAndDecisionForCommodityAfterTheDecisionIsGiven(string commCode, string desc, string quantity, string authority, string decision, string commodityNum)
+        {
+            Assert.Multiple(() =>
+            {
+                Assert.True(commCode.Equals(btmsSearchResultPage?.GetCommodityCode(commodityNum)), $"Commodity code of commodity number {commodityNum} did not match");
+                Assert.True(desc.Equals(btmsSearchResultPage?.GetCommodityDesc(commodityNum)), $"Commodity description of commodity number {commodityNum} did not match");
+                Assert.True(quantity.Equals(btmsSearchResultPage?.GetCommodityQuantity(commodityNum)), $"Commodity quantity of commodity number {commodityNum} did not match");
+                Assert.True(authority.Equals(btmsSearchResultPage?.GetCommodityAuthority(commodityNum)), $"Commodity authority of commodity number {commodityNum} did not match");
+                Assert.True(decision.Equals(btmsSearchResultPage?.GetCommodityDecision(commodityNum)), $"Commodity decision of commodity number {commodityNum} did not match");
+            });
+        }
+
         [When("the user logs out of BTMS")]
         public void WhenTheUserLogsOutOfBTMS()
         {

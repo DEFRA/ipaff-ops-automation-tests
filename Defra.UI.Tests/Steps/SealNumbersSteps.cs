@@ -23,7 +23,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext = context;
         }
 
-
         [Then("the Seal numbers page should be displayed")]
         public void ThenTheSealNumbersPageShouldBeDisplayed()
         {
@@ -38,6 +37,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 _scenarioContext.Add("AreNewSealNumbersRequired", expectedSelection);
                 Assert.True(sealNumbersPage?.IsSealNumbersNoPreselected(), "No is not pre-selected for Are new seal numbers required?");
             }
+        }
+
+        [When("the user select {string} radio button on the Seal numbers page")]
+        public void WhenISelectRadioButtonOnTheSealNumbersPage(string sealNum)
+        {
+            sealNumbersPage?.SelectSealNumRadio(sealNum);
+            _scenarioContext.Add("AreNewSealNumbersRequired", sealNum);
         }
     }
 }
