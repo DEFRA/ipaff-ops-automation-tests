@@ -67,5 +67,17 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var year = currentDate.Year.ToString();
             decisionPage?.EnterCurrentDateInDecisionPage(day, month, year);
         }
+
+        [Then("the main radio option {string} and the sub radio option {string} are selected by default")]
+        public void ThenTheMainRadioOptionAndTheSubRadioOptionAreSelectedByDefault(string mainRadio, string subRadio)
+        {
+            Assert.Multiple(() =>
+            {
+                Assert.True(decisionPage?.IsAcceptableForRadioSelected(mainRadio), $"The main radio option {mainRadio} is not selected by default on the Decision page");
+                Assert.True(decisionPage?.IsInternalMarketSubRadioSelected(subRadio), $"The sub radio option {subRadio} is not selected by default on the Decision page");
+            }
+            );
+        }
+
     }
 }

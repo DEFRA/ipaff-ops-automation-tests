@@ -36,5 +36,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 Assert.True(laboratoryTestsPage?.IsLabTestsNoPreselected(), "No is not pre-selected for Would you like to record laboratory tests?");
             }
         }
+
+        [When("the user select {string} radio button on the Laboratory tests page")]
+        public void WhenISelectRadioButtonOnTheLaboratoryTestsPage(string labTestsOption)
+        {
+            laboratoryTestsPage?.SelectLabTestsRadio(labTestsOption);
+        }
     }
 }
