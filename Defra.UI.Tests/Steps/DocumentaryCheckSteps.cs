@@ -24,10 +24,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the Documentary check page should be displayed")]
         public void ThenTheDocumentaryCheckPageShouldBeDisplayed()
         {
-            Assert.True(documentaryCheckPage?.IsPageLoaded());
+            Assert.True(documentaryCheckPage?.IsPageLoaded(), "Documentary check page is not displayed");
         }
 
 
+        [When("the user selects {string} for the Documentary check and clicks Save and continue")]
         [When("the user selects {string} for the documentary check and clicks Save and continue")]
         public void WhenTheUserSelectsForTheDocumentaryCheckAndClicksSaveAndContinue(string decision)
         {

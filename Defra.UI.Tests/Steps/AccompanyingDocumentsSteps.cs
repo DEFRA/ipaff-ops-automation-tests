@@ -79,12 +79,37 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the document {string} {string} is uploaded successfully")]
         public void ThenTheDocumentIsUploadedSuccessfully(string name, string format)
         {
-            var filename = name + format;
-            Assert.True(accompanyingDocumentsPage?.GetFileName.Contains(filename), "The accompanying document upload has failed");
+            var expectedFileName = name + format;
+            var displayedFileName = accompanyingDocumentsPage?.GetFileName;
+
+            // Handle filename truncation - the UI truncates long filenames but keeps the extension
+            var isMatch = false;
+
+            if (!string.IsNullOrEmpty(displayedFileName) && !string.IsNullOrEmpty(expectedFileName))
+            {
+                var displayedExtension = Path.GetExtension(displayedFileName);
+                var expectedExtension = Path.GetExtension(expectedFileName);
+
+                var displayedNameWithoutExt = Path.GetFileNameWithoutExtension(displayedFileName);
+                var expectedNameWithoutExt = Path.GetFileNameWithoutExtension(expectedFileName);
+
+                // Check if extensions match and displayed name is the start of expected name (handles truncation)
+                isMatch = displayedExtension.Equals(expectedExtension, StringComparison.OrdinalIgnoreCase) &&
+                          expectedNameWithoutExt.StartsWith(displayedNameWithoutExt, StringComparison.OrdinalIgnoreCase);
+            }
+
+            Assert.True(
+                isMatch,
+                $"The accompanying document upload has failed. Expected '{expectedFileName}', but got '{displayedFileName}'"
+            );
 
             //The date selected from date picker gets populated only after the document is uploaded. Hence, we are adding date to scenario context after attaching the document.
-            var dateOfIssue = accompanyingDocumentsPage?.GetDocumentIssueDate();
-            _scenarioContext.Add("DocumentDateOfIssue", dateOfIssue);
+            //Only add if it doesn't already exist (e.g., when date was manually entered instead of using date picker)
+            if (!_scenarioContext.ContainsKey("DocumentDateOfIssue"))
+            {
+                var dateOfIssue = accompanyingDocumentsPage?.GetDocumentIssueDate();
+                _scenarioContext.Add("DocumentDateOfIssue", dateOfIssue);
+            }
         }
 
         [When("the user enters date of issue {string}{string}{string}")]

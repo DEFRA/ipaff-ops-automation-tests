@@ -27,6 +27,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(checksSubmittedPage?.IsPageLoaded(), "Yours checks have been submitted page not loaded");
             _scenarioContext.Add("CHEDReferenceWithVersion", checksSubmittedPage.GetCHEDReferenceWithVersion());
             _scenarioContext.Add("Outcome", checksSubmittedPage.GetOutcome());
+            Assert.True(checksSubmittedPage?.IsViewOrPrintCHEDButtonDisplayed(), "View or print CHED button is not displayed");
         }
 
         [When("the user clicks View or print CHED button")]
@@ -41,5 +42,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
             checksSubmittedPage?.ClickReturnToYourDashboard();
         }
 
+        [When("the user clicks View or print CHED")]
+        public void WhenTheUserClicksViewOrPrintCHED()
+        {
+            checksSubmittedPage?.ClickViewOrPrintCHED();
+        }
     }
 }

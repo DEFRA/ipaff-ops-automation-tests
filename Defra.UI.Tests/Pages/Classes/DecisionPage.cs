@@ -14,6 +14,8 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects
         private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
+        private IWebElement acceptableForRadio(string acceptableForRadioOption) => _driver.FindElement(By.XPath($"//label[contains(text(),'{acceptableForRadioOption}')]/preceding-sibling::input"));
+        private IWebElement internalMarketSubRadio(string internalMarketSubOption) => _driver.FindElement(By.XPath($"//label[contains(text(),'{internalMarketSubOption}')]/preceding-sibling::input"));
         private IWebElement rdoTransit => _driver.FindElement(By.Id("acceptability-transit"));
         private IWebElement drpExitBCP => _driver.FindElement(By.Id("transitExitBipUk"));
         private IWebElement drpTransitedCountry => _driver.FindElement(By.Id("transitCountry"));
@@ -30,6 +32,13 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtNotAcceptableDay => _driver.FindElement(By.Id("not-acceptable-day"));
         private IWebElement txtNotAcceptableMonth => _driver.FindElement(By.Id("not-acceptable-month"));
         private IWebElement txtNotAcceptableYear => _driver.FindElement(By.Id("not-acceptable-year"));
+        private IWebElement btnSaveAndContinue => _driver.FindElement(By.Id("button-save-and-continue"));
+        // Dynamic helper to get radio button by label text
+        private IWebElement GetRadioButtonByLabel(string labelText) =>
+            _driver.FindElement(By.XPath($"//label[normalize-space(text())='{labelText}']/preceding-sibling::input[@type='radio']"));
+        // Dynamic helper to get sub-option radio button within conditional radios
+        private IWebElement GetConditionalRadioButtonByLabel(string labelText) =>
+            _driver.FindElement(By.XPath($"//div[contains(@class, 'govuk-radios--conditional')]//label[normalize-space(text())='{labelText}']/preceding-sibling::input[@type='radio']"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -42,6 +51,36 @@ namespace Defra.UI.Tests.Pages.Classes
         public bool IsPageLoaded()
         {
             return primaryTitle.Text.Contains("Decision");
+        }
+
+        public bool IsAcceptableForRadioSelected(string acceptableForRadioOption)
+        {
+            return acceptableForRadio(acceptableForRadioOption).GetAttribute("aria-expanded").Contains("true");
+        }
+
+        public bool IsInternalMarketSubRadioSelected(string internalMarketSubOption)
+        {
+            return internalMarketSubRadio(internalMarketSubOption).GetAttribute("checked") != null;
+        }
+
+        public void SelectAcceptableFor(string acceptableFor, string subOption)
+        {
+            // Click the main acceptableFor radio button based on label text
+            GetRadioButtonByLabel(acceptableFor).Click();
+
+            // If acceptableFor is "Internal market", click the sub-option
+            if (acceptableFor.Equals("Internal market", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!string.IsNullOrEmpty(subOption))
+                {
+                    GetConditionalRadioButtonByLabel(subOption).Click();
+                }
+            }
+        }
+
+        public void ClickSaveAndContinue()
+        {
+            btnSaveAndContinue.Click();
         }
 
         public bool VerifyTransitRadioButtonPrePopulated()
