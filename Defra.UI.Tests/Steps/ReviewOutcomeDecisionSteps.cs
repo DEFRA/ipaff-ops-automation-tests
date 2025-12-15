@@ -106,7 +106,49 @@ namespace Defra.UI.Tests.Steps.IPAFF
             }
 
             Assert.True(allDataMatches, $"Review outcome decision page data validation failed. Mismatches: {string.Join(", ", mismatches)}");
-        }        
+        }
+
+        [Then("the details reflect the information added for CHED D")]
+        public void ThenTheDetailsReflectTheInformationAddedForCHEDD()
+        {
+            var allDataMatches = true;
+            var mismatches = new List<string>();
+
+            // Border Control Post
+            ValidateIfExists("BorderControlPostReference", reviewOutcomeDecisionPage?.GetBorderControlPostReference(), ref allDataMatches, mismatches);
+
+            // Checks
+            ValidateIfExists("DocumentaryCheckDecision", reviewOutcomeDecisionPage?.GetDocumentaryCheckDecision(), ref allDataMatches, mismatches);
+            ValidateIfExists("IdentityCheckDecision", reviewOutcomeDecisionPage?.GetIdentityCheckDecision(), ref allDataMatches, mismatches);
+            ValidateIfExists("PhysicalCheckDecision", reviewOutcomeDecisionPage?.GetPhysicalCheckDecision(), ref allDataMatches, mismatches);
+
+            // Seal Numbers
+            ValidateIfExists("AreNewSealNumbersRequired", reviewOutcomeDecisionPage?.GetSealNumbersStatus(), ref allDataMatches, mismatches);
+
+            // Laboratory Tests
+            ValidateIfExists("AreLaboratoryTestsRequired", reviewOutcomeDecisionPage?.GetLaboratoryTestsRequired(), ref allDataMatches, mismatches);
+
+            // Documents
+            ValidateIfExists("DocumentType", reviewOutcomeDecisionPage?.GetAdditionalDocumentType(), ref allDataMatches, mismatches);
+            ValidateIfExists("DocumentReference", reviewOutcomeDecisionPage?.GetAdditionalDocumentReference(), ref allDataMatches, mismatches);
+            ValidateIfExists("DocumentDateOfIssue", reviewOutcomeDecisionPage?.GetAdditionalDocumentDateOfIssue(), ref allDataMatches, mismatches);
+            ValidateFileNameWithTruncation("DocumentName", reviewOutcomeDecisionPage?.GetAdditionalDocumentFileName(), ref allDataMatches, mismatches);
+
+            // Decision
+            ValidateIfExists("AcceptableFor", reviewOutcomeDecisionPage?.GetAcceptanceDecision(), ref allDataMatches, mismatches);
+            ValidateIfExists("AcceptableForSubOption", GetAcceptableForSubOptionValue(), ref allDataMatches, mismatches);
+
+            if (!allDataMatches)
+            {
+                Console.WriteLine("[REVIEW OUTCOME VALIDATION] Data mismatches found:");
+                foreach (var mismatch in mismatches)
+                {
+                    Console.WriteLine($"[REVIEW OUTCOME VALIDATION] {mismatch}");
+                }
+            }
+
+            Assert.True(allDataMatches, $"Review outcome decision page data validation failed. Mismatches: {string.Join(", ", mismatches)}");
+        }
 
         private void ValidateIfExists(string contextKey, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
         {

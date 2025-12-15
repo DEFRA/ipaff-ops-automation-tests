@@ -402,6 +402,7 @@ namespace Defra.UI.Tests.Pages.Classes
         // Seal Numbers
         public string? GetSealNumbersStatus()
         {
+            var a = SafelyGetElementText(sealNumbersStatus);
             return SafelyGetElementText(sealNumbersStatus);
         }
 
