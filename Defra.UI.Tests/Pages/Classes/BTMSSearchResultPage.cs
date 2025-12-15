@@ -20,7 +20,6 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtQuantity => _driver.WaitForElement(By.XPath("//*[@class='govuk-details__text']//td[4]"));
         private IWebElement txtAuthority => _driver.WaitForElement(By.XPath("//*[@class='govuk-details__text']//td[5]"));
         private IWebElement txtDecision => _driver.WaitForElement(By.XPath("//*[@class='govuk-details__text']//td[6]"));
-       
         private List<IWebElement> commodityCodeList => _driver.WaitForElements(By.XPath("//*[@class='govuk-details__text']//td[2]")).ToList();
         private List<IWebElement> descriptionList => _driver.WaitForElements(By.XPath("//*[@class='govuk-details__text']//td[3]")).ToList();
         private List<IWebElement> quantityList => _driver.WaitForElements(By.XPath("//*[@class='govuk-details__text']//td[4]")).ToList();
