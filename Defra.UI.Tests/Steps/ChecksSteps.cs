@@ -22,13 +22,14 @@ namespace Defra.UI.Tests.Steps
         [Then("the Checks page should be displayed")]
         public void ThenTheChecksPageShouldBeDisplayed()
         {
-            Assert.True(checksPage?.IsChecksPageLoaded());
+            Assert.True(checksPage?.IsChecksPageLoaded(), "Checks page is not displayed");
         }
 
         [When("the user selects {string} radio button under Documentary check on the Checks page")]
         public void WhenTheUserSelectsRadioButtonUnderDocumentaryCheckOnTheChecksPage(string docCheckOption)
         {
             checksPage?.SelectDocCheckRadio(docCheckOption);
+            _scenarioContext.Add("DocumentaryCheckDecision", docCheckOption);
         }
 
         [When("the user selects {string} radio button under Identity check on the Checks page")]
@@ -41,6 +42,7 @@ namespace Defra.UI.Tests.Steps
         public void WhenTheUserSelectsSubRadioButtonUnderTheIdentityCheckMainRadio(string identityCheckSubOption)
         {
             checksPage?.SelectIdentityCheckSubRadio(identityCheckSubOption);
+            _scenarioContext.Add("IdentityCheckDecision", identityCheckSubOption);
         }
 
         [When("the user selects {string} radio button under Physical check on the Checks page")]
@@ -53,6 +55,7 @@ namespace Defra.UI.Tests.Steps
         public void WhenTheUserSelectsSubRadioButtonUnderThePhysicalCheckMainRadio(string physicalCheckSubOption)
         {
             checksPage?.SelectPhysicalCheckSubRadio(physicalCheckSubOption);
+            _scenarioContext.Add("PhysicalCheckDecision", physicalCheckSubOption);
         }
 
         [When("the user clicks on Save and continue button on the Checks page")]

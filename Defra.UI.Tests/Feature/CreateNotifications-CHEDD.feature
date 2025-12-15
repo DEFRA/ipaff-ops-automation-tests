@@ -108,7 +108,7 @@ Scenario: User creates and submits a B2C consignment notification - CHED D
 	And I have selected "Sign in with Government Gateway" as login type
 	When I click Continue button from How do you want to sign in page
 	Then I should redirected to the IPAFF Sign in using Government Gateway page
-	When I have provided the IPAFF Inspector credentials and signin
+	When I have provided the IPAFF Gateway Inspector credentials and signin
 	Then the user should be logged into Import notifications page
 	When the user searches for the newly created notification on the Import notifications page
 	Then the user clicks the notificaiton found with status "NEW"
@@ -135,8 +135,32 @@ Scenario: User creates and submits a B2C consignment notification - CHED D
 	And the main radio option 'Internal market' and the sub radio option 'Human consumption' are selected by default
 	And the user clicks Save and continue
 	Then the Review outcome decision page should be displayed
+	And the details reflect the information added for CHED D
+	When the user selects the radio button to declare that the checks have been carried out in accordance with EU law
 	When the user populates the Date and time of checks
 	And user clicks Submit decision
 	Then the Your checks have been submitted page should be displayed
+	When the user clicks View or print CHED
+	Then the certificate should be displayed in a new browser tab
+	When the user checks that the data in the certificate matches the data entered into the notification
+	And the user closes the PDF browser tab
+	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 2
+	Then the user should be logged out successfully
+	When the user navigate to the BTMS application
+	Then I click Sign in button
+	And I should see type of Gateway login page
+	And I have selected "Government Gateway" as login type
+	And I click Sign in button
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the BTMS Sign in using Government Gateway page
+	When I have provided the BTMS credentials and signin
+	Then the BTMS search screen should be displayed
+	When the user searches for the CHED created earlier
+	Then the BTMS search result screen should be displayed
+	And the user validates the commodity code "12024200", description "Shelled, whether or not broken", quantity "19000", authority "FNAO" and decision "Acceptable for Internal Market" for commodity "1" after the decision is given
+	And the user validates the commodity code "100610", description "Rice in the husk (paddy or rough)", quantity "18000", authority "FNAO" and decision "Acceptable for Internal Market" for commodity "2" after the decision is given	
+	When the user logs out of BTMS
 	Then the user should be logged out successfully
