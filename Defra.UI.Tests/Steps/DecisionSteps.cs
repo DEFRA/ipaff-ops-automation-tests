@@ -24,7 +24,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the Decision page should be displayed")]
         public void ThenTheDecisionPageShouldBeDisplayed()
         {
-            Assert.True(decisionPage?.IsPageLoaded());
+            Assert.True(decisionPage?.IsPageLoaded(), "Decision page is not displayed");
+        }
+
+        [When("the user selects Acceptable for {string} {string}")]
+        public void WhenTheUserSelectsAcceptableFor(string acceptableFor, string subOption)
+        {
+            _scenarioContext.Add("AcceptableFor", acceptableFor);
+            _scenarioContext.Add("AcceptableForSubOption", subOption);
+            decisionPage?.SelectAcceptableFor(acceptableFor, subOption);
         }
 
         [Then("the user verifies the Transit radio button option is pre populated")]
@@ -59,5 +67,17 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var year = currentDate.Year.ToString();
             decisionPage?.EnterCurrentDateInDecisionPage(day, month, year);
         }
+
+        [Then("the main radio option {string} and the sub radio option {string} are selected by default")]
+        public void ThenTheMainRadioOptionAndTheSubRadioOptionAreSelectedByDefault(string mainRadio, string subRadio)
+        {
+            Assert.Multiple(() =>
+            {
+                Assert.True(decisionPage?.IsAcceptableForRadioSelected(mainRadio), $"The main radio option {mainRadio} is not selected by default on the Decision page");
+                Assert.True(decisionPage?.IsInternalMarketSubRadioSelected(subRadio), $"The sub radio option {subRadio} is not selected by default on the Decision page");
+            }
+            );
+        }
+
     }
 }

@@ -31,8 +31,17 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserEntersALocalReferenceNumberAndClicksSaveAndContinue()
         {
             var customDeclarionRef = _scenarioContext.Get<string>("CustomsDeclarationReference");
+            _scenarioContext.Add("BorderControlPostReference", customDeclarionRef);
             localReferenceNumberPage?.EnterLocalReferenceNumber(customDeclarionRef);
             localReferenceNumberPage?.ClickSaveAndContinue();
         }
+
+        [When("the user clicks Save and continue without entering the local reference number data")]
+        public void WhenTheUserClicksSaveAndContinueWithoutEnteringTheLocalReferenceNumberData()
+        {
+            _scenarioContext.Add("BorderControlPostReference", "");
+            localReferenceNumberPage?.ClickSaveAndContinue();
+        }
+
     }
 }

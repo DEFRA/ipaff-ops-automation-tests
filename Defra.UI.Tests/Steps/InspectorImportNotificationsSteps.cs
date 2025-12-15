@@ -38,10 +38,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
         [Then("the user clicks the notificaiton found with status {string}")]
+        [Then("the user searches for the CHED D notification that was recently submitted")]
         public void ThenTheNotificationShouldBeFoundWithStatus(string status)
         {
             var chedRef = _scenarioContext.Get<string>("CHEDReference");
-            inspectorImportNotificationsPage?.SearchForChed(chedRef);
             inspectorImportNotificationsPage?.VerifyNotificationStatus(chedRef, status);
         }
 

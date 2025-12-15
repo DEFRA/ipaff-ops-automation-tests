@@ -46,6 +46,18 @@ namespace Defra.UI.Tests.Pages.Classes
             return outcomeValue.Text.Trim();
         }
 
+        public bool IsViewOrPrintCHEDButtonDisplayed()
+        {
+            try
+            {
+                return btnViewOrPrintCHED.Displayed;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public void ClickViewOrPrintCHED()
         {
             btnViewOrPrintCHED.Click();

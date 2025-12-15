@@ -24,7 +24,23 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the Laboratory tests page should be displayed")]
         public void ThenTheLaboratoryTestsPageShouldBeDisplayed()
         {
-            Assert.True(laboratoryTestsPage?.IsPageLoaded());
+            Assert.True(laboratoryTestsPage?.IsPageLoaded(), "Laboratory tests page is not displayed");
+        }
+
+        [Then("{string} is pre-selected for Would you like to record laboratory tests?")]
+        public void ThenIsPreSelectedForWouldYouLikeToRecordLaboratoryTests(string expectedSelection)
+        {
+            if (expectedSelection.Equals("No", StringComparison.OrdinalIgnoreCase))
+            {
+                _scenarioContext.Add("AreLaboratoryTestsRequired", expectedSelection);
+                Assert.True(laboratoryTestsPage?.IsLabTestsNoPreselected(), "No is not pre-selected for Would you like to record laboratory tests?");
+            }
+        }
+
+        [When("the user select {string} radio button on the Laboratory tests page")]
+        public void WhenISelectRadioButtonOnTheLaboratoryTestsPage(string labTestsOption)
+        {
+            laboratoryTestsPage?.SelectLabTestsRadio(labTestsOption);
         }
     }
 }
