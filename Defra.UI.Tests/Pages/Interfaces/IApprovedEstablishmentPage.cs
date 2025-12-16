@@ -15,5 +15,6 @@ namespace Defra.UI.Tests.Pages.Interfaces
         string GetTotalNetWeight();
         string GetTotalPackages();
         string GetEstablishmentListFirstName();
+        void ClickRemoveEstablishment();
     }
 }

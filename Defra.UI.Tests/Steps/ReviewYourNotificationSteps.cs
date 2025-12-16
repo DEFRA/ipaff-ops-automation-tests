@@ -276,6 +276,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             VerifyDescriptionOfTheGoods();
             VerifyDocuments();
             VerifyTraders();
+            VerifyTransportAndConsignmentContactDetails();
         }
 
         private void VerifyAboutTheConsignment()
@@ -300,7 +301,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.AreEqual(contryFromWhereConsigned, summary?.ContryFromWhereConsigned, $"Country from where consigned is not matching in {pageName} page!");
             Assert.AreEqual(consignmentConformToRegulatoryRequirements, summary?.ConsignmentConformToRegulatoryRequirements, $"Consignment confirmation to regulatory requirements is not matching in {pageName} page!");
             Assert.AreEqual(consignmentRefNum, summary?.ConsignmentReferenceNumber, $"Consignment Reference Number is not matching in {pageName} page!");
-            //Assert.IsTrue(summary?.MainReasonForImport.ToUpper().Contains(mainReasonForImport.ToUpper()), $"Main reason for import is not matching in {pageName} page!");
+            Assert.IsTrue(summary?.MainReasonForImport.ToUpper().Contains(mainReasonForImport.ToUpper()), $"Main reason for import is not matching in {pageName} page!");
             Assert.AreEqual(riskCategory.ToUpper(), summary?.RiskCategory.ToUpper(), $"Risk category is not matching in {pageName} page!");
         }
 
@@ -323,7 +324,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var temperature = _scenarioContext.Get<string>("Temperature");
 
             Assert.AreEqual(commodityCode, summary?.CommodityCode, $"Commodity Code is not matching in {pageName} page!");
-            //Assert.AreEqual(typeOfCommodity, summary?.TypeOfCommodity, $"Type Of Commodity is not matching in {pageName} page!");
+            Assert.AreEqual(typeOfCommodity, summary?.TypeOfCommodity, $"Type Of Commodity is not matching in {pageName} page!");
             Assert.AreEqual(species, summary?.Species, $"Species is not matching in {pageName} page!");
             Assert.AreEqual(netWeight, summary?.NetWeight, $"NetWeight is not matching in {pageName} page!");
             Assert.AreEqual(packages, summary?.NumberOfPackages, $"Number Of Packages is not matching in {pageName} page!");
@@ -341,17 +342,17 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var summary = summaryPage?.GetSummaryDetails();
             var pageName = "Review your notification";
 
-            var documentType = _scenarioContext.Get<string>("DocumentType");
-            var documentReference = _scenarioContext.Get<string>("DocumentReference");
-            var dateOfIssue = _scenarioContext.Get<string>("DateOfIssue");
+            var documentType = _scenarioContext.Get<string[]>("DocumentType");
+            var documentReference = _scenarioContext.Get<string[]>("DocumentReference");
+            var dateOfIssue = _scenarioContext.Get<string[]>("DateOfIssue");
             var approvedEstablishmentName = _scenarioContext.Get<string>("ApprovedEstablishmentName");
             var approvedEstablishmentCountry = _scenarioContext.Get<string>("ApprovedEstablishmentCountry");
             var approvedEstablishmentType = _scenarioContext.Get<string>("ApprovedEstablishmentType");
             var approvedEstablishmentApprovalNum = _scenarioContext.Get<string>("ApprovedEstablishmentApprovalNum");
 
-            Assert.AreEqual(documentType, summary?.DocumentType, $"Document Type is not matching in {pageName} page!");
-            Assert.AreEqual(documentReference, summary?.DocumentReference, $"Document Reference is not matching in {pageName} page!");
-            Assert.AreEqual(dateOfIssue, summary?.DateOfIssue, $"Date Of Issue is not matching in {pageName} page!");
+            CollectionAssert.AreEqual(documentType, summary?.DocumentType, $"Document Type is not matching in {pageName} page!");
+            CollectionAssert.AreEqual(documentReference, summary?.DocumentReference, $"Document Reference is not matching in {pageName} page!");
+            CollectionAssert.AreEqual(dateOfIssue, summary?.DateOfIssue, $"Date Of Issue is not matching in {pageName} page!");
             Assert.AreEqual(approvedEstablishmentName, summary?.ApprovedEstablishmentName, $"Approved Establishment Name is not matching in {pageName} page!");
             Assert.AreEqual(approvedEstablishmentCountry, summary?.ApprovedEstablishmentCountry, $"Approved Establishment Country is not matching in {pageName} page!");
             Assert.AreEqual(approvedEstablishmentType, summary?.ApprovedEstablishmentType, $"Approved Establishment Type is not matching in {pageName} page!");
@@ -377,10 +378,52 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var actualPlaceOfDestination = summary?.PlaceOfDestination.ToUpper().Replace(", ", ",").ReplaceLineEndings("\n");
             var expectedPlaceOfDestination = placeOfDestination.ToUpper().Replace(", ", ",").ReplaceLineEndings("\n");
 
-            Assert.IsTrue(actualConsignorDetails.Contains(expectedConsignorDetails), $"Consignor Details is not matching in {pageName} page!");
-            Assert.IsTrue(actualConsigneeDetails.Contains(expectedConsigneeDetails), $"Consignee Details is not matching in {pageName} page!");
-            Assert.IsTrue(actualImporterDetails.Contains(expectedImporterDetails), $"Importer Details is not matching in {pageName} page!");
-            Assert.IsTrue(actualPlaceOfDestination.Contains(expectedPlaceOfDestination), $"Place Of Destination is not matching in {pageName} page!");
+            Assert.IsTrue(actualConsignorDetails?.Contains(expectedConsignorDetails), $"Consignor Details is not matching in {pageName} page!");
+            Assert.IsTrue(actualConsigneeDetails?.Contains(expectedConsigneeDetails), $"Consignee Details is not matching in {pageName} page!");
+            Assert.IsTrue(actualImporterDetails?.Contains(expectedImporterDetails), $"Importer Details is not matching in {pageName} page!");
+            Assert.IsTrue(actualPlaceOfDestination?.Contains(expectedPlaceOfDestination), $"Place Of Destination is not matching in {pageName} page!");
+        }
+
+        public void VerifyTransportAndConsignmentContactDetails()
+        {
+            var pageName = "Review your notification";
+
+            var portOfEntry = _scenarioContext.Get<string>("PortOfEntry");
+            var meansOfTransport = _scenarioContext.Get<string>("MeansOfTransport");
+            var transportId = _scenarioContext.Get<string>("TransportId");
+            var areContainers = _scenarioContext.Get<string>("AreContainers");
+            var transportDocRef = _scenarioContext.Get<string>("EnterTransportDocRef");
+            var estimatedArrivalDate = _scenarioContext.Get<string>("EstimatedArrivalDate");
+            var estimatedArrivalTime = _scenarioContext.Get<string>("EstimatedArrivalTime");
+            var isCTC = _scenarioContext.Get<string>("IsCTC");
+            var isGVMS = _scenarioContext.Get<string>("IsGVMS");
+            var consignmentContactAddress = _scenarioContext.Get<string>("ConsignmentContactAddress");
+
+            Assert.AreEqual(portOfEntry , reviewPage?.GetPortOfEntry(), $"Port of Entry is not matching in {pageName} page!");
+            Assert.AreEqual(meansOfTransport, reviewPage?.GetMeansOfTransport(), $"Means of Transport is not matching in {pageName} page!");
+            Assert.AreEqual(transportId, reviewPage?.GetTransportId(), $"Transport Id is not matching in {pageName} page!");
+            Assert.AreEqual(areContainers, reviewPage?.GetContainerUsage(), $"Containers is not matching in {pageName} page!");
+            Assert.AreEqual(transportDocRef, reviewPage?.GetTransportDocumentReference(), $"Transport Document Reference is not matching in {pageName} page!");
+            Assert.AreEqual(estimatedArrivalDate, reviewPage?.GetEstimatedArrivalDate(), $"Estimated Arrival Date is not matching in {pageName} page!");
+            Assert.AreEqual(estimatedArrivalTime, reviewPage?.GetEstimatedArrivalTime(), $"Estimated Arrival Time is not matching in {pageName} page!");
+            Assert.AreEqual(isCTC, reviewPage?.GetCTCUsage(), $"CTC Usage is not matching in {pageName} page!");
+            Assert.AreEqual(isGVMS, reviewPage?.GetGVMSUsage(), $"GVMS Usage is not matching in {pageName} page!");
+            Assert.AreEqual(consignmentContactAddress, reviewPage?.GetConsignmentContactAddress(), $"Consignment Contact Address is not matching in {pageName} page!");
+        }
+
+        [Then(@"the user should see an error message '(.*)' in review page")]
+        public void ThenIShouldSeeAnErrorMessageInReviewPage(string errorMessage)
+        {
+            if (!string.IsNullOrEmpty(errorMessage))
+            {
+                Assert.True(reviewPage?.IsError(errorMessage), $"There is no error message found with - {errorMessage}");
+            }
+        }
+
+        [When(@"the user Clicks the change link under '(.*)'")]
+        public void WhenIClickTheChangeLinkUnderHeading(string heading)
+        {
+            reviewPage?.ClickChangeLink(heading);
         }
     }
 }

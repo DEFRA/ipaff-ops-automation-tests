@@ -60,5 +60,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             decisionHubPage?.ClickDecisionLink();
         }
+        
+        [When("the user clicks Review And Submit link")]
+        public void WhenTheUserClicksReviewAndSubmitLink()
+        {
+            decisionHubPage?.ClickReviewAndSubmitLink();
+        }
     }
 }

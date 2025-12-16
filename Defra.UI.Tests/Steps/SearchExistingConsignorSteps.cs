@@ -30,7 +30,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user selects any one of the displayed consignors or exporters")]
         public void WhenTheUserSelectsAnyOneOfTheDisplayedConsignorsOrExporters()
         {
-            _scenarioContext.Add("ConsignorDetails", searchExistingConsignorPage.GetSelectedConsignor());
+            _scenarioContext["ConsignorDetails"] = searchExistingConsignorPage.GetSelectedConsignor();
             searchExistingConsignorPage?.ClickSelect();
         }
 

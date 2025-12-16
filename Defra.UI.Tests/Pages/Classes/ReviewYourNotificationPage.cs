@@ -82,6 +82,12 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement notifyTransportContacts => _driver.FindElement(By.Id("transporter-contact-yesnoindicator"));
         private IWebElement consignmentContactAddress => _driver.FindElement(By.Id("organisation-branch-address-address"));
         private IReadOnlyCollection<IWebElement> divAboutTheConsignmentDetails => _driver.WaitForElements(By.XPath("//div[@id='document-pet-card']//dl/div"));
+                
+        private IWebElement lnkChange(string section) => _driver.FindElement(By.XPath($"(//*[text()='{section}']/following::a)[1]"));
+
+
+        //Error Message
+        private IReadOnlyCollection<IWebElement> lblErrorMessages => _driver.WaitForElements(By.XPath("//div[@class='govuk-error-summary']/div/ul/li"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -642,6 +648,23 @@ namespace Defra.UI.Tests.Pages.Classes
         public string? GetContainerUsage()
         {
             try { return containerUsage.Text.Trim(); } catch { return null; }
+        }
+
+        public bool IsError(string errorMessage)
+        {
+            foreach (var element in lblErrorMessages)
+            {
+                if (element.Text.Contains(errorMessage))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public void ClickChangeLink(string heading)
+        {
+            lnkChange(heading).Click();
         }
     }
 }

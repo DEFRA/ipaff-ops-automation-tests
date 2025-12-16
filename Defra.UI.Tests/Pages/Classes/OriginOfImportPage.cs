@@ -22,6 +22,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement rdoYesAfterBCP => _driver.FindElement(By.Id("transport-details-required"));
         private IWebElement rdoNoAfterBCP => _driver.FindElement(By.Id("transport-details-required-2"));
         private IWebElement txtReferenceNumber => _driver.FindElement(By.Id("local-reference-number"));
+        private IWebElement btnSaveAndReviewToHub => _driver.FindElement(By.Id("save-and-return-button"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -70,6 +71,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickBrowserForwardButton()
         {
             _driver.ClickBrowserForwardButton();
+        }
+
+        public void ClickSaveAndReturnToHub()
+        {
+            btnSaveAndReviewToHub.Click();
         }
     }
 }

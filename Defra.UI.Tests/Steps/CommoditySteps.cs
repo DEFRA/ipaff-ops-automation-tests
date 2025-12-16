@@ -77,7 +77,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserPopulatesNetWeightAs(string weight)
         {
             commodityPage?.EnterNetWeight(weight);
-            _scenarioContext.Add("NetWeight", weight);
+            _scenarioContext["NetWeight"]= weight;
         }
 
         [When("the user populates Number of animals as {string}")]
@@ -91,7 +91,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserPopulatesNumberOfPackagesAs(string packages)
         {
             commodityPage?.EnterNumberOfPackages(packages);
-            _scenarioContext.Add("NumberOfPackages", packages);
+            _scenarioContext["NumberOfPackages"] = packages;
         }
 
 
@@ -99,18 +99,18 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserSelectsTypeOfPackageAs(string type)
         {
             commodityPage?.SelectPackageType(type);
-            _scenarioContext.Add("PackageType", type);
+            _scenarioContext["PackageType"] = type;
         }
 
         [When("the user clicks the Update total button")]
         public void WhenTheUserClicksTheUpdateTotalButton()
         {
             commodityPage?.ClickUpdateTotal();
-            Thread.Sleep(2000);
-            _scenarioContext.Add("SubtotalNetWeight", commodityPage.GetSubtotalNetWeight());
-            _scenarioContext.Add("SubtotalPackages", commodityPage.GetSubtotalPackages());
-            _scenarioContext.Add("TotalNetWeight", commodityPage.GetTotalNetWeight());
-            _scenarioContext.Add("TotalPackages", commodityPage.GetTotalPackages());
+            Thread.Sleep(1000);
+            _scenarioContext["SubtotalNetWeight"] = commodityPage?.GetSubtotalNetWeight();
+            _scenarioContext["SubtotalPackages"] = commodityPage?.GetSubtotalPackages();
+            _scenarioContext["TotalNetWeight"] = commodityPage?.GetTotalNetWeight();
+            _scenarioContext["TotalPackages"] = commodityPage?.GetTotalPackages();
         }
 
         [When("the user populates Net weight as {string} for the second commodity {string}")]
@@ -147,7 +147,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void ThenTheTotalGrossWeightShouldBeGreaterThanTheNetWeight(string weight)
         {
             commodityPage?.EnterTotalGrossWeight(weight);
-            _scenarioContext.Add("TotalGrossWeight", weight);
+            _scenarioContext["TotalGrossWeight"] = weight;
         }
 
         [When("the user clicks Save and continue in commodity page")]

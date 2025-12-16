@@ -16,7 +16,7 @@ namespace Defra.UI.Tests.Pages.Classes
         #region Page Objects
         private IReadOnlyCollection<IWebElement> divAboutConsignment => _driver.WaitForElements(By.XPath("//*[@id='review-table-about-notification']/div"));
         private IWebElement txtCommodityCode => _driver.WaitForElement(By.XPath("//*[normalize-space()='Commodity code']//following-sibling::td[1]"));
-        private IWebElement txtCommodityType => _driver.WaitForElement(By.XPath("//*[normalize-space()='Type of commodity']//following-sibling::td[1]"));
+        private IWebElement txtCommodityType => _driver.WaitForElement(By.XPath("//*[normalize-space()='Description of the goods']/following::tr[3]//following-sibling::td[2]"));
         private IWebElement txtSpecies => _driver.WaitForElement(By.XPath("//*[normalize-space()='Species']/../../following-sibling::tbody//td[1]"));
         private IWebElement txtNetWeight => _driver.WaitForElement(By.XPath("//*[@class='govuk-table__cell govuk-table__cell--numeric consignment-net-weight']"));
         private IWebElement txtPackages => _driver.WaitForElement(By.XPath("//*[@class='govuk-table__cell govuk-table__cell--numeric consignment-net-weight']//following-sibling::td[1]"));
@@ -27,9 +27,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtTotalPackages => _driver.WaitForElement(By.XPath("//*[normalize-space()='Total packages']//following-sibling::td"));
         private IWebElement txtTotalGrossWeight => _driver.WaitForElement(By.XPath("//*[normalize-space()='Total gross weight']//following-sibling::td[1]"));
         private IWebElement txtTemperature => _driver.WaitForElement(By.XPath("//*[normalize-space()='Temperature']//following-sibling::dd"));
-        private IWebElement txtDocumentType => _driver.WaitForElement(By.Id("veterinary-document-type-1"));
-        private IWebElement txtDocumentReference => _driver.WaitForElement(By.Id("veterinary-document-reference-1"));
-        private IWebElement txtDateOfIssue => _driver.WaitForElement(By.Id("veterinary-document-issue-date-1"));
+        private IReadOnlyCollection<IWebElement> txtDocumentType => _driver.WaitForElements(By.XPath("//td[contains(@id,'veterinary-document-type')]"));
+        private IReadOnlyCollection<IWebElement> txtDocumentReference => _driver.WaitForElements(By.XPath("//td[contains(@id,'veterinary-document-reference')]"));
+        private IReadOnlyCollection<IWebElement> txtDateOfIssue => _driver.WaitForElements(By.XPath("//td[contains(@id,'veterinary-document-issue-date')]"));
         private IWebElement txtApprovedEstablishmentName => _driver.WaitForElement(By.XPath("//*[@id='establishments-row-1']/td[1]"));
         private IWebElement txtApprovedEstablishmentCountry => _driver.WaitForElement(By.XPath("//*[@id='establishments-row-1']/td[2]"));
         private IWebElement txtApprovedEstablishmentType => _driver.WaitForElement(By.XPath("//*[@id='establishments-row-1']/td[3]"));
@@ -93,7 +93,7 @@ namespace Defra.UI.Tests.Pages.Classes
             }
 
             summary.CommodityCode = txtCommodityCode.Text.Trim();
-          //  summary.TypeOfCommodity = txtCommodityType.Text.Trim();
+            summary.TypeOfCommodity = txtCommodityType.Text.Trim();
             summary.Species = txtSpecies.Text.Trim();
             summary.NetWeight = txtNetWeight.Text.Trim().Replace(" kg/units", "");
             summary.NumberOfPackages = txtPackages.Text.Trim();
@@ -105,9 +105,9 @@ namespace Defra.UI.Tests.Pages.Classes
             summary.TotalGrossWeight = txtTotalGrossWeight.Text.Trim().Replace(" kg/units", "");
             summary.Temperature = txtTemperature.Text.Trim();
 
-            summary.DocumentType = txtDocumentType.Text.Trim();
-            summary.DocumentReference = txtDocumentReference.Text.Trim();
-            summary.DateOfIssue = txtDateOfIssue.Text.Trim();
+            summary.DocumentType = txtDocumentType.Select(e => e.Text).ToArray();
+            summary.DocumentReference = txtDocumentReference.Select(e => e.Text).ToArray();
+            summary.DateOfIssue = txtDateOfIssue.Select(e => e.Text).ToArray();
             summary.ApprovedEstablishmentName = txtApprovedEstablishmentName.Text.Trim();
             summary.ApprovedEstablishmentCountry = txtApprovedEstablishmentCountry.Text.Trim();
             summary.ApprovedEstablishmentType = txtApprovedEstablishmentType.Text.Trim();

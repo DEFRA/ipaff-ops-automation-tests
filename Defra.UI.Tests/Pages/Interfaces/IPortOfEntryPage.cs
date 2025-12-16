@@ -15,5 +15,7 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void EnterEstimatedArrivalDate(string day, string month, string year);
         void EnterEstimatedArrivalTime(string hour, string minutes);
         void EnterEstimatedJourneyTime(string hours);
+        void EnterContainerDetails(string containerNumber, string sealNumber);
+        void SelectAreConsignmentsInContainer(string option);
     }
 }
