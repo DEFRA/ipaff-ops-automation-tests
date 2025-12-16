@@ -84,7 +84,7 @@
     <None Update="power-apps-bindings.idcoms.yml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="power-apps-bindings.pims.yml.yml">
+    <None Update="power-apps-bindings.pims.yml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="power-apps-bindings.yml">
