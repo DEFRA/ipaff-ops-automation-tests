@@ -37,8 +37,7 @@ public class TestConfiguration
         {
             case "IDCOMS":
                 return IdcomsFileName;
-            case "PIMS":
-            case "IPAFFS":
+            case "PIMS":          
                 return PimsFileName;
             default:
                 return FileName;
