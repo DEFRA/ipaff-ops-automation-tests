@@ -8,7 +8,6 @@ namespace Defra.UI.Tests.Tools
         public UrlBuilder Default();
         public UrlBuilder BTMSDefault();
         public UrlBuilder InspectorDefault();
-        public UrlBuilder PIMSDefault();
         public string BuildApp();
         public UrlBuilder Add(string segment);
     }
@@ -26,7 +25,6 @@ namespace Defra.UI.Tests.Tools
         private string BaseApplicationUrl = null;
         private string BaseBTMSApplicationUrl = null;
         private string BaseInspectorUrl = null;
-        private string BasePIMSApplicationUrl = null;
 
         public UrlBuilder Add(string segment)
         {
@@ -103,27 +101,7 @@ namespace Defra.UI.Tests.Tools
             }
             return path;
         }
-
-        public string BuildPIMSApp()
-        {
-            string path = null;
-            if (segments.Count > 0)
-            {
-                path = string.Join("/", segments);
-
-                if (segments.Count > 0 && hasTrailingSlash)
-                {
-                    path += "/";
-                }
-                path = BasePIMSApplicationUrl + "/" + path;
-            }
-            else
-            {
-                path = BasePIMSApplicationUrl;
-            }
-            return path;
-        }
-
+                
         public UrlBuilder Default()
         {
             BaseApplicationUrl = ConfigSetup.BaseConfiguration.TestConfiguration.ApplicationUrl;
@@ -144,14 +122,7 @@ namespace Defra.UI.Tests.Tools
 
             return this;
         }
-
-        public UrlBuilder PIMSDefault()
-        {
-            BasePIMSApplicationUrl = ConfigSetup.BaseConfiguration.TestConfiguration.PIMSApplicationUrl;
-
-            return this;
-        }
-
+                
         private static string CleanSegment(string segment)
         {
             var unescaped = Uri.UnescapeDataString(segment);

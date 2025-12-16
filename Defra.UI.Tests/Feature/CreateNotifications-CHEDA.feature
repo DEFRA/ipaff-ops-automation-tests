@@ -3,8 +3,9 @@
 Create a notification for CHEDA type
 
 Scenario: User creates and submits a B2C consignment notification - CHEDA
-	Given I navigate to the PIMS application
+	Given I am logged in to the '' app as ''
 	When I have provided the PIMS credentials and signin
+	And I open the 'Importer Notifications' area
 	#Given that I navigate to the IPAFF application
 	#Then I should see type of Gateway login page
 	#And I have selected 'Sign in with Government Gateway' as login type

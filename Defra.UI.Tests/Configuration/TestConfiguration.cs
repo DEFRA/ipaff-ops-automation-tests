@@ -5,9 +5,6 @@
         public string BTMSApplicationUrl { get; set; }
         public string ApplicationUrl { get; set; }
         public string InspectorUrl { get; set; }
-        public string PIMSApplicationUrl { get; set; }
-        public string PIMSUsername { get; set; }
-        public string PIMSPassword { get; set; }
         public string Environment { get; set; }
         public string Platform { get; set; }
         public bool Headless { get; set; }
