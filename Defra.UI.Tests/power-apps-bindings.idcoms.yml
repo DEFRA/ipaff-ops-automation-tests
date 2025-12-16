@@ -1,0 +1,9 @@
+url: '#{{ IDCOMSUrl }}'
+useProfiles: false
+browserOptions:
+  browserType: Chrome
+users:
+  - username: '#{{ IDCOMSUser }}'
+    password: '#{{ IDCOMSPassword }}'
+    alias: '#{{ IDCOMSUserAlias }}'
+appName: 'IDCOMS'
