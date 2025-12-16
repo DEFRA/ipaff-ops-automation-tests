@@ -24,6 +24,8 @@ public class LoginSteps : PowerAppsStepDefiner
     [Given(@"I am logged in to the '(.*)' app as '(.*)'")]
     public static void GivenIAmLoggedInToTheAppAs(string appName, string userAlias)
     {
+        SelectApplication(appName);
+        TestConfig.GetUser(userAlias);
         GivenIAmLoggedInToTheAppAs1(appName, userAlias);
     }
 

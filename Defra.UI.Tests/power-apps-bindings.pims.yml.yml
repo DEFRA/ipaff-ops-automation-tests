@@ -1,0 +1,9 @@
+url: '#{{ PIMSUrl }}'
+useProfiles: false
+browserOptions:
+  browserType: Chrome
+users:
+  - username: '#{{ PIMSUser }}'
+    password: '#{{ PIMSPassword }}'
+    alias: '#{{ PIMSUserAlias }}'
+appName: 'IPAFFS'
