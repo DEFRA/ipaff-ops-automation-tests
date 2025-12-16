@@ -42,7 +42,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void ThenTheUserSelectsAContactAddressForTheConsignment()
         {
             var selectedAddress = contactAddressPage?.GetSelectedContactAddress();
-            _scenarioContext.Add("ConsignmentContactAddress", selectedAddress);
+            _scenarioContext["ConsignmentContactAddress"] = selectedAddress;
         }
     }
 }

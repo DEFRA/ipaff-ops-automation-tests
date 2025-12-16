@@ -32,11 +32,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var consigneeAddress = searchExistingImporterPage?.GetSelectedImporterAddress();
             var consigneeCountry = searchExistingImporterPage?.GetSelectedImporterCountry();
 
-            _scenarioContext.Add("ImporterName", consigneeName);
-            _scenarioContext.Add("ImporterAddress", consigneeAddress);
-            _scenarioContext.Add("ImporterCountry", consigneeCountry);
+            _scenarioContext["ImporterName"] = consigneeName;
+            _scenarioContext["ImporterAddress"] = consigneeAddress;
+            _scenarioContext["ImporterCountry"] = consigneeCountry;
 
-            _scenarioContext.Add("ImporterDetails", searchExistingImporterPage?.GetSelectedImporter());
+            _scenarioContext["ImporterDetails"] = searchExistingImporterPage?.GetSelectedImporter();
 
             searchExistingImporterPage?.ClickSelect(importer);
         }

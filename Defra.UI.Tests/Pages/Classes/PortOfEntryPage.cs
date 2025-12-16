@@ -25,6 +25,10 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtHour => _driver.WaitForElement(By.Id("arrival-time-hour"));
         private IWebElement txtMinutes => _driver.WaitForElement(By.Id("arrival-time-minutes"));
         private IWebElement txtEstimatedJourneyTimeHour => _driver.FindElement(By.Id("estimated-journey-time-hour"));
+        private IWebElement txtContainerNumber => _driver.FindElement(By.Id("container-number-1"));
+        private IWebElement txtSealNumber => _driver.FindElement(By.Id("seal-number-1"));
+        private IWebElement chkOfficalSeal => _driver.FindElement(By.Id("official-seal-1"));
+        private IWebElement rdoAreConsignmentInContainer => _driver.FindElement(By.Id("are-consignments-in-containers-yes"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -49,6 +53,8 @@ namespace Defra.UI.Tests.Pages.Classes
         public void EnterPortOfEntry(string port)
         {
             txtPortOfEntry.Click();
+            txtPortOfEntry.Clear();
+            txtPortOfEntry.Click();
             txtPortOfEntry.SendKeys(port);
         }
 
@@ -59,11 +65,13 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void EnterTransportId(string transId) 
         { 
+            txtTransportId.Clear(); 
             txtTransportId.SendKeys(transId); 
         }
         
         public void EnterTransportDocRef(string DocumentRef) 
-        { 
+        {
+            txtTransportDocRef.Clear();
             txtTransportDocRef.SendKeys(DocumentRef); 
         }
 
@@ -76,7 +84,9 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void EnterEstimatedArrivalTime(string hour, string minutes)
         {
+            txtHour.Clear();
             txtHour.SendKeys(hour);
+            txtMinutes.Clear();
             txtMinutes.SendKeys(minutes);
         }
 
@@ -90,6 +100,18 @@ namespace Defra.UI.Tests.Pages.Classes
             {
                 // Field not present (CHED-P), continue without error
             }
+        }
+
+        public void EnterContainerDetails(string containerNumber, string sealNumber)
+        {
+            txtContainerNumber.SendKeys(containerNumber);
+            txtSealNumber.SendKeys(sealNumber);
+            chkOfficalSeal.Click();
+        }
+
+        public void SelectAreConsignmentsInContainer(string option)
+        {
+            rdoAreConsignmentInContainer.Click();
         }
     }
 }

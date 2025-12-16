@@ -29,7 +29,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user selects a consignee with a UK country")]
         public void WhenTheUserSelectsAConsigneeWithAUKCountry()
         {
-            _scenarioContext.Add("ConsigneeDetails", searchExistingConsigneePage.GetSelectedConsignee());
+            _scenarioContext["ConsigneeDetails"] = searchExistingConsigneePage?.GetSelectedConsignee();
             searchExistingConsigneePage?.ClickSelect();
         }
 
