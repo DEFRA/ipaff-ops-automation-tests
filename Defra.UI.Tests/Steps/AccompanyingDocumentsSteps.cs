@@ -35,14 +35,30 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserSelectsDocumentType(string type)
         {
             accompanyingDocumentsPage?.SelectDocumentType(type);
-            _scenarioContext.Add("DocumentType", type);
+            AppendStringToScenarioContextArray(_scenarioContext, "DocumentType", type);
         }
+
+        public void AppendStringToScenarioContextArray(ScenarioContext context, string key, string value)
+        {
+            if (context.TryGetValue(key, out var existing) && existing is string[] current)
+            {
+                var updated = new string[current.Length + 1];
+                Array.Copy(current, updated, current.Length);
+                updated[current.Length] = value;
+                context[key] = updated;
+            }
+            else
+            {
+                context[key] = new[] { value };
+            }
+        }
+
 
         [When("the user enters Document reference {string}")]
         public void WhenTheUserEntersDocumentReference(string reference)
         {
             accompanyingDocumentsPage?.EnterDocumentReference(reference);
-            _scenarioContext.Add("DocumentReference", reference);
+            AppendStringToScenarioContextArray(_scenarioContext, "DocumentReference", reference);
         }
 
         [When("the user enters date of issue {string}")]
@@ -52,7 +68,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             accompanyingDocumentsPage?.EnterDateOfIssue(date.Day.ToString(), date.Month.ToString(), date.Year.ToString());
             var monthName = date.ToString("MMMM", CultureInfo.InvariantCulture);
             var dateofIssue = date.Day.ToString() + " " + monthName + " " + date.Year.ToString();
-            _scenarioContext.Add("DateOfIssue", dateofIssue);
+            AppendStringToScenarioContextArray(_scenarioContext, "DateOfIssue", dateofIssue);
         }
 
         [When("the user selects a future date from the date picker")]
@@ -118,6 +134,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
             accompanyingDocumentsPage?.EnterDateOfIssue(day, month, year);
             var dateofIssue = day + " " + month + " " + year;
             _scenarioContext.Add("DocumentDateOfIssue", dateofIssue);
+        }
+
+        [When(@"the user clicks the Add a document link")]
+        public void WhenTheUserClicksTheAddADocumentLink()
+        {
+            accompanyingDocumentsPage?.ClickAddADocument();
         }
     }
 }

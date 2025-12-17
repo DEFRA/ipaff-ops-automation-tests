@@ -11,5 +11,6 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void IsItAfterBCP(string option);
         void EnterConsignmentRefNum(string refNum);
         void ClickBrowserForwardButton();
+        void ClickSaveAndReturnToHub();
     }
 }

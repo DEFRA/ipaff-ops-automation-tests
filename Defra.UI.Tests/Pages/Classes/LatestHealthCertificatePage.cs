@@ -45,18 +45,14 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void EnterDocumentReference(string reference)
         {
-            txtDocumentReference.Click();
             txtDocumentReference.Clear();
             txtDocumentReference.SendKeys(reference);
         }
 
         public void EnterDateOfIssue(string day, string month, string year)
         {
-            txtDay.Click();
             txtDay.SendKeys(day);
-            txtMonth.Click();
             txtMonth.SendKeys(month);
-            txtYear.Click();
             txtYear.SendKeys(year);
         }
 
