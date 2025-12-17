@@ -154,7 +154,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             if (_scenarioContext.ContainsKey(contextKey))
             {
-                var expectedValue = _scenarioContext.Get<string>(contextKey);
+                string expectedValue = null;
+                try
+                {
+                    expectedValue = _scenarioContext.Get<string>(contextKey);
+                }
+                catch (InvalidCastException)
+                {
+                    expectedValue = _scenarioContext.Get<string[]>(contextKey)?.FirstOrDefault();
+                }
+
                 if (!string.IsNullOrEmpty(expectedValue))
                 {
                     // Handle special comparisons
@@ -220,7 +229,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 case "AcceptableForSubOption":
                     // Ignore spaces for AcceptableForSubOption (handles both CHED-A CertifiedFor and CHED-P ConsignmentUse)
                     return expected.Replace(" ", "").Equals(actual.Replace(" ", ""), StringComparison.OrdinalIgnoreCase);
-
+              
                 default:
                     return expected.Equals(actual.Trim(), StringComparison.OrdinalIgnoreCase);
             }

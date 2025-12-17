@@ -81,12 +81,14 @@ Scenario: User creates and submits a B2C consignment notification - CHEDP
 	When the user clicks Save and continue
 	Then the Goods movement services page should be displayed
 	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
 	When the user clicks Save and continue
 	Then the Contact details page should be displayed, pre-populated with the user's details
 	When the user clicks Save and continue
 	Then the Nominated contacts page should be displayed
 	When the user clicks Save and continue
 	Then the Contact address for consignment page should be displayed
+	And the user selects a contact address for the consignment
 	When the user clicks Save and continue
 	Then the Review your notification page should be displayed
 	And the user verifies all the data displayed in review page
@@ -261,12 +263,14 @@ Scenario: User creates and submits a B2C consignment notification for Transit Re
 	When the user clicks Save and continue
 	Then the Goods movement services page should be displayed
 	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
 	When the user clicks Save and continue
 	Then the Contact details page should be displayed, pre-populated with the user's details
 	When the user clicks Save and continue
 	Then the Nominated contacts page should be displayed
 	When the user clicks Save and continue
 	Then the Contact address for consignment page should be displayed
+	And the user selects a contact address for the consignment
 	When the user clicks Save and continue
 	Then the Review your notification page should be displayed
 	And the user verifies all the data displayed in review page
@@ -434,12 +438,14 @@ Scenario: User creates and submits a B2C consignment notification for Transhipme
 	When the user clicks Save and continue
 	Then the Goods movement services page should be displayed
 	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
 	When the user clicks Save and continue
 	Then the Contact details page should be displayed, pre-populated with the user's details
 	When the user clicks Save and continue
 	Then the Nominated contacts page should be displayed
 	When the user clicks Save and continue
 	Then the Contact address for consignment page should be displayed
+	And the user selects a contact address for the consignment
 	When the user clicks Save and continue
 	Then the Review your notification page should be displayed
 	And the user verifies all the data displayed in review page
@@ -682,10 +688,10 @@ Scenario: User creates a B2C consignment notification, updates it from the revie
 	Then the notification should be present in the list
 	When the user clicks Amend
 	Then the Notification Hub page should be displayed
-	When the user clicks on 'Origin of the import'
+	When the user clicks on 'Origin of the import' link
 	When the user chooses "Finland" from the dropdown for Country of origin
 	And the user clicks on Save and return to hub
-	When the user clicks on 'Addresses'
+	When the user clicks on 'Addresses' link
 	Then the Addresses page should be displayed
 	When the user clicks on Change link under 'Consignor or exporter'
 	Then the Search for an existing consignor or exporter page should be displayed
@@ -704,7 +710,7 @@ Scenario: User creates a B2C consignment notification, updates it from the revie
 	When the user selects a place of destination with a UK country
 	Then the chosen place of destination should be displayed on the Addresses page
 	When the user clicks on Save and return to hub
-	When the user clicks on 'Review and submit'
+	When the user clicks on 'Review and submit' link
 	When the user clicks Save and continue
     Then the Declaration page should be displayed
 	When the user clicks Submit notification           
