@@ -30,6 +30,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement documentDate => _driver.WaitForElement(documentDateBy);
         private IWebElement addAttachmentLink => _driver.WaitForElement(By.Id("add-attachment"));
         private IWebElement nextButton => _driver.WaitForElement(By.Id("next-button"));
+        private IWebElement lnkAddADocument => _driver.WaitForElement(By.Id("button-display-additional-document-row"));
+        private List<IWebElement> documentRows => _driver.WaitForElements(By.XPath("//div[@class='additional-documents__grid-row additional-document-info']")).ToList();
         private IWebElement fileName => _driver.WaitForElement(By.XPath("//a[contains(@id,'attachment-view-')]"));
         private List<IWebElement> datePickerDateList => _driver.WaitForElements(By.XPath("//table[@class='date-picker__date-table']//tr/td")).ToList();
 
@@ -63,11 +65,8 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void EnterDateOfIssue(string day, string month, string year)
         { 
-            txtDay.Click(); 
             txtDay.SendKeys(day);
-            txtMonth.Click();
             txtMonth.SendKeys(month);
-            txtYear.Click();
             txtYear.SendKeys(year);
         }
 
@@ -122,5 +121,17 @@ namespace Defra.UI.Tests.Pages.Classes
         }
 
         public string GetFileName => fileName.Text;
+
+        public void ClickAddADocument()
+        {
+            lnkAddADocument.Click();
+        }
+
+        public bool IsRowPresent()
+        {
+            return (documentRows != null && documentRows.Count > 0)
+                ? documentRows[0].Displayed
+                : false;
+        }
     }
 }

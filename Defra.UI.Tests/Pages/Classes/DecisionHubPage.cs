@@ -19,6 +19,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement lnkSealNumbers => _driver.WaitForElement(By.XPath("//a[normalize-space()='Seal numbers']"));
         private IWebElement lnkLaboratoryTests => _driver.WaitForElement(By.XPath("//a[normalize-space()='Laboratory tests']"));
         private IWebElement lnkDecision => _driver.WaitForElement(By.Id("button-decision-notification"));
+        private IWebElement lnkReviewAndSubmit => _driver.WaitForElement(By.Id("button-review-notification"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -61,6 +62,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickDecisionLink()
         {
             lnkDecision.Click();
+        }
+
+        public void ClickReviewAndSubmitLink()
+        {
+            lnkReviewAndSubmit.Click();
         }
     }
 }

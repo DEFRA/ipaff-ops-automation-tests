@@ -38,7 +38,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserSelectsAnyRadioButtonOnTheAdditionalDetailsPage(string option)
         {
             additionalDetailsPage?.ClickImportingProduct(option);
-            _scenarioContext.Add("Temperature", option);
+            _scenarioContext["Temperature"] = option;
         }
 
         [When("the user selects {string} radio button under Commodity intended for on the Additional details page")]
@@ -60,6 +60,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             additionalDetailsPage?.SelectUnweanedAnimalsOption(unweanedAnimalsOption);
             _scenarioContext.Add("UnweanedAnimalsOption", unweanedAnimalsOption);
+        }
+
+        [When(@"the user clicks on Save and review")]
+        public void WhenIClickSaveAndReview()
+        {
+            additionalDetailsPage?.ClickSaveAndReview();
         }
 
     }

@@ -152,8 +152,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserClicksSameAsConsigneeForPlaceOfDestination()
         {
             addressesPage?.ClickPlaceOfDestinationSameAsConsignee();
-            _scenarioContext.Add("PlaceOfDestinationDetails", addressesPage.GetSelectedPlaceOfDestination());
+            _scenarioContext["PlaceOfDestinationDetails"] = addressesPage?.GetSelectedPlaceOfDestination();
         }
 
+
+        [When(@"the user clicks on Change link under '(.*)'")]
+        public void WhenTheUserClicksOnChangeLinkUnderConsignorOrExporter(string link)
+        {
+            addressesPage?.ClickChangeInAddressPage(link);
+        }
     }
 }

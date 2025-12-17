@@ -35,6 +35,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement verifyDestinationName => _driver.FindElement(By.XPath("//td[@headers='place-of-destination-name']"));
         private IWebElement verifyDestinationAddress => _driver.FindElement(By.XPath("//td[@headers='place-of-destination-address']"));
         private IWebElement verifyDestinationCountry => _driver.FindElement(By.XPath("//td[@headers='place-of-destination-country']"));
+        private IWebElement lnkChange(string section) => _driver.FindElement(By.XPath($"(//h2[normalize-space(text())='{section}']/following::a)[1]"));
+
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -144,6 +146,11 @@ namespace Defra.UI.Tests.Pages.Classes
             var destinationCountry = verifyDestinationCountry.Text.Trim();
             var destinationDetails = destinationName + "\n" + destinationAddress + "," + destinationCountry;
             return destinationDetails;
+        }
+
+        public void ClickChangeInAddressPage(string section)
+        {
+            lnkChange(section).Click();
         }
     }
 }

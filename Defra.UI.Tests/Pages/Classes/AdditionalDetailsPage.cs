@@ -22,6 +22,7 @@ namespace Defra.UI.Tests.Pages.Classes
             _driver.FindElement(By.XPath($"//label[@class='govuk-label govuk-radios__label' and normalize-space()='{certificationText}']"));
         private IWebElement rdoUnweanedAnimalsYes => _driver.FindElement(By.XPath("//*[@id='includingNonablactedyes']/following-sibling::label"));
         private IWebElement rdoUnweanedAnimalsNo => _driver.FindElement(By.XPath("//*[@id='includingNonAblactedno']/following-sibling::label"));
+        private IWebElement btnSaveAndReview => _driver.FindElement(By.XPath("//button[text()='Save and review']"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -78,6 +79,11 @@ namespace Defra.UI.Tests.Pages.Classes
                 rdoUnweanedAnimalsYes.Click();
             else if (option.Equals("No") || rdoUnweanedAnimalsNo.Text.Trim().Contains(option))
                 rdoUnweanedAnimalsNo.Click();
+        }
+
+        public void ClickSaveAndReview()
+        {
+            btnSaveAndReview.Click();
         }
     }
 }
