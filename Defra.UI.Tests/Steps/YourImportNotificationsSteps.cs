@@ -79,5 +79,19 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             Assert.True(importNotificationsPage?.VerifyBrowserTabClosed(), "PDF browser tab not closed properly");
         }
+
+        [When("the user clicks Amend")]
+        public void WhenTheUserClicksAmend()
+        {
+            var chedReference = _scenarioContext.Get<string>("CHEDReference");
+            importNotificationsPage?.ClickAmend(chedReference);
+        }
+
+        [When("user searches for the '(.*)' import notification")]
+        public void WhenUserSearchesForTheImportNotification(string reference)
+        {
+            _scenarioContext.Add("CHEDReference", reference);
+            importNotificationsPage?.SearchForNotification(reference);
+        }
     }
 }

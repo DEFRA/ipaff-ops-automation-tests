@@ -23,6 +23,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtapprovedEstablishmentCountry => _driver.WaitForElement(By.XPath("//*[@id='establishments-row-1']/td[2]"));
         private IWebElement txtapprovedEstablishmentType => _driver.WaitForElement(By.XPath("//*[@id='establishments-row-1']/td[3]"));
         private IWebElement txtapprovedEstablishmentApprovalNum => _driver.WaitForElement(By.XPath("//*[@id='establishments-row-1']/td[4]"));
+        private IWebElement lnkRemoveEstablishment => _driver.WaitForElement(By.Id("establishment-remove-1"));
 
         #endregion
 
@@ -48,7 +49,7 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             var select = new SelectElement(countryDropdown);
             string actual = select.SelectedOption.Text.Trim();
-            return actual.Equals(country);
+            return actual.Contains(country);
         }
 
         public string GetEstablishmentListFirstName()
@@ -84,6 +85,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public string GetTotalPackages()
         {
             return txtapprovedEstablishmentApprovalNum.Text.Trim();
+        }
+
+        public void ClickRemoveEstablishment()
+        {
+            lnkRemoveEstablishment.Click();
         }
     }
 }

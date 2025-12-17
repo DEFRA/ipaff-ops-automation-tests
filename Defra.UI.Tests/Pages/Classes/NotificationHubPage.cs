@@ -20,6 +20,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
         private IWebElement lnkCountriesConsignmentTravel => _driver.WaitForElement(By.XPath("//a[contains(text(), 'Countries the consignment will travel through')]"));
         private IWebElement lnkCommodity => _driver.WaitForElement(By.Id("commodity-details-link"), true);
+        private IWebElement lnkNotificationHub(string link) => _driver.WaitForElement(By.XPath($"//a[normalize-space(text())='{link}']"), true);
+
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -42,6 +44,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickCountriesTheConsignmentWillTravelThroughLink()
         {
             lnkCountriesConsignmentTravel.Click();
+        }
+
+        public void ClickLink(string link)
+        {
+            lnkNotificationHub(link).Click();
         }
     }
 }

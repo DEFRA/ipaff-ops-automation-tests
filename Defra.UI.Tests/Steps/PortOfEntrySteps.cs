@@ -58,14 +58,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
             // CHED-A specific field - only filled if present
             portOfEntryPage?.EnterEstimatedJourneyTime(journeyTimeHours);
 
-            _scenarioContext.Add("PortOfEntry", port);
-            _scenarioContext.Add("MeansOfTransport", mode);
-            _scenarioContext.Add("TransportId", transId);
-            _scenarioContext.Add("AreContainers", option);
-            _scenarioContext.Add("EnterTransportDocRef", DocumentRef);
-            _scenarioContext.Add("EstimatedArrivalDate", formattedDate);
-            _scenarioContext.Add("EstimatedArrivalTime", formattedTime);
-            _scenarioContext.Add("EstimatedJourneyTime", journeyTimeHours);
+            
+            _scenarioContext["PortOfEntry"] = port;
+            _scenarioContext["MeansOfTransport"] = mode;
+            _scenarioContext["TransportId"] = transId;
+            _scenarioContext["AreContainers"] = option;
+            _scenarioContext["EnterTransportDocRef"] = DocumentRef;
+            _scenarioContext["EstimatedArrivalDate"] = formattedDate;
+            _scenarioContext["EstimatedArrivalTime"] = formattedTime;
+            _scenarioContext["EstimatedJourneyTime"] = journeyTimeHours;           
         }
     }
 }

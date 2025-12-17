@@ -11,6 +11,7 @@
         bool VerifyDataInCertificate(string chedReference);
         void ClosePDFBrowserTab();
         bool VerifyBrowserTabClosed();
+        void ClickAmend(string chedReference);
 
     }
 }

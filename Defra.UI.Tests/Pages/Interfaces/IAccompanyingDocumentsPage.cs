@@ -14,6 +14,8 @@ namespace Defra.UI.Tests.Pages.Interfaces
         string GetDocumentIssueDate();
         void ClickAddAttachmentLink();
         void AddAccompanyingDocument(string fileName);
+        void ClickAddADocument();
+        bool IsRowPresent();
         string GetFileName { get; }
     }
 }

@@ -36,5 +36,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             notificationHubPage?.ClickCountriesTheConsignmentWillTravelThroughLink();
         }
+
+        [When(@"the user clicks on '(.*)' link")]
+        public void WhenTheUserClicksOn(string link) 
+        {
+            notificationHubPage?.ClickLink(link);
+        }
     }
 }

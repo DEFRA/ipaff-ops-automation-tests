@@ -11,5 +11,6 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void ClickSealNumbersLink();
         void ClickLaboratoryTestsLink();
         void ClickDecisionLink();
+        void ClickReviewAndSubmitLink();
     }
 }

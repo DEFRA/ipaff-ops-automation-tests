@@ -10,5 +10,6 @@ namespace Defra.UI.Tests.Pages.Interfaces
         bool SelectCommodityIntendedForRadio(string commIntendedForOption);
         void SelectAnimalCertification(string certificationOption);
         void SelectUnweanedAnimalsOption(string option);
+        void ClickSaveAndReview();
     }
 }
