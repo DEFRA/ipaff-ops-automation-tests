@@ -33,9 +33,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the user records the IPAFFS User details and CHED Reference")]
         public void WhenTheUserRecordsTheIPAFFSUserDetailsAndCHEDReference()
         {
-            _scenarioContext.Add("CHEDReference", confirmationPage.GetCHEDReference());
-            _scenarioContext.Add("CustomsDeclarationReference", confirmationPage.GetCustomsDeclarationReference());
-            _scenarioContext.Add("CustomsDocumentCode", confirmationPage.GetCustomsDocumentCode());
+            _scenarioContext["CHEDReference"] = confirmationPage.GetCHEDReference();
+            _scenarioContext["CustomsDeclarationReference"] = confirmationPage.GetCustomsDeclarationReference();
+            _scenarioContext["CustomsDocumentCode"] = confirmationPage.GetCustomsDocumentCode();
         }
        
         [When("the user clicks Return to your dashboard")]

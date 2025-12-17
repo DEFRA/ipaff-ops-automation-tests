@@ -74,5 +74,7 @@
         string? GetRouteCountries();
         string? GetNotifyTransportContacts();
         string? GetConsignmentContactAddress();
+        bool IsError(string errorMessage);
+        void ClickChangeLink(string heading);
     }
 }

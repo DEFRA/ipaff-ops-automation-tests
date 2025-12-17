@@ -30,7 +30,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user selects a place of destination with a UK country")]
         public void WhenTheUserSelectsAPlaceOfDestinationWithAUKCountry()
         {
-            _scenarioContext.Add("PlaceOfDestinationDetails", searchExistingDestinationPage.GetSelectedPlaceOfDestination());
+            _scenarioContext["PlaceOfDestinationDetails"] = searchExistingDestinationPage?.GetSelectedPlaceOfDestination();
             searchExistingDestinationPage?.ClickSelect();
         }
 

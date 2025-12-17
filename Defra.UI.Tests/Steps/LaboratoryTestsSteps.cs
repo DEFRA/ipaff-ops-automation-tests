@@ -1,4 +1,5 @@
-﻿using Defra.UI.Tests.Pages.Interfaces;
+﻿using Defra.UI.Tests.Pages.Classes;
+using Defra.UI.Tests.Pages.Interfaces;
 using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;
@@ -41,6 +42,60 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenISelectRadioButtonOnTheLaboratoryTestsPage(string labTestsOption)
         {
             laboratoryTestsPage?.SelectLabTestsRadio(labTestsOption);
+        }
+        
+        [When("the user select {string} reason radio button on the Laboratory tests page")]
+        public void WhenISelectReasonRadioButtonOnTheLaboratoryTestsPage(string labTestsReason)
+        {
+            laboratoryTestsPage?.SelectLabTestsReason(labTestsReason);
+        }
+
+        [When("the user clicks the Select link for the {string} commodity code")]
+        public void WhenIClicksTheSelectLinkForTheCommodityCode(string commodityCode)
+        {
+            laboratoryTestsPage?.ClickSelectForCommodityCode(commodityCode);
+
+        }
+        
+        [When("the user clicks on the Test {string}")]
+        public void WhentheUserClicksOnTest(string testName)
+        {
+            laboratoryTestsPage?.SelectTest(testName);
+        }
+
+        [When("the user selects {string} in Laboratory test category")]
+        public void WhenTheUserSelectsLaboratoryTestCategory(string category)
+        {
+            laboratoryTestsPage?.SelectLaboratoryTestCategory(category);
+        }
+        
+        [When("the user selects {string} in Laboratory test subcategory")]
+        public void WhenTheUserSelectsLaboratoryTestSubCategory(string category)
+        {
+            laboratoryTestsPage?.SelectLaboratoryTestSubCategory(category);
+        }
+        
+        [When("the user selects {string} from the list of Laboratory tests")]
+        public void WhenTheUserSelectsFromTheListOfLaboratoryTests(string test)
+        {
+            laboratoryTestsPage?.SelectLaboratoryTest(test);
+        }
+        
+        [When("the user clicks on Search")]
+        public void WhenTheUserClicksSearch()
+        {
+            laboratoryTestsPage?.ClickSearch();
+        }
+
+        [When("the user populates the commodity sample details {string} {string} {string} {string} {string} {string}")]
+        public void WhenIPopulateTheCommoditySampleDetails(String analysisType, string labTest, string sampleReference, string numberOfSamples, string sampleType, string storageTemperature)
+        {
+            laboratoryTestsPage?.SelectAnalysisType(analysisType);
+            laboratoryTestsPage?.SelectLaboratoryTesting(labTest);
+            laboratoryTestsPage?.EnterSampleReferenceNumber(sampleReference);
+            laboratoryTestsPage?.EnterNumberOfSamples(numberOfSamples);
+            laboratoryTestsPage?.SelectSampleType(sampleType);
+            laboratoryTestsPage?.SelectStorageTemperature(storageTemperature);
         }
     }
 }
