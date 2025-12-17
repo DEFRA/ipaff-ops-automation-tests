@@ -12,6 +12,7 @@
         public string RiskCategory { get; set; }
         public string CommodityCode { get; set; }
         public string TypeOfCommodity { get; set; }
+        public string TypeOfCommodity1 { get; set; }
         public string Species { get; set; }
         public string NetWeight { get; set; }
         public string NumberOfPackages { get; set; }

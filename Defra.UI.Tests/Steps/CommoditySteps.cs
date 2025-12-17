@@ -45,7 +45,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserSelectsTheTypeOfCommodity(string type)
         {
             commodityPage?.SelectTypeOfCommodity(type);
-            _scenarioContext.Add("TypeOfCommodity", type);
+            _scenarioContext["TypeOfCommodity"] = type;
         }
 
 

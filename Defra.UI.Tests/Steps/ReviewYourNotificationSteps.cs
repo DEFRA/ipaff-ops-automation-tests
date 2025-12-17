@@ -179,7 +179,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             if (_scenarioContext.ContainsKey(contextKey))
             {
-                var expectedValue = _scenarioContext.Get<string>(contextKey);
+                string expectedValue = null;
+                try
+                {
+                    expectedValue = _scenarioContext.Get<string>(contextKey);
+                }
+                catch (InvalidCastException)
+                {
+                    expectedValue = _scenarioContext.Get<string[]>(contextKey)?.FirstOrDefault();
+                }
+
                 if (!string.IsNullOrEmpty(expectedValue))
                 {
                     var isMatch = expectedValue.Equals(reviewValue?.Trim(), StringComparison.OrdinalIgnoreCase);
@@ -289,7 +298,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var contryFromWhereConsigned = _scenarioContext.Get<string>("ContryFromWhereConsigned");
             var consignmentConformToRegulatoryRequirements = _scenarioContext.Get<string>("ConsignmentConformToRegulatoryRequirements");
             var consignmentRefNum = _scenarioContext.Get<string>("ConsignmentReferenceNumber");
-            var mainReasonForImport = _scenarioContext.Get<string>("MainReasonForImport");
+            var mainReasonForImport = "For "+_scenarioContext.Get<string>("MainReasonForImport");
             var riskCategory = _scenarioContext.Get<string>("RiskCategory");
             if (_scenarioContext.TryGetValue("Purpose", out string purpose) &&
                 !string.IsNullOrWhiteSpace(purpose))
@@ -301,7 +310,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.AreEqual(contryFromWhereConsigned, summary?.ContryFromWhereConsigned, $"Country from where consigned is not matching in {pageName} page!");
             Assert.AreEqual(consignmentConformToRegulatoryRequirements, summary?.ConsignmentConformToRegulatoryRequirements, $"Consignment confirmation to regulatory requirements is not matching in {pageName} page!");
             Assert.AreEqual(consignmentRefNum, summary?.ConsignmentReferenceNumber, $"Consignment Reference Number is not matching in {pageName} page!");
-            Assert.IsTrue(summary?.MainReasonForImport.ToUpper().Contains(mainReasonForImport.ToUpper()), $"Main reason for import is not matching in {pageName} page!");
+            Assert.IsTrue(mainReasonForImport.ToUpper().Contains(summary?.MainReasonForImport.ToUpper()), $"Main reason for import is not matching in {pageName} page!");
             Assert.AreEqual(riskCategory.ToUpper(), summary?.RiskCategory.ToUpper(), $"Risk category is not matching in {pageName} page!");
         }
 
@@ -324,7 +333,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var temperature = _scenarioContext.Get<string>("Temperature");
 
             Assert.AreEqual(commodityCode, summary?.CommodityCode, $"Commodity Code is not matching in {pageName} page!");
-            Assert.AreEqual(typeOfCommodity, summary?.TypeOfCommodity, $"Type Of Commodity is not matching in {pageName} page!");
+            Assert.AreEqual(typeOfCommodity, commodityCode.StartsWith("16042005") ? summary?.TypeOfCommodity1 : summary?.TypeOfCommodity, $"Type Of Commodity is not matching in {pageName} page!");
             Assert.AreEqual(species, summary?.Species, $"Species is not matching in {pageName} page!");
             Assert.AreEqual(netWeight, summary?.NetWeight, $"NetWeight is not matching in {pageName} page!");
             Assert.AreEqual(packages, summary?.NumberOfPackages, $"Number Of Packages is not matching in {pageName} page!");

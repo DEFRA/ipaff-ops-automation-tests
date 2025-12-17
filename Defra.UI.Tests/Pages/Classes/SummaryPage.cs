@@ -17,6 +17,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IReadOnlyCollection<IWebElement> divAboutConsignment => _driver.WaitForElements(By.XPath("//*[@id='review-table-about-notification']/div"));
         private IWebElement txtCommodityCode => _driver.WaitForElement(By.XPath("//*[normalize-space()='Commodity code']//following-sibling::td[1]"));
         private IWebElement txtCommodityType => _driver.WaitForElement(By.XPath("//*[normalize-space()='Description of the goods']/following::tr[3]//following-sibling::td[2]"));
+        private IWebElement txtCommodityType1 => _driver.WaitForElement(By.XPath("(//*[normalize-space()='Description of the goods']/following::td)[1]"));
         private IWebElement txtSpecies => _driver.WaitForElement(By.XPath("//*[normalize-space()='Species']/../../following-sibling::tbody//td[1]"));
         private IWebElement txtNetWeight => _driver.WaitForElement(By.XPath("//*[@class='govuk-table__cell govuk-table__cell--numeric consignment-net-weight']"));
         private IWebElement txtPackages => _driver.WaitForElement(By.XPath("//*[@class='govuk-table__cell govuk-table__cell--numeric consignment-net-weight']//following-sibling::td[1]"));
@@ -94,6 +95,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
             summary.CommodityCode = txtCommodityCode.Text.Trim();
             summary.TypeOfCommodity = txtCommodityType.Text.Trim();
+            summary.TypeOfCommodity1 = txtCommodityType1.Text.Trim();
             summary.Species = txtSpecies.Text.Trim();
             summary.NetWeight = txtNetWeight.Text.Trim().Replace(" kg/units", "");
             summary.NumberOfPackages = txtPackages.Text.Trim();
