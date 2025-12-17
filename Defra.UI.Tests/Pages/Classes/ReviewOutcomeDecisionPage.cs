@@ -292,15 +292,15 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void EnterCurrentDateAndTime(string day, string month, string year, string hours, string minutes)
         {
-            inputDay.Click();
+            //inputDay.Click();
             inputDay.SendKeys(day);
-            inputMonth.Click();
+            //inputMonth.Click();
             inputMonth.SendKeys(month);
-            inputYear.Click();
+            //inputYear.Click();
             inputYear.SendKeys(year);
-            inputHour.Click();
+            //inputHour.Click();
             inputHour.SendKeys(hours);
-            inputMinutes.Click();
+            //inputMinutes.Click();
             inputMinutes.SendKeys(minutes);
         }
 

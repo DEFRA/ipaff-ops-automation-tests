@@ -46,21 +46,15 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void EnterSampleUseByDate(string day, string month, string year)
         {
-            txtUseByDay.Click();
             txtUseByDay.SendKeys(day);
-            txtUseByMonth.Click();
             txtUseByMonth.SendKeys(month);
-            txtUseByYear.Click();
             txtUseByYear.SendKeys(year);
         }
         
         public void EnterReleasedDate(string day, string month, string year)
         {
-            txtReleasedDay.Click();
             txtReleasedDay.SendKeys(day);
-            txtReleasedMonth.Click();
             txtReleasedMonth.SendKeys(month);
-            txtReleasedYear.Click();
             txtReleasedYear.SendKeys(year);
         }
 

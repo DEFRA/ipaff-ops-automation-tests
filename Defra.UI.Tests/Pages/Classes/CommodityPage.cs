@@ -59,7 +59,6 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void EnterCommodityCode(string code)
         {
-            txtCommodityCode.Click();
             txtCommodityCode.SendKeys(code);
             btnSearch.Click();
         }
@@ -96,13 +95,11 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void EnterNetWeight(string weight)
         { 
-            txtNetWeight.Click(); 
             txtNetWeight.Clear(); 
             txtNetWeight.SendKeys(weight); 
         }
         public void EnterNumberOfPackages(string packages)
         {
-            txtNumberOfPackages.Click(); 
             txtNumberOfPackages.Clear(); 
             txtNumberOfPackages.SendKeys(packages); 
         }
@@ -141,7 +138,6 @@ namespace Defra.UI.Tests.Pages.Classes
       
         public void EnterTotalGrossWeight(string weight)
         { 
-            txtTotalGrossWeight.Click(); 
             txtTotalGrossWeight.Clear(); 
             txtTotalGrossWeight.SendKeys(weight); 
         }
