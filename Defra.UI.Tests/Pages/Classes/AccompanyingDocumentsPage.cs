@@ -65,11 +65,8 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void EnterDateOfIssue(string day, string month, string year)
         { 
-            txtDay.Click(); 
             txtDay.SendKeys(day);
-            txtMonth.Click();
             txtMonth.SendKeys(month);
-            txtYear.Click();
             txtYear.SendKeys(year);
         }
 

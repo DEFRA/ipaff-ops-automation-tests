@@ -64,7 +64,6 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void EnterConsignmentRefNum(string refNum)
         {
-            txtReferenceNumber.Click();
             txtReferenceNumber.SendKeys(refNum);
         }
 
