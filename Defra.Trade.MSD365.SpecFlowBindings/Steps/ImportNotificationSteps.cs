@@ -46,15 +46,18 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
         }
     }
 
-    public ImportNotificationSteps(SessionContext context)
-    {
-        this.context = context;
-    }
-
     public ImportNotificationSteps(SessionContext context, ScenarioContext scenarioContext)
     {
         this.context = context;
         this.scenarioContext = scenarioContext;
+    }
+
+    [When("I search Importer Notifications for the notification created in IPAFFS")]
+    public void WhenISearchImporterNotificationsForTheNotificationCreatedInIPAFFS()
+    {
+        var chedReference = scenarioContext.Get<string>("CHEDReference");
+        XrmApp.Grid.Search(chedReference);
+        Driver.WaitForTransaction();
     }
 
     [When(@"an importer amend '(.*)' to inspection address '(.*)' of '(.*)'")]
