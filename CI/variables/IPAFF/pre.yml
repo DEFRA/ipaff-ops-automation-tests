@@ -2,9 +2,8 @@ variables:
  Environment: 'pre'
  EnvLogin: 'TeZvzAsx8usMhsCVqGG203Iity63qjaT'
  FilterTestCategory : 'TestCategory=Regression' 
- IDCOMSUrl: 'https://defra-trade-plants-preprod.crm4.dynamics.com'
- IDCOMSUser: 'nagarajan.subbiah@defra.onmicrosoft.com'
- IDOMSUserAlias: 'Nagarajan Subbiah'
+ IDCOMSUrl: 'https://defra-trade-plants-preprod.crm4.dynamics.com/main.aspx?appid=337d4d96-492d-ee11-bdf4-000d3ab8960d'
  SecretsFilter: 'IPAFFIDCOMSAutomation'
  IsLiveUserAccount: false
  IsAccessibilityEnabled: ${{ parameters.isAccessibilityEnabled }}
+ PIMSUrl: 'https://defra-cit-preprod.crm4.dynamics.com/main.aspx?appid=2bc0d6ca-9d1f-eb11-a813-000d3a2c32b3'

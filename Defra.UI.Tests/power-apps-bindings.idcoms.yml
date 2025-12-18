@@ -5,5 +5,5 @@ browserOptions:
 users:
   - username: '#{{ IDCOMSUser }}'
     password: '#{{ IDCOMSPassword }}'
-    alias: '#{{ IDCOMSUserAlias }}'
+    alias: 'Caseworker'
 appName: 'IDCOMS'

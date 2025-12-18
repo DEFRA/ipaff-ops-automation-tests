@@ -5,5 +5,5 @@ browserOptions:
 users:
   - username: '#{{ PIMSUser }}'
     password: '#{{ PIMSPassword }}'
-    alias: '#{{ PIMSUserAlias }}'
+    alias: 'Caseworker'
 appName: 'PIMS'

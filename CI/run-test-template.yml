@@ -45,7 +45,7 @@ jobs:
     ${{ if contains(parameters.seleniumGrid, 'browserstack') }}:
       name: 'DEFRA-TRD'
 
-  variables:
+    variables:
     - group: 'IPAFFPREPROD'
     - template: 'variables/${{parameters.application}}/global.yml'
       parameters:
@@ -58,7 +58,10 @@ jobs:
         target:  ${{parameters.target}}
         isEmulationEnabled:  ${{parameters.isEmulationEnabled}}
         emulateDeviceInfo:  ${{parameters.emulateDeviceInfo}}
-        idcomsPassword: '$(IPAFFIDCOMSCredential)'
+        idcomsUrl: '$(IDCOMSUrl)'
+        idcomsUsername: '$(IDCOMS_USERNAME)'
+        idcomsPassword: '$(IDCOMS_PASSWORD)'
+        pimsUrl: '$(PIMSUrl)'
         pimsUsername: '$(PIMS_USERNAME)'
         pimsPassword: '$(PIMS_PASSWORD)'
         isAccessibilityEnabled: ${{parameters.isAccessibilityEnabled}}
@@ -117,10 +120,10 @@ jobs:
       displayName: 'Display appsettings.json'
 
     - task: replacetokens@3
-      displayName: Replace Tokens for IDCOMS configuration file
+      displayName: Replace Tokens for Power Apps configuration files
       inputs:
         rootDirectory: '$(System.DefaultWorkingDirectory)/Defra.UI.Tests'
-        targetFiles: 'power-apps-bindings.yml'
+        targetFiles: 'power-apps-bindings*.yml'
         encoding: auto
         writeBOM: true
         escapeType: json
