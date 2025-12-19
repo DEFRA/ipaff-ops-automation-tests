@@ -43,9 +43,10 @@ namespace Defra.UI.Tests.Pages.Classes
             return consignorDetails;
         }
 
-        public void ClickSelect() 
-        { 
-            btnSelect.Click(); 
+        public void ClickSelect(string consignor) 
+        {
+            if (selectedConsignorName.Text.Trim().Equals(consignor))
+                btnSelect.Click();
         }
 
         public string GetSelectedConsignorName() => selectedConsignorName.Text.Trim();

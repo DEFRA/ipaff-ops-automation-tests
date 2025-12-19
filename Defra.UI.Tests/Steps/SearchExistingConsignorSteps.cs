@@ -27,15 +27,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(searchExistingConsignorPage?.IsPageLoaded(), "Traders Search for an existing consignor or exporter page not loaded");
         }
         
-        [When("the user selects any one of the displayed consignors or exporters")]
-        public void WhenTheUserSelectsAnyOneOfTheDisplayedConsignorsOrExporters()
+        [When("the user selects one of the displayed consignors or exporters {string}")]
+        public void WhenTheUserSelectsOneOfTheDisplayedConsignorsOrExporters(string consignor)
         {
             _scenarioContext["ConsignorDetails"] = searchExistingConsignorPage.GetSelectedConsignor();
-            searchExistingConsignorPage?.ClickSelect();
+            searchExistingConsignorPage?.ClickSelect(consignor);
         }
 
-        [When("the user selects a consignor or exporter")]
-        public void WhenTheUserSelectsAConsignorOrExporter()
+        [When("the user selects a consignor or exporter {string}")]
+        public void WhenTheUserSelectsAConsignorOrExporter(string consignor)
         {
             var consignorName = searchExistingConsignorPage?.GetSelectedConsignorName();
             var consignorAddress = searchExistingConsignorPage?.GetSelectedConsignorAddress();
@@ -45,7 +45,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext.Add("ConsignorAddress", consignorAddress);
             _scenarioContext.Add("ConsignorCountry", consignorCountry);
 
-            searchExistingConsignorPage?.ClickSelect();
+            searchExistingConsignorPage?.ClickSelect(consignor);
         }
     }
 }
