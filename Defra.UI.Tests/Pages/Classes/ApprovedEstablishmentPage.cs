@@ -101,10 +101,7 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             foreach (var item in txtCountryInSearchResult)
             {
-                if(item.Text.Trim().Equals(country))
-                {  
-                    return true; 
-                }
+                 return item.Text.Trim().Equals(country); 
             }
             return false;
         }
@@ -113,10 +110,7 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             foreach (var item in txtTypeInSearchResult)
             {
-                if (item.Text.Trim().Equals(type))
-                {
-                    return true;
-                }
+                 return item.Text.Trim().Equals(type);
             }
             return false;
         }
@@ -125,10 +119,7 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             foreach (var item in txtStatusInSearchResult)
             {
-                if (item.Text.Trim().Equals(status))
-                {
-                    return true;
-                }
+                 return item.Text.Trim().Equals(status);
             }
             return false;
         }
