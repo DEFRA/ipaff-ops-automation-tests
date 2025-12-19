@@ -92,6 +92,8 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ConsignmentsRequiringControlPage, IConsignmentsRequiringControlPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<RecordLaboratoryTestInformationPage, IRecordLaboratoryTestInformationPage>());
             
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CookiesPage, ICookiesPage>());
+
             //Read Email
             _objectContainer.RegisterInstanceAs(GetBaseWithScenarioContext<FetchCodeFromEmail, IFetchCodeFromEmail>());
         }

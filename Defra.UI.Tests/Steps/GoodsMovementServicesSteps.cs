@@ -29,14 +29,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserSelectsForAreYouUsingTheCommonTransitConventionCTC(string option)
         {
             goodsMovementServicesPage?.CTCToMoveGoods(option);
-            _scenarioContext.Add("IsCTC", option);
+            _scenarioContext["IsCTC"] = option;
         }
 
         [When("the user selects {string} for Will the transport use the Goods Vehicle Movement Service \\(GVMS)?")]
         public void WhenTheUserSelectsForWillTheTransportUseTheGoodsVehicleMovementServiceGVMS(string option)
         {
             goodsMovementServicesPage?.GVMSToMoveGoods(option);
-            _scenarioContext.Add("IsGVMS", option);
+            _scenarioContext["IsGVMS"] = option;
         }       
     }
 }
