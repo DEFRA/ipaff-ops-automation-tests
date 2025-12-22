@@ -34,3 +34,5 @@ variables:
   IsEmulationEnabled: ${{ parameters.isEmulationEnabled }}
   EmulateDeviceInfo: ${{ parameters.emulateDeviceInfo }}
   IsAccessibilityEnabled: ${{ parameters.isAccessibilityEnabled }}
+  PIMSUser: $(PIMS_USERNAME)
+  PIMSPassword: $(PIMS_PASSWORD)
