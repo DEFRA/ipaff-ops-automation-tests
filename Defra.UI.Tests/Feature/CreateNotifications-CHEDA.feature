@@ -1,4 +1,5 @@
-﻿Feature: Create Notification CHEDA
+﻿@Regression
+Feature: Create Notification CHEDA
 
 Create a notification for CHEDA type
 
