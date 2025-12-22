@@ -36,3 +36,5 @@ variables:
   IsAccessibilityEnabled: ${{ parameters.isAccessibilityEnabled }}
   PIMSUser: $(PIMS_USERNAME)
   PIMSPassword: $(PIMS_PASSWORD)
+  IDCOMSUser: $(IDCOMS_USERNAME)
+  IDCOMSPassword: $(IDCOMS_PASSWORD)
