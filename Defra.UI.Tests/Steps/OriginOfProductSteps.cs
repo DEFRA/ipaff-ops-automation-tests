@@ -32,7 +32,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserChoosesFromTheDropdownForCountryOfOrigin(string country)
         {
             originOfProductPage?.SelectCountryOfOrigin(country);
-            _scenarioContext.Add("CountryOfOrigin", country);
+            _scenarioContext["CountryOfOrigin"] = country;
         }
     }
 }

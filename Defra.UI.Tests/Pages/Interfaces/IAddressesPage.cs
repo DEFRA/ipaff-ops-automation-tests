@@ -22,5 +22,6 @@ namespace Defra.UI.Tests.Pages.Interfaces
         string GetSelectedPlaceOfDestination();
         void ClickAddImporter();
         bool VerifySelectedImporter(string importerName, string importerAddress, string importerCountry);
+        void ClickChangeInAddressPage(string link);
     }
 }
