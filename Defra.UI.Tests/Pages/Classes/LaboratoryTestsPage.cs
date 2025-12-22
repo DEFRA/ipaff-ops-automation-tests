@@ -16,6 +16,8 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects
         private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
+        private IWebElement secondaryTitle => _driver.WaitForElement(By.XPath("//h2[@class='govuk-heading-s govuk-!-margin-bottom-1  ']"), true);
+        private IWebElement secondaryTitleReview => _driver.WaitForElement(By.XPath("//h2[@class='govuk-heading-m']"), true);
         private IWebElement labTestsRadio(string labTestsOption) => _driver.FindElement(By.XPath($"//input[@class='govuk-radios__input']/following-sibling::label[contains(text(),'{labTestsOption}')]"));
         private IWebElement labTestsReasonRadio(string labTestsReason) => _driver.FindElement(By.XPath($"//input[@value='{labTestsReason}']"));
         private IWebElement selectForCommodityCode(string commodityCode) => _driver.FindElement(By.XPath($"(//td[text()='{commodityCode}']/following::a[text()='Select'])[1]"));
@@ -32,6 +34,12 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement selectNumberOfSamples => _driver.FindElement(By.Id("numberOfSamples"));
         private IWebElement selectSamplesType => _driver.FindElement(By.Id("sampleType"));
         private IWebElement selectStorageTemperature => _driver.FindElement(By.Id("conservationOfSample"));
+        private IWebElement txtCommodityCode => _driver.FindElement(By.XPath("//*[@class='govuk-table__body']/tr[1]/td[1]"));
+        private IWebElement txtDescription => _driver.FindElement(By.XPath("//*[@class='govuk-table__body']/tr[1]/td[2]"));
+        private IWebElement txtSpecies => _driver.FindElement(By.XPath("//*[@class='govuk-table__body']/tr[1]/td[3]"));  
+        private IWebElement lnkLabTestSelect => _driver.FindElement(By.Id("choose-laboratory-test-0"));
+        private IWebElement txtLabTestName => _driver.FindElement(By.XPath("//*[@class='govuk-table__body']/tr[1]/td[1]"));
+        private IReadOnlyCollection<IWebElement> reviewTableFirstRow => _driver.FindElements(By.XPath("//*[@class='govuk-table__body']"));      
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -120,6 +128,57 @@ namespace Defra.UI.Tests.Pages.Classes
         public void SelectSampleType(string sampleType)
         {
             new SelectElement(selectSamplesType).SelectByText(sampleType);
+        }
+
+        public bool IsCommoditySampledPageLoaded()
+        {
+            return secondaryTitle.Text.Trim().Contains("Commodity sampled");
+        }
+
+        public string GetLaboratoryTestName()
+        {
+            return txtLabTestName.Text.Trim();
+        }
+
+        public void ClickSelectLaboratoryTest()
+        {
+            lnkLabTestSelect.Click();
+        }
+
+        public string GetSelectedCommoditySampledCode()
+        {
+            return txtCommodityCode.Text.Trim();
+        }
+
+        public string GetSelectedCommoditySampledDescription()
+        {
+            return txtDescription.Text.Trim();
+        }
+
+        public string GetSelectedCommoditySampledSpecies()
+        {
+            return txtSpecies.Text.Trim();
+        }
+
+
+        public bool IsReviewPageLoaded()
+        {
+            return secondaryTitleReview.Text.Trim().Contains("Review");
+        }
+
+        public bool VerifyLabTestsReviewPage(string commodityCode, string commodityDescription, string commoditySpecies, string labTestName)
+        {
+            foreach(var row in reviewTableFirstRow)
+            {
+                string rowText = row.Text;
+                if(rowText.Contains(commodityCode)
+                    && rowText.Contains(commodityDescription)
+                    && rowText.Contains(labTestName)
+                    && rowText.Contains("Pending")
+                    && rowText.Trim().Contains("Remove"))
+                    return true;
+            }
+            return false;
         }
     }
 }

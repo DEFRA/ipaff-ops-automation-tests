@@ -1,4 +1,4 @@
-﻿using Defra.UI.Tests.Pages.Classes;
+﻿using AventStack.ExtentReports.Gherkin.Model;
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using NUnit.Framework;
@@ -38,6 +38,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
             AppendStringToScenarioContextArray(_scenarioContext, "DocumentType", type);
         }
 
+        [When("the user selects Document type for the next notification {string}")]
+        public void WhenTheUserSelectsDocumentTypeForTheNextNotification(string type)
+        {
+            accompanyingDocumentsPage?.SelectDocumentType(type);
+            UpdateStringToScenarioContextArray(_scenarioContext, "DocumentType", type);
+        }
+
         public void AppendStringToScenarioContextArray(ScenarioContext context, string key, string value)
         {
             if (context.TryGetValue(key, out var existing) && existing is string[] current)
@@ -45,6 +52,21 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 var updated = new string[current.Length + 1];
                 Array.Copy(current, updated, current.Length);
                 updated[current.Length] = value;
+                context[key] = updated;
+            }
+            else
+            {
+                context[key] = new[] { value };
+            }
+        }
+
+        public void UpdateStringToScenarioContextArray(ScenarioContext context, string key, string value)
+        {
+            if (context.TryGetValue(key, out var existing) && existing is string[] current)
+            {
+                var updated = new string[current.Length];
+                Array.Copy(current,1,updated,0,current.Length - 1);
+                updated[current.Length - 1] = value;
                 context[key] = updated;
             }
             else
@@ -61,6 +83,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
             AppendStringToScenarioContextArray(_scenarioContext, "DocumentReference", reference);
         }
 
+
+        [When("the user enters Document reference for the next notification {string}")]
+        public void WhenTheUserEntersDocumentReferenceForTheNextNotification(string reference)
+        {
+            accompanyingDocumentsPage?.EnterDocumentReference(reference);
+            UpdateStringToScenarioContextArray(_scenarioContext, "DocumentReference", reference);
+        }
+
+
         [When("the user enters date of issue {string}")]
         public void WhenTheUserEntersDateOfIssue(string dateString)
         {
@@ -69,6 +100,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var monthName = date.ToString("MMMM", CultureInfo.InvariantCulture);
             var dateofIssue = date.Day.ToString() + " " + monthName + " " + date.Year.ToString();
             AppendStringToScenarioContextArray(_scenarioContext, "DateOfIssue", dateofIssue);
+        }
+
+        [When("the user enters date of issue for the next notification {string}")]
+        public void WhenTheUserEntersDateOfIssueForTheNextNotification(string dateString)
+        {
+            var date = Utils.ConvertToDate(dateString);
+            accompanyingDocumentsPage?.EnterDateOfIssue(date.Day.ToString(), date.Month.ToString(), date.Year.ToString());
+            var monthName = date.ToString("MMMM", CultureInfo.InvariantCulture);
+            var dateofIssue = date.Day.ToString() + " " + monthName + " " + date.Year.ToString();
+            UpdateStringToScenarioContextArray(_scenarioContext, "DateOfIssue", dateofIssue);
         }
 
         [When("the user selects a future date from the date picker")]
@@ -89,7 +130,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             var filename = name + format;
             accompanyingDocumentsPage?.AddAccompanyingDocument(filename);
-            _scenarioContext.Add("DocumentName", filename);
+            _scenarioContext["DocumentName"] = filename;
         }
 
         [Then("the document {string} {string} is uploaded successfully")]
@@ -124,7 +165,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             if (!_scenarioContext.ContainsKey("DocumentDateOfIssue"))
             {
                 var dateOfIssue = accompanyingDocumentsPage?.GetDocumentIssueDate();
-                _scenarioContext.Add("DocumentDateOfIssue", dateOfIssue);
+                _scenarioContext["DocumentDateOfIssue"] = dateOfIssue;
             }
         }
 
@@ -133,7 +174,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             accompanyingDocumentsPage?.EnterDateOfIssue(day, month, year);
             var dateofIssue = day + " " + month + " " + year;
-            _scenarioContext.Add("DocumentDateOfIssue", dateofIssue);
+            _scenarioContext["DocumentDateOfIssue"] = dateofIssue;
         }
 
         [When(@"the user clicks the Add a document link")]

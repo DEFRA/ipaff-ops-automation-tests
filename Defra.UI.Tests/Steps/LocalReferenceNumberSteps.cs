@@ -42,6 +42,5 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext.Add("BorderControlPostReference", "");
             localReferenceNumberPage?.ClickSaveAndContinue();
         }
-
     }
 }

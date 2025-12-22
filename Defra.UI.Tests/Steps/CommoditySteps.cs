@@ -31,14 +31,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserSearchesCommodityCode(string code)
         {
             commodityPage?.EnterCommodityCode(code);
-            _scenarioContext.Add("CommodityCode", code);
+            _scenarioContext["CommodityCode"] = code;
         }
 
         [Then("the commodity details should be populated {string} {string}")]
         public void ThenTheCommodityDetailsShouldBePopulated(string code, string description)
         {
             Assert.True(commodityPage?.VerifyCommdityDetails(code,description));
-            _scenarioContext.Add("CommodityDescription", description);
+            _scenarioContext["CommodityDescription"] = description;
         }
 
         [When("the user selects the type of commodity {string}")]
@@ -53,7 +53,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserSelectsSpeciesOfCommodity(string species)
         {
             commodityPage?.SelectCommoditySpecies(species);
-            _scenarioContext.Add("Species", species);
+            _scenarioContext["Species"] = species;
         }
 
 
@@ -77,7 +77,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserPopulatesNetWeightAs(string weight)
         {
             commodityPage?.EnterNetWeight(weight);
-            _scenarioContext["NetWeight"]= weight;
+            _scenarioContext["NetWeight"] = weight;
         }
 
         [When("the user populates Number of animals as {string}")]

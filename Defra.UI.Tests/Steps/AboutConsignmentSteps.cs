@@ -31,7 +31,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserChoosesOption(string option)
         {
             aboutConsignmentPage?.ClickImportingProduct(option);
-            _scenarioContext.Add("ImportType", option);
+            _scenarioContext["ImportType"] = option;
         }
 
         [Then("the user should be able to click Save and continue")]

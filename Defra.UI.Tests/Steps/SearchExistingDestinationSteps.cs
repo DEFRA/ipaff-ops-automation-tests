@@ -27,15 +27,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(searchExistingDestinationPage?.IsPageLoaded(), "Traders Search for an existing place of destination page not loaded");
         }
 
-        [When("the user selects a place of destination with a UK country")]
-        public void WhenTheUserSelectsAPlaceOfDestinationWithAUKCountry()
+        [When("the user selects a place of destination {string} with a UK country")]
+        public void WhenTheUserSelectsAPlaceOfDestinationWithAUKCountry(string destination)
         {
             _scenarioContext["PlaceOfDestinationDetails"] = searchExistingDestinationPage?.GetSelectedPlaceOfDestination();
-            searchExistingDestinationPage?.ClickSelect();
+            searchExistingDestinationPage?.ClickSelect(destination);
         }
 
-        [When("the user selects a place of destination")]
-        public void WhenTheUserSelectsAPlaceOfDestination()
+        [When("the user selects a place of destination {string}")]
+        public void WhenTheUserSelectsAPlaceOfDestination(string destination)
         {
             var destinationName = searchExistingDestinationPage?.GetSelectedDestinationName();
             var destinationAddress = searchExistingDestinationPage?.GetSelectedDestinationAddress();
@@ -45,7 +45,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext.Add("DestinationAddress", destinationAddress);
             _scenarioContext.Add("DestinationCountry", destinationCountry);
 
-            searchExistingDestinationPage?.ClickSelect();
+            searchExistingDestinationPage?.ClickSelect(destination);
         }
     }
 }

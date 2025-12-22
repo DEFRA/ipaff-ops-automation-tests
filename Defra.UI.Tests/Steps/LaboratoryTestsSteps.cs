@@ -1,4 +1,4 @@
-﻿using Defra.UI.Tests.Pages.Classes;
+﻿using AventStack.ExtentReports.Gherkin.Model;
 using Defra.UI.Tests.Pages.Interfaces;
 using NUnit.Framework;
 using Reqnroll;
@@ -53,6 +53,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user clicks the Select link for the {string} commodity code")]
         public void WhenIClicksTheSelectLinkForTheCommodityCode(string commodityCode)
         {
+            _scenarioContext["SelectedCommoditySampledCode"] = laboratoryTestsPage?.GetSelectedCommoditySampledCode();
+            _scenarioContext["SelectedCommoditySampledDescription"] = laboratoryTestsPage?.GetSelectedCommoditySampledDescription();
+            _scenarioContext["SelectedCommoditySampledSpecies"] = laboratoryTestsPage?.GetSelectedCommoditySampledSpecies();
             laboratoryTestsPage?.ClickSelectForCommodityCode(commodityCode);
 
         }
@@ -88,7 +91,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
         [When("the user populates the commodity sample details {string} {string} {string} {string} {string} {string}")]
-        public void WhenIPopulateTheCommoditySampleDetails(String analysisType, string labTest, string sampleReference, string numberOfSamples, string sampleType, string storageTemperature)
+        public void WhenIPopulateTheCommoditySampleDetails(string analysisType, string labTest, string sampleReference, string numberOfSamples, string sampleType, string storageTemperature)
         {
             laboratoryTestsPage?.SelectAnalysisType(analysisType);
             laboratoryTestsPage?.SelectLaboratoryTesting(labTest);
@@ -96,6 +99,38 @@ namespace Defra.UI.Tests.Steps.IPAFF
             laboratoryTestsPage?.EnterNumberOfSamples(numberOfSamples);
             laboratoryTestsPage?.SelectSampleType(sampleType);
             laboratoryTestsPage?.SelectStorageTemperature(storageTemperature);
+            _scenarioContext["AnalysisType"] = analysisType;
+        }
+
+         [When("the user clicks select link of one of the Laboratory test")]
+         public void WhenTheUserClicksSelectLinkOfOneOfTheLaboratoryTest()
+         {
+             _scenarioContext["LaboratoryTestName"] = laboratoryTestsPage?.GetLaboratoryTestName();
+             laboratoryTestsPage?.ClickSelectLaboratoryTest();
+         }
+
+         [Then("the Laboratory tests Commodity sampled page should be displayed")]
+         public void ThenTheLaboratoryTestsCommoditySampledPageShouldBeDisplayed()
+         {
+             Assert.True(laboratoryTestsPage?.IsCommoditySampledPageLoaded(), "Laboratory tests Commodity sampled page is not displayed");
+         }
+
+        [Then("the Laboratory tests Review page should be displayed")]
+        public void ThenTheLaboratoryTestsReviewPageShouldBeDisplayed()
+        {
+            Assert.True(laboratoryTestsPage?.IsReviewPageLoaded(), "Laboratory tests Review page is not displayed");
+        }
+
+        [Then("the user verifies the data in Laboratory tests review page")]
+        public void ThenTheUserVerifiesTheDataInLaboratoryTestsReviewPage()
+        {
+            var commodityCode = _scenarioContext.Get<string>("SelectedCommoditySampledCode");
+            var commodityDescription = _scenarioContext.Get<string>("SelectedCommoditySampledDescription");
+            var commoditySpecies = _scenarioContext.Get<string>("SelectedCommoditySampledSpecies");
+            var labTestName = _scenarioContext.Get<string>("LaboratoryTestName");
+            var analysisType = _scenarioContext.Get<string>("AnalysisType");
+
+            Assert.True(laboratoryTestsPage?.VerifyLabTestsReviewPage(commodityCode, commodityDescription, commoditySpecies, labTestName));
         }
     }
 }

@@ -278,11 +278,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
             }
         }
 
-        [Then("the user verifies all the data displayed in review page")]
-        public void ThenTheUserVerifiesAllTheDataDisplayedInReviewPage()
+        [Then("the user verifies all the data displayed in review page for commodity code {string}")]
+        public void ThenTheUserVerifiesAllTheDataDisplayedInReviewPageForCommodityCode(string code)
         {
             VerifyAboutTheConsignment();
-            VerifyDescriptionOfTheGoods();
+            VerifyDescriptionOfTheGoods(code);
             VerifyDocuments();
             VerifyTraders();
             VerifyTransportAndConsignmentContactDetails();
@@ -314,7 +314,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.AreEqual(riskCategory.ToUpper(), summary?.RiskCategory.ToUpper(), $"Risk category is not matching in {pageName} page!");
         }
 
-        private void VerifyDescriptionOfTheGoods()
+        private void VerifyDescriptionOfTheGoods(string code)
         {
             var summary = summaryPage?.GetSummaryDetails();
             var pageName = "Review your notification";
@@ -333,7 +333,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var temperature = _scenarioContext.Get<string>("Temperature");
 
             Assert.AreEqual(commodityCode, summary?.CommodityCode, $"Commodity Code is not matching in {pageName} page!");
-            Assert.AreEqual(typeOfCommodity, commodityCode.StartsWith("16042005") ? summary?.TypeOfCommodity1 : summary?.TypeOfCommodity, $"Type Of Commodity is not matching in {pageName} page!");
+            Assert.AreEqual(typeOfCommodity, commodityCode.StartsWith(code) ? summary?.TypeOfCommodity1 : summary?.TypeOfCommodity, $"Type Of Commodity is not matching in {pageName} page!");
             Assert.AreEqual(species, summary?.Species, $"Species is not matching in {pageName} page!");
             Assert.AreEqual(netWeight, summary?.NetWeight, $"NetWeight is not matching in {pageName} page!");
             Assert.AreEqual(packages, summary?.NumberOfPackages, $"Number Of Packages is not matching in {pageName} page!");
