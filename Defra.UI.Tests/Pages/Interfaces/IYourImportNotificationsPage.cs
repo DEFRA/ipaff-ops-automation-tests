@@ -13,5 +13,6 @@
         bool VerifyBrowserTabClosed();
         void ClickAmend(string chedReference);
 
+        void ClickCookiesLink();
     }
 }

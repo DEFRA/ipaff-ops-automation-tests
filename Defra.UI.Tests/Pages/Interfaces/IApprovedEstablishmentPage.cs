@@ -1,7 +1,4 @@
-﻿using Faker;
-using OpenQA.Selenium;
-
-namespace Defra.UI.Tests.Pages.Interfaces
+﻿namespace Defra.UI.Tests.Pages.Interfaces
 {
     public interface IApprovedEstablishmentPage
     {
@@ -16,5 +13,11 @@ namespace Defra.UI.Tests.Pages.Interfaces
         string GetTotalPackages();
         string GetEstablishmentListFirstName();
         void ClickRemoveEstablishment();
+        bool VerifySelectedCountryOnlyDisplayed(string country);
+        bool VerifySelectedTypeOnlyDisplayed(string type);
+        bool VerifySelectedStatusOnlyDisplayed(string status);
+        void SelectTypeFromDropdown(string type);
+        void SelectStatusFromDropdown(string status);
+        void ClickSearchButton();
     }
 }

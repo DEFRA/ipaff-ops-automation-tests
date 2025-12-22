@@ -47,11 +47,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserChoosesAndTheSub_Option(string option, string subOption)
         {
             reasonForImportPage?.SelectReasonForImport(option);
-            _scenarioContext.Add("MainReasonForImport", option);
+            _scenarioContext["MainReasonForImport"] = option;
             if (!string.IsNullOrWhiteSpace(subOption))
             {
                 reasonForImportPage?.SelectReasonForImportSubOption(subOption);
-                _scenarioContext.Add("Purpose", subOption);
+                _scenarioContext["Purpose"] = subOption;
             }
         }
 
@@ -59,7 +59,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserChoosesAsTheMainReasonForImportingTheConsignment(string option)
         {
             reasonForImportPage?.SelectReasonForImport(option);
-            _scenarioContext.Add("MainReasonForImport", option);
+            _scenarioContext["MainReasonForImport"] = option;
         }
 
         [When("the user chooses exit BCP {string} transited country {string} and destination country {string}")]

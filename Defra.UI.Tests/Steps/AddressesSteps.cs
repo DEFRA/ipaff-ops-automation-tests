@@ -46,10 +46,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         "Consignor details do not match");
         }
 
-        [Then("the chosen consignor or exporter should be displayed on the Addresses page")]
-        public void ThenTheChosenConsignorOrExporterShouldBeDisplayedOnTheAddressesPage()
+        [Then("the chosen consignor or exporter {string} should be displayed on the Addresses page")]
+        public void ThenTheChosenConsignorOrExporterShouldBeDisplayedOnTheAddressesPage(string consignor)
         {
-            Assert.True(addressesPage?.VerifySelectedConsignor());
+            Assert.True(addressesPage?.VerifySelectedConsignor(consignor));
         }
 
 
@@ -70,23 +70,23 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         "Consignee details do not match");
         }
 
-        [Then("the chosen consignee should be displayed on the Addresses page")]
-        public void ThenTheChosenConsigneeShouldBeDisplayedOnTheAddressesPage()
+        [Then("the chosen consignee {string} should be displayed on the Addresses page")]
+        public void ThenTheChosenConsigneeShouldBeDisplayedOnTheAddressesPage(string consigneeName)
         {
-            Assert.True(addressesPage?.VerifySelectedConsignee());
+            Assert.True(addressesPage?.VerifySelectedConsignee(consigneeName));
         }
 
         [When("the user clicks Same as consignee for the Importer")]
         public void WhenTheUserClicksSameAsConsigneeForTheImporter()
         {
             addressesPage?.ClickImporterSameAsConsignee();
-            _scenarioContext.Add("ImporterDetails", addressesPage.GetSelectedImporter());
+            _scenarioContext["ImporterDetails"] = addressesPage.GetSelectedImporter();
         }
 
-        [Then("the importer should be populated with the same details as the consignee on the Addresses page")]
-        public void ThenTheImporterShouldBePopulatedWithTheSameDetailsAsTheConsigneeOnTheAddressesPage()
+        [Then("the importer should be populated with the same details as the consignee {string} on the Addresses page")]
+        public void ThenTheImporterShouldBePopulatedWithTheSameDetailsAsTheConsigneeOnTheAddressesPage(string consigneeName)
         {
-            Assert.True(addressesPage?.VerifySelectedConsignee());
+            Assert.True(addressesPage?.VerifySelectedConsignee(consigneeName));
         }
 
         [Then("the importer should be populated with the same details as the consignee")]
@@ -141,11 +141,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
             "Destination details do not match");
         }
 
-        [Then ("the place of destination should be populated with the same details as the consignee on the Addresses page")]
-        [Then("the chosen place of destination should be displayed on the Addresses page")]
-        public void ThenTheChosenPlaceOfDestinationShouldBeDisplayedOnTheAddressesPage()
+        [Then ("the place of destination should be populated with the same details as the consignee {string} on the Addresses page")]
+        [Then("the chosen place of destination {string} should be displayed on the Addresses page")]
+        public void ThenTheChosenPlaceOfDestinationShouldBeDisplayedOnTheAddressesPage(string destination)
         {
-            Assert.True(addressesPage?.VerifySelectedDestination());
+            Assert.True(addressesPage?.VerifySelectedDestination(destination));
         }
 
         [When("the user clicks Same as consignee for Place of destination")]

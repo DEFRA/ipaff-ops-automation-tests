@@ -31,7 +31,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserChoosesRiskCategory(string option)
         {
             riskCategoryPage?.ClickRiskCategory(option);
-            _scenarioContext.Add("RiskCategory", option);
+            _scenarioContext["RiskCategory"] = option;
         }
     }
 }

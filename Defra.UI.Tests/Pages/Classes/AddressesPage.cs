@@ -63,9 +63,9 @@ namespace Defra.UI.Tests.Pages.Classes
             lnkAddConsignor.Click(); 
         }
 
-        public bool VerifySelectedConsignor()
+        public bool VerifySelectedConsignor(string consignor)
         {
-            return selectedConsignor.Text.Trim().Equals("ABC");
+            return selectedConsignor.Text.Trim().Equals(consignor);
         }
 
         public void ClickAddConsignee() 
@@ -73,9 +73,9 @@ namespace Defra.UI.Tests.Pages.Classes
             lnkAddConsignee.Click(); 
         }
 
-        public bool VerifySelectedConsignee()
+        public bool VerifySelectedConsignee(string consigneeName)
         {
-            return selectedConsignee.Text.Trim().Equals("XYZ");
+            return selectedConsignee.Text.Trim().Equals(consigneeName);
         }
 
         public void ClickImporterSameAsConsignee()
@@ -92,13 +92,13 @@ namespace Defra.UI.Tests.Pages.Classes
         }
 
         public void ClickAddDestination() 
-        { 
-            lnkAddDestination.Click(); 
+        {
+            lnkAddDestination.Click();
         }
 
-        public bool VerifySelectedDestination()
+        public bool VerifySelectedDestination(string destination)
         {
-            return selectedDestination.Text.Trim().Equals("XYZ");
+            return selectedDestination.Text.Trim().Equals(destination);
         }
 
         public bool VerifySelectedConsignor(string name, string address, string country)
@@ -137,6 +137,7 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickPlaceOfDestinationSameAsConsignee()
         {
             lnksameAsConsigneePlaceOfDestination.Click();
+            Thread.Sleep(1000);
         }
 
         public string GetSelectedPlaceOfDestination()

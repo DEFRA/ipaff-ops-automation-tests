@@ -65,5 +65,18 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             inspectorImportNotificationsPage?.ClickRecordControl();
         }
+
+        [When("the user clicks Create notification in Dashboard page header")]
+        public void WhenTheUserClicksCreateNotificationInDashboardPageHeader()
+        {
+            inspectorImportNotificationsPage?.ClickCreateNotification();
+        }
+
+        [When("the user clicks Record decision from the header")]
+        public void WhenTheUserClicksRecordDecisionFromTheHeader()
+        {
+            inspectorImportNotificationsPage?.ClickRecordDecision();
+        }
+
     }
 }
