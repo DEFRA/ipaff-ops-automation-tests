@@ -1,7 +1,7 @@
 url: '#{{ PIMSUrl }}'
 useProfiles: false
 browserOptions:
-  browserType: Chrome
+  browserType: Remote
   driversPath: ''
   headless: false
   privateMode: false
