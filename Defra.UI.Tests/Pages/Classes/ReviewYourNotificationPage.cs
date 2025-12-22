@@ -654,7 +654,10 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             foreach (var element in lblErrorMessages)
             {
-                  return element.Text.Contains(errorMessage);
+                if (element.Text.Contains(errorMessage))
+                {
+                    return true;
+                }
             }
             return false;
         }

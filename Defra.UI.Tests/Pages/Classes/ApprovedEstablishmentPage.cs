@@ -1,6 +1,7 @@
 ﻿using Defra.UI.Tests.Configuration;
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
+using Faker;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
@@ -26,9 +27,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtapprovedEstablishmentType => _driver.WaitForElement(By.XPath("//*[@id='establishments-row-1']/td[3]"));
         private IWebElement txtapprovedEstablishmentApprovalNum => _driver.WaitForElement(By.XPath("//*[@id='establishments-row-1']/td[4]"));
         private IWebElement lnkRemoveEstablishment => _driver.WaitForElement(By.Id("establishment-remove-1"));
-        private IReadOnlyCollection<IWebElement> txtCountryInSearchResult => _driver.FindElements(By.XPath("//*[@id='establishments-search-results']//td[6]"));
-        private IReadOnlyCollection<IWebElement> txtTypeInSearchResult => _driver.FindElements(By.XPath("//*[@id='establishments-search-results']//td[3]"));
-        private IReadOnlyCollection<IWebElement> txtStatusInSearchResult => _driver.FindElements(By.XPath("//*[@id='establishments-search-results']//td[5]"));
+        private IReadOnlyCollection<IWebElement> lstCountryInSearchResult => _driver.FindElements(By.XPath("//*[@id='establishments-search-results']//td[6]"));
+        private IReadOnlyCollection<IWebElement> lstTypeInSearchResult => _driver.FindElements(By.XPath("//*[@id='establishments-search-results']//td[3]"));
+        private IReadOnlyCollection<IWebElement> lstStatusInSearchResult => _driver.FindElements(By.XPath("//*[@id='establishments-search-results']//td[5]"));
         private IWebElement btnSearch => _driver.FindElement(By.Id("search"));
         #endregion
 
@@ -98,30 +99,18 @@ namespace Defra.UI.Tests.Pages.Classes
         }
 
         public bool VerifySelectedCountryOnlyDisplayed(string country)
-        {
-            foreach (var item in txtCountryInSearchResult)
-            {
-                 return item.Text.Trim().Equals(country); 
-            }
-            return false;
+        {               
+            return lstCountryInSearchResult.All(x=>x.Text.Trim().Equals(country));
         }
 
         public bool VerifySelectedTypeOnlyDisplayed(string type)
         {
-            foreach (var item in txtTypeInSearchResult)
-            {
-                 return item.Text.Trim().Equals(type);
-            }
-            return false;
+            return lstTypeInSearchResult.All(x => x.Text.Trim().Equals(type));
         }
 
         public bool VerifySelectedStatusOnlyDisplayed(string status)
         {
-            foreach (var item in txtStatusInSearchResult)
-            {
-                 return item.Text.Trim().Equals(status);
-            }
-            return false;
+            return lstStatusInSearchResult.All(x => x.Text.Trim().Equals(status));
         }
 
         public void SelectTypeFromDropdown(string type)
