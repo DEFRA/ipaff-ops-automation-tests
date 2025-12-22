@@ -5,7 +5,7 @@ browserOptions:
   driversPath: ''
   headless: false
   privateMode: false
-  seleniumGridUrl: '#{{ SeleniumGrid }}'
+  remoteHubServer: '#{{ SeleniumGrid }}'
 users:
   - username: '#{{ PIMSUser }}'
     password: '#{{ PIMSPassword }}'
