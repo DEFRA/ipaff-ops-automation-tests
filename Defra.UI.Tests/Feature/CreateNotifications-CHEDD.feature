@@ -1,5 +1,4 @@
-﻿@Regression
-Feature: CreateNotification CHEDD
+﻿Feature: CreateNotification CHEDD
 
 Create a notification for CHEDD type
 
