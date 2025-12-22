@@ -91,7 +91,7 @@ Scenario: User creates and submits a B2C consignment notification - CHEDP
 	And the user selects a contact address for the consignment
 	When the user clicks Save and continue
 	Then the Review your notification page should be displayed
-	And the user verifies all the data displayed in review page
+	And the user verifies all the data displayed in review page for commodity code "160"
 	When the user clicks Save and continue
 	Then the Declaration page should be displayed
 	When the user clicks Submit notification
@@ -273,7 +273,7 @@ Scenario: User creates and submits a B2C consignment notification for Transit Re
 	And the user selects a contact address for the consignment
 	When the user clicks Save and continue
 	Then the Review your notification page should be displayed
-	And the user verifies all the data displayed in review page
+	And the user verifies all the data displayed in review page for commodity code "160"
 	When the user clicks Save and continue
 	Then the Declaration page should be displayed
 	When the user clicks Submit notification
@@ -448,7 +448,7 @@ Scenario: User creates and submits a B2C consignment notification for Transhipme
 	And the user selects a contact address for the consignment
 	When the user clicks Save and continue
 	Then the Review your notification page should be displayed
-	And the user verifies all the data displayed in review page
+	And the user verifies all the data displayed in review page for commodity code "160"
 	When the user clicks Save and continue
 	Then the Declaration page should be displayed
 	When the user clicks Submit notification
@@ -625,7 +625,7 @@ Scenario: User creates and submits 2 B2C consignment notification with existing 
 	Then the new tab should be closed
 	When the user clicks Save and continue
 	Then the Review your notification page should be displayed
-	And the user verifies all the data displayed in review page
+	And the user verifies all the data displayed in review page for commodity code "160"
 	When the user clicks Save and continue
 	Then the Declaration page should be displayed
 	When the user clicks Submit notification
@@ -725,7 +725,7 @@ Scenario: User creates and submits 2 B2C consignment notification with existing 
 	Then the Confirm billing details page should be displayed
 	When the user clicks Save and continue
 	Then the Review your notification page should be displayed
-	And the user verifies all the data displayed in review page
+	And the user verifies all the data displayed in review page for commodity code "160"
 	When the user clicks Save and continue
 	Then the Declaration page should be displayed
 	When the user clicks Submit notification
@@ -830,7 +830,7 @@ Scenario: Admin submits a notification and records decision and validate cookies
 	And the user selects a contact address for the consignment
 	When the user clicks Save and continue
 	Then the Review your notification page should be displayed
-	And the user verifies all the data displayed in review page
+	And the user verifies all the data displayed in review page for commodity code "160"
 	When the user clicks Save and continue
 	Then the Declaration page should be displayed
 	When the user clicks Submit notification
@@ -1013,7 +1013,7 @@ Scenario: User creates a B2C consignment notification, updates it from the revie
 	When the user selects 'Frozen' radio button on the Additional details page
 	And the user clicks on Save and review
 	Then the Review your notification page should be displayed
-	Then the user verifies all the data displayed in review page
+	Then the user verifies all the data displayed in review page for commodity code "160"
 	When the user Clicks the change link under 'Transport'
 	When the user populates the transport details "BRISTOL (GBBRS)" "No" "Road vehicle" "123456" "Doc1234"
 	And the user clicks on Save and review
@@ -1059,7 +1059,7 @@ Scenario: User creates a B2C consignment notification, updates it from the revie
 	Then the Contact address for consignment page should be displayed
 	And the user selects a contact address for the consignment
 	When the user clicks on Save and review
-	Then the user verifies all the data displayed in review page
+	Then the user verifies all the data displayed in review page for commodity code "160"
 	When the user clicks Save and continue
 	Then the Declaration page should be displayed
 	When the user clicks Submit notification
