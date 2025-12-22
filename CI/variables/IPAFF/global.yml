@@ -17,18 +17,6 @@ parameters:
     type: string
   - name: emulateDeviceInfo
     type: string
-  - name: idcomsUrl
-    type: string
-  - name: idcomsUsername
-    type: string
-  - name: idcomsPassword
-    type: string
-  - name: pimsUrl
-    type: string
-  - name: pimsUsername
-    type: string
-  - name: pimsPassword
-    type: string
   - name: isAccessibilityEnabled
     type: boolean
     default: false
@@ -45,10 +33,4 @@ variables:
   Target: ${{ parameters.target }}
   IsEmulationEnabled: ${{ parameters.isEmulationEnabled }}
   EmulateDeviceInfo: ${{ parameters.emulateDeviceInfo }}
-  IDCOMSUrl: ${{ parameters.idcomsUrl }}
-  IDCOMSUser: ${{ parameters.idcomsUsername }}
-  IDCOMSPassword: ${{ parameters.idcomsPassword }}
-  PIMSUrl: ${{ parameters.pimsUrl }}
-  PIMSUser: ${{ parameters.pimsUsername }}
-  PIMSPassword: ${{ parameters.pimsPassword }}
   IsAccessibilityEnabled: ${{ parameters.isAccessibilityEnabled }}

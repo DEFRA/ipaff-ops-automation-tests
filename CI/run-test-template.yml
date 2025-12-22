@@ -57,13 +57,7 @@ jobs:
         bsBrowserVersion:  ${{parameters.bsBrowserVersion}}
         target:  ${{parameters.target}}
         isEmulationEnabled:  ${{parameters.isEmulationEnabled}}
-        emulateDeviceInfo:  ${{parameters.emulateDeviceInfo}}
-        idcomsUrl: '$(IDCOMSUrl)'
-        idcomsUsername: '$(IDCOMS_USERNAME)'
-        idcomsPassword: '$(IDCOMS_PASSWORD)'
-        pimsUrl: '$(PIMSUrl)'
-        pimsUsername: '$(PIMS_USERNAME)'
-        pimsPassword: '$(PIMS_PASSWORD)'
+        emulateDeviceInfo:  ${{parameters.emulateDeviceInfo}}        
         isAccessibilityEnabled: ${{parameters.isAccessibilityEnabled}}
     - name: FilterTestCases
       ${{ if eq(parameters.filterTestCases, '') }}:
