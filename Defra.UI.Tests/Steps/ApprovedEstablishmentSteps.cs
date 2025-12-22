@@ -36,13 +36,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the list of establishments should be displayed, filtered by Country of origin to {string}")]
         public void ThenTheListOfEstablishmentsShouldBeDisplayedFilteredByCountryOfOriginToChina(string country)
         {
-            approvedEstablishmentPage?.VerifySelectedCountryOfOrigin(country);
+            Assert.IsTrue(approvedEstablishmentPage?.VerifySelectedCountryOfOrigin(country));
         }
 
         [When("the user clicks Select for one of the establishments in the list")]
         public void WhenTheUserClicksSelectForOneOfTheEstablishmentsInTheList()
         {
-            _scenarioContext.Add("EstablishmentListFirstName", approvedEstablishmentPage.GetEstablishmentListFirstName());
+            _scenarioContext["EstablishmentListFirstName"] = approvedEstablishmentPage?.GetEstablishmentListFirstName();
             approvedEstablishmentPage?.ClickSelectEstablishment();
         }
 
@@ -51,10 +51,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             var establishmentListFirstName = _scenarioContext.Get<string>("EstablishmentListFirstName");
             approvedEstablishmentPage?.VerifySelectedEstablismentName(establishmentListFirstName);
-            _scenarioContext.Add("ApprovedEstablishmentName", approvedEstablishmentPage.GetSubtotalNetWeight());
-            _scenarioContext.Add("ApprovedEstablishmentCountry", approvedEstablishmentPage.GetSubtotalPackages());
-            _scenarioContext.Add("ApprovedEstablishmentType", approvedEstablishmentPage.GetTotalNetWeight());
-            _scenarioContext.Add("ApprovedEstablishmentApprovalNum", approvedEstablishmentPage.GetTotalPackages());
+            _scenarioContext["ApprovedEstablishmentName"] = approvedEstablishmentPage?.GetSubtotalNetWeight();
+            _scenarioContext["ApprovedEstablishmentCountry"] = approvedEstablishmentPage?.GetSubtotalPackages();
+            _scenarioContext["ApprovedEstablishmentType"] = approvedEstablishmentPage?.GetTotalNetWeight();
+            _scenarioContext["ApprovedEstablishmentApprovalNum"] = approvedEstablishmentPage?.GetTotalPackages();
+        }
+
+        [When(@"the user removes the establishment of origin")]
+        public void WhenIRemoveTheEstablishmentOfOrigin()
+        {
+            approvedEstablishmentPage?.ClickRemoveEstablishment();
         }
 
     }

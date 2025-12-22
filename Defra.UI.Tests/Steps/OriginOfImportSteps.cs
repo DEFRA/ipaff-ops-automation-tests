@@ -30,7 +30,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void ThenTheOriginOfTheImportPageShouldBeDisplayedShowingAsTheCountryOfOriginAndCountryFromWhereConsigned(string country)
         {
             Assert.True(originOfImportPage?.IsPageLoaded(), "About the consignment Origin of the import page not loaded");
-            _scenarioContext.Add("ContryFromWhereConsigned", country);
+            _scenarioContext["ContryFromWhereConsigned"] =  country;
         }
 
         [When("the user chooses {string} for Does your consignment require a region code?")]
@@ -64,6 +64,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenIClickTheForwardButtonInTheBrowser()
         {
             originOfImportPage?.ClickBrowserForwardButton();
+        }
+
+        [When("the user clicks on Save and return to hub")]
+        public void WhenTheUserClicksOnSaveAndReturnToHub()
+        {
+            originOfImportPage?.ClickSaveAndReturnToHub();
         }
     }
 }

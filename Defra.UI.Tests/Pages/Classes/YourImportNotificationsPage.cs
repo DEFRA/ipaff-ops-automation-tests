@@ -19,6 +19,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement notificationCount => _driver.FindElement(By.Id("notification-count"));
         private IWebElement GetNotificationReferenceInList(string chedRef) => _driver.FindElement(By.XPath($"//dd[@id='reference-number-0' and contains(text(), '{chedRef}')]"));
         private IWebElement GetShowNotificationLink(string chedRef) => _driver.FindElement(By.Id($"show-certificate-{chedRef}"));
+        private IWebElement GetAmendLink(string chedRef) => _driver.FindElement(By.Id($"amend-details-{chedRef}"));
 
         #endregion
 
@@ -97,6 +98,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public bool VerifyBrowserTabClosed()
         {
             return _driver.WindowHandles.Count == 1;
+        }
+
+        public void ClickAmend(string chedReference)
+        {
+            GetAmendLink(chedReference).Click();
         }
     }
 }
