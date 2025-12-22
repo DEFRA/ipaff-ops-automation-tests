@@ -330,30 +330,7 @@ jobs:
         find $(System.DefaultWorkingDirectory)/Defra.UI.Tests -name "TestExecutionReport_*.html" -exec cp {} $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/ \;
       displayName: 'Copy reports and screenshots'
       condition: always()
-      continueOnError: true
-
-    # NEW: Debug - Show actual screenshot paths in HTML
-    - powershell: |
-        $reportsPath = "$(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports"
-        $htmlFile = Get-ChildItem -Path $reportsPath -Filter "TestExecutionReport_*.html" | Select-Object -First 1
-        
-        if ($htmlFile) {
-            Write-Host "=== Inspecting $($htmlFile.Name) for screenshot references ==="
-            $content = Get-Content $htmlFile.FullName -Raw
-            
-            # Find all PNG references
-            $pngMatches = [regex]::Matches($content, '["\(]([^"()]*\.png)["\)]')
-            
-            Write-Host "`nFound $($pngMatches.Count) PNG references:"
-            foreach ($match in $pngMatches | Select-Object -First 10) {
-                Write-Host "  - $($match.Groups[1].Value)"
-            }
-        } else {
-            Write-Host "No HTML file found in $reportsPath"
-        }
-      displayName: 'Debug - Show screenshot paths in HTML'
-      condition: always()
-      continueOnError: true
+      continueOnError: true    
 
     # Fix screenshot paths in HTML
     - powershell: |
@@ -364,10 +341,10 @@ jobs:
             Write-Host "Processing $($htmlFile.Name)..."
             $content = Get-Content $htmlFile.FullName -Raw
             
-            # Replace Linux-style absolute paths with relative paths
-            # Matches: /agent/_work/1/s/Defra.UI.Tests/Reports/Screenshots/filename.png
-            # Replaces with: Screenshots/filename.png
-            $content = $content -replace '(?<=["\(])/[^"/)]+/Reports/Screenshots/([^"/)]+\.png)', 'Screenshots/$1'
+            # Replace absolute paths with relative paths
+            # Matches: /agent/_work/1/s/Defra.UI.Tests/Reports/Screenshots/guid.png
+            # Replaces with: Screenshots/guid.png
+            $content = $content -replace '(?<=["\(])/agent/_work/[^"()]+/Defra\.UI\.Tests/Reports/Screenshots/([^"/)]+\.png)', 'Screenshots/$1'
             
             # Save the modified content
             Set-Content -Path $htmlFile.FullName -Value $content
