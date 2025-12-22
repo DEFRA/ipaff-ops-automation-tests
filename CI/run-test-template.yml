@@ -319,22 +319,26 @@ jobs:
           artifactName: TestExecution_${{ parameters.jobName }}
           targetPath: '$(System.DefaultWorkingDirectory)/Defra.UI.Tests/TestExecution_${{ parameters.jobName }}.json'
     
-    # - script: |
-    #     mkdir -p $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/Screenshots
-    #     mkdir -p $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports
+    - script: |
+        mkdir -p $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/Screenshots
+        mkdir -p $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports
+        
+        # Find and copy all PNG files from TestResults
+        find $(System.DefaultWorkingDirectory)/Defra.UI.Tests/TestResults -name "*.png" -exec cp {} $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/Screenshots/ \;
+        
+        # Copy HTML reports if they exist
+        find $(System.DefaultWorkingDirectory)/Defra.UI.Tests -name "TestExecutionReport_*.html" -exec cp {} $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/ \;
+      displayName: 'Copy reports and screenshots'
+      condition: always()
+      continueOnError: true
 
-    #     cp $(System.DefaultWorkingDirectory)/Defra.UI.Tests/*.png \
-    #         $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/Screenshots/
-
-    #     cp $(System.DefaultWorkingDirectory)/Defra.UI.Tests/TestExecutionReport_*.html \
-    #         $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/
-    #   displayName: 'Copy reports and screenshots'
-
-    # - task: PublishPipelineArtifact@0
-    #   displayName: 'Publish Html Report and screenshots'
-    #   inputs:
-    #       artifactName: ${{ parameters.jobName }}_TestReport
-    #       targetPath: '$(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/'
+    - task: PublishPipelineArtifact@0
+      displayName: 'Publish Html Report and screenshots'
+      inputs:
+          artifactName: ${{ parameters.jobName }}_TestReport
+          targetPath: '$(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/'
+      condition: always()
+      continueOnError: true
 
     - task: PublishTestResults@2
       displayName: 'Publish Test Results'
