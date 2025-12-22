@@ -2,6 +2,10 @@ url: '#{{ PIMSUrl }}'
 useProfiles: false
 browserOptions:
   browserType: Chrome
+  driversPath: ''
+  headless: false
+  privateMode: false
+  seleniumGridUrl: '#{{ SeleniumGrid }}'
 users:
   - username: '#{{ PIMSUser }}'
     password: '#{{ PIMSPassword }}'
