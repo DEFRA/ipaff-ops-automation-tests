@@ -1,6 +1,4 @@
-﻿using OpenQA.Selenium;
-
-namespace Defra.UI.Tests.Pages.Interfaces
+﻿namespace Defra.UI.Tests.Pages.Interfaces
 {
     public interface IReviewOutcomeDecisionPage
     {
@@ -50,5 +48,6 @@ namespace Defra.UI.Tests.Pages.Interfaces
         // Controlled Destination
         string? GetControlledDestinationName();
         string? GetControlledDestinationAddress();
+        bool VerifyReason(string reason);
     }
 }

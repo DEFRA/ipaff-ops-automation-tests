@@ -34,5 +34,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var chedRef = _scenarioContext.Get<string>("CHEDReference");
             Assert.True(consignmentsRequiringControlPage?.VerifyNotificationStatus(chedRef, status));
         }
+
+        [When("the user clicks CHEDP reference number")]
+        public void WhenTheUserClicksCHEDPReferenceNumber()
+        {
+            consignmentsRequiringControlPage?.ClickCHEDReferencNum();
+        }
     }
 }

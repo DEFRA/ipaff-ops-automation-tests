@@ -47,5 +47,23 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             checksSubmittedPage?.ClickViewOrPrintCHED();
         }
+
+
+        [Then(@"the user should see an error message {string} under title {string} in checks submitted page")]
+        public void ThenIShouldSeeAnErrorMessageUnderTitleInChecksSubmittedPage(string errorMessage, string title)
+        {
+            Assert.True(checksSubmittedPage?.VerifyErrorMessageTitle(title));
+
+            if (!string.IsNullOrEmpty(errorMessage))
+            {
+                Assert.True(checksSubmittedPage?.IsError(errorMessage), $"There is no error message found with - {errorMessage}");
+            }
+        }
+
+        [Then("the message {string} should be displayed under Next steps")]
+        public void ThenTheMessageShouldBeDisplayedUnderNextSteps(string message)
+        {
+            Assert.True(checksSubmittedPage?.VerifyNextStepsMessage(message));
+        }
     }
 }
