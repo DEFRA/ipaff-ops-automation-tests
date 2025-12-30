@@ -30,9 +30,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user selects Acceptable for {string} {string}")]
         public void WhenTheUserSelectsAcceptableFor(string acceptableFor, string subOption)
         {
-            _scenarioContext.Add("AcceptableFor", acceptableFor);
-            _scenarioContext.Add("AcceptableForSubOption", subOption);
-            decisionPage?.SelectAcceptableFor(acceptableFor, subOption);
+            _scenarioContext["AcceptableFor"] = acceptableFor;
+            _scenarioContext["AcceptableForSubOption"] = subOption;
+            decisionPage?.SelectNotAcceptableFor(acceptableFor, subOption);
         }
 
         [Then("the user verifies the Transit radio button option is pre populated")]
@@ -79,5 +79,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
             );
         }
 
+        [When("the user enters reason {string} and selects By date")]
+        public void WhenTheUserEntersReasonAndSelectsByDate(string reason)
+        {
+            decisionPage?.EnterReason(reason);
+            var currentDate = DateTime.Now;
+            var day = currentDate.Day.ToString();
+            var month = currentDate.Month.ToString();
+            var year = currentDate.Year.ToString();
+            decisionPage?.EnterCurrentDateInDecisionPage(day, month, year);
+        }
     }
 }

@@ -18,6 +18,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement outcomeValue => _driver.WaitForElement(By.XPath("//*[@class='govuk-!-font-weight-bold']"));
         private IWebElement btnViewOrPrintCHED => _driver.WaitForElement(By.Id("print"));
         private IWebElement lnkReturnToDashboard => _driver.FindElement(By.Id("return-to-home-page"));
+        private IWebElement lblErrorMessageTitle => _driver.FindElement(By.XPath("//div[@id='border-notification-banner']/h2"));
+        private IReadOnlyCollection<IWebElement> lblErrorMessages => _driver.FindElements(By.XPath("//div[@id='border-notification-banner']/div/ul/li"));
+        private IWebElement txtInNextSteps => _driver.FindElement(By.XPath("//*[normalize-space()='Next steps']/following-sibling::p"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -66,6 +69,28 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickReturnToYourDashboard()
         {
             lnkReturnToDashboard.Click();
+        }
+
+        public bool IsError(string errorMessage)
+        {
+            foreach (var element in lblErrorMessages)
+            {
+                if (element.Text.Contains(errorMessage))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool VerifyErrorMessageTitle(string title)
+        {
+            return lblErrorMessageTitle.Text.Trim().Contains(title);
+        }
+
+        public bool VerifyNextStepsMessage(string message)
+        {
+            return txtInNextSteps.Text.Trim().Contains(message);
         }
     }
 }

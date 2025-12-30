@@ -81,6 +81,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user selects {string} from the list of Laboratory tests")]
         public void WhenTheUserSelectsFromTheListOfLaboratoryTests(string test)
         {
+            _scenarioContext["LaboratoryTestName"] = test;
             laboratoryTestsPage?.SelectLaboratoryTest(test);
         }
         

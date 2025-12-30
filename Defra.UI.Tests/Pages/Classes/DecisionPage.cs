@@ -26,6 +26,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement rdoSpecificWarehouse => _driver.FindElement(By.Id("acceptability-nonconforming"));
         private IWebElement rdoNotAcceptable => _driver.FindElement(By.Id("acceptability-refused"));
         private IWebElement rdoDestruction => _driver.FindElement(By.Id("notAcceptAction-destruction"));
+        private IWebElement rdoDestructionReason => _driver.FindElement(By.Id("notAcceptableDestructionReason"));
         private IWebElement rdoReDispatching => _driver.FindElement(By.Id("notAcceptAction-reexport"));
         private IWebElement rdoTransformation => _driver.FindElement(By.Id("notAcceptAction-transformation"));
         private IWebElement rdoOther => _driver.FindElement(By.Id("notAcceptAction-other"));
@@ -39,6 +40,8 @@ namespace Defra.UI.Tests.Pages.Classes
         // Dynamic helper to get sub-option radio button within conditional radios
         private IWebElement GetConditionalRadioButtonByLabel(string labelText) =>
             _driver.FindElement(By.XPath($"//div[contains(@class, 'govuk-radios--conditional')]//label[normalize-space(text())='{labelText}']/preceding-sibling::input[@type='radio']"));
+        private IWebElement rdoNotAccptableSubOption(string subOption) =>
+            _driver.FindElement(By.XPath($"//label[normalize-space(text())='{subOption}']"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -137,6 +140,18 @@ namespace Defra.UI.Tests.Pages.Classes
             txtNotAcceptableMonth.SendKeys(month);
             txtNotAcceptableYear.Click();
             txtNotAcceptableYear.SendKeys(year);
+        }
+
+        public void EnterReason(string reason)
+        {
+            rdoDestructionReason.Click();
+            rdoDestructionReason.SendKeys(reason);
+        }
+
+        public void SelectNotAcceptableFor(string acceptableFor, string subOption)
+        {
+            GetRadioButtonByLabel(acceptableFor).Click();
+            rdoNotAccptableSubOption(subOption).Click();
         }
     }
 }

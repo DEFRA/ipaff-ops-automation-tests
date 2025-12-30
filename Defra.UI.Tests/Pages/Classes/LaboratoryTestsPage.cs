@@ -1,8 +1,6 @@
 ﻿using Defra.UI.Tests.Configuration;
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
-using DocumentFormat.OpenXml.Math;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
@@ -39,7 +37,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtSpecies => _driver.FindElement(By.XPath("//*[@class='govuk-table__body']/tr[1]/td[3]"));  
         private IWebElement lnkLabTestSelect => _driver.FindElement(By.Id("choose-laboratory-test-0"));
         private IWebElement txtLabTestName => _driver.FindElement(By.XPath("//*[@class='govuk-table__body']/tr[1]/td[1]"));
-        private IReadOnlyCollection<IWebElement> reviewTableFirstRow => _driver.FindElements(By.XPath("//*[@class='govuk-table__body']"));      
+        private IReadOnlyCollection<IWebElement> reviewTableFirstRow => _driver.FindElements(By.XPath("//*[@class='govuk-table__body']"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -171,12 +169,11 @@ namespace Defra.UI.Tests.Pages.Classes
             foreach(var row in reviewTableFirstRow)
             {
                 string rowText = row.Text;
-                if(rowText.Contains(commodityCode)
+                return rowText.Contains(commodityCode)
                     && rowText.Contains(commodityDescription)
                     && rowText.Contains(labTestName)
                     && rowText.Contains("Pending")
-                    && rowText.Trim().Contains("Remove"))
-                    return true;
+                    && rowText.Trim().Contains("Remove");
             }
             return false;
         }
