@@ -4,6 +4,9 @@
   "bindingAssemblies": [
     {
       "assembly": "Capgemini.PowerApps.SpecFlowBindings"
+    },
+    {
+      "assembly": "Defra.Trade.MSD365.SpecFlowBindings"
     }
   ]
 }
