@@ -1,5 +1,4 @@
-﻿
-namespace Defra.UI.Tests.Configuration
+﻿namespace Defra.UI.Tests.Configuration
 {
     public class TestConfiguration
     {

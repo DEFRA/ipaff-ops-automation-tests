@@ -72,6 +72,10 @@ namespace Defra.UI.Tests.Pages.Classes
             if (windowHandles.Count > 1)
             {
                 _driver.SwitchTo().Window(windowHandles.Last());
+
+                // Optional Wait for PDF to load (helps with screenshot rendering) - can remove if not needed
+                Thread.Sleep(2000);
+
                 return _driver.Url.Contains("/certificate/pdf");
             }
             return false;

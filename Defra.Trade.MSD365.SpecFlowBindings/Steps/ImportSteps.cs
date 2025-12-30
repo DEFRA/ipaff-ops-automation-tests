@@ -97,7 +97,7 @@ public class ImportSteps : PowerAppsStepDefiner
     [Given(@"'(.*)' has been created, assigned to myself and which has following tasks")]
     public void GivenHasBeenCreatedAssignedToMyselfAndWhichHasFollowingTasks(string dataFileName, Table table)
     {
-        LoginSteps.GivenIAmLoggedInToTheAppAs("Defra Trade", "a user");
+        //LoginSteps.GivenIAmLoggedInToTheAppAs("Defra Trade", "a user");
         this.CreateImportApplicationAndWaitForTasks(dataFileName);
         List<WorkOrderServiceTaskTable> expectedList = table.CreateSet<WorkOrderServiceTaskTable>().ToList();
         expectedList.ForEach(p => p.StatusReason = "Active");
@@ -111,7 +111,7 @@ public class ImportSteps : PowerAppsStepDefiner
     [Given(@"An import application has (at least|more than) one commodity which requires Physical Inspection")]
     public void GivenAnImportApplicationHasAtleastOneCommodityWhichRequiresPhysicalInspection(string numberOfPHSICommodities)
     {
-        LoginSteps.GivenIAmLoggedInToTheAppAs("Defra Trade", "a user");
+        //LoginSteps.GivenIAmLoggedInToTheAppAs("Defra Trade", "a user");
 
         var dataFileName = "an import notification";
 
@@ -504,7 +504,7 @@ public class ImportSteps : PowerAppsStepDefiner
 
     private void CreateImportApplicationAndWaitForTasks(string dataFileName)
     {
-        new ImportNotificationSteps(this.context).GivenHasBeenCreated(dataFileName);
+        //new ImportNotificationSteps(this.context).GivenHasBeenCreated(dataFileName);
         var asynSteps = new AsyncSteps(this.context);
         asynSteps.WhenIWaitForTheWorkOrderToBeCreatedWithTasks(SpecflowBindingsConstants.ImportNotificationTaskCount, dataFileName); asynSteps.WhenIWaitForAllServiceTasksToBeOwned(dataFileName, SpecflowBindingsConstants.DefaultTaskCountOwnedByCITImportsTeam);
         asynSteps.AssignWorkorderToBaseRoleUser();
