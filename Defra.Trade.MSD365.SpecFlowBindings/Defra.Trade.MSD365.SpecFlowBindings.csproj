@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ExtentReports" Version="5.0.4" />
     <PackageReference Include="Faker.Net" Version="2.0.154" />
     <PackageReference Include="FluentAssertions" Version="6.12.0" />
     <PackageReference Include="Microsoft.CrmSdk.Workflow" Version="9.0.2.51" />

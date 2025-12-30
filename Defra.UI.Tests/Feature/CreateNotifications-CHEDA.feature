@@ -172,3 +172,7 @@ Scenario: User creates and submits a B2C consignment notification - CHEDA
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
+	When I am logged in to the 'PIMS' app as 'Caseworker'
+	And I open the sub area 'Importer Notifications' under the 'Case Management' area
+	And I search Importer Notifications for the notification created in IPAFFS
+	And I open the record at position '0' in the grid

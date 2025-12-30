@@ -81,6 +81,12 @@
     <None Update="driver.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="power-apps-bindings.idcoms.yml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="power-apps-bindings.pims.yml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="power-apps-bindings.yml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

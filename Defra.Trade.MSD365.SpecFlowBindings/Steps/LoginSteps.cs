@@ -20,10 +20,12 @@ public class LoginSteps : PowerAppsStepDefiner
     /// </summary>
     /// <param name="appName">The name of the app.</param>
     /// <param name="userAlias">The alias of the user.</param>
-    [Scope(Tag = "Trade")]
-    [Given(@"I am logged in to the '(.*)' app as '(.*)'")]
-    public static void GivenIAmLoggedInToTheAppAs(string appName, string userAlias)
+    //[Scope(Tag = "Trade")]
+    [Given("I am logged in to the {string} app as {string}")]
+    [When("I am logged in to the {string} app as {string}")]
+    public void GivenIAmLoggedInToTheAppAs(string appName, string userAlias)
     {
+        SelectApplication(appName);
         GivenIAmLoggedInToTheAppAs1(appName, userAlias);
     }
 
