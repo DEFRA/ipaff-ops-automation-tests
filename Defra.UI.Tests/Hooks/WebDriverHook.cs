@@ -80,6 +80,9 @@ namespace Defra.UI.Tests.Hooks
 
             _scenario = _feature.CreateNode<AventStack.ExtentReports.Gherkin.Model.Scenario>(_scenarioContext.ScenarioInfo.Title);
 
+            // Store scenario in ScenarioContext so PIMS hook can access it
+            _scenarioContext.Set(_scenario, "ExtentScenario");
+            
             if (isRunOnce)
             {
                 GovernmentGateway.Initialize(_objectContainer);
@@ -181,8 +184,22 @@ namespace Defra.UI.Tests.Hooks
         [AfterStep]
         public void AfterStep()
         {
-            var stepType = _scenarioContext.StepContext.StepInfo.StepDefinitionType.ToString();
             var stepInfo = _scenarioContext.StepContext.StepInfo.Text;
+            
+            // Skip if this is a PIMS step (let PIMS hook handle it)
+            bool isPimsStep = stepInfo.Contains("PIMS", StringComparison.OrdinalIgnoreCase) ||
+                             stepInfo.Contains("logged in to the", StringComparison.OrdinalIgnoreCase) ||
+                             stepInfo.Contains("sub area", StringComparison.OrdinalIgnoreCase) ||
+                             stepInfo.Contains("Importer Notifications", StringComparison.OrdinalIgnoreCase) ||
+                             stepInfo.Contains("open the record", StringComparison.OrdinalIgnoreCase) ||
+                             stepInfo.Contains("in the grid", StringComparison.OrdinalIgnoreCase);
+            
+            if (isPimsStep)
+            {
+                return;
+            }
+
+            var stepType = _scenarioContext.StepContext.StepInfo.StepDefinitionType.ToString();
             var screenshotPath = CaptureScreenshot();
 
             if (_scenarioContext.TestError == null)
@@ -206,6 +223,27 @@ namespace Defra.UI.Tests.Hooks
             if (!Directory.Exists(screenshotsDir))
             {
                 Directory.CreateDirectory(screenshotsDir);
+            }
+
+            try
+            {
+                var handles = Driver.WindowHandles;
+                if (handles != null && handles.Count > 0)
+                {
+                    var currentHandle = Driver.CurrentWindowHandle;
+                    if (handles.Contains(currentHandle))
+                    {
+                        Driver.SwitchTo().Window(currentHandle);
+                    }
+                    else
+                    {
+                        Driver.SwitchTo().Window(handles.Last());
+                    }
+                }
+            }
+            catch
+            {
+                // Silently handle window switch errors
             }
 
             var screenshot = ((ITakesScreenshot)Driver).GetScreenshot();

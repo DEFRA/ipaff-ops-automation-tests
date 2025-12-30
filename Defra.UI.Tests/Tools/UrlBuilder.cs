@@ -25,6 +25,7 @@ namespace Defra.UI.Tests.Tools
         private string BaseApplicationUrl = null;
         private string BaseBTMSApplicationUrl = null;
         private string BaseInspectorUrl = null;
+
         public UrlBuilder Add(string segment)
         {
             if (segment == null)
@@ -53,7 +54,8 @@ namespace Defra.UI.Tests.Tools
                     path += "/";
                 }
                 path = BaseApplicationUrl + "/" + path;
-            }else
+            }
+            else
             {
                 path = BaseApplicationUrl;
             }
@@ -99,7 +101,7 @@ namespace Defra.UI.Tests.Tools
             }
             return path;
         }
-
+                
         public UrlBuilder Default()
         {
             BaseApplicationUrl = ConfigSetup.BaseConfiguration.TestConfiguration.ApplicationUrl;
@@ -120,7 +122,7 @@ namespace Defra.UI.Tests.Tools
 
             return this;
         }
-
+                
         private static string CleanSegment(string segment)
         {
             var unescaped = Uri.UnescapeDataString(segment);
