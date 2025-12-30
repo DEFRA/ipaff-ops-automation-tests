@@ -1181,3 +1181,233 @@ Scenario: User creates a B2C consignment notification, updates it from the revie
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
+
+Scenario: User creates and submits a notification, override the risk decision and reject the notification - CHEDP
+	Given that I navigate to the IPAFF application
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF credentials and signin
+	Then the user should be logged into Notification page
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Products of animal origin, germinal products or animal by-products' option
+	And the user clicks Save and continue
+	Then the Origin of the plants plant product or other objects page should be displayed
+	When the user chooses "France" from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing "France" as the Country of origin and Country from where consigned
+	When the user chooses "No" for Does your consignment require a region code?
+	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
+	When the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
+	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
+	When the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '41015050' commodity code
+	Then the commodity details should be populated '41015050' 'Dried or dry-salted'
+	When the user selects the type of commodity 'Domestic'
+	And the user selects species of commodity 'Bison bison'
+	And the user selects "No" for Do you want to add another commodity?
+	When the user clicks Save and continue
+	Then What is the main reason for importing the consignment? page should be displayed with radio buttons
+	When the user chooses "Internal market" and the sub-option "Animal feedingstuff"
+	And the user clicks Save and continue
+	Then Select the highest risk category for the commodities in this consignment page should be displayed
+	When the user chooses "Low risk" risk category
+	And the user clicks Save and continue
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Commodity page should be displayed with the commodity and description entered
+	When the user populates Net weight as '1000'
+	And the user populates Number of packages as '10'
+	And the user selects type of package as 'Box'
+	When the user clicks the Update total button
+	Then the total gross weight should be greater than the net weight '1500'
+	When the user clicks Save and continue in commodity page
+	Then the Additional details page should be displayed
+	When the user selects 'Ambient' radio button on the Additional details page
+	And the user clicks Save and continue
+	Then the Accompanying documents page should be displayed
+	When the user selects Document type "Commercial invoice"
+	And the user enters Document reference "INV12345"
+	And the user enters date of issue "24/11/2025"
+	Then the user should be able to click Save and continue
+	And the Approved establishment of origin page should be displayed
+	When the user clicks Search for an approved establishment
+	Then the list of establishments should be displayed, filtered by Country of origin "France" type "ABP Transport" status "Approved"
+	When the user clicks Select for one of the establishments in the list
+	Then the Approved establishment of origin page should be displayed with the selected establishment
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects one of the displayed consignors or exporters "ABC"
+	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee "XYZ" with a UK country
+	Then the chosen consignee "XYZ" should be displayed on the Addresses page
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee "XYZ" on the Addresses page
+	When the user clicks Add a place of destination
+	Then the Search for an existing place of destination page should be displayed
+	When the user selects a place of destination "XYZ" with a UK country
+	Then the chosen place of destination "XYZ" should be displayed on the Addresses page
+	When the user clicks Save and continue
+	Then the Transport to the port of entry page should be displayed
+	When the user populates the transport details "BRISTOL (GBBRS)" "No" "Road vehicle" "123456" "Doc1234"
+	When the user clicks Save and continue
+	Then the Goods movement services page should be displayed
+	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	When the user clicks Save and continue
+	Then the Contact details page should be displayed, pre-populated with the user's details
+	When the user clicks Save and continue
+	Then the Nominated contacts page should be displayed
+	When the user clicks Save and continue
+	Then the Contact address for consignment page should be displayed
+	And the user selects a contact address for the consignment
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	And the user verifies all the data displayed in review page for commodity code "160"
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	When the user records the IPAFFS User details and CHED Reference
+	Then the details should be recorded
+	When the user logs out of IPAFFS Part 1
+	Then the user should be logged out successfully
+	When I navigate to the IPAFF Inspector application
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF Inspector credentials and signin
+	Then the user should be logged into Import notifications page
+	When the user searches for the newly created notification on the Import notifications page
+	Then the user clicks the notificaiton found with status "NEW"
+	Then the Decision Hub page should be displayed
+	When the user clicks override the risk decision
+	Then the Override risk decision page should be displayed
+	When the user clicks Yes, override risk decision button
+	Then the Decision Hub page should be displayed
+	And the notification status should change from "NEW" to "IN PROGRESS"
+	When the user clicks Local reference number link in Record checks
+	Then Local reference number page should be displayed
+	When the user enters a local reference number and clicks Save and continue
+	Then the Documentary check page should be displayed
+	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
+	Then the Identity and physical checks page should be displayed
+	When the user selects "Satisfactory" under "Seal check only" in identity check
+	And the user selects "Satisfactory" for physical check
+	And the user clicks Save and continue
+	Then the Seal numbers page should be displayed
+	And 'No' is pre-selected for Are new seal numbers required?
+	When the user clicks Save and continue
+	Then the Laboratory tests page should be displayed
+	And 'No' is pre-selected for Would you like to record laboratory tests?
+	When the user select 'Yes' radio button on the Laboratory tests page
+	When the user clicks Save and continue
+	When the user select 'Suspicion' reason radio button on the Laboratory tests page
+	And the user clicks Save and continue
+	Then the Laboratory tests page should be displayed
+	When the user clicks the Select link for the '41015050' commodity code
+	Then the Laboratory tests page should be displayed
+	When the user selects 'Animal diseases' in Laboratory test category
+	And the user selects 'Cattle diseases' in Laboratory test subcategory
+	And the user clicks on Search
+	And the user selects 'Anaplasma marginale' from the list of Laboratory tests
+	Then the Laboratory tests Commodity sampled page should be displayed
+	When the user populates the commodity sample details 'Initial analysis' 'Campden BRI' '12345' '3' 'Blood' 'Chilled'
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	And the user verifies the data in Laboratory tests review page
+	When the user clicks Save and continue
+	Then the Decision page should be displayed
+	When the user selects Acceptable for 'Internal market' 'Animal feedingstuff'
+	And the user clicks Save and continue
+	Then the Review outcome decision page should be displayed
+	And the user checks the reason should be 'Suspicious' in the review page
+	When the user populates the Date and time of checks
+	And user clicks Submit decision
+	Then the user should see an error message 'Lab results pending for this consignment' in review page
+	When the user Clicks the change link under 'Laboratory tests'
+	Then the Laboratory tests page should be displayed
+	When the user select 'Yes' radio button on the Laboratory tests page
+	And the user clicks Save and continue
+	When the user select 'Suspicion' reason radio button on the Laboratory tests page
+	And the user clicks Save and continue
+	Then the Laboratory tests page should be displayed
+	When the user clicks on the Test 'Anaplasma marginale'
+	Then the Record laboratory test information page should be displayed
+	When the user enters Sample use by date as '15''12''2025'
+	When the user enters Released date as '16''12''2025'
+	When the user selects "Not satisfactory" for Conclusion
+	And the user clicks Save and continue
+	Then the Laboratory tests page should be displayed
+	When the user clicks Save and Return
+	Then the Decision Hub page should be displayed
+	When the user clicks Decision link
+	Then the Decision page should be displayed
+	When the user clicks Save and continue
+	Then the Review outcome decision page should be displayed
+	And the user should not see an error message 'Lab results pending for this consignment' in review page
+	When the user Clicks the change link under 'Decision information'
+	Then the Decision page should be displayed
+	When the user selects Acceptable for 'Not acceptable' 'Destruction'
+	And the user enters reason 'Not satisfactory' and selects By date
+	And the user clicks Save and continue
+	Then the Select a controlled destination page should be displayed
+	When the user clicks Add a controlled destination
+	Then the Search for an existing controlled destination page should be displayed
+	When the user selects a controlled destination
+	Then the chosen controlled destination should be displayed
+	When the user clicks Save and continue
+	Then the Reason for Refusal page should be displayed
+	When the user selects "Microbiological Contamination" as reason for refusal
+	And the user clicks Save and continue
+	Then the Review outcome decision page should be displayed
+	When the user populates the Date and time of checks
+	And user clicks Submit decision
+	Then the user should see an error message 'Refused for microbiological contamination reasons' under title 'The result of this decision requires a border notification to be created' in checks submitted page
+	And the user should see an error message 'Refused for unsatisfactory laboratory test results' under title 'The result of this decision requires a border notification to be created' in checks submitted page
+	And the message 'Due to the reason of refusal, a border notification is required to be created to alert the FSA to a possible issue.' should be displayed under Next steps
+	When the user clicks return to you dashboard link
+	Then the Import notifications dashboard page should be displayed
+	When user searches for the import notification after decision submission
+	Then the notification should be present in the list of part 2 dashboard
+	And the notification should be found with the status "Rejected"
+	When the user clicks CHEDP reference number
+	Then the CHED overview page should be displayed
+	When the user clicks Raise border notification button
+	Then Enter the details of the border notification page should be displayed
+	And the user enters the details as 'Food' 'official control on the market' 'Fats & oils' 'Product' 'Brand' 'Label' 'Other' 'Use by date' 'undecided' 'environment' 'Allergens' 'destruction'
+	When the user clicks Save and continue
+	Then the Accompanying documents page should be displayed
+	When the user selects Document type "Commercial invoice"
+	And the user enters Document reference "INV12345"
+	And the user clicks on Add attachment link
+	And the user uploads the document 'IPAFFS Test Document' in the format '.docx'
+	Then the document 'IPAFFS Test Document' '.docx' is uploaded successfully
+	When the user download the document attached in accompanying documents
+	Then the user switch to next tab and open the browser downloads
+	And verifies the document 'IPAFFS Test Document' downloaded successfully
+	When the user closes the newly opened tab
+	Then the browser tab is closed
+	When the user clicks Save and continue
+	Then Reveiw border notification page should be displayed
+	When the user clicks submit button
+	Then your border notification has been submitted page should be displayed
+	When the user records the BN number
+	And the user clicks Return to dashboard button
+	Then Border notifications dashboard page should be displayed
+	When the user searches for the newly created border notification
+	Then the border notification found with status "NEW"
+	When the user clicks the view details of the border notification
+	Then the Border notification overview page should be displayed
+	When the user clicks Dashboard link
+	Then Border notifications dashboard page should be displayed
+	When the user logs out of IPAFFS Part 2
+	Then the user should be logged out successfully

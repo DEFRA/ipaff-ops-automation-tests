@@ -434,5 +434,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             reviewPage?.ClickChangeLink(heading);
         }
+
+        [Then("the user should not see an error message {string} in review page")]
+        public void ThenTheUserShouldNotSeeAnErrorMessageInReviewPage(string errorMessage)
+        {
+            Assert.True(reviewPage?.VerifyErrorMsgDisplayed(errorMessage), $"There is error message found with - {errorMessage}");
+        }
     }
 }

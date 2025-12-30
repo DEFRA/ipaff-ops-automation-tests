@@ -83,11 +83,11 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement consignmentContactAddress => _driver.FindElement(By.Id("organisation-branch-address-address"));
         private IReadOnlyCollection<IWebElement> divAboutTheConsignmentDetails => _driver.WaitForElements(By.XPath("//div[@id='document-pet-card']//dl/div"));
                 
-        private IWebElement lnkChange(string section) => _driver.FindElement(By.XPath($"(//*[text()='{section}']/following::a)[1]"));
+        private IWebElement lnkChange(string section) => _driver.FindElement(By.XPath($"(//*[normalize-space()='{section}']/following::a)[1]"));
 
 
         //Error Message
-        private IReadOnlyCollection<IWebElement> lblErrorMessages => _driver.WaitForElements(By.XPath("//div[@class='govuk-error-summary']/div/ul/li"));
+        private IReadOnlyCollection<IWebElement> lblErrorMessages => _driver.FindElements(By.XPath("//div[@class='govuk-error-summary']/div/ul/li"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -665,6 +665,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickChangeLink(string heading)
         {
             lnkChange(heading).Click();
+        }
+
+        public bool VerifyErrorMsgDisplayed(string errorMessage)
+        {
+            return lblErrorMessages.Count == 0;
         }
     }
 }

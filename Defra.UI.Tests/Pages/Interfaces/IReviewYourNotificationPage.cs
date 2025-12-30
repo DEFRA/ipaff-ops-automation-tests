@@ -76,5 +76,6 @@
         string? GetConsignmentContactAddress();
         bool IsError(string errorMessage);
         void ClickChangeLink(string heading);
+        bool VerifyErrorMsgDisplayed(string errorMessage);
     }
 }

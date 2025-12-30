@@ -66,5 +66,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             decisionHubPage?.ClickReviewAndSubmitLink();
         }
+
+        [When("the user clicks override the risk decision")]
+        public void WhenTheUserClicksOverrideTheRiskDecision()
+        {
+            decisionHubPage?.ClickOverrideRiskDecisionLink();
+        }
     }
 }
