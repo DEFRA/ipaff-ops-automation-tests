@@ -21,6 +21,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement inputHour => _driver.WaitForElement(By.Id("time-of-checks-hour"));
         private IWebElement inputMinutes => _driver.WaitForElement(By.Id("time-of-checks-minute"));
         private IWebElement rdoCertifyingOfficer => _driver.FindElement(By.Id("signed-by-official"));
+        private IWebElement txtReasonInReviewPage => _driver.FindElement(By.XPath("//*[@id='parttwo/laboratorytests/testreason']/td[2]"));
 
         // Border Control Post
         private IWebElement borderControlPostReference =>
@@ -515,6 +516,11 @@ namespace Defra.UI.Tests.Pages.Classes
 
             var lines = fullText.Split('\n', StringSplitOptions.RemoveEmptyEntries);
             return lines.Length > 1 ? lines[1].Trim() : string.Empty;
+        }
+
+        public bool VerifyReason(string reason)
+        {
+            return txtReasonInReviewPage.Text.Trim().Equals(reason);
         }
     }
 }

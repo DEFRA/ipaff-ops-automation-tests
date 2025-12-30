@@ -25,6 +25,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(reviewOutcomeDecisionPage?.IsPageLoaded(), "Review outcome decision page not loaded");
         }
 
+        [Then("the user checks the reason should be {string} in the review page")]
+        public void ThenTheUserChecksTheReasonShouldBeInTheReviewPage(string reason)
+        {
+            reviewOutcomeDecisionPage?.VerifyReason(reason);
+        }
+
+
         [When("the user populates the Date and time of checks")]
         public void WhenTheUserPopulatesTheDateAndTimeOfChecks()
         {
