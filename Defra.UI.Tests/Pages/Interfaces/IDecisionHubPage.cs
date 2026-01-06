@@ -11,5 +11,7 @@
         void ClickDecisionLink();
         void ClickReviewAndSubmitLink();
         void ClickOverrideRiskDecisionLink();
+        bool VerifyInspectionRequiredBox(string msgboxTitle);
+        bool VerifyInspectionRequiredMessage(string message);
     }
 }

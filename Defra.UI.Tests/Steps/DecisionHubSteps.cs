@@ -72,5 +72,17 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             decisionHubPage?.ClickOverrideRiskDecisionLink();
         }
+
+        [Then("the user verifies {string} box appears in the page")]
+        public void ThenBoxAppearsUnderTheDecisionHubScreenTitle(string msgboxTitle)
+        {
+            Assert.True(decisionHubPage?.VerifyInspectionRequiredBox(msgboxTitle));
+        }
+
+        [Then("the text {string} is displayed")]
+        public void ThenTheTextIsDisplayed(string message)
+        {
+            Assert.True(decisionHubPage?.VerifyInspectionRequiredMessage(message));
+        }
     }
 }
