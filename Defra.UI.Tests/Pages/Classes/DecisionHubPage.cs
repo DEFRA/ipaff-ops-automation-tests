@@ -21,6 +21,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement lnkDecision => _driver.WaitForElement(By.Id("button-decision-notification"));
         private IWebElement lnkReviewAndSubmit => _driver.WaitForElement(By.Id("button-review-notification"));
         private IWebElement lnkOverrideRiskDecision => _driver.FindElement(By.Id("override-risk-decision-link"));
+        private IWebElement txtRiskAssesmentTitle => _driver.FindElement(By.Id("risk-assessment-banner-title"));
+        private IWebElement txtRiskAssesmentMessage => _driver.FindElement(By.XPath("//p[@class='govuk-body']"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -73,6 +75,16 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickOverrideRiskDecisionLink()
         {
             lnkOverrideRiskDecision.Click();
+        }
+
+        public bool VerifyInspectionRequiredBox(string msgboxTitle)
+        {
+            return txtRiskAssesmentTitle.Text.Trim().Equals(msgboxTitle);
+        }
+
+        public bool VerifyInspectionRequiredMessage(string message)
+        {
+            return txtRiskAssesmentMessage.Text.Trim().Equals(message);
         }
     }
 }
