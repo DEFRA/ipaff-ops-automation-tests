@@ -100,5 +100,22 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext.Add("TranshipmentDestinationCountry", transhipmentCountry);
         }
 
+        [When("the user enters exit date {string} days from today")]
+        public void WhenTheUserEntersExitDateDaysFromToday(string daysFromToday)
+        {
+            int days = int.Parse(daysFromToday);
+            reasonForImportPage?.EnterExitDate(days);
+
+            var exitDate = DateTime.Now.AddDays(days);
+            var formattedExitDate = exitDate.ToString("dd MMMM yyyy");
+            _scenarioContext.Add("ExitDate", formattedExitDate);
+        }
+
+        [When("the user selects exit BCP {string}")]
+        public void WhenTheUserSelectsExitBCP(string exitBCP)
+        {
+            reasonForImportPage?.SelectExitBCP(exitBCP);
+            _scenarioContext.Add("ExitBCP", exitBCP);
+        }
     }
 }

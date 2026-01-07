@@ -39,6 +39,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
             ValidateIfExists("MainReasonForImport", reviewPage?.GetMainReasonForImport(), ref allDataMatches, mismatches);
             ValidateIfExists("Purpose", reviewPage?.GetPurpose(), ref allDataMatches, mismatches);
             ValidateIfExists("ConsignmentReferenceNumber", reviewPage?.GetConsignmentReferenceNumber(), ref allDataMatches, mismatches);
+            ValidateIfExists("ExitDate", reviewPage?.GetExitDate(), ref allDataMatches, mismatches);
+            ValidateIfExists("ExitBCP", reviewPage?.GetExitBCP(), ref allDataMatches, mismatches);
 
             // Commodity details  
             ValidateIfExists("CommodityCode", reviewPage?.GetCommodityCode(), ref allDataMatches, mismatches);
@@ -48,6 +50,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             // Animal details
             ValidateIfExists("CertificationOption", reviewPage?.GetCertificationOption(), ref allDataMatches, mismatches);
+            ValidateIfExists("HorseName", reviewPage?.GetHorseName(), ref allDataMatches, mismatches);
+            ValidateIfExists("MicrochipNumber", reviewPage?.GetMicrochipNumber(), ref allDataMatches, mismatches);
+            ValidateIfExists("PassportNumber", reviewPage?.GetPassportNumber(), ref allDataMatches, mismatches);
 
             // Documents
             ValidateIfExists("HealthCertificateReference", reviewPage?.GetHealthCertificateReference(), ref allDataMatches, mismatches);
@@ -73,11 +78,19 @@ namespace Defra.UI.Tests.Steps.IPAFF
             ValidateIfExists("MeansOfTransport", reviewPage?.GetMeansOfTransport(), ref allDataMatches, mismatches);
             ValidateIfExists("TransportId", reviewPage?.GetTransportId(), ref allDataMatches, mismatches);
             ValidateIfExists("AreContainers", reviewPage?.GetContainerUsage(), ref allDataMatches, mismatches);
+            ValidateIfExists("ContainerNumber", reviewPage?.GetContainerNumber(), ref allDataMatches, mismatches);
+            ValidateIfExists("SealNumber", reviewPage?.GetSealNumber(), ref allDataMatches, mismatches);
+            ValidateIfExists("OfficialSealAffixed", reviewPage?.GetOfficialSeal(), ref allDataMatches, mismatches);
             ValidateIfExists("EnterTransportDocRef", reviewPage?.GetTransportDocumentReference(), ref allDataMatches, mismatches);
             ValidateIfExists("EstimatedArrivalDate", reviewPage?.GetEstimatedArrivalDate(), ref allDataMatches, mismatches);
             ValidateIfExists("EstimatedArrivalTime", reviewPage?.GetEstimatedArrivalTime(), ref allDataMatches, mismatches);
             ValidateIfExists("EstimatedJourneyTime", reviewPage?.GetEstimatedJourneyTime(), ref allDataMatches, mismatches);
             ValidateIfExists("IsGVMS", reviewPage?.GetGVMSUsage(), ref allDataMatches, mismatches);
+            ValidateIfExists("MeansOfTransportAfterBCP", reviewPage?.GetMeansOfTransportAfterBCP(), ref allDataMatches, mismatches);
+            ValidateIfExists("TransportIdentificationAfterBCP", reviewPage?.GetTransportIdentificationAfterBCP(), ref allDataMatches, mismatches);
+            ValidateIfExists("TransportDocumentReferenceAfterBCP", reviewPage?.GetTransportDocumentReferenceAfterBCP(), ref allDataMatches, mismatches);
+            ValidateIfExists("DepartureDateFromBCP", reviewPage?.GetDepartureDateFromBCP(), ref allDataMatches, mismatches);
+            ValidateIfExists("DepartureTimeFromBCP", reviewPage?.GetDepartureTimeFromBCP(), ref allDataMatches, mismatches);
 
             // Transporter details
             ValidateIfExists("TransporterName", reviewPage?.GetTransporterName(), ref allDataMatches, mismatches);
@@ -438,7 +451,17 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the user should not see an error message {string} in review page")]
         public void ThenTheUserShouldNotSeeAnErrorMessageInReviewPage(string errorMessage)
         {
-            Assert.True(reviewPage?.VerifyErrorMsgDisplayed(errorMessage), $"There is error message found with - {errorMessage}");
+            var (hasError, errorMessages) = reviewPage?.VerifyErrorMsgDisplayed(errorMessage)
+                ?? (false, string.Empty);
+
+            if (hasError)
+            {
+                Assert.Fail($"Error message '{errorMessage}' is still present on the review page. " +
+                           $"All error messages found: {errorMessages}");
+            }
+
+            // If hasError is false, the assertion passes (no error banner or specific error not found)
+            Assert.False(hasError, "Error validation passed - no error message found");
         }
     }
 }

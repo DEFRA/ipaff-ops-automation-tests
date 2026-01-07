@@ -38,6 +38,16 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement lnkLabTestSelect => _driver.FindElement(By.Id("choose-laboratory-test-0"));
         private IWebElement txtLabTestName => _driver.FindElement(By.XPath("//*[@class='govuk-table__body']/tr[1]/td[1]"));
         private IReadOnlyCollection<IWebElement> reviewTableFirstRow => _driver.FindElements(By.XPath("//*[@class='govuk-table__body']"));
+        private IWebElement legendReasonForTesting => _driver.FindElement(By.XPath("//legend[contains(@class, 'govuk-fieldset__legend--m') and contains(text(), 'Reason for testing')]"));
+        private IWebElement headingSelectCommodity => _driver.FindElement(By.XPath("//h2[@class='govuk-heading-m' and contains(text(), 'Select the commodity sampled')]"));
+        private IWebElement headingCommodityToTest => _driver.FindElement(By.XPath("//h2[@class='govuk-heading-s govuk-!-margin-bottom-1  ' and contains(text(), 'Commodity to be tested')]"));
+        private IWebElement txtSampleDateDay => _driver.FindElement(By.Id("sample-date-day"));
+        private IWebElement txtSampleDateMonth => _driver.FindElement(By.Id("sample-date-month"));
+        private IWebElement txtSampleDateYear => _driver.FindElement(By.Id("sample-date-year"));
+        private IWebElement txtSampleTimeHour => _driver.FindElement(By.Id("sample-time-hour"));
+        private IWebElement txtSampleTimeMinutes => _driver.FindElement(By.Id("sample-time-minutes"));
+        private IWebElement lnkAddAnotherTest => _driver.FindElement(By.Id("AddAnotherTest"));
+        private IWebElement GetLabTestResultElement(int index) => _driver.FindElement(By.XPath($"//tr[@id='lab-tests-row-{index}']//td[6]"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -176,6 +186,66 @@ namespace Defra.UI.Tests.Pages.Classes
                     && rowText.Trim().Contains("Remove");
             }
             return false;
+        }
+
+        public bool IsReasonForTestingPageLoaded()
+        {
+            return legendReasonForTesting.Text.Contains("Reason for testing");
+        }
+
+        public bool IsSelectCommoditySampledPageLoaded()
+        {
+            return headingSelectCommodity.Text.Contains("Select the commodity sampled");
+        }
+
+        public bool IsCommodityToBeTestedPageLoaded()
+        {
+            return headingCommodityToTest.Text.Contains("Commodity to be tested");
+        }
+
+        public string GetSampleDate()
+        {
+            var day = txtSampleDateDay.GetAttribute("value");
+            var month = txtSampleDateMonth.GetAttribute("value");
+            var year = txtSampleDateYear.GetAttribute("value");
+
+            var date = DateTime.ParseExact($"{day}/{month}/{year}", "d/M/yyyy",
+                System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.None);
+
+            return date.ToString("d MMMM yyyy");
+        }
+
+        public string GetSampleTime()
+        {
+            var hour = txtSampleTimeHour.GetAttribute("value");
+            var minutes = txtSampleTimeMinutes.GetAttribute("value");
+
+            return $"{int.Parse(hour):D2}:{int.Parse(minutes):D2}";
+        }
+
+        public bool IsAddAnotherTestLinkDisplayed()
+        {
+            try
+            {
+                return lnkAddAnotherTest.Displayed;
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
+        }
+
+        public string GetLabTestResult(int index = 0)
+        {
+            try
+            {
+                return GetLabTestResultElement(index).Text.Trim();
+            }
+            catch (NoSuchElementException)
+            {
+                return string.Empty;
+            }
         }
     }
 }

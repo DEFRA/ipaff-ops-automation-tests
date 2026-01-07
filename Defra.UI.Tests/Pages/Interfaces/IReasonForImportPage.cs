@@ -4,7 +4,7 @@ using OpenQA.Selenium;
 namespace Defra.UI.Tests.Pages.Interfaces
 {
     public interface IReasonForImportPage
-    { 
+    {
         bool IsPageLoaded();
         bool AreImportReasonsPresent();
         bool AreImportReasonsForCHEDDPresent();
@@ -19,5 +19,7 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void SelectTransitedCountry(string transitedCountry);
         void SelectDestinationCountry(string destinationCountry);
         void SelectTranshipmentDestination(string transhipmentCountry);
+        void EnterExitDate(int daysFromToday);
+        void SelectExitBCP(string exitBCP);
     }
 }

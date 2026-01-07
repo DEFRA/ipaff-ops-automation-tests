@@ -42,6 +42,10 @@ namespace Defra.UI.Tests.Pages.Classes
             _driver.FindElement(By.XPath($"//div[contains(@class, 'govuk-radios--conditional')]//label[normalize-space(text())='{labelText}']/preceding-sibling::input[@type='radio']"));
         private IWebElement rdoNotAccptableSubOption(string subOption) =>
             _driver.FindElement(By.XPath($"//label[normalize-space(text())='{subOption}']"));
+        private IWebElement txtExitDateDay => _driver.FindElement(By.Id("temp-deadline-day"));
+        private IWebElement txtExitDateMonth => _driver.FindElement(By.Id("temp-deadline-month"));
+        private IWebElement txtExitDateYear => _driver.FindElement(By.Id("temp-deadline-year"));
+        private IWebElement ddlExitBCP => _driver.FindElement(By.Id("temporaryExitBipUk"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -152,6 +156,34 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             GetRadioButtonByLabel(acceptableFor).Click();
             rdoNotAccptableSubOption(subOption).Click();
+        }
+
+        public bool IsRadioButtonPreSelected(string radioButtonName)
+        {
+            try
+            {
+                var radioButton = GetRadioButtonByLabel(radioButtonName);
+                return radioButton.GetAttribute("checked") != null;
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
+        }
+
+        public string GetExitDate()
+        {
+            var day = txtExitDateDay.GetAttribute("value");
+            var month = txtExitDateMonth.GetAttribute("value");
+            var year = txtExitDateYear.GetAttribute("value");
+
+            return $"{day}/{month}/{year}";
+        }
+
+        public string GetExitBCP()
+        {
+            var selectElement = new SelectElement(ddlExitBCP);
+            return selectElement.SelectedOption.Text;
         }
     }
 }
