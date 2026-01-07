@@ -30,6 +30,17 @@
 
         // Laboratory Tests
         string? GetLaboratoryTestsRequired();
+        string? GetLaboratoryTestsReason();
+        string? GetLaboratoryTestAnalysisType(int index = 0);
+        string? GetLaboratoryTestCommoditySampled(int index = 0);
+        string? GetLaboratoryTestName(int index = 0);
+        string? GetLaboratoryTestSampleDate(int index = 0);
+        string? GetLaboratoryTestSampleTime(int index = 0);
+        string? GetLaboratoryTestSampleUseByDate(int index = 0);
+        string? GetLaboratoryTestReleasedDate(int index = 0);
+        string? GetLaboratoryTestConclusion(int index = 0);
+
+
 
         // Documents
         string? GetHealthCertificateReference();
@@ -44,6 +55,8 @@
         string? GetAcceptanceDecision();
         string? GetCertifiedFor();
         string? GetConsignmentUse();
+        string? GetDeadline();
+        string? GetExitBCP();
 
         // Controlled Destination
         string? GetControlledDestinationName();

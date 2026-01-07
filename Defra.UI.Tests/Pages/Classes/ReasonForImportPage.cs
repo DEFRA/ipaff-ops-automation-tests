@@ -28,7 +28,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement rdoIMAnimalFeeding => _driver.WaitForElement(By.XPath("//*[@id='internalMarketanimal']/following-sibling::label"));
         private IWebElement rdoIMOther => _driver.WaitForElement(By.XPath("//*[@id='internalMarketother']/following-sibling::label"));
         private IWebElement rdoIMPharma => _driver.WaitForElement(By.XPath("//*[@id='internalMarketpharma']/following-sibling::label"));
-        private IWebElement rdoIMTechnicalUse => _driver.WaitForElement(By.XPath("//*[@id='internalMarkettechnical']/following-sibling::label")); 
+        private IWebElement rdoIMTechnicalUse => _driver.WaitForElement(By.XPath("//*[@id='internalMarkettechnical']/following-sibling::label"));
         private IWebElement GetReasonRadioButton(string reasonText) =>
             _driver.FindElement(By.XPath($"//label[contains(@class, 'govuk-radios__label') and contains(normalize-space(), '{reasonText}')]"));
         private IWebElement GetInternalMarketSubOption(string subOptionText) =>
@@ -38,6 +38,10 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtYear => _driver.WaitForElement(By.Id("estimated-arrival-at-port-of-exit-date-year"));
         private IWebElement txtHours => _driver.WaitForElement(By.Id("estimated-arrival-at-port-of-exit-time-hour"));
         private IWebElement txtMinutes => _driver.WaitForElement(By.Id("estimated-arrival-at-port-of-exit-time-minutes"));
+        private IWebElement txtExitDateDay => _driver.WaitForElement(By.Id("exit-date-day"));
+        private IWebElement txtExitDateMonth => _driver.WaitForElement(By.Id("exit-date-month"));
+        private IWebElement txtExitDateYear => _driver.WaitForElement(By.Id("exit-date-year"));
+        private IWebElement ddlExitBCP => _driver.WaitForElement(By.Id("bcp-temporary-admission"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -115,8 +119,8 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             var subOptionRadioButton = GetInternalMarketSubOption(subOption);
             subOptionRadioButton.Click();
-        } 
-        
+        }
+
         public void SelectExitBorderControlPost(string exitBCP)
         {
             new SelectElement(txtExitBCP).SelectByText(exitBCP);
@@ -153,6 +157,22 @@ namespace Defra.UI.Tests.Pages.Classes
         public void SelectTranshipmentDestination(string transhipmentCountry)
         {
             new SelectElement(txtTranshipmentDestination).SelectByText(transhipmentCountry);
+        }
+
+        public void EnterExitDate(int daysFromToday)
+        {
+            var exitDate = DateTime.Now.AddDays(daysFromToday);
+            txtExitDateDay.Click();
+            txtExitDateDay.SendKeys(exitDate.Day.ToString());
+            txtExitDateMonth.Click();
+            txtExitDateMonth.SendKeys(exitDate.Month.ToString());
+            txtExitDateYear.Click();
+            txtExitDateYear.SendKeys(exitDate.Year.ToString());
+        }
+
+        public void SelectExitBCP(string exitBCP)
+        {
+            new SelectElement(ddlExitBCP).SelectByText(exitBCP);
         }
     }
 }
