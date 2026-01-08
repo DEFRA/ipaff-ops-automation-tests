@@ -17,7 +17,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects
         private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
-        private IWebElement secondaryTitle => _driver.WaitForElement(By.Id("page-secondary-title"), true);
+        private IWebElement secondaryTitle => _driver.WaitForElement(By.XPath("//*[normalize-space()='Documents' or normalize-space()='Additional documents']"), true);
         private IWebElement ddlDocumentType => _driver.WaitForElement(By.Name("document-type"));
         private IWebElement txtDocumentReference => _driver.WaitForElement(By.Name("document-reference"));
         private IWebElement txtDay => _driver.WaitForElement(By.Name("document-issue-date-day"));
@@ -36,7 +36,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement lnkCancel => _driver.WaitForElement(By.XPath("//a[contains(text(),'Cancel')]"));
         private IWebElement lnkAddADocument => _driver.WaitForElement(By.Id("button-display-additional-document-row"));
         private List<IWebElement> documentRows => _driver.WaitForElements(By.XPath("//div[@class='additional-documents__grid-row additional-document-info']")).ToList();
-        private IWebElement fileName => _driver.WaitForElement(By.XPath("//a[contains(@id,'attachment-view-')]"));
+        private IWebElement fileName => _driver.FindElement(By.XPath("//a[contains(@id,'attachment-view-')] | //a[contains(@id,'attachment-name-0')]"));
         private List<IWebElement> datePickerDateList => _driver.WaitForElements(By.XPath("//table[@class='date-picker__date-table']//tr/td")).ToList();
         private IWebElement errorSummaryTitle => _driver.WaitForElement(By.Id("error-summary-title"));
         private IWebElement errorSummaryMsg => _driver.WaitForElement(By.XPath("//ul[contains(@class,'govuk-error-summary__list')]/li/a"));
@@ -54,7 +54,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool IsPageLoaded()
         {
-            return secondaryTitle.Text.Contains("Documents")
+            return (secondaryTitle.Text.Contains("Documents") || secondaryTitle.Text.Contains("Additional documents"))
                 && primaryTitle.Text.Contains("Accompanying documents");
         }
 

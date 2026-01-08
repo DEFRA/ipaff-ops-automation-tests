@@ -1,7 +1,6 @@
 ﻿using Defra.UI.Tests.Configuration;
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
-using DocumentFormat.OpenXml.Bibliography;
 using OpenQA.Selenium;
 using Reqnroll.BoDi;
 
@@ -14,7 +13,6 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects
         private IWebElement pageTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
-
         private IWebElement commodity => _driver.FindElement(By.Id("commodity"));
         private IWebElement netWeight => _driver.FindElement(By.Id("net-weight"));
         private IWebElement laboratoryTest => _driver.FindElement(By.Id("laboratory-test-"));
@@ -40,8 +38,12 @@ namespace Defra.UI.Tests.Pages.Classes
         //Last updated Date and Time
         private IWebElement lastUpdatedDate => _driver.FindElement(By.Id("last-updated-date"));
         private IWebElement lastUpdatedTime => _driver.FindElement(By.Id("last-updated-time"));
+        
+        private IWebElement btnSubmit => _driver.FindElement(By.Id("submit-button"));
+        private IWebElement lnkDocument => _driver.FindElement(By.Id("download-attachment-0"));
+        //private IReadOnlyCollection <IWebElement> lnkDownloadedFile => _driver.FindElements(By.Id("file-link"));
         #endregion
-
+       
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
 
         public ReviewBorderNotificationPage(IObjectContainer container)
@@ -79,5 +81,32 @@ namespace Defra.UI.Tests.Pages.Classes
         //Last updated Date and Time details
         public string GetLastUpdatedDate => lastUpdatedDate?.Text?.Trim() ?? string.Empty;
         public string GetLastUpdatedTime => lastUpdatedTime?.Text?.Trim() ?? string.Empty;
+        
+        public void ClickSubmitButton()
+        {
+            btnSubmit.Click();
+        }
+
+        public void ClickDocumentLink()
+        {
+            lnkDocument.Click();
+            Thread.Sleep(1000);
+        }
+
+        public void OpenDownloadsInNewTab()
+        {
+            _driver.SwitchTo().NewWindow(WindowType.Tab);
+            _driver?.Navigate().GoToUrl("chrome://downloads/");
+        }
+
+        public bool VerifyFileDownloaded(string fileName)
+        {
+            string downloadedFile = (string)((IJavaScriptExecutor)_driver)
+                .ExecuteScript("return document.querySelector('downloads-manager')" +
+                ".shadowRoot.querySelector('downloads-item')" +
+                ".shadowRoot.querySelector('#file-link').textContent;");
+
+            return downloadedFile.Contains(fileName);
+        }
     }
 }

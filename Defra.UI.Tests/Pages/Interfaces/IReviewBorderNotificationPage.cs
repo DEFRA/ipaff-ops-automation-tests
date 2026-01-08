@@ -24,5 +24,9 @@
         string GetAccompanyingDocumentFileName { get; }
         string GetLastUpdatedDate { get; }
         string GetLastUpdatedTime { get; }
+        void ClickDocumentLink();
+        void ClickSubmitButton();
+        void OpenDownloadsInNewTab();
+        bool VerifyFileDownloaded(string fileName);
     }
 }

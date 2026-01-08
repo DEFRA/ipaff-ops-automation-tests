@@ -32,7 +32,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserEntersDocumentReference(string reference)
         {
             latestHealthCertificatePage?.EnterDocumentReference(reference);
-            _scenarioContext.Add("HealthCertificateReference", reference);
+            _scenarioContext["HealthCertificateReference"] = reference;
         }
 
         [When("the user enters Latest Health Certificate date of issue {string}{string}{string}")]    
@@ -40,7 +40,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             latestHealthCertificatePage?.EnterDateOfIssue(day, month, year);
             var dateofIssue = day + " " + month + " " + year;
-            _scenarioContext.Add("HealthCertificateDateOfIssue", dateofIssue);
+            _scenarioContext["HealthCertificateDateOfIssue"] = dateofIssue;
         }
 
         [When("the user clicks on Add attachment link on the Latest Health Certificate page")]
@@ -97,7 +97,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             var filename = name + format;
             accompanyingDocumentsPage?.AddAccompanyingDocument(filename);
-            _scenarioContext.Add("LatestHealthCertificateDocumentName", filename);
+            _scenarioContext["LatestHealthCertificateDocumentName"] = filename;
         }
 
         [Then("the Latest Health Certificate document {string} {string} is uploaded successfully")]
@@ -108,7 +108,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             //The date selected from date picker gets populated only after the document is uploaded. Hence, we are adding date to scenario context after attaching the document.
             var dateOfIssue = latestHealthCertificatePage?.GetDocumentIssueDate();
-            _scenarioContext.Add("LatestHealthCertificateDocumentDateOfIssue", dateOfIssue);
+            _scenarioContext["LatestHealthCertificateDocumentDateOfIssue"] = dateOfIssue;
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Reqnroll.BoDi;
 using NUnit.Framework;
-using OpenQA.Selenium;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
 
@@ -68,6 +67,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(importNotificationsPage?.VerifyDataInCertificate(chedReference), "Certificate data verification failed");
         }
 
+        [When("the user closes the newly opened tab")]
         [When("the user closes the PDF browser tab")]
         public void WhenTheUserClosesThePDFBrowserTab()
         {
@@ -92,6 +92,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             _scenarioContext.Add("CHEDReference", reference);
             importNotificationsPage?.SearchForNotification(reference);
+        }
+
+
+        [When("the user clicks Cookies link from the footer of the page")]
+        public void WhenTheUserClicksCookiesLinkFromTheFooterOfThePage()
+        {
+            importNotificationsPage?.ClickCookiesLink();
         }
     }
 }

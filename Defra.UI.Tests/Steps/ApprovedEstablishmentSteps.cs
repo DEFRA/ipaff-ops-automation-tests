@@ -33,10 +33,19 @@ namespace Defra.UI.Tests.Steps.IPAFF
             approvedEstablishmentPage?.ClickSearchForApproved();
         }
 
-        [Then("the list of establishments should be displayed, filtered by Country of origin to {string}")]
-        public void ThenTheListOfEstablishmentsShouldBeDisplayedFilteredByCountryOfOriginToChina(string country)
+        [Then("the list of establishments should be displayed, filtered by Country of origin {string} type {string} status {string}")]
+        public void ThenTheListOfEstablishmentsShouldBeDisplayedFilteredByCountryOfOriginTypeStatus(string country, string type, string status)
         {
             Assert.IsTrue(approvedEstablishmentPage?.VerifySelectedCountryOfOrigin(country));
+
+            approvedEstablishmentPage?.SelectTypeFromDropdown(type);
+            approvedEstablishmentPage?.SelectStatusFromDropdown(status);
+            approvedEstablishmentPage?.ClickSearchButton();
+            Thread.Sleep(1000);
+
+            Assert.IsTrue(approvedEstablishmentPage?.VerifySelectedCountryOnlyDisplayed(country), "Search List is not displayed based on the selected country");
+            Assert.IsTrue(approvedEstablishmentPage?.VerifySelectedTypeOnlyDisplayed(type), "Search List is not displayed based on the selected type");
+            Assert.IsTrue(approvedEstablishmentPage?.VerifySelectedStatusOnlyDisplayed(status), "Search List is not displayed based on the selected status");
         }
 
         [When("the user clicks Select for one of the establishments in the list")]
@@ -62,6 +71,5 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             approvedEstablishmentPage?.ClickRemoveEstablishment();
         }
-
     }
 }

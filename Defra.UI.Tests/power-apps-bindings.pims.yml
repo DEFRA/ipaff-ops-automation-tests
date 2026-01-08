@@ -1,0 +1,14 @@
+url: '#{{ PIMSUrl }}'
+useProfiles: false
+browserOptions:
+  browserType: Remote
+  remoteBrowserType: Chrome
+  driversPath: ''
+  headless: false
+  privateMode: false
+  remoteHubServer: '#{{ SeleniumGrid }}'
+users:
+  - username: '#{{ PIMSUser }}'
+    password: '#{{ PIMSPassword }}'
+    alias: 'Caseworker'
+appName: 'PIMS'

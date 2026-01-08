@@ -26,25 +26,25 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(searchExistingConsigneePage?.IsPageLoaded(), "Traders Search for an existing consignee page not loaded");
         }
 
-        [When("the user selects a consignee with a UK country")]
-        public void WhenTheUserSelectsAConsigneeWithAUKCountry()
+        [When("the user selects a consignee {string} with a UK country")]
+        public void WhenTheUserSelectsAConsigneeWithAUKCountry(string consigneeName)
         {
             _scenarioContext["ConsigneeDetails"] = searchExistingConsigneePage?.GetSelectedConsignee();
-            searchExistingConsigneePage?.ClickSelect();
+            searchExistingConsigneePage?.ClickSelect(consigneeName);
         }
 
-        [When("the user selects a consignee")]
-        public void WhenTheUserSelectsAConsignee()
+        [When("the user selects a consignee {string}")]
+        public void WhenTheUserSelectsAConsignee(string consigneeName)
         {
-            var consigneeName = searchExistingConsigneePage?.GetSelectedConsigneeName();
+            var selectedConsigneeName = searchExistingConsigneePage?.GetSelectedConsigneeName();
             var consigneeAddress = searchExistingConsigneePage?.GetSelectedConsigneeAddress();
             var consigneeCountry = searchExistingConsigneePage?.GetSelectedConsigneeCountry();
 
-            _scenarioContext.Add("ConsigneeName", consigneeName);
+            _scenarioContext.Add("ConsigneeName", selectedConsigneeName);
             _scenarioContext.Add("ConsigneeAddress", consigneeAddress);
             _scenarioContext.Add("ConsigneeCountry", consigneeCountry);
 
-            searchExistingConsigneePage?.ClickSelect();
+            searchExistingConsigneePage?.ClickSelect(consigneeName);
         }
     }
 }
