@@ -1,10 +1,9 @@
-﻿using Defra.UI.Tests.Pages.Classes;
 using Defra.UI.Tests.Pages.Interfaces;
 using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;
 
-namespace Defra.UI.Tests.Steps
+namespace Defra.UI.Tests.Steps.IPAFF
 {
     [Binding]
     public class ReviewBorderNotificationSteps
@@ -21,6 +20,7 @@ namespace Defra.UI.Tests.Steps
         }
 
         [Then("the Review border notification page should be displayed")]
+        [Then("Reveiw border notification page should be displayed")]
         public void ThenTheReviewBorderNotificationPageShouldBeDisplayed()
         {
             Assert.True(reviewBorderNotificationPage?.IsPageLoaded(), "Review border notification page is not loaded");
@@ -96,6 +96,31 @@ namespace Defra.UI.Tests.Steps
             {
                 Console.WriteLine($"[REVIEW VALIDATION] ⊘ {contextKey}: Skipped (not in context)");
             }
+        }
+
+        [When("the user download the document attached in accompanying documents")]
+        public void WhenTheUserDownloadTheDocumentAttachedInAccompanyingDocuments()
+        {
+            reviewBorderNotificationPage?.ClickDocumentLink();
+        }
+
+
+        [When("the user clicks submit button")]
+        public void WhenTheUserClicksSubmitButton()
+        {
+            reviewBorderNotificationPage?.ClickSubmitButton();
+        }
+
+        [Then("the user switch to next tab and open the browser downloads")]
+        public void ThenTheUserSwitchToNextTabAndOpenTheBrowserDownloads()
+        {
+            reviewBorderNotificationPage?.OpenDownloadsInNewTab();
+        }
+
+        [Then("verifies the document {string} downloaded successfully")]
+        public void ThenVerifiesTheDocumentDownloadedSuccessfully(string fileName)
+        {
+            Assert.True(reviewBorderNotificationPage?.VerifyFileDownloaded(fileName));
         }
     }
 }

@@ -6,7 +6,7 @@ namespace Defra.UI.Tests.Pages.Interfaces
     public interface ISearchExistingDestinationPage
     {
         bool IsPageLoaded();
-        void ClickSelect();
+        void ClickSelect(string destination);
         string GetSelectedPlaceOfDestination();
         string GetSelectedDestinationName();
         string GetSelectedDestinationAddress();

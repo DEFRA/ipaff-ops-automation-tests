@@ -61,17 +61,17 @@ Scenario: User creates and submits a B2C consignment notification - CHEDA
 	Then the Addresses page should be displayed
 	When the user clicks Add a consignor or exporter
 	Then the Search for an existing consignor or exporter page should be displayed
-	When the user selects a consignor or exporter
+	When the user selects a consignor or exporter 'ABC'
 	Then the chosen consignor or exporter should be displayed
 	When the user clicks Add a consignee
 	Then the Search for an existing consignee page should be displayed
-	When the user selects a consignee
+	When the user selects a consignee 'XYZ'
 	Then the chosen consignee should be displayed
 	When the user clicks Same as consignee for the Importer
 	Then the importer should be populated with the same details as the consignee
 	When the user clicks Add a place of destination
 	Then the Search for an existing place of destination page should be displayed
-	When the user selects a place of destination
+	When the user selects a place of destination 'XYZ'
 	Then the chosen place of destination should be displayed
 	When the user clicks Save and continue
 	Then the Add the County Parish Holding number (CPH) page should be displayed
@@ -172,3 +172,7 @@ Scenario: User creates and submits a B2C consignment notification - CHEDA
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
+	When I am logged in to the 'PIMS' app as 'Caseworker'
+	And I open the sub area 'Importer Notifications' under the 'Case Management' area
+	And I search Importer Notifications for the notification created in IPAFFS
+	And I open the record at position '0' in the grid

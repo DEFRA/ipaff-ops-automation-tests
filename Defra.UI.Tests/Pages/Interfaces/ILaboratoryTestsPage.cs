@@ -20,5 +20,13 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void EnterNumberOfSamples(string numberOfSamples);
         void SelectStorageTemperature(string storageTemperature);
         void SelectSampleType(string sampleType);
+        string GetSelectedCommoditySampledCode();
+        string GetSelectedCommoditySampledDescription();
+        string GetSelectedCommoditySampledSpecies();
+        bool IsCommoditySampledPageLoaded();
+        void ClickSelectLaboratoryTest();
+        string GetLaboratoryTestName();
+        bool IsReviewPageLoaded();
+        bool VerifyLabTestsReviewPage(string commodityCode, string commodityDescription, string commoditySpecies, string labTestName);
     }
 }

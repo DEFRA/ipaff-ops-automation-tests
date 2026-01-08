@@ -20,6 +20,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement GetNotificationReferenceInList(string chedRef) => _driver.FindElement(By.XPath($"//dd[@id='reference-number-0' and contains(text(), '{chedRef}')]"));
         private IWebElement GetShowNotificationLink(string chedRef) => _driver.FindElement(By.Id($"show-certificate-{chedRef}"));
         private IWebElement GetAmendLink(string chedRef) => _driver.FindElement(By.Id($"amend-details-{chedRef}"));
+        private IWebElement lnkCookies => _driver.FindElement(By.Id("button-cookies"));
 
         #endregion
 
@@ -71,6 +72,10 @@ namespace Defra.UI.Tests.Pages.Classes
             if (windowHandles.Count > 1)
             {
                 _driver.SwitchTo().Window(windowHandles.Last());
+
+                // Optional Wait for PDF to load (helps with screenshot rendering) - can remove if not needed
+                Thread.Sleep(2000);
+
                 return _driver.Url.Contains("/certificate/pdf");
             }
             return false;
@@ -94,6 +99,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public bool VerifyBrowserTabClosed()
         {
             return _driver.WindowHandles.Count == 1;
+        }
+
+        public void ClickCookiesLink()
+        {
+            lnkCookies.Click();
         }
 
         public void ClickAmend(string chedReference)

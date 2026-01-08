@@ -91,8 +91,17 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ReasonForRefusalPage, IReasonForRefusalPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ConsignmentsRequiringControlPage, IConsignmentsRequiringControlPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<RecordLaboratoryTestInformationPage, IRecordLaboratoryTestInformationPage>());
-            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CreateBorderNotificationPage, ICreateBorderNotificationPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ReviewBorderNotificationPage, IReviewBorderNotificationPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<OverrideRiskDecisionPage, IOverrideRiskDecisionPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDOverviewPage, ICHEDOverviewPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<EnterBorderNotificationDetailsPage, IEnterBorderNotificationDetailsPage>());
+            //Remove after merging page
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CreateBorderNotificationPage, ICreateBorderNotificationPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<BorderNotificationSubmittedPage, IBorderNotificationSubmittedPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<BorderNotificationsPage, IBorderNotificationsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<BorderNotificationOverviewPage, IBorderNotificationOverviewPage>());
+
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CookiesPage, ICookiesPage>());
 
             //Read Email
             _objectContainer.RegisterInstanceAs(GetBaseWithScenarioContext<FetchCodeFromEmail, IFetchCodeFromEmail>());
