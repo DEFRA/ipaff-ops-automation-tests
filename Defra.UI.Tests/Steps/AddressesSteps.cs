@@ -102,7 +102,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext.Add("ImporterCountry", consigneeCountry);
 
             // Verify importer shows same details as consignee
-            Assert.True(addressesPage?.VerifySelectedConsignee(consigneeName, consigneeAddress, consigneeCountry),
+            Assert.True(addressesPage?.VerifySelectedImporter(consigneeName, consigneeAddress, consigneeCountry),
                         "Importer details do not match consignee");
         }
 
@@ -133,9 +133,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the chosen place of destination should be displayed")]
         public void ThenTheChosenPlaceOfDestinationShouldBeDisplayed()
         {
-            var destinationName = _scenarioContext.Get<string>("DestinationName");
-            var destinationAddress = _scenarioContext.Get<string>("DestinationAddress");
-            var destinationCountry = _scenarioContext.Get<string>("DestinationCountry");
+            var destinationName = _scenarioContext.Get<string>("PlaceOfDestinationName");
+            var destinationAddress = _scenarioContext.Get<string>("PlaceOfDestinationAddress");
+            var destinationCountry = _scenarioContext.Get<string>("PlaceOfDestinationCountry");
 
             Assert.True(addressesPage?.VerifySelectedDestination(destinationName, destinationAddress, destinationCountry),
             "Destination details do not match");
@@ -170,9 +170,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var consigneeCountry = _scenarioContext.Get<string>("ConsigneeCountry");
 
             // Since place of destination uses same data as consignee, store it in context
-            _scenarioContext.Add("DestinationName", consigneeName);
-            _scenarioContext.Add("DestinationAddress", consigneeAddress);
-            _scenarioContext.Add("DestinationCountry", consigneeCountry);
+            // Use indexer assignment instead of .Add() to handle cases where key might already exist
+            _scenarioContext["PlaceOfDestinationName"] = consigneeName;
+            _scenarioContext["PlaceOfDestinationAddress"] = consigneeAddress;
+            _scenarioContext["PlaceOfDestinationCountry"] = consigneeCountry;
 
             // Verify place of destination shows same details as consignee
             Assert.True(addressesPage?.VerifySelectedDestination(consigneeName, consigneeAddress, consigneeCountry),

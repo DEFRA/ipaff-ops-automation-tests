@@ -119,5 +119,28 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             Assert.That(exitBCP, Does.Contain(expectedExitBCP), $"Exit BCP mismatch. Expected: {expectedExitBCP}, Actual: {exitBCP}");
         }
+
+        [Then("the exit BCP is prepopulated with value entered in Part 1")]
+        public void ThenTheExitBCPIsPrepopulatedWithValueEnteredInPart1()
+        {
+            var expectedExitBCP = _scenarioContext.Get<string>("ExitBCP");
+            var actualExitBCP = decisionPage?.GetTransitExitBCP();
+
+            // Extract the first word from expected (e.g., "Manchester" from "Manchester Airport (animals) - GBMNC4")
+            var expectedFirstWord = expectedExitBCP.Split(' ')[0];
+
+            Assert.That(actualExitBCP, Does.Contain(expectedFirstWord),
+                $"Exit BCP is not prepopulated correctly. Expected to contain: '{expectedFirstWord}', Actual: '{actualExitBCP}'");
+        }
+
+        [Then("the destination country is prepopulated with value entered in Part 1")]
+        public void ThenTheDestinationCountryIsPrepopulatedWithValueEnteredInPart1()
+        {
+            var expectedDestinationCountry = _scenarioContext.Get<string>("DestinationCountry");
+            var actualDestinationCountry = decisionPage?.GetDestinationCountry();
+
+            Assert.That(actualDestinationCountry, Is.EqualTo(expectedDestinationCountry),
+                $"Destination country is not prepopulated correctly. Expected: '{expectedDestinationCountry}', Actual: '{actualDestinationCountry}'");
+        }
     }
 }

@@ -114,8 +114,55 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user selects exit BCP {string}")]
         public void WhenTheUserSelectsExitBCP(string exitBCP)
         {
-            reasonForImportPage?.SelectExitBCP(exitBCP);
+            reasonForImportPage?.SelectExitBCPBasedOnContext(exitBCP);
             _scenarioContext.Add("ExitBCP", exitBCP);
+        }
+
+        [When("the user verifies {string} radio button exists with {int} sub-options for {string}")]
+        public void WhenTheUserVerifiesRadioButtonExistsWithSubOptionsFor(string radioButton, int subOptionCount, string subOptionSection)
+        {
+            reasonForImportPage?.SelectReasonForImport(radioButton);
+            Assert.True(reasonForImportPage?.VerifyInternalMarketHasSubOptions(subOptionCount),
+                $"{radioButton} should have {subOptionCount} sub-options for {subOptionSection}");
+        }
+
+        [When("the user verifies {string} radio button exists with {string} dropdown")]
+        public void WhenTheUserVerifiesRadioButtonExistsWithDropdown(string radioButton, string dropdownName)
+        {
+            reasonForImportPage?.SelectReasonForImport(radioButton);
+            Assert.True(reasonForImportPage?.VerifyTranshipmentHasDestinationCountryDropdown(),
+                $"{radioButton} should have {dropdownName} dropdown");
+        }
+
+        [When("the user verifies {string} radio button exists with {string} dropdown and {string} dropdown")]
+        public void WhenTheUserVerifiesRadioButtonExistsWithTwoDropdowns(string radioButton, string dropdown1, string dropdown2)
+        {
+            reasonForImportPage?.SelectReasonForImport(radioButton);
+            Assert.True(reasonForImportPage?.VerifyTransitHasExitBCPAndDestinationDropdowns(),
+                $"{radioButton} should have {dropdown1} and {dropdown2} dropdowns");
+        }
+
+        [When("the user verifies {string} radio button exists with no sub-options")]
+        public void WhenTheUserVerifiesRadioButtonExistsWithNoSubOptions(string radioButton)
+        {
+            reasonForImportPage?.SelectReasonForImport(radioButton);
+            Assert.True(reasonForImportPage?.VerifyReentryHasNoSubOptions(),
+                $"{radioButton} should exist and have no sub-options");
+        }
+
+        [When("the user verifies {string} radio button exists with {string} fields and {string} dropdown")]
+        public void WhenTheUserVerifiesRadioButtonExistsWithFieldsAndDropdown(string radioButton, string fields, string dropdown)
+        {
+            reasonForImportPage?.SelectReasonForImport(radioButton);
+            Assert.True(reasonForImportPage?.VerifyTemporaryAdmissionHasExitDateAndBCPDropdown(),
+                $"{radioButton} should have {fields} fields and {dropdown} dropdown");
+        }
+
+        [When("the user selects destination country {string}")]
+        public void WhenTheUserSelectsDestinationCountry(string destinationCountry)
+        {
+            reasonForImportPage?.SelectDestinationCountryBasedOnContext(destinationCountry);
+            _scenarioContext.Add("DestinationCountry", destinationCountry);
         }
     }
 }

@@ -29,16 +29,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user selects a consignee {string} with a UK country")]
         public void WhenTheUserSelectsAConsigneeWithAUKCountry(string consigneeName)
         {
-            _scenarioContext["ConsigneeDetails"] = searchExistingConsigneePage?.GetSelectedConsignee();
+            _scenarioContext["ConsigneeDetails"] = searchExistingConsigneePage?.GetSelectedConsignee(consigneeName);
             searchExistingConsigneePage?.ClickSelect(consigneeName);
         }
 
         [When("the user selects a consignee {string}")]
         public void WhenTheUserSelectsAConsignee(string consigneeName)
         {
-            var selectedConsigneeName = searchExistingConsigneePage?.GetSelectedConsigneeName();
-            var consigneeAddress = searchExistingConsigneePage?.GetSelectedConsigneeAddress();
-            var consigneeCountry = searchExistingConsigneePage?.GetSelectedConsigneeCountry();
+            var selectedConsigneeName = searchExistingConsigneePage?.GetSelectedConsigneeName(consigneeName);
+            var consigneeAddress = searchExistingConsigneePage?.GetSelectedConsigneeAddress(consigneeName);
+            var consigneeCountry = searchExistingConsigneePage?.GetSelectedConsigneeCountry(consigneeName);
 
             _scenarioContext.Add("ConsigneeName", selectedConsigneeName);
             _scenarioContext.Add("ConsigneeAddress", consigneeAddress);
