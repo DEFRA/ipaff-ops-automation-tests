@@ -1,9 +1,12 @@
 ﻿using Defra.UI.Tests.Configuration;
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
+using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
+using SeleniumExtras.WaitHelpers;
 
 
 namespace Defra.UI.Tests.Pages.Classes
@@ -38,6 +41,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtYear => _driver.WaitForElement(By.Id("estimated-arrival-at-port-of-exit-date-year"));
         private IWebElement txtHours => _driver.WaitForElement(By.Id("estimated-arrival-at-port-of-exit-time-hour"));
         private IWebElement txtMinutes => _driver.WaitForElement(By.Id("estimated-arrival-at-port-of-exit-time-minutes"));
+        private By txtPointOfExitBy => By.Id("point-of-exit");
+        private IWebElement txtPointOfExit => _driver.WaitForElement(txtPointOfExitBy);
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -140,6 +145,29 @@ namespace Defra.UI.Tests.Pages.Classes
             txtMinutes.SendKeys(minutes);
         }
 
+        public string EnterConsignmentDepartureDate()
+        {
+            var futureDate = DateTime.Now.AddDays(7);
+
+            txtDay.SendKeys(futureDate.Day.ToString());
+            txtMonth.SendKeys(futureDate.Month.ToString());
+            txtYear.SendKeys(futureDate.Year.ToString());
+
+            var leavingFromGBDate = futureDate.ToString("dd MMMM yyyy");
+            return leavingFromGBDate;
+        }
+
+        public string EnterConsignmentDepartureTime()
+        {
+            var futureDate = DateTime.Now.AddDays(7);
+            var leavingFromGBTime = futureDate.ToString("HH:mm");
+            
+            txtHours.SendKeys(futureDate.Hour.ToString());
+            txtMinutes.SendKeys(futureDate.Minute.ToString());
+
+            return leavingFromGBTime;
+        }
+
         public void SelectTransitedCountry(string transitedCountry)
         {
             new SelectElement(txtTransitedCountry).SelectByText(transitedCountry);
@@ -154,5 +182,14 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             new SelectElement(txtTranshipmentDestination).SelectByText(transhipmentCountry);
         }
+
+        public void AddPlaceOfExit(string placeOfExit)
+        {
+            _driver.WaitForElementCondition(ExpectedConditions.ElementIsVisible(txtPointOfExitBy));
+            txtPointOfExit.SendKeys(placeOfExit);
+        }
+
+
+        
     }
 }

@@ -27,9 +27,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the Accompanying documents page should be displayed")]
         public void ThenTheAccompanyingDocumentsPageShouldBeDisplayed()
         {
-            Assert.True(accompanyingDocumentsPage?.IsPageLoaded(), "Accompanying documents");
+            Assert.True(accompanyingDocumentsPage?.IsPageLoaded(), "Accompanying documents page is not displayed");
         }
 
+        [Then("the Accompanying documents page should be displayed on the Inspector application")]
+        public void WhenTheAccompanyingDocumentsPageShouldBeDisplayedOnTheInspectorApplication()
+        {
+            Assert.True(accompanyingDocumentsPage?.IsAccompanyingDocPageLoadedOnInspectorApp(), "Accompanying documents page is not displayed on the Inspector application");
+        }
 
         [When("the user selects Document type {string}")]
         public void WhenTheUserSelectsDocumentType(string type)
@@ -84,12 +89,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
             accompanyingDocumentsPage?.ClickAddAttachmentLink();
         }
 
+        [When("the user uploads the document {string} in the format {string} that exceeds size limit")]
         [When("the user uploads the document {string} in the format {string}")]
         public void WhenTheUserUploadsTheDocumentInTheFormat(string name, string format)
         {
             var filename = name + format;
             accompanyingDocumentsPage?.AddAccompanyingDocument(filename);
-            _scenarioContext.Add("DocumentName", filename);
+
+            if(!filename.Contains("Exceeds size"))
+                _scenarioContext.Add("DocumentName", filename);
         }
 
         [Then("the document {string} {string} is uploaded successfully")]
@@ -140,6 +148,18 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserClicksTheAddADocumentLink()
         {
             accompanyingDocumentsPage?.ClickAddADocument();
+        }
+
+        [Then("the error message for exceeding file size should be displayed")]
+        public void ThenTheErrorMessageForExceedingFileSizeShouldBeDisplayed()
+        {
+            Assert.True(accompanyingDocumentsPage?.ValidateDocUploadErrors(), "Error messages are not displayed when the document size exceeds 10 MB");
+        }
+
+        [When("the user clicks on Cancel link")]
+        public void WhenTheUserClicksOnCancelLink()
+        {
+            accompanyingDocumentsPage?.ClickCancelLink();
         }
     }
 }

@@ -12,6 +12,8 @@
         string? GetMainReasonForImport();
         string? GetPurpose();
         string? GetConsignmentReferenceNumber();
+        string? GetPointOfExit();
+        (string departureDate, string departureTime) GetConsignmentDepartureDateTime();
 
         // Commodity details
         string? GetCommodityCode();

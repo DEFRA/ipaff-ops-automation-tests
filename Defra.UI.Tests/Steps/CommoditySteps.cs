@@ -143,6 +143,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext.Add("TotalPackages", commodityPage.GetTotalPackages());
         }
 
+        [When("the total gross weight should be greater than the net weight {string}")]
         [Then("the total gross weight should be greater than the net weight {string}")]
         public void ThenTheTotalGrossWeightShouldBeGreaterThanTheNetWeight(string weight)
         {

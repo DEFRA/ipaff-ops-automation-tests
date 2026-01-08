@@ -1,11 +1,9 @@
-﻿using Faker;
-using OpenQA.Selenium;
-
-namespace Defra.UI.Tests.Pages.Interfaces
+﻿namespace Defra.UI.Tests.Pages.Interfaces
 {
     public interface IAccompanyingDocumentsPage
     {
-        bool IsPageLoaded();  
+        bool IsPageLoaded();
+        bool IsAccompanyingDocPageLoadedOnInspectorApp();
         void SelectDocumentType(string type);
         void EnterDocumentReference(string reference);
         void EnterDateOfIssue(string day, string month, string year);
@@ -14,8 +12,10 @@ namespace Defra.UI.Tests.Pages.Interfaces
         string GetDocumentIssueDate();
         void ClickAddAttachmentLink();
         void AddAccompanyingDocument(string fileName);
+        void ClickCancelLink();
         void ClickAddADocument();
         bool IsRowPresent();
         string GetFileName { get; }
+        bool ValidateDocUploadErrors();
     }
 }

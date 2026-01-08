@@ -1,6 +1,4 @@
-﻿using OpenQA.Selenium;
-
-namespace Defra.UI.Tests.Pages.Interfaces
+﻿namespace Defra.UI.Tests.Pages.Interfaces
 {
     public interface IAdditionalDetailsPage
     {
@@ -11,5 +9,6 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void SelectAnimalCertification(string certificationOption);
         void SelectUnweanedAnimalsOption(string option);
         void ClickSaveAndReview();
+        bool AreAllCommIntendedForRadioOptionsDisplayed(List<string> commOptionsListExpected);
     }
 }

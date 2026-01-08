@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualBasic.FileIO;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
 
 namespace Defra.UI.Tests.Pages.Interfaces
 {
@@ -19,5 +18,8 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void SelectTransitedCountry(string transitedCountry);
         void SelectDestinationCountry(string destinationCountry);
         void SelectTranshipmentDestination(string transhipmentCountry);
+        string EnterConsignmentDepartureDate();
+        string EnterConsignmentDepartureTime();
+        void AddPlaceOfExit(string placeOfExit);
     }
 }
