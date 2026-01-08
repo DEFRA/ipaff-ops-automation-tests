@@ -15,5 +15,7 @@
         bool IsRadioButtonPreSelected(string radioButtonName);
         string GetExitDate();
         string GetExitBCP();
+        string GetDestinationCountry();
+        string GetTransitExitBCP();
     }
 }

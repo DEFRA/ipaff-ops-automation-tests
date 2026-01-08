@@ -160,6 +160,18 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 $"The accompanying document upload has failed. Expected '{expectedFileName}', but got '{displayedFileName}'"
             );
 
+            // Verify Download link is present
+            Assert.True(
+                accompanyingDocumentsPage?.IsDownloadAttachmentLinkPresent(),
+                $"Download attachment link is not present for document '{expectedFileName}'"
+            );
+
+            // Verify Remove attachment link is present
+            Assert.True(
+                accompanyingDocumentsPage?.IsRemoveAttachmentLinkPresent(),
+                $"Remove attachment link is not present for document '{expectedFileName}'"
+            );
+
             //The date selected from date picker gets populated only after the document is uploaded. Hence, we are adding date to scenario context after attaching the document.
             //Only add if it doesn't already exist (e.g., when date was manually entered instead of using date picker)
             if (!_scenarioContext.ContainsKey("DocumentDateOfIssue"))
@@ -174,6 +186,23 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             accompanyingDocumentsPage?.EnterDateOfIssue(day, month, year);
             var dateofIssue = day + " " + month + " " + year;
+            _scenarioContext["DocumentDateOfIssue"] = dateofIssue;
+        }
+
+        [When("the user enters date of issue from last week")]
+        public void WhenTheUserEntersDateOfIssueFromLastWeek()
+        {
+            var lastWeekDate = DateTime.Now.AddDays(-7);
+
+            // Format day and month with leading zeros to match input format
+            var day = lastWeekDate.Day.ToString("00");
+            var month = lastWeekDate.Month.ToString("00");
+            var year = lastWeekDate.Year.ToString();
+
+            accompanyingDocumentsPage?.EnterDateOfIssue(day, month, year);
+
+            // Store in "dd MM yyyy" format to match HealthCertificateDateOfIssue
+            var dateofIssue = $"{day} {month} {year}";  // "01 01 2026"
             _scenarioContext["DocumentDateOfIssue"] = dateofIssue;
         }
 

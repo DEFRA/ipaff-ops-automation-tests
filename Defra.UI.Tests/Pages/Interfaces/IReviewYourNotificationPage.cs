@@ -14,6 +14,7 @@
         string? GetConsignmentReferenceNumber();
         string? GetExitDate();
         string? GetExitBCP();
+        string? GetDestinationCountry();
 
         // Commodity details
         string? GetCommodityCode();
@@ -33,10 +34,12 @@
         string? GetHorseName(int index = 0);
         string? GetMicrochipNumber(int index = 0);
         string? GetPassportNumber(int index = 0);
+        string? GetEarTag(int index = 0);
 
         // Additional details
         string? GetCommodityIntendedFor();
         string? GetTemperature();
+        string? GetUnweanedAnimalsOption();
 
         // Documents
         string? GetHealthCertificateReference();

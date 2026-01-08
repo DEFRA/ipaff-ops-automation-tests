@@ -116,7 +116,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
          {
              _scenarioContext["LaboratoryTestName"] = laboratoryTestsPage?.GetLaboratoryTestName();
              laboratoryTestsPage?.ClickSelectLaboratoryTest();
-         }
+
+            // Capture system date and time AFTER clicking the Select link
+            var labTestSelectedDateTime = DateTime.Now;
+            _scenarioContext["LabTestSelectedDate"] = labTestSelectedDateTime.ToString("d MMMM yyyy");
+            _scenarioContext["LabTestSelectedTime"] = labTestSelectedDateTime.ToString("HH:mm");
+        }
 
          [Then("the Laboratory tests Commodity sampled page should be displayed")]
          public void ThenTheLaboratoryTestsCommoditySampledPageShouldBeDisplayed()

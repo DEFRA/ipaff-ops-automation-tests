@@ -185,5 +185,31 @@ namespace Defra.UI.Tests.Pages.Classes
             var selectElement = new SelectElement(ddlExitBCP);
             return selectElement.SelectedOption.Text;
         }
+
+        public string GetDestinationCountry()
+        {
+            try
+            {
+                var selectElement = new SelectElement(drpDestinationCountry);
+                return selectElement.SelectedOption.Text.Trim();
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+
+        public string GetTransitExitBCP()
+        {
+            try
+            {
+                var selectElement = new SelectElement(drpExitBCP);
+                return selectElement.SelectedOption.Text.Trim();
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
     }
 }

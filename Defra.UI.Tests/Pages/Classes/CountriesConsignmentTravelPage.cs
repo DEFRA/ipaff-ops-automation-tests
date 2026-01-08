@@ -20,6 +20,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement primaryTitle => _driver.WaitForElement(By.XPath("//*[@id='page-primary-title']"), true);
         private IWebElement secondaryTitle => _driver.WaitForElement(By.XPath("//*[@id='page-secondary-title']"), true);
         private IWebElement ddlTransitedState => _driver.WaitForElement(By.Id("transited-state"));
+        private IWebElement btnAddAnotherCountry => _driver.WaitForElement(By.Id("add-another-country"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -38,6 +39,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public void SelectCountry(string country)
         {
             new SelectElement(ddlTransitedState).SelectByText(country);
+        }
+
+        public void ClickAddAnotherCountry()
+        {
+            btnAddAnotherCountry.Click();
         }
     }
 }

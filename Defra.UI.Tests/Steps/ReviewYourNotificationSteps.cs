@@ -41,6 +41,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             ValidateIfExists("ConsignmentReferenceNumber", reviewPage?.GetConsignmentReferenceNumber(), ref allDataMatches, mismatches);
             ValidateIfExists("ExitDate", reviewPage?.GetExitDate(), ref allDataMatches, mismatches);
             ValidateIfExists("ExitBCP", reviewPage?.GetExitBCP(), ref allDataMatches, mismatches);
+            ValidateIfExists("DestinationCountry", reviewPage?.GetDestinationCountry(), ref allDataMatches, mismatches);
 
             // Commodity details  
             ValidateIfExists("CommodityCode", reviewPage?.GetCommodityCode(), ref allDataMatches, mismatches);
@@ -50,6 +51,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             // Animal details
             ValidateIfExists("CertificationOption", reviewPage?.GetCertificationOption(), ref allDataMatches, mismatches);
+            ValidateIfExists("EarTag", reviewPage?.GetEarTag(), ref allDataMatches, mismatches);
+            ValidateIfExists("UnweanedAnimalsOption", reviewPage?.GetUnweanedAnimalsOption(), ref allDataMatches, mismatches);
             ValidateIfExists("HorseName", reviewPage?.GetHorseName(), ref allDataMatches, mismatches);
             ValidateIfExists("MicrochipNumber", reviewPage?.GetMicrochipNumber(), ref allDataMatches, mismatches);
             ValidateIfExists("PassportNumber", reviewPage?.GetPassportNumber(), ref allDataMatches, mismatches);
@@ -70,8 +73,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
             ValidateIfExists("ConsigneeAddress", reviewPage?.GetConsigneeAddress(), ref allDataMatches, mismatches);
             ValidateIfExists("ImporterName", reviewPage?.GetImporterName(), ref allDataMatches, mismatches);
             ValidateIfExists("ImporterAddress", reviewPage?.GetImporterAddress(), ref allDataMatches, mismatches);
-            ValidateIfExists("DestinationName", reviewPage?.GetDestinationName(), ref allDataMatches, mismatches);
-            ValidateIfExists("DestinationAddress", reviewPage?.GetDestinationAddress(), ref allDataMatches, mismatches);
+            ValidateIfExists("PlaceOfDestinationName", reviewPage?.GetDestinationName(), ref allDataMatches, mismatches);
+            ValidateIfExists("PlaceOfDestinationAddress", reviewPage?.GetDestinationAddress(), ref allDataMatches, mismatches);
 
             // Transport details
             ValidateIfExists("PortOfEntry", reviewPage?.GetPortOfEntry(), ref allDataMatches, mismatches);
@@ -160,8 +163,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
             ValidateIfExists("ConsigneeAddress", reviewPage?.GetConsigneeAddress(), ref allDataMatches, mismatches);
             ValidateIfExists("ImporterName", reviewPage?.GetImporterName(), ref allDataMatches, mismatches);
             ValidateIfExists("ImporterAddress", reviewPage?.GetImporterAddress(), ref allDataMatches, mismatches);
-            ValidateIfExists("DestinationName", reviewPage?.GetDestinationName(), ref allDataMatches, mismatches);
-            ValidateIfExists("DestinationAddress", reviewPage?.GetDestinationAddress(), ref allDataMatches, mismatches);
+            ValidateIfExists("PlaceOfDestinationName", reviewPage?.GetDestinationName(), ref allDataMatches, mismatches);
+            ValidateIfExists("PlaceOfDestinationAddress", reviewPage?.GetDestinationAddress(), ref allDataMatches, mismatches);
 
             // Transport details
             ValidateIfExists("PortOfEntry", reviewPage?.GetPortOfEntry(), ref allDataMatches, mismatches);
@@ -192,32 +195,74 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             if (_scenarioContext.ContainsKey(contextKey))
             {
-                string expectedValue = null;
-                try
-                {
-                    expectedValue = _scenarioContext.Get<string>(contextKey);
-                }
-                catch (InvalidCastException)
-                {
-                    expectedValue = _scenarioContext.Get<string[]>(contextKey)?.FirstOrDefault();
-                }
+                object contextValue = _scenarioContext[contextKey];
 
-                if (!string.IsNullOrEmpty(expectedValue))
+                // Handle List<string> (for multiple countries)
+                if (contextValue is List<string> countryList)
                 {
-                    var isMatch = expectedValue.Equals(reviewValue?.Trim(), StringComparison.OrdinalIgnoreCase);
+                    // Join the list with line breaks to match the HTML format
+                    var expectedValue = string.Join("\n", countryList).Trim();
+
+                    // The review page displays countries with <br> which Selenium converts to \n
+                    var actualValue = reviewValue?.Trim().Replace("\r\n", "\n").Replace("\r", "\n");
+
+                    var isMatch = expectedValue.Equals(actualValue, StringComparison.OrdinalIgnoreCase);
                     if (!isMatch)
                     {
                         allDataMatches = false;
-                        mismatches.Add($"{contextKey}: Expected '{expectedValue}', Found '{reviewValue?.Trim()}'");
+                        mismatches.Add($"{contextKey}: Expected '{expectedValue}', Found '{actualValue}'");
                     }
                     else
                     {
                         Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
                     }
                 }
+                // Handle string[] (for documents)
+                else if (contextValue is string[] stringArray)
+                {
+                    var expectedValue = stringArray.FirstOrDefault();
+                    if (!string.IsNullOrEmpty(expectedValue))
+                    {
+                        var isMatch = expectedValue.Equals(reviewValue?.Trim(), StringComparison.OrdinalIgnoreCase);
+                        if (!isMatch)
+                        {
+                            allDataMatches = false;
+                            mismatches.Add($"{contextKey}: Expected '{expectedValue}', Found '{reviewValue?.Trim()}'");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[REVIEW VALIDATION] ⊘ {contextKey}: Skipped (empty value in array)");
+                    }
+                }
+                // Handle single string value
+                else if (contextValue is string expectedValue)
+                {
+                    if (!string.IsNullOrEmpty(expectedValue))
+                    {
+                        var isMatch = expectedValue.Equals(reviewValue?.Trim(), StringComparison.OrdinalIgnoreCase);
+                        if (!isMatch)
+                        {
+                            allDataMatches = false;
+                            mismatches.Add($"{contextKey}: Expected '{expectedValue}', Found '{reviewValue?.Trim()}'");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[REVIEW VALIDATION] ⊘ {contextKey}: Skipped (empty value in context)");
+                    }
+                }
                 else
                 {
-                    Console.WriteLine($"[REVIEW VALIDATION] ⊘ {contextKey}: Skipped (empty value in context)");
+                    Console.WriteLine($"[REVIEW VALIDATION] ⊘ {contextKey}: Skipped (unsupported type: {contextValue.GetType().Name})");
                 }
             }
             else
