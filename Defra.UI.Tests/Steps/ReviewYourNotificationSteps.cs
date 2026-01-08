@@ -116,15 +116,34 @@ namespace Defra.UI.Tests.Steps.IPAFF
             ValidateIfExists("ConsignmentReferenceNumber", reviewPage?.GetConsignmentReferenceNumber(), ref allDataMatches, mismatches);
             ValidateIfExists("MainReasonForImport", reviewPage?.GetMainReasonForImport(), ref allDataMatches, mismatches);
 
-            ValidateIfExists("CommodityCodeFirstCommodity", reviewPage?.GetCommodityCodeList(0), ref allDataMatches, mismatches);
-            ValidateIfExists("NetWeightFirstCommodity", reviewPage?.GetNetWeightList(0), ref allDataMatches, mismatches);
-            ValidateIfExists("NumberOfPackagesFirstCommodity", reviewPage?.GetNumPackagesList(0), ref allDataMatches, mismatches);
-            ValidateIfExists("TypeOfPackageFirstCommodity", reviewPage?.GetTypeOfPackagesList(0), ref allDataMatches, mismatches);
+            if (_scenarioContext.ContainsKey("PlaceOfExit"))
+            {
+                var dateTime = reviewPage?.GetConsignmentDepartureDateTime();
 
-            ValidateIfExists("CommodityCodeSecondCommodity", reviewPage?.GetCommodityCodeList(1), ref allDataMatches, mismatches);
-            ValidateIfExists("NetWeightSecondCommodity", reviewPage?.GetNetWeightList(1), ref allDataMatches, mismatches);
-            ValidateIfExists("NumOfPackagesSecondCommodity", reviewPage?.GetNumPackagesList(1), ref allDataMatches, mismatches);
-            ValidateIfExists("TypeOfPackageSecondCommodity", reviewPage?.GetTypeOfPackagesList(1), ref allDataMatches, mismatches);
+                ValidateIfExists("PlaceOfExit", reviewPage?.GetPointOfExit(), ref allDataMatches, mismatches);
+                ValidateIfExists("ConsignmentLeavingFromGBDate", dateTime.Value.departureDate, ref allDataMatches, mismatches);
+                ValidateIfExists("ConsignmentLeavingFromGBTime", dateTime.Value.departureTime, ref allDataMatches, mismatches);
+            }
+
+            if (_scenarioContext.ContainsKey("CommodityCodeFirstCommodity"))
+            {
+                ValidateIfExists("CommodityCodeFirstCommodity", reviewPage?.GetCommodityCodeList(0), ref allDataMatches, mismatches);
+                ValidateIfExists("NetWeightFirstCommodity", reviewPage?.GetNetWeightList(0), ref allDataMatches, mismatches);
+                ValidateIfExists("NumberOfPackagesFirstCommodity", reviewPage?.GetNumPackagesList(0), ref allDataMatches, mismatches);
+                ValidateIfExists("TypeOfPackageFirstCommodity", reviewPage?.GetTypeOfPackagesList(0), ref allDataMatches, mismatches);
+
+                ValidateIfExists("CommodityCodeSecondCommodity", reviewPage?.GetCommodityCodeList(1), ref allDataMatches, mismatches);
+                ValidateIfExists("NetWeightSecondCommodity", reviewPage?.GetNetWeightList(1), ref allDataMatches, mismatches);
+                ValidateIfExists("NumOfPackagesSecondCommodity", reviewPage?.GetNumPackagesList(1), ref allDataMatches, mismatches);
+                ValidateIfExists("TypeOfPackageSecondCommodity", reviewPage?.GetTypeOfPackagesList(1), ref allDataMatches, mismatches);
+            }
+            else
+            {
+                ValidateIfExists("CommodityCode", reviewPage?.GetCommodityCodeList(0), ref allDataMatches, mismatches);
+                ValidateIfExists("NetWeight", reviewPage?.GetNetWeightList(0), ref allDataMatches, mismatches);
+                ValidateIfExists("NumberOfPackages", reviewPage?.GetNumPackagesList(0), ref allDataMatches, mismatches);
+                ValidateIfExists("PackageType", reviewPage?.GetTypeOfPackagesList(0), ref allDataMatches, mismatches);
+            }
 
             ValidateIfExists("TotalNetWeight", reviewPage?.GetTotalNetWeight(), ref allDataMatches, mismatches);
             ValidateIfExists("TotalPackages", reviewPage?.GetTotalPackages(), ref allDataMatches, mismatches);
@@ -213,6 +232,27 @@ namespace Defra.UI.Tests.Steps.IPAFF
             }
         }
 
+        private void ValidateIfContains(string contextKey, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
+        {
+            if (_scenarioContext.ContainsKey(contextKey))
+            {
+                var expectedValue = _scenarioContext.Get<string>(contextKey);
+                if (!string.IsNullOrEmpty(expectedValue))
+                {
+                    var isMatch = expectedValue.Contains(reviewValue?.Trim(), StringComparison.OrdinalIgnoreCase);
+                    if (!isMatch)
+                    {
+                        allDataMatches = false;
+                        mismatches.Add($"{contextKey}: Expected '{expectedValue}', Found '{reviewValue?.Trim()}'");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
+                    }
+                }
+            }
+        }
+
         private void ValidateFileNameWithTruncation(string contextKey, string? displayedFileName, ref bool allDataMatches, List<string> mismatches)
         {
             if (_scenarioContext.ContainsKey(contextKey))
@@ -254,27 +294,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             else
             {
                 Console.WriteLine($"[REVIEW VALIDATION] ⊘ {contextKey}: Skipped (not in context)");
-            }
-        }
-
-        private void ValidateIfContains(string contextKey, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
-        {
-            if (_scenarioContext.ContainsKey(contextKey))
-            {
-                var expectedValue = _scenarioContext.Get<string>(contextKey);
-                if (!string.IsNullOrEmpty(expectedValue))
-                {
-                    var isMatch = expectedValue.Contains(reviewValue?.Trim(), StringComparison.OrdinalIgnoreCase);
-                    if (!isMatch)
-                    {
-                        allDataMatches = false;
-                        mismatches.Add($"{contextKey}: Expected '{expectedValue}', Found '{reviewValue?.Trim()}'");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
-                    }
-                }
             }
         }
 

@@ -34,7 +34,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserSearchesForTheNewlyCreatedNotificationOnTheImportNotificationsPage()
         {
             var chedRef = _scenarioContext.Get<string>("CHEDReference");
-            inspectorImportNotificationsPage?.SearchForChed(chedRef);
+            inspectorImportNotificationsPage?.SearchForChed("CHEDD.GB.2026.1056897");
         }
 
         [Then("the user clicks the notificaiton found with status {string}")]
