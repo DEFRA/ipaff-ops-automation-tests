@@ -199,6 +199,26 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void ThenTheLaboratoryTestsCommodityToBeTestedPageShouldBeDisplayed()
         {
             Assert.True(laboratoryTestsPage?.IsCommodityToBeTestedPageLoaded(), "Laboratory tests Commodity to be tested page is not displayed");
-        }       
+        }
+
+        [When("the user clicks the Add a laboratory test link")]
+        public void WhenTheUserClicksTheAddALaboratoryTestLink()
+        {
+            laboratoryTestsPage?.ClickAddAnotherTest();
+        }
+
+        [Then("the user verifies multiple Laboratory tests are entered with Results {string}")]
+        public void ThenTheUserVerifiesMultipleLaboratoryTestsAreEnteredWithResults(string expectedResult)
+        {
+            if (expectedResult.Equals("Pending", StringComparison.OrdinalIgnoreCase))
+            {
+                Assert.True(laboratoryTestsPage?.VerifyMultipleLabTestsWithPendingResults(2),
+                    "Failed to verify multiple laboratory tests with Pending results");
+            }
+            else
+            {
+                Assert.Fail($"Verification for result '{expectedResult}' is not implemented");
+            }
+        }
     }
 }

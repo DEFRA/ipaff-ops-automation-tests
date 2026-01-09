@@ -508,5 +508,19 @@ namespace Defra.UI.Tests.Steps.IPAFF
             // If hasError is false, the assertion passes (no error banner or specific error not found)
             Assert.False(hasError, "Error validation passed - no error message found");
         }
+
+        [Then("the user should not see any error messages in review page")]
+        public void ThenTheUserShouldNotSeeAnyErrorMessagesInReviewPage()
+        {
+            var (hasError, errorMessages) = reviewPage?.VerifyErrorMsgDisplayed(string.Empty)
+                ?? (false, string.Empty);
+
+            if (hasError)
+            {
+                Assert.Fail($"Unexpected error messages found on the review page: {errorMessages}");
+            }
+
+            Assert.False(hasError, "Error validation passed - no error messages found");
+        }
     }
 }

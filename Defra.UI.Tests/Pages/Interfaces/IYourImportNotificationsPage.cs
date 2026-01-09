@@ -14,5 +14,11 @@
         void ClickAmend(string chedReference);
 
         void ClickCookiesLink();
+        string GetNotificationStatus();
+        bool IsAmendLinkPresent(string chedReference);
+        bool IsAmendLinkNotPresent(string chedReference);
+        bool IsCopyAsNewLinkPresent(string chedReference);
+        bool IsViewDetailsLinkPresent(string chedReference);
+        bool IsShowNotificationLinkPresent(string chedReference);
     }
 }
