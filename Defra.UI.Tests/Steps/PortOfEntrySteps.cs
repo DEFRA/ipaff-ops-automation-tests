@@ -49,6 +49,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var minutes = futureDate.Minute.ToString();
 
             portOfEntryPage?.EnterPortOfEntry(port);
+            portOfEntryPage?.SelectAreTrailersOrContainersUsed(option);
             portOfEntryPage?.SelectMeansOfTransport(mode);
             portOfEntryPage?.EnterTransportId(transId);
             portOfEntryPage?.EnterTransportDocRef(DocumentRef);
@@ -58,7 +59,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             // CHED-A specific field - only filled if present
             portOfEntryPage?.EnterEstimatedJourneyTime(journeyTimeHours);
 
-            
+
             _scenarioContext["PortOfEntry"] = port;
             _scenarioContext["MeansOfTransport"] = mode;
             _scenarioContext["TransportId"] = transId;
@@ -66,7 +67,28 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["EnterTransportDocRef"] = DocumentRef;
             _scenarioContext["EstimatedArrivalDate"] = formattedDate;
             _scenarioContext["EstimatedArrivalTime"] = formattedTime;
-            _scenarioContext["EstimatedJourneyTime"] = journeyTimeHours;           
+            _scenarioContext["EstimatedJourneyTime"] = journeyTimeHours;
         }
+
+        [When("the user enters Container Number {string}")]
+        public void WhenTheUserEntersContainerNumber(string containerNumber)
+        {
+            portOfEntryPage?.EnterContainerNumber(containerNumber);
+            _scenarioContext.Add("ContainerNumber", containerNumber);
+        }
+
+        [When("the user enters Seal Number {string}")]
+        public void WhenTheUserEntersSealNumber(string sealNumber)
+        {
+            portOfEntryPage?.EnterSealNumber(sealNumber);
+            _scenarioContext.Add("SealNumber", sealNumber);
+        }
+
+        [When("the user ticks the checkbox to confirm an official seal is affixed")]
+        public void WhenTheUserTicksTheCheckboxToConfirmAnOfficialSealIsAffixed()
+        {
+            portOfEntryPage?.TickOfficialSealCheckbox();
+            _scenarioContext.Add("OfficialSealAffixed", "Yes");
+        }        
     }
 }

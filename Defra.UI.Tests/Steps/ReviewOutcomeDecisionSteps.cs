@@ -83,8 +83,19 @@ namespace Defra.UI.Tests.Steps.IPAFF
             // Seal Numbers
             ValidateIfExists("AreNewSealNumbersRequired", reviewOutcomeDecisionPage?.GetSealNumbersStatus(), ref allDataMatches, mismatches);
 
-            // Laboratory Tests
+            // Laboratory Tests - Basic
             ValidateIfExists("AreLaboratoryTestsRequired", reviewOutcomeDecisionPage?.GetLaboratoryTestsRequired(), ref allDataMatches, mismatches);
+            ValidateIfExists("LaboratoryTestsReason", reviewOutcomeDecisionPage?.GetLaboratoryTestsReason(), ref allDataMatches, mismatches);
+
+            // Laboratory Tests - Detailed Fields
+            ValidateIfExists("AnalysisType", reviewOutcomeDecisionPage?.GetLaboratoryTestAnalysisType(0), ref allDataMatches, mismatches);
+            ValidateLabTestCommoditySampled("SelectedCommoditySampledCode", "SelectedCommoditySampledDescription", reviewOutcomeDecisionPage?.GetLaboratoryTestCommoditySampled(0), ref allDataMatches, mismatches);
+            ValidateIfExists("LaboratoryTestName", reviewOutcomeDecisionPage?.GetLaboratoryTestName(0), ref allDataMatches, mismatches);
+            ValidateIfExists("SampleDate", reviewOutcomeDecisionPage?.GetLaboratoryTestSampleDate(0), ref allDataMatches, mismatches);
+            ValidateIfExists("SampleTime", reviewOutcomeDecisionPage?.GetLaboratoryTestSampleTime(0), ref allDataMatches, mismatches);
+            ValidateIfExists("SampleUseByDate", reviewOutcomeDecisionPage?.GetLaboratoryTestSampleUseByDate(0), ref allDataMatches, mismatches);
+            ValidateIfExists("ReleasedDate", reviewOutcomeDecisionPage?.GetLaboratoryTestReleasedDate(0), ref allDataMatches, mismatches);
+            ValidateIfExists("Conclusion", reviewOutcomeDecisionPage?.GetLaboratoryTestConclusion(0), ref allDataMatches, mismatches);
 
             // Documents
             ValidateIfExists("HealthCertificateReference", reviewOutcomeDecisionPage?.GetHealthCertificateReference(), ref allDataMatches, mismatches);
@@ -98,6 +109,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
             // Decision
             ValidateIfExists("AcceptableFor", reviewOutcomeDecisionPage?.GetAcceptanceDecision(), ref allDataMatches, mismatches);
             ValidateIfExists("AcceptableForSubOption", GetAcceptableForSubOptionValue(), ref allDataMatches, mismatches);
+
+            // Temporary Admission Horses - Decision Fields
+            ValidateIfExists("ExitDate", reviewOutcomeDecisionPage?.GetDeadline(), ref allDataMatches, mismatches);
+            ValidateIfExists("ExitBCP", reviewOutcomeDecisionPage?.GetExitBCP(), ref allDataMatches, mismatches);
 
             // Controlled Destination
             ValidateIfExists("ControlledDestinationName", reviewOutcomeDecisionPage?.GetControlledDestinationName(), ref allDataMatches, mismatches);
@@ -231,12 +246,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     return actual.Contains("No new seal numbers have been entered", StringComparison.OrdinalIgnoreCase);
 
                 case "AcceptableFor":
-                    return actual.Equals($"Acceptable for {expected.ToLower()}", StringComparison.OrdinalIgnoreCase);
+                    return CompareAcceptableFor(expected, actual);
 
                 case "AcceptableForSubOption":
                     // Ignore spaces for AcceptableForSubOption (handles both CHED-A CertifiedFor and CHED-P ConsignmentUse)
                     return expected.Replace(" ", "").Equals(actual.Replace(" ", ""), StringComparison.OrdinalIgnoreCase);
-              
+
+                case "LaboratoryTestsReason":
+                    // Handle variation: "Suspicion" (task list) vs "Suspicious" (review page)
+                    return CompareLaboratoryTestsReason(expected, actual);
+
                 default:
                     return expected.Equals(actual.Trim(), StringComparison.OrdinalIgnoreCase);
             }
@@ -250,6 +269,40 @@ namespace Defra.UI.Tests.Steps.IPAFF
                                 : "Units";
 
             return displayValue.Equals(actual.Trim(), StringComparison.OrdinalIgnoreCase);
+        }
+
+        private bool CompareLaboratoryTestsReason(string expected, string actual)
+        {
+            // Direct match
+            if (expected.Equals(actual.Trim(), StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            // Handle "Suspicion" -> "Suspicious" variation
+            if (expected.Equals("Suspicion", StringComparison.OrdinalIgnoreCase) &&
+                actual.Trim().Equals("Suspicious", StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            // Handle reverse case (if ever needed)
+            if (expected.Equals("Suspicious", StringComparison.OrdinalIgnoreCase) &&
+                actual.Trim().Equals("Suspicion", StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            return false;
+        }
+
+        private bool CompareAcceptableFor(string expected, string actual)
+        {
+            // Expected format from task list: "Temporary admission horses"
+            // Actual format on review page: "Acceptable for temporary admission"
+
+            // Handle "Temporary admission horses" -> "Acceptable for temporary admission"
+            if (expected.Equals("Temporary admission horses", StringComparison.OrdinalIgnoreCase))
+            {
+                return actual.Equals("Acceptable for temporary admission", StringComparison.OrdinalIgnoreCase);
+            }
+
+            // Handle other variations (Internal market, Transit, etc.)
+            return actual.Equals($"Acceptable for {expected.ToLower()}", StringComparison.OrdinalIgnoreCase);
         }
 
         private void ValidateFileNameWithTruncation(string contextKey, string? displayedFileName, ref bool allDataMatches, List<string> mismatches)
@@ -293,6 +346,40 @@ namespace Defra.UI.Tests.Steps.IPAFF
             else
             {
                 Console.WriteLine($"[REVIEW OUTCOME VALIDATION] ⊘ {contextKey}: Skipped (not in context)");
+            }
+        }
+
+        private void ValidateLabTestCommoditySampled(string codeContextKey, string descriptionContextKey, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
+        {
+            if (_scenarioContext.ContainsKey(codeContextKey) && _scenarioContext.ContainsKey(descriptionContextKey))
+            {
+                var code = _scenarioContext.Get<string>(codeContextKey);
+                var description = _scenarioContext.Get<string>(descriptionContextKey);
+                var expectedValue = $"{code} - {description}";
+
+                if (!string.IsNullOrEmpty(reviewValue))
+                {
+                    var isMatch = expectedValue.Equals(reviewValue.Trim(), StringComparison.OrdinalIgnoreCase);
+
+                    if (!isMatch)
+                    {
+                        allDataMatches = false;
+                        mismatches.Add($"CommoditySampled: Expected '{expectedValue}', Found '{reviewValue?.Trim()}'");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[REVIEW OUTCOME VALIDATION] ✓ CommoditySampled: '{expectedValue}' matches");
+                    }
+                }
+                else
+                {
+                    allDataMatches = false;
+                    mismatches.Add($"CommoditySampled: Expected '{expectedValue}', Found null/empty");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[REVIEW OUTCOME VALIDATION] ⊘ CommoditySampled: Skipped (not in context)");
             }
         }
     }

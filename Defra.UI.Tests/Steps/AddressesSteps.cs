@@ -161,5 +161,22 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             addressesPage?.ClickChangeInAddressPage(link);
         }
+
+        [Then("the place of destination should be populated with the same details as the consignee")]
+        public void ThenThePlaceOfDestinationShouldBePopulatedWithTheSameDetailsAsTheConsignee()
+        {
+            var consigneeName = _scenarioContext.Get<string>("ConsigneeName");
+            var consigneeAddress = _scenarioContext.Get<string>("ConsigneeAddress");
+            var consigneeCountry = _scenarioContext.Get<string>("ConsigneeCountry");
+
+            // Since place of destination uses same data as consignee, store it in context
+            _scenarioContext.Add("DestinationName", consigneeName);
+            _scenarioContext.Add("DestinationAddress", consigneeAddress);
+            _scenarioContext.Add("DestinationCountry", consigneeCountry);
+
+            // Verify place of destination shows same details as consignee
+            Assert.True(addressesPage?.VerifySelectedDestination(consigneeName, consigneeAddress, consigneeCountry),
+                        "Place of destination details do not match consignee");
+        }
     }
 }

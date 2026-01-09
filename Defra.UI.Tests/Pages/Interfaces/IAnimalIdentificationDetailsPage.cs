@@ -7,5 +7,8 @@ namespace Defra.UI.Tests.Pages.Interfaces
         bool IsPageLoaded();
         void EnterIdentificationDetails(string identificationDetails);
         void EnterDescription(string description);
+        void EnterHorseName(string horseName);
+        void EnterMicrochipNumber(string microchipNumber);
+        void EnterPassportNumber(string passportNumber);
     }
 }

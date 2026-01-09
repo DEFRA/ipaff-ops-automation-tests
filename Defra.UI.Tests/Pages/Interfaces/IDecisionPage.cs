@@ -12,5 +12,8 @@
         void SelectAcceptableFor(string acceptableFor, string subOption);
         void EnterReason(string reason);
         void SelectNotAcceptableFor(string acceptableFor, string subOption);
+        bool IsRadioButtonPreSelected(string radioButtonName);
+        string GetExitDate();
+        string GetExitBCP();
     }
 }
