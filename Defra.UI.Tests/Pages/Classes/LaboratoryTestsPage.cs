@@ -34,7 +34,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement selectStorageTemperature => _driver.FindElement(By.Id("conservationOfSample"));
         private IWebElement txtCommodityCode => _driver.FindElement(By.XPath("//*[@class='govuk-table__body']/tr[1]/td[1]"));
         private IWebElement txtDescription => _driver.FindElement(By.XPath("//*[@class='govuk-table__body']/tr[1]/td[2]"));
-        private IWebElement txtSpecies => _driver.FindElement(By.XPath("//*[@class='govuk-table__body']/tr[1]/td[3]"));  
+        private IWebElement txtSpecies => _driver.FindElement(By.XPath("//*[@class='govuk-table__body']/tr[1]/td[3]"));
         private IWebElement lnkLabTestSelect => _driver.FindElement(By.Id("choose-laboratory-test-0"));
         private IWebElement txtLabTestName => _driver.FindElement(By.XPath("//*[@class='govuk-table__body']/tr[1]/td[1]"));
         private IReadOnlyCollection<IWebElement> reviewTableFirstRow => _driver.FindElements(By.XPath("//*[@class='govuk-table__body']"));
@@ -48,6 +48,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtSampleTimeMinutes => _driver.FindElement(By.Id("sample-time-minutes"));
         private IWebElement lnkAddAnotherTest => _driver.FindElement(By.Id("AddAnotherTest"));
         private IWebElement GetLabTestResultElement(int index) => _driver.FindElement(By.XPath($"//tr[@id='lab-tests-row-{index}']//td[6]"));
+        private IReadOnlyCollection<IWebElement> labTestRows => _driver.FindElements(By.XPath("//table[@id='LabTestsTable']//tbody//tr[contains(@id, 'lab-tests-row-')]"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -232,6 +233,48 @@ namespace Defra.UI.Tests.Pages.Classes
         public string GetLabTestResult(int index = 0)
         {
             return GetLabTestResultElement(index).SafelyGetText();
+        }
+
+        public void ClickAddAnotherTest()
+        {
+            lnkAddAnotherTest.Click();
+        }
+
+        public int GetLabTestCount()
+        {
+            try
+            {
+                return labTestRows.Count;
+            }
+            catch (NoSuchElementException)
+            {
+                return 0;
+            }
+        }
+
+        public bool VerifyMultipleLabTestsWithPendingResults(int expectedMinimumCount = 2)
+        {
+            var testCount = GetLabTestCount();
+
+            if (testCount < expectedMinimumCount)
+            {
+                Console.WriteLine($"Expected at least {expectedMinimumCount} lab tests, but found {testCount}");
+                return false;
+            }
+
+            // Verify all tests have "Pending" status
+            for (int i = 0; i < testCount; i++)
+            {
+                var result = GetLabTestResult(i);
+                if (!result.Equals("Pending", StringComparison.OrdinalIgnoreCase))
+                {
+                    Console.WriteLine($"Lab test at index {i} has result '{result}', expected 'Pending'");
+                    return false;
+                }
+            }
+
+            Console.WriteLine($"Verified {testCount} lab tests, all with 'Pending' results");
+            return true;
         }
     }
 }

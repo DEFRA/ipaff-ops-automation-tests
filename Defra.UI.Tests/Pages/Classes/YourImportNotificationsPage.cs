@@ -20,7 +20,13 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement GetNotificationReferenceInList(string chedRef) => _driver.FindElement(By.XPath($"//dd[@id='reference-number-0' and contains(text(), '{chedRef}')]"));
         private IWebElement GetShowNotificationLink(string chedRef) => _driver.FindElement(By.Id($"show-certificate-{chedRef}"));
         private IWebElement GetAmendLink(string chedRef) => _driver.FindElement(By.Id($"amend-details-{chedRef}"));
+        private IWebElement GetNotificationStatus(string chedRef) => _driver.FindElement(By.Id("status-0"));
         private IWebElement lnkCookies => _driver.FindElement(By.Id("button-cookies"));
+        private By NotificationStatusBy => By.Id("status-0");
+        private By GetAmendLinkBy(string chedRef) => By.Id($"amend-details-{chedRef}");
+        private By GetCopyAsNewLinkBy(string chedRef) => By.Id($"copy-as-new-{chedRef}");
+        private By GetViewDetailsLinkBy(string chedRef) => By.Id($"view-details-{chedRef}");
+        private By GetShowNotificationLinkBy(string chedRef) => By.Id($"show-certificate-{chedRef}");
 
         #endregion
 
@@ -109,6 +115,36 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickAmend(string chedReference)
         {
             GetAmendLink(chedReference).Click();
+        }
+
+        public string GetNotificationStatus()
+        {
+            return _driver.SafelyGetText(NotificationStatusBy);
+        }
+
+        public bool IsAmendLinkPresent(string chedReference)
+        {
+            return _driver.IsElementDisplayed(GetAmendLinkBy(chedReference));
+        }
+
+        public bool IsAmendLinkNotPresent(string chedReference)
+        {
+            return !_driver.IsElementDisplayed(GetAmendLinkBy(chedReference));
+        }
+
+        public bool IsCopyAsNewLinkPresent(string chedReference)
+        {
+            return _driver.IsElementDisplayed(GetCopyAsNewLinkBy(chedReference));
+        }
+
+        public bool IsViewDetailsLinkPresent(string chedReference)
+        {
+            return _driver.IsElementDisplayed(GetViewDetailsLinkBy(chedReference));
+        }
+
+        public bool IsShowNotificationLinkPresent(string chedReference)
+        {
+            return _driver.IsElementDisplayed(GetShowNotificationLinkBy(chedReference));
         }
     }
 }

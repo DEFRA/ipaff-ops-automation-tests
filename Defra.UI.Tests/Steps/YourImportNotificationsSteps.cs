@@ -100,5 +100,47 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             importNotificationsPage?.ClickCookiesLink();
         }
+
+        [Then("the notification returned in the search has the status {string}")]
+        public void ThenTheNotificationReturnedInTheSearchHasTheStatus(string expectedStatus)
+        {
+            var actualStatus = importNotificationsPage?.GetNotificationStatus();
+            Assert.AreEqual(expectedStatus, actualStatus, $"Expected status '{expectedStatus}' but found '{actualStatus}'");
+        }
+
+        [Then("the Amend link should be available for the notification")]
+        public void ThenTheAmendLinkShouldBeAvailableForTheNotification()
+        {
+            var chedReference = _scenarioContext.Get<string>("CHEDReference");
+            Assert.True(importNotificationsPage?.IsAmendLinkPresent(chedReference), "Amend link is not present");
+        }
+
+        [Then("the Amend link should not be available for the notification")]
+        public void ThenTheAmendLinkShouldNotBeAvailableForTheNotification()
+        {
+            var chedReference = _scenarioContext.Get<string>("CHEDReference");
+            Assert.True(importNotificationsPage?.IsAmendLinkNotPresent(chedReference), "Amend link should not be present but was found");
+        }
+
+        [Then("the Copy as new link should be available for the notification")]
+        public void ThenTheCopyAsNewLinkShouldBeAvailableForTheNotification()
+        {
+            var chedReference = _scenarioContext.Get<string>("CHEDReference");
+            Assert.True(importNotificationsPage?.IsCopyAsNewLinkPresent(chedReference), "Copy as new link is not present");
+        }
+
+        [Then("the View details link should be available for the notification")]
+        public void ThenTheViewDetailsLinkShouldBeAvailableForTheNotification()
+        {
+            var chedReference = _scenarioContext.Get<string>("CHEDReference");
+            Assert.True(importNotificationsPage?.IsViewDetailsLinkPresent(chedReference), "View details link is not present");
+        }
+
+        [Then("the Show notification link should be available for the notification")]
+        public void ThenTheShowNotificationLinkShouldBeAvailableForTheNotification()
+        {
+            var chedReference = _scenarioContext.Get<string>("CHEDReference");
+            Assert.True(importNotificationsPage?.IsShowNotificationLinkPresent(chedReference), "Show notification link is not present");
+        }
     }
 }
