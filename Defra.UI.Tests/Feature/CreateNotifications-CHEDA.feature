@@ -65,13 +65,13 @@ Scenario: User creates and submits a B2C consignment notification - CHEDA
 	Then the chosen consignor or exporter should be displayed
 	When the user clicks Add a consignee
 	Then the Search for an existing consignee page should be displayed
-	When the user selects a consignee 'XYZ'
+	When the user selects a consignee 'DEF'
 	Then the chosen consignee should be displayed
 	When the user clicks Same as consignee for the Importer
 	Then the importer should be populated with the same details as the consignee
 	When the user clicks Add a place of destination
 	Then the Search for an existing place of destination page should be displayed
-	When the user selects a place of destination 'XYZ'
+	When the user selects a place of destination 'DEF'
 	Then the chosen place of destination should be displayed
 	When the user clicks Save and continue
 	Then the Add the County Parish Holding number (CPH) page should be displayed
@@ -237,7 +237,7 @@ Scenario: User creates and submits a B2C consignment notification for Temporary 
 	Then the chosen consignor or exporter should be displayed
 	When the user clicks Add a consignee
 	Then the Search for an existing consignee page should be displayed
-	When the user selects a consignee 'XYZ'
+	When the user selects a consignee 'DEF'
 	Then the chosen consignee should be displayed
 	When the user clicks Same as consignee for the Importer
 	Then the importer should be populated with the same details as the consignee

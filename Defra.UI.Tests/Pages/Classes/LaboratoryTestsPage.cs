@@ -226,26 +226,12 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool IsAddAnotherTestLinkDisplayed()
         {
-            try
-            {
-                return lnkAddAnotherTest.Displayed;
-            }
-            catch (NoSuchElementException)
-            {
-                return false;
-            }
+            return lnkAddAnotherTest.IsElementDisplayed();
         }
 
         public string GetLabTestResult(int index = 0)
         {
-            try
-            {
-                return GetLabTestResultElement(index).Text.Trim();
-            }
-            catch (NoSuchElementException)
-            {
-                return string.Empty;
-            }
+            return GetLabTestResultElement(index).SafelyGetText();
         }
     }
 }

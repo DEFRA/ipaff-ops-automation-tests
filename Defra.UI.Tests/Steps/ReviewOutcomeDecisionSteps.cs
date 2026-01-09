@@ -120,13 +120,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
             if (acceptableFor.Equals("Temporary admission horses", StringComparison.OrdinalIgnoreCase))
             {
                 ValidateIfExists("ExitDate", reviewOutcomeDecisionPage?.GetDeadline(), ref allDataMatches, mismatches);
-                ValidateIfExists("ExitBCP", reviewOutcomeDecisionPage?.GetExitBCP(), ref allDataMatches, mismatches);
+                ValidateExitBCP("ExitBCP", reviewOutcomeDecisionPage?.GetExitBCP(), ref allDataMatches, mismatches);
             }
 
             // Transit - Decision Fields (only validate if decision is Transit)
             if (acceptableFor.Equals("Transit", StringComparison.OrdinalIgnoreCase))
             {
-                ValidateTransitExitBCP("ExitBCP", reviewOutcomeDecisionPage?.GetTransitExitBCP(), ref allDataMatches, mismatches);
+                ValidateExitBCP("ExitBCP", reviewOutcomeDecisionPage?.GetTransitExitBCP(), ref allDataMatches, mismatches);
                 ValidateTransitDestinationCountry("DestinationCountry", reviewOutcomeDecisionPage?.GetTransitDestinationCountry(), ref allDataMatches, mismatches);
             }
 
@@ -375,6 +375,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
                 if (!string.IsNullOrEmpty(reviewValue))
                 {
+                    // The review page shows the Commodity sampled as Commodity Code - Description (e.g., "0103 - Live Swine") 
+                    // Therefore we need scenario context values for  the commodity code and description
+
                     var isMatch = expectedValue.Equals(reviewValue.Trim(), StringComparison.OrdinalIgnoreCase);
 
                     if (!isMatch)
@@ -399,7 +402,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             }
         }
 
-        private void ValidateTransitExitBCP(string contextKey, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
+        private void ValidateExitBCP(string contextKey, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
         {
             if (_scenarioContext.ContainsKey(contextKey))
             {
