@@ -13,7 +13,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects
         private IWebElement pageTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
-
+     
         // About the consignment
         private IWebElement importType => _driver.FindElement(By.Id("importing"));
         private IWebElement countryOfOrigin => _driver.FindElement(By.Id("country-of-origin"));
@@ -21,6 +21,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement mainReasonForImport => _driver.FindElement(By.Id("purpose-of-consignment-value"));
         private IWebElement purpose => _driver.FindElement(By.XPath("//dt[text()='Purpose in the internal market']//following-sibling::dd"));
         private IWebElement consignmentReferenceNumber => _driver.FindElement(By.XPath("//dt[text()='Consignment reference number']//following-sibling::dd"));
+        private IWebElement exitDate => _driver.FindElement(By.Id("exit-date-value"));
+        private IWebElement exitBCP => _driver.FindElement(By.Id("designated-bip-horses-value"));
 
         // Commodity details
         private IWebElement commodityCode => _driver.FindElement(By.XPath("//td[text()='Commodity code']//following-sibling::td[1]"));
@@ -42,6 +44,9 @@ namespace Defra.UI.Tests.Pages.Classes
 
         // Animal details
         private IWebElement certificationOption => _driver.FindElement(By.XPath("//td[text()='Certified for']//following-sibling::td"));
+        private IWebElement GetHorseNameElement(int index) => _driver.FindElement(By.XPath($"//table[@id='animal-identification-details-table']//tbody//tr[{index + 1}]//td[@headers='horseName-01']"));
+        private IWebElement GetMicrochipElement(int index) => _driver.FindElement(By.XPath($"//table[@id='animal-identification-details-table']//tbody//tr[{index + 1}]//td[@headers='microchip-01']"));
+        private IWebElement GetPassportElement(int index) => _driver.FindElement(By.XPath($"//table[@id='animal-identification-details-table']//tbody//tr[{index + 1}]//td[@headers='passport-01']"));
 
         // Documents
         private IWebElement healthCertificateReference => _driver.FindElement(By.Id("latest-health-document-reference"));
@@ -69,6 +74,14 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement estimatedJourneyTime => _driver.FindElement(By.XPath("//th[text()='Estimated total journey time of the animals']//following-sibling::td"));
         private IWebElement ctcUsage => _driver.FindElement(By.XPath("//td[contains(text(),'Using the Common Transit Convention')]/following-sibling::td"));
         private IWebElement gvmsUsage => _driver.FindElement(By.Id("goods-movement-services-route"));
+        private IWebElement GetContainerNumberElement(int index) => _driver.FindElement(By.Id($"container-number-{index}"));
+        private IWebElement GetSealNumberElement(int index) => _driver.FindElement(By.Id($"seal-number-{index}"));
+        private IWebElement GetOfficialSealElement(int index) => _driver.FindElement(By.Id($"official-seal-present-{index}"));
+        private IWebElement meansOfTransportAfterBCP => _driver.FindElement(By.XPath("//th[contains(text(),'Means of transport after BCP or Port of entry')]//following-sibling::td"));
+        private IWebElement transportIdentificationAfterBCP => _driver.FindElement(By.XPath("//table[@id='review-table-transport']//th[text()='Transport identification']//following-sibling::td"));
+        private IWebElement transportDocumentReferenceAfterBCP => _driver.FindElement(By.XPath("//table[@id='review-table-transport']//th[text()='Transport document reference']//following-sibling::td"));
+        private IWebElement departureDateFromBCP => _driver.FindElement(By.XPath("//th[text()='Departure date from port of entry']//following-sibling::td"));
+        private IWebElement departureTimeFromBCP => _driver.FindElement(By.XPath("//th[text()='Departure time from port of entry']//following-sibling::td"));
 
         // Transporter details
         private IWebElement transporterName => _driver.FindElement(By.Id("transporter-name"));
@@ -349,11 +362,47 @@ namespace Defra.UI.Tests.Pages.Classes
             return totalGrossWeightText;
         }
 
+        public string? GetExitDate()
+        {
+            try
+            {
+                var text = exitDate.Text.Trim();
+                // Convert "14 January 2026" to "14 January 2026" format (matches stored format)
+                if (DateTime.TryParse(text, out DateTime date))
+                {
+                    return date.ToString("dd MMMM yyyy");
+                }
+                return text;
+            }
+            catch { return null; }
+        }
+
+        public string? GetExitBCP()
+        {
+            try { return exitBCP.Text.Trim(); } catch { return null; }
+        }
+
         // Animal details
         public string? GetCertificationOption()
         {
             try { return certificationOption.Text.Trim(); } catch { return null; }
         }
+
+        public string? GetHorseName(int index = 0)
+        {
+            try { return GetHorseNameElement(index).Text.Trim(); } catch { return null; }
+        }
+
+        public string? GetMicrochipNumber(int index = 0)
+        {
+            try { return GetMicrochipElement(index).Text.Trim(); } catch { return null; }
+        }
+
+        public string? GetPassportNumber(int index = 0)
+        {
+            try { return GetPassportElement(index).Text.Trim(); } catch { return null; }
+        }
+
 
         //Additional details
 
@@ -566,6 +615,58 @@ namespace Defra.UI.Tests.Pages.Classes
             try { return gvmsUsage.Text.Trim(); } catch { return null; }
         }
 
+        // Transport to BCP - Containers
+        public string? GetContainerNumber(int index = 0)
+        {
+            try { return GetContainerNumberElement(index).Text.Trim(); } catch { return null; }
+        }
+
+        public string? GetSealNumber(int index = 0)
+        {
+            try { return GetSealNumberElement(index).Text.Trim(); } catch { return null; }
+        }
+
+        public string? GetOfficialSeal(int index = 0)
+        {
+            try { return GetOfficialSealElement(index).Text.Trim(); } catch { return null; }
+        }
+
+        // Transport after BCP
+        public string? GetMeansOfTransportAfterBCP()
+        {
+            try { return meansOfTransportAfterBCP.Text.Trim(); } catch { return null; }
+        }
+
+        public string? GetTransportIdentificationAfterBCP()
+        {
+            try { return transportIdentificationAfterBCP.Text.Trim(); } catch { return null; }
+        }
+
+        public string? GetTransportDocumentReferenceAfterBCP()
+        {
+            try { return transportDocumentReferenceAfterBCP.Text.Trim(); } catch { return null; }
+        }
+
+        public string? GetDepartureDateFromBCP()
+        {
+            try
+            {
+                var text = departureDateFromBCP.Text.Trim();
+                // Convert "17 January 2026" to "17 Jan 2026" format
+                if (DateTime.TryParse(text, out DateTime date))
+                {
+                    return date.ToString("dd MMM yyyy");
+                }
+                return text;
+            }
+            catch { return null; }
+        }
+
+        public string? GetDepartureTimeFromBCP()
+        {
+            try { return departureTimeFromBCP.Text.Trim(); } catch { return null; }
+        }
+
         // Transporter details
         public string? GetTransporterName()
         {
@@ -667,9 +768,29 @@ namespace Defra.UI.Tests.Pages.Classes
             lnkChange(heading).Click();
         }
 
-        public bool VerifyErrorMsgDisplayed(string errorMessage)
+        public (bool hasError, string errorMessages) VerifyErrorMsgDisplayed(string errorMessage)
         {
-            return lblErrorMessages.Count == 0;
+            // Check if error message banner is present
+            if (lblErrorMessages.Count == 0)
+            {
+                // No error banner present - this is what we want (test should pass)
+                return (false, string.Empty);
+            }
+
+            // Error banner is present - collect all error messages
+            var errorMessagesList = new List<string>();
+            foreach (var element in lblErrorMessages)
+            {
+                errorMessagesList.Add(element.Text.Trim());
+            }
+
+            var allErrorMessages = string.Join("; ", errorMessagesList);
+
+            // Check if the specific error message we're looking for is in the list
+            var containsSpecificError = errorMessagesList.Any(msg =>
+                msg.Contains(errorMessage, StringComparison.OrdinalIgnoreCase));
+
+            return (containsSpecificError, allErrorMessages);
         }
     }
 }

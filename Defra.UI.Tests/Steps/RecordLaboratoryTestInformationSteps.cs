@@ -29,26 +29,32 @@ namespace Defra.UI.Tests.Steps
         [When("the user selects {string} for Conclusion")]
         public void WhenTheUserSelectsForConclusion(string decision)
         {
-            _scenarioContext.Add("Conclusion", decision);
+            _scenarioContext["Conclusion"] = decision;
             recordLaboratoryTestInformation?.SelectConclusion(decision);
         }
-        
 
         [When("the user enters Sample use by date as {string}{string}{string}")]
         public void WhenTheUserEntersSampleUseByDate(string day, string month, string year)
         {
             recordLaboratoryTestInformation?.EnterSampleUseByDate(day, month, year);
-            var useByDate = day + " " + month + " " + year;
-            _scenarioContext.Add("SampleUseByDate", useByDate);
+
+            var date = DateTime.ParseExact($"{day}/{month}/{year}", "d/M/yyyy",
+                System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.None);
+
+            _scenarioContext["SampleUseByDate"] = date.ToString("d MMMM yyyy");
         }
 
         [When("the user enters Released date as {string}{string}{string}")]
         public void WhenTheUserEntersReleasedDate(string day, string month, string year)
         {
             recordLaboratoryTestInformation?.EnterReleasedDate(day, month, year);
-            var releasedDate = day + " " + month + " " + year;
-            _scenarioContext.Add("ReleasedDate", releasedDate);
-        }
 
+            var date = DateTime.ParseExact($"{day}/{month}/{year}", "d/M/yyyy",
+                System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.None);
+
+            _scenarioContext["ReleasedDate"] = date.ToString("d MMMM yyyy");
+        }
     }
 }

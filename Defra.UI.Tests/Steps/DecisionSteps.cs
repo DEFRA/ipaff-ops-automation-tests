@@ -89,5 +89,35 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var year = currentDate.Year.ToString();
             decisionPage?.EnterCurrentDateInDecisionPage(day, month, year);
         }
+
+        [Then("the {string} radio button option is pre populated")]
+        public void ThenTheRadioButtonOptionIsPrePopulated(string radioButtonOption)
+        {
+            _scenarioContext["AcceptableFor"] = radioButtonOption;
+            Assert.True(decisionPage?.IsRadioButtonPreSelected(radioButtonOption),
+                        $"'{radioButtonOption}' radio button is not pre-selected");
+        }
+
+        [Then("the exit date is pre populated")]
+        public void ThenTheExitDateIsPrePopulated()
+        {
+            var exitDate = decisionPage?.GetExitDate();
+            var expectedExitDate = _scenarioContext.Get<string>("ExitDate");
+
+            // Convert expectedExitDate from "dd MMMM yyyy" to "dd/MM/yyyy" format for comparison
+            var parsedDate = DateTime.ParseExact(expectedExitDate, "dd MMMM yyyy", System.Globalization.CultureInfo.InvariantCulture);
+            var formattedExpectedDate = parsedDate.ToString("dd/MM/yyyy");
+
+            Assert.That(exitDate, Is.EqualTo(formattedExpectedDate), $"Exit date mismatch. Expected: {formattedExpectedDate}, Actual: {exitDate}");
+        }
+
+        [Then("the exit BCP is correct")]
+        public void ThenTheExitBCPIsCorrect()
+        {
+            var exitBCP = decisionPage?.GetExitBCP();
+            var expectedExitBCP = _scenarioContext.Get<string>("ExitBCP");
+
+            Assert.That(exitBCP, Does.Contain(expectedExitBCP), $"Exit BCP mismatch. Expected: {expectedExitBCP}, Actual: {exitBCP}");
+        }
     }
 }
