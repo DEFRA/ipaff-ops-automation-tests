@@ -24,7 +24,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement rdoNonInternalMarket => _driver.WaitForElement(By.XPath("//*[@id='radio-noninternalmarket']/following-sibling::label"));
         private IWebElement txtExitBCP => _driver.WaitForElement(By.Name("bcp-transit-third-country"));
         private IWebElement txtTransitedCountry => _driver.WaitForElement(By.Id("transit-third-countries-last"));
-        private IWebElement txtDestinationCountry => _driver.WaitForElement(By.Id("third-country-transit"));
+        private IWebElement txtDestinationCountry => _driver.FindElement(By.Id("third-country-transit"));
         private IWebElement txtTranshipmentDestination => _driver.FindElement(By.Id("third-country-transhipment"));
         private IWebElement rdoIMAnimalFeeding => _driver.WaitForElement(By.XPath("//*[@id='internalMarketanimal']/following-sibling::label"));
         private IWebElement rdoIMOther => _driver.WaitForElement(By.XPath("//*[@id='internalMarketother']/following-sibling::label"));
@@ -42,13 +42,13 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtExitDateDay => _driver.WaitForElement(By.Id("exit-date-day"));
         private IWebElement txtExitDateMonth => _driver.WaitForElement(By.Id("exit-date-month"));
         private IWebElement txtExitDateYear => _driver.WaitForElement(By.Id("exit-date-year"));
-        private IWebElement ddlExitBCP => _driver.WaitForElement(By.Id("bcp-temporary-admission"));
+        private IWebElement ddlExitBCP => _driver.FindElement(By.Id("bcp-temporary-admission"));
         private IWebElement internalMarketConditional => _driver.WaitForElement(By.Id("internalmarket-conditional"));
         private IWebElement transhipConditional => _driver.WaitForElement(By.Id("tranship-conditional"));
         private IWebElement transitConditional => _driver.WaitForElement(By.Id("conditional-transit"));
         private By reentryConditionalLocator => By.Id("conditional-reimport");
         private IWebElement temporaryAdmissionConditional => _driver.WaitForElement(By.Id("conditional-temporary-admission"));
-        private IWebElement transitExitBCP => _driver.WaitForElement(By.Id("bcp-transit-third-country"));
+        private IWebElement transitExitBCP => _driver.FindElement(By.Id("bcp-transit-third-country"));
         private IWebElement transitDestinationCountry => _driver.WaitForElement(By.Id("third-country-transit"));
         private IReadOnlyCollection<IWebElement> internalMarketSubOptions => internalMarketConditional.FindElements(By.CssSelector("input[type='radio'][name='internal-market']"));
         #endregion

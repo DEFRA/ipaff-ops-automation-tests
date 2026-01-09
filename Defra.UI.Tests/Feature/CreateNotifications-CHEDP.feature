@@ -67,14 +67,14 @@ Scenario: User creates and submits a B2C consignment notification - CHEDP
 	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
 	When the user clicks Add a consignee
 	Then the Search for an existing consignee page should be displayed
-	When the user selects a consignee "XYZ" with a UK country
-	Then the chosen consignee "XYZ" should be displayed on the Addresses page
+	When the user selects a consignee "DEF" with a UK country
+	Then the chosen consignee "DEF" should be displayed on the Addresses page
 	When the user clicks Same as consignee for the Importer
-	Then the importer should be populated with the same details as the consignee "XYZ" on the Addresses page
+	Then the importer should be populated with the same details as the consignee "DEF" on the Addresses page
 	When the user clicks Add a place of destination
 	Then the Search for an existing place of destination page should be displayed
-	When the user selects a place of destination "XYZ" with a UK country
-	Then the chosen place of destination "XYZ" should be displayed on the Addresses page
+	When the user selects a place of destination "DEF" with a UK country
+	Then the chosen place of destination "DEF" should be displayed on the Addresses page
 	When the user clicks Save and continue
 	Then the Transport to the port of entry page should be displayed
 	When the user populates the transport details "BRISTOL (GBBRS)" "No" "Road vehicle" "123456" "Doc1234"
@@ -247,16 +247,16 @@ Scenario: User creates and submits a B2C consignment notification for Transit Re
 	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
 	When the user clicks Add a consignee
 	Then the Search for an existing consignee page should be displayed
-	When the user selects a consignee "XYZ" with a UK country
-	Then the chosen consignee "XYZ" should be displayed on the Addresses page
+	When the user selects a consignee "DEF" with a UK country
+	Then the chosen consignee "DEF" should be displayed on the Addresses page
 	When the user clicks Add an importer
 	Then the Search for an existing importer page should be displayed
-	When the user selects an importer "XYZ" with a UK country
+	When the user selects an importer "DEF" with a UK country
 	Then the chosen importer should be displayed on the Addresses page
 	When the user clicks Add a place of destination
 	Then the Search for an existing place of destination page should be displayed
-	When the user selects a place of destination "XYZ" with a UK country
-	Then the chosen place of destination "XYZ" should be displayed on the Addresses page
+	When the user selects a place of destination "DEF" with a UK country
+	Then the chosen place of destination "DEF" should be displayed on the Addresses page
 	When the user clicks Save and continue
 	Then the Transport to the port of entry page should be displayed
 	When the user populates the transport details "BRISTOL (GBBRS)" "No" "Road vehicle" "123456" "Doc1234"
@@ -426,12 +426,12 @@ Scenario: User creates and submits a B2C consignment notification for Transhipme
 	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
 	When the user clicks Add a consignee
 	Then the Search for an existing consignee page should be displayed
-	When the user selects a consignee "XYZ" with a UK country
-	Then the chosen consignee "XYZ" should be displayed on the Addresses page
+	When the user selects a consignee "DEF" with a UK country
+	Then the chosen consignee "DEF" should be displayed on the Addresses page
 	When the user clicks Same as consignee for the Importer
-	Then the importer should be populated with the same details as the consignee "XYZ" on the Addresses page
+	Then the importer should be populated with the same details as the consignee "DEF" on the Addresses page
 	When the user clicks Same as consignee for Place of destination
-	Then the place of destination should be populated with the same details as the consignee "XYZ" on the Addresses page
+	Then the place of destination should be populated with the same details as the consignee "DEF" on the Addresses page
 	When the user clicks Save and continue
 	Then the Transport to the port of entry page should be displayed
 	When the user populates the transport details "BRISTOL (GBBRS)" "No" "Road vehicle" "123456" "Doc1234"
@@ -593,12 +593,12 @@ Scenario: User creates and submits 2 B2C consignment notification with existing 
 	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
 	When the user clicks Add a consignee
 	Then the Search for an existing consignee page should be displayed
-	When the user selects a consignee "XYZ" with a UK country
-	Then the chosen consignee "XYZ" should be displayed on the Addresses page
+	When the user selects a consignee "DEF" with a UK country
+	Then the chosen consignee "DEF" should be displayed on the Addresses page
 	When the user clicks Same as consignee for the Importer
-	Then the importer should be populated with the same details as the consignee "XYZ" on the Addresses page
+	Then the importer should be populated with the same details as the consignee "DEF" on the Addresses page
 	When the user clicks Same as consignee for Place of destination
-	Then the place of destination should be populated with the same details as the consignee "XYZ" on the Addresses page
+	Then the place of destination should be populated with the same details as the consignee "DEF" on the Addresses page
 	When the user clicks Save and continue
 	Then the Transport to the port of entry page should be displayed
 	When the user populates the transport details "DOVER EAST (SEVINGTON BCP) (GBSEV)" "No" "Road vehicle" "123456" "Doc1234"
@@ -701,12 +701,12 @@ Scenario: User creates and submits 2 B2C consignment notification with existing 
 	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
 	When the user clicks Add a consignee
 	Then the Search for an existing consignee page should be displayed
-	When the user selects a consignee "XYZ" with a UK country
-	Then the chosen consignee "XYZ" should be displayed on the Addresses page
+	When the user selects a consignee "DEF" with a UK country
+	Then the chosen consignee "DEF" should be displayed on the Addresses page
 	When the user clicks Same as consignee for the Importer
-	Then the importer should be populated with the same details as the consignee "XYZ" on the Addresses page
+	Then the importer should be populated with the same details as the consignee "DEF" on the Addresses page
 	When the user clicks Same as consignee for Place of destination
-	Then the place of destination should be populated with the same details as the consignee "XYZ" on the Addresses page
+	Then the place of destination should be populated with the same details as the consignee "DEF" on the Addresses page
 	When the user clicks Save and continue
 	Then the Transport to the port of entry page should be displayed
 	When the user populates the transport details "FOLKESTONE - EUROTUNNEL (SEVINGTON BCP) (GBFOLS)" "No" "Road vehicle" "123456" "Doc1234"
@@ -977,12 +977,12 @@ Scenario: User creates a B2C consignment notification, updates it from the revie
 	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
 	When the user clicks Add a consignee
 	Then the Search for an existing consignee page should be displayed
-	When the user selects a consignee "XYZ" with a UK country
-	Then the chosen consignee "XYZ" should be displayed on the Addresses page
+	When the user selects a consignee "DEF" with a UK country
+	Then the chosen consignee "DEF" should be displayed on the Addresses page
 	When the user clicks Same as consignee for the Importer
-	Then the importer should be populated with the same details as the consignee "XYZ" on the Addresses page
+	Then the importer should be populated with the same details as the consignee "DEF" on the Addresses page
 	When the user clicks Same as consignee for Place of destination
-	Then the place of destination should be populated with the same details as the consignee "XYZ" on the Addresses page
+	Then the place of destination should be populated with the same details as the consignee "DEF" on the Addresses page
 	When the user clicks Save and continue
 	Then the Transport to the port of entry page should be displayed
 	When the user populates the transport details "LIVERPOOL (GBLIV)" "No" "Road vehicle" "123456" "Doc1234"
@@ -1043,16 +1043,16 @@ Scenario: User creates a B2C consignment notification, updates it from the revie
 	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
 	When the user clicks on Change link under 'Consignee'
 	Then the Search for an existing consignee page should be displayed
-	When the user selects a consignee "XYZ" with a UK country
-	Then the chosen consignee "XYZ" should be displayed on the Addresses page
+	When the user selects a consignee "DEF" with a UK country
+	Then the chosen consignee "DEF" should be displayed on the Addresses page
 	When the user clicks on Change link under 'Importer'
 	Then the Search for an existing importer page should be displayed
-	When the user selects an importer "XYZ" with a UK country
+	When the user selects an importer "DEF" with a UK country
 	Then the chosen importer should be displayed on the Addresses page
 	When the user clicks on Change link under 'Place of destination'
 	Then the Search for an existing place of destination page should be displayed
-	When the user selects a place of destination "XYZ" with a UK country
-	Then the chosen place of destination "XYZ" should be displayed on the Addresses page
+	When the user selects a place of destination "DEF" with a UK country
+	Then the chosen place of destination "DEF" should be displayed on the Addresses page
 	When the user clicks on Save and review
 	Then the Review your notification page should be displayed
 	When the user Clicks the change link under 'Contact address for consignment'
@@ -1088,16 +1088,16 @@ Scenario: User creates a B2C consignment notification, updates it from the revie
 	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
 	When the user clicks on Change link under 'Consignee'
 	Then the Search for an existing consignee page should be displayed
-	When the user selects a consignee "XYZ" with a UK country
-	Then the chosen consignee "XYZ" should be displayed on the Addresses page
+	When the user selects a consignee "DEF" with a UK country
+	Then the chosen consignee "DEF" should be displayed on the Addresses page
 	When the user clicks on Change link under 'Importer'
 	Then the Search for an existing importer page should be displayed
-	When the user selects an importer "XYZ" with a UK country
+	When the user selects an importer "DEF" with a UK country
 	Then the chosen importer should be displayed on the Addresses page
 	When the user clicks on Change link under 'Place of destination'
 	Then the Search for an existing place of destination page should be displayed
-	When the user selects a place of destination "XYZ" with a UK country
-	Then the chosen place of destination "XYZ" should be displayed on the Addresses page
+	When the user selects a place of destination "DEF" with a UK country
+	Then the chosen place of destination "DEF" should be displayed on the Addresses page
 	When the user clicks on Save and return to hub
 	When the user clicks on 'Review and submit' link
 	When the user clicks Save and continue
@@ -1246,14 +1246,14 @@ Scenario: User creates and submits a notification, override the risk decision an
 	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
 	When the user clicks Add a consignee
 	Then the Search for an existing consignee page should be displayed
-	When the user selects a consignee "XYZ" with a UK country
-	Then the chosen consignee "XYZ" should be displayed on the Addresses page
+	When the user selects a consignee "DEF" with a UK country
+	Then the chosen consignee "DEF" should be displayed on the Addresses page
 	When the user clicks Same as consignee for the Importer
-	Then the importer should be populated with the same details as the consignee "XYZ" on the Addresses page
+	Then the importer should be populated with the same details as the consignee "DEF" on the Addresses page
 	When the user clicks Add a place of destination
 	Then the Search for an existing place of destination page should be displayed
-	When the user selects a place of destination "XYZ" with a UK country
-	Then the chosen place of destination "XYZ" should be displayed on the Addresses page
+	When the user selects a place of destination "DEF" with a UK country
+	Then the chosen place of destination "DEF" should be displayed on the Addresses page
 	When the user clicks Save and continue
 	Then the Transport to the port of entry page should be displayed
 	When the user populates the transport details "BRISTOL (GBBRS)" "No" "Road vehicle" "123456" "Doc1234"
@@ -1485,12 +1485,12 @@ Scenario: User submits a notification as no inspection required, override the ri
 	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
 	When the user clicks Add a consignee
 	Then the Search for an existing consignee page should be displayed
-	When the user selects a consignee "XYZ" with a UK country
-	Then the chosen consignee "XYZ" should be displayed on the Addresses page
+	When the user selects a consignee "DEF" with a UK country
+	Then the chosen consignee "DEF" should be displayed on the Addresses page
 	When the user clicks Same as consignee for the Importer
-	Then the importer should be populated with the same details as the consignee "XYZ" on the Addresses page
+	Then the importer should be populated with the same details as the consignee "DEF" on the Addresses page
 	When the user clicks Same as consignee for Place of destination
-	Then the place of destination should be populated with the same details as the consignee "XYZ" on the Addresses page
+	Then the place of destination should be populated with the same details as the consignee "DEF" on the Addresses page
 	When the user clicks Save and continue
 	Then the Transport to the port of entry page should be displayed
 	When the user populates the transport details "BRISTOL (GBBRS)" "No" "Road vehicle" "123456" "Doc1234"
