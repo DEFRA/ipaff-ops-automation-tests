@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
+using System.Globalization;
 
 namespace Defra.UI.Tests.Steps.IPAFF
 {
@@ -110,11 +111,26 @@ namespace Defra.UI.Tests.Steps.IPAFF
             ValidateIfExists("AcceptableFor", reviewOutcomeDecisionPage?.GetAcceptanceDecision(), ref allDataMatches, mismatches);
             ValidateIfExists("AcceptableForSubOption", GetAcceptableForSubOptionValue(), ref allDataMatches, mismatches);
 
-            // Temporary Admission Horses - Decision Fields
-            ValidateIfExists("ExitDate", reviewOutcomeDecisionPage?.GetDeadline(), ref allDataMatches, mismatches);
-            ValidateIfExists("ExitBCP", reviewOutcomeDecisionPage?.GetExitBCP(), ref allDataMatches, mismatches);
+            // Determine decision type from scenario context
+            var acceptableFor = _scenarioContext.ContainsKey("AcceptableFor")
+                ? _scenarioContext.Get<string>("AcceptableFor")
+                : string.Empty;
 
-            // Controlled Destination
+            // Temporary Admission Horses - Decision Fields (only validate if decision is Temporary admission horses)
+            if (acceptableFor.Equals("Temporary admission horses", StringComparison.OrdinalIgnoreCase))
+            {
+                ValidateIfExists("ExitDate", reviewOutcomeDecisionPage?.GetDeadline(), ref allDataMatches, mismatches);
+                ValidateExitBCP("ExitBCP", reviewOutcomeDecisionPage?.GetExitBCP(), ref allDataMatches, mismatches);
+            }
+
+            // Transit - Decision Fields (only validate if decision is Transit)
+            if (acceptableFor.Equals("Transit", StringComparison.OrdinalIgnoreCase))
+            {
+                ValidateExitBCP("ExitBCP", reviewOutcomeDecisionPage?.GetTransitExitBCP(), ref allDataMatches, mismatches);
+                ValidateTransitDestinationCountry("DestinationCountry", reviewOutcomeDecisionPage?.GetTransitDestinationCountry(), ref allDataMatches, mismatches);
+            }
+
+            // Controlled Destination (only for Internal market decisions)
             ValidateIfExists("ControlledDestinationName", reviewOutcomeDecisionPage?.GetControlledDestinationName(), ref allDataMatches, mismatches);
             ValidateIfExists("ControlledDestinationAddress", reviewOutcomeDecisionPage?.GetControlledDestinationAddress(), ref allDataMatches, mismatches);
 
@@ -359,6 +375,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
                 if (!string.IsNullOrEmpty(reviewValue))
                 {
+                    // The review page shows the Commodity sampled as Commodity Code - Description (e.g., "0103 - Live Swine") 
+                    // Therefore we need scenario context values for  the commodity code and description
+
                     var isMatch = expectedValue.Equals(reviewValue.Trim(), StringComparison.OrdinalIgnoreCase);
 
                     if (!isMatch)
@@ -380,6 +399,130 @@ namespace Defra.UI.Tests.Steps.IPAFF
             else
             {
                 Console.WriteLine($"[REVIEW OUTCOME VALIDATION] ⊘ CommoditySampled: Skipped (not in context)");
+            }
+        }
+
+        private void ValidateExitBCP(string contextKey, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
+        {
+            if (_scenarioContext.ContainsKey(contextKey))
+            {
+                var expectedExitBCP = _scenarioContext.Get<string>(contextKey);
+
+                if (!string.IsNullOrEmpty(expectedExitBCP) && !string.IsNullOrEmpty(reviewValue))
+                {
+                    // The review page shows the code (e.g., "GBMNC4" or "GBLHR4A")
+                    // The scenario context has the full name (e.g., "Manchester Airport (animals) - GBMNC4" or "Heathrow Airport - HARC (animals)")
+
+                    // Extract the code by finding the last occurrence of " - " and taking everything after it
+                    var lastDashIndex = expectedExitBCP.LastIndexOf(" - ");
+                    var expectedCode = lastDashIndex >= 0
+                        ? expectedExitBCP.Substring(lastDashIndex + 3).Trim()
+                        : expectedExitBCP;
+
+                    var isMatch = reviewValue.Trim().Equals(expectedCode, StringComparison.OrdinalIgnoreCase);
+
+                    if (!isMatch)
+                    {
+                        allDataMatches = false;
+                        mismatches.Add($"Transit {contextKey}: Expected code '{expectedCode}', Found '{reviewValue?.Trim()}'");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[REVIEW OUTCOME VALIDATION] ✓ Transit {contextKey}: '{expectedCode}' matches");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"[REVIEW OUTCOME VALIDATION] ⊘ Transit {contextKey}: Skipped (empty value)");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[REVIEW OUTCOME VALIDATION] ⊘ Transit {contextKey}: Skipped (not in context)");
+            }
+        }
+
+        private void ValidateTransitDestinationCountry(string contextKey, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
+        {
+            if (_scenarioContext.ContainsKey(contextKey))
+            {
+                var expectedCountry = _scenarioContext.Get<string>(contextKey);
+
+                if (!string.IsNullOrEmpty(expectedCountry) && !string.IsNullOrEmpty(reviewValue))
+                {
+                    // The review page shows the country code (e.g., "QA" for Qatar)
+                    // The scenario context has the full country name (e.g., "Qatar")
+
+                    var expectedCode = GetCountryISOCode(expectedCountry);
+
+                    var isMatch = reviewValue.Trim().Equals(expectedCode, StringComparison.OrdinalIgnoreCase);
+
+                    if (!isMatch)
+                    {
+                        allDataMatches = false;
+                        mismatches.Add($"Transit {contextKey}: Expected code '{expectedCode}' for '{expectedCountry}', Found '{reviewValue?.Trim()}'");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[REVIEW OUTCOME VALIDATION] ✓ Transit {contextKey}: '{expectedCode}' ({expectedCountry}) matches");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"[REVIEW OUTCOME VALIDATION] ⊘ Transit {contextKey}: Skipped (empty value)");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[REVIEW OUTCOME VALIDATION] ⊘ Transit {contextKey}: Skipped (not in context)");
+            }
+        }
+
+        /// <summary>
+        /// Gets the ISO 3166-1 alpha-2 country code for a given country name.
+        /// Returns the input unchanged if it's already a 2-letter code or if no match is found.
+        /// </summary>
+        private string GetCountryISOCode(string countryName)
+        {
+            // If it's already a 2-letter code, return as-is
+            if (countryName.Length == 2)
+            {
+                return countryName.ToUpper();
+            }
+
+            try
+            {
+                // Try to find the country by English name using CultureInfo
+                var cultures = CultureInfo.GetCultures(CultureTypes.SpecificCultures);
+
+                foreach (var culture in cultures)
+                {
+                    try
+                    {
+                        var region = new RegionInfo(culture.Name);
+
+                        // Check if the English name matches
+                        if (region.EnglishName.Equals(countryName, StringComparison.OrdinalIgnoreCase) ||
+                            region.DisplayName.Equals(countryName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            return region.TwoLetterISORegionName;
+                        }
+                    }
+                    catch
+                    {
+                        // Skip cultures that don't have region info
+                        continue;
+                    }
+                }
+
+                // If no match found, return the original value
+                Console.WriteLine($"[WARNING] Could not find ISO code for country: '{countryName}', using as-is");
+                return countryName;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] Error getting ISO code for '{countryName}': {ex.Message}");
+                return countryName;
             }
         }
     }

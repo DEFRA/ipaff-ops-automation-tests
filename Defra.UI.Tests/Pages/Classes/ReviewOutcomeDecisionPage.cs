@@ -42,6 +42,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement acceptanceDecision => _driver.FindElement(By.Id("acceptance-decision"));
         private By deadlineBy => By.XPath("//tr[@id='decision-row-2']//td[contains(@class, 'check-status')]");
         private By exitBCPBy => By.XPath("//tr[@id='decision/temporaryexitbip']//td[contains(@class, 'check-status')]");
+        private By transitExitBCPBy => By.XPath("//tr[@id='decision/transitexitbip']//td[contains(@class, 'check-status')]");
+        private By transitDestinationCountryBy => By.XPath("//tr[@id='decision/transitdestinationcountry']//td[contains(@class, 'check-status')]");
 
         // Seal Numbers
         private IWebElement sealNumbersStatus => _driver.FindElement(By.Id("notifications-not-found"));
@@ -461,6 +463,16 @@ namespace Defra.UI.Tests.Pages.Classes
         public string? GetAcceptanceDecision()
         {
             return SafelyGetElementText(acceptanceDecision);
+        }
+
+        public string? GetTransitExitBCP()
+        {
+            return SafelyGetElementTextByLocator(transitExitBCPBy);
+        }
+
+        public string? GetTransitDestinationCountry()
+        {
+            return SafelyGetElementTextByLocator(transitDestinationCountryBy);
         }
 
         // CHED-A specific

@@ -17,5 +17,7 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void ClickAddADocument();
         bool IsRowPresent();
         string GetFileName { get; }
+        bool IsDownloadAttachmentLinkPresent();
+        bool IsRemoveAttachmentLinkPresent();
     }
 }

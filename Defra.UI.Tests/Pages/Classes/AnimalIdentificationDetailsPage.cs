@@ -41,35 +41,30 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void EnterIdentificationDetails(string identificationDetails)
         {
-            txtIdentificationDetails.Click();
             txtIdentificationDetails.Clear();
             txtIdentificationDetails.SendKeys(identificationDetails);
         }
 
         public void EnterDescription(string description)
         {
-            txtDescription.Click();
             txtDescription.Clear();
             txtDescription.SendKeys(description);
         }
 
         public void EnterHorseName(string horseName)
         {
-            txtHorseName.Click();
             txtHorseName.Clear();
             txtHorseName.SendKeys(horseName);
         }
 
         public void EnterMicrochipNumber(string microchipNumber)
         {
-            txtMicrochipNumber.Click();
             txtMicrochipNumber.Clear();
             txtMicrochipNumber.SendKeys(microchipNumber);
         }
 
         public void EnterPassportNumber(string passportNumber)
         {
-            txtPassportNumber.Click();
             txtPassportNumber.Clear();
             txtPassportNumber.SendKeys(passportNumber);
         }

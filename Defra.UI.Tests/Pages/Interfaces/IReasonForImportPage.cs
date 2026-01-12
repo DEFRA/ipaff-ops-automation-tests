@@ -18,8 +18,15 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void EnterConsignmentLeavingTime(string hours, string minutes);
         void SelectTransitedCountry(string transitedCountry);
         void SelectDestinationCountry(string destinationCountry);
+        void SelectDestinationCountryBasedOnContext(string destinationCountry);
         void SelectTranshipmentDestination(string transhipmentCountry);
         void EnterExitDate(int daysFromToday);
         void SelectExitBCP(string exitBCP);
+        void SelectExitBCPBasedOnContext(string exitBCP);
+        bool VerifyInternalMarketHasSubOptions(int expectedCount);
+        bool VerifyTranshipmentHasDestinationCountryDropdown();
+        bool VerifyTransitHasExitBCPAndDestinationDropdowns();
+        bool VerifyReentryHasNoSubOptions();
+        bool VerifyTemporaryAdmissionHasExitDateAndBCPDropdown();
     }
 }

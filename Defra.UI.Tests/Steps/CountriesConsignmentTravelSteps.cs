@@ -32,7 +32,22 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserSelectsForWillTheConsignmentTravelThroughAnyOtherCountriesBeforeReachingTheUK(string country)
         {
             countriesConsignmentTravelPage?.SelectCountry(country);
-            _scenarioContext.Add("CountriesConsignmentWillTravelThrough", country);
+
+            // Handle multiple transited countries by storing as a list
+            if (_scenarioContext.TryGetValue("CountriesConsignmentWillTravelThrough", out var existingCountries) && existingCountries is List<string> countries)
+            {
+                countries.Add(country);
+            }
+            else
+            {
+                _scenarioContext["CountriesConsignmentWillTravelThrough"] = new List<string> { country };
+            }
+        }
+
+        [When("the user clicks Add another country")]
+        public void WhenTheUserClicksAddAnotherCountry()
+        {
+            countriesConsignmentTravelPage?.ClickAddAnotherCountry();
         }
     }
 }

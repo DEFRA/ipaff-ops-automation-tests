@@ -114,10 +114,47 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the exit BCP is correct")]
         public void ThenTheExitBCPIsCorrect()
         {
-            var exitBCP = decisionPage?.GetExitBCP();
+            var actualExitBCP = decisionPage?.GetExitBCP();
             var expectedExitBCP = _scenarioContext.Get<string>("ExitBCP");
 
-            Assert.That(exitBCP, Does.Contain(expectedExitBCP), $"Exit BCP mismatch. Expected: {expectedExitBCP}, Actual: {exitBCP}");
+            // Extract the name part by finding the last " - " and taking everything before it
+            // Example: "London Borough of Hillingdon Heathrow Airport Imported Food Office - ADADA" 
+            //          → "London Borough of Hillingdon Heathrow Airport Imported Food Office"
+            var lastDashIndex = expectedExitBCP.LastIndexOf(" - ");
+            var expectedName = lastDashIndex >= 0
+                ? expectedExitBCP.Substring(0, lastDashIndex).Trim()
+                : expectedExitBCP;
+
+            Assert.That(actualExitBCP, Is.EqualTo(expectedName),
+                $"Exit BCP mismatch. Expected: '{expectedName}', Actual: '{actualExitBCP}'");
+        }
+
+        [Then("the exit BCP is prepopulated with value entered in Part 1")]
+        public void ThenTheExitBCPIsPrepopulatedWithValueEnteredInPart1()
+        {
+            var expectedExitBCP = _scenarioContext.Get<string>("ExitBCP");
+            var actualExitBCP = decisionPage?.GetTransitExitBCP();
+
+            // Extract the name part by finding the last " - " and taking everything before it
+            // Example: "Manchester Airport (animals) - GBMNC4" → "Manchester Airport (animals)"
+            // Example: "Heathrow Airport - HARC (animals) - GBLHR4A" → "Heathrow Airport - HARC (animals)"
+            var lastDashIndex = expectedExitBCP.LastIndexOf(" - ");
+            var expectedName = lastDashIndex >= 0
+                ? expectedExitBCP.Substring(0, lastDashIndex).Trim()
+                : expectedExitBCP;
+
+            Assert.That(actualExitBCP, Is.EqualTo(expectedName),
+                $"Exit BCP is not prepopulated correctly. Expected: '{expectedName}', Actual: '{actualExitBCP}'");
+        }
+
+        [Then("the destination country is prepopulated with value entered in Part 1")]
+        public void ThenTheDestinationCountryIsPrepopulatedWithValueEnteredInPart1()
+        {
+            var expectedDestinationCountry = _scenarioContext.Get<string>("DestinationCountry");
+            var actualDestinationCountry = decisionPage?.GetDestinationCountry();
+
+            Assert.That(actualDestinationCountry, Is.EqualTo(expectedDestinationCountry),
+                $"Destination country is not prepopulated correctly. Expected: '{expectedDestinationCountry}', Actual: '{actualDestinationCountry}'");
         }
     }
 }
