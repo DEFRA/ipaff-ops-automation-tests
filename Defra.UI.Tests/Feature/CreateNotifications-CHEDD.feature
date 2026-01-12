@@ -72,13 +72,13 @@ Scenario: User creates and submits a B2C consignment notification - CHED D
 	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
 	When the user clicks Add a consignee
 	Then the Search for an existing consignee page should be displayed
-	When the user selects a consignee "XYZ"
+	When the user selects a consignee "DEF"
 	Then the chosen consignee should be displayed
 	When the user clicks Same as consignee for the Importer
 	Then the importer should be populated with the same details as the consignee
 	When the user clicks Add a place of destination
 	Then the Search for an existing place of destination page should be displayed
-	When the user selects a place of destination 'XYZ'
+	When the user selects a place of destination 'DEF'
 	Then the chosen place of destination should be displayed
 	When the user clicks Save and continue
 	Then the Transport to the port of entry page should be displayed
@@ -166,7 +166,7 @@ Scenario: User creates and submits a B2C consignment notification - CHED D
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
 
-Scenario: User creates and submits a B2C consignment notification - CHED D (SPS -9107)	
+Scenario: User creates and submits a notification, override the risk decision and reject the notification - CHED D	
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
@@ -218,9 +218,6 @@ Scenario: User creates and submits a B2C consignment notification - CHED D (SPS 
 	And the user uploads the document 'IPAFFS Test Document - Exceeds size' in the format '.png' that exceeds size limit
 	Then the error message for exceeding file size should be displayed
 	When the user clicks on Cancel link
-	#And the user clicks Save and continue
-	#Then the Addresses page should be displayed
-	#Click cancel
 	Then the Accompanying documents page should be displayed
 	When the user clicks on Add attachment link
 	And the user uploads the document 'IPAFFS Test Health Certificate' in the format '.docx'
@@ -229,17 +226,25 @@ Scenario: User creates and submits a B2C consignment notification - CHED D (SPS 
 	Then the Addresses page should be displayed
 	When the user clicks Add a consignor or exporter
 	Then the Search for an existing consignor or exporter page should be displayed
-	When the user selects any one of the displayed consignors or exporters
-	Then the chosen consignor or exporter should be displayed on the Addresses page
+	#When the user selects any one of the displayed consignors or exporters
+	#Then the chosen consignor or exporter should be displayed on the Addresses page
+	#When the user selects one of the displayed consignors or exporters "ABC"
+	#Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter should be displayed
 	When the user clicks Add a consignee
 	Then the Search for an existing consignee page should be displayed
-	When the user selects a consignee
+	#When the user selects a consignee
+	#When the user selects a consignee "DEF" with a UK country
+	#Then the chosen consignee "DEF" should be displayed on the Addresses page
+	When the user selects a consignee 'DEF'
 	Then the chosen consignee should be displayed
 	When the user clicks Same as consignee for the Importer
 	Then the importer should be populated with the same details as the consignee
 	When the user clicks Add a place of destination
 	Then the Search for an existing place of destination page should be displayed
-	When the user selects a place of destination
+	#When the user selects a place of destination
+	When the user selects a place of destination 'DEF'
 	Then the chosen place of destination should be displayed
 	When the user clicks Save and continue
 	Then the Transport to the port of entry page should be displayed
@@ -260,7 +265,6 @@ Scenario: User creates and submits a B2C consignment notification - CHED D (SPS 
 	When the user clicks Save and continue
 	Then the Declaration page should be displayed
 	When the user clicks Submit notification
-	#check
 	Then the Confirmation page should be displayed with the initial risk assessment
 	When the user records the IPAFFS User details and CHED Reference
 	When the user clicks Return to your dashboard
@@ -323,13 +327,6 @@ Scenario: User creates and submits a B2C consignment notification - CHED D (SPS 
 	When the user selects 'Use for other purpose' 'Not acceptable' in decision page
 	And the user enters currendate in decision page
 	And the user clicks Save and continue
-	#Check
-	Then the Select a controlled destination page should be displayed
-	When the user clicks Add a controlled destination
-	Then the Search for an existing controlled destination page should be displayed
-	When the user selects a controlled destination
-	Then the chosen controlled destination should be displayed
-	When the user clicks Save and continue
 	Then the Reason for Refusal page should be displayed
 	When the user selects "Other, Create Border Notification" as reason for refusal
 	And the user selects "Chemical Contamination" as another reason for refusal
@@ -338,32 +335,69 @@ Scenario: User creates and submits a B2C consignment notification - CHED D (SPS 
 	When the user populates the Date and time of checks
 	And user clicks Submit decision
 	Then the Your checks have been submitted page should be displayed
-	#Add step def
-	And a border notification banner displaying the reason for refusal is displayed
+	And a border notification banner displaying the reason for refusal 'Refused for chemical contamination, other border notification reasons' under the title 'The result of this decision requires a border notification to be created' is displayed
 	When the user clicks on Create border notification button
 	Then Enter the details of the border notification page should be displayed
 	When the user selects "Food" as the Notification type
 	And the user selects "border control - consignment detained" as the Notification basis
 	And the user selects "Alcoholic Beverages" as the Product category
 	And the user enters "Food" as the Product name
-	And the user enters "Flipflop" as the Brand / trade name
+	And the user enters "Flipflop" as the Brand name
 	And the user enters "Ingredients" in the Other labelling field
 	And the user enters "Destroy" in the Other information field
 	And the user selects "Use by date" under the Durability date radio options
-	And the user enters currendate under the Use by date radio
 	And the user selects 'not serious' as Risk decision
 	And the user selects 'animal health' as Impact on
 	And the user selects 'GMO / novel food' as Hazard category
 	And the user selects 'chemical treatment' as Measure taken
 	And the user clicks Save and continue
 	Then the Accompanying documents page should be displayed on the Inspector application
-	When the user selects Document type "Air waybill"
-	And the user enters Document reference "INV12345"
-	And the user selects a future date from the date picker
+	When the user selects Document type "Air Waybill" for creating border notification
+	And the user enters Document reference "INV12345" for creating border notification
 	And the user clicks on Add attachment link
-	And the user uploads the document 'IPAFFS Test Document' in the format '.docx'
-	Then the document 'IPAFFS Test Document' '.docx' is uploaded successfully
+	And the user uploads the document 'IPAFFS Test Document' in the format '.docx' for creating border notification
+	Then the Accompanying documents page should be displayed on the Inspector application
 	And the user clicks Save and continue
 	Then the Review border notification page should be displayed
 	And the border notification details reflect the information added
 	When the user clicks on the Submit button
+	Then your border notification has been submitted page should be displayed
+	When the user records the BN number
+	And the user clicks Return to dashboard button
+	Then Border notifications dashboard page should be displayed
+	When the user searches for the newly created border notification
+	Then the border notification found with status "NEW"
+	When the user logs out of Border notifications in IPAFFS Part 2 
+	Then the user should be logged out successfully
+	When I navigate to the IPAFF Inspector application
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF Gateway Inspector credentials and signin
+	Then the user should be logged into Import notifications page
+	When the user searches for the newly created notification on the Import notifications page
+	Then the notification is displayed on the inspector dashboard
+	When the user clicks View CHED link
+	Then the certificate should be displayed in a new browser tab
+	When the user checks that the data in the certificate matches the data entered into the notification
+	And the user closes the PDF browser tab
+	Then the browser tab is closed
+	When the user logs out of IPAFFS Part 2
+	Then the user should be logged out successfully
+	When the user navigate to the BTMS application
+	Then I click Sign in button
+	And I should see type of Gateway login page
+	And I have selected "Government Gateway" as login type
+	And I click Sign in button
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the BTMS Sign in using Government Gateway page
+	When I have provided the BTMS credentials and signin
+	Then the BTMS search screen should be displayed
+	When the user searches for the CHED created earlier
+	Then the BTMS search result screen should be displayed
+	And the user validates the commodity code "12024200", description "Shelled, whether or not broken", quantity "1000", authority "FNAO" and decision "Non Acceptable" for commodity "1" after the decision is given
+	When the user logs out of BTMS
+	Then the user should be logged out successfully

@@ -43,6 +43,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
             AppendStringToScenarioContextArray(_scenarioContext, "DocumentType", type);
         }
 
+        [When("the user selects Document type {string} for creating border notification")]
+        public void WhenTheUserSelectsDocumentTypeForCreatingBorderNotification(string type)
+        {
+            accompanyingDocumentsPage?.SelectDocumentType(type);
+            _scenarioContext["AccompanyingDocumentTypeBN"] = type;
+        }
+
         [When("the user selects Document type for the next notification {string}")]
         public void WhenTheUserSelectsDocumentTypeForTheNextNotification(string type)
         {
@@ -88,6 +95,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
             AppendStringToScenarioContextArray(_scenarioContext, "DocumentReference", reference);
         }
 
+        [When("the user enters Document reference {string} for creating border notification")]
+        public void WhenTheUserEntersDocumentReferenceForCreatingBorderNotification(string reference)
+        {
+            accompanyingDocumentsPage?.EnterDocumentReference(reference);
+            _scenarioContext["AccompanyingDocumentRefBN"] = reference;
+        }
 
         [When("the user enters Document reference for the next notification {string}")]
         public void WhenTheUserEntersDocumentReferenceForTheNextNotification(string reference)
@@ -95,7 +108,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             accompanyingDocumentsPage?.EnterDocumentReference(reference);
             UpdateStringToScenarioContextArray(_scenarioContext, "DocumentReference", reference);
         }
-
 
         [When("the user enters date of issue {string}")]
         public void WhenTheUserEntersDateOfIssue(string dateString)
@@ -139,6 +151,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             if(!filename.Contains("Exceeds size"))
                 _scenarioContext["DocumentName"] = filename;
+        }
+
+        [When("the user uploads the document {string} in the format {string} for creating border notification")]
+        public void WhenTheUserUploadsTheDocumentInTheFormatForCreatingBorderNotification(string name, string format)
+        {
+            var filename = name + format;
+            accompanyingDocumentsPage?.AddAccompanyingDocument(filename);
+
+            _scenarioContext["AccompanyingDocumentFileNameBN"] = filename;
         }
 
         [Then("the document {string} {string} is uploaded successfully")]
