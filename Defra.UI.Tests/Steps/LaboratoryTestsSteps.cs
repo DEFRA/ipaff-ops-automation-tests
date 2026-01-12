@@ -207,6 +207,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             laboratoryTestsPage?.ClickAddAnotherTest();
         }
 
+        [Then("the user verifies multiple Laboratory tests are displayed with Results {string}")]
         [Then("the user verifies multiple Laboratory tests are entered with Results {string}")]
         public void ThenTheUserVerifiesMultipleLaboratoryTestsAreEnteredWithResults(string expectedResult)
         {
@@ -214,6 +215,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
             {
                 Assert.True(laboratoryTestsPage?.VerifyMultipleLabTestsWithPendingResults(2),
                     "Failed to verify multiple laboratory tests with Pending results");
+            }
+            else if (expectedResult.Equals("Satisfactory", StringComparison.OrdinalIgnoreCase))
+            {
+                Assert.True(laboratoryTestsPage?.VerifyMultipleLabTestsWithSatisfactoryResults(2),
+                    "Failed to verify multiple laboratory tests with Satisfactory results");
             }
             else
             {

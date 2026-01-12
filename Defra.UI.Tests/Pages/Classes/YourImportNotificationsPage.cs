@@ -146,5 +146,10 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             return _driver.IsElementDisplayed(GetShowNotificationLinkBy(chedReference));
         }
+
+        public void ClickViewDetails(string chedReference)
+        {
+            _driver.FindElement(GetViewDetailsLinkBy(chedReference)).Click();
+        }
     }
 }

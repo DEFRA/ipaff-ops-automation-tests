@@ -13,7 +13,12 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects
         private IWebElement pageTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
-     
+        private By CopyAsNewButtonBy => By.XPath("//button[@type='submit' and @value='Copy as new']");
+        private By ViewCHEDButtonBy => By.Id("show-notification");
+        private By ChangeLinksBy => By.XPath("//a[text()='Change']");
+        private IWebElement lnkChange(string section) => _driver.FindElement(By.XPath($"(//*[normalize-space()='{section}']/following::a)[1]"));
+        private By DashboardLinkBy => By.XPath("//a[@class='govuk-breadcrumbs__link' and @href='/notification/pre/protected/notifications']");
+
         // About the consignment
         private IWebElement importType => _driver.FindElement(By.Id("importing"));
         private IWebElement countryOfOrigin => _driver.FindElement(By.Id("country-of-origin"));
@@ -98,10 +103,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement routeCountries => _driver.FindElement(By.XPath("//td[text()='Route']//following-sibling::td"));
         private IWebElement notifyTransportContacts => _driver.FindElement(By.Id("transporter-contact-yesnoindicator"));
         private IWebElement consignmentContactAddress => _driver.FindElement(By.Id("organisation-branch-address-address"));
-        private IReadOnlyCollection<IWebElement> divAboutTheConsignmentDetails => _driver.WaitForElements(By.XPath("//div[@id='document-pet-card']//dl/div"));
-                
-        private IWebElement lnkChange(string section) => _driver.FindElement(By.XPath($"(//*[normalize-space()='{section}']/following::a)[1]"));
-
+        private IReadOnlyCollection<IWebElement> divAboutTheConsignmentDetails => _driver.WaitForElements(By.XPath("//div[@id='document-pet-card']//dl/div"));               
 
         //Error Message
         private IReadOnlyCollection<IWebElement> lblErrorMessages => _driver.FindElements(By.XPath("//div[@class='govuk-error-summary']/div/ul/li"));
@@ -858,6 +860,42 @@ namespace Defra.UI.Tests.Pages.Classes
                 msg.Contains(errorMessage, StringComparison.OrdinalIgnoreCase));
 
             return (containsSpecificError, allErrorMessages);
+        }
+
+        public bool IsCopyAsNewButtonDisplayed()
+        {
+            return _driver.IsElementDisplayed(CopyAsNewButtonBy);
+        }
+
+        public bool IsViewCHEDButtonDisplayed()
+        {
+            return _driver.IsElementDisplayed(ViewCHEDButtonBy);
+        }
+
+        public bool AreChangeLinksNotDisplayed()
+        {
+            try
+            {
+                var changeLinks = _driver.FindElements(ChangeLinksBy);
+                var displayedLinks = changeLinks.Where(link => link.IsElementDisplayed()).ToList();
+
+                if (displayedLinks.Count == 0)
+                {
+                    return true;
+                }
+
+                Console.WriteLine($"✗ Found {displayedLinks.Count} Change link(s) displayed when expecting none");
+                return false;
+            }
+            catch (NoSuchElementException)
+            {
+                return true;
+            }
+        }
+
+        public void ClickDashboardLink()
+        {
+            _driver.FindElement(DashboardLinkBy).Click();
         }
     }
 }

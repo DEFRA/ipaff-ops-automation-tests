@@ -38,5 +38,6 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void ClickAddAnotherTest();
         int GetLabTestCount();
         bool VerifyMultipleLabTestsWithPendingResults(int expectedMinimumCount = 2);
+        bool VerifyMultipleLabTestsWithSatisfactoryResults(int expectedMinimumCount = 2);
     }
 }

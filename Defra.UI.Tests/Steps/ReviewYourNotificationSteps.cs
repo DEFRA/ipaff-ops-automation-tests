@@ -522,5 +522,29 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             Assert.False(hasError, "Error validation passed - no error messages found");
         }
+
+        [Then("the Copy as new button should be available")]
+        public void ThenTheCopyAsNewButtonShouldBeAvailable()
+        {
+            Assert.True(reviewPage?.IsCopyAsNewButtonDisplayed(), "Copy as new button is not displayed");
+        }
+
+        [Then("the View CHED button should be available")]
+        public void ThenTheViewCHEDButtonShouldBeAvailable()
+        {
+            Assert.True(reviewPage?.IsViewCHEDButtonDisplayed(), "View CHED button is not displayed");
+        }
+
+        [Then("the Change links should not be available")]
+        public void ThenTheChangeLinksShouldNotBeAvailable()
+        {
+            Assert.True(reviewPage?.AreChangeLinksNotDisplayed(), "Change links should not be displayed but were found");
+        }
+
+        [When("the user clicks on the Dashboard link")]
+        public void WhenTheUserClicksOnTheDashboardLink()
+        {
+            reviewPage?.ClickDashboardLink();
+        }
     }
 }

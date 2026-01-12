@@ -276,5 +276,30 @@ namespace Defra.UI.Tests.Pages.Classes
             Console.WriteLine($"Verified {testCount} lab tests, all with 'Pending' results");
             return true;
         }
+
+        public bool VerifyMultipleLabTestsWithSatisfactoryResults(int expectedMinimumCount = 2)
+        {
+            var testCount = GetLabTestCount();
+
+            if (testCount < expectedMinimumCount)
+            {
+                Console.WriteLine($"Expected at least {expectedMinimumCount} lab tests, but found {testCount}");
+                return false;
+            }
+
+            // Verify all tests have "Satisfactory" status
+            for (int i = 0; i < testCount; i++)
+            {
+                var result = GetLabTestResult(i);
+                if (!result.Equals("Satisfactory", StringComparison.OrdinalIgnoreCase))
+                {
+                    Console.WriteLine($"Lab test at index {i} has result '{result}', expected 'Satisfactory'");
+                    return false;
+                }
+            }
+
+            Console.WriteLine($"Verified {testCount} lab tests, all with 'Satisfactory' results");
+            return true;
+        }
     }
 }

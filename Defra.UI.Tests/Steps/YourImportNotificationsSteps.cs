@@ -142,5 +142,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var chedReference = _scenarioContext.Get<string>("CHEDReference");
             Assert.True(importNotificationsPage?.IsShowNotificationLinkPresent(chedReference), "Show notification link is not present");
         }
+
+        [When("the user clicks View details for the notification")]
+        public void WhenTheUserClicksViewDetailsForTheNotification()
+        {
+            var chedReference = _scenarioContext.Get<string>("CHEDReference");
+            importNotificationsPage?.ClickViewDetails(chedReference);
+        }
     }
 }
