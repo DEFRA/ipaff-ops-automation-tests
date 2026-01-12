@@ -28,7 +28,6 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtEnteredCommodityDesc => _driver.WaitForElement(By.XPath("//*[@class='govuk-table__row  ']/td[2]"));
         private IWebElement txtNetWeight => _driver.FindElement(By.XPath("//*[@class='govuk-table species-table-cheda']//input[@class='govuk-input net-weight ']"));
         private IWebElement txtNumberOfPackages => _driver.FindElement(By.XPath("//*[@class='govuk-table species-table-cheda']//input[@class='govuk-input number-of-packages ']"));
-        //private IWebElement ddlPackageType => _driver.FindElement(By.XPath("//*[@class='govuk-table species-table-cheda']//*[@class='govuk-select type-of-package govuk-!-width-full']"));
         private IWebElement ddlPackageType => _driver.FindElement(By.XPath("//*[@class='govuk-table species-table-cheda']//*[contains(@class,'type-of-package')]"));
         private IWebElement speciesTable => _driver.FindElement(By.XPath("//*[@class='govuk-table species-table-cheda']"));
         private List<IWebElement> commodityTreeList => _driver.WaitForElements(By.XPath("//ul[@class='commodity-tree']/li//span[@class='commodity-description-links-container']/button")).ToList();
