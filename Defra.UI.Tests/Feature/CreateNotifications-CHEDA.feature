@@ -768,66 +768,81 @@ Scenario: User creates and submits a B2C consignment notification with inspector
 	Then the Review outcome decision page should be displayed
 	And the user should see an error message 'A document type must be entered' in review page
 	And the user should see an error message 'Lab results pending for this consignment' in review page
-	#When the user Clicks the change link under 'Laboratory tests'
-	#Then the Laboratory tests Review page should be displayed
-	#When the user clicks on the Test '.AMINOGLYCOSIDE/AMINOSIDE'
-	#Then the Record laboratory test information page should be displayed
-	#When the user enters Sample use by date as '15''12''2025'
-	#When the user enters Released date as '16''12''2025'
-	#When the user selects 'satisfactory' for Conclusion
-	#And the user clicks Save and continue
-	#Then the Laboratory tests Review page should be displayed
-	#When the user clicks on the Test '.ANTHELMINTIC'
-	#Then the Record laboratory test information page should be displayed
-	#When the user enters Sample use by date as '15''12''2025'
-	#When the user enters Released date as '16''12''2025'
-	#When the user selects 'satisfactory' for Conclusion
-	#And the user clicks Save and continue
-	#Then the Laboratory tests Review page should be displayed
-	#When the user clicks Save and Return
-	#Then the Decision Hub page should be displayed
-	#When the user clicks Review And Submit link
-	#Then the Review outcome decision page should be displayed
-	#And the user should not see an error message 'Lab results pending for this consignment' in review page
-	#And the user should see an error message 'A document type must be entered' in review page
-	#When the user Clicks the change link under 'Documents'
-	#Then the Accompanying documents page should be displayed for inspector
-	#And the user verifies there are no documents in the Inspector section
-	#When the user selects Document type 'Commercial invoice'
-	#And the user enters Document reference 'INSP12345'
-	#And the user enters date of issue '05''12''2025'
-	#And the user clicks on Add attachment link
-	#And the user uploads the document 'IPAFFS Inspector Document' in the format '.docx'
-	#Then the document 'IPAFFS Inspector Document' '.docx' is uploaded successfully
-	#When the user clicks Save and continue
-	#Then the Review outcome decision page should be displayed
-	#And the user should not see any error messages in review page
-	#When the user selects the radio button to declare that the checks have been carried out in accordance with EU law
-	#And user clicks Submit decision
-	#Then the Your checks have been submitted page should be displayed
-	#When the user clicks View or print CHED
-	#Then the certificate should be displayed in a new browser tab
-	#When the user checks that the data in the certificate matches the data entered into the notification
-	#And the user closes the PDF browser tab
-	#Then the browser tab is closed
-	#When the user logs out of IPAFFS Part 2
-	#Then the user should be logged out successfully
-	#When I navigate to the IPAFF application
-	#Then I should see type of Gateway login page
-	#And I have selected 'Sign in with Government Gateway' as login type
-	#When I click Continue button from How do you want to sign in page
-	#Then I should redirected to the IPAFF Sign in using Government Gateway page
-	#When I have provided the IPAFF credentials and signin
-	#Then the user should be logged into Notification page
-	#When user searches for the import notification
-	#Then the notification should be present in the list
-	#And the notification should be found with the status 'Valid'
-	#When the user clicks View details for the notification
-	#Then the Review your notification page should be displayed
-	#And the Show notification link should be available
-	#And the Copy as new link should be available
-	#And the Amend link should not be available
-	#When the user clicks Return to your dashboard
-	#Then the dashboard page should be displayed
-	#When the user logs out of IPAFFS Part 1
-	#Then the user should be logged out successfully
+	When the user Clicks the change link under 'Laboratory tests'
+	Then the Laboratory tests page should be displayed
+	When the user clicks Save and continue
+	Then the Laboratory tests Reason for testing page should be displayed
+	When the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	When the user clicks on the Test '.AMINOGLYCOSIDE/AMINOSIDE'
+	Then the Record laboratory test information page should be displayed
+	When the user enters Sample use by date as '15''12''2025'
+	When the user enters Released date as '16''12''2025'
+	When the user selects 'Satisfactory' for Conclusion
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	When the user clicks on the Test '.ANTITHYROID AGENTS'
+	Then the Record laboratory test information page should be displayed
+	When the user enters Sample use by date as '15''12''2025'
+	When the user enters Released date as '16''12''2025'
+	When the user selects 'Satisfactory' for Conclusion
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	When the user clicks on the Test '.CHEMICAL ELEMENTS'
+	Then the Record laboratory test information page should be displayed
+	When the user enters Sample use by date as '15''12''2025'
+	When the user enters Released date as '16''12''2025'
+	When the user selects 'Satisfactory' for Conclusion
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	And the user verifies multiple Laboratory tests are displayed with Results 'Satisfactory'
+	When the user clicks Save and Return
+	Then the Decision Hub page should be displayed
+	When the user clicks Review And Submit link
+	Then the Review outcome decision page should be displayed
+	And the user should not see an error message 'Lab results pending for this consignment' in review page
+	And the user should see an error message 'A document type must be entered' in review page
+	When the user Clicks the change link under 'Documents'
+	Then the Documents page should be displayed
+	And the Add another document link is displayed
+	And the user verifies there are no documents in the Inspector section
+	When the user selects Document type 'Commercial invoice'
+	And the user enters Document reference 'INSP12345'
+	And the user enters date of issue '05''12''2025'
+	And the user clicks on Add attachment link
+	And the user uploads the document 'IPAFFS Inspector Document' in the format '.docx'
+	Then the document 'IPAFFS Inspector Document' '.docx' is uploaded successfully
+	And the user verifies the entered document information is displayed correctly
+	When the user clicks Save and continue
+	Then the Review outcome decision page should be displayed
+	And the user should not see any error messages in review page
+	When the user selects the radio button to declare that the checks have been carried out in accordance with EU law
+	And user clicks Submit decision
+	Then the Your checks have been submitted page should be displayed
+	When the user clicks View or print CHED
+	Then the certificate should be displayed in a new browser tab
+	When the user checks that the data in the certificate matches the data entered into the notification
+	And the user closes the PDF browser tab
+	Then the browser tab is closed
+	When the user logs out of IPAFFS Part 2
+	Then the user should be logged out successfully
+	When I navigate to the IPAFF application
+	Then I should see type of Gateway login page
+	And I have selected 'Sign in with Government Gateway' as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF credentials and signin
+	Then the user should be logged into Notification page
+	When user searches for the import notification
+	Then the notification should be present in the list
+	And the notification returned in the search has the status 'VALID'
+	And the Amend link should not be available for the notification
+	When the user clicks View details for the notification
+	Then the Review your notification page should be displayed
+	And the Copy as new button should be available
+	And the View CHED button should be available
+	And the Change links should not be available
+	When the user clicks on the Dashboard link
+	Then the dashboard page should be displayed
+	When the user logs out of IPAFFS Part 1
+	Then the user should be logged out successfully

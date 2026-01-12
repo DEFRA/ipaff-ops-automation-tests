@@ -94,5 +94,9 @@
         bool IsError(string errorMessage);
         void ClickChangeLink(string heading);
         (bool hasError, string errorMessages) VerifyErrorMsgDisplayed(string errorMessage);
+        bool IsCopyAsNewButtonDisplayed();
+        bool IsViewCHEDButtonDisplayed();
+        bool AreChangeLinksNotDisplayed();
+        void ClickDashboardLink();
     }
 }
