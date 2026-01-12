@@ -42,5 +42,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             notificationHubPage?.ClickLink(link);
         }
+
+        [When("the user clicks the Transport contacts hyperlink")]
+        public void WhenTheUserClicksTheTransportContactsHyperlink()
+        {
+            notificationHubPage?.ClickLink("Transport contacts");
+        }
     }
 }

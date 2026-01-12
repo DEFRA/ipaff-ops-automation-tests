@@ -41,7 +41,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement errorSummaryTitle => _driver.WaitForElement(By.Id("error-summary-title"));
         private IWebElement errorSummaryMsg => _driver.WaitForElement(By.XPath("//ul[contains(@class,'govuk-error-summary__list')]/li/a"));
         private IWebElement  errorMsgFieldLevel=> _driver.WaitForElement(By.Id("fileUpload-error"));
-
+        private IWebElement downloadAttachmentLink => _driver.FindElement(By.XPath("//a[contains(@id,'attachment-download-')]"));
+        private IWebElement removeAttachmentButton => _driver.FindElement(By.XPath("//button[contains(@id,'remove-attachment-')]"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -153,6 +154,30 @@ namespace Defra.UI.Tests.Pages.Classes
             return errorSummaryTitle.Text.Trim().Contains("Please fix the following errors")
                 && errorSummaryMsg.Text.Trim().Contains("The selected file must be smaller than 10MB")
                 && errorMsgFieldLevel.Text.Trim().Contains("The selected file must be smaller than 10MB");
+        }
+
+        public bool IsDownloadAttachmentLinkPresent()
+        {
+            try
+            {
+                return downloadAttachmentLink.Displayed && downloadAttachmentLink.Text.Contains("Download");
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
+        }
+
+        public bool IsRemoveAttachmentLinkPresent()
+        {
+            try
+            {
+                return removeAttachmentButton.Displayed && removeAttachmentButton.Text.Contains("Remove attachment");
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
         }
     }
 }

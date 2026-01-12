@@ -14,6 +14,9 @@
         string? GetConsignmentReferenceNumber();
         string? GetPointOfExit();
         (string departureDate, string departureTime) GetConsignmentDepartureDateTime();
+        string? GetExitDate();
+        string? GetExitBCP();
+        string? GetDestinationCountry();
 
         // Commodity details
         string? GetCommodityCode();
@@ -27,12 +30,18 @@
         string? GetTotalNetWeight();
         string? GetTotalPackages();
         string? GetTotalGrossWeight();
+        
         // Animal details
         string? GetCertificationOption();
+        string? GetHorseName(int index = 0);
+        string? GetMicrochipNumber(int index = 0);
+        string? GetPassportNumber(int index = 0);
+        string? GetEarTag(int index = 0);
 
         // Additional details
         string? GetCommodityIntendedFor();
         string? GetTemperature();
+        string? GetUnweanedAnimalsOption();
 
         // Documents
         string? GetHealthCertificateReference();
@@ -64,6 +73,14 @@
         string? GetEstimatedJourneyTime();
         string? GetCTCUsage();
         string? GetGVMSUsage();
+        string? GetContainerNumber(int index = 0);
+        string? GetSealNumber(int index = 0);
+        string? GetOfficialSeal(int index = 0);
+        string? GetMeansOfTransportAfterBCP();
+        string? GetTransportIdentificationAfterBCP();
+        string? GetTransportDocumentReferenceAfterBCP();
+        string? GetDepartureDateFromBCP();
+        string? GetDepartureTimeFromBCP();
 
         // Transporter details
         string? GetTransporterName();
@@ -78,6 +95,6 @@
         string? GetConsignmentContactAddress();
         bool IsError(string errorMessage);
         void ClickChangeLink(string heading);
-        bool VerifyErrorMsgDisplayed(string errorMessage);
+        (bool hasError, string errorMessages) VerifyErrorMsgDisplayed(string errorMessage);
     }
 }
