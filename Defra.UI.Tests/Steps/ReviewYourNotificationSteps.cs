@@ -136,7 +136,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             {
                 var dateTime = reviewPage?.GetConsignmentDepartureDateTime();
 
-                ValidateIfExists("PlaceOfExit", reviewPage?.GetPointOfExit(), ref allDataMatches, mismatches);
+                ValidateIfExists("PlaceOfExit", reviewPage?.GetPointOfExit, ref allDataMatches, mismatches);
                 ValidateIfExists("ConsignmentLeavingFromGBDate", dateTime.Value.departureDate, ref allDataMatches, mismatches);
                 ValidateIfExists("ConsignmentLeavingFromGBTime", dateTime.Value.departureTime, ref allDataMatches, mismatches);
             }

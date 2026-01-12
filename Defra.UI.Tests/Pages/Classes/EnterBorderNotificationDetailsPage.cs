@@ -84,7 +84,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void EnterOtherInformation(string otherInfo)
         {
-            txtOtherInfo.Click();
+            txtOtherInfo.Clear();
             txtOtherInfo.SendKeys(otherInfo);
         }
 
@@ -154,19 +154,14 @@ namespace Defra.UI.Tests.Pages.Classes
         public void SelectProductDetails(string category, string product, string brand)
         {
             new SelectElement(drpProductCategory).SelectByText(category);
-            txtProductName.Click();
             txtProductName.SendKeys(product);
-            txtBrandName.Click();
             txtBrandName.SendKeys(brand);
         }
 
         public void SelectOtherDetails(string label, string otherInfo, string dateOption)
         {
-            txtOtherLabel.Click();
             txtOtherLabel.SendKeys(label);
-            txtOtherInfo.Click();
             txtOtherInfo.SendKeys(otherInfo);
-
             SelectDurabilityDateOption(dateOption);
         }
 
