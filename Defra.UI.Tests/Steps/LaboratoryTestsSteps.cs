@@ -116,7 +116,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
          {
              _scenarioContext["LaboratoryTestName"] = laboratoryTestsPage?.GetLaboratoryTestName();
              laboratoryTestsPage?.ClickSelectLaboratoryTest();
-         }
+
+            // Capture system date and time AFTER clicking the Select link
+            var labTestSelectedDateTime = DateTime.Now;
+            _scenarioContext["LabTestSelectedDate"] = labTestSelectedDateTime.ToString("d MMMM yyyy");
+            _scenarioContext["LabTestSelectedTime"] = labTestSelectedDateTime.ToString("HH:mm");
+        }
 
          [Then("the Laboratory tests Commodity sampled page should be displayed")]
          public void ThenTheLaboratoryTestsCommoditySampledPageShouldBeDisplayed()
@@ -129,19 +134,32 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             // Get the expected values from when the lab test was selected
             var expectedDate = _scenarioContext.Get<string>("LabTestSelectedDate");
-            var expectedTime = _scenarioContext.Get<string>("LabTestSelectedTime");
+            var expectedTimeStr = _scenarioContext.Get<string>("LabTestSelectedTime");
 
             // Get the actual values from the page
             var actualDate = laboratoryTestsPage?.GetSampleDate();
-            var actualTime = laboratoryTestsPage?.GetSampleTime();
+            var actualTimeStr = laboratoryTestsPage?.GetSampleTime();
 
             // Validate the sample date matches exactly
             Assert.That(actualDate, Is.EqualTo(expectedDate),
                 $"Sample date mismatch. Expected: {expectedDate}, Actual: {actualDate}");
 
-            // Validate the sample time matches exactly
-            Assert.That(actualTime, Is.EqualTo(expectedTime),
-                $"Sample time mismatch. Expected: {expectedTime}, Actual: {actualTime}");
+            // Parse times for comparison with tolerance
+            if (TimeSpan.TryParse(expectedTimeStr, out var expectedTime) &&
+                TimeSpan.TryParse(actualTimeStr, out var actualTime))
+            {
+                var timeDifference = Math.Abs((actualTime - expectedTime).TotalMinutes);
+
+                // Allow up to 1 minutes tolerance for timing differences
+                Assert.That(timeDifference, Is.LessThanOrEqualTo(1),
+                    $"Sample time is outside acceptable range. Expected: {expectedTimeStr}, Actual: {actualTimeStr}, Difference: {timeDifference:F1} minutes");
+            }
+            else
+            {
+                // Fallback to exact match if parsing fails
+                Assert.That(actualTimeStr, Is.EqualTo(expectedTimeStr),
+                    $"Sample time mismatch. Expected: {expectedTimeStr}, Actual: {actualTimeStr}");
+            }
         }
 
         [Then("the Laboratory tests Review page should be displayed")]

@@ -22,7 +22,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement purpose => _driver.FindElement(By.XPath("//dt[text()='Purpose in the internal market']//following-sibling::dd"));
         private IWebElement consignmentReferenceNumber => _driver.FindElement(By.XPath("//dt[text()='Consignment reference number']//following-sibling::dd"));
         private IWebElement exitDate => _driver.FindElement(By.Id("exit-date-value"));
-        private IWebElement exitBCP => _driver.FindElement(By.Id("designated-bip-horses-value"));
+        private By exitBCPTemporaryAdmissionLocator => By.Id("designated-bip-horses-value");
+        private By exitBCPTransitLocator => By.XPath("//dt[@id='exit-border-control-post-header']/following-sibling::dd");
+        private IWebElement destinationCountry => _driver.FindElement(By.XPath("//dt[@id='destination-country-header']/following-sibling::dd"));
 
         // Commodity details
         private IWebElement commodityCode => _driver.FindElement(By.XPath("//td[text()='Commodity code']//following-sibling::td[1]"));
@@ -47,6 +49,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement GetHorseNameElement(int index) => _driver.FindElement(By.XPath($"//table[@id='animal-identification-details-table']//tbody//tr[{index + 1}]//td[@headers='horseName-01']"));
         private IWebElement GetMicrochipElement(int index) => _driver.FindElement(By.XPath($"//table[@id='animal-identification-details-table']//tbody//tr[{index + 1}]//td[@headers='microchip-01']"));
         private IWebElement GetPassportElement(int index) => _driver.FindElement(By.XPath($"//table[@id='animal-identification-details-table']//tbody//tr[{index + 1}]//td[@headers='passport-01']"));
+        private IWebElement GetEarTagElement(int index) => _driver.FindElement(By.XPath($"//table[contains(@aria-describedby,'animalProduct')]//tbody//tr[{index + 1}]//td[@headers='earTag-01']"));
+        private IWebElement unweanedAnimalsOption => _driver.FindElement(By.XPath("//td[contains(text(),'Includes unweaned animals')]/following-sibling::td"));
 
         // Documents
         private IWebElement healthCertificateReference => _driver.FindElement(By.Id("latest-health-document-reference"));
@@ -379,7 +383,55 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public string? GetExitBCP()
         {
-            try { return exitBCP.Text.Trim(); } catch { return null; }
+            try
+            {
+                // First, check what the main reason for import is
+                var mainReason = GetMainReasonForImport();
+
+                if (mainReason?.Contains("Transit", StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    // For Transit, use the exit-border-control-post-header locator
+                    var transitExitBCP = _driver.FindElement(exitBCPTransitLocator);
+                    return transitExitBCP.Text.Trim();
+                }
+                else if (mainReason?.Contains("Temporary admission", StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    // For Temporary Admission Horses, use the designated-bip-horses-value locator
+                    var tempAdmissionExitBCP = _driver.FindElement(exitBCPTemporaryAdmissionLocator);
+                    return tempAdmissionExitBCP.Text.Trim();
+                }
+                else
+                {
+                    // Fallback: Try both locators
+                    try
+                    {
+                        var transitExitBCP = _driver.FindElement(exitBCPTransitLocator);
+                        if (!string.IsNullOrEmpty(transitExitBCP.Text))
+                            return transitExitBCP.Text.Trim();
+                    }
+                    catch { }
+
+                    try
+                    {
+                        var tempAdmissionExitBCP = _driver.FindElement(exitBCPTemporaryAdmissionLocator);
+                        if (!string.IsNullOrEmpty(tempAdmissionExitBCP.Text))
+                            return tempAdmissionExitBCP.Text.Trim();
+                    }
+                    catch { }
+
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"GetExitBCP failed: {ex.Message}");
+                return null;
+            }
+        }
+
+        public string? GetDestinationCountry()
+        {
+            try { return destinationCountry.Text.Trim(); } catch { return null; }
         }
 
         // Animal details
@@ -403,6 +455,10 @@ namespace Defra.UI.Tests.Pages.Classes
             try { return GetPassportElement(index).Text.Trim(); } catch { return null; }
         }
 
+        public string? GetEarTag(int index = 0)
+        {
+            try { return GetEarTagElement(index).Text.Trim(); } catch { return null; }
+        }
 
         //Additional details
 
@@ -414,6 +470,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public string? GetTemperature()
         {
             try { return temperature.Text.Trim(); } catch { return null; }
+        }
+
+        public string? GetUnweanedAnimalsOption()
+        {
+            try { return unweanedAnimalsOption.Text.Trim(); } catch { return null; }
         }
 
         // Documents
@@ -722,20 +783,26 @@ namespace Defra.UI.Tests.Pages.Classes
             return lines.Length > 0 ? lines[0].Trim() : "";
         }
 
-        // Update address extraction methods to only return the street address part:
         private string ExtractAddressFromAddressText(string fullText)
         {
             var lines = fullText.Split('\n', StringSplitOptions.RemoveEmptyEntries);
             if (lines.Length > 1)
             {
                 var addressLine = lines[1].Trim();
-                // Extract only the street address portion before additional details
-                var parts = addressLine.Split(',');
-                if (parts.Length >= 4)
+
+                // The review page shows: "street, city, postcode, country, phone"
+                // We only want: "street, city, postcode"
+
+                var parts = addressLine.Split(',', StringSplitOptions.TrimEntries);
+
+                // Take only the first 3 parts (street, city/region, postcode)
+                // This excludes both country and phone number
+                if (parts.Length >= 3)
                 {
-                    // Return only the first 4 parts: street, city, region, postcode
-                    return string.Join(", ", parts.Take(4).Select(p => p.Trim()));
+                    var addressWithoutCountryAndPhone = string.Join(", ", parts.Take(3));
+                    return addressWithoutCountryAndPhone;
                 }
+
                 return addressLine;
             }
             return "";

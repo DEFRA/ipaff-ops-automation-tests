@@ -19,11 +19,12 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement rdoInternalMarket => _driver.WaitForElement(By.XPath("//*[@id='radio-internalmarket']/following-sibling::label"));
         private IWebElement rdoTranshipment => _driver.WaitForElement(By.XPath("//*[@id='radio-tranship']/following-sibling::label"));
         private IWebElement rdoTransit => _driver.WaitForElement(By.XPath("//*[@id='radio-transit']/following-sibling::label"));
-        private IWebElement rdoReentry => _driver.WaitForElement(By.XPath("//*[@id='radio-reimport']/following-sibling::label"));
+        private IWebElement rdoReentry => _driver.WaitForElement(By.XPath("//*[@id='a_impadm2']/following-sibling::label")); 
+        private IWebElement rdoTemporaryAdmissionHorses => _driver.WaitForElement(By.XPath("//*[@id='a_impadm3']/following-sibling::label"));
         private IWebElement rdoNonInternalMarket => _driver.WaitForElement(By.XPath("//*[@id='radio-noninternalmarket']/following-sibling::label"));
         private IWebElement txtExitBCP => _driver.WaitForElement(By.Name("bcp-transit-third-country"));
         private IWebElement txtTransitedCountry => _driver.WaitForElement(By.Id("transit-third-countries-last"));
-        private IWebElement txtDestinationCountry => _driver.WaitForElement(By.Id("third-country-transit"));
+        private IWebElement txtDestinationCountry => _driver.FindElement(By.Id("third-country-transit"));
         private IWebElement txtTranshipmentDestination => _driver.FindElement(By.Id("third-country-transhipment"));
         private IWebElement rdoIMAnimalFeeding => _driver.WaitForElement(By.XPath("//*[@id='internalMarketanimal']/following-sibling::label"));
         private IWebElement rdoIMOther => _driver.WaitForElement(By.XPath("//*[@id='internalMarketother']/following-sibling::label"));
@@ -41,7 +42,15 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtExitDateDay => _driver.WaitForElement(By.Id("exit-date-day"));
         private IWebElement txtExitDateMonth => _driver.WaitForElement(By.Id("exit-date-month"));
         private IWebElement txtExitDateYear => _driver.WaitForElement(By.Id("exit-date-year"));
-        private IWebElement ddlExitBCP => _driver.WaitForElement(By.Id("bcp-temporary-admission"));
+        private IWebElement ddlExitBCP => _driver.FindElement(By.Id("bcp-temporary-admission"));
+        private IWebElement internalMarketConditional => _driver.WaitForElement(By.Id("internalmarket-conditional"));
+        private IWebElement transhipConditional => _driver.WaitForElement(By.Id("tranship-conditional"));
+        private IWebElement transitConditional => _driver.WaitForElement(By.Id("conditional-transit"));
+        private By reentryConditionalLocator => By.Id("conditional-reimport");
+        private IWebElement temporaryAdmissionConditional => _driver.WaitForElement(By.Id("conditional-temporary-admission"));
+        private IWebElement transitExitBCP => _driver.FindElement(By.Id("bcp-transit-third-country"));
+        private IWebElement transitDestinationCountry => _driver.WaitForElement(By.Id("third-country-transit"));
+        private IReadOnlyCollection<IWebElement> internalMarketSubOptions => internalMarketConditional.FindElements(By.CssSelector("input[type='radio'][name='internal-market']"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -154,6 +163,36 @@ namespace Defra.UI.Tests.Pages.Classes
             new SelectElement(txtDestinationCountry).SelectByText(destinationCountry);
         }
 
+        public void SelectDestinationCountryBasedOnContext(string destinationCountry)
+        {
+            // Determine which dropdown to use based on what's currently visible
+            try
+            {
+                // Check if Transit dropdown is displayed
+                if (txtDestinationCountry.Displayed)
+                {
+                    new SelectElement(txtDestinationCountry).SelectByText(destinationCountry);
+                    return;
+                }
+            }
+            catch (NoSuchElementException) { }
+            catch (ElementNotInteractableException) { }
+
+            try
+            {
+                // Check if Transhipment dropdown is displayed
+                if (txtTranshipmentDestination.Displayed)
+                {
+                    new SelectElement(txtTranshipmentDestination).SelectByText(destinationCountry);
+                    return;
+                }
+            }
+            catch (NoSuchElementException) { }
+            catch (ElementNotInteractableException) { }
+
+            throw new InvalidOperationException("No visible Destination Country dropdown found. Ensure the correct import reason (Transit or Transhipment) is selected.");
+        }
+
         public void SelectTranshipmentDestination(string transhipmentCountry)
         {
             new SelectElement(txtTranshipmentDestination).SelectByText(transhipmentCountry);
@@ -173,6 +212,113 @@ namespace Defra.UI.Tests.Pages.Classes
         public void SelectExitBCP(string exitBCP)
         {
             new SelectElement(ddlExitBCP).SelectByText(exitBCP);
+        }
+
+        public void SelectExitBCPBasedOnContext(string exitBCP)
+        {
+            // Determine which dropdown to use based on what's currently visible
+            try
+            {
+                // Check if Transit dropdown is displayed
+                if (transitExitBCP.Displayed)
+                {
+                    new SelectElement(transitExitBCP).SelectByText(exitBCP);
+                    return;
+                }
+            }
+            catch (NoSuchElementException) { }
+            catch (ElementNotInteractableException) { }
+
+            try
+            {
+                // Check if Temporary Admission dropdown is displayed
+                if (ddlExitBCP.Displayed)
+                {
+                    new SelectElement(ddlExitBCP).SelectByText(exitBCP);
+                    return;
+                }
+            }
+            catch (NoSuchElementException) { }
+            catch (ElementNotInteractableException) { }
+
+            throw new InvalidOperationException("No visible Exit BCP dropdown found. Ensure the correct import reason is selected.");
+        }
+
+        public bool VerifyInternalMarketHasSubOptions(int expectedCount)
+        {
+            try
+            {
+                return internalMarketSubOptions.Count == expectedCount;
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
+        }
+
+        public bool VerifyTranshipmentHasDestinationCountryDropdown()
+        {
+            try
+            {
+                return IsElementPresent(txtTranshipmentDestination) && txtTranshipmentDestination.TagName == "select";
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
+        }
+
+        public bool VerifyTransitHasExitBCPAndDestinationDropdowns()
+        {
+            try
+            {
+                return IsElementPresent(transitExitBCP) && transitExitBCP.TagName == "select"
+                    && IsElementPresent(transitDestinationCountry) && transitDestinationCountry.TagName == "select";
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
+        }
+
+        public bool VerifyReentryHasNoSubOptions()
+        {
+            try
+            {
+                // Verify the radio button exists and is displayed
+                bool radioButtonExists = rdoReentry.Displayed;
+
+                // Verify there is no conditional div for Re-entry
+                try
+                {
+                    var conditionalDiv = _driver.FindElement(reentryConditionalLocator);
+                    // If we found the conditional div, Re-entry has sub-options (unexpected)
+                    return false;
+                }
+                catch (NoSuchElementException)
+                {
+                    // No conditional div found - this is expected for Re-entry
+                    return radioButtonExists;
+                }
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
+        }
+
+        public bool VerifyTemporaryAdmissionHasExitDateAndBCPDropdown()
+        {
+            try
+            {
+                return txtExitDateDay.Displayed && txtExitDateMonth.Displayed
+                    && txtExitDateYear.Displayed && ddlExitBCP.Displayed
+                    && ddlExitBCP.TagName == "select";
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
         }
     }
 }

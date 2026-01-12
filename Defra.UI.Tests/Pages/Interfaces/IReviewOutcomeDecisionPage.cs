@@ -57,6 +57,8 @@
         string? GetConsignmentUse();
         string? GetDeadline();
         string? GetExitBCP();
+        string? GetTransitExitBCP();
+        string? GetTransitDestinationCountry();
 
         // Controlled Destination
         string? GetControlledDestinationName();

@@ -34,6 +34,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private List<IWebElement> documentRows => _driver.WaitForElements(By.XPath("//div[@class='additional-documents__grid-row additional-document-info']")).ToList();
         private IWebElement fileName => _driver.FindElement(By.XPath("//a[contains(@id,'attachment-view-')] | //a[contains(@id,'attachment-name-0')]"));
         private List<IWebElement> datePickerDateList => _driver.WaitForElements(By.XPath("//table[@class='date-picker__date-table']//tr/td")).ToList();
+        private IWebElement downloadAttachmentLink => _driver.FindElement(By.XPath("//a[contains(@id,'attachment-download-')]"));
+        private IWebElement removeAttachmentButton => _driver.FindElement(By.XPath("//button[contains(@id,'remove-attachment-')]"));
 
         #endregion
 
@@ -132,6 +134,30 @@ namespace Defra.UI.Tests.Pages.Classes
             return (documentRows != null && documentRows.Count > 0)
                 ? documentRows[0].Displayed
                 : false;
+        }
+
+        public bool IsDownloadAttachmentLinkPresent()
+        {
+            try
+            {
+                return downloadAttachmentLink.Displayed && downloadAttachmentLink.Text.Contains("Download");
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
+        }
+
+        public bool IsRemoveAttachmentLinkPresent()
+        {
+            try
+            {
+                return removeAttachmentButton.Displayed && removeAttachmentButton.Text.Contains("Remove attachment");
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
         }
     }
 }
