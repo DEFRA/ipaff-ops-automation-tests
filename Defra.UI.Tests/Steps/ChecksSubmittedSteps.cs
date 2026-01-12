@@ -48,12 +48,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             checksSubmittedPage?.ClickViewOrPrintCHED();
         }
 
-        public void ThenABorderNotificationBannerDisplayingTheReasonForRefusalUnderTheTitleIsDisplayed(string p0, string p1)
-        {
-            throw new PendingStepException();
-        }
-
-
         [Then(@"the user should see an error message {string} under title {string} in checks submitted page")]
         [Then("a border notification banner displaying the reason for refusal {string} under the title {string} is displayed")]
 
