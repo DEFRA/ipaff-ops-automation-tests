@@ -15,7 +15,7 @@ Scenario: User creates and submits a B2C consignment notification - CHED D
 	Then the About the consignment/What are you importing? page should be displayed with radio buttons
 	When the user chooses 'High risk food and feed of non-animal origin' option
 	And the user clicks Save and continue
-	Then the Origin of the animal or product page should be displayed
+	Then the Origin of the plants plant product or other objects page should be displayed
 	When the user chooses "Australia" from the dropdown for Country of origin
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "Australia" as the Country of origin and Country from where consigned
