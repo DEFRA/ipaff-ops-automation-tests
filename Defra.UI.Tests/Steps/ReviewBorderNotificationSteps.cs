@@ -58,6 +58,17 @@ namespace Defra.UI.Tests.Steps.IPAFF
             //Last updated Date and Time details
             ValidateIfExists("LastUpdatedDateBN", reviewBorderNotificationPage?.GetLastUpdatedDate, ref allDataMatches, mismatches);
             ValidateIfExists("LastUpdatedTimeBN", reviewBorderNotificationPage?.GetLastUpdatedTime, ref allDataMatches, mismatches);
+
+            if (!allDataMatches)
+            {
+                Console.WriteLine("[BORDER CONTROL NOTIFICATION REVIEW OUTCOME VALIDATION] Data mismatches found:");
+                foreach (var mismatch in mismatches)
+                {
+                    Console.WriteLine($"[BORDER CONTROL NOTIFICATION REVIEW OUTCOME VALIDATION] {mismatch}");
+                }
+            }
+
+            Assert.True(allDataMatches, $"Border control review outcome decision page data validation failed. Mismatches: {string.Join(", ", mismatches)}");
         }
 
         private void ValidateIfExists(string contextKey, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
@@ -104,8 +115,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
             reviewBorderNotificationPage?.ClickDocumentLink();
         }
 
-
         [When("the user clicks submit button")]
+        [When("the user clicks on the Submit button")]
         public void WhenTheUserClicksSubmitButton()
         {
             reviewBorderNotificationPage?.ClickSubmitButton();

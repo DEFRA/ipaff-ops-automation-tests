@@ -95,8 +95,6 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<OverrideRiskDecisionPage, IOverrideRiskDecisionPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDOverviewPage, ICHEDOverviewPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<EnterBorderNotificationDetailsPage, IEnterBorderNotificationDetailsPage>());
-            //Remove after merging page
-            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CreateBorderNotificationPage, ICreateBorderNotificationPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<BorderNotificationSubmittedPage, IBorderNotificationSubmittedPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<BorderNotificationsPage, IBorderNotificationsPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<BorderNotificationOverviewPage, IBorderNotificationOverviewPage>());
