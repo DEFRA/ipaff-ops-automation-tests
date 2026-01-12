@@ -17,5 +17,7 @@
         bool IsRowPresent();
         string GetFileName { get; }
         bool ValidateDocUploadErrors();
+        bool IsDownloadAttachmentLinkPresent();
+        bool IsRemoveAttachmentLinkPresent();
     }
 }

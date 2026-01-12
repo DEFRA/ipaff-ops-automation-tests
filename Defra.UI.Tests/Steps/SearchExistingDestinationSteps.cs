@@ -41,9 +41,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var destinationAddress = searchExistingDestinationPage?.GetSelectedDestinationAddress();
             var destinationCountry = searchExistingDestinationPage?.GetSelectedDestinationCountry();
 
-            _scenarioContext.Add("DestinationName", destinationName);
-            _scenarioContext.Add("DestinationAddress", destinationAddress);
-            _scenarioContext.Add("DestinationCountry", destinationCountry);
+            _scenarioContext.Add("PlaceOfDestinationName", destinationName);
+            _scenarioContext.Add("PlaceOfDestinationAddress", destinationAddress);
+            _scenarioContext.Add("PlaceOfDestinationCountry", destinationCountry);
 
             searchExistingDestinationPage?.ClickSelect(destination);
         }

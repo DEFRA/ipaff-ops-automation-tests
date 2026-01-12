@@ -226,24 +226,16 @@ Scenario: User creates and submits a notification, override the risk decision an
 	Then the Addresses page should be displayed
 	When the user clicks Add a consignor or exporter
 	Then the Search for an existing consignor or exporter page should be displayed
-	#When the user selects any one of the displayed consignors or exporters
-	#Then the chosen consignor or exporter should be displayed on the Addresses page
-	#When the user selects one of the displayed consignors or exporters "ABC"
-	#Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
 	When the user selects a consignor or exporter 'ABC'
 	Then the chosen consignor or exporter should be displayed
 	When the user clicks Add a consignee
 	Then the Search for an existing consignee page should be displayed
-	#When the user selects a consignee
-	#When the user selects a consignee "DEF" with a UK country
-	#Then the chosen consignee "DEF" should be displayed on the Addresses page
 	When the user selects a consignee 'DEF'
 	Then the chosen consignee should be displayed
 	When the user clicks Same as consignee for the Importer
 	Then the importer should be populated with the same details as the consignee
 	When the user clicks Add a place of destination
 	Then the Search for an existing place of destination page should be displayed
-	#When the user selects a place of destination
 	When the user selects a place of destination 'DEF'
 	Then the chosen place of destination should be displayed
 	When the user clicks Save and continue

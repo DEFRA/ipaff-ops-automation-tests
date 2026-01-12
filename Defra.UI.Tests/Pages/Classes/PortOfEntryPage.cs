@@ -28,7 +28,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtContainerNumber => _driver.FindElement(By.Id("container-number-1"));
         private IWebElement txtSealNumber => _driver.FindElement(By.Id("seal-number-1"));
         private IWebElement chkOfficalSeal => _driver.FindElement(By.Id("official-seal-1"));
-        private IWebElement rdoAreConsignmentInContainer => _driver.FindElement(By.Id("are-consignments-in-containers-yes"));
+        private IWebElement rdoAreConsignmentsInContainerYes => _driver.FindElement(By.Id("are-consignments-in-containers-yes"));
+        private IWebElement rdoAreConsignmentsInContainerNo => _driver.FindElement(By.Id("are-consignments-in-containers-no"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -108,9 +109,38 @@ namespace Defra.UI.Tests.Pages.Classes
             chkOfficalSeal.Click();
         }
 
-        public void SelectAreConsignmentsInContainer(string option)
+        public void SelectAreTrailersOrContainersUsed(string option)
         {
-            rdoAreConsignmentInContainer.Click();
+            if (option.Equals("Yes", StringComparison.OrdinalIgnoreCase))
+            {
+                rdoAreConsignmentsInContainerYes.Click();
+            }
+            else
+            {
+                rdoAreConsignmentsInContainerNo.Click();
+            }
         }
+
+        public void EnterContainerNumber(string containerNumber)
+        {
+            txtContainerNumber.Click();
+            txtContainerNumber.Clear();
+            txtContainerNumber.SendKeys(containerNumber);
+        }
+
+        public void EnterSealNumber(string sealNumber)
+        {
+            txtSealNumber.Click();
+            txtSealNumber.Clear();
+            txtSealNumber.SendKeys(sealNumber);
+        }
+
+        public void TickOfficialSealCheckbox()
+        {
+            if (!chkOfficalSeal.Selected)
+            {
+                chkOfficalSeal.Click();
+            }
+        }        
     }
 }

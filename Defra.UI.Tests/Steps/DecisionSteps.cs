@@ -95,5 +95,72 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var year = currentDate.Year.ToString();
             decisionPage?.EnterCurrentDateInDecisionPage(day, month, year);
         }
+
+        [Then("the {string} radio button option is pre populated")]
+        public void ThenTheRadioButtonOptionIsPrePopulated(string radioButtonOption)
+        {
+            _scenarioContext["AcceptableFor"] = radioButtonOption;
+            Assert.True(decisionPage?.IsRadioButtonPreSelected(radioButtonOption),
+                        $"'{radioButtonOption}' radio button is not pre-selected");
+        }
+
+        [Then("the exit date is pre populated")]
+        public void ThenTheExitDateIsPrePopulated()
+        {
+            var exitDate = decisionPage?.GetExitDate();
+            var expectedExitDate = _scenarioContext.Get<string>("ExitDate");
+
+            // Convert expectedExitDate from "dd MMMM yyyy" to "dd/MM/yyyy" format for comparison
+            var parsedDate = DateTime.ParseExact(expectedExitDate, "dd MMMM yyyy", System.Globalization.CultureInfo.InvariantCulture);
+            var formattedExpectedDate = parsedDate.ToString("dd/MM/yyyy");
+
+            Assert.That(exitDate, Is.EqualTo(formattedExpectedDate), $"Exit date mismatch. Expected: {formattedExpectedDate}, Actual: {exitDate}");
+        }
+
+        [Then("the exit BCP is correct")]
+        public void ThenTheExitBCPIsCorrect()
+        {
+            var actualExitBCP = decisionPage?.GetExitBCP();
+            var expectedExitBCP = _scenarioContext.Get<string>("ExitBCP");
+
+            // Extract the name part by finding the last " - " and taking everything before it
+            // Example: "London Borough of Hillingdon Heathrow Airport Imported Food Office - ADADA" 
+            //          → "London Borough of Hillingdon Heathrow Airport Imported Food Office"
+            var lastDashIndex = expectedExitBCP.LastIndexOf(" - ");
+            var expectedName = lastDashIndex >= 0
+                ? expectedExitBCP.Substring(0, lastDashIndex).Trim()
+                : expectedExitBCP;
+
+            Assert.That(actualExitBCP, Is.EqualTo(expectedName),
+                $"Exit BCP mismatch. Expected: '{expectedName}', Actual: '{actualExitBCP}'");
+        }
+
+        [Then("the exit BCP is prepopulated with value entered in Part 1")]
+        public void ThenTheExitBCPIsPrepopulatedWithValueEnteredInPart1()
+        {
+            var expectedExitBCP = _scenarioContext.Get<string>("ExitBCP");
+            var actualExitBCP = decisionPage?.GetTransitExitBCP();
+
+            // Extract the name part by finding the last " - " and taking everything before it
+            // Example: "Manchester Airport (animals) - GBMNC4" → "Manchester Airport (animals)"
+            // Example: "Heathrow Airport - HARC (animals) - GBLHR4A" → "Heathrow Airport - HARC (animals)"
+            var lastDashIndex = expectedExitBCP.LastIndexOf(" - ");
+            var expectedName = lastDashIndex >= 0
+                ? expectedExitBCP.Substring(0, lastDashIndex).Trim()
+                : expectedExitBCP;
+
+            Assert.That(actualExitBCP, Is.EqualTo(expectedName),
+                $"Exit BCP is not prepopulated correctly. Expected: '{expectedName}', Actual: '{actualExitBCP}'");
+        }
+
+        [Then("the destination country is prepopulated with value entered in Part 1")]
+        public void ThenTheDestinationCountryIsPrepopulatedWithValueEnteredInPart1()
+        {
+            var expectedDestinationCountry = _scenarioContext.Get<string>("DestinationCountry");
+            var actualDestinationCountry = decisionPage?.GetDestinationCountry();
+
+            Assert.That(actualDestinationCountry, Is.EqualTo(expectedDestinationCountry),
+                $"Destination country is not prepopulated correctly. Expected: '{expectedDestinationCountry}', Actual: '{actualDestinationCountry}'");
+        }
     }
 }

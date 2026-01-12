@@ -33,7 +33,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             if (expectedSelection.Equals("No", StringComparison.OrdinalIgnoreCase))
             {
-                _scenarioContext.Add("AreLaboratoryTestsRequired", expectedSelection);
+                _scenarioContext["AreLaboratoryTestsRequired"] = expectedSelection;
                 Assert.True(laboratoryTestsPage?.IsLabTestsNoPreselected(), "No is not pre-selected for Would you like to record laboratory tests?");
             }
         }
@@ -41,12 +41,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user select {string} radio button on the Laboratory tests page")]
         public void WhenISelectRadioButtonOnTheLaboratoryTestsPage(string labTestsOption)
         {
+            _scenarioContext["AreLaboratoryTestsRequired"] = labTestsOption;
             laboratoryTestsPage?.SelectLabTestsRadio(labTestsOption);
         }
-        
+
         [When("the user select {string} reason radio button on the Laboratory tests page")]
         public void WhenISelectReasonRadioButtonOnTheLaboratoryTestsPage(string labTestsReason)
         {
+            _scenarioContext["LaboratoryTestsReason"] = labTestsReason;
             laboratoryTestsPage?.SelectLabTestsReason(labTestsReason);
         }
 
@@ -57,7 +59,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["SelectedCommoditySampledDescription"] = laboratoryTestsPage?.GetSelectedCommoditySampledDescription();
             _scenarioContext["SelectedCommoditySampledSpecies"] = laboratoryTestsPage?.GetSelectedCommoditySampledSpecies();
             laboratoryTestsPage?.ClickSelectForCommodityCode(commodityCode);
-
         }
         
         [When("the user clicks on the Test {string}")]
@@ -77,14 +78,18 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             laboratoryTestsPage?.SelectLaboratoryTestSubCategory(category);
         }
-        
+
         [When("the user selects {string} from the list of Laboratory tests")]
         public void WhenTheUserSelectsFromTheListOfLaboratoryTests(string test)
-        {
+        {           
             _scenarioContext["LaboratoryTestName"] = test;
             laboratoryTestsPage?.SelectLaboratoryTest(test);
+            // Capture system date and time AFTER clicking the Select link
+            var labTestSelectedDateTime = DateTime.Now;
+            _scenarioContext["LabTestSelectedDate"] = labTestSelectedDateTime.ToString("d MMMM yyyy");
+            _scenarioContext["LabTestSelectedTime"] = labTestSelectedDateTime.ToString("HH:mm");
         }
-        
+
         [When("the user clicks on Search")]
         public void WhenTheUserClicksSearch()
         {
@@ -100,21 +105,62 @@ namespace Defra.UI.Tests.Steps.IPAFF
             laboratoryTestsPage?.EnterNumberOfSamples(numberOfSamples);
             laboratoryTestsPage?.SelectSampleType(sampleType);
             laboratoryTestsPage?.SelectStorageTemperature(storageTemperature);
-            _scenarioContext["AnalysisType"] = analysisType;
+
+            _scenarioContext["AnalysisType"] = analysisType;        
+            _scenarioContext["SampleDate"] = laboratoryTestsPage?.GetSampleDate();
+            _scenarioContext["SampleTime"] = laboratoryTestsPage?.GetSampleTime();
         }
 
-         [When("the user clicks select link of one of the Laboratory test")]
+        [When("the user clicks select link of one of the Laboratory test")]
          public void WhenTheUserClicksSelectLinkOfOneOfTheLaboratoryTest()
          {
              _scenarioContext["LaboratoryTestName"] = laboratoryTestsPage?.GetLaboratoryTestName();
              laboratoryTestsPage?.ClickSelectLaboratoryTest();
-         }
+
+            // Capture system date and time AFTER clicking the Select link
+            var labTestSelectedDateTime = DateTime.Now;
+            _scenarioContext["LabTestSelectedDate"] = labTestSelectedDateTime.ToString("d MMMM yyyy");
+            _scenarioContext["LabTestSelectedTime"] = labTestSelectedDateTime.ToString("HH:mm");
+        }
 
          [Then("the Laboratory tests Commodity sampled page should be displayed")]
          public void ThenTheLaboratoryTestsCommoditySampledPageShouldBeDisplayed()
          {
              Assert.True(laboratoryTestsPage?.IsCommoditySampledPageLoaded(), "Laboratory tests Commodity sampled page is not displayed");
          }
+
+        [Then("the Sample date and time is todays date with the time the lab test was selected")]
+        public void ThenTheSampleDateAndTimeIsTodaysDateWithTheTimeTheLabTestWasSelected()
+        {
+            // Get the expected values from when the lab test was selected
+            var expectedDate = _scenarioContext.Get<string>("LabTestSelectedDate");
+            var expectedTimeStr = _scenarioContext.Get<string>("LabTestSelectedTime");
+
+            // Get the actual values from the page
+            var actualDate = laboratoryTestsPage?.GetSampleDate();
+            var actualTimeStr = laboratoryTestsPage?.GetSampleTime();
+
+            // Validate the sample date matches exactly
+            Assert.That(actualDate, Is.EqualTo(expectedDate),
+                $"Sample date mismatch. Expected: {expectedDate}, Actual: {actualDate}");
+
+            // Parse times for comparison with tolerance
+            if (TimeSpan.TryParse(expectedTimeStr, out var expectedTime) &&
+                TimeSpan.TryParse(actualTimeStr, out var actualTime))
+            {
+                var timeDifference = Math.Abs((actualTime - expectedTime).TotalMinutes);
+
+                // Allow up to 1 minutes tolerance for timing differences
+                Assert.That(timeDifference, Is.LessThanOrEqualTo(1),
+                    $"Sample time is outside acceptable range. Expected: {expectedTimeStr}, Actual: {actualTimeStr}, Difference: {timeDifference:F1} minutes");
+            }
+            else
+            {
+                // Fallback to exact match if parsing fails
+                Assert.That(actualTimeStr, Is.EqualTo(expectedTimeStr),
+                    $"Sample time mismatch. Expected: {expectedTimeStr}, Actual: {actualTimeStr}");
+            }
+        }
 
         [Then("the Laboratory tests Review page should be displayed")]
         public void ThenTheLaboratoryTestsReviewPageShouldBeDisplayed()
@@ -130,8 +176,29 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var commoditySpecies = _scenarioContext.Get<string>("SelectedCommoditySampledSpecies");
             var labTestName = _scenarioContext.Get<string>("LaboratoryTestName");
             var analysisType = _scenarioContext.Get<string>("AnalysisType");
+            var result = laboratoryTestsPage?.GetLabTestResult(0);
 
             Assert.True(laboratoryTestsPage?.VerifyLabTestsReviewPage(commodityCode, commodityDescription, commoditySpecies, labTestName));
+            Assert.True(laboratoryTestsPage?.IsAddAnotherTestLinkDisplayed(), "Add another test link is not displayed");
+            Assert.That(result, Is.EqualTo("Pending"), $"Lab test result mismatch. Expected: Pending, Actual: {result}");
         }
+
+        [Then("the Laboratory tests Reason for testing page should be displayed")]
+        public void ThenTheLaboratoryTestsReasonForTestingPageShouldBeDisplayed()
+        {
+            Assert.True(laboratoryTestsPage?.IsReasonForTestingPageLoaded(), "Laboratory tests Reason for testing page is not displayed");
+        }
+
+        [Then("the Laboratory tests Select the commodity sampled page should be displayed")]
+        public void ThenTheLaboratoryTestsSelectTheCommoditySampledPageShouldBeDisplayed()
+        {
+            Assert.True(laboratoryTestsPage?.IsSelectCommoditySampledPageLoaded(), "Laboratory tests Select the commodity sampled page is not displayed");
+        }
+
+        [Then("the Laboratory tests Commodity to be tested page should be displayed")]
+        public void ThenTheLaboratoryTestsCommodityToBeTestedPageShouldBeDisplayed()
+        {
+            Assert.True(laboratoryTestsPage?.IsCommodityToBeTestedPageLoaded(), "Laboratory tests Commodity to be tested page is not displayed");
+        }       
     }
 }

@@ -21,6 +21,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement secondaryTitle => _driver.WaitForElement(By.XPath("//*[@id='page-secondary-title']"), true);
         private IWebElement txtIdentificationDetails => _driver.FindElement(By.XPath("//input[contains(@id, 'identification_details')]"));
         private IWebElement txtDescription => _driver.FindElement(By.XPath("//input[contains(@id, 'description')]"));
+        private IWebElement txtHorseName => _driver.FindElement(By.XPath("//input[contains(@id, 'horse_name')]"));
+        private IWebElement txtMicrochipNumber => _driver.FindElement(By.XPath("//input[contains(@id, 'microchip')]"));
+        private IWebElement txtPassportNumber => _driver.FindElement(By.XPath("//input[contains(@id, 'passport')]"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -38,16 +41,32 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void EnterIdentificationDetails(string identificationDetails)
         {
-            txtIdentificationDetails.Click();
             txtIdentificationDetails.Clear();
             txtIdentificationDetails.SendKeys(identificationDetails);
         }
 
         public void EnterDescription(string description)
         {
-            txtDescription.Click();
             txtDescription.Clear();
             txtDescription.SendKeys(description);
+        }
+
+        public void EnterHorseName(string horseName)
+        {
+            txtHorseName.Clear();
+            txtHorseName.SendKeys(horseName);
+        }
+
+        public void EnterMicrochipNumber(string microchipNumber)
+        {
+            txtMicrochipNumber.Clear();
+            txtMicrochipNumber.SendKeys(microchipNumber);
+        }
+
+        public void EnterPassportNumber(string passportNumber)
+        {
+            txtPassportNumber.Clear();
+            txtPassportNumber.SendKeys(passportNumber);
         }
     }
 }
