@@ -28,10 +28,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement firstDateOfTheMonth => _driver.WaitForElement(By.XPath("//td/button[text()='1']"));
         private By documentDateBy => By.XPath("//div[contains(@id,'additional-document-date-value')]");
         private IWebElement documentDate => _driver.WaitForElement(documentDateBy);
-        //private IWebElement addAttachmentLink => _driver.WaitForElement(By.Id("add-attachment"));
-        //private IWebElement addAttachmentLink => _driver.WaitForElement(By.Name("add-attachment"));
         private IWebElement addAttachmentLink => _driver.WaitForElement(By.XPath("//button[contains(@Name,'add-attachment')]"));
-        //private IWebElement addAttachmentInspectorLink => _driver.WaitForElement(By.Name("add-attachment-new"));
         private IWebElement nextButton => _driver.WaitForElement(By.Id("next-button"));
         private IWebElement lnkCancel => _driver.WaitForElement(By.XPath("//a[contains(text(),'Cancel')]"));
         private IWebElement lnkAddADocument => _driver.WaitForElement(By.Id("button-display-additional-document-row"));
@@ -41,7 +38,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement errorSummaryTitle => _driver.WaitForElement(By.Id("error-summary-title"));
         private IWebElement errorSummaryMsg => _driver.WaitForElement(By.XPath("//ul[contains(@class,'govuk-error-summary__list')]/li/a"));
         private IWebElement  errorMsgFieldLevel=> _driver.WaitForElement(By.Id("fileUpload-error"));
-        private IWebElement downloadAttachmentLink => _driver.FindElement(By.XPath("//a[contains(@id,'attachment-download-')]"));
+        private IWebElement downloadAttachmentLink => _driver.FindElement(By.XPath("//a[contains(@id,'attachment-download-')] | //a[contains(@id,'download-attachment-')]"));
         private IWebElement removeAttachmentButton => _driver.FindElement(By.XPath("//button[contains(@id,'remove-attachment-')]"));
         #endregion
 

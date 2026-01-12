@@ -90,7 +90,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             var durabilityDate = enterBorderNotificationDetailsPage.SelectDurabilityDateOption(durabilityOption);
             var durabilityDateOption = durabilityOption + " - " + durabilityDate;
-            //_scenarioContext["DurabilityOptionBN"] = durabilityOption;
             _scenarioContext["DurabilityDateBN"] = durabilityDateOption;
         }
 
