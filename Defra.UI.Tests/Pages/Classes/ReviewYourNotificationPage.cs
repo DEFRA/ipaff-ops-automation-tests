@@ -203,19 +203,7 @@ namespace Defra.UI.Tests.Pages.Classes
             }
         }
 
-        public string? GetPointOfExit()
-        {
-            var pointOfExitVal = string.Empty;
-            try
-            {
-                pointOfExitVal = pointOfExit.Text.Trim();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"GetPointOfExit failed: {ex.Message}");
-            }
-            return pointOfExitVal;
-        }
+        public string GetPointOfExit => pointOfExit?.Text?.Trim() ?? string.Empty;
 
         public (string departureDate, string departureTime) GetConsignmentDepartureDateTime()
         {
