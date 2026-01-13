@@ -411,8 +411,8 @@ Scenario: SPS-9106
 	When the user searches by selecting 'Exporter' in the Type dropdown
 	Then the type of every address listed is 'Exporter'
 	When the user clicks on the Dashboard link on the top left
-	Then the Your notifications page is displayed
-	And the Search notifications by section displays all the fields
+	Then the user is taken to the Your import notifications page
+	And the Search notifications by section displays all the fields on the Your import notifications page
 	When the user clicks Contact link on the footer
 	Then the Contacting us by phone or by email page is displayed
 	And the Contacting us by phone or by email page displays the expected text under the header

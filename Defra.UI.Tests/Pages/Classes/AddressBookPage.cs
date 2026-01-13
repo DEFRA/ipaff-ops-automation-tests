@@ -11,10 +11,12 @@ namespace Defra.UI.Tests.Pages.Classes
         private IObjectContainer _objectContainer;
 
         #region Page Objects
-        private IWebElement PageHeading => _driver.WaitForElement(By.Id("page-primary-title"), true);
+        private IWebElement PageHeading => _driver.WaitForElement(By.XPath("//div[@id='address-book-page']//h1[@id='page-primary-title']"), true);
         private IWebElement ddlType => _driver.FindElement(By.Id("type"));
         private IWebElement btnSearch => _driver.FindElement(By.Id("search"));
         private IWebElement economicOperatorsTable => _driver.WaitForElement(By.Id("economic-operators-table"));
+        private IWebElement lnkDashboard => _driver.FindElement(By.XPath("//a[text()='Dashboard']"));
+
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -52,6 +54,8 @@ namespace Defra.UI.Tests.Pages.Classes
 
             return matchedRows == rows;
         }
+
+        public void ClickDashboardLink() => lnkDashboard.Click();
         #endregion
     }
 }

@@ -6,5 +6,6 @@
         void SelectType(string type);
         void ClickSearchButton();
         bool ValidateTypeInSearchResults(string type);
+        void ClickDashboardLink();
     }
 }
