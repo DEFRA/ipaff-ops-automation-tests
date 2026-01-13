@@ -21,7 +21,7 @@ namespace Defra.UI.Tests.Tools
 
         public static DateTime ConvertToDate(string dateTime)
         {
-           return DateTime.ParseExact(dateTime, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            return DateTime.ParseExact(dateTime, "dd/MM/yyyy", CultureInfo.InvariantCulture);
         }
 
         public static string GenerateRandomUKPhonenumber()
@@ -33,7 +33,7 @@ namespace Defra.UI.Tests.Tools
 
         public static string GenerateMicrochipNumber()
         {
-           return DateTime.Now.ToString("ddMMyyHHmmssfff");
+            return DateTime.Now.ToString("ddMMyyHHmmssfff");
         }
 
         public static string GenerateRandomNumber()
@@ -84,5 +84,97 @@ namespace Defra.UI.Tests.Tools
         {
             ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView()", element);
         }
+
+        #region WebDriver Extension Methods for Element Safety
+
+        /// <summary>
+        /// Checks if an element is displayed without throwing an exception.
+        /// Returns false if the element is not found or not displayed.
+        /// </summary>
+        public static bool IsElementDisplayed(this IWebDriver driver, By locator)
+        {
+            try
+            {
+                var element = driver.FindElement(locator);
+                return element.Displayed;
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
+            catch (ElementNotInteractableException)
+            {
+                return false;
+            }
+            catch (StaleElementReferenceException)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Checks if an element is displayed without throwing an exception.
+        /// Returns false if the element is not found or not displayed.
+        /// </summary>
+        public static bool IsElementDisplayed(this IWebElement element)
+        {
+            try
+            {
+                return element.Displayed;
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
+            catch (ElementNotInteractableException)
+            {
+                return false;
+            }
+            catch (StaleElementReferenceException)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Safely retrieves text from an element by locator, returning empty string if element not found.
+        /// </summary>
+        public static string SafelyGetText(this IWebDriver driver, By locator)
+        {
+            try
+            {
+                var element = driver.FindElement(locator);
+                return element.Text.Trim();
+            }
+            catch (NoSuchElementException)
+            {
+                return string.Empty;
+            }
+            catch (StaleElementReferenceException)
+            {
+                return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Safely retrieves text from an element, returning empty string if element not accessible.
+        /// </summary>
+        public static string SafelyGetText(this IWebElement element)
+        {
+            try
+            {
+                return element.Text.Trim();
+            }
+            catch (NoSuchElementException)
+            {
+                return string.Empty;
+            }
+            catch (StaleElementReferenceException)
+            {
+                return string.Empty;
+            }
+        }
+
+        #endregion
     }
 }

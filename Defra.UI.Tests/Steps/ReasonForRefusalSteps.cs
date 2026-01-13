@@ -34,5 +34,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext.Add("ReasonForRefusal", reason);
         }
 
+        [When("the user selects {string} as another reason for refusal")]
+        public void WhenTheUserSelectsAdditionalReasonForRefusal(string reason)
+        {
+            reasonForRefusalPage?.SelectReasonForRefusal(reason);
+            _scenarioContext.Add("AdditionalReasonForRefusal", reason);
+        }
     }
 }

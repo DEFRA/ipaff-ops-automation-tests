@@ -28,5 +28,12 @@ namespace Defra.UI.Tests.Pages.Interfaces
         string GetLaboratoryTestName();
         bool IsReviewPageLoaded();
         bool VerifyLabTestsReviewPage(string commodityCode, string commodityDescription, string commoditySpecies, string labTestName);
+        bool IsReasonForTestingPageLoaded();
+        bool IsSelectCommoditySampledPageLoaded();
+        bool IsCommodityToBeTestedPageLoaded();        
+        string GetSampleDate();
+        string GetSampleTime();
+        bool IsAddAnotherTestLinkDisplayed();
+        string GetLabTestResult(int index = 0);
     }
 }

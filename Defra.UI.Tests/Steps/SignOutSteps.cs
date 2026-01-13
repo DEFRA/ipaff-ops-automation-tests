@@ -21,6 +21,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
         [When("the user logs out of IPAFFS Part {int}")]
+        [When("the user logs out of Border notifications in IPAFFS Part {int}")]
         public void WhenTheUserLogsOutOfIPAFFSPart(int partNumber)
         {
             signOutPage?.SignedOut();

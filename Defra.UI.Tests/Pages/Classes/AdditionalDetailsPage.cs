@@ -67,6 +67,25 @@ namespace Defra.UI.Tests.Pages.Classes
             return false;
         }
 
+        public bool AreAllCommIntendedForRadioOptionsDisplayed(List<string> commOptionsListExpected)
+        {
+            try
+            {
+                List<string> commOptionsListActual = new List<string>();
+
+                foreach (var commIntendedForRadio in commIntendedForRadioList)
+                {
+                    commOptionsListActual.Add(commIntendedForRadio.Text.Trim());
+                }
+                return commOptionsListExpected.All(expected => commOptionsListActual.Contains(expected));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"AreAllCommIntendedForRadioOptionsDisplayed failed: {ex.Message}");
+                return false;
+            }
+        }
+
         public void SelectAnimalCertification(string certificationOption)
         {
             var certificationRadioButton = getAnimalCertificationRadioButton(certificationOption);
