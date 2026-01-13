@@ -23,7 +23,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext = context;
         }
 
-
         [Then("the Accompanying documents page should be displayed")]
         public void ThenTheAccompanyingDocumentsPageShouldBeDisplayed()
         {

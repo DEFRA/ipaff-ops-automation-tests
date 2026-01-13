@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Defra.UI.Tests.Pages.Interfaces
+﻿namespace Defra.UI.Tests.Pages.Interfaces
 {
-    internal interface IAddressBookPage
+    public interface IAddressBookPage
     {
+        bool IsPageLoaded();
+        void SelectType(string type);
+        void ClickSearchButton();
+        bool ValidateTypeInSearchResults(string type);
     }
 }

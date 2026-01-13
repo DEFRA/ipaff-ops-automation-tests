@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Defra.UI.Tests.Pages.Interfaces;
+﻿using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
@@ -19,6 +14,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement PageHeading => _driver.WaitForElement(By.Id("page-primary-title"), true);
         private IWebElement ddlType => _driver.FindElement(By.Id("type"));
         private IWebElement btnSearch => _driver.FindElement(By.Id("search"));
+        private IWebElement economicOperatorsTable => _driver.WaitForElement(By.Id("economic-operators-table"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -39,6 +35,23 @@ namespace Defra.UI.Tests.Pages.Classes
         }
 
         public void ClickSearchButton() => btnSearch.Click();
+
+        public bool ValidateTypeInSearchResults(string type)
+        {
+            // Count rows
+            var rows = economicOperatorsTable.FindElements(By.XPath("//tbody/tr")).Count;
+            if (rows == 0) 
+                return false;
+
+            // Count rows where the 2nd td contains the text (Type column is the 2nd column)
+            /*var matchedRows = economicOperatorsTable.FindElements(By.XPath(
+                "//tbody/tr[td[2][contains(normalize-space(.), " +
+                $"\"{type}\"" + ")]]")).Count;*/
+
+            var matchedRows = economicOperatorsTable.FindElements(By.XPath("//tbody/tr[td[2][contains(normalize-space(.), " + $"{type}" + ")]]")).Count;
+
+            return matchedRows == rows;
+        }
         #endregion
     }
 }
