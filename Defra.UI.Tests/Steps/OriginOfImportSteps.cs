@@ -71,5 +71,23 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             originOfImportPage?.ClickSaveAndReturnToHub();
         }
+
+        [When("country of origin and Country from where consigned fields are pre-populated with previously selected country")]
+        public void ThenCountryOfOriginAndCountryFromWhereConsignedFieldsArePre_PopulatedWithPreviouslySelectedCountry()
+        {
+            var countryOfOrigin = _scenarioContext.Get<string>("CountryOfOrigin");
+            Assert.Multiple(() =>
+            {
+                Assert.True(countryOfOrigin.Equals(originOfImportPage?.GetOriginCountryText), "Country of origin field does not contain previously selected country");
+                Assert.True(countryOfOrigin.Equals(originOfImportPage?.GetOriginCountryText), "Country from where consigned field does not contain previously selected country");
+            });
+        }
+
+        [When("{string} is pre-selected for the Does your consignment require a region code? radio option")]
+        public void ThenIsPre_SelectedForTheDoesYourConsignmentRequireARegionCodeRadioOption(string ragionCodeRadio)
+        {
+            Assert.True(originOfImportPage?.IsRegionCodeRadioSelected(ragionCodeRadio), $"Region code radio is not pre-selected with {ragionCodeRadio} option");
+
+        }
     }
 }

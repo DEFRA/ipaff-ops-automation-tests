@@ -24,6 +24,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement countryOfOrigin => _driver.FindElement(By.Id("country-of-origin"));
         private IWebElement countryFromWhereConsigned => _driver.FindElement(By.XPath("//dt[text()='Country from where consigned']//following-sibling::dd"));
         private IWebElement mainReasonForImport => _driver.FindElement(By.Id("purpose-of-consignment-value"));
+        private IWebElement pointOfExit => _driver.FindElement(By.XPath("//dt[@id='point-of-exit-header']/following-sibling::dd"));
+        private IWebElement consignmentDepartureDateTime => _driver.FindElement(By.Id("estimated-departure-date-time-value"));
         private IWebElement purpose => _driver.FindElement(By.XPath("//dt[text()='Purpose in the internal market']//following-sibling::dd"));
         private IWebElement consignmentReferenceNumber => _driver.FindElement(By.XPath("//dt[text()='Consignment reference number']//following-sibling::dd"));
         private IWebElement exitDate => _driver.FindElement(By.Id("exit-date-value"));
@@ -103,8 +105,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement routeCountries => _driver.FindElement(By.XPath("//td[text()='Route']//following-sibling::td"));
         private IWebElement notifyTransportContacts => _driver.FindElement(By.Id("transporter-contact-yesnoindicator"));
         private IWebElement consignmentContactAddress => _driver.FindElement(By.Id("organisation-branch-address-address"));
-        private IReadOnlyCollection<IWebElement> divAboutTheConsignmentDetails => _driver.WaitForElements(By.XPath("//div[@id='document-pet-card']//dl/div"));               
-
+        private IReadOnlyCollection<IWebElement> divAboutTheConsignmentDetails => _driver.WaitForElements(By.XPath("//div[@id='document-pet-card']//dl/div"));
+                
         //Error Message
         private IReadOnlyCollection<IWebElement> lblErrorMessages => _driver.FindElements(By.XPath("//div[@class='govuk-error-summary']/div/ul/li"));
         #endregion
@@ -168,7 +170,6 @@ namespace Defra.UI.Tests.Pages.Classes
             catch { return null; }
         }
 
-
         public string? GetPurpose()
         {
             try
@@ -205,6 +206,22 @@ namespace Defra.UI.Tests.Pages.Classes
             }
         }
 
+        public string GetPointOfExit => pointOfExit?.Text?.Trim() ?? string.Empty;
+
+        public (string departureDate, string departureTime) GetConsignmentDepartureDateTime()
+        {
+            try
+            {
+                var departureDateTime = consignmentDepartureDateTime.Text.Trim();
+                var dateTimeParts = departureDateTime.Split(',', StringSplitOptions.TrimEntries);
+                return (DateTime.Parse(dateTimeParts[0]).ToString("dd MMMM yyyy"), dateTimeParts.Length > 1 ? dateTimeParts[1] : string.Empty);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error while getting date and time: {ex.Message}");
+                return (string.Empty, string.Empty);
+            }
+        }
 
         public string? GetCommodityCode()
         {

@@ -17,12 +17,15 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement secondaryTitle => _driver.WaitForElement(By.Id("page-secondary-title"), true);
         private IWebElement rdoYesRegionCode => _driver.FindElement(By.Id("region-code-yes"));
         private IWebElement rdoNoRegionCode => _driver.FindElement(By.Id("region-code-no"));
+        private IWebElement rdoRegionCode(string regionCodeRadioOption) => _driver.FindElement(By.XPath($"//label[contains(text(),'{regionCodeRadioOption}')]/preceding-sibling::input"));
         private IWebElement rdoYesConsignmentConform => _driver.FindElement(By.XPath("//fieldset[legend[contains(text(),'Does this consignment conform')]]//label[normalize-space(.)='Yes']"));
         private IWebElement rdoNoConsignmentConform => _driver.FindElement(By.XPath("//fieldset[legend[contains(text(),'Does this consignment conform')]]//label[normalize-space(.)='No']"));
         private IWebElement rdoYesAfterBCP => _driver.FindElement(By.Id("transport-details-required"));
         private IWebElement rdoNoAfterBCP => _driver.FindElement(By.Id("transport-details-required-2"));
         private IWebElement txtReferenceNumber => _driver.FindElement(By.Id("local-reference-number"));
         private IWebElement btnSaveAndReviewToHub => _driver.FindElement(By.Id("save-and-return-button"));
+        private IWebElement originCountrySelectedVal => _driver.FindElement(By.XPath("//select[@id='origin-country']/option[@selected]"));
+        private IWebElement consignedCountrySelectedVal => _driver.FindElement(By.XPath("//select[@id='consigned-country']/option[@selected]"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -75,6 +78,15 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickSaveAndReturnToHub()
         {
             btnSaveAndReviewToHub.Click();
+        }
+
+        public string GetOriginCountryText => originCountrySelectedVal.Text.Trim();
+        
+        public string GetConsignedCountryText => consignedCountrySelectedVal.Text.Trim();
+        
+        public bool IsRegionCodeRadioSelected(string regionCodeRadioOption)
+        {
+            return rdoRegionCode(regionCodeRadioOption).GetAttribute("checked") != null;
         }
     }
 }

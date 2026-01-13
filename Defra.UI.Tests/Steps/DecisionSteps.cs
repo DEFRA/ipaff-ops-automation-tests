@@ -79,6 +79,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
             );
         }
 
+        [Then("{string} radio is pre-selected under Acceptable for")]
+        public void ThenRadioIsPre_SelectedUnderAcceptableFor(string mainRadio)
+        {
+            Assert.True(decisionPage?.IsAcceptableForRadioSelected(mainRadio), $"The main radio option {mainRadio} is not selected by default on the Decision page");
+        }
+
         [When("the user enters reason {string} and selects By date")]
         public void WhenTheUserEntersReasonAndSelectsByDate(string reason)
         {
