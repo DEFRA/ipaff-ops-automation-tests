@@ -12,5 +12,8 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void EnterConsignmentRefNum(string refNum);
         void ClickBrowserForwardButton();
         void ClickSaveAndReturnToHub();
+        string GetOriginCountryText { get; }
+        string GetConsignedCountryText { get; }
+        bool IsRegionCodeRadioSelected(string regionCodeRadioOption);
     }
 }

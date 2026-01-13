@@ -39,5 +39,26 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             animalIdentificationDetailsPage?.EnterDescription(description);
         }
+
+        [When("the user populates the Horse name as {string}")]
+        public void WhenTheUserPopulatesTheHorseNameAs(string horseName)
+        {
+            animalIdentificationDetailsPage?.EnterHorseName(horseName);
+            _scenarioContext.Add("HorseName", horseName);
+        }
+
+        [When("the user populates the Microchip number as {string}")]
+        public void WhenTheUserPopulatesTheMicrochipNumberAs(string microchipNumber)
+        {
+            animalIdentificationDetailsPage?.EnterMicrochipNumber(microchipNumber);
+            _scenarioContext.Add("MicrochipNumber", microchipNumber);
+        }
+
+        [When("the user populates the Passport number as {string}")]
+        public void WhenTheUserPopulatesThePassportNumberAs(string passportNumber)
+        {
+            animalIdentificationDetailsPage?.EnterPassportNumber(passportNumber);
+            _scenarioContext.Add("PassportNumber", passportNumber);
+        }
     }
 }

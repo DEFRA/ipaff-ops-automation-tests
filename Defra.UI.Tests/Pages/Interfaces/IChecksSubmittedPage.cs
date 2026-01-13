@@ -11,5 +11,6 @@
         bool IsError(string errorMessage);
         bool VerifyErrorMessageTitle(string title);
         bool VerifyNextStepsMessage(string message);
+        void ClickCreateBorderNotiButton();
     }
 }
