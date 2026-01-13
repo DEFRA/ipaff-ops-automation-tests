@@ -48,8 +48,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
             checksSubmittedPage?.ClickViewOrPrintCHED();
         }
 
-
         [Then(@"the user should see an error message {string} under title {string} in checks submitted page")]
+        [Then("a border notification banner displaying the reason for refusal {string} under the title {string} is displayed")]
+
         public void ThenIShouldSeeAnErrorMessageUnderTitleInChecksSubmittedPage(string errorMessage, string title)
         {
             Assert.True(checksSubmittedPage?.VerifyErrorMessageTitle(title));
@@ -65,5 +66,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             Assert.True(checksSubmittedPage?.VerifyNextStepsMessage(message));
         }
+
+        [When("the user clicks on Create border notification button")]
+        public void WhenTheUserClicksOnCreateBorderNotificationButton()
+        {
+            checksSubmittedPage?.ClickCreateBorderNotiButton();
+        }
+
     }
 }

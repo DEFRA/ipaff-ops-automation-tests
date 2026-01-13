@@ -27,15 +27,27 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the Accompanying documents page should be displayed")]
         public void ThenTheAccompanyingDocumentsPageShouldBeDisplayed()
         {
-            Assert.True(accompanyingDocumentsPage?.IsPageLoaded(), "Accompanying documents");
+            Assert.True(accompanyingDocumentsPage?.IsPageLoaded(), "Accompanying documents page is not displayed");
         }
 
+        [Then("the Accompanying documents page should be displayed on the Inspector application")]
+        public void WhenTheAccompanyingDocumentsPageShouldBeDisplayedOnTheInspectorApplication()
+        {
+            Assert.True(accompanyingDocumentsPage?.IsAccompanyingDocPageLoadedOnInspectorApp(), "Accompanying documents page is not displayed on the Inspector application");
+        }
 
         [When("the user selects Document type {string}")]
         public void WhenTheUserSelectsDocumentType(string type)
         {
             accompanyingDocumentsPage?.SelectDocumentType(type);
             AppendStringToScenarioContextArray(_scenarioContext, "DocumentType", type);
+        }
+
+        [When("the user selects Document type {string} for creating border notification")]
+        public void WhenTheUserSelectsDocumentTypeForCreatingBorderNotification(string type)
+        {
+            accompanyingDocumentsPage?.SelectDocumentType(type);
+            _scenarioContext["AccompanyingDocumentTypeBN"] = type;
         }
 
         [When("the user selects Document type for the next notification {string}")]
@@ -83,6 +95,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
             AppendStringToScenarioContextArray(_scenarioContext, "DocumentReference", reference);
         }
 
+        [When("the user enters Document reference {string} for creating border notification")]
+        public void WhenTheUserEntersDocumentReferenceForCreatingBorderNotification(string reference)
+        {
+            accompanyingDocumentsPage?.EnterDocumentReference(reference);
+            _scenarioContext["AccompanyingDocumentRefBN"] = reference;
+        }
 
         [When("the user enters Document reference for the next notification {string}")]
         public void WhenTheUserEntersDocumentReferenceForTheNextNotification(string reference)
@@ -90,7 +108,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             accompanyingDocumentsPage?.EnterDocumentReference(reference);
             UpdateStringToScenarioContextArray(_scenarioContext, "DocumentReference", reference);
         }
-
 
         [When("the user enters date of issue {string}")]
         public void WhenTheUserEntersDateOfIssue(string dateString)
@@ -125,12 +142,24 @@ namespace Defra.UI.Tests.Steps.IPAFF
             accompanyingDocumentsPage?.ClickAddAttachmentLink();
         }
 
+        [When("the user uploads the document {string} in the format {string} that exceeds size limit")]
         [When("the user uploads the document {string} in the format {string}")]
         public void WhenTheUserUploadsTheDocumentInTheFormat(string name, string format)
         {
             var filename = name + format;
             accompanyingDocumentsPage?.AddAccompanyingDocument(filename);
-            _scenarioContext["DocumentName"] = filename;
+
+            if(!filename.Contains("Exceeds size"))
+                _scenarioContext["DocumentName"] = filename;
+        }
+
+        [When("the user uploads the document {string} in the format {string} for creating border notification")]
+        public void WhenTheUserUploadsTheDocumentInTheFormatForCreatingBorderNotification(string name, string format)
+        {
+            var filename = name + format;
+            accompanyingDocumentsPage?.AddAccompanyingDocument(filename);
+
+            _scenarioContext["AccompanyingDocumentFileNameBN"] = filename;
         }
 
         [Then("the document {string} {string} is uploaded successfully")]
@@ -210,6 +239,18 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserClicksTheAddADocumentLink()
         {
             accompanyingDocumentsPage?.ClickAddADocument();
+        }
+
+        [Then("the error message for exceeding file size should be displayed")]
+        public void ThenTheErrorMessageForExceedingFileSizeShouldBeDisplayed()
+        {
+            Assert.True(accompanyingDocumentsPage?.ValidateDocUploadErrors(), "Error messages are not displayed when the document size exceeds 10 MB");
+        }
+
+        [When("the user clicks on Cancel link")]
+        public void WhenTheUserClicksOnCancelLink()
+        {
+            accompanyingDocumentsPage?.ClickCancelLink();
         }
     }
 }

@@ -12,6 +12,8 @@
         string? GetMainReasonForImport();
         string? GetPurpose();
         string? GetConsignmentReferenceNumber();
+        string? GetPointOfExit { get; }
+        (string departureDate, string departureTime) GetConsignmentDepartureDateTime();
         string? GetExitDate();
         string? GetExitBCP();
         string? GetDestinationCountry();
