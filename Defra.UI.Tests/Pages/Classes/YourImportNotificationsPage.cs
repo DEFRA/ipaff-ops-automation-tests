@@ -27,6 +27,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private By GetCopyAsNewLinkBy(string chedRef) => By.Id($"copy-as-new-{chedRef}");
         private By GetViewDetailsLinkBy(string chedRef) => By.Id($"view-details-{chedRef}");
         private By GetShowNotificationLinkBy(string chedRef) => By.Id($"show-certificate-{chedRef}");
+        private IWebElement lnkAddressBook => _driver.WaitForElement(By.Id("address-book-link"));
 
         #endregion
 
@@ -150,6 +151,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickViewDetails(string chedReference)
         {
             _driver.FindElement(GetViewDetailsLinkBy(chedReference)).Click();
+        }
+
+        public void ClickAddressBookLink()
+        {
+            lnkAddressBook.Click();
         }
     }
 }

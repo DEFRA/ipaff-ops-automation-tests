@@ -846,3 +846,111 @@ Scenario: User creates and submits a B2C consignment notification with inspector
 	Then the dashboard page should be displayed
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
+
+Scenario: User adds addresses to address book and amends a CHEDA notification to use new traders - SPS-7387
+	Given that I navigate to the IPAFF application
+	Then I should see type of Gateway login page
+	And I have selected 'Sign in with Government Gateway' as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF credentials and signin
+	Then the user should be logged into Notification page
+	When the user clicks Address book link
+	Then the Address book page should be displayed
+	When the user clicks Add an address
+	Then the Choose address type page should be displayed with 'Operator address' and 'My organisation branch address' radio buttons
+	When the user selects address type 'Operator address' and clicks Continue
+	Then the Choose operator type page should be displayed with 'Importer' 'Exporter' 'Transporter' and 'Packer' radio buttons
+	When the user selects operator type 'Importer' and clicks Continue
+	Then the Add operator details page should be displayed
+	When the user adds the operator 'Importer' details	
+	And the user clicks Save and Continue
+	Then the address has been added to your address book page should be displayed
+	And Continue from here
+	When the user clicks Return to Address Book
+	Then the Address Book page should be displayed
+	And the newly added address 'Test Importer SPS7387' should be displayed in the address book
+	When the user clicks Add an address
+	Then the Choose address type page should be displayed with 'Operator address' and 'My organisation branch address' radio buttons
+	When the user selects 'Operator address' and clicks Continue
+	Then the Choose Operator Type page should be displayed with 'Importer' 'Exporter' 'Transporter' and 'Packer' radio buttons
+	When the user selects 'Exporter' radio button and clicks Continue
+	Then the Add Operator Details page should be displayed
+	When the user enters operator name 'Test Exporter SPS7387'
+	And the user enters operator address line 1 'Exporter Address Line 1'
+	And the user enters operator address line 2 'Exporter Address Line 2'
+	And the user enters operator city or town 'Exporter City'
+	And the user enters operator postcode 'EX1 1EX'
+	And the user selects operator country 'France'
+	And the user enters operator telephone number '07598765432'
+	And the user enters operator email 'testexporter@test.com'
+	And the user clicks Save and Continue
+	Then the address has been added to your address book page should be displayed
+	When the user clicks Return to Address Book
+	Then the Address Book page should be displayed
+	And the newly added address 'Test Exporter SPS7387' should be displayed in the address book
+	When the user clicks Add an address
+	Then the Choose address type page should be displayed with 'Operator address' and 'My organisation branch address' radio buttons
+	When the user selects 'Operator address' and clicks Continue
+	Then the Choose Operator Type page should be displayed with 'Importer' 'Exporter' 'Transporter' and 'Packer' radio buttons
+	When the user selects 'Transporter' radio button and clicks Continue
+	Then the Transporter type selection page should be displayed
+	When the user selects 'Private transporter' and clicks Continue
+	Then the Add Operator Details page should be displayed
+	When the user enters operator name 'Test Transporter SPS7387'
+	And the user enters operator address line 1 'Transporter Address Line 1'
+	And the user enters operator address line 2 'Transporter Address Line 2'
+	And the user enters operator city or town 'Transporter City'
+	And the user enters operator postcode 'TR1 1TR'
+	And the user selects operator country 'United Kingdom'
+	And the user enters operator telephone number '07511223344'
+	And the user enters operator email 'testtransporter@test.com'
+	And the user clicks Save and Continue
+	Then the address has been added to your address book page should be displayed
+	When the user clicks Return to Address Book
+	Then the Address Book page should be displayed
+	And the newly added address 'Test Transporter SPS7387' should be displayed in the address book
+	When the user clicks Dashboard link
+	Then the dashboard page should be displayed
+	When user searches for a CHEDA import notification with status 'NEW'
+	Then a notification with status 'NEW' should be found
+	When the user clicks Amend
+	Then the Notification Hub page should be displayed
+	And the notification reference number version should be incremented by 1
+	When the user clicks on 'Addresses' link
+	Then the Addresses page should be displayed
+	When the user clicks on Change link under 'Consignor or exporter'
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects the consignor or exporter 'Test Exporter SPS7387' from address book
+	Then the chosen consignor or exporter 'Test Exporter SPS7387' should be displayed on the Addresses page
+	When the user clicks on Change link under 'Consignee'
+	Then the Search for an existing consignee page should be displayed
+	When the user selects the consignee 'Test Importer SPS7387' from address book
+	Then the chosen consignee 'Test Importer SPS7387' should be displayed on the Addresses page
+	When the user clicks on Change link under 'Importer'
+	Then the Search for an existing importer page should be displayed
+	When the user selects the importer 'Test Importer SPS7387' from address book
+	Then the chosen importer 'Test Importer SPS7387' should be displayed on the Addresses page
+	When the user clicks on Change link under 'Place of destination'
+	Then the Search for an existing place of destination page should be displayed
+	When the user selects the place of destination 'Test Importer SPS7387' from address book
+	Then the chosen place of destination 'Test Importer SPS7387' should be displayed on the Addresses page
+	When the user clicks on Save and return to hub
+	Then the Notification Hub page should be displayed
+	When the user clicks on 'Review and submit' link
+	Then the Review your notification page should be displayed
+	And the new traders should be displayed in the review page
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user ticks the checkbox to declare that the information is true and correct
+	And the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	When the user clicks View or print CHED
+	Then the certificate should be displayed in a new browser tab
+	And the new traders 'Test Exporter SPS7387' 'Test Importer SPS7387' should be displayed in the certificate
+	When the user closes the PDF browser tab
+	Then the browser tab is closed
+	When the user clicks Return to your dashboard
+	Then the dashboard page should be displayed
+	When the user logs out of IPAFFS Part 1
+	Then the user should be logged out successfully

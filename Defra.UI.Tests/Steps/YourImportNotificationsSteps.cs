@@ -149,5 +149,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var chedReference = _scenarioContext.Get<string>("CHEDReference");
             importNotificationsPage?.ClickViewDetails(chedReference);
         }
+
+        [When(@"the user clicks Address book link")]
+        public void WhenTheUserClicksAddressBookLink()
+        {
+            importNotificationsPage?.ClickAddressBookLink();
+        }
     }
 }
