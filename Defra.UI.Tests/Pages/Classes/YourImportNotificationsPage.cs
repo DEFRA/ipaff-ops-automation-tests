@@ -4,7 +4,6 @@ using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
 using Reqnroll.BoDi;
 
-
 namespace Defra.UI.Tests.Pages.Classes
 {
     public class YourImportNotificationsPage : IYourImportNotificationsPage
@@ -20,8 +19,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement GetNotificationReferenceInList(string chedRef) => _driver.FindElement(By.XPath($"//dd[@id='reference-number-0' and contains(text(), '{chedRef}')]"));
         private IWebElement GetShowNotificationLink(string chedRef) => _driver.FindElement(By.Id($"show-certificate-{chedRef}"));
         private IWebElement GetAmendLink(string chedRef) => _driver.FindElement(By.Id($"amend-details-{chedRef}"));
+        private IWebElement lnkAddressBook => _driver.FindElement(By.Id("address-book-link"));
+        private IWebElement lnkContact => _driver.FindElement(By.XPath("//a[contains(text(),'Contact')]"));
         private IWebElement lnkCookies => _driver.FindElement(By.Id("button-cookies"));
-
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -110,5 +110,9 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             GetAmendLink(chedReference).Click();
         }
+
+        public void ClickAddressBookLink() => lnkAddressBook.Click();
+
+        public void ClickContactLink() => lnkContact.Click();
     }
 }

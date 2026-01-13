@@ -22,6 +22,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
         [Then("the user should be logged into Notification page")]        
         [Then("the dashboard page should be displayed")]
+        [Then("the user is taken to the Your import notifications page")]
         public void ThenTheDashboardShouldBeDisplayed()
         {
             Assert.True(importNotificationsPage?.IsPageLoaded(), "Dashboard not displayed");
@@ -99,6 +100,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserClicksCookiesLinkFromTheFooterOfThePage()
         {
             importNotificationsPage?.ClickCookiesLink();
+        }
+
+        [When("the user clicks the Address book link on the Your import notifications page")]
+        public void WhenTheUserClicksTheAddressBookLinkOnTheYourImportNotificationsPage()
+        {
+            importNotificationsPage?.ClickAddressBookLink();
         }
     }
 }

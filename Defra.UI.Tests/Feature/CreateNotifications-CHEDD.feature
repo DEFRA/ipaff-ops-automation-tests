@@ -393,3 +393,41 @@ Scenario: User creates and submits a notification, override the risk decision an
 	And the user validates the commodity code "12024200", description "Shelled, whether or not broken", quantity "1000", authority "FNAO" and decision "Non Acceptable" for commodity "1" after the decision is given
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
+
+Scenario: SPS-9106
+	Given that I navigate to the IPAFF application
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF credentials and signin
+	Then the user is taken to the Your import notifications page
+	When the user clicks the Address book link on the Your import notifications page
+	Then the Address book page should be displayed
+	When the user searches by selecting 'Importer' in the Type dropdown
+	Then the type of every address listed is 'Importer'
+	When the user searches by selecting 'Transporter' in the Type dropdown
+	Then the type of every address listed is 'Transporter'
+	When the user searches by selecting 'Exporter' in the Type dropdown
+	Then the type of every address listed is 'Exporter'
+	When the user clicks on the Dashboard link on the top left
+	Then the Your notifications page is displayed
+	And the Search notifications by section displays all the fields
+	When the user clicks Contact link on the footer
+	Then the Contacting us by phone or by email page is displayed
+	And the Contacting us by phone or by email page displays the expected text under the header
+	When the user clicks on the back link
+	Then the Your notifications page is displayed
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'High risk food and feed of non-animal origin' option
+	And the user clicks Save and continue
+	Then the Origin of the plants plant product or other objects page should be displayed
+	When the user chooses "Australia" from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing "Australia" as the Country of origin and Country from where consigned
+
+
+
+
+	
