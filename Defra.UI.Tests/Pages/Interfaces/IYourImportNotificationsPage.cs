@@ -12,7 +12,7 @@
         void ClosePDFBrowserTab();
         bool VerifyBrowserTabClosed();
         void ClickAmend(string chedReference);
-
         void ClickCookiesLink();
+        void ClickAddressBookLink();
     }
 }
