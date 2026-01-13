@@ -100,6 +100,23 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext.Add("TranshipmentDestinationCountry", transhipmentCountry);
         }
 
+        [When("the user enters the date and time the consignment will leave Great Britain")]
+        public void WhenTheUserEntersTheDateAndTimeTheConsignmentWillLeaveGreatBritain()
+        {
+            var leavingFromGBDate = reasonForImportPage?.EnterConsignmentDepartureDate();
+            var leavingFromGBTime = reasonForImportPage?.EnterConsignmentDepartureTime();
+
+            _scenarioContext.Add("ConsignmentLeavingFromGBDate", leavingFromGBDate);
+            _scenarioContext.Add("ConsignmentLeavingFromGBTime", leavingFromGBTime);
+        }
+
+        [When("the user enters {string} as the Point of exit")]
+        public void WhenTheUserEntersAsThePointOfExit(string placeOfExit)
+        {
+            reasonForImportPage?.AddPlaceOfExit(placeOfExit);
+            _scenarioContext.Add("PlaceOfExit", placeOfExit);
+        }
+
         [When("the user enters exit date {string} days from today")]
         public void WhenTheUserEntersExitDateDaysFromToday(string daysFromToday)
         {

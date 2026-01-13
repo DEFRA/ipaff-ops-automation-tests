@@ -68,5 +68,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
             additionalDetailsPage?.ClickSaveAndReview();
         }
 
+        [Then("the Commodity intended for field displays the radio options {string} {string} {string} and {string}")]
+        public void ThenTheCommodityIntendedForFieldDisplaysTheRadioOptionsAnd(string radioOne, string radioTwo, string radioThree, string radioFour)
+        {
+            List<string> commOptionsListExpected = new List<string>() { radioOne, radioTwo, radioThree, radioFour };
+            Assert.True(additionalDetailsPage?.AreAllCommIntendedForRadioOptionsDisplayed(commOptionsListExpected), "Not all Commodity intended for radio options are displayed on the Additional details page");
+        }
     }
 }
