@@ -426,8 +426,3 @@ Scenario: SPS-9106
 	When the user chooses "Australia" from the dropdown for Country of origin
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "Australia" as the Country of origin and Country from where consigned
-
-
-
-
-	
