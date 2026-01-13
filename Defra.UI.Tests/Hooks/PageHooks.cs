@@ -100,6 +100,11 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<BorderNotificationOverviewPage, IBorderNotificationOverviewPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<TransportAfterPortOfEntryPage, ITransportAfterPortOfEntryPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<DocumentsPage, IDocumentsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<AddressBookPage, IAddressBookPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ChooseAddressTypePage, IChooseAddressTypePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ChooseOperatorTypePage, IChooseOperatorTypePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<AddOperatorDetailsPage, IAddOperatorDetailsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<TheAddressHasBeenAddedPage, ITheAddressHasBeenAddedPage>());
 
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CookiesPage, ICookiesPage>());
 

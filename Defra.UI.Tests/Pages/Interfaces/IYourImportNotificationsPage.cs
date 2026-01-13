@@ -21,5 +21,6 @@
         bool IsViewDetailsLinkPresent(string chedReference);
         bool IsShowNotificationLinkPresent(string chedReference);
         void ClickViewDetails(string chedReference);
+        void ClickAddressBookLink();
     }
 }
