@@ -49,27 +49,47 @@ namespace Defra.UI.Tests.Pages.Classes
             return primaryTitle.Text.Contains("Enter the details of the border notification");
         }
 
-        public void SelectNotificationDetails(string type, string basis)
+        public void SelectNotificationType(string type)
         {
             new SelectElement(drpNotificationType).SelectByText(type);
+        }
+
+        public void SelectNotificationBasis(string basis)
+        {
             new SelectElement(drpNotificationBasis).SelectByText(basis);
         }
 
-        public void SelectProductDetails(string category, string product, string brand)
+        public void SelectProductCategory(string category)
         {
             new SelectElement(drpProductCategory).SelectByText(category);
-            txtProductName.Click();
-            txtProductName.SendKeys(product);
-            txtBrandName.Click();
+        }
+
+        public void EnterProductName(string name)
+        {
+            txtProductName.Clear();
+            txtProductName.SendKeys(name);
+        }
+
+        public void EnterBrandName(string brand)
+        {
+            txtBrandName.Clear();
             txtBrandName.SendKeys(brand);
         }
 
-        public void SelectOtherDetails(string label, string otherInfo, string dateOption)
+        public void EnterOtherLabelling(string label)
         {
-            txtOtherLabel.Click();
+            txtOtherLabel.Clear();
             txtOtherLabel.SendKeys(label);
-            txtOtherInfo.Click();
+        }
+
+        public void EnterOtherInformation(string otherInfo)
+        {
+            txtOtherInfo.Clear();
             txtOtherInfo.SendKeys(otherInfo);
+        }
+
+        public string SelectDurabilityDateOption(string dateOption)
+        {
             rdoDurabilityDate(dateOption).Click();
 
             var futureDate = DateTime.Now.AddDays(20);
@@ -102,6 +122,47 @@ namespace Defra.UI.Tests.Pages.Classes
                 txtBestBeforeEndYear.Click();
                 txtBestBeforeEndYear.SendKeys(year);
             }
+            return futureDate.ToString("dd/MM/yyyy");
+        }
+
+        public void SelectRiskDecision(string decision)
+        {
+            new SelectElement(drpRiskDecision).SelectByText(decision);
+        }
+
+        public void SelectImpactOn(string impact)
+        {
+            new SelectElement(drpImpactOn).SelectByText(impact);
+        }
+
+        public void SelectHazardCategory(string hazard)
+        {
+            new SelectElement(drpHazardCategory).SelectByText(hazard);
+        }
+
+        public void SelectMeasureTaken(string measure)
+        {
+            new SelectElement(drpMeasureTaken).SelectByText(measure);
+        }
+
+        public void SelectNotificationDetails(string type, string basis)
+        {
+            new SelectElement(drpNotificationType).SelectByText(type);
+            new SelectElement(drpNotificationBasis).SelectByText(basis);
+        }
+
+        public void SelectProductDetails(string category, string product, string brand)
+        {
+            new SelectElement(drpProductCategory).SelectByText(category);
+            txtProductName.SendKeys(product);
+            txtBrandName.SendKeys(brand);
+        }
+
+        public void SelectOtherDetails(string label, string otherInfo, string dateOption)
+        {
+            txtOtherLabel.SendKeys(label);
+            txtOtherInfo.SendKeys(otherInfo);
+            SelectDurabilityDateOption(dateOption);
         }
 
         public void SelectRiskDetails(string decision, string impact, string hazard, string measure)
