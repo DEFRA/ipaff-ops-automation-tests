@@ -895,8 +895,8 @@ Scenario: User adds addresses to address book and amends a CHEDA notification to
 	When the user clicks Return to Address Book
 	Then the Address book page should be displayed
 	And the newly added operator 'Transporter' should be displayed in the address book
-	#When the user clicks Dashboard link
-	#Then the dashboard page should be displayed
+	When the user clicks on Dashboard above Address book
+	Then the dashboard page should be displayed
 	#When user searches for a CHEDA import notification with status 'NEW'
 	#Then a notification with status 'NEW' should be found
 	#When the user clicks Amend

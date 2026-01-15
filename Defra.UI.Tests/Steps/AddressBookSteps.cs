@@ -33,8 +33,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
             addressBookPage?.ClickAddAnAddress();
         }
 
-        [When(@"the user clicks Dashboard link")]
-        public void WhenTheUserClicksDashboardLink()
+        [When("the user clicks on Dashboard above Address book")]
+        public void WhenTheUserClicksOnDashboardAboveAddressBook()
         {
             addressBookPage?.ClickDashboard();
         }

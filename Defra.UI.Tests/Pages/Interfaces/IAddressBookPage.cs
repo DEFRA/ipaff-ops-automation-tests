@@ -10,6 +10,5 @@ namespace Defra.UI.Tests.Pages.Interfaces
         string GetOperatorAddress(string operatorName);
         string GetOperatorCountry(string operatorName);
         void ClickDashboard();
-        void ClickReturnToAddressBook();
     }
 }
