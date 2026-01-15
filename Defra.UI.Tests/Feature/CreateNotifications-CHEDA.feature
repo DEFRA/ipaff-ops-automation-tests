@@ -89,8 +89,6 @@ Scenario: User creates and submits a B2C consignment notification - CHEDA Happy 
 	When the user selects any one of the displayed transporters
 	Then the chosen transporter should be displayed on the Transporter page
 	When the user clicks Save and continue in Transporter page
-	Then the Notification Hub page should be displayed
-	When the user clicks the Countries the consignment will travel through hyperlink 
 	Then the Which countries will the consignment travel through? page should be displayed
 	When the user selects 'Kenya' for Will the consignment travel through any other countries before reaching the UK?
 	And the user clicks Save and continue
@@ -262,9 +260,7 @@ Scenario: User creates and submits a CHEDA consignment notification for Temporar
 	Then the Search for an existing transporter page should be displayed
 	When the user selects any one of the displayed transporters
 	Then the chosen transporter should be displayed on the Transporter page
-	When the user clicks Save and continue in Transporter page
-	Then the Notification Hub page should be displayed
-	When the user clicks the Transport contacts hyperlink
+	When the user clicks Save and continue in Transporter page	
 	Then the Transport Contacts page should be displayed
 	When the user selects 'No' for Should we notify any transport contacts about inspections?
 	And the user clicks Save and continue
@@ -467,8 +463,6 @@ Scenario: User creates and submits a CHEDA consignment notification with Transit
 	When the user selects any one of the displayed transporters
 	Then the chosen transporter should be displayed on the Transporter page
 	When the user clicks Save and continue in Transporter page
-	Then the Notification Hub page should be displayed
-	When the user clicks the Countries the consignment will travel through hyperlink 
 	Then the Which countries will the consignment travel through? page should be displayed
 	When the user selects 'Kenya' for Will the consignment travel through any other countries before reaching the UK?
 	And the user clicks Add another country
@@ -636,8 +630,6 @@ Scenario: User creates and submits a CHEDA consignment notification with inspect
 	When the user selects any one of the displayed transporters
 	Then the chosen transporter should be displayed on the Transporter page
 	When the user clicks Save and continue in Transporter page
-	Then the Notification Hub page should be displayed
-	When the user clicks the Transport contacts hyperlink
 	Then the Transport Contacts page should be displayed
 	When the user selects 'No' for Should we notify any transport contacts about inspections?
 	And the user clicks Save and continue
@@ -933,8 +925,6 @@ Scenario: User adds addresses to address book and amends a CHEDA notification to
 	When the user selects any one of the displayed transporters
 	Then the chosen transporter should be displayed on the Transporter page
 	When the user clicks Save and continue in Transporter page
-	Then the Notification Hub page should be displayed
-	When the user clicks the Countries the consignment will travel through hyperlink 
 	Then the Which countries will the consignment travel through? page should be displayed
 	When the user selects 'Kenya' for Will the consignment travel through any other countries before reaching the UK?
 	And the user clicks Save and continue
@@ -1021,28 +1011,34 @@ Scenario: User adds addresses to address book and amends a CHEDA notification to
 	When the user searches for the transporter from the address book 'Transporter' 
 	And the user selects the transporter from the address book 'Transporter' 
 	Then the chosen transporter from the address book should be displayed on the Transporter page 'Transporter'
-	When the user clicks on Save and return to hub
+	When the user clicks Save and return to hub in Transporter page
 	Then the Notification Hub page should be displayed
-	#When the user clicks on 'Review and submit' link
-	#Then the Review your notification page should be displayed
-	#And the Consignor or exporter shows the new trader 'Exporter' on the review page
-	#And the Consignee shows the new 'Importer' on the review page
-	#And the Importer shows the new 'Importer' on the review page
-	#And the Place of destination shows the new 'Importer' on the review page	
-	#And the Transporter shows the new 'Transporter' on the review page	
-	#When the user clicks Save and continue
-	#Then the Declaration page should be displayed
-	#When the user ticks the checkbox to declare that the information is true and correct
-	#And the user clicks Submit notification
-	#Then the Confirmation page should be displayed with the initial risk assessment
-	#When the user clicks View or print CHED
-	#Then the certificate should be displayed in a new browser tab
-	#And the new Consignor or exporter should be displayed in the certificate ''
-	#And the new Consignee should be displayed in the certificate ''
-	#And the new Importer should be displayed in the certificate ''
-	#And the new Place of destination should be displayed in the certificate ''
-	#And the new Transporter should be displayed in the certificate ''
-	#When the user closes the PDF browser tab
-	#Then the browser tab is closed
-	#When the user clicks Return to your dashboard
-	#Then the dashboard page should be displayed
+	When the user clicks on 'Review and submit' link
+	Then the Review your notification page should be displayed
+	And the Consignor or exporter shows the new trader 'Exporter' on the review page
+	And the Consignee shows the new 'Importer' on the review page
+	And the Importer shows the new 'Importer' on the review page
+	And the Place of destination shows the new 'Importer' on the review page	
+	And the Transporter shows the new 'Transporter' on the review page	
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user ticks the checkbox to declare that the information is true and correct
+	And the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	When the user clicks Address book link
+	Then the Address book page should be displayed
+	And the user deletes the newly added operator 'Importer'
+	And the user deletes the newly added operator 'Exporter'
+	And the user deletes the newly added operator 'Transporter'
+#Create step definitions below once PDF validation is implemented
+	When the user clicks View or print CHED
+	Then the certificate should be displayed in a new browser tab
+	And the new Consignor or exporter should be displayed in the certificate ''
+	And the new Consignee should be displayed in the certificate ''
+	And the new Importer should be displayed in the certificate ''
+	And the new Place of destination should be displayed in the certificate ''
+	And the new Transporter should be displayed in the certificate ''
+	When the user closes the PDF browser tab
+	Then the browser tab is closed
+	When the user clicks Return to your dashboard
+	Then the dashboard page should be displayed

@@ -57,12 +57,18 @@ namespace Defra.UI.Tests.Steps.IPAFF
             transporterPage?.ClickSaveAndContinue();
         }
 
+        [When("the user clicks Save and return to hub in Transporter page")]
+        public void WhenTheUserClicksSaveAndReturnToHubInTransporterPage()
+        {
+            transporterPage?.ClickSaveAndReturnToHub();
+        }
+
         [When("the user clicks on Change link next to Transporter")]
         public void WhenTheUserClicksOnChangeLinkNextToTransporter()
         {
             transporterPage?.ClickChangeTransporter();
-        }
-
+        }        
+    
         [Then("the chosen transporter from the address book should be displayed on the Transporter page {string}")]
         public void ThenTheChosenTransporterFromTheAddressBookShouldBeDisplayedOnTheTransporterPage(string operatorType)
         {

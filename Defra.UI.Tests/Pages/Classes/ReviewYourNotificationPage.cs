@@ -634,6 +634,46 @@ namespace Defra.UI.Tests.Pages.Classes
             catch { return null; }
         }
 
+        public string? GetConsignorCountry()
+        {
+            try
+            {
+                var fullText = consignorDetails.Text.Trim();
+                return ExtractCountryFromAddressText(fullText);
+            }
+            catch { return null; }
+        }
+
+        public string? GetConsigneeCountry()
+        {
+            try
+            {
+                var fullText = consigneeDetails.Text.Trim();
+                return ExtractCountryFromAddressText(fullText);
+            }
+            catch { return null; }
+        }
+
+        public string? GetImporterCountry()
+        {
+            try
+            {
+                var fullText = importerDetails.Text.Trim();
+                return ExtractCountryFromAddressText(fullText);
+            }
+            catch { return null; }
+        }
+
+        public string? GetPlaceOfDestinationCountry()
+        {
+            try
+            {
+                var fullText = destinationDetails.Text.Trim();
+                return ExtractCountryFromAddressText(fullText);
+            }
+            catch { return null; }
+        }
+
         // Transport details
         public string? GetPortOfEntry()
         {
@@ -759,6 +799,27 @@ namespace Defra.UI.Tests.Pages.Classes
             try { return transporterAddress.Text.Trim(); } catch { return null; }
         }
 
+        public string? GetTransporterAddressWithoutContact()
+        {
+            try
+            {
+                var fullAddress = transporterAddress.Text.Trim();
+
+                // Transporter address format: "street, city, postcode, phone, email"
+                // We only want: "street, city, postcode"
+                var parts = fullAddress.Split(',', StringSplitOptions.TrimEntries);
+
+                if (parts.Length >= 3)
+                {
+                    // Take first 3 parts (street, city, postcode) - exclude phone and email
+                    return string.Join(", ", parts.Take(3));
+                }
+
+                return fullAddress;
+            }
+            catch { return null; }
+        }
+
         public string? GetTransporterCountry()
         {
             try { return transporterCountry.Text.Trim(); } catch { return null; }
@@ -824,6 +885,27 @@ namespace Defra.UI.Tests.Pages.Classes
                 }
 
                 return addressLine;
+            }
+            return "";
+        }
+
+        private string ExtractCountryFromAddressText(string fullText)
+        {
+            var lines = fullText.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+            if (lines.Length > 1)
+            {
+                var addressLine = lines[1].Trim();
+
+                // The review page shows: "street, city, postcode, country, phone"
+                // Country is the 4th part (index 3)
+
+                var parts = addressLine.Split(',', StringSplitOptions.TrimEntries);
+
+                // Return the 4th part (country) if it exists
+                if (parts.Length >= 4)
+                {
+                    return parts[3].Trim();
+                }
             }
             return "";
         }
