@@ -15,20 +15,20 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects
         private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
-        private IWebElement lnkAddAnAddress => _driver.WaitForElement(By.LinkText("Add an address"));
-        private IWebElement lnkReturnToAddressBook => _driver.WaitForElement(By.LinkText("Return to Address Book"));
-        private IWebElement lnkDashboard => _driver.WaitForElement(By.LinkText("Dashboard"));
+        private IWebElement lnkAddAnAddress => _driver.FindElement(By.LinkText("Add an address"));
+        private IWebElement lnkReturnToAddressBook => _driver.FindElement(By.LinkText("Return to Address Book"));
+        private IWebElement lnkDashboard => _driver.FindElement(By.LinkText("Dashboard"));
         private IWebElement GetOperatorNameElement(string operatorName) =>
-            _driver.WaitForElement(By.XPath($"//table[@id='economic-operators-table']//td[@class='govuk-table__cell' and normalize-space()='{operatorName}']"));
+            _driver.FindElement(By.XPath($"//table[@id='economic-operators-table']//td[@class='govuk-table__cell' and normalize-space()='{operatorName}']"));
 
         private IWebElement GetOperatorTypeElement(string operatorName) =>
-            _driver.WaitForElement(By.XPath($"//table[@id='economic-operators-table']//td[@class='govuk-table__cell' and normalize-space()='{operatorName}']/following-sibling::td[1]"));
+            _driver.FindElement(By.XPath($"//table[@id='economic-operators-table']//td[@class='govuk-table__cell' and normalize-space()='{operatorName}']/following-sibling::td[1]"));
 
         private IWebElement GetOperatorAddressElement(string operatorName) =>
-            _driver.WaitForElement(By.XPath($"//table[@id='economic-operators-table']//td[@class='govuk-table__cell' and normalize-space()='{operatorName}']/following-sibling::td[2]"));
+            _driver.FindElement(By.XPath($"//table[@id='economic-operators-table']//td[@class='govuk-table__cell' and normalize-space()='{operatorName}']/following-sibling::td[2]"));
 
         private IWebElement GetOperatorCountryElement(string operatorName) =>
-            _driver.WaitForElement(By.XPath($"//table[@id='economic-operators-table']//td[@class='govuk-table__cell' and normalize-space()='{operatorName}']/following-sibling::td[3]"));
+            _driver.FindElement(By.XPath($"//table[@id='economic-operators-table']//td[@class='govuk-table__cell' and normalize-space()='{operatorName}']/following-sibling::td[3]"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
