@@ -10,13 +10,14 @@ namespace Defra.UI.Tests.Pages.Classes
     {
         private string Platform => ConfigSetup.BaseConfiguration.TestConfiguration.Platform;
         private IObjectContainer _objectContainer;
+        private const int MaxRetryAttempts = 3;
+        private const int RetryDelayMilliseconds = 500;
 
         #region Page Objects
         private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
         private IWebElement lnkAddAnAddress => _driver.WaitForElement(By.LinkText("Add an address"));
         private IWebElement lnkReturnToAddressBook => _driver.WaitForElement(By.LinkText("Return to Address Book"));
         private IWebElement lnkDashboard => _driver.WaitForElement(By.LinkText("Dashboard"));
-        private IReadOnlyCollection<IWebElement> addressBookEntries => _driver.FindElements(By.CssSelector("[data-test='address-book-entry']"));
         private IWebElement GetOperatorNameElement(string operatorName) =>
             _driver.WaitForElement(By.XPath($"//table[@id='economic-operators-table']//td[@class='govuk-table__cell' and normalize-space()='{operatorName}']"));
 
@@ -49,34 +50,61 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool IsOperatorDisplayedInAddressBook(string operatorName, string operatorType, string operatorAddress, string operatorCountry)
         {
-            try
+            for (int attempt = 1; attempt <= MaxRetryAttempts; attempt++)
             {
-                var nameElement = GetOperatorNameElement(operatorName);
-                var typeElement = GetOperatorTypeElement(operatorName);
-                var addressElement = GetOperatorAddressElement(operatorName);
-                var countryElement = GetOperatorCountryElement(operatorName);
+                try
+                {
+                    var nameElement = GetOperatorNameElement(operatorName);
+                    var typeElement = GetOperatorTypeElement(operatorName);
+                    var addressElement = GetOperatorAddressElement(operatorName);
+                    var countryElement = GetOperatorCountryElement(operatorName);
 
-                // Verify the operator name is displayed
-                var nameDisplayed = nameElement.Displayed && nameElement.Text.Trim().Equals(operatorName);
+                    // Verify the operator name is displayed
+                    var nameDisplayed = nameElement.Displayed && nameElement.Text.Trim().Equals(operatorName);
 
-                // Verify the operator type matches (case-insensitive comparison)
-                var typeDisplayed = typeElement.Displayed &&
-                                   typeElement.Text.Trim().Equals(operatorType, StringComparison.OrdinalIgnoreCase);
+                    // Verify the operator type matches (case-insensitive comparison)
+                    var typeDisplayed = typeElement.Displayed &&
+                                       typeElement.Text.Trim().Equals(operatorType, StringComparison.OrdinalIgnoreCase);
 
-                // Verify the operator address contains the expected address
-                var addressDisplayed = addressElement.Displayed &&
-                                      addressElement.Text.Trim().Contains(operatorAddress, StringComparison.OrdinalIgnoreCase);
+                    // Verify the operator address contains the expected address
+                    var addressDisplayed = addressElement.Displayed &&
+                                          addressElement.Text.Trim().Contains(operatorAddress, StringComparison.OrdinalIgnoreCase);
 
-                // Verify the operator country matches
-                var countryDisplayed = countryElement.Displayed &&
-                                      countryElement.Text.Trim().Equals(operatorCountry, StringComparison.OrdinalIgnoreCase);
+                    // Verify the operator country matches
+                    var countryDisplayed = countryElement.Displayed &&
+                                          countryElement.Text.Trim().Equals(operatorCountry, StringComparison.OrdinalIgnoreCase);
 
-                return nameDisplayed && typeDisplayed && addressDisplayed && countryDisplayed;
+                    return nameDisplayed && typeDisplayed && addressDisplayed && countryDisplayed;
+                }
+                catch (Exception ex)
+                {
+                    // Log the attempt failure
+                    Console.WriteLine($"Attempt {attempt} of {MaxRetryAttempts} failed to find operator '{operatorName}'. Exception: {ex.Message}");
+
+                    // If this is not the last attempt, refresh the page and retry
+                    if (attempt < MaxRetryAttempts)
+                    {
+                        Console.WriteLine($"Refreshing the Address Book page and retrying...");
+                        _driver.Navigate().Refresh();
+
+                        // Wait for the page to reload by verifying it's loaded
+                        if (!IsPageLoaded())
+                        {
+                            Console.WriteLine($"Warning: Page did not reload properly on attempt {attempt}");
+                        }
+
+                        Thread.Sleep(RetryDelayMilliseconds);
+                    }
+                    else
+                    {
+                        // Last attempt failed, return false
+                        Console.WriteLine($"All {MaxRetryAttempts} attempts exhausted. Operator '{operatorName}' not found in address book.");
+                        return false;
+                    }
+                }
             }
-            catch
-            {
-                return false;
-            }
+
+            return false;
         }
 
         public string GetOperatorName(string operatorName) => GetOperatorNameElement(operatorName).Text.Trim();
