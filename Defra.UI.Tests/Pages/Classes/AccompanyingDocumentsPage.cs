@@ -134,6 +134,8 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public string GetFileName => fileName.Text;
 
+        public int GetFileLength => fileName.Text.Trim().Length;
+
         public void ClickAddADocument()
         {
             lnkAddADocument.Click();

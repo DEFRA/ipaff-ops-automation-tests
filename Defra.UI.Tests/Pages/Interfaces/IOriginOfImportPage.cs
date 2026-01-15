@@ -1,7 +1,4 @@
-﻿using Faker;
-using OpenQA.Selenium;
-
-namespace Defra.UI.Tests.Pages.Interfaces
+﻿namespace Defra.UI.Tests.Pages.Interfaces
 {
     public interface IOriginOfImportPage
     {
@@ -15,5 +12,6 @@ namespace Defra.UI.Tests.Pages.Interfaces
         string GetOriginCountryText { get; }
         string GetConsignedCountryText { get; }
         bool IsRegionCodeRadioSelected(string regionCodeRadioOption);
+        void SelectConsignedCountry(string consignedCountry);
     }
 }

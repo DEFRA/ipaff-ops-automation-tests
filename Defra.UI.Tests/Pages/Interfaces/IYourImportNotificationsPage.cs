@@ -17,5 +17,6 @@
         void ClickCookiesLink();
         void ClickContactLink();
         void ClickAddressBookLink();
+        void ClickViewDetailsLink();
     }
 }

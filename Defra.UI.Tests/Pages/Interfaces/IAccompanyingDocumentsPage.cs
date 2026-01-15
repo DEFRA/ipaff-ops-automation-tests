@@ -16,6 +16,7 @@
         void ClickAddADocument();
         bool IsRowPresent();
         string GetFileName { get; }
+        public int GetFileLength { get; }
         bool ValidateDocUploadErrors();
         bool IsDownloadAttachmentLinkPresent();
         bool IsRemoveAttachmentLinkPresent();

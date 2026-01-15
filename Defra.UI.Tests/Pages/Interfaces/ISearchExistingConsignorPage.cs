@@ -1,15 +1,12 @@
-﻿using Faker;
-using OpenQA.Selenium;
-
-namespace Defra.UI.Tests.Pages.Interfaces
+﻿namespace Defra.UI.Tests.Pages.Interfaces
 {
     public interface ISearchExistingConsignorPage
     {
         bool IsPageLoaded();
-        void ClickSelect(string consignor);
-        string GetSelectedConsignor();
-        string GetSelectedConsignorName();
-        string GetSelectedConsignorAddress();
-        string GetSelectedConsignorCountry();
+        void ClickSelect(string consignorName);
+        string GetSelectedConsignor(string consignorName);
+        string GetSelectedConsignorName(string consignorName);
+        string GetSelectedConsignorAddress(string consignorName);
+        string GetSelectedConsignorCountry(string consignorName);
     }
 }
