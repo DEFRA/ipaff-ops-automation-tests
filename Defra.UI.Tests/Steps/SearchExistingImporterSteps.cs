@@ -26,19 +26,19 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
         [When("the user selects an importer {string} with a UK country")]
-        public void WhenTheUserSelectsAnImporterWithAUKCountry(string importer)
+        public void WhenTheUserSelectsAnImporterWithAUKCountry(string importerName)
         {
-            var consigneeName = searchExistingImporterPage?.GetSelectedImporterName();
-            var consigneeAddress = searchExistingImporterPage?.GetSelectedImporterAddress();
-            var consigneeCountry = searchExistingImporterPage?.GetSelectedImporterCountry();
+            var selectedImporterName = searchExistingImporterPage?.GetSelectedImporterName(importerName);
+            var importerAddress = searchExistingImporterPage?.GetSelectedImporterAddress(importerName);
+            var importerCountry = searchExistingImporterPage?.GetSelectedImporterCountry(importerName);
 
-            _scenarioContext["ImporterName"] = consigneeName;
-            _scenarioContext["ImporterAddress"] = consigneeAddress;
-            _scenarioContext["ImporterCountry"] = consigneeCountry;
+            _scenarioContext["ImporterName"] = selectedImporterName;
+            _scenarioContext["ImporterAddress"] = importerAddress;
+            _scenarioContext["ImporterCountry"] = importerCountry;
 
-            _scenarioContext["ImporterDetails"] = searchExistingImporterPage?.GetSelectedImporter();
+            _scenarioContext["ImporterDetails"] = searchExistingImporterPage?.GetSelectedImporter(importerName);
 
-            searchExistingImporterPage?.ClickSelect(importer);
+            searchExistingImporterPage?.ClickSelect(importerName);
         }
     }
 }
