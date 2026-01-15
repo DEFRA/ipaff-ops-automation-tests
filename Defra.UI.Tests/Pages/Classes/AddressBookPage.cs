@@ -112,11 +112,6 @@ namespace Defra.UI.Tests.Pages.Classes
         public string GetOperatorAddress(string operatorName) => GetOperatorAddressElement(operatorName).Text.Trim();
         public string GetOperatorCountry(string operatorName) => GetOperatorCountryElement(operatorName).Text.Trim();
 
-        public void ClickReturnToAddressBook()
-        {
-            lnkReturnToAddressBook.Click();
-        }
-
         public void ClickDashboard()
         {
             lnkDashboard.Click();
