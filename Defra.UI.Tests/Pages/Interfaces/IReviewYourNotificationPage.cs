@@ -61,6 +61,10 @@
         string? GetImporterAddress();
         string? GetDestinationName();
         string? GetDestinationAddress();
+        string? GetConsignorCountry();
+        string? GetConsigneeCountry();
+        string? GetImporterCountry();
+        string? GetPlaceOfDestinationCountry();
 
         // Transport details
         string? GetPortOfEntry();
@@ -85,6 +89,7 @@
         // Transporter details
         string? GetTransporterName();
         string? GetTransporterAddress();
+        string? GetTransporterAddressWithoutContact();
         string? GetTransporterCountry();
         string? GetTransporterApprovalNumber();
         string? GetTransporterType();
