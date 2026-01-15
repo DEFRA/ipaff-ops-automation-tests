@@ -183,6 +183,7 @@ namespace Defra.UI.Tests.Tools
         /// <summary>
         /// Generates random operator details with realistic data using Bogus Faker library.
         /// Randomly selects a country from the available countries list.
+        /// Uses regionally authentic locales including non-Latin scripts (Arabic, Cyrillic, Chinese, Japanese, Korean, Greek, Georgian, Persian, Nepali).
         /// </summary>
         public static OperatorDetails GenerateOperatorDetails()
         {
@@ -206,33 +207,36 @@ namespace Defra.UI.Tests.Tools
 
             var operatorDetails = new OperatorDetails
             {
-                OperatorName = faker.Company.CompanyName(),
-                AddressLine1 = faker.Address.StreetAddress(),
-                CityOrTown = faker.Address.City(),
+                OperatorName = faker.Company.CompanyName().Replace(",", ""),
+                AddressLine1 = faker.Address.StreetAddress().Replace(",", ""),
+                CityOrTown = faker.Address.City().Replace(",", ""),
                 Postcode = postcode,
                 Country = countryName,
-                TelephoneNumber = phoneNumber,
-                Email = faker.Internet.Email().ToLower()
+                TelephoneNumber = phoneNumber.Replace(",", ""),
+                Email = GenerateSafeEmail(faker)
             };
 
             return operatorDetails;
         }
 
         /// <summary>
-        /// Maps country names from IPAFFS to their most appropriate Bogus locale codes
+        /// Maps country names from IPAFFS to their most appropriate Bogus locale codes.
+        /// Uses regionally authentic locales including non-Latin scripts (Arabic, Cyrillic, Chinese, Japanese, Korean, Greek, Georgian, Persian, Nepali).
+        /// All locales are officially supported by the Bogus library.
+        /// See: https://github.com/bchavez/Bogus#locales
         /// </summary>
         private static Dictionary<string, string> GetCountryLocaleMapping()
         {
             return new Dictionary<string, string>
             {
-                // All countries from IPAFFS HTML dropdown mapped to Bogus locales
+                // Countries mapped to VALID Bogus locales
                 { "Afghanistan", "en" },
-                { "Aland Islands", "en" },
+                { "Aland Islands", "fi" },
                 { "Albania", "en" },
                 { "Algeria", "ar" },
                 { "American Samoa", "en_US" },
                 { "Andorra", "es" },
-                { "Angola", "pt" },
+                { "Angola", "pt_PT" },
                 { "Anguilla", "en" },
                 { "Antarctica", "en" },
                 { "Antigua and Barbuda", "en" },
@@ -254,21 +258,21 @@ namespace Defra.UI.Tests.Tools
                 { "Bhutan", "en" },
                 { "Bolivia", "es" },
                 { "Bonaire, Sint Eustatius and Saba", "nl" },
-                { "Bosnia and Herzegovina", "en" },
+                { "Bosnia and Herzegovina", "hr" },
                 { "Botswana", "en" },
                 { "Bouvet Island", "en" },
                 { "Brazil", "pt_BR" },
                 { "British Indian Ocean Territory", "en" },
                 { "British Virgin Islands", "en" },
                 { "Brunei", "en" },
-                { "Bulgaria", "bg" },
+                { "Bulgaria", "en" },
                 { "Burkina Faso", "fr" },
                 { "Burundi", "fr" },
                 { "Cambodia", "en" },
                 { "Cameroon", "fr" },
                 { "Canada", "en_CA" },
                 { "Canary Islands", "es" },
-                { "Cape Verde", "pt" },
+                { "Cape Verde", "pt_PT" },
                 { "Cayman Islands", "en" },
                 { "Central African Republic", "fr" },
                 { "Chad", "fr" },
@@ -288,7 +292,7 @@ namespace Defra.UI.Tests.Tools
                 { "Cyprus", "el" },
                 { "Czech Republic", "cz" },
                 { "Democratic Republic of the Congo", "fr" },
-                { "Denmark", "da" },
+                { "Denmark", "en" },
                 { "Djibouti", "fr" },
                 { "Dominica", "en" },
                 { "Dominican Republic", "es" },
@@ -298,7 +302,7 @@ namespace Defra.UI.Tests.Tools
                 { "England", "en_GB" },
                 { "Equatorial Guinea", "es" },
                 { "Eritrea", "en" },
-                { "Estonia", "et" },
+                { "Estonia", "en" },
                 { "Eswatini", "en" },
                 { "Ethiopia", "en" },
                 { "Falkland Islands", "en" },
@@ -310,7 +314,7 @@ namespace Defra.UI.Tests.Tools
                 { "French Polynesia", "fr" },
                 { "French Southern Territories", "fr" },
                 { "Gabon", "fr" },
-                { "Georgia", "ka" },
+                { "Georgia", "ge" },
                 { "Germany", "de" },
                 { "Ghana", "en" },
                 { "Gibraltar", "en" },
@@ -322,32 +326,32 @@ namespace Defra.UI.Tests.Tools
                 { "Guatemala", "es" },
                 { "Guernsey", "en" },
                 { "Guinea", "fr" },
-                { "Guinea-Bissau", "pt" },
+                { "Guinea-Bissau", "pt_PT" },
                 { "Guyana", "en" },
                 { "Haiti", "fr" },
                 { "Heard Island and McDonald Islands", "en" },
                 { "Holy See", "it" },
                 { "Honduras", "es" },
                 { "Hong Kong", "zh_CN" },
-                { "Hungary", "hu" },
+                { "Hungary", "en" },
                 { "Iceland", "en" },
                 { "India", "en_IND" },
-                { "Indonesia", "id" },
+                { "Indonesia", "id_ID" },
                 { "Iran", "fa" },
                 { "Iraq", "ar" },
                 { "Isle of Man", "en" },
-                { "Israel", "he" },
+                { "Israel", "en" },
                 { "Italy", "it" },
                 { "Jamaica", "en" },
                 { "Japan", "ja" },
                 { "Jersey", "en" },
                 { "Jordan", "ar" },
-                { "Kazakhstan", "en" },
+                { "Kazakhstan", "ru" },
                 { "Kenya", "en" },
                 { "Kiribati", "en" },
                 { "Kosovo", "en" },
                 { "Kuwait", "ar" },
-                { "Kyrgyzstan", "en" },
+                { "Kyrgyzstan", "ru" },
                 { "Laos", "en" },
                 { "Latvia", "lv" },
                 { "Lebanon", "ar" },
@@ -355,7 +359,7 @@ namespace Defra.UI.Tests.Tools
                 { "Liberia", "en" },
                 { "Libya", "ar" },
                 { "Liechtenstein", "de" },
-                { "Lithuania", "lt" },
+                { "Lithuania", "en" },
                 { "Luxembourg", "fr" },
                 { "Macao", "zh_CN" },
                 { "Madagascar", "fr" },
@@ -374,20 +378,20 @@ namespace Defra.UI.Tests.Tools
                 { "Moldova", "ro" },
                 { "Monaco", "fr" },
                 { "Mongolia", "en" },
-                { "Montenegro", "en" },
+                { "Montenegro", "hr" },
                 { "Montserrat", "en" },
                 { "Morocco", "ar" },
-                { "Mozambique", "pt" },
+                { "Mozambique", "pt_PT" },
                 { "Myanmar", "en" },
-                { "Namibia", "en" },
+                { "Namibia", "af_ZA" },
                 { "Nauru", "en" },
-                { "Nepal", "en" },
+                { "Nepal", "ne" },
                 { "Netherlands", "nl" },
                 { "New Caledonia", "fr" },
                 { "New Zealand", "en" },
                 { "Nicaragua", "es" },
                 { "Niger", "fr" },
-                { "Nigeria", "en" },
+                { "Nigeria", "en_NG" },
                 { "Niue", "en" },
                 { "Norfolk Island", "en" },
                 { "North Korea", "ko" },
@@ -415,22 +419,22 @@ namespace Defra.UI.Tests.Tools
                 { "Rwanda", "fr" },
                 { "Samoa", "en" },
                 { "San Marino", "it" },
-                { "Sao Tome and Principe", "pt" },
+                { "Sao Tome and Principe", "pt_PT" },
                 { "Saudi Arabia", "ar" },
                 { "Scotland", "en_GB" },
                 { "Senegal", "fr" },
-                { "Serbia", "sr_Latn" },
+                { "Serbia", "hr" },
                 { "Seychelles", "en" },
                 { "Sierra Leone", "en" },
                 { "Singapore", "en" },
                 { "Slovakia", "sk" },
-                { "Slovenia", "sl" },
+                { "Slovenia", "hr" },
                 { "Solomon Islands", "en" },
                 { "Somalia", "ar" },
                 { "South Africa", "en_ZA" },
                 { "South Georgia and the South Sandwich Islands", "en" },
                 { "South Korea", "ko" },
-                { "South Sudan", "en" },
+                { "South Sudan", "ar" },
                 { "Spain", "es" },
                 { "Sri Lanka", "en" },
                 { "St Barthélemy", "fr" },
@@ -447,19 +451,19 @@ namespace Defra.UI.Tests.Tools
                 { "Switzerland", "de_CH" },
                 { "Syria", "ar" },
                 { "Taiwan", "zh_TW" },
-                { "Tajikistan", "en" },
+                { "Tajikistan", "ru" },
                 { "Tanzania", "en" },
-                { "Thailand", "th" },
+                { "Thailand", "en" },
                 { "The Gambia", "en" },
                 { "The Occupied Palestinian Territories", "ar" },
-                { "Timor-Leste", "pt" },
+                { "Timor-Leste", "pt_PT" },
                 { "Togo", "fr" },
                 { "Tokelau", "en" },
                 { "Tonga", "en" },
                 { "Trinidad and Tobago", "en" },
                 { "Tunisia", "ar" },
                 { "Turkey", "tr" },
-                { "Turkmenistan", "en" },
+                { "Turkmenistan", "ru" },
                 { "Turks and Caicos Islands", "en" },
                 { "Tuvalu", "en" },
                 { "Uganda", "en" },
@@ -469,7 +473,7 @@ namespace Defra.UI.Tests.Tools
                 { "United States Minor Outlying Islands", "en_US" },
                 { "United States of America", "en_US" },
                 { "Uruguay", "es" },
-                { "Uzbekistan", "en" },
+                { "Uzbekistan", "ru" },
                 { "Vanuatu", "en" },
                 { "Venezuela", "es" },
                 { "Viet Nam", "vi" },
@@ -479,7 +483,7 @@ namespace Defra.UI.Tests.Tools
                 { "Western Sahara", "ar" },
                 { "Yemen", "ar" },
                 { "Zambia", "en" },
-                { "Zimbabwe", "en" }
+                { "Zimbabwe", "en_ZA" }
             };
         }
 
@@ -510,6 +514,43 @@ namespace Defra.UI.Tests.Tools
                     => GenerateRandomUKPhonenumber(),
                 _ => faker.Phone.PhoneNumber()
             };
+        }
+
+        /// <summary>
+        /// Generates a safe email address that doesn't start with a period or other invalid characters.
+        /// Includes fallback mechanism to ensure valid email format.
+        /// </summary>
+        private static string GenerateSafeEmail(Bogus.Faker faker)
+        {
+            var email = faker.Internet.Email();
+            var maxAttempts = 10;
+            var attempts = 0;
+
+            // Keep regenerating until we get a valid email
+            while (attempts < maxAttempts)
+            {
+                // Check if email starts with invalid characters
+                if (!email.StartsWith(".") &&
+                    !email.StartsWith("-") &&
+                    !email.StartsWith("_") &&
+                    email.Contains("@") &&
+                    !email.StartsWith("@"))
+                {
+                    return email;
+                }
+
+                // Regenerate if invalid
+                email = faker.Internet.Email();
+                attempts++;
+            }
+
+            // Fallback: manually create a valid email if all attempts fail
+            var random = new Random();
+            var prefix = $"user{random.Next(10000, 99999)}";
+            var providers = new[] { "gmail.com", "outlook.com", "yahoo.com", "hotmail.com", "test.com" };
+            var provider = providers[random.Next(providers.Length)];
+
+            return $"{prefix}@{provider}";
         }
 
         #endregion
