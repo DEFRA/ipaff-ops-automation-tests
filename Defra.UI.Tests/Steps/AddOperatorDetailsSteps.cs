@@ -39,9 +39,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext[$"{operatorType}Name"] = operatorDetails.OperatorName;
             _scenarioContext[$"{operatorType}Address"] = operatorDetails.Address;
             _scenarioContext[$"{operatorType}Country"] = operatorDetails.Country;
-
-            // Store the operator type for later reference
-            _scenarioContext["LastAddedOperatorType"] = operatorType;
         }
 
         [When(@"the user clicks Save and Continue")]

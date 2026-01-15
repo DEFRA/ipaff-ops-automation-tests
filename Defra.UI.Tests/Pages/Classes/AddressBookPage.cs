@@ -17,6 +17,17 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement lnkReturnToAddressBook => _driver.WaitForElement(By.LinkText("Return to Address Book"));
         private IWebElement lnkDashboard => _driver.WaitForElement(By.LinkText("Dashboard"));
         private IReadOnlyCollection<IWebElement> addressBookEntries => _driver.FindElements(By.CssSelector("[data-test='address-book-entry']"));
+        private IWebElement GetOperatorNameElement(string operatorName) =>
+            _driver.WaitForElement(By.XPath($"//table[@id='economic-operators-table']//td[@class='govuk-table__cell' and normalize-space()='{operatorName}']"));
+
+        private IWebElement GetOperatorTypeElement(string operatorName) =>
+            _driver.WaitForElement(By.XPath($"//table[@id='economic-operators-table']//td[@class='govuk-table__cell' and normalize-space()='{operatorName}']/following-sibling::td[1]"));
+
+        private IWebElement GetOperatorAddressElement(string operatorName) =>
+            _driver.WaitForElement(By.XPath($"//table[@id='economic-operators-table']//td[@class='govuk-table__cell' and normalize-space()='{operatorName}']/following-sibling::td[2]"));
+
+        private IWebElement GetOperatorCountryElement(string operatorName) =>
+            _driver.WaitForElement(By.XPath($"//table[@id='economic-operators-table']//td[@class='govuk-table__cell' and normalize-space()='{operatorName}']/following-sibling::td[3]"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -36,18 +47,42 @@ namespace Defra.UI.Tests.Pages.Classes
             lnkAddAnAddress.Click();
         }
 
-        public bool IsAddressDisplayedInAddressBook(string addressName)
+        public bool IsOperatorDisplayedInAddressBook(string operatorName, string operatorType, string operatorAddress, string operatorCountry)
         {
             try
             {
-                var addressElement = _driver.WaitForElement(By.XPath($"//*[contains(text(), '{addressName}')]"), true);
-                return addressElement.Displayed;
+                var nameElement = GetOperatorNameElement(operatorName);
+                var typeElement = GetOperatorTypeElement(operatorName);
+                var addressElement = GetOperatorAddressElement(operatorName);
+                var countryElement = GetOperatorCountryElement(operatorName);
+
+                // Verify the operator name is displayed
+                var nameDisplayed = nameElement.Displayed && nameElement.Text.Trim().Equals(operatorName);
+
+                // Verify the operator type matches (case-insensitive comparison)
+                var typeDisplayed = typeElement.Displayed &&
+                                   typeElement.Text.Trim().Equals(operatorType, StringComparison.OrdinalIgnoreCase);
+
+                // Verify the operator address contains the expected address
+                var addressDisplayed = addressElement.Displayed &&
+                                      addressElement.Text.Trim().Contains(operatorAddress, StringComparison.OrdinalIgnoreCase);
+
+                // Verify the operator country matches
+                var countryDisplayed = countryElement.Displayed &&
+                                      countryElement.Text.Trim().Equals(operatorCountry, StringComparison.OrdinalIgnoreCase);
+
+                return nameDisplayed && typeDisplayed && addressDisplayed && countryDisplayed;
             }
             catch
             {
                 return false;
             }
         }
+
+        public string GetOperatorName(string operatorName) => GetOperatorNameElement(operatorName).Text.Trim();
+        public string GetOperatorType(string operatorName) => GetOperatorTypeElement(operatorName).Text.Trim();
+        public string GetOperatorAddress(string operatorName) => GetOperatorAddressElement(operatorName).Text.Trim();
+        public string GetOperatorCountry(string operatorName) => GetOperatorCountryElement(operatorName).Text.Trim();
 
         public void ClickReturnToAddressBook()
         {
