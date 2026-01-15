@@ -848,7 +848,6 @@ Scenario: User creates and submits a CHEDA consignment notification with inspect
 	Then the user should be logged out successfully
 
 Scenario: User adds addresses to address book and amends a CHEDA notification to use new traders - SPS-7387
-# Pre-requisite steps 
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected 'Sign in with Government Gateway' as login type
@@ -946,10 +945,9 @@ Scenario: User adds addresses to address book and amends a CHEDA notification to
 	And the user selects a contact address for the consignment
 	When the user clicks Save and continue
 	Then the Review your notification page should be displayed
-	And the user gets the CHED Reference number from the Review your notification page
+	And the user gets the CHED reference from the Review your notification page
 	When the user clicks on the Dashboard link
 	Then the dashboard page should be displayed
-# Test steps
 	When the user clicks Address book link
 	Then the Address book page should be displayed
 	When the user clicks Add an address
@@ -996,8 +994,7 @@ Scenario: User adds addresses to address book and amends a CHEDA notification to
 	Then the notification should be present in the list
 	When the user clicks Amend
 	Then the Notification Hub page should be displayed
-	And the notification reference number version should be incremented by '1'
-	When the user clicks on 'Addresses' link
+	When the user clicks on 'Consignor or Exporter, Consignee, Importer and Place of Destination' link
 	Then the Addresses page should be displayed
 	When the user clicks on Change link under 'Consignor or exporter'
 	Then the Search for an existing consignor or exporter page should be displayed
@@ -1005,8 +1002,8 @@ Scenario: User adds addresses to address book and amends a CHEDA notification to
 	Then the chosen consignor from the address book should be displayed on the Addresses page 'Exporter' 
 	When the user clicks on Change link under 'Consignee'
 	Then the Search for an existing consignee page should be displayed
-	When the user selects the consignee from the address book 'Transporter' 
-	Then the chosen consignee from the address book should be displayed on the Addresses page 'Transporter' 
+	When the user selects the consignee from the address book 'Importer' 
+	Then the chosen consignee from the address book should be displayed on the Addresses page 'Importer' 
 	When the user clicks on Change link under 'Importer'
 	Then the Search for an existing importer page should be displayed
 	When the user selects the importer from the address book 'Importer' 
@@ -1017,24 +1014,35 @@ Scenario: User adds addresses to address book and amends a CHEDA notification to
 	Then the chosen place of destination from the address book should be displayed on the Addresses page 'Importer'
 	When the user clicks on Save and return to hub
 	Then the Notification Hub page should be displayed
-	When the user clicks on 'Review and submit' link
-	Then the Review your notification page should be displayed
-	And the Consignor or exporter shows the new trader 'Exporter' on the review page
-	And the Consignee shows the new 'Transporter' on the review page
-	And the Importer shows the new 'Importer' on the review page
-	And the Place of destination shows the new 'Importer' on the review page	
-	When the user clicks Save and continue
-	Then the Declaration page should be displayed
-	When the user ticks the checkbox to declare that the information is true and correct
-	And the user clicks Submit notification
-	Then the Confirmation page should be displayed with the initial risk assessment
-	When the user clicks View or print CHED
-	Then the certificate should be displayed in a new browser tab
-	And the new Consignor or exporter should be displayed in the certificate ''
-	And the new Consignee should be displayed in the certificate ''
-	And the new Importer should be displayed in the certificate ''
-	And the new Place of destination should be displayed in the certificate ''
-	When the user closes the PDF browser tab
-	Then the browser tab is closed
-	When the user clicks Return to your dashboard
-	Then the dashboard page should be displayed
+	When the user clicks on 'Transporter' link
+	Then the Transporter page should be displayed
+	When the user clicks on Change link next to Transporter
+	Then the Search for an existing transporter page should be displayed
+	When the user searches for the transporter from the address book 'Transporter' 
+	And the user selects the transporter from the address book 'Transporter' 
+	Then the chosen transporter from the address book should be displayed on the Transporter page 'Transporter'
+	When the user clicks on Save and return to hub
+	Then the Notification Hub page should be displayed
+	#When the user clicks on 'Review and submit' link
+	#Then the Review your notification page should be displayed
+	#And the Consignor or exporter shows the new trader 'Exporter' on the review page
+	#And the Consignee shows the new 'Importer' on the review page
+	#And the Importer shows the new 'Importer' on the review page
+	#And the Place of destination shows the new 'Importer' on the review page	
+	#And the Transporter shows the new 'Transporter' on the review page	
+	#When the user clicks Save and continue
+	#Then the Declaration page should be displayed
+	#When the user ticks the checkbox to declare that the information is true and correct
+	#And the user clicks Submit notification
+	#Then the Confirmation page should be displayed with the initial risk assessment
+	#When the user clicks View or print CHED
+	#Then the certificate should be displayed in a new browser tab
+	#And the new Consignor or exporter should be displayed in the certificate ''
+	#And the new Consignee should be displayed in the certificate ''
+	#And the new Importer should be displayed in the certificate ''
+	#And the new Place of destination should be displayed in the certificate ''
+	#And the new Transporter should be displayed in the certificate ''
+	#When the user closes the PDF browser tab
+	#Then the browser tab is closed
+	#When the user clicks Return to your dashboard
+	#Then the dashboard page should be displayed

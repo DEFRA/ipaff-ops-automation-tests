@@ -11,7 +11,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private string Platform => ConfigSetup.BaseConfiguration.TestConfiguration.Platform;
         private IObjectContainer _objectContainer;
         private const int MaxRetryAttempts = 3;
-        private const int RetryDelayMilliseconds = 500;
+        private const int RetryDelayMilliseconds = 1000;
 
         #region Page Objects
         private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
