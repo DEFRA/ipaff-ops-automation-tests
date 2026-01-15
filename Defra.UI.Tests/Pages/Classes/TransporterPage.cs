@@ -26,6 +26,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement verifyTransporterNameAddressCountry => _driver.FindElement(By.XPath("//td[@headers='transporter-company-name-address-country']"));
         private IWebElement verifyTransporterApprovalNumber => _driver.FindElement(By.XPath("//td[@headers='transporter-number']"));
         private IWebElement verifyTransporterType => _driver.FindElement(By.XPath("//td[@headers='transporter-type']"));
+        private IWebElement lnkChangeTransporter => _driver.WaitForElement(By.Id("edit-transporter-from-bip"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -81,6 +82,11 @@ namespace Defra.UI.Tests.Pages.Classes
             {
                 return false;
             }
+        }
+
+        public void ClickChangeTransporter()
+        {
+            lnkChangeTransporter.Click();
         }
     }
 }

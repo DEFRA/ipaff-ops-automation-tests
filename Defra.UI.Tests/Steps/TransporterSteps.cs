@@ -57,5 +57,29 @@ namespace Defra.UI.Tests.Steps.IPAFF
             transporterPage?.ClickSaveAndContinue();
         }
 
+        [When("the user clicks on Change link next to Transporter")]
+        public void WhenTheUserClicksOnChangeLinkNextToTransporter()
+        {
+            transporterPage?.ClickChangeTransporter();
+        }
+
+        [Then("the chosen transporter from the address book should be displayed on the Transporter page {string}")]
+        public void ThenTheChosenTransporterFromTheAddressBookShouldBeDisplayedOnTheTransporterPage(string operatorType)
+        {
+            // Get the ORIGINAL operator details from address book (source of truth)
+            var expectedName = _scenarioContext[$"{operatorType}Name"]?.ToString();
+            var expectedAddress = _scenarioContext[$"{operatorType}Address"]?.ToString();
+            var expectedCountry = _scenarioContext[$"{operatorType}Country"]?.ToString();
+            var expectedApprovalNumber = _scenarioContext["TransporterApprovalNumber"]?.ToString();
+            var expectedType = _scenarioContext["TransporterType"]?.ToString();
+
+            // Verify using existing page method
+            var isDisplayed = transporterPage?.VerifySelectedTransporter(expectedName, expectedAddress, expectedCountry, expectedApprovalNumber, expectedType);
+
+            Assert.IsTrue(isDisplayed,
+                $"Transporter from address book ({operatorType}) not displayed correctly. Expected: {expectedName}, {expectedAddress}, {expectedCountry}, {expectedApprovalNumber}, {expectedType}");
+
+            Console.WriteLine($"[ADDRESS BOOK] ✓ Verified {operatorType} transporter displayed: {expectedName}, {expectedAddress}, {expectedCountry}");
+        }
     }
 }
