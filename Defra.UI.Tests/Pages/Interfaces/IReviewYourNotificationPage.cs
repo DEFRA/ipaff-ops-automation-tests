@@ -100,5 +100,6 @@
         bool IsViewCHEDButtonDisplayed();
         bool AreChangeLinksNotDisplayed();
         void ClickDashboardLink();
+        string? GetCHEDReference();
     }
 }

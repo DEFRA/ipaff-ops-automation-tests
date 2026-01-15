@@ -565,5 +565,22 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             reviewPage?.ClickDashboardLink();
         }
+
+        [Given("the user gets the CHED reference from the Review your notification page")]
+        [When("the user gets the CHED reference from the Review your notification page")]
+        [Then("the user gets the CHED reference from the Review your notification page")]
+        public void WhenTheUserGetsTheCHEDReferenceFromTheReviewYourNotificationPage()
+        {
+            var chedReference = reviewPage?.GetCHEDReference();
+
+            if (string.IsNullOrEmpty(chedReference))
+            {
+                Assert.Fail("CHED reference not found on Review your notification page");
+            }
+
+            _scenarioContext.Set(chedReference, "CHEDReference");
+
+            Console.WriteLine($"[CHED REFERENCE] Retrieved and stored: {chedReference}");
+        }
     }
 }

@@ -18,6 +18,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private By ChangeLinksBy => By.XPath("//a[text()='Change']");
         private IWebElement lnkChange(string section) => _driver.FindElement(By.XPath($"(//*[normalize-space()='{section}']/following::a)[1]"));
         private By DashboardLinkBy => By.XPath("//a[@class='govuk-breadcrumbs__link' and @href='/notification/pre/protected/notifications']");
+        private IWebElement chedReference => _driver.FindElement(By.Id("reference-number"));
 
         // About the consignment
         private IWebElement importType => _driver.FindElement(By.Id("importing"));
@@ -835,6 +836,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public string? GetContainerUsage()
         {
             try { return containerUsage.Text.Trim(); } catch { return null; }
+        }
+
+        public string? GetCHEDReference()
+        {
+            try { return chedReference.Text.Trim(); } catch { return null; }
         }
 
         public bool IsError(string errorMessage)

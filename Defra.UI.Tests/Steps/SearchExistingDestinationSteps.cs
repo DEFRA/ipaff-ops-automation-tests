@@ -45,5 +45,24 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             searchExistingDestinationPage?.ClickSelect(destinationName);
         }
+
+        [When("the user selects the place of destination from the address book {string}")]
+        public void WhenTheUserSelectsThePlaceOfDestinationFromTheAddressBook(string operatorType)
+        {
+            // Retrieve the operator name that was stored when adding to address book
+            var operatorNameKey = $"{operatorType}Name";
+
+            if (!_scenarioContext.ContainsKey(operatorNameKey))
+            {
+                Assert.Fail($"Operator name for {operatorType} not found in scenario context. Key: {operatorNameKey}");
+            }
+
+            var destinationName = _scenarioContext[operatorNameKey]?.ToString();
+
+            // Just click select - don't update context keys
+            searchExistingDestinationPage?.ClickSelect(destinationName);
+
+            Console.WriteLine($"[ADDRESS BOOK] Selected {operatorType} as place of destination: {destinationName}");
+        }
     }
 }
