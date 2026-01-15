@@ -38,7 +38,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement errorSummaryTitle => _driver.WaitForElement(By.Id("error-summary-title"));
         private IWebElement errorSummaryMsg => _driver.WaitForElement(By.XPath("//ul[contains(@class,'govuk-error-summary__list')]/li/a"));
         private IWebElement errorMsgFieldLevel=> _driver.WaitForElement(By.Id("fileUpload-error"));
-        private IWebElement downloadAttachmentLink => _driver.FindElement(By.XPath("//a[contains(@aria-label,'Download') and contains(@href,'/attachment/')]"));
+        private By downloadAttachmentLinkLocator => By.XPath("//a[contains(@aria-label,'Download') and contains(@href,'/attachment/')]");
+        private By downloadAttachmentLinkChedPLocator => By.XPath("//a[contains(@aria-label,'View') and contains(@href,'/attachment/') and contains(@id,'attachment-view-')]");
         private IWebElement removeAttachmentButton => _driver.FindElement(By.XPath("//button[contains(@id,'remove-attachment-')]"));
         #endregion
 
@@ -157,7 +158,22 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             try
             {
-                return downloadAttachmentLink.Displayed && downloadAttachmentLink.Text.Contains("Download");
+                // Try CHED-A/CHED-D format first
+                var chedADLinks = _driver.FindElements(downloadAttachmentLinkLocator);
+                if (chedADLinks.Count > 0 && chedADLinks[0].Displayed)
+                {
+                    return chedADLinks[0].Text.Contains("Download");
+                }
+
+                // Try CHED-P format
+                var chedPLinks = _driver.FindElements(downloadAttachmentLinkChedPLocator);
+                if (chedPLinks.Count > 0 && chedPLinks[0].Displayed)
+                {
+                    // For CHED-P, just check if the link is displayed with any text (document name)
+                    return !string.IsNullOrWhiteSpace(chedPLinks[0].Text);
+                }
+
+                return false;
             }
             catch (NoSuchElementException)
             {
