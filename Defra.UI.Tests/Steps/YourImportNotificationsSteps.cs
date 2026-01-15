@@ -33,6 +33,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             importNotificationsPage?.ClickCreateNotification();
         }
 
+        [When("the user searches for the import notification")]
         [When("user searches for the import notification")]
         public void WhenUserSearchesForTheImportNotification()
         {
