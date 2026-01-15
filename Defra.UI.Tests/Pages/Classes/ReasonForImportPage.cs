@@ -1,6 +1,7 @@
 ﻿using Defra.UI.Tests.Configuration;
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
@@ -168,6 +169,18 @@ namespace Defra.UI.Tests.Pages.Classes
             return leavingFromGBDate;
         }
 
+        public string EnterTodaysDateAsConsignmentDepartureDate()
+        {
+            var currentDate = DateTime.Now;
+
+            txtDay.SendKeys(currentDate.Day.ToString());
+            txtMonth.SendKeys(currentDate.Month.ToString());
+            txtYear.SendKeys(currentDate.Year.ToString());
+
+            var leavingFromGBDate = currentDate.ToString("dd MMMM yyyy");
+            return leavingFromGBDate;
+        }
+
         public string EnterConsignmentDepartureTime()
         {
             var futureDate = DateTime.Now.AddDays(7);
@@ -177,6 +190,13 @@ namespace Defra.UI.Tests.Pages.Classes
             txtMinutes.SendKeys(futureDate.Minute.ToString());
 
             return leavingFromGBTime;
+        }
+
+        public string EnterConsignmentDepartureTime(string hours, string minutes)
+        {
+            txtHours.SendKeys(hours);
+            txtMinutes.SendKeys(minutes);
+            return $"{hours:D2}:{minutes:D2}";
         }
 
         public void SelectTransitedCountry(string transitedCountry)

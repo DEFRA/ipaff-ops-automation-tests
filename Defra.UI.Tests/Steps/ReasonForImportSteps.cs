@@ -181,5 +181,19 @@ namespace Defra.UI.Tests.Steps.IPAFF
             reasonForImportPage?.SelectDestinationCountryBasedOnContext(destinationCountry);
             _scenarioContext.Add("DestinationCountry", destinationCountry);
         }
+
+        [When("the user enters today's date as the consignment departure date")]
+        public void WhenTheUserEntersTodaysDateAsTheConsignmentDepartureDate()
+        {
+            var leavingFromGBDate = reasonForImportPage?.EnterTodaysDateAsConsignmentDepartureDate();
+            _scenarioContext.Add("ConsignmentLeavingFromGBDate", leavingFromGBDate);
+        }
+
+        [When("the user enters {string} hours and {string} minutes in the consignment departure time")]
+        public void WhenTheUserEntersHoursAndMinutesInTheConsignmentDepartureTime(string hours, string minutes)
+        {
+            var leavingFromGBTime = reasonForImportPage?.EnterConsignmentDepartureTime(hours, minutes);
+            _scenarioContext.Add("ConsignmentLeavingFromGBTime", leavingFromGBTime);
+        }
     }
 }

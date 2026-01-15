@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using Defra.UI.Tests.Configuration;
+﻿using Defra.UI.Tests.Configuration;
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
@@ -15,7 +14,7 @@ namespace Defra.UI.Tests.Pages.Classes
         #region Page Objects
         private IWebElement PageHeading => _driver.WaitForElement(By.XPath("//h1[@id='page-primary-title']"), true);
         private IWebElement lnkCreateNotification => _driver.WaitForElement(By.LinkText("Create a new notification"));
-        
+ 
         private IWebElement searchNotificationsPanel => _driver.FindElement(By.XPath("//div[contains(@class,'search-panel')]"));
         private IWebElement txtCertificateNumber => _driver.FindElement(By.Id("certificate-number"));
         private IWebElement txtCommodity => _driver.FindElement(By.Id("commodity-code-or-desc"));
@@ -42,6 +41,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement GetShowNotificationLink(string chedRef) => _driver.FindElement(By.Id($"show-certificate-{chedRef}"));
         private IWebElement GetAmendLink(string chedRef) => _driver.FindElement(By.Id($"amend-details-{chedRef}"));
         private IWebElement lnkAddressBook => _driver.FindElement(By.Id("address-book-link"));
+        private IWebElement lnkViewDetails => _driver.FindElement(By.Name("viewDetails"));
         private IWebElement lnkContact => _driver.FindElement(By.XPath("//a[contains(text(),'Contact')]"));
         private IWebElement lnkCookies => _driver.FindElement(By.Id("button-cookies"));
 
@@ -135,7 +135,7 @@ namespace Defra.UI.Tests.Pages.Classes
         }
 
         public void ClickAddressBookLink() => lnkAddressBook.Click();
-
+        public void ClickViewDetailsLink() => lnkViewDetails.Click();
         public void ClickContactLink() => lnkContact.Click();
 
         public bool IsSearchNotiByPanelDisplayed => searchNotificationsPanel != null && searchNotificationsPanel.Displayed;

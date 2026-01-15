@@ -30,16 +30,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user selects one of the displayed consignors or exporters {string}")]
         public void WhenTheUserSelectsOneOfTheDisplayedConsignorsOrExporters(string consignor)
         {
-            _scenarioContext["ConsignorDetails"] = searchExistingConsignorPage.GetSelectedConsignor();
+            _scenarioContext["ConsignorDetails"] = searchExistingConsignorPage.GetSelectedConsignor(consignor);
             searchExistingConsignorPage?.ClickSelect(consignor);
         }
 
         [When("the user selects a consignor or exporter {string}")]
         public void WhenTheUserSelectsAConsignorOrExporter(string consignor)
         {
-            var consignorName = searchExistingConsignorPage?.GetSelectedConsignorName();
-            var consignorAddress = searchExistingConsignorPage?.GetSelectedConsignorAddress();
-            var consignorCountry = searchExistingConsignorPage?.GetSelectedConsignorCountry();
+            var consignorName = searchExistingConsignorPage?.GetSelectedConsignorName(consignor);
+            var consignorAddress = searchExistingConsignorPage?.GetSelectedConsignorAddress(consignor);
+            var consignorCountry = searchExistingConsignorPage?.GetSelectedConsignorCountry(consignor);
 
             _scenarioContext.Add("ConsignorName", consignorName);
             _scenarioContext.Add("ConsignorAddress", consignorAddress);
