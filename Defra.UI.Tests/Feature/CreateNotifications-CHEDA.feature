@@ -1025,11 +1025,6 @@ Scenario: User adds addresses to address book and amends a CHEDA notification to
 	When the user ticks the checkbox to declare that the information is true and correct
 	And the user clicks Submit notification
 	Then the Confirmation page should be displayed with the initial risk assessment
-	When the user clicks Address book link
-	Then the Address book page should be displayed
-	And the user deletes the newly added operator 'Importer'
-	And the user deletes the newly added operator 'Exporter'
-	And the user deletes the newly added operator 'Transporter'
 #Create step definitions below once PDF validation is implemented
 	#When the user clicks View or print CHED
 	#Then the certificate should be displayed in a new browser tab
@@ -1042,3 +1037,8 @@ Scenario: User adds addresses to address book and amends a CHEDA notification to
 	#Then the browser tab is closed
 	#When the user clicks Return to your dashboard
 	#Then the dashboard page should be displayed
+	When the user clicks Address book link
+	Then the Address book page should be displayed
+	And the user deletes the newly added operator 'Importer'
+	And the user deletes the newly added operator 'Exporter'
+	And the user deletes the newly added operator 'Transporter'
