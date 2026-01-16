@@ -29,6 +29,9 @@ namespace Defra.UI.Tests.Pages.Classes
 
         private IWebElement GetOperatorCountryElement(string operatorName) =>
             _driver.FindElement(By.XPath($"//table[@id='economic-operators-table']//td[@class='govuk-table__cell' and normalize-space()='{operatorName}']/following-sibling::td[3]"));
+
+        private IWebElement GetOperatorViewLink(string operatorName) =>
+            _driver.FindElement(By.XPath($"//table[@id='economic-operators-table']//td[@class='govuk-table__cell' and normalize-space()='{operatorName}']/following-sibling::td[4]//a[text()='View']"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -115,6 +118,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickDashboard()
         {
             lnkDashboard.Click();
+        }
+
+        public void ClickViewOperator(string operatorName)
+        {
+            GetOperatorViewLink(operatorName).Click();
         }
     }
 }
