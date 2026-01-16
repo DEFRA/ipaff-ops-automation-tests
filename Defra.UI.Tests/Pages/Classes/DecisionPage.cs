@@ -27,7 +27,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement rdoNotAcceptable => _driver.FindElement(By.Id("acceptability-refused"));
         private IWebElement rdoDestruction => _driver.FindElement(By.Id("notAcceptAction-destruction"));
         private IWebElement rdoDestructionReason => _driver.FindElement(By.Id("notAcceptableDestructionReason"));
-        private IWebElement rdoReDispatching => _driver.FindElement(By.Id("notAcceptAction-redispatch"));
+        private IWebElement rdoReDispatching => _driver.FindElement(By.XPath("//input[@id='notAcceptAction-reexport']|//input[@id='notAcceptAction-redispatch']"));
         private IWebElement rdoTransformation => _driver.FindElement(By.Id("notAcceptAction-transformation"));
         private IWebElement rdoOther => _driver.FindElement(By.Id("notAcceptAction-other"));
         private IWebElement txtNotAcceptableDay => _driver.FindElement(By.Id("not-acceptable-day"));
