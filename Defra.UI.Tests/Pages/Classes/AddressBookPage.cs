@@ -40,15 +40,9 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool ValidateTypeInSearchResults(string type)
         {
-            // Count rows
             var rows = economicOperatorsTable.FindElements(By.XPath("//tbody/tr")).Count;
             if (rows == 0) 
                 return false;
-
-            // Count rows where the 2nd td contains the text (Type column is the 2nd column)
-            /*var matchedRows = economicOperatorsTable.FindElements(By.XPath(
-                "//tbody/tr[td[2][contains(normalize-space(.), " +
-                $"\"{type}\"" + ")]]")).Count;*/
 
             var matchedRows = economicOperatorsTable.FindElements(By.XPath("//tbody/tr[td[2][contains(normalize-space(.), " + $"{type}" + ")]]")).Count;
 
