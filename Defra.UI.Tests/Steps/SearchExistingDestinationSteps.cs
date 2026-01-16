@@ -61,8 +61,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             // Just click select - don't update context keys
             searchExistingDestinationPage?.ClickSelect(destinationName);
-
-            Console.WriteLine($"[ADDRESS BOOK] Selected {operatorType} as place of destination: {destinationName}");
         }
     }
 }

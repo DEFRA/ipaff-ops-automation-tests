@@ -187,12 +187,44 @@ namespace Defra.UI.Tests.Tools
         /// </summary>
         public static OperatorDetails GenerateOperatorDetails()
         {
+            return GenerateOperatorDetails(null);
+        }
+
+        /// <summary>
+        /// Generates random operator details with realistic data using Bogus Faker library.
+        /// For Importer operator type, restricts country selection to Great Britain (England, Scotland, Wales, Northern Ireland).
+        /// For other types, randomly selects from all available countries.
+        /// Uses regionally authentic locales including non-Latin scripts (Arabic, Cyrillic, Chinese, Japanese, Korean, Greek, Georgian, Persian, Nepali).
+        /// </summary>
+        /// <param name="operatorType">The type of operator (e.g., "Importer", "Exporter", "Transporter"). Pass null for random selection from all countries.</param>
+        public static OperatorDetails GenerateOperatorDetails(string? operatorType)
+        {
             // List of all countries from IPAFFS dropdown with their best-match Bogus locales
             var countryLocaleMap = GetCountryLocaleMapping();
 
-            // Randomly select a country
+            // Great Britain countries
+            var greatBritainCountries = new List<string> { "England", "Scotland", "Wales", "Northern Ireland" };
+
+            // Randomly select a country based on operator type
             var random = new Random();
-            var selectedCountry = countryLocaleMap.ElementAt(random.Next(countryLocaleMap.Count));
+            KeyValuePair<string, string> selectedCountry;
+
+            // Check if operator type is Importer (case-insensitive, trim whitespace)
+            var isImporter = !string.IsNullOrWhiteSpace(operatorType) &&
+                             operatorType.Trim().Equals("Importer", StringComparison.OrdinalIgnoreCase);
+
+            if (isImporter)
+            {
+                // For Importer, select only from Great Britain countries
+                var gbCountryName = greatBritainCountries[random.Next(greatBritainCountries.Count)];
+                selectedCountry = new KeyValuePair<string, string>(gbCountryName, countryLocaleMap[gbCountryName]);
+            }
+            else
+            {
+                // For other types, select from all available countries
+                selectedCountry = countryLocaleMap.ElementAt(random.Next(countryLocaleMap.Count));
+            }
+
             var countryName = selectedCountry.Key;
             var locale = selectedCountry.Value;
 

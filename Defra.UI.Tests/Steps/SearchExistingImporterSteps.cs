@@ -56,8 +56,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             // Just click select - don't update context keys
             searchExistingImporterPage?.ClickSelect(importerName);
-
-            Console.WriteLine($"[ADDRESS BOOK] Selected {operatorType} as importer: {importerName}");
         }
     }
 }

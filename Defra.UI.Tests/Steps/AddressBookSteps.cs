@@ -93,8 +93,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             // Verify we're back on Address Book page
             Assert.IsTrue(addressBookPage?.IsPageLoaded(),
                 "Address Book page did not load after deletion");
-
-            Console.WriteLine($"[ADDRESS BOOK] ✓ Successfully deleted operator '{operatorName}' of type '{operatorType}'");
         }
     }
 }

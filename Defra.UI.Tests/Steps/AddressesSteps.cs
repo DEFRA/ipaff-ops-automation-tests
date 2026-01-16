@@ -193,8 +193,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             Assert.IsTrue(isDisplayed,
                 $"Consignor from address book ({operatorType}) not displayed correctly. Expected: {expectedName}, {expectedAddress}, {expectedCountry}");
-
-            Console.WriteLine($"[ADDRESS BOOK] ✓ Verified {operatorType} consignor displayed: {expectedName}, {expectedAddress}, {expectedCountry}");
         }
 
         [Then("the chosen consignee from the address book should be displayed on the Addresses page {string}")]
@@ -210,8 +208,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             Assert.IsTrue(isDisplayed,
                 $"Consignee from address book ({operatorType}) not displayed correctly. Expected: {expectedName}, {expectedAddress}, {expectedCountry}");
-
-            Console.WriteLine($"[ADDRESS BOOK] ✓ Verified {operatorType} consignee displayed: {expectedName}, {expectedAddress}, {expectedCountry}");
         }
 
         [Then("the chosen importer from the address book should be displayed on the Addresses page {string}")]
@@ -227,8 +223,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             Assert.IsTrue(isDisplayed,
                 $"Importer from address book ({operatorType}) not displayed correctly. Expected: {expectedName}, {expectedAddress}, {expectedCountry}");
-
-            Console.WriteLine($"[ADDRESS BOOK] ✓ Verified {operatorType} importer displayed: {expectedName}, {expectedAddress}, {expectedCountry}");
         }
 
         [Then("the chosen place of destination from the address book should be displayed on the Addresses page {string}")]
@@ -244,8 +238,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             Assert.IsTrue(isDisplayed,
                 $"Place of destination from address book ({operatorType}) not displayed correctly. Expected: {expectedName}, {expectedAddress}, {expectedCountry}");
-
-            Console.WriteLine($"[ADDRESS BOOK] ✓ Verified {operatorType} place of destination displayed: {expectedName}, {expectedAddress}, {expectedCountry}");
         }
     }
 }
