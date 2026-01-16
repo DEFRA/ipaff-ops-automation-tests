@@ -5,7 +5,6 @@ using OpenQA.Selenium;
 using Reqnroll.BoDi;
 using Defra.UI.Tests.HelperMethods;
 using OpenQA.Selenium.Support.UI;
-using System.Data;
 
 namespace Defra.UI.Tests.Pages.Classes
 {

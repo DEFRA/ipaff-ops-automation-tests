@@ -1,11 +1,7 @@
 ﻿using Reqnroll.BoDi;
 using NUnit.Framework;
-using OpenQA.Selenium;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
-using DocumentFormat.OpenXml.Bibliography;
-using DocumentFormat.OpenXml.Drawing.Charts;
-
 
 namespace Defra.UI.Tests.Steps.IPAFF
 {
