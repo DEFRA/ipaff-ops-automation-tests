@@ -27,7 +27,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement rdoNotAcceptable => _driver.FindElement(By.Id("acceptability-refused"));
         private IWebElement rdoDestruction => _driver.FindElement(By.Id("notAcceptAction-destruction"));
         private IWebElement rdoDestructionReason => _driver.FindElement(By.Id("notAcceptableDestructionReason"));
-        private IWebElement rdoReDispatching => _driver.FindElement(By.Id("notAcceptAction-reexport"));
+        private IWebElement rdoReDispatching => _driver.FindElement(By.Id("notAcceptAction-redispatch"));
         private IWebElement rdoTransformation => _driver.FindElement(By.Id("notAcceptAction-transformation"));
         private IWebElement rdoOther => _driver.FindElement(By.Id("notAcceptAction-other"));
         private IWebElement txtNotAcceptableDay => _driver.FindElement(By.Id("not-acceptable-day"));
@@ -46,6 +46,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtExitDateMonth => _driver.FindElement(By.Id("temp-deadline-month"));
         private IWebElement txtExitDateYear => _driver.FindElement(By.Id("temp-deadline-year"));
         private IWebElement ddlExitBCP => _driver.FindElement(By.Id("temporaryExitBipUk"));
+        
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -138,11 +139,8 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void EnterCurrentDateInDecisionPage(string day, string month, string year)
         {
-            txtNotAcceptableDay.Click();
             txtNotAcceptableDay.SendKeys(day);
-            txtNotAcceptableMonth.Click();
             txtNotAcceptableMonth.SendKeys(month);
-            txtNotAcceptableYear.Click();
             txtNotAcceptableYear.SendKeys(year);
         }
 
