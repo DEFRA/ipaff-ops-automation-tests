@@ -22,6 +22,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
         [Then("the user should be logged into Notification page")]        
         [Then("the dashboard page should be displayed")]
+        [Then("the user is taken to the Your import notifications page")]
+        [Then("the Your notifications page is displayed")]
         public void ThenTheDashboardShouldBeDisplayed()
         {
             Assert.True(importNotificationsPage?.IsPageLoaded(), "Dashboard not displayed");
@@ -100,5 +102,34 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             importNotificationsPage?.ClickCookiesLink();
         }
+
+        [When("the user clicks Contact link on the footer")]
+        public void WhenTheUserClicksContactLinkOnTheFooter()
+        {
+            importNotificationsPage?.ClickContactLink();
+        }
+
+        [When("the user clicks the Address book link on the Your import notifications page")]
+        public void WhenTheUserClicksTheAddressBookLinkOnTheYourImportNotificationsPage()
+        {
+            importNotificationsPage?.ClickAddressBookLink();
+        }
+
+        [Then("the Search notifications by section displays all the fields on the Your import notifications page")]
+        public void ThenTheSearchNotificationsBySectionDisplaysAllTheFieldsOnTheYourImportNotificationsPage()
+        {
+            Assert.Multiple(() =>
+            {
+                Assert.True(importNotificationsPage?.IsSearchNotiByPanelDisplayed, "Search notifications by panel is not displayed on the Your import notifications page");
+                Assert.True(importNotificationsPage?.AreAllSearchFieldsDisplayed(), "Not all search fields are displayed under Search notifications by panel");
+            });
+        }
+
+        [When("the user clicks the View details link")]
+        public void WhenTheUserClicksTheViewDetailsLink()
+        {
+            importNotificationsPage?.ClickViewDetailsLink();
+        }
+
     }
 }

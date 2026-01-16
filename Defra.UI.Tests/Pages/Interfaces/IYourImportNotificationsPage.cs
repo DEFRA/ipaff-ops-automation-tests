@@ -4,6 +4,8 @@
     {
         bool IsPageLoaded();
         void ClickCreateNotification();
+        bool IsSearchNotiByPanelDisplayed { get; }
+        bool AreAllSearchFieldsDisplayed();
         void SearchForNotification(string notificationNumber);
         bool VerifyNotificationInList(string chedReference);
         void ClickShowNotification(string chedReference);
@@ -12,7 +14,9 @@
         void ClosePDFBrowserTab();
         bool VerifyBrowserTabClosed();
         void ClickAmend(string chedReference);
-
         void ClickCookiesLink();
+        void ClickContactLink();
+        void ClickAddressBookLink();
+        void ClickViewDetailsLink();
     }
 }
