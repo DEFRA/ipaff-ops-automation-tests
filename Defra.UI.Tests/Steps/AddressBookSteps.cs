@@ -1,4 +1,4 @@
-using Defra.UI.Tests.Pages.Interfaces;
+﻿using Defra.UI.Tests.Pages.Interfaces;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using Reqnroll;
@@ -12,8 +12,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
         private readonly IObjectContainer _objectContainer;
         private readonly ScenarioContext _scenarioContext;
 
-        private IWebDriver? _driver => _objectContainer.IsRegistered<IWebDriver>() ? _objectContainer.Resolve<IWebDriver>() : null;
         private IAddressBookPage? addressBookPage => _objectContainer.IsRegistered<IAddressBookPage>() ? _objectContainer.Resolve<IAddressBookPage>() : null;
+        private IViewOperatorPage? viewOperatorPage => _objectContainer.IsRegistered<IViewOperatorPage>() ? _objectContainer.Resolve<IViewOperatorPage>() : null;
+        private IDeleteAddressPage? deleteAddressPage => _objectContainer.IsRegistered<IDeleteAddressPage>() ? _objectContainer.Resolve<IDeleteAddressPage>() : null;
+        private ITheAddressHasBeenDeletedPage? theAddressHasBeenDeletedPage => _objectContainer.IsRegistered<ITheAddressHasBeenDeletedPage>() ? _objectContainer.Resolve<ITheAddressHasBeenDeletedPage>() : null;
 
         public AddressBookSteps(ScenarioContext context, IObjectContainer container)
         {
@@ -50,6 +52,49 @@ namespace Defra.UI.Tests.Steps.IPAFF
             // Verify the operator is displayed in the address book with all details
             var isDisplayed = addressBookPage?.IsOperatorDisplayedInAddressBook(operatorName, operatorType, operatorAddress, operatorCountry);
             Assert.IsTrue(isDisplayed, $"Operator '{operatorName}' of type '{operatorType}' with address '{operatorAddress}' and country '{operatorCountry}' not found in address book");
+        }
+
+        [Then(@"the user deletes the newly added operator '(.*)'")]
+        public void WhenTheUserDeletesTheNewlyAddedOperator(string operatorType)
+        {
+            // Get the operator name from scenario context
+            var operatorName = _scenarioContext[$"{operatorType}Name"]?.ToString();
+
+            if (string.IsNullOrEmpty(operatorName))
+            {
+                Assert.Fail($"Operator name for type '{operatorType}' not found in scenario context.");
+                return;
+            }
+
+            // Step 1: Click View on the operator row
+            addressBookPage?.ClickViewOperator(operatorName);
+
+            // Verify View Operator page loaded
+            Assert.IsTrue(viewOperatorPage?.IsPageLoaded(operatorName),
+                $"View Operator page did not load for operator '{operatorName}'");
+
+            // Step 2: Click Delete button
+            viewOperatorPage?.ClickDelete();
+
+            // Verify Delete Address page loaded
+            Assert.IsTrue(deleteAddressPage?.IsPageLoaded(),
+                "Delete Address page did not load");
+
+            // Step 3: Click "Yes, delete this address" button
+            deleteAddressPage?.ClickYesDeleteThisAddress();
+
+            // Verify The Address Has Been Deleted page loaded
+            Assert.IsTrue(theAddressHasBeenDeletedPage?.IsPageLoaded(),
+                "The Address Has Been Deleted confirmation page did not load");
+
+            // Step 4: Click Return to Address Book
+            theAddressHasBeenDeletedPage?.ClickReturnToAddressBook();
+
+            // Verify we're back on Address Book page
+            Assert.IsTrue(addressBookPage?.IsPageLoaded(),
+                "Address Book page did not load after deletion");
+
+            Console.WriteLine($"[ADDRESS BOOK] ✓ Successfully deleted operator '{operatorName}' of type '{operatorType}'");
         }
     }
 }

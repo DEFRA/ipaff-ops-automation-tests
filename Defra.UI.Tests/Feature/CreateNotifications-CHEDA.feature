@@ -1031,14 +1031,14 @@ Scenario: User adds addresses to address book and amends a CHEDA notification to
 	And the user deletes the newly added operator 'Exporter'
 	And the user deletes the newly added operator 'Transporter'
 #Create step definitions below once PDF validation is implemented
-	When the user clicks View or print CHED
-	Then the certificate should be displayed in a new browser tab
-	And the new Consignor or exporter should be displayed in the certificate ''
-	And the new Consignee should be displayed in the certificate ''
-	And the new Importer should be displayed in the certificate ''
-	And the new Place of destination should be displayed in the certificate ''
-	And the new Transporter should be displayed in the certificate ''
-	When the user closes the PDF browser tab
-	Then the browser tab is closed
-	When the user clicks Return to your dashboard
-	Then the dashboard page should be displayed
+	#When the user clicks View or print CHED
+	#Then the certificate should be displayed in a new browser tab
+	#And the new Consignor or exporter should be displayed in the certificate ''
+	#And the new Consignee should be displayed in the certificate ''
+	#And the new Importer should be displayed in the certificate ''
+	#And the new Place of destination should be displayed in the certificate ''
+	#And the new Transporter should be displayed in the certificate ''
+	#When the user closes the PDF browser tab
+	#Then the browser tab is closed
+	#When the user clicks Return to your dashboard
+	#Then the dashboard page should be displayed
