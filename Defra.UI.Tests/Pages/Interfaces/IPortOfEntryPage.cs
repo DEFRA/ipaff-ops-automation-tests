@@ -13,9 +13,9 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void EnterTransportId(string transId);
         void EnterTransportDocRef(string DocumentRef);
         void EnterEstimatedArrivalDate(string day, string month, string year);
-        string EnterCurrentDateAsEstimatedArrivalDate();
+        //string EnterCurrentDateAsEstimatedArrivalDate();
         void EnterEstimatedArrivalTime(string hour, string minutes);
-        string EnterFutureTimeInEstimatedArrivalTime();
+        //string EnterFutureTimeInEstimatedArrivalTime();
         void EnterEstimatedJourneyTime(string hours);
         void EnterContainerDetails(string containerNumber, string sealNumber);
         void SelectAreTrailersOrContainersUsed(string option);

@@ -166,7 +166,7 @@ Scenario: User creates and submits a B2C consignment notification - CHED D
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
 
-Scenario: User creates and submits a notification, override the risk decision and reject the notification - CHED D	
+Scenario: User creates and submits a notification, override the risk decision, reject the notification and creates border notification - CHED D
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
@@ -394,7 +394,7 @@ Scenario: User creates and submits a notification, override the risk decision an
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
 
-Scenario: SPS-9106
+Scenario: User verifies Address book page search, submits notification for 'Non-Internal market' reason,  override the risk decision, reject the notification and creates border notification - CHED D
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
@@ -440,8 +440,7 @@ Scenario: SPS-9106
 	Then What is the main reason for importing the consignment? page should be displayed with radio buttons for CHEDD
 	When The user selects 'Non-internal market' radio option
 	And the user enters 'London' as the Point of exit
-	And the user enters today's date as the consignment departure date
-	And the user enters '23' hours and '59' minutes in the consignment departure time
+	And the user enters the date and time the consignment will leave Great Britain
 	And the user clicks Save and continue
 	Then the Notification Hub page should be displayed
 	When the user clicks the Commodity hyperlink
@@ -483,8 +482,7 @@ Scenario: SPS-9106
 	Then the chosen place of destination should be displayed
 	When the user clicks Save and continue
 	Then the Transport to the port of entry page should be displayed
-	#When the user populates the transport details 'LONDON GATEWAY (GBLGP)' 'No' 'Road vehicle' '123456' 'Doc1234'
-	When the user populates the transport details 'LONDON GATEWAY (GBLGP)' 'No' 'Road vehicle' '123456' 'Doc1234' and enter current date and future time
+	When the user populates the transport details 'LONDON GATEWAY (GBLGP)' 'No' 'Road vehicle' '123456' 'Doc1234'
 	When the user clicks Save and continue
 	Then the Goods movement services page should be displayed
 	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
@@ -502,6 +500,7 @@ Scenario: SPS-9106
 	Then the Declaration page should be displayed
 	When the user clicks Submit notification
 	Then the Confirmation page should be displayed with the initial risk assessment
+	When the user records the IPAFFS User details and CHED Reference
 	When the user clicks Return to your dashboard
 	Then the dashboard page should be displayed
 	When user searches for the import notification
@@ -556,18 +555,17 @@ Scenario: SPS-9106
 	And the user clicks Save and continue
 	Then the Decision page should be displayed
 	And 'Non-internal market' radio is pre-selected under Acceptable for
-	#add steps
-	When the user enters currendate in decision page
+	When the user changes the selection to "Re-dispatching" "Not acceptable" in the decision page
+	And the user enters currendate in decision page
 	And the user clicks Save and continue
 	Then the Reason for Refusal page should be displayed
-	#check
 	When the user selects "Other, Create Border Notification" as reason for refusal
 	And the user clicks Save and continue
 	Then the Review outcome decision page should be displayed
 	When the user populates the Date and time of checks
 	And user clicks Submit decision
 	Then the Your checks have been submitted page should be displayed
-	And a border notification banner displaying the reason for refusal 'Refused for chemical contamination' under the title 'The result of this decision requires a border notification to be created' is displayed
+	And a border notification banner displaying the reason for refusal 'Refused for other border notification' under the title 'The result of this decision requires a border notification to be created' is displayed
 	When the user clicks on Create border notification button
 	Then Enter the details of the border notification page should be displayed
 	When the user selects "Food" as the Notification type
@@ -601,7 +599,6 @@ Scenario: SPS-9106
 	Then the border notification found with status "NEW"
 	When the user logs out of Border notifications in IPAFFS Part 2 
 	Then the user should be logged out successfully
-	#check
 	When I navigate to the IPAFF Inspector application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
@@ -611,7 +608,6 @@ Scenario: SPS-9106
 	Then the user should be logged into Import notifications page
 	When the user searches for the newly created notification on the Import notifications page
 	Then the notification is displayed on the inspector dashboard
-	#check
 	When the user clicks View CHED link
 	Then the certificate should be displayed in a new browser tab
 	When the user checks that the data in the certificate matches the data entered into the notification
@@ -619,7 +615,6 @@ Scenario: SPS-9106
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
-    #check
 	When the user navigate to the BTMS application
 	Then I click Sign in button
 	And I should see type of Gateway login page

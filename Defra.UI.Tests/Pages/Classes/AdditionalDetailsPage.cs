@@ -69,7 +69,22 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool AreAllCommIntendedForRadioOptionsDisplayed(List<string> commOptionsListExpected)
         {
-            try
+            var commOptionsListActual = new HashSet<string>(
+                    commIntendedForRadioList
+                        .Select(x => x.Text?.Trim())
+                        .Where(s => !string.IsNullOrEmpty(s)),
+                    StringComparer.OrdinalIgnoreCase // drop if case-sensitive
+                );
+
+            var a = commOptionsListExpected
+                .Where(s => !string.IsNullOrWhiteSpace(s))
+                .All(expected => commOptionsListActual.Contains(expected.Trim()));
+
+            return commOptionsListExpected
+                .Where(s => !string.IsNullOrWhiteSpace(s))
+                .All(expected => commOptionsListActual.Contains(expected.Trim()));
+
+            /*try
             {
                 List<string> commOptionsListActual = new List<string>();
 
@@ -83,7 +98,7 @@ namespace Defra.UI.Tests.Pages.Classes
             {
                 Console.WriteLine($"AreAllCommIntendedForRadioOptionsDisplayed failed: {ex.Message}");
                 return false;
-            }
+            }*/
         }
 
         public void SelectAnimalCertification(string certificationOption)

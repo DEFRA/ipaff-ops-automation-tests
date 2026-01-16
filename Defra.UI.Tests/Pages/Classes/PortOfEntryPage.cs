@@ -83,36 +83,12 @@ namespace Defra.UI.Tests.Pages.Classes
             txtYear.SendKeys(year);
         }
 
-        public string EnterCurrentDateAsEstimatedArrivalDate()
-        {
-            var currentDate = DateTime.Now;
-
-            txtDay.SendKeys(currentDate.Day.ToString());
-            txtMonth.SendKeys(currentDate.Month.ToString());
-            txtYear.SendKeys(currentDate.Year.ToString());
-
-            var estimatedArrivalDate = currentDate.ToString("dd MMMM yyyy");
-            return estimatedArrivalDate;
-        }
-
         public void EnterEstimatedArrivalTime(string hour, string minutes)
         {
             txtHour.Clear();
             txtHour.SendKeys(hour);
             txtMinutes.Clear();
             txtMinutes.SendKeys(minutes);
-        }
-
-        public string EnterFutureTimeInEstimatedArrivalTime()
-        {
-            var currentTime = DateTime.Now;
-
-            DateTime futureTime = currentTime.AddHours(2);
-            DateTime futureTimeMinutes = currentTime.AddMinutes(30);
-            txtHour.SendKeys(futureTime.Hour.ToString("D2"));
-            txtMinutes.SendKeys(futureTime.Minute.ToString("D2"));
-
-            return futureTime.ToString("HH:mm");
         }
 
         public void EnterEstimatedJourneyTime(string hours)
