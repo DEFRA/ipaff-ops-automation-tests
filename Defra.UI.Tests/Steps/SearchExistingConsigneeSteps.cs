@@ -62,8 +62,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             // Just click select - don't update context keys
             searchExistingConsigneePage?.ClickSelect(consigneeName);
-
-            Console.WriteLine($"[ADDRESS BOOK] Selected {operatorType} as consignee: {consigneeName}");
         }
     }
 }

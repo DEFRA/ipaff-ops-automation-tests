@@ -63,8 +63,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             // Search for the transporter by name
             searchExistingTranspoterPage?.SearchForTransporter(transporterName);
-
-            Console.WriteLine($"[ADDRESS BOOK] Searched for {operatorType} transporter: {transporterName}");
         }
 
         [When("the user selects the transporter from the address book {string}")]
@@ -90,8 +88,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             // Click Select button
             searchExistingTranspoterPage?.ClickSelectForTransporter(transporterName);
-
-            Console.WriteLine($"[ADDRESS BOOK] Selected {operatorType} transporter: {transporterName}");
         }
     }
 }

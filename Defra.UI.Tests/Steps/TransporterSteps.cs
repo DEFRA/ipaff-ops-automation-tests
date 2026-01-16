@@ -84,8 +84,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             Assert.IsTrue(isDisplayed,
                 $"Transporter from address book ({operatorType}) not displayed correctly. Expected: {expectedName}, {expectedAddress}, {expectedCountry}, {expectedApprovalNumber}, {expectedType}");
-
-            Console.WriteLine($"[ADDRESS BOOK] ✓ Verified {operatorType} transporter displayed: {expectedName}, {expectedAddress}, {expectedCountry}");
         }
     }
 }

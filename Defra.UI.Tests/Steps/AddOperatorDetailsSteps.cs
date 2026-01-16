@@ -29,8 +29,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When(@"the user adds the operator '([^']*)' details")]
         public void WhenTheUserAddsTheOperatorDetails(string operatorType)
         {
-            // Generate random operator details
-            var operatorDetails = Utils.GenerateOperatorDetails();
+            // Generate random operator details based on operator type
+            var operatorDetails = Utils.GenerateOperatorDetails(operatorType);
 
             // Enter the details into the form
             addOperatorDetailsPage?.EnterOperatorDetails(operatorDetails);
