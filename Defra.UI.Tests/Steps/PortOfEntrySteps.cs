@@ -71,26 +71,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["EstimatedJourneyTime"] = journeyTimeHours;
         }
 
-        [When("the user populates the transport details {string} {string} {string} {string} {string} and enter current date and future time")]
-        public void WhenTheUserPopulatesTheTransportDetailsAndEnterCurrentDateAndFutureTime(string port, string option, string mode, string transId, string DocumentRef)
-        {
-            portOfEntryPage?.EnterPortOfEntry(port);
-            portOfEntryPage?.SelectAreTrailersOrContainersUsed(option);
-            portOfEntryPage?.SelectMeansOfTransport(mode);
-            portOfEntryPage?.EnterTransportId(transId);
-            portOfEntryPage?.EnterTransportDocRef(DocumentRef);
-            var estimatedArrivalDate = portOfEntryPage?.EnterCurrentDateAsEstimatedArrivalDate();
-            var estimatedArrivalTime = portOfEntryPage?.EnterFutureTimeInEstimatedArrivalTime();
-
-            _scenarioContext["PortOfEntry"] = port;
-            _scenarioContext["MeansOfTransport"] = mode;
-            _scenarioContext["TransportId"] = transId;
-            _scenarioContext["AreContainers"] = option;
-            _scenarioContext["EnterTransportDocRef"] = DocumentRef;
-            _scenarioContext["EstimatedArrivalDate"] = estimatedArrivalDate;
-            _scenarioContext["EstimatedArrivalTime"] = estimatedArrivalTime;
-        }
-
         [When("the user enters Container Number {string}")]
         public void WhenTheUserEntersContainerNumber(string containerNumber)
         {

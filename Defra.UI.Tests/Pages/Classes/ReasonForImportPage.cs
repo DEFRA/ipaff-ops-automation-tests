@@ -169,18 +169,6 @@ namespace Defra.UI.Tests.Pages.Classes
             return leavingFromGBDate;
         }
 
-        public string EnterTodaysDateAsConsignmentDepartureDate()
-        {
-            var currentDate = DateTime.Now;
-
-            txtDay.SendKeys(currentDate.Day.ToString());
-            txtMonth.SendKeys(currentDate.Month.ToString());
-            txtYear.SendKeys(currentDate.Year.ToString());
-
-            var leavingFromGBDate = currentDate.ToString("dd MMMM yyyy");
-            return leavingFromGBDate;
-        }
-
         public string EnterConsignmentDepartureTime()
         {
             var futureDate = DateTime.Now.AddDays(7);
@@ -190,13 +178,6 @@ namespace Defra.UI.Tests.Pages.Classes
             txtMinutes.SendKeys(futureDate.Minute.ToString());
 
             return leavingFromGBTime;
-        }
-
-        public string EnterConsignmentDepartureTime(string hours, string minutes)
-        {
-            txtHours.SendKeys(hours);
-            txtMinutes.SendKeys(minutes);
-            return $"{hours:D2}:{minutes:D2}";
         }
 
         public void SelectTransitedCountry(string transitedCountry)

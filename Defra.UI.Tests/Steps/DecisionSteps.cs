@@ -52,6 +52,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
         [When("the user selects {string} {string} in decision page")]
+        [When("the user changes the selection to {string} {string} in the decision page")]
         public void WhenTheUserSelectsInDecisionPage(string subOption, string decision)
         {
             decisionPage?.SelectDecision(subOption, decision);

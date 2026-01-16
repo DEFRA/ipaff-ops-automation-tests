@@ -21,8 +21,8 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void SelectTranshipmentDestination(string transhipmentCountry);
         string EnterConsignmentDepartureDate();
         string EnterConsignmentDepartureTime();
-        string EnterTodaysDateAsConsignmentDepartureDate();
-        string EnterConsignmentDepartureTime(string hours, string minutes);
+        //string EnterTodaysDateAsConsignmentDepartureDate();
+        //string EnterConsignmentDepartureTime(string hours, string minutes);
         void AddPlaceOfExit(string placeOfExit);
         void EnterExitDate(int daysFromToday);
         void SelectExitBCP(string exitBCP);

@@ -31,13 +31,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Given(@"that I navigate to the IPAFF application")]
         public void GivenThatINavigateToThePortCheckerApplication()
         {
-            var currentDate = DateTime.Now;
-
-            var estimatedArrivalDate = currentDate.ToString("dd MMMM yyyy");
-
-            
-
-
             var url = urlBuilder.Default().BuildApp();
             _driver?.Navigate().GoToUrl(url);
         }
