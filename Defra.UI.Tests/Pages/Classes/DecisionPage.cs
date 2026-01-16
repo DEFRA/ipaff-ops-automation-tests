@@ -46,10 +46,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtExitDateMonth => _driver.FindElement(By.Id("temp-deadline-month"));
         private IWebElement txtExitDateYear => _driver.FindElement(By.Id("temp-deadline-year"));
         private IWebElement ddlExitBCP => _driver.FindElement(By.Id("temporaryExitBipUk"));
-        //private IWebElement txtChecksDateDay => _driver.FindElement(By.Id("date-of-checks-day"));
-        //private IWebElement txtChecksDateMonth => _driver.FindElement(By.Id("date-of-checks-month"));
-        //private IWebElement txtChecksDateYear => _driver.FindElement(By.Id("date-of-checks-year"));
-
+        
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -146,20 +143,6 @@ namespace Defra.UI.Tests.Pages.Classes
             txtNotAcceptableMonth.SendKeys(month);
             txtNotAcceptableYear.SendKeys(year);
         }
-
-        /*public void EnterDateOfChecksInDecisionPage(string day, string month, string year)
-        {
-            txtChecksDateDay.SendKeys(day);
-            txtChecksDateMonth.SendKeys(month);
-            txtChecksDateYear.SendKeys(year);
-        }
-
-        public void EnterTimeOfChecksInDecisionPage(string day, string month, string year)
-        {
-            txtChecksDateDay.SendKeys(day);
-            txtChecksDateMonth.SendKeys(month);
-            txtChecksDateYear.SendKeys(year);
-        }*/
 
         public void EnterReason(string reason)
         {

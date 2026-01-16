@@ -76,29 +76,9 @@ namespace Defra.UI.Tests.Pages.Classes
                     StringComparer.OrdinalIgnoreCase // drop if case-sensitive
                 );
 
-            var a = commOptionsListExpected
-                .Where(s => !string.IsNullOrWhiteSpace(s))
-                .All(expected => commOptionsListActual.Contains(expected.Trim()));
-
             return commOptionsListExpected
                 .Where(s => !string.IsNullOrWhiteSpace(s))
                 .All(expected => commOptionsListActual.Contains(expected.Trim()));
-
-            /*try
-            {
-                List<string> commOptionsListActual = new List<string>();
-
-                foreach (var commIntendedForRadio in commIntendedForRadioList)
-                {
-                    commOptionsListActual.Add(commIntendedForRadio.Text.Trim());
-                }
-                return commOptionsListExpected.All(expected => commOptionsListActual.Contains(expected));
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"AreAllCommIntendedForRadioOptionsDisplayed failed: {ex.Message}");
-                return false;
-            }*/
         }
 
         public void SelectAnimalCertification(string certificationOption)

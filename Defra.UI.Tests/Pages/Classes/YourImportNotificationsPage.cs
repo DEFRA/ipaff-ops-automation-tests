@@ -14,7 +14,6 @@ namespace Defra.UI.Tests.Pages.Classes
         #region Page Objects
         private IWebElement PageHeading => _driver.WaitForElement(By.XPath("//h1[@id='page-primary-title']"), true);
         private IWebElement lnkCreateNotification => _driver.WaitForElement(By.LinkText("Create a new notification"));
- 
         private IWebElement searchNotificationsPanel => _driver.FindElement(By.XPath("//div[contains(@class,'search-panel')]"));
         private IWebElement txtCertificateNumber => _driver.FindElement(By.Id("certificate-number"));
         private IWebElement txtCommodity => _driver.FindElement(By.Id("commodity-code-or-desc"));

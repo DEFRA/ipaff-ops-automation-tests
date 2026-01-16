@@ -1,7 +1,6 @@
 ﻿using Defra.UI.Tests.Configuration;
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
-using DocumentFormat.OpenXml.Drawing.Charts;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
