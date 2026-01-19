@@ -23,7 +23,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext = context;
         }
 
-
         [Then("the Accompanying documents page should be displayed")]
         public void ThenTheAccompanyingDocumentsPageShouldBeDisplayed()
         {
@@ -142,8 +141,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
             accompanyingDocumentsPage?.ClickAddAttachmentLink();
         }
 
-        [When("the user uploads the document {string} in the format {string} that exceeds size limit")]
         [When("the user uploads the document {string} in the format {string}")]
+        [When("the user uploads the document {string} in the format {string} that exceeds size limit")]
+        [When("the user uploads a document with a filename longer than {int} characters {string} in the format {string}")]
         public void WhenTheUserUploadsTheDocumentInTheFormat(string name, string format)
         {
             var filename = name + format;
@@ -208,6 +208,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 var dateOfIssue = accompanyingDocumentsPage?.GetDocumentIssueDate();
                 _scenarioContext["DocumentDateOfIssue"] = dateOfIssue;
             }
+        }
+
+        [Then("the file name should contain {int} characters including the file type")]
+        public void ThenTheFileNameShouldContainCharactersIncludingTheFileType(int fileLength)
+        {
+            Assert.True(fileLength.Equals(accompanyingDocumentsPage.GetFileLength), "File name length should be 27 characters after truncation");
         }
 
         [When("the user enters date of issue {string}{string}{string}")]
