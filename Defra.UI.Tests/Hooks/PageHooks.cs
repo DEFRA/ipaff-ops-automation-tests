@@ -99,8 +99,8 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<BorderNotificationsPage, IBorderNotificationsPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<BorderNotificationOverviewPage, IBorderNotificationOverviewPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<TransportAfterPortOfEntryPage, ITransportAfterPortOfEntryPage>());
-            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<DocumentsPage, IDocumentsPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<AddressBookPage, IAddressBookPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<DocumentsPage, IDocumentsPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ChooseAddressTypePage, IChooseAddressTypePage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ChooseOperatorTypePage, IChooseOperatorTypePage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<AddOperatorDetailsPage, IAddOperatorDetailsPage>());
@@ -111,6 +111,7 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<TheAddressHasBeenDeletedPage, ITheAddressHasBeenDeletedPage>());
 
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CookiesPage, ICookiesPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ContactPage, IContactPage>());
 
             //Read Email
             _objectContainer.RegisterInstanceAs(GetBaseWithScenarioContext<FetchCodeFromEmail, IFetchCodeFromEmail>());

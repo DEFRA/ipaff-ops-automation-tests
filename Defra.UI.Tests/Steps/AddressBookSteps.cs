@@ -29,17 +29,32 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(addressBookPage?.IsPageLoaded(), "Address Book page not loaded");
         }
 
+        [When("the user searches by selecting {string} in the Type dropdown")]
+        public void WhenTheUserSearchesBySelectingInTheTypeDropdown(string type)
+        {
+            addressBookPage?.SelectType(type);
+            addressBookPage?.ClickSearchButton();
+        }
+
+        [Then("the type of every address listed is {string}")]
+        public void ThenTheTypeOfEveryAddressListedIs(string type)
+        {
+            addressBookPage?.ValidateTypeInSearchResults(type);
+        }
+
+        [When("the user clicks on the Dashboard link on the top left")]
+        [When("the user clicks on Dashboard above Address book")]
+        public void WhenTheUserClicksOnTheDashboardLinkOnTheTopLeft()
+        {
+            addressBookPage?.ClickDashboardLink();
+        }
+
         [When(@"the user clicks Add an address")]
         public void WhenTheUserClicksAddAnAddress()
         {
             addressBookPage?.ClickAddAnAddress();
         }
 
-        [When("the user clicks on Dashboard above Address book")]
-        public void WhenTheUserClicksOnDashboardAboveAddressBook()
-        {
-            addressBookPage?.ClickDashboard();
-        }
 
         [Then(@"the newly added operator {string} should be displayed in the address book")]
         public void ThenTheNewlyAddedOperatorShouldBeDisplayedInTheAddressBook(string operatorType)
@@ -61,7 +76,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var operatorName = _scenarioContext[$"{operatorType}Name"]?.ToString();
 
             if (string.IsNullOrEmpty(operatorName))
-            {
+        {
                 Assert.Fail($"Operator name for type '{operatorType}' not found in scenario context.");
                 return;
             }

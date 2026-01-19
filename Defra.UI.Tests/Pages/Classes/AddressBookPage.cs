@@ -2,6 +2,7 @@ using Defra.UI.Tests.Configuration;
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
 
 namespace Defra.UI.Tests.Pages.Classes
@@ -15,6 +16,10 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects
         private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
+        private IWebElement ddlType => _driver.FindElement(By.Id("type"));
+        private IWebElement btnSearch => _driver.FindElement(By.Id("search"));
+        private IWebElement economicOperatorsTable => _driver.WaitForElement(By.Id("economic-operators-table"));
+        private IWebElement lnkDashboard => _driver.FindElement(By.XPath("//a[text()='Dashboard']"));
         private IWebElement lnkAddAnAddress => _driver.FindElement(By.LinkText("Add an address"));
         private IWebElement lnkReturnToAddressBook => _driver.FindElement(By.LinkText("Return to Address Book"));
         private IWebElement lnkDashboard => _driver.FindElement(By.LinkText("Dashboard"));
@@ -41,6 +46,7 @@ namespace Defra.UI.Tests.Pages.Classes
             _objectContainer = container;
         }
 
+        #region Methods
         public bool IsPageLoaded()
         {
             return primaryTitle.Text.Contains("Address book");
@@ -49,6 +55,24 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickAddAnAddress()
         {
             lnkAddAnAddress.Click();
+        }
+
+        public void SelectType(string type)
+        {
+            new SelectElement(ddlType).SelectByText(type);
+        }
+
+        public void ClickSearchButton() => btnSearch.Click();
+
+        public bool ValidateTypeInSearchResults(string type)
+        {
+            var rows = economicOperatorsTable.FindElements(By.XPath("//tbody/tr")).Count;
+            if (rows == 0)
+                return false;
+
+            var matchedRows = economicOperatorsTable.FindElements(By.XPath("//tbody/tr[td[2][contains(normalize-space(.), " + $"{type}" + ")]]")).Count;
+
+            return matchedRows == rows;
         }
 
         public bool IsOperatorDisplayedInAddressBook(string operatorName, string operatorType, string operatorAddress, string operatorCountry)
@@ -107,7 +131,7 @@ namespace Defra.UI.Tests.Pages.Classes
                 }
             }
 
-            return false;
+                return false;
         }
 
         public string GetOperatorName(string operatorName) => GetOperatorNameElement(operatorName).Text.Trim();
