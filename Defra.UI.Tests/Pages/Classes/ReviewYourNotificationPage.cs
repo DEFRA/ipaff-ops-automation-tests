@@ -13,7 +13,13 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects
         private IWebElement pageTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
-     
+        private By CopyAsNewButtonBy => By.XPath("//button[@type='submit' and @value='Copy as new']");
+        private By ViewCHEDButtonBy => By.Id("show-notification");
+        private By ChangeLinksBy => By.XPath("//a[text()='Change']");
+        private IWebElement lnkChange(string section) => _driver.FindElement(By.XPath($"(//*[normalize-space()='{section}']/following::a)[1]"));
+        private By DashboardLinkBy => By.XPath("//a[@class='govuk-breadcrumbs__link' and @href='/notification/pre/protected/notifications']");
+        private IWebElement chedReference => _driver.FindElement(By.Id("reference-number"));
+
         // About the consignment
         private IWebElement importType => _driver.FindElement(By.Id("importing"));
         private IWebElement countryOfOrigin => _driver.FindElement(By.Id("country-of-origin"));
@@ -102,8 +108,6 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement consignmentContactAddress => _driver.FindElement(By.Id("organisation-branch-address-address"));
         private IReadOnlyCollection<IWebElement> divAboutTheConsignmentDetails => _driver.WaitForElements(By.XPath("//div[@id='document-pet-card']//dl/div"));
                 
-        private IWebElement lnkChange(string section) => _driver.FindElement(By.XPath($"(//*[normalize-space()='{section}']/following::a)[1]"));
-
         //Error Message
         private IReadOnlyCollection<IWebElement> lblErrorMessages => _driver.FindElements(By.XPath("//div[@class='govuk-error-summary']/div/ul/li"));
         #endregion
@@ -630,6 +634,46 @@ namespace Defra.UI.Tests.Pages.Classes
             catch { return null; }
         }
 
+        public string? GetConsignorCountry()
+        {
+            try
+            {
+                var fullText = consignorDetails.Text.Trim();
+                return ExtractCountryFromAddressText(fullText);
+            }
+            catch { return null; }
+        }
+
+        public string? GetConsigneeCountry()
+        {
+            try
+            {
+                var fullText = consigneeDetails.Text.Trim();
+                return ExtractCountryFromAddressText(fullText);
+            }
+            catch { return null; }
+        }
+
+        public string? GetImporterCountry()
+        {
+            try
+            {
+                var fullText = importerDetails.Text.Trim();
+                return ExtractCountryFromAddressText(fullText);
+            }
+            catch { return null; }
+        }
+
+        public string? GetPlaceOfDestinationCountry()
+        {
+            try
+            {
+                var fullText = destinationDetails.Text.Trim();
+                return ExtractCountryFromAddressText(fullText);
+            }
+            catch { return null; }
+        }
+
         // Transport details
         public string? GetPortOfEntry()
         {
@@ -755,6 +799,27 @@ namespace Defra.UI.Tests.Pages.Classes
             try { return transporterAddress.Text.Trim(); } catch { return null; }
         }
 
+        public string? GetTransporterAddressWithoutContact()
+        {
+            try
+            {
+                var fullAddress = transporterAddress.Text.Trim();
+
+                // Transporter address format: "street, city, postcode, phone, email"
+                // We only want: "street, city, postcode"
+                var parts = fullAddress.Split(',', StringSplitOptions.TrimEntries);
+
+                if (parts.Length >= 3)
+                {
+                    // Take first 3 parts (street, city, postcode) - exclude phone and email
+                    return string.Join(", ", parts.Take(3));
+                }
+
+                return fullAddress;
+            }
+            catch { return null; }
+        }
+
         public string? GetTransporterCountry()
         {
             try { return transporterCountry.Text.Trim(); } catch { return null; }
@@ -824,6 +889,27 @@ namespace Defra.UI.Tests.Pages.Classes
             return "";
         }
 
+        private string ExtractCountryFromAddressText(string fullText)
+        {
+            var lines = fullText.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+            if (lines.Length > 1)
+            {
+                var addressLine = lines[1].Trim();
+
+                // The review page shows: "street, city, postcode, country, phone"
+                // Country is the 4th part (index 3)
+
+                var parts = addressLine.Split(',', StringSplitOptions.TrimEntries);
+
+                // Return the 4th part (country) if it exists
+                if (parts.Length >= 4)
+                {
+                    return parts[3].Trim();
+                }
+            }
+            return "";
+        }
+
         public string? GetConsignmentReferenceNumber()
         {
             try { return consignmentReferenceNumber.Text.Trim(); } catch { return null; }
@@ -832,6 +918,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public string? GetContainerUsage()
         {
             try { return containerUsage.Text.Trim(); } catch { return null; }
+        }
+
+        public string? GetCHEDReference()
+        {
+            try { return chedReference.Text.Trim(); } catch { return null; }
         }
 
         public bool IsError(string errorMessage)
@@ -874,6 +965,42 @@ namespace Defra.UI.Tests.Pages.Classes
                 msg.Contains(errorMessage, StringComparison.OrdinalIgnoreCase));
 
             return (containsSpecificError, allErrorMessages);
+        }
+
+        public bool IsCopyAsNewButtonDisplayed()
+        {
+            return _driver.IsElementDisplayed(CopyAsNewButtonBy);
+        }
+
+        public bool IsViewCHEDButtonDisplayed()
+        {
+            return _driver.IsElementDisplayed(ViewCHEDButtonBy);
+        }
+
+        public bool AreChangeLinksNotDisplayed()
+        {
+            try
+            {
+                var changeLinks = _driver.FindElements(ChangeLinksBy);
+                var displayedLinks = changeLinks.Where(link => link.IsElementDisplayed()).ToList();
+
+                if (displayedLinks.Count == 0)
+                {
+                    return true;
+                }
+
+                Console.WriteLine($"✗ Found {displayedLinks.Count} Change link(s) displayed when expecting none");
+                return false;
+            }
+            catch (NoSuchElementException)
+            {
+                return true;
+            }
+        }
+
+        public void ClickDashboardLink()
+        {
+            _driver.FindElement(DashboardLinkBy).Click();
         }
     }
 }
