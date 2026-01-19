@@ -28,24 +28,25 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
         
         [When("the user selects one of the displayed consignors or exporters {string}")]
-        public void WhenTheUserSelectsOneOfTheDisplayedConsignorsOrExporters(string consignor)
+        public void WhenTheUserSelectsOneOfTheDisplayedConsignorsOrExporters(string consignorName)
         {
-            _scenarioContext["ConsignorDetails"] = searchExistingConsignorPage.GetSelectedConsignor();
-            searchExistingConsignorPage?.ClickSelect(consignor);
+            _scenarioContext["ConsignorDetails"] = searchExistingConsignorPage.GetSelectedConsignor(consignorName);
+            searchExistingConsignorPage?.ClickSelect(consignorName);
         }
 
         [When("the user selects a consignor or exporter {string}")]
-        public void WhenTheUserSelectsAConsignorOrExporter(string consignor)
+        public void WhenTheUserSelectsAConsignorOrExporter(string consignorName)
         {
-            var consignorName = searchExistingConsignorPage?.GetSelectedConsignorName();
-            var consignorAddress = searchExistingConsignorPage?.GetSelectedConsignorAddress();
-            var consignorCountry = searchExistingConsignorPage?.GetSelectedConsignorCountry();
+            var consignorNm = searchExistingConsignorPage?.GetSelectedConsignorName(consignorName);
+            var consignorAddress = searchExistingConsignorPage?.GetSelectedConsignorAddress(consignorName);
+            var consignorCountry = searchExistingConsignorPage?.GetSelectedConsignorCountry(consignorName);
 
-            _scenarioContext.Add("ConsignorName", consignorName);
-            _scenarioContext.Add("ConsignorAddress", consignorAddress);
-            _scenarioContext.Add("ConsignorCountry", consignorCountry);
+            _scenarioContext["ConsignorName"] = consignorNm;
+            _scenarioContext["ConsignorAddress"] = consignorAddress;
+            _scenarioContext["ConsignorCountry"] = consignorCountry;
+            _scenarioContext["ConsignorDetails"] = searchExistingConsignorPage?.GetSelectedConsignor(consignorName);
 
-            searchExistingConsignorPage?.ClickSelect(consignor);
+            searchExistingConsignorPage?.ClickSelect(consignorName);
         }
     }
 }

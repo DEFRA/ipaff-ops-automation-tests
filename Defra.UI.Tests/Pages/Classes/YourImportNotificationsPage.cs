@@ -21,7 +21,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement GetShowNotificationLink(string chedRef) => _driver.FindElement(By.Id($"show-certificate-{chedRef}"));
         private IWebElement GetAmendLink(string chedRef) => _driver.FindElement(By.Id($"amend-details-{chedRef}"));
         private IWebElement lnkCookies => _driver.FindElement(By.Id("button-cookies"));
-
+        private IWebElement txtStatus => _driver.FindElement(By.XPath("//*[normalize-space()='CHED status']/following-sibling::dd"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -109,6 +109,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickAmend(string chedReference)
         {
             GetAmendLink(chedReference).Click();
+        }
+
+        public bool VerifyNotificationStatus(string status)
+        {
+            return txtStatus.Text.Trim().Equals(status);
         }
     }
 }

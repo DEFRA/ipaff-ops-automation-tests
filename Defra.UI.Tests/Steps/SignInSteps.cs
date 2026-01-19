@@ -158,5 +158,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             governmentGatewayTypePage?.ClickSignInButton();
         }
+
+        [When("the users opens a new tab")]
+        public void WhenTheUsersOpensANewTab()
+        {
+            governmentGatewayTypePage?.OpenNewTab();
+        }
     }
 }

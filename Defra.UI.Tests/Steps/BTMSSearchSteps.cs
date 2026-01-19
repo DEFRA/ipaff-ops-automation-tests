@@ -26,11 +26,17 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(btmsSearchPage?.IsPageLoaded(), "Search for an MRN, CHED, GMR or DUCR page not loaded");
         }
 
-
         [When("the user searches for the CHED created earlier")]
         public void WhenTheUserSearchesForTheCHEDCreatedEarlierAndChecksAllDetailsMatch()
         {
             var chedRef = _scenarioContext.Get<string>("CHEDReference");
+            btmsSearchPage?.SearchForChed(chedRef);
+        }
+
+        [When("the user searches for the replacement CHED reference")]
+        public void WhenTheUserSearchesForTheReplacementCHEDReference()
+        {
+            var chedRef = _scenarioContext.Get<string>("ReplacementCHEDReference");
             btmsSearchPage?.SearchForChed(chedRef);
         }
     }
