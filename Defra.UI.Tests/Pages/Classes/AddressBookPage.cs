@@ -19,7 +19,6 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement ddlType => _driver.FindElement(By.Id("type"));
         private IWebElement btnSearch => _driver.FindElement(By.Id("search"));
         private IWebElement economicOperatorsTable => _driver.WaitForElement(By.Id("economic-operators-table"));
-        private IWebElement lnkDashboard => _driver.FindElement(By.XPath("//a[text()='Dashboard']"));
         private IWebElement lnkAddAnAddress => _driver.FindElement(By.LinkText("Add an address"));
         private IWebElement lnkReturnToAddressBook => _driver.FindElement(By.LinkText("Return to Address Book"));
         private IWebElement lnkDashboard => _driver.FindElement(By.LinkText("Dashboard"));
@@ -139,7 +138,7 @@ namespace Defra.UI.Tests.Pages.Classes
         public string GetOperatorAddress(string operatorName) => GetOperatorAddressElement(operatorName).Text.Trim();
         public string GetOperatorCountry(string operatorName) => GetOperatorCountryElement(operatorName).Text.Trim();
 
-        public void ClickDashboard()
+        public void ClickDashboardLink()
         {
             lnkDashboard.Click();
         }
@@ -148,5 +147,6 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             GetOperatorViewLink(operatorName).Click();
         }
+        #endregion
     }
 }
