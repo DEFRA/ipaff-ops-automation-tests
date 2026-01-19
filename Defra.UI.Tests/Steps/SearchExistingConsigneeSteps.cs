@@ -47,5 +47,22 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             searchExistingConsigneePage?.ClickSelect(consigneeName);
         }
+
+        [When("the user selects the consignee from the address book {string}")]
+        public void WhenTheUserSelectsTheConsigneeFromTheAddressBook(string operatorType)
+        {
+            // Retrieve the operator name that was stored when adding to address book
+            var operatorNameKey = $"{operatorType}Name";
+
+            if (!_scenarioContext.ContainsKey(operatorNameKey))
+            {
+                Assert.Fail($"Operator name for {operatorType} not found in scenario context. Key: {operatorNameKey}");
+            }
+
+            var consigneeName = _scenarioContext[operatorNameKey]?.ToString();
+
+            // Just click select - don't update context keys
+            searchExistingConsigneePage?.ClickSelect(consigneeName);
+        }
     }
 }

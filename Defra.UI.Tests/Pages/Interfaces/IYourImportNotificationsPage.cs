@@ -15,8 +15,15 @@
         bool VerifyBrowserTabClosed();
         void ClickAmend(string chedReference);
         void ClickCookiesLink();
-        void ClickContactLink();
+        string GetNotificationStatus();
+        bool IsAmendLinkPresent(string chedReference);
+        bool IsAmendLinkNotPresent(string chedReference);
+        bool IsCopyAsNewLinkPresent(string chedReference);
+        bool IsViewDetailsLinkPresent(string chedReference);
+        bool IsShowNotificationLinkPresent(string chedReference);
+        void ClickViewDetails(string chedReference);
         void ClickAddressBookLink();
+        void ClickContactLink();
         void ClickViewDetailsLink();
         bool VerifyNotificationStatus(string status);
     }
