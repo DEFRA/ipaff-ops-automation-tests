@@ -242,7 +242,7 @@ Scenario: User creates and submits a CHEDA consignment notification with multipl
 	Then the Transport to the BCP or Port of entry page should be displayed
 	When the user enters BCP or Port of entry 'London Borough of Hillingdon Heathrow Airport Imported Food Office - ADADA'
 	And the user selects 'No' for Are any road trailers or shipping containers being used to transport the consignment
-	And the user selects means of transport to BCP or Port of entry 'Road vehicle'
+	And the user selects means of transport to BCP or Port of entry 'Airplane'
 	And the user enters transport identification 'QR184'
 	And the user enters transport document reference 'Doc1234'
 	And the user enters arrival date at BCP or Port of entry '0' days from now
@@ -286,101 +286,97 @@ Scenario: User creates and submits a CHEDA consignment notification with multipl
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 1
+	Then the user should be logged out successfully	
+	When I navigate to the IPAFF Inspector application
+	Then I should see type of Gateway login page
+	And I have selected 'Sign in with Government Gateway' as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF Heathrow Inspector credentials and signin
+	Then the user should be logged into Import notifications page
+	When the user searches for the newly created notification on the Import notifications page
+	Then the user clicks the notificaiton found with status 'NEW'
+	And the Decision Hub page should be displayed
+	When the user clicks Save and set as in progress
+	Then the notification status should change from 'NEW' to 'IN PROGRESS'
+	When the user clicks Local reference number link in Record checks
+	Then Local reference number page should be displayed
+	When the user enters a local reference number and clicks Save and continue
+	Then the Documentary check page should be displayed
+	When the user selects 'Satisfactory' for the Documentary check and clicks Save and continue
+	Then the Identity, physical and welfare checks page should be displayed
+	When the user selects 'Satisfactory' for Identity check
+	And the user selects 'Satisfactory' for Physical check
+	And the user selects '5' for Number of animals checked
+	And the user selects 'Satisfactory' for Welfare check
+	And the user selects '0' '%' for Number of dead animals
+	And the user selects '0' 'unit' for Number of unfit animals
+	And the user selects '0' for Number of births or abortions
+	And the user clicks Save and continue
+	Then the Seal numbers page should be displayed
+	And 'No' is pre-selected for Are new seal numbers required?
+	When the user clicks Save and continue
+	Then the Laboratory tests page should be displayed
+	When the user selects 'Yes' radio button for Would you like to record laboratory tests?
+	And the user clicks Save and continue
+	Then the Laboratory tests Reason for testing page should be displayed
+	And the user verifies 'Random' 'Suspicion' and 'Emergency measures' radio buttons are displayed
+	When the user selects 'Emergency measures' radio button for Reason for testing
+	And the user clicks Save and continue
+	Then the Laboratory tests Select the commodity sampled page should be displayed
+	When the user clicks the Select link for the '0103' commodity code
+	Then the Laboratory tests Commodity to be tested page should be displayed
+	When the user selects any Laboratory test from the displayed list
+	Then the Laboratory tests Commodity sampled page should be displayed
+	And the Sample date and time is todays date with the time the lab test was selected
+	When the user populates the commodity sample details 'Initial analysis' 'Campden BRI' 'EMRG1234' '2' 'Blood' 'Chilled'
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	When the user clicks Add another test
+	Then the Laboratory tests Select the commodity sampled page should be displayed
+	When the user clicks the Select link for the '0103' commodity code
+	Then the Laboratory tests Commodity to be tested page should be displayed
+	When the user selects '.ANTITHYROID AGENTS' from the list of Laboratory tests
+	Then the Laboratory tests Commodity sampled page should be displayed
+	When the user populates the commodity sample details 'Initial analysis' 'Concept Life Sciences' 'EMRG5678' '3' 'Blood' 'Frozen'
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	And the user verifies multiple Laboratory tests are entered with Results 'Pending'
+	When the user clicks Save and continue
+	Then the Decision page should be displayed
+	When the user selects Acceptable for 'Internal market' 'Approved bodies'
+	And the user clicks Save and continue
+	Then the Select a controlled destination page should be displayed
+	When the user clicks Add a controlled destination
+	Then the Search for an existing controlled destination page should be displayed
+	When the user selects a controlled destination
+	Then the chosen controlled destination should be displayed
+	When the user clicks Save and continue
+	Then the Review outcome decision page should be displayed
+	And the user should see an error message 'Lab results pending for this consignment' in review page
+	When the user Clicks the change link under 'Laboratory tests'
+	Then the Laboratory tests page should be displayed
+	When the user select 'Yes' radio button on the Laboratory tests page
+	And the user clicks Save and continue
+	Then the Laboratory tests Reason for testing page should be displayed
+	When the user selects 'Random' radio button for Reason for testing
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	When the user clicks Save and Return
+	Then the Decision Hub page should be displayed
+	When the user clicks Review And Submit link
+	Then the Review outcome decision page should be displayed
+	And the user should not see an error message 'Lab results pending for this consignment' in review page
+	When the user selects the radio button to declare that the checks have been carried out in accordance with EU law
+	And user clicks Submit decision
+	Then the Your checks have been submitted page should be displayed
+	When the user clicks View or print CHED
+	Then the certificate should be displayed in a new browser tab
+	When the user checks that the data in the certificate matches the data entered into the notification
+	And the user closes the PDF browser tab
+	Then the browser tab is closed
+	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
-	#When I navigate to the IPAFF Inspector application
-	#Then I should see type of Gateway login page
-	#And I have selected 'Sign in with Government Gateway' as login type
-	#When I click Continue button from How do you want to sign in page
-	#Then I should redirected to the IPAFF Sign in using Government Gateway page
-	#When I have provided the IPAFF Heathrow Inspector credentials and signin
-	#Then the user should be logged into Import notifications page
-	#When the user searches for the newly created notification on the Import notifications page
-	#Then the user clicks the notificaiton found with status 'NEW'
-	#And the Decision Hub page should be displayed
-	#When the user clicks Save and set as in progress
-	#Then the notification status should change from 'NEW' to 'IN PROGRESS'
-	#When the user clicks Local reference number link in Record checks
-	#Then Local reference number page should be displayed
-	#When the user enters a local reference number and clicks Save and continue
-	#Then the Documentary check page should be displayed
-	#When the user selects 'Satisfactory' for the Documentary check and clicks Save and continue
-	#Then the Identity, physical and welfare checks page should be displayed
-	#When the user selects 'Satisfactory' for Identity check
-	#And the user selects 'Satisfactory' for Physical check
-	#And the user selects '5' for Number of animals checked
-	#And the user selects 'Satisfactory' for Welfare check
-	#And the user selects '0' '%' for Number of dead animals
-	#And the user selects '0' 'unit' for Number of unfit animals
-	#And the user selects '0' for Number of births or abortions
-	#And the user clicks Save and continue
-	#Then the Seal numbers page should be displayed
-	#And 'No' is pre-selected for Are new seal numbers required?
-	#When the user clicks Save and continue
-	#Then the Laboratory tests page should be displayed
-	#When the user select 'Yes' radio button on the Laboratory tests page
-	#And the user clicks Save and continue
-	#Then the Laboratory tests Reason for testing page should be displayed
-	#And the user verifies 'Random' 'Suspicion' and 'Emergency measures' radio buttons are displayed
-	#When the user select 'Emergency measures' reason radio button on the Laboratory tests page
-	#And the user clicks Save and continue
-	#Then the Laboratory tests Select the commodity sampled page should be displayed
-	#When the user clicks the Select link for the '0103' commodity code
-	#Then the Laboratory tests Commodity to be tested page should be displayed
-	#When the user clicks select link of one of the Laboratory test
-	#Then the Laboratory tests Commodity sampled page should be displayed
-	#And the Sample date and time is todays date with the time the lab test was selected
-	#When the user populates the commodity sample details 'Initial analysis' 'Campden BRI' 'EMRG1234' '2' 'Blood' 'Chilled'
-	#And the user clicks Save and continue
-	#Then the Laboratory tests Review page should be displayed
-	#And the user verifies the data in Laboratory tests review page
-	#And the Test result shows 'Pending'
-	#When the user clicks the Add a laboratory test link
-	#Then the Laboratory tests Select the commodity sampled page should be displayed
-	#When the user clicks the Select link for the '0103' commodity code
-	#Then the Laboratory tests Commodity to be tested page should be displayed
-	#When the user selects '.ANTITHYROID AGENTS' from the list of Laboratory tests
-	#Then the Laboratory tests Commodity sampled page should be displayed
-	#When the user populates the commodity sample details 'Initial analysis' 'Concept Life Sciences' 'EMRG5678' '3' 'Blood' 'Frozen'
-	#And the user clicks Save and continue
-	#Then the Laboratory tests Review page should be displayed
-	#And the user verifies multiple Laboratory tests are entered with Results 'Pending'
-	#When the user clicks Save and continue
-	#Then the Decision page should be displayed
-	#When the user selects Acceptable for 'Internal market' 'Approved bodies'
-	#And the user clicks Save and continue
-	#Then the Select a controlled destination page should be displayed
-	#When the user clicks Add a controlled destination
-	#Then the Search for an existing controlled destination page should be displayed
-	#When the user selects a controlled destination
-	#Then the chosen controlled destination should be displayed
-	#When the user clicks Save and continue
-	#Then the Review outcome decision page should be displayed
-	#And the user should see an error message 'Lab results pending for this consignment' in review page
-	#When the user Clicks the change link under 'Laboratory tests'
-	#Then the Laboratory tests page should be displayed
-	#When the user select 'Yes' radio button on the Laboratory tests page
-	#And the user clicks Save and continue
-	#Then the Laboratory tests Reason for testing page should be displayed
-	#When the user select 'Random' reason radio button on the Laboratory tests page
-	#And the user clicks Save and continue
-	#Then the Laboratory tests Review page should be displayed
-	#When the user clicks Save and Return
-	#Then the Decision Hub page should be displayed
-	#When the user clicks Review And Submit link
-	#Then the Review outcome decision page should be displayed
-	#And the user should not see an error message 'Lab results pending for this consignment' in review page
-	#And the details reflect the information added
-	#When the user selects the radio button to declare that the checks have been carried out in accordance with EU law
-	#And user clicks Submit decision
-	#Then the Your checks have been submitted page should be displayed
-	#When the user clicks View or print CHED
-	#Then the certificate should be displayed in a new browser tab
-	#When the user checks that the data in the certificate matches the data entered into the notification
-	#And the Laboratory test details are displayed in the certificate
-	#And the user closes the PDF browser tab
-	#Then the browser tab is closed
-	#When the user logs out of IPAFFS Part 2
-	#Then the user should be logged out successfully
 
 Scenario: User creates and submits a CHEDA consignment notification for Temporary admission horses with laboratory tests - SPS-7384
 	Given that I navigate to the IPAFF application
