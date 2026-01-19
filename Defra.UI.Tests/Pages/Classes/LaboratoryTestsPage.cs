@@ -17,7 +17,13 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement secondaryTitle => _driver.WaitForElement(By.XPath("//h2[@class='govuk-heading-s govuk-!-margin-bottom-1  ']"), true);
         private IWebElement secondaryTitleReview => _driver.WaitForElement(By.XPath("//h2[@class='govuk-heading-m']"), true);
         private IWebElement labTestsRadio(string labTestsOption) => _driver.FindElement(By.XPath($"//input[@class='govuk-radios__input']/following-sibling::label[contains(text(),'{labTestsOption}')]"));
-        private IWebElement labTestsReasonRadio(string labTestsReason) => _driver.FindElement(By.XPath($"//input[@value='{labTestsReason}']"));
+        private IWebElement GetLabTestsReasonRadioButton(string labelText)
+        {
+            var label = _driver.FindElement(
+                By.XPath($"//label[@class='govuk-label govuk-radios__label' and normalize-space()='{labelText}']"));
+            var inputId = label.GetAttribute("for");
+            return _driver.FindElement(By.Id(inputId));
+        }
         private IWebElement selectForCommodityCode(string commodityCode) => _driver.FindElement(By.XPath($"(//td[text()='{commodityCode}']/following::a[text()='Select'])[1]"));
         private IWebElement lnkTestName(string testName) => _driver.FindElement(By.XPath($"//td/button[normalize-space(text())='{testName}']"));
         private IWebElement lnkSelectLabTest(string testName) => _driver.FindElement(By.XPath($"//td[text()='{testName}']/following::a[1]"));
@@ -67,7 +73,7 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             labTestsRadio(labTestsOption).Click();
         }
-              
+
         public bool IsLabTestsNoPreselected()
         {
             return rdoLabTestsNo.GetAttribute("checked") != null;
@@ -75,19 +81,20 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void SelectLabTestsReason(string labTestsReason)
         {
-            labTestsReasonRadio(labTestsReason).Click();
+            var radioInput = GetLabTestsReasonRadioButton(labTestsReason);
+            radioInput.Click();
         }
 
         public void ClickSelectForCommodityCode(string commodityCode)
         {
             selectForCommodityCode(commodityCode).Click();
         }
-        
+
         public void SelectTest(string testName)
         {
             lnkTestName(testName).Click();
         }
-        
+
         public void ClickSearch()
         {
             btnSearch.Click();
@@ -97,12 +104,12 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             new SelectElement(selectLabTestCategory).SelectByText(category);
         }
-        
+
         public void SelectLaboratoryTestSubCategory(string category)
         {
             new SelectElement(selectLabTestSubCategory).SelectByText(category);
         }
-        
+
         public void SelectLaboratoryTest(string test)
         {
             lnkSelectLabTest(test).Click();
@@ -177,7 +184,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool VerifyLabTestsReviewPage(string commodityCode, string commodityDescription, string commoditySpecies, string labTestName)
         {
-            foreach(var row in reviewTableFirstRow)
+            foreach (var row in reviewTableFirstRow)
             {
                 string rowText = row.Text;
                 return rowText.Contains(commodityCode)
@@ -300,6 +307,30 @@ namespace Defra.UI.Tests.Pages.Classes
 
             Console.WriteLine($"Verified {testCount} lab tests, all with 'Satisfactory' results");
             return true;
+        }
+
+        public bool AreLabTestReasonRadioButtonsDisplayed(params string[] reasonOptions)
+        {
+            try
+            {
+                foreach (var reason in reasonOptions)
+                {
+                    var radioInput = GetLabTestsReasonRadioButton(reason);
+
+                    // Check if parent container is displayed (more reliable than checking hidden input)
+                    var container = radioInput.FindElement(By.XPath("./.."));
+                    if (!container.Displayed)
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+            catch (NoSuchElementException ex)
+            {
+                return false;
+            }
         }
     }
 }
