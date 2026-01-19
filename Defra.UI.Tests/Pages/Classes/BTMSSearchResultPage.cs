@@ -14,18 +14,13 @@ namespace Defra.UI.Tests.Pages.Classes
         #region Page Objects   
         private IWebElement primaryTitle => _driver.WaitForElement(By.XPath("//*[@class='govuk-heading-l']"), true);
         private IWebElement secondaryTitle => _driver.WaitForElement(By.XPath("//span[@class='govuk-caption-l']"), true);
-        private IWebElement txtItemNumber => _driver.WaitForElement(By.XPath("//*[@class='govuk-details__text']//td[1]"));
-        private IWebElement txtCommodityCode => _driver.WaitForElement(By.XPath("//*[@class='govuk-details__text']//td[2]"));
-        private IWebElement txtComodityDesc => _driver.WaitForElement(By.XPath("//*[@class='govuk-details__text']//td[3]"));
-        private IWebElement txtQuantity => _driver.WaitForElement(By.XPath("//*[@class='govuk-details__text']//td[4]"));
-        private IWebElement txtAuthority => _driver.WaitForElement(By.XPath("//*[@class='govuk-details__text']//td[5]"));
-        private IWebElement txtDecision => _driver.WaitForElement(By.XPath("//*[@class='govuk-details__text']//td[6]"));
+        private List<IWebElement> searchResultRows => _driver.FindElements(By.XPath("//*[@class='govuk-table govuk-table--small-text-until-tablet btms-notification']//tbody/tr")).ToList();
         private List<IWebElement> commodityCodeList => _driver.WaitForElements(By.XPath("//*[@class='govuk-details__text']//td[2]")).ToList();
         private List<IWebElement> descriptionList => _driver.WaitForElements(By.XPath("//*[@class='govuk-details__text']//td[3]")).ToList();
         private List<IWebElement> quantityList => _driver.WaitForElements(By.XPath("//*[@class='govuk-details__text']//td[4]")).ToList();
         private List<IWebElement> authorityList => _driver.WaitForElements(By.XPath("//*[@class='govuk-details__text']//td[5]")).ToList();
         private List<IWebElement> decisionList => _driver.WaitForElements(By.XPath("//*[@class='govuk-details__text']//td[6]")).ToList();
-
+        private IWebElement txtCHEDStatus => _driver.FindElement(By.XPath("//*[normalize-space()='CHED Status']/following-sibling::dd"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -43,11 +38,19 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool ValidateBTMSSearchResult(string commodityCode, string commodityDescription, string commodityQuantity, string authority, string decision)
         {
-            return txtCommodityCode.Text.Trim().Contains(commodityCode)
-                && txtComodityDesc.Text.Trim().Contains(commodityDescription)
-                && txtQuantity.Text.Trim().Contains(commodityQuantity)
-                && txtAuthority.Text.Trim().Contains(authority)
-                && txtDecision.Text.Trim().Contains(decision);
+            foreach(var row in searchResultRows)
+            {
+                var cells = row.FindElements(By.TagName("td")).ToList();
+                bool match = 
+                    cells[1].Text.Trim() == commodityCode
+                    && cells[2].Text.Trim() == commodityDescription
+                    && cells[3].Text.Trim() == commodityQuantity
+                    && cells[4].Text.Trim() == authority
+                    && cells[5].Text.Trim() == decision;
+                if (match)
+                    return true;
+            }
+            return false;
         }
 
         public string GetCommodityCode(string commodityNum)
@@ -87,6 +90,17 @@ namespace Defra.UI.Tests.Pages.Classes
                 Console.WriteLine($"{commDetailOnPage} failed: {ex}");
             }
             return commDetailOnPage;
+        }
+
+        public bool VerifyStatus(string status)
+        {
+            return txtCHEDStatus.Text.Trim().Equals(status);
+        }
+
+        public bool IsPageLoadedForReplacementCHED(string replacementCHEDPREFNum)
+        {
+            return primaryTitle.Text.Trim().Contains(replacementCHEDPREFNum)
+                && secondaryTitle.Text.Trim().Contains("Showing result for");
         }
     }
 }

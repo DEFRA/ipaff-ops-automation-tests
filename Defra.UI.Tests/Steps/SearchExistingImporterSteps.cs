@@ -28,15 +28,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user selects an importer {string} with a UK country")]
         public void WhenTheUserSelectsAnImporterWithAUKCountry(string importer)
         {
-            var consigneeName = searchExistingImporterPage?.GetSelectedImporterName();
-            var consigneeAddress = searchExistingImporterPage?.GetSelectedImporterAddress();
-            var consigneeCountry = searchExistingImporterPage?.GetSelectedImporterCountry();
+            var importerName = searchExistingImporterPage?.GetSelectedImporterName(importer);
+            var importerAddress = searchExistingImporterPage?.GetSelectedImporterAddress(importer);
+            var importerCountry = searchExistingImporterPage?.GetSelectedImporterCountry(importer);
 
-            _scenarioContext["ImporterName"] = consigneeName;
-            _scenarioContext["ImporterAddress"] = consigneeAddress;
-            _scenarioContext["ImporterCountry"] = consigneeCountry;
+            _scenarioContext["ImporterName"] = importerName;
+            _scenarioContext["ImporterAddress"] = importerAddress;
+            _scenarioContext["ImporterCountry"] = importerCountry;
 
-            _scenarioContext["ImporterDetails"] = searchExistingImporterPage?.GetSelectedImporter();
+            _scenarioContext["ImporterDetails"] = searchExistingImporterPage?.GetSelectedImporter(importer);
 
             searchExistingImporterPage?.ClickSelect(importer);
         }

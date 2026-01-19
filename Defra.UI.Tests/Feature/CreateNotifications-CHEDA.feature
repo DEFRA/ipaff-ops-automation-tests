@@ -127,7 +127,7 @@ Scenario: User creates and submits a B2C consignment notification - CHEDA
 	When I have provided the IPAFF Heathrow Inspector credentials and signin
 	Then the user should be logged into Import notifications page
 	When the user searches for the newly created notification on the Import notifications page
-	Then the user clicks the notificaiton found with status 'NEW'
+	Then the user clicks the notification found with status 'NEW'
 	And the Decision Hub page should be displayed
 	When the user clicks Save and set as in progress
 	Then the notification status should change from 'NEW' to 'IN PROGRESS'
@@ -298,7 +298,7 @@ Scenario: User creates and submits a B2C consignment notification for Temporary 
 	When I have provided the IPAFF Heathrow Inspector credentials and signin
 	Then the user should be logged into Import notifications page
 	When the user searches for the newly created notification on the Import notifications page
-	Then the user clicks the notificaiton found with status 'NEW'
+	Then the user clicks the notification found with status 'NEW'
 	And the Decision Hub page should be displayed
 	When the user clicks Save and set as in progress
 	Then the notification status should change from 'NEW' to 'IN PROGRESS'
@@ -507,7 +507,7 @@ Scenario: User creates and submits a B2C consignment notification with Transit t
 	When I have provided the IPAFF Heathrow Inspector credentials and signin
 	Then the user should be logged into Import notifications page
 	When the user searches for the newly created notification on the Import notifications page
-	Then the user clicks the notificaiton found with status 'NEW'
+	Then the user clicks the notification found with status 'NEW'
 	And the Decision Hub page should be displayed
 	When the user clicks Save and set as in progress
 	Then the notification status should change from 'NEW' to 'IN PROGRESS'

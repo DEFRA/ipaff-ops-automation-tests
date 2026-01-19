@@ -112,7 +112,7 @@ Scenario: User creates and submits a B2C consignment notification - CHED D
 	When I have provided the IPAFF Gateway Inspector credentials and signin
 	Then the user should be logged into Import notifications page
 	When the user searches for the newly created notification on the Import notifications page
-	Then the user clicks the notificaiton found with status "NEW"
+	Then the user clicks the notification found with status "NEW"
 	Then the Decision Hub page should be displayed
 	When the user clicks Save and set as in progress
 	Then the notification status should change from "NEW" to "IN PROGRESS"
@@ -294,7 +294,7 @@ Scenario: User creates and submits a notification, override the risk decision an
 	When I have provided the IPAFF Gateway Inspector credentials and signin
 	Then the user should be logged into Import notifications page
 	When the user searches for the newly created notification on the Import notifications page
-	Then the user clicks the notificaiton found with status "NEW"
+	Then the user clicks the notification found with status "NEW"
 	Then the Decision Hub page should be displayed
 	When the user clicks Save and set as in progress
 	Then the notification status should change from "NEW" to "IN PROGRESS"

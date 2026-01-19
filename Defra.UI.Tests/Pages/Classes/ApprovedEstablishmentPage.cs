@@ -16,17 +16,22 @@ namespace Defra.UI.Tests.Pages.Classes
         #region Page Objects
         private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
         private IWebElement secondaryTitle => _driver.WaitForElement(By.Id("page-secondary-title"), true);
-        private IWebElement lnkSearchForApproved => _driver.WaitForElement(By.Name("add-establishment"));
+        private IWebElement lnkSearchForApproved => _driver.FindElement(By.Name("add-establishment"));
         private IWebElement countryDropdown => _driver.FindElement(By.Id("establishment-country-code"));
         private IWebElement typeDropdown => _driver.FindElement(By.Id("establishment-type"));
         private IWebElement statusDropdown => _driver.FindElement(By.Id("establishment-status"));
-        private IWebElement lnkSelectEstablishment => _driver.WaitForElement(By.Id("select-establishment-1"));
-        private IWebElement establishmentSearchResultFirstName => _driver.WaitForElement(By.XPath("//*[@id='establishments-search-results-row-1']/td[1]"));
-        private IWebElement selectedEstablishment => _driver.WaitForElement(By.XPath("//*[@id='establishments-row-1']/td[1]"));
-        private IWebElement txtapprovedEstablishmentCountry => _driver.WaitForElement(By.XPath("//*[@id='establishments-row-1']/td[2]"));
-        private IWebElement txtapprovedEstablishmentType => _driver.WaitForElement(By.XPath("//*[@id='establishments-row-1']/td[3]"));
-        private IWebElement txtapprovedEstablishmentApprovalNum => _driver.WaitForElement(By.XPath("//*[@id='establishments-row-1']/td[4]"));
-        private IWebElement lnkRemoveEstablishment => _driver.WaitForElement(By.Id("establishment-remove-1"));
+        private IReadOnlyCollection<IWebElement> lnkSelectEstablishment => _driver.FindElements(By.Id("select-establishment-1"));
+        private IWebElement establishmentSearchResultFirstName => _driver.FindElement(By.XPath("//*[@id='establishments-search-results-row-1']/td[1]"));
+        private IReadOnlyCollection<IWebElement> establishmentSearchResultTable => _driver.FindElements(By.XPath("//*[@id='establishments-table']/tbody"));
+        private IWebElement selectedEstablishment => _driver.FindElement(By.XPath("//*[@id='establishments-row-1']/td[1]"));
+        private IWebElement txtapprovedEstablishmentCountry => _driver.FindElement(By.XPath("//*[@id='establishments-row-1']/td[2]"));
+        private IWebElement txtapprovedEstablishmentType => _driver.FindElement(By.XPath("//*[@id='establishments-row-1']/td[3]"));
+        private IWebElement txtapprovedEstablishmentApprovalNum => _driver.FindElement(By.XPath("//*[@id='establishments-row-1']/td[4]"));
+        private IWebElement selectedEstablishment2 => _driver.FindElement(By.XPath("//*[@id='establishments-row-2']/td[1]"));
+        private IWebElement txtapprovedEstablishmentCountry2 => _driver.FindElement(By.XPath("//*[@id='establishments-row-2']/td[2]"));
+        private IWebElement txtapprovedEstablishmentType2 => _driver.FindElement(By.XPath("//*[@id='establishments-row-2']/td[3]"));
+        private IWebElement txtapprovedEstablishmentApprovalNum2 => _driver.FindElement(By.XPath("//*[@id='establishments-row-2']/td[4]"));
+        private IWebElement lnkRemoveEstablishment => _driver.FindElement(By.Id("establishment-remove-1"));
         private IReadOnlyCollection<IWebElement> lstCountryInSearchResult => _driver.FindElements(By.XPath("//*[@id='establishments-search-results']//td[6]"));
         private IReadOnlyCollection<IWebElement> lstTypeInSearchResult => _driver.FindElements(By.XPath("//*[@id='establishments-search-results']//td[3]"));
         private IReadOnlyCollection<IWebElement> lstStatusInSearchResult => _driver.FindElements(By.XPath("//*[@id='establishments-search-results']//td[5]"));
@@ -64,8 +69,8 @@ namespace Defra.UI.Tests.Pages.Classes
         }
 
         public void ClickSelectEstablishment() 
-        { 
-            lnkSelectEstablishment.Click(); 
+        {
+            lnkSelectEstablishment.FirstOrDefault().Click();
         }
 
         public bool VerifySelectedEstablismentName(string establishmentListFirstName)
@@ -73,24 +78,36 @@ namespace Defra.UI.Tests.Pages.Classes
             return selectedEstablishment.Text.Trim().Equals(establishmentListFirstName);
         }
 
-        public string GetSubtotalNetWeight()
+        public string GetSelectedEstablishmentName()
         {
-            return selectedEstablishment.Text.Trim();
+            if (establishmentSearchResultTable.Count == 2)
+                return selectedEstablishment2.Text.Trim();
+            else
+                return selectedEstablishment.Text.Trim();
         }
 
-        public string GetSubtotalPackages()
+        public string GetSelectedEstablishmentCountry()
         {
-            return txtapprovedEstablishmentCountry.Text.Trim();
+            if (establishmentSearchResultTable.Count == 2)
+                return txtapprovedEstablishmentCountry2.Text.Trim();
+            else
+                return txtapprovedEstablishmentCountry.Text.Trim();
         }
 
-        public string GetTotalNetWeight()
+        public string GetSelectedEstablishmentType()
         {
-            return txtapprovedEstablishmentType.Text.Trim();
+            if (establishmentSearchResultTable.Count == 2)
+                return txtapprovedEstablishmentType2.Text.Trim();
+            else
+                return txtapprovedEstablishmentType.Text.Trim();
         }
 
-        public string GetTotalPackages()
+        public string GetSelectedEstablishmentApprovalNumber()
         {
-            return txtapprovedEstablishmentApprovalNum.Text.Trim();
+            if (establishmentSearchResultTable.Count == 2)
+                return txtapprovedEstablishmentApprovalNum2.Text.Trim();
+            else
+                return txtapprovedEstablishmentApprovalNum.Text.Trim();
         }
 
         public void ClickRemoveEstablishment()
