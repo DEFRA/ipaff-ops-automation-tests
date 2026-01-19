@@ -1,9 +1,7 @@
 ﻿using Reqnroll.BoDi;
 using NUnit.Framework;
-using OpenQA.Selenium;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
-
 
 namespace Defra.UI.Tests.Steps.IPAFF
 {
@@ -58,7 +56,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             // CHED-A specific field - only filled if present
             portOfEntryPage?.EnterEstimatedJourneyTime(journeyTimeHours);
-
 
             _scenarioContext["PortOfEntry"] = port;
             _scenarioContext["MeansOfTransport"] = mode;

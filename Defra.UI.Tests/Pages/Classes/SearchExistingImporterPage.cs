@@ -33,7 +33,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool IsPageLoaded()
         {
-            return secondaryTitle.Text.Contains("Traders")
+            return secondaryTitle.Text.Contains("Traders") 
                 && primaryTitle.Text.Contains("Search for an existing importer");
         }
 
