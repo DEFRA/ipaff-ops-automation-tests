@@ -20,7 +20,6 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement btnSearch => _driver.FindElement(By.Id("search"));
         private IWebElement economicOperatorsTable => _driver.WaitForElement(By.Id("economic-operators-table"));
         private IWebElement lnkAddAnAddress => _driver.FindElement(By.LinkText("Add an address"));
-        private IWebElement lnkReturnToAddressBook => _driver.FindElement(By.LinkText("Return to Address Book"));
         private IWebElement lnkDashboard => _driver.FindElement(By.LinkText("Dashboard"));
         private IWebElement GetOperatorNameElement(string operatorName) =>
             _driver.FindElement(By.XPath($"//table[@id='economic-operators-table']//td[@class='govuk-table__cell' and normalize-space()='{operatorName}']"));
