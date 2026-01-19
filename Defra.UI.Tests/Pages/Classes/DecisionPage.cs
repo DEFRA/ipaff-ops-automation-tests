@@ -46,6 +46,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtExitDateMonth => _driver.FindElement(By.Id("temp-deadline-month"));
         private IWebElement txtExitDateYear => _driver.FindElement(By.Id("temp-deadline-year"));
         private IWebElement ddlExitBCP => _driver.FindElement(By.Id("temporaryExitBipUk"));
+        
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();

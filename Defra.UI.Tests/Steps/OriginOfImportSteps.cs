@@ -87,7 +87,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void ThenIsPre_SelectedForTheDoesYourConsignmentRequireARegionCodeRadioOption(string ragionCodeRadio)
         {
             Assert.True(originOfImportPage?.IsRegionCodeRadioSelected(ragionCodeRadio), $"Region code radio is not pre-selected with {ragionCodeRadio} option");
+        }
 
+        [When("the user changes the consigned country to {string}")]
+        public void WhenTheUserChangesTheConsignedCountryTo(string consignedCountry)
+        {
+            originOfImportPage?.SelectConsignedCountry(consignedCountry);
+            _scenarioContext["ContryFromWhereConsigned"] = consignedCountry;
         }
     }
 }

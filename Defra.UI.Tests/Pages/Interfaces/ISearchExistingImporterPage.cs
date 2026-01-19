@@ -7,9 +7,9 @@ namespace Defra.UI.Tests.Pages.Interfaces
     {
         bool IsPageLoaded();
         void ClickSelect(string importer);
-        string GetSelectedImporterName(string importer);
-        string GetSelectedImporterAddress(string importer);
-        string GetSelectedImporterCountry(string importer);
-        string GetSelectedImporter(string importer);
+        string GetSelectedImporterName(string importerName);
+        string GetSelectedImporterAddress(string importerName);
+        string GetSelectedImporterCountry(string importerName);
+        string GetSelectedImporter(string importerName);
     }
 }

@@ -4,6 +4,7 @@ using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
 using Reqnroll.BoDi;
 using Defra.UI.Tests.HelperMethods;
+using OpenQA.Selenium.Support.UI;
 
 namespace Defra.UI.Tests.Pages.Classes
 {
@@ -26,6 +27,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement btnSaveAndReviewToHub => _driver.FindElement(By.Id("save-and-return-button"));
         private IWebElement originCountrySelectedVal => _driver.FindElement(By.XPath("//select[@id='origin-country']/option[@selected]"));
         private IWebElement consignedCountrySelectedVal => _driver.FindElement(By.XPath("//select[@id='consigned-country']/option[@selected]"));
+        private IWebElement ddlConsignedCountry => _driver.FindElement(By.Id("consigned-country"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -87,6 +89,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public bool IsRegionCodeRadioSelected(string regionCodeRadioOption)
         {
             return rdoRegionCode(regionCodeRadioOption).GetAttribute("checked") != null;
+        }
+
+        public void SelectConsignedCountry(string consignedCountry)
+        {
+            new SelectElement(ddlConsignedCountry).SelectByText(consignedCountry);
         }
     }
 }

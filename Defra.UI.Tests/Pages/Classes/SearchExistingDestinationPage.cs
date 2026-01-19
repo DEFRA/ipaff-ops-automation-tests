@@ -22,6 +22,14 @@ namespace Defra.UI.Tests.Pages.Classes
             _driver.WaitForElement(By.XPath($"//td[contains(@class,'economic-operator-name') and normalize-space()='{destinationName}']/following-sibling::td[contains(@class,'economic-operator-address')]"));
         private IWebElement GetDestinationCountryElement(string destinationName) =>
             _driver.WaitForElement(By.XPath($"//td[contains(@class,'economic-operator-name') and normalize-space()='{destinationName}']/following-sibling::td[2]"));
+        private IWebElement btnSelect => _driver.WaitForElement(By.XPath("//*[@id='Table-SearchResults']//button[normalize-space()='Select']"));
+        private IWebElement selectedPOEName => _driver.WaitForElement(By.XPath("//*[@id='Table-SearchResults']//td[1]"));
+        private IWebElement selectedPOEAddress => _driver.WaitForElement(By.XPath("//*[@id='Table-SearchResults']//td[2]"));
+        private IWebElement selectedPOECountry => _driver.WaitForElement(By.XPath("//*[@id='Table-SearchResults']//td[3]"));
+        private IWebElement selectedDestinationName => _driver.FindElement(By.XPath("//td[@class='govuk-table__cell economic-operator-name']"));
+        private IWebElement selectedDestinationAddress => _driver.FindElement(By.XPath("//td[@class='govuk-table__cell economic-operator-address']"));
+        private IWebElement selectedDestinationCountry => _driver.FindElement(By.XPath("//td[@class='govuk-table__cell'][not(@headers)]"));
+
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -46,9 +54,9 @@ namespace Defra.UI.Tests.Pages.Classes
             return placeOfDestinationDetails;
         }
 
-        public void ClickSelect(string destinationName)
+        public void ClickSelect(string destination) 
         {
-            GetSelectButtonForDestination(destinationName).Click();
+            GetSelectButtonForDestination(destination).Click();
         }
 
         public string GetSelectedDestinationName(string destinationName) => GetDestinationNameElement(destinationName).Text.Trim();

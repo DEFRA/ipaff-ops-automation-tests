@@ -4,7 +4,6 @@ using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
 using Reqnroll.BoDi;
 
-
 namespace Defra.UI.Tests.Pages.Classes
 {
     public class SearchExistingConsignorPage : ISearchExistingConsignorPage
@@ -13,6 +12,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IObjectContainer _objectContainer;
 
         #region Page Objects
+
         private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
         private IWebElement secondaryTitle => _driver.WaitForElement(By.Id("page-secondary-title"), true);
         private IWebElement GetSelectButtonForConsignor(string consignorName) =>
