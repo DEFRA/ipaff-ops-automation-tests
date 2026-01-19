@@ -35,5 +35,9 @@ namespace Defra.UI.Tests.Pages.Interfaces
         string GetSampleTime();
         bool IsAddAnotherTestLinkDisplayed();
         string GetLabTestResult(int index = 0);
+        void ClickAddAnotherTest();
+        int GetLabTestCount();
+        bool VerifyMultipleLabTestsWithPendingResults(int expectedMinimumCount = 2);
+        bool VerifyMultipleLabTestsWithSatisfactoryResults(int expectedMinimumCount = 2);
     }
 }
