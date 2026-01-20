@@ -229,8 +229,7 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             foreach (var element in txtViewLinks)
             {
-                if (element.Text.Contains("View"))
-                    return true;
+                return element.Text.Contains("View");
             }
             return false;
         }
@@ -268,8 +267,7 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             foreach (var element in lblSusStatusInDashboard)
             {
-                if (element.Text.Contains("Suspended"))
-                    return true;
+                return element.Text.Contains("Suspended");
             }
             return false;
         }

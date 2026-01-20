@@ -1,6 +1,4 @@
-﻿using OpenQA.Selenium;
-
-namespace Defra.UI.Tests.Pages.Interfaces
+﻿namespace Defra.UI.Tests.Pages.Interfaces
 {
     public interface IDecisionHubPage
     { 
@@ -12,5 +10,8 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void ClickLaboratoryTestsLink();
         void ClickDecisionLink();
         void ClickReviewAndSubmitLink();
+        void ClickOverrideRiskDecisionLink();
+        bool VerifyInspectionRequiredBox(string msgboxTitle);
+        bool VerifyInspectionRequiredMessage(string message);
     }
 }

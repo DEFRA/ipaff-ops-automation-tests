@@ -45,6 +45,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
             inspectorImportNotificationsPage?.VerifyNotificationStatus(chedRef, status);
         }
 
+        [Then("the notification is displayed on the inspector dashboard")]
+        public void ThenTheNotificationIsDisplayedOnTheInspectorDashboard()
+        {
+            var chedRef = _scenarioContext.Get<string>("CHEDReference");
+            inspectorImportNotificationsPage?.SearchForChed(chedRef);
+            Assert.True(inspectorImportNotificationsPage?.VerifyNotificationIsPresent(chedRef));
+        }
 
         [Then("the notification should be present in the list of part {int} dashboard")]
         public void ThenTheNotificationShouldBePresentInTheListOfPartDashboard(int p0)
@@ -65,5 +72,18 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             inspectorImportNotificationsPage?.ClickRecordControl();
         }
+
+        [When("the user clicks Create notification in Dashboard page header")]
+        public void WhenTheUserClicksCreateNotificationInDashboardPageHeader()
+        {
+            inspectorImportNotificationsPage?.ClickCreateNotification();
+        }
+
+        [When("the user clicks Record decision from the header")]
+        public void WhenTheUserClicksRecordDecisionFromTheHeader()
+        {
+            inspectorImportNotificationsPage?.ClickRecordDecision();
+        }
+
     }
 }

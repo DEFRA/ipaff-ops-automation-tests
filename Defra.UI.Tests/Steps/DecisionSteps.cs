@@ -30,9 +30,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user selects Acceptable for {string} {string}")]
         public void WhenTheUserSelectsAcceptableFor(string acceptableFor, string subOption)
         {
-            _scenarioContext.Add("AcceptableFor", acceptableFor);
-            _scenarioContext.Add("AcceptableForSubOption", subOption);
-            decisionPage?.SelectAcceptableFor(acceptableFor, subOption);
+            _scenarioContext["AcceptableFor"] = acceptableFor;
+            _scenarioContext["AcceptableForSubOption"] = subOption;
+            decisionPage?.SelectNotAcceptableFor(acceptableFor, subOption);
         }
 
         [Then("the user verifies the Transit radio button option is pre populated")]
@@ -52,6 +52,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
         [When("the user selects {string} {string} in decision page")]
+        [When("the user changes the selection to {string} {string} in the decision page")]
         public void WhenTheUserSelectsInDecisionPage(string subOption, string decision)
         {
             decisionPage?.SelectDecision(subOption, decision);
@@ -79,5 +80,88 @@ namespace Defra.UI.Tests.Steps.IPAFF
             );
         }
 
+        [Then("{string} radio is pre-selected under Acceptable for")]
+        public void ThenRadioIsPre_SelectedUnderAcceptableFor(string mainRadio)
+        {
+            Assert.True(decisionPage?.IsAcceptableForRadioSelected(mainRadio), $"The main radio option {mainRadio} is not selected by default on the Decision page");
+        }
+
+        [When("the user enters reason {string} and selects By date")]
+        public void WhenTheUserEntersReasonAndSelectsByDate(string reason)
+        {
+            decisionPage?.EnterReason(reason);
+            var currentDate = DateTime.Now;
+            var day = currentDate.Day.ToString();
+            var month = currentDate.Month.ToString();
+            var year = currentDate.Year.ToString();
+            decisionPage?.EnterCurrentDateInDecisionPage(day, month, year);
+        }
+
+        [Then("the {string} radio button option is pre populated")]
+        public void ThenTheRadioButtonOptionIsPrePopulated(string radioButtonOption)
+        {
+            _scenarioContext["AcceptableFor"] = radioButtonOption;
+            Assert.True(decisionPage?.IsRadioButtonPreSelected(radioButtonOption),
+                        $"'{radioButtonOption}' radio button is not pre-selected");
+        }
+
+        [Then("the exit date is pre populated")]
+        public void ThenTheExitDateIsPrePopulated()
+        {
+            var exitDate = decisionPage?.GetExitDate();
+            var expectedExitDate = _scenarioContext.Get<string>("ExitDate");
+
+            // Convert expectedExitDate from "dd MMMM yyyy" to "dd/MM/yyyy" format for comparison
+            var parsedDate = DateTime.ParseExact(expectedExitDate, "dd MMMM yyyy", System.Globalization.CultureInfo.InvariantCulture);
+            var formattedExpectedDate = parsedDate.ToString("dd/MM/yyyy");
+
+            Assert.That(exitDate, Is.EqualTo(formattedExpectedDate), $"Exit date mismatch. Expected: {formattedExpectedDate}, Actual: {exitDate}");
+        }
+
+        [Then("the exit BCP is correct")]
+        public void ThenTheExitBCPIsCorrect()
+        {
+            var actualExitBCP = decisionPage?.GetExitBCP();
+            var expectedExitBCP = _scenarioContext.Get<string>("ExitBCP");
+
+            // Extract the name part by finding the last " - " and taking everything before it
+            // Example: "London Borough of Hillingdon Heathrow Airport Imported Food Office - ADADA" 
+            //          → "London Borough of Hillingdon Heathrow Airport Imported Food Office"
+            var lastDashIndex = expectedExitBCP.LastIndexOf(" - ");
+            var expectedName = lastDashIndex >= 0
+                ? expectedExitBCP.Substring(0, lastDashIndex).Trim()
+                : expectedExitBCP;
+
+            Assert.That(actualExitBCP, Is.EqualTo(expectedName),
+                $"Exit BCP mismatch. Expected: '{expectedName}', Actual: '{actualExitBCP}'");
+        }
+
+        [Then("the exit BCP is prepopulated with value entered in Part 1")]
+        public void ThenTheExitBCPIsPrepopulatedWithValueEnteredInPart1()
+        {
+            var expectedExitBCP = _scenarioContext.Get<string>("ExitBCP");
+            var actualExitBCP = decisionPage?.GetTransitExitBCP();
+
+            // Extract the name part by finding the last " - " and taking everything before it
+            // Example: "Manchester Airport (animals) - GBMNC4" → "Manchester Airport (animals)"
+            // Example: "Heathrow Airport - HARC (animals) - GBLHR4A" → "Heathrow Airport - HARC (animals)"
+            var lastDashIndex = expectedExitBCP.LastIndexOf(" - ");
+            var expectedName = lastDashIndex >= 0
+                ? expectedExitBCP.Substring(0, lastDashIndex).Trim()
+                : expectedExitBCP;
+
+            Assert.That(actualExitBCP, Is.EqualTo(expectedName),
+                $"Exit BCP is not prepopulated correctly. Expected: '{expectedName}', Actual: '{actualExitBCP}'");
+        }
+
+        [Then("the destination country is prepopulated with value entered in Part 1")]
+        public void ThenTheDestinationCountryIsPrepopulatedWithValueEnteredInPart1()
+        {
+            var expectedDestinationCountry = _scenarioContext.Get<string>("DestinationCountry");
+            var actualDestinationCountry = decisionPage?.GetDestinationCountry();
+
+            Assert.That(actualDestinationCountry, Is.EqualTo(expectedDestinationCountry),
+                $"Destination country is not prepopulated correctly. Expected: '{expectedDestinationCountry}', Actual: '{actualDestinationCountry}'");
+        }
     }
 }

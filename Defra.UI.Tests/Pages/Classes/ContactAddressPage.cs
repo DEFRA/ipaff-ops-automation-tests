@@ -45,18 +45,13 @@ namespace Defra.UI.Tests.Pages.Classes
         public string GetSelectedContactAddress()
         {
             var fullAddress = firstContactAddressLabel.Text.Trim();
+            var lines = fullAddress.Split(new[] { "\r\n", "\n", "," }, StringSplitOptions.RemoveEmptyEntries)
+                                    .Select(l => l.Trim())
+                                    .ToList();
 
-            // Split by newlines to get individual address components
-            var lines = fullAddress.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-
-            // Return only the first 4 lines (street, region, city, postcode)
-            // This excludes the country which is not displayed on the review page
-            if (lines.Length >= 4)
-            {
-                return string.Join("\n", lines.Take(4).Select(l => l.Trim()));
-            }
-
-            return fullAddress;
+            // This excludes the country which is not displayed on the review page and also it works for all address irrespective of number of lines in address
+            lines.RemoveAt(lines.Count - 1); 
+            return string.Join("\n", lines).Trim();
         }
     }
 }

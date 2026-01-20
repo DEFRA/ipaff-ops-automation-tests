@@ -6,10 +6,10 @@ namespace Defra.UI.Tests.Pages.Interfaces
     public interface ISearchExistingConsigneePage
     {
         bool IsPageLoaded();
-        void ClickSelect();
-        string GetSelectedConsignee();
-        string GetSelectedConsigneeName();
-        string GetSelectedConsigneeAddress();
-        string GetSelectedConsigneeCountry();
+        string GetSelectedConsignee(string consigneeName);
+        void ClickSelect(string consigneeName);
+        string GetSelectedConsigneeName(string consigneeName);
+        string GetSelectedConsigneeAddress(string consigneeName);
+        string GetSelectedConsigneeCountry(string consigneeName);
     }
 }

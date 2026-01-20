@@ -40,8 +40,23 @@ public abstract class PowerAppsStepDefiner
     [ThreadStatic]
     private static XrmApp xrmApp;
 
+    [ThreadStatic]
+    private static string currentAppUnderTest;
+
     private static IDictionary<string, string> userProfilesDirectories;
     private static object userProfilesDirectoriesLock = new object();
+
+    /// <summary>
+    /// Ensure a clean switch when changing the application.
+    /// </summary>
+    public static void SelectApplication(string applicationUnderTest)
+    {
+        currentAppUnderTest = applicationUnderTest;
+        xrmApp = null;
+        client = null;
+        testConfig?.Flush();
+        testConfig = null;
+    }
 
     /// <summary>
     /// Gets access token used to authenticate as the application user configured for testing.
@@ -67,7 +82,27 @@ public abstract class PowerAppsStepDefiner
         {
             if (testConfig == null)
             {
-                var configPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),TestConfiguration.FileName);
+                var appHint = string.IsNullOrWhiteSpace(currentAppUnderTest)
+                    ? currentAppUnderTest
+                    : currentAppUnderTest.Trim().Trim('\'', '"');
+                var baseDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                var fileName = TestConfiguration.ResolveFileName(currentAppUnderTest);
+                var configPath = Path.Combine(baseDir, fileName);
+
+                if (!File.Exists(configPath))
+                {
+                    var defaultPath = Path.Combine(baseDir, TestConfiguration.FileName);
+                    if (File.Exists(defaultPath))
+                    {
+                        configPath = defaultPath;
+                    }
+                    else
+                    {
+                        throw new FileNotFoundException(
+                            $"Power Apps bindings file not found. Tried '{configPath}' and fallback '{defaultPath}'. " +
+                            $"Hint='{appHint ?? "<none>"}'. Ensure the YAML is copied to output.");
+                    }
+                }
 
                 testConfig = new DeserializerBuilder()
                     .WithTypeConverter(new BrowserCredentialsYamlTypeConverter())

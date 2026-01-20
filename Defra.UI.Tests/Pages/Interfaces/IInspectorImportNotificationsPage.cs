@@ -8,5 +8,7 @@
         void VerifyNotificationStatus(string chedRef, string status);
         void ClickViewCHED();
         void ClickRecordControl();
+        void ClickCreateNotification();
+        void ClickRecordDecision();
     }
 }

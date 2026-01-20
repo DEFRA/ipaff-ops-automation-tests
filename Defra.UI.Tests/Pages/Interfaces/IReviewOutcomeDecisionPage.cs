@@ -1,6 +1,4 @@
-﻿using OpenQA.Selenium;
-
-namespace Defra.UI.Tests.Pages.Interfaces
+﻿namespace Defra.UI.Tests.Pages.Interfaces
 {
     public interface IReviewOutcomeDecisionPage
     {
@@ -32,6 +30,17 @@ namespace Defra.UI.Tests.Pages.Interfaces
 
         // Laboratory Tests
         string? GetLaboratoryTestsRequired();
+        string? GetLaboratoryTestsReason();
+        string? GetLaboratoryTestAnalysisType(int index = 0);
+        string? GetLaboratoryTestCommoditySampled(int index = 0);
+        string? GetLaboratoryTestName(int index = 0);
+        string? GetLaboratoryTestSampleDate(int index = 0);
+        string? GetLaboratoryTestSampleTime(int index = 0);
+        string? GetLaboratoryTestSampleUseByDate(int index = 0);
+        string? GetLaboratoryTestReleasedDate(int index = 0);
+        string? GetLaboratoryTestConclusion(int index = 0);
+
+
 
         // Documents
         string? GetHealthCertificateReference();
@@ -46,9 +55,14 @@ namespace Defra.UI.Tests.Pages.Interfaces
         string? GetAcceptanceDecision();
         string? GetCertifiedFor();
         string? GetConsignmentUse();
+        string? GetDeadline();
+        string? GetExitBCP();
+        string? GetTransitExitBCP();
+        string? GetTransitDestinationCountry();
 
         // Controlled Destination
         string? GetControlledDestinationName();
         string? GetControlledDestinationAddress();
+        bool VerifyReason(string reason);
     }
 }

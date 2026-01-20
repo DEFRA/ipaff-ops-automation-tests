@@ -21,6 +21,18 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement inputHour => _driver.WaitForElement(By.Id("time-of-checks-hour"));
         private IWebElement inputMinutes => _driver.WaitForElement(By.Id("time-of-checks-minute"));
         private IWebElement rdoCertifyingOfficer => _driver.FindElement(By.Id("signed-by-official"));
+        private IWebElement txtReasonInReviewPage => _driver.FindElement(By.XPath("//*[@id='parttwo/laboratorytests/testreason']/td[2]"));
+
+        // Laboratory Tests
+        private By laboratoryTestsReasonBy => By.XPath("//tr[@id='parttwo/laboratorytests/testreason']//td[contains(@class, 'check-status')]");
+        private By GetLaboratoryTestAnalysisTypeBy(int index) => By.XPath($"//tr[@id='laboratory-test-analysis-type-{index}']//td[contains(@class, 'check-status')]");
+        private By GetLaboratoryTestCommoditySampledBy(int index) => By.XPath($"//tr[@id='laboratory-test-commodity-sampled-{index}']//td[contains(@class, 'check-status')]");
+        private By GetLaboratoryTestNameBy(int index) => By.XPath($"//tr[@id='laboratory-test-name-{index}']//td[contains(@class, 'check-status')]");
+        private By GetLaboratoryTestSampleDateBy(int index) => By.XPath($"//tr[@id='laboratory-test-sample-date-{index}']//td[contains(@class, 'check-status')]");
+        private By GetLaboratoryTestSampleTimeBy(int index) => By.XPath($"//tr[@id='laboratory-test-sample-time-{index}']//td[contains(@class, 'check-status')]");
+        private By GetLaboratoryTestSampleUseByDateBy(int index) => By.XPath($"//tr[@id='laboratory-test-sample-use-by-date-{index}']//td[contains(@class, 'check-status')]");
+        private By GetLaboratoryTestReleasedDateBy(int index) => By.XPath($"//tr[@id='laboratory-test-released-date-{index}']//td[contains(@class, 'check-status')]");
+        private By GetLaboratoryTestConclusionBy(int index) => By.XPath($"//tr[@id='laboratory-test-conclusion-{index}']//td[contains(@class, 'check-status')]");
 
         // Border Control Post
         private IWebElement borderControlPostReference =>
@@ -28,6 +40,10 @@ namespace Defra.UI.Tests.Pages.Classes
 
         // Decision
         private IWebElement acceptanceDecision => _driver.FindElement(By.Id("acceptance-decision"));
+        private By deadlineBy => By.XPath("//tr[@id='decision-row-2']//td[contains(@class, 'check-status')]");
+        private By exitBCPBy => By.XPath("//tr[@id='decision/temporaryexitbip']//td[contains(@class, 'check-status')]");
+        private By transitExitBCPBy => By.XPath("//tr[@id='decision/transitexitbip']//td[contains(@class, 'check-status')]");
+        private By transitDestinationCountryBy => By.XPath("//tr[@id='decision/transitdestinationcountry']//td[contains(@class, 'check-status')]");
 
         // Seal Numbers
         private IWebElement sealNumbersStatus => _driver.FindElement(By.Id("notifications-not-found"));
@@ -449,6 +465,16 @@ namespace Defra.UI.Tests.Pages.Classes
             return SafelyGetElementText(acceptanceDecision);
         }
 
+        public string? GetTransitExitBCP()
+        {
+            return SafelyGetElementTextByLocator(transitExitBCPBy);
+        }
+
+        public string? GetTransitDestinationCountry()
+        {
+            return SafelyGetElementTextByLocator(transitDestinationCountryBy);
+        }
+
         // CHED-A specific
         public string? GetCertifiedFor()
         {
@@ -515,6 +541,132 @@ namespace Defra.UI.Tests.Pages.Classes
 
             var lines = fullText.Split('\n', StringSplitOptions.RemoveEmptyEntries);
             return lines.Length > 1 ? lines[1].Trim() : string.Empty;
+        }
+
+        public bool VerifyReason(string reason)
+        {
+            return txtReasonInReviewPage.Text.Trim().Equals(reason);
+        }
+
+        // Laboratory Tests - Detailed Fields
+        public string? GetLaboratoryTestsReason()
+        {
+            return SafelyGetElementTextByLocator(laboratoryTestsReasonBy);
+        }
+
+        public string? GetLaboratoryTestAnalysisType(int index = 0)
+        {
+            return SafelyGetElementTextByLocator(GetLaboratoryTestAnalysisTypeBy(index));
+        }
+
+        public string? GetLaboratoryTestCommoditySampled(int index = 0)
+        {
+            return SafelyGetElementTextByLocator(GetLaboratoryTestCommoditySampledBy(index));
+        }
+
+        public string? GetLaboratoryTestName(int index = 0)
+        {
+            return SafelyGetElementTextByLocator(GetLaboratoryTestNameBy(index));
+        }
+
+        public string? GetLaboratoryTestSampleDate(int index = 0)
+        {
+            try
+            {
+                var text = SafelyGetElementTextByLocator(GetLaboratoryTestSampleDateBy(index));
+                if (string.IsNullOrEmpty(text))
+                    return text;
+
+                // Convert "6 January 2026" to "d MMMM yyyy" format
+                if (DateTime.TryParse(text, out DateTime date))
+                {
+                    return date.ToString("d MMMM yyyy");
+                }
+                return text;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public string? GetLaboratoryTestSampleTime(int index = 0)
+        {
+            return SafelyGetElementTextByLocator(GetLaboratoryTestSampleTimeBy(index));
+        }
+
+        public string? GetLaboratoryTestSampleUseByDate(int index = 0)
+        {
+            try
+            {
+                var text = SafelyGetElementTextByLocator(GetLaboratoryTestSampleUseByDateBy(index));
+                if (string.IsNullOrEmpty(text))
+                    return text;
+
+                // Convert "15 December 2025" to "d MMMM yyyy" format
+                if (DateTime.TryParse(text, out DateTime date))
+                {
+                    return date.ToString("d MMMM yyyy");
+                }
+                return text;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public string? GetLaboratoryTestReleasedDate(int index = 0)
+        {
+            try
+            {
+                var text = SafelyGetElementTextByLocator(GetLaboratoryTestReleasedDateBy(index));
+                if (string.IsNullOrEmpty(text))
+                    return text;
+
+                // Convert "16 December 2025" to "d MMMM yyyy" format
+                if (DateTime.TryParse(text, out DateTime date))
+                {
+                    return date.ToString("d MMMM yyyy");
+                }
+                return text;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public string? GetLaboratoryTestConclusion(int index = 0)
+        {
+            return SafelyGetElementTextByLocator(GetLaboratoryTestConclusionBy(index));
+        }
+
+        // Decision - Temporary Admission Horses
+        public string? GetDeadline()
+        {
+            try
+            {
+                var text = SafelyGetElementTextByLocator(deadlineBy);
+                if (string.IsNullOrEmpty(text))
+                    return text;
+
+                // Convert "14 January 2026" to "d MMMM yyyy" format
+                if (DateTime.TryParse(text, out DateTime date))
+                {
+                    return date.ToString("d MMMM yyyy");
+                }
+                return text;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public string? GetExitBCP()
+        {
+            return SafelyGetElementTextByLocator(exitBCPBy);
         }
     }
 }

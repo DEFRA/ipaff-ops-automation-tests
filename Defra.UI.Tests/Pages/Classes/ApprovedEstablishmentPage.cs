@@ -1,6 +1,7 @@
 ﻿using Defra.UI.Tests.Configuration;
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
+using Faker;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
@@ -16,7 +17,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
         private IWebElement secondaryTitle => _driver.WaitForElement(By.Id("page-secondary-title"), true);
         private IWebElement lnkSearchForApproved => _driver.WaitForElement(By.Name("add-establishment"));
-        private IWebElement countryDropdown => _driver.WaitForElement(By.Id("establishment-country-code"));
+        private IWebElement countryDropdown => _driver.FindElement(By.Id("establishment-country-code"));
+        private IWebElement typeDropdown => _driver.FindElement(By.Id("establishment-type"));
+        private IWebElement statusDropdown => _driver.FindElement(By.Id("establishment-status"));
         private IWebElement lnkSelectEstablishment => _driver.WaitForElement(By.Id("select-establishment-1"));
         private IWebElement establishmentSearchResultFirstName => _driver.WaitForElement(By.XPath("//*[@id='establishments-search-results-row-1']/td[1]"));
         private IWebElement selectedEstablishment => _driver.WaitForElement(By.XPath("//*[@id='establishments-row-1']/td[1]"));
@@ -24,7 +27,10 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtapprovedEstablishmentType => _driver.WaitForElement(By.XPath("//*[@id='establishments-row-1']/td[3]"));
         private IWebElement txtapprovedEstablishmentApprovalNum => _driver.WaitForElement(By.XPath("//*[@id='establishments-row-1']/td[4]"));
         private IWebElement lnkRemoveEstablishment => _driver.WaitForElement(By.Id("establishment-remove-1"));
-
+        private IReadOnlyCollection<IWebElement> lstCountryInSearchResult => _driver.FindElements(By.XPath("//*[@id='establishments-search-results']//td[6]"));
+        private IReadOnlyCollection<IWebElement> lstTypeInSearchResult => _driver.FindElements(By.XPath("//*[@id='establishments-search-results']//td[3]"));
+        private IReadOnlyCollection<IWebElement> lstStatusInSearchResult => _driver.FindElements(By.XPath("//*[@id='establishments-search-results']//td[5]"));
+        private IWebElement btnSearch => _driver.FindElement(By.Id("search"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -90,6 +96,36 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickRemoveEstablishment()
         {
             lnkRemoveEstablishment.Click();
+        }
+
+        public bool VerifySelectedCountryOnlyDisplayed(string country)
+        {               
+            return lstCountryInSearchResult.All(x=>x.Text.Trim().Equals(country));
+        }
+
+        public bool VerifySelectedTypeOnlyDisplayed(string type)
+        {
+            return lstTypeInSearchResult.All(x => x.Text.Trim().Equals(type));
+        }
+
+        public bool VerifySelectedStatusOnlyDisplayed(string status)
+        {
+            return lstStatusInSearchResult.All(x => x.Text.Trim().Equals(status));
+        }
+
+        public void SelectTypeFromDropdown(string type)
+        {
+            new SelectElement(typeDropdown).SelectByText(type);
+        }
+
+        public void SelectStatusFromDropdown(string status)
+        {
+            new SelectElement(statusDropdown).SelectByText(status);
+        }
+
+        public void ClickSearchButton()
+        {
+            btnSearch.Click();
         }
     }
 }

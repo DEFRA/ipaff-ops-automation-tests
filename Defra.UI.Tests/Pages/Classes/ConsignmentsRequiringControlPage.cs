@@ -15,6 +15,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement primaryTitle => _driver.WaitForElement(By.XPath("//*[@class='govuk-heading-xl govuk-!-margin-bottom-6 govuk-!-font-size-48 ']"), true);
         private IWebElement lnkChedRefNumSearcResult => _driver.FindElement(By.XPath("//*[normalize-space()='Reference Number']//following-sibling::dd"));
         private IWebElement lnkChedStatusSearcResult => _driver.FindElement(By.XPath("//*[normalize-space()='CHED status']//following-sibling::dd/strong"));
+        private IWebElement lnkChedRefNum => _driver.FindElement(By.XPath("//*[normalize-space()='Reference Number']/following-sibling::dd"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -33,6 +34,11 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             return lnkChedRefNumSearcResult.Text.Trim().Contains(chedRef)
                 && lnkChedStatusSearcResult.Text.ToUpper().Trim().Equals(status.ToUpper());
+        }
+
+        public void ClickCHEDReferencNum()
+        {
+            lnkChedRefNum.Click();
         }
     }
 }

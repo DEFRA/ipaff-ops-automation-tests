@@ -41,6 +41,7 @@
   <ItemGroup>
     <PackageReference Include="Azure.Identity" Version="1.12.0" />
     <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.5.0" />
+    <PackageReference Include="Bogus" Version="35.6.5" />
     <PackageReference Include="Cognizant.WCAG.Compliance.Checker" Version="1.2.313" />
     <PackageReference Include="Defra.Ui.Automation.Framework" Version="2.0.7" />
     <PackageReference Include="Dynamitey" Version="3.0.3" />
@@ -72,6 +73,15 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Data\Documents\IPAFFS Inspector Document.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\Documents\IPAFFS Test Document - Exceeds size.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\Documents\IPAFFS Test Document with a long file name to check the limit of filename length exceeding 100 characters.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Data\Documents\IPAFFS Test Health Certificate.docx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -80,6 +90,12 @@
     </None>
     <None Update="driver.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="power-apps-bindings.idcoms.yml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="power-apps-bindings.pims.yml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="power-apps-bindings.yml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
