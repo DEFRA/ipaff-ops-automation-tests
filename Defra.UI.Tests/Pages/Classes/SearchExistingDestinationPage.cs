@@ -54,9 +54,9 @@ namespace Defra.UI.Tests.Pages.Classes
             return placeOfDestinationDetails;
         }
 
-        public void ClickSelect(string destination) 
+        public void ClickSelect(string destinationName) 
         {
-            GetSelectButtonForDestination(destination).Click();
+            GetSelectButtonForDestination(destinationName).Click();
         }
 
         public string GetSelectedDestinationName(string destinationName) => GetDestinationNameElement(destinationName).Text.Trim();

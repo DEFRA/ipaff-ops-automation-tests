@@ -38,19 +38,15 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool ValidateBTMSSearchResult(string commodityCode, string commodityDescription, string commodityQuantity, string authority, string decision)
         {
-            foreach(var row in searchResultRows)
+            return searchResultRows.Any(row =>
             {
                 var cells = row.FindElements(By.TagName("td")).ToList();
-                bool match = 
-                    cells[1].Text.Trim() == commodityCode
-                    && cells[2].Text.Trim() == commodityDescription
-                    && cells[3].Text.Trim() == commodityQuantity
-                    && cells[4].Text.Trim() == authority
-                    && cells[5].Text.Trim() == decision;
-                if (match)
-                    return true;
-            }
-            return false;
+                return cells[1].Text.Trim().Equals(commodityCode)
+                    && cells[2].Text.Trim().Equals(commodityDescription)
+                    && cells[3].Text.Trim().Equals(commodityQuantity)
+                    && cells[4].Text.Trim().Equals(authority)
+                    && cells[5].Text.Trim().Equals(decision);
+            });
         }
 
         public string GetCommodityCode(string commodityNum)
