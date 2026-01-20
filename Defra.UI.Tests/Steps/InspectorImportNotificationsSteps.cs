@@ -27,7 +27,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(inspectorImportNotificationsPage?.IsPageLoaded());
         }
 
-
+        [When("the user searches for the original notification")]
         [When("the user searches for the CHED number")]
         [When("user searches for the import notification after decision submission")]
         [When("the user searches for the newly created notification on the Import notifications page")]
@@ -37,12 +37,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
             inspectorImportNotificationsPage?.SearchForChed(chedRef);
         }
 
-        [Then("the user clicks the notificaiton found with status {string}")]
+        [Then("the user clicks the notification found with status {string}")]
         [Then("the user searches for the CHED D notification that was recently submitted")]
         public void ThenTheNotificationShouldBeFoundWithStatus(string status)
         {
             var chedRef = _scenarioContext.Get<string>("CHEDReference");
-            inspectorImportNotificationsPage?.VerifyNotificationStatus(chedRef, status);
+            inspectorImportNotificationsPage?.VerifyNotificationStatusAndClick(chedRef, status);
         }
 
         [Then("the notification is displayed on the inspector dashboard")]
@@ -85,5 +85,19 @@ namespace Defra.UI.Tests.Steps.IPAFF
             inspectorImportNotificationsPage?.ClickRecordDecision();
         }
 
+        [Then("the {string} notification should be displayed with status {string}")]
+        public void ThenTheNotificationShouldBeDisplayedWithStatus(string type, string status)
+        {
+            var chedRef = _scenarioContext.Get<string>("CHEDReference");
+            var replacementChedReference = _scenarioContext.Get<string>("ReplacementCHEDReference");
+            Assert.True(inspectorImportNotificationsPage?.VerifyNotificationIsPresentWithStatus(type, chedRef, replacementChedReference, status));
+        }
+
+        [When("the user searches for the replacement notification")]
+        public void WhenTheUserSearchesForTheReplacementNotification()
+        {
+            var chedReference = _scenarioContext.Get<string>("ReplacementCHEDReference");
+            inspectorImportNotificationsPage?.SearchForChed(chedReference);
+        }
     }
 }

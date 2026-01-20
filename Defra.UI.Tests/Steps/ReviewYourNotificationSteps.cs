@@ -395,13 +395,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             var summary = summaryPage?.GetSummaryDetails();
             var pageName = "Review your notification";
+            var expectedList = new List<string>();
 
-            var commodityCode = _scenarioContext.Get<string>("CommodityCode");
-            var typeOfCommodity = _scenarioContext.Get<string>("TypeOfCommodity");
-            var species = _scenarioContext.Get<string>("Species");
-            var netWeight = _scenarioContext.Get<string>("NetWeight");
-            var packages = _scenarioContext.Get<string>("NumberOfPackages");
-            var packageType = _scenarioContext.Get<string>("PackageType");
+            var commodityCode = _scenarioContext["CommodityCode"] as List<string>;
+            var typeOfCommodity = _scenarioContext.Get<List<string>>("TypeOfCommodity");
+            var species = _scenarioContext["Species"] as List<string>;
+            var netWeight = _scenarioContext["NetWeight"] as List<string>;
+            var packages = _scenarioContext["NumberOfPackages"] as List<string>;
+            var packageType = _scenarioContext["PackageType"] as List<string>;
             var subtotalNetWeight = _scenarioContext.Get<string>("SubtotalNetWeight");
             var subtotalPackages = _scenarioContext.Get<string>("SubtotalPackages");
             var totalNetWeight = _scenarioContext.Get<string>("TotalNetWeight");
@@ -410,11 +411,30 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var temperature = _scenarioContext.Get<string>("Temperature");
 
             Assert.AreEqual(commodityCode, summary?.CommodityCode, $"Commodity Code is not matching in {pageName} page!");
-            Assert.AreEqual(typeOfCommodity, commodityCode.StartsWith(code) ? summary?.TypeOfCommodity1 : summary?.TypeOfCommodity, $"Type Of Commodity is not matching in {pageName} page!");
+            
+            foreach(var item in commodityCode.Where(c => c.StartsWith("160")))
+            {
+                expectedList.AddRange(summary?.TypeOfCommodity1);
+            }
+            if(commodityCode.Any(c => !c.StartsWith("160")))
+            {
+                expectedList.AddRange(summary?.TypeOfCommodity);
+            }
+            Assert.AreEqual(typeOfCommodity, expectedList);
+
             Assert.AreEqual(species, summary?.Species, $"Species is not matching in {pageName} page!");
-            Assert.AreEqual(netWeight, summary?.NetWeight, $"NetWeight is not matching in {pageName} page!");
-            Assert.AreEqual(packages, summary?.NumberOfPackages, $"Number Of Packages is not matching in {pageName} page!");
-            Assert.AreEqual(packageType, summary?.PackageType, $"Package Type is not matching in {pageName} page!");
+            for (int i = 0; i < netWeight.Count; i++)
+            {
+                Assert.AreEqual(netWeight[i], summary?.NetWeight[i], $"NetWeight is not matching in {pageName} page!");
+            }
+            for (int i = 0; i < packages.Count; i++)
+            {
+                Assert.AreEqual(packages[i], summary?.NumberOfPackages[i], $"Number Of Packages is not matching in {pageName} page!");
+            }
+            for (int i = 0; i < packageType.Count; i++)
+            {
+                Assert.AreEqual(packageType[i], summary?.PackageType[i], $"Package Type is not matching in {pageName} page!");
+            }
             Assert.AreEqual(subtotalNetWeight, summary?.SubtotalNetWeight, $"Subtotal NetWeight is not matching in {pageName} page!");
             Assert.AreEqual(subtotalPackages, summary?.SubtotalPackages, $"Subtotal Packages is not matching in {pageName} page!");
             Assert.AreEqual(totalNetWeight, summary?.TotalNetWeight, $"Total NetWeight is not matching in {pageName} page!");

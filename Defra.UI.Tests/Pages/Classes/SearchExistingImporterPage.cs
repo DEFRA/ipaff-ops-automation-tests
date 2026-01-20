@@ -5,10 +5,12 @@ using OpenQA.Selenium;
 using Reqnroll.BoDi;
 
 namespace Defra.UI.Tests.Pages.Classes
+
 {
     public class SearchExistingImporterPage : ISearchExistingImporterPage
     {
         private string Platform => ConfigSetup.BaseConfiguration.TestConfiguration.Platform;
+
         private IObjectContainer _objectContainer;
 
         #region Page Objects

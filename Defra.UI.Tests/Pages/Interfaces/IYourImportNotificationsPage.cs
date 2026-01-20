@@ -25,5 +25,6 @@
         void ClickAddressBookLink();
         void ClickContactLink();
         void ClickViewDetailsLink();
+        bool VerifyNotificationStatus(string status);
     }
 }
