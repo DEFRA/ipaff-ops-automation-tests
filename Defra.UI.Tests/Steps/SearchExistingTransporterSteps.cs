@@ -51,32 +51,29 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user searches for the transporter from the address book {string}")]
         public void WhenTheUserSearchesForTheTransporterFromTheAddressBook(string operatorType)
         {
-            // Retrieve the operator name that was stored when adding to address book
             var operatorNameKey = $"{operatorType}Name";
 
-            if (!_scenarioContext.ContainsKey(operatorNameKey))
-            {
-                Assert.Fail($"Operator name for {operatorType} not found in scenario context. Key: {operatorNameKey}");
-            }
+            var transporterName = _scenarioContext.ContainsKey(operatorNameKey)
+                ? _scenarioContext[operatorNameKey]?.ToString()
+                : null;
 
-            var transporterName = _scenarioContext[operatorNameKey]?.ToString();
+            Assert.That(transporterName, Is.Not.Null.And.Not.Empty,
+                $"Operator name for type '{operatorType}' not found in scenario context (expected key: '{operatorNameKey}')");
 
-            // Search for the transporter by name
             searchExistingTranspoterPage?.SearchForTransporter(transporterName);
         }
 
         [When("the user selects the transporter from the address book {string}")]
         public void WhenTheUserSelectsTheTransporterFromTheAddressBook(string operatorType)
         {
-            // Retrieve the operator name that was stored when adding to address book
             var operatorNameKey = $"{operatorType}Name";
 
-            if (!_scenarioContext.ContainsKey(operatorNameKey))
-            {
-                Assert.Fail($"Operator name for {operatorType} not found in scenario context. Key: {operatorNameKey}");
-            }
+            var transporterName = _scenarioContext.ContainsKey(operatorNameKey)
+                ? _scenarioContext[operatorNameKey]?.ToString()
+                : null;
 
-            var transporterName = _scenarioContext[operatorNameKey]?.ToString();
+            Assert.That(transporterName, Is.Not.Null.And.Not.Empty,
+                $"Operator name for type '{operatorType}' not found in scenario context (expected key: '{operatorNameKey}')");
 
             // Get the transporter details before clicking select
             var selectedApprovalNumber = searchExistingTranspoterPage?.GetSelectedTransporterApprovalNumber(transporterName);

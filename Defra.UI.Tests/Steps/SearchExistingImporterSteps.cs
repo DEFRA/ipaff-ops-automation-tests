@@ -44,17 +44,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user selects the importer from the address book {string}")]
         public void WhenTheUserSelectsTheImporterFromTheAddressBook(string operatorType)
         {
-            // Retrieve the operator name that was stored when adding to address book
             var operatorNameKey = $"{operatorType}Name";
 
-            if (!_scenarioContext.ContainsKey(operatorNameKey))
-            {
-                Assert.Fail($"Operator name for {operatorType} not found in scenario context. Key: {operatorNameKey}");
-            }
+            var importerName = _scenarioContext.ContainsKey(operatorNameKey)
+                ? _scenarioContext[operatorNameKey]?.ToString()
+                : null;
 
-            var importerName = _scenarioContext[operatorNameKey]?.ToString();
+            Assert.That(importerName, Is.Not.Null.And.Not.Empty,
+                $"Operator name for type '{operatorType}' not found in scenario context (expected key: '{operatorNameKey}')");
 
-            // Just click select - don't update context keys
             searchExistingImporterPage?.ClickSelect(importerName);
         }
     }
