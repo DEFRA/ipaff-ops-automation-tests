@@ -573,10 +573,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             var chedReference = reviewPage?.GetCHEDReference();
 
-            if (string.IsNullOrEmpty(chedReference))
-            {
-                Assert.Fail("CHED reference not found on Review your notification page");
-            }
+            Assert.That(chedReference, Is.Not.Null.And.Not.Empty,
+                "CHED reference not found on Review your notification page");
 
             _scenarioContext.Set(chedReference, "CHEDReference");
 

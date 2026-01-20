@@ -247,17 +247,7 @@ namespace Defra.UI.Tests.Pages.Classes
             lnkAddAnotherTest.Click();
         }
 
-        public int GetLabTestCount()
-        {
-            try
-            {
-                return labTestRows.Count;
-            }
-            catch (NoSuchElementException)
-            {
-                return 0;
-            }
-        }
+        public int GetLabTestCount() => labTestRows?.Count ?? 0;
 
         public bool VerifyMultipleLabTestsWithPendingResults(int expectedMinimumCount = 2)
         {
@@ -316,18 +306,15 @@ namespace Defra.UI.Tests.Pages.Classes
                 foreach (var reason in reasonOptions)
                 {
                     var radioInput = GetLabTestsReasonRadioButton(reason);
-
-                    // Check if parent container is displayed (more reliable than checking hidden input)
                     var container = radioInput.FindElement(By.XPath("./.."));
                     if (!container.Displayed)
                     {
                         return false;
                     }
                 }
-
                 return true;
             }
-            catch (NoSuchElementException ex)
+            catch (NoSuchElementException)
             {
                 return false;
             }

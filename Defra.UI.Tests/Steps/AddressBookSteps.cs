@@ -75,11 +75,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
             // Get the operator name from scenario context
             var operatorName = _scenarioContext[$"{operatorType}Name"]?.ToString();
 
-            if (string.IsNullOrEmpty(operatorName))
-        {
-                Assert.Fail($"Operator name for type '{operatorType}' not found in scenario context.");
-                return;
-            }
+            Assert.That(operatorName, Is.Not.Null.And.Not.Empty,
+                $"Operator name for type '{operatorType}' not found in scenario context.");
 
             // Step 1: Click View on the operator row
             addressBookPage?.ClickViewOperator(operatorName);
