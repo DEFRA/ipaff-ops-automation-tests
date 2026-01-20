@@ -54,13 +54,13 @@ namespace Defra.UI.Tests.Pages.Classes
             return placeOfDestinationDetails;
         }
 
-        public string GetSelectedDestinationName(string destinationName) => GetDestinationNameElement(destinationName).Text.Trim();
-        public string GetSelectedDestinationAddress(string destinationName) => GetDestinationAddressElement(destinationName).Text.Trim();
-        public string GetSelectedDestinationCountry(string destinationName) => GetDestinationCountryElement(destinationName).Text.Trim();
-
-        public void ClickSelect(string destinationName)
+        public void ClickSelect(string destinationName) 
         {
             GetSelectButtonForDestination(destinationName).Click();
         }
+
+        public string GetSelectedDestinationName(string destinationName) => GetDestinationNameElement(destinationName).Text.Trim();
+        public string GetSelectedDestinationAddress(string destinationName) => GetDestinationAddressElement(destinationName).Text.Trim();
+        public string GetSelectedDestinationCountry(string destinationName) => GetDestinationCountryElement(destinationName).Text.Trim();
     }
 }

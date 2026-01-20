@@ -39,8 +39,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement errorSummaryMsg => _driver.WaitForElement(By.XPath("//ul[contains(@class,'govuk-error-summary__list')]/li/a"));
         private IWebElement errorMsgFieldLevel=> _driver.WaitForElement(By.Id("fileUpload-error"));
         private By downloadAttachmentLinkLocator => By.XPath("//a[contains(@aria-label,'Download') and contains(@href,'/attachment/')]");
-        private By downloadAttachmentLinkChedPLocator => By.XPath("//a[contains(@aria-label,'View') and contains(@href,'/attachment/') and contains(@id,'attachment-view-')]");
-        private IWebElement removeAttachmentButton => _driver.FindElement(By.XPath("//button[contains(@id,'remove-attachment-')]"));
+        private By downloadAttachmentLinkChedPLocator => By.XPath("//a[(contains(@aria-label,'View') and contains(@href,'/attachment/') and contains(@id,'attachment-view-')) or (@id='download-attachment-0')]");
+        private IWebElement removeAttachmentButton => _driver.FindElement(By.XPath("//button[contains(@id,'remove-attachment-')] | //a[@id='remove-attachment-0']"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -174,7 +174,6 @@ namespace Defra.UI.Tests.Pages.Classes
                     // For CHED-P, just check if the link is displayed with any text (document name)
                     return !string.IsNullOrWhiteSpace(chedPLinks[0].Text);
                 }
-
                 return false;
             }
             catch (NoSuchElementException)
