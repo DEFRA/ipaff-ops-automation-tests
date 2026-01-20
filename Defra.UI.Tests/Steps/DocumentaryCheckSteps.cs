@@ -32,7 +32,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user selects {string} for the documentary check and clicks Save and continue")]
         public void WhenTheUserSelectsForTheDocumentaryCheckAndClicksSaveAndContinue(string decision)
         {
-            _scenarioContext.Add("DocumentaryCheckDecision", decision);
+            _scenarioContext["DocumentaryCheckDecision"] = decision;
             documentaryCheckPage?.SelectDocumentaryCheckDecision(decision);
             documentaryCheckPage?.ClickSaveAndContinue();
         }
