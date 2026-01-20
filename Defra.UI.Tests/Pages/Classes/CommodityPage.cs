@@ -89,12 +89,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool VerifyEnteredCommdityDetails(List<string> code, List<string> description)
         {
-            foreach (var item in code)
-            {
-                if (!txtDisplayedCommodityTable.Text.Contains(item))
-                    return false;
-            }
-            return true;
+            return code.All(item => txtDisplayedCommodityTable.Text.Contains(item));
         }
 
         public void EnterNetWeight(List<string> weight)

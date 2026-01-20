@@ -37,7 +37,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private List<IWebElement> datePickerDateList => _driver.WaitForElements(By.XPath("//table[@class='date-picker__date-table']//tr/td")).ToList();
         private IWebElement errorSummaryTitle => _driver.WaitForElement(By.Id("error-summary-title"));
         private IWebElement errorSummaryMsg => _driver.WaitForElement(By.XPath("//ul[contains(@class,'govuk-error-summary__list')]/li/a"));
-        private IWebElement  errorMsgFieldLevel=> _driver.WaitForElement(By.Id("fileUpload-error"));
+        private IWebElement errorMsgFieldLevel=> _driver.WaitForElement(By.Id("fileUpload-error"));
         private By downloadAttachmentLinkLocator => By.XPath("//a[contains(@aria-label,'Download') and contains(@href,'/attachment/')]");
         private By downloadAttachmentLinkChedPLocator => By.XPath("//a[(contains(@aria-label,'View') and contains(@href,'/attachment/') and contains(@id,'attachment-view-')) or (@id='download-attachment-0')]");
         private IWebElement removeAttachmentButton => _driver.FindElement(By.XPath("//button[contains(@id,'remove-attachment-')] | //a[@id='remove-attachment-0']"));

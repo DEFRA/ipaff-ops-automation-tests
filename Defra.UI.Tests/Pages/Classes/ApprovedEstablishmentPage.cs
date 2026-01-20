@@ -80,10 +80,9 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public string GetSelectedEstablishmentName()
         {
-            if (establishmentSearchResultTable.Count == 2)
-                return selectedEstablishment2.Text.Trim();
-            else
-                return selectedEstablishment.Text.Trim();
+            return establishmentSearchResultTable.Count == 2
+               ? selectedEstablishment2.Text.Trim()
+               : selectedEstablishment.Text.Trim();
         }
 
         public string GetSelectedEstablishmentCountry()
