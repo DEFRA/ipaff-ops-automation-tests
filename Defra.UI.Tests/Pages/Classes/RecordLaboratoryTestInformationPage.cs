@@ -18,7 +18,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1"), true);
-        private IWebElement rdoConclusion(string decision) => _driver.FindElement(By.Id($"radio-result-{decision}"));
+        private IWebElement rdoConclusion(string decision) => _driver.FindElement(By.XPath($"//input[@value='{decision}']"));
         private IWebElement txtUseByDay => _driver.WaitForElement(By.Name("sample-use-by-date-day"));
         private IWebElement txtUseByMonth => _driver.WaitForElement(By.Name("sample-use-by-date-month"));
         private IWebElement txtUseByYear => _driver.WaitForElement(By.Name("sample-use-by-date-year"));

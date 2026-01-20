@@ -4,6 +4,7 @@ using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
+using SeleniumExtras.WaitHelpers;
 
 
 namespace Defra.UI.Tests.Pages.Classes
@@ -19,16 +20,17 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement rdoInternalMarket => _driver.WaitForElement(By.XPath("//*[@id='radio-internalmarket']/following-sibling::label"));
         private IWebElement rdoTranshipment => _driver.WaitForElement(By.XPath("//*[@id='radio-tranship']/following-sibling::label"));
         private IWebElement rdoTransit => _driver.WaitForElement(By.XPath("//*[@id='radio-transit']/following-sibling::label"));
-        private IWebElement rdoReentry => _driver.WaitForElement(By.XPath("//*[@id='radio-reimport']/following-sibling::label"));
+        private IWebElement rdoReentry => _driver.WaitForElement(By.XPath("//*[@id='a_impadm2']/following-sibling::label")); 
+        private IWebElement rdoTemporaryAdmissionHorses => _driver.WaitForElement(By.XPath("//*[@id='a_impadm3']/following-sibling::label"));
         private IWebElement rdoNonInternalMarket => _driver.WaitForElement(By.XPath("//*[@id='radio-noninternalmarket']/following-sibling::label"));
         private IWebElement txtExitBCP => _driver.WaitForElement(By.Name("bcp-transit-third-country"));
         private IWebElement txtTransitedCountry => _driver.WaitForElement(By.Id("transit-third-countries-last"));
-        private IWebElement txtDestinationCountry => _driver.WaitForElement(By.Id("third-country-transit"));
+        private IWebElement txtDestinationCountry => _driver.FindElement(By.Id("third-country-transit"));
         private IWebElement txtTranshipmentDestination => _driver.FindElement(By.Id("third-country-transhipment"));
         private IWebElement rdoIMAnimalFeeding => _driver.WaitForElement(By.XPath("//*[@id='internalMarketanimal']/following-sibling::label"));
         private IWebElement rdoIMOther => _driver.WaitForElement(By.XPath("//*[@id='internalMarketother']/following-sibling::label"));
         private IWebElement rdoIMPharma => _driver.WaitForElement(By.XPath("//*[@id='internalMarketpharma']/following-sibling::label"));
-        private IWebElement rdoIMTechnicalUse => _driver.WaitForElement(By.XPath("//*[@id='internalMarkettechnical']/following-sibling::label")); 
+        private IWebElement rdoIMTechnicalUse => _driver.WaitForElement(By.XPath("//*[@id='internalMarkettechnical']/following-sibling::label"));
         private IWebElement GetReasonRadioButton(string reasonText) =>
             _driver.FindElement(By.XPath($"//label[contains(@class, 'govuk-radios__label') and contains(normalize-space(), '{reasonText}')]"));
         private IWebElement GetInternalMarketSubOption(string subOptionText) =>
@@ -38,6 +40,20 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtYear => _driver.WaitForElement(By.Id("estimated-arrival-at-port-of-exit-date-year"));
         private IWebElement txtHours => _driver.WaitForElement(By.Id("estimated-arrival-at-port-of-exit-time-hour"));
         private IWebElement txtMinutes => _driver.WaitForElement(By.Id("estimated-arrival-at-port-of-exit-time-minutes"));
+        private By txtPointOfExitBy => By.Id("point-of-exit");
+        private IWebElement txtPointOfExit => _driver.WaitForElement(txtPointOfExitBy);
+        private IWebElement txtExitDateDay => _driver.WaitForElement(By.Id("exit-date-day"));
+        private IWebElement txtExitDateMonth => _driver.WaitForElement(By.Id("exit-date-month"));
+        private IWebElement txtExitDateYear => _driver.WaitForElement(By.Id("exit-date-year"));
+        private IWebElement ddlExitBCP => _driver.FindElement(By.Id("bcp-temporary-admission"));
+        private IWebElement internalMarketConditional => _driver.WaitForElement(By.Id("internalmarket-conditional"));
+        private IWebElement transhipConditional => _driver.WaitForElement(By.Id("tranship-conditional"));
+        private IWebElement transitConditional => _driver.WaitForElement(By.Id("conditional-transit"));
+        private By reentryConditionalLocator => By.Id("conditional-reimport");
+        private IWebElement temporaryAdmissionConditional => _driver.WaitForElement(By.Id("conditional-temporary-admission"));
+        private IWebElement transitExitBCP => _driver.FindElement(By.Id("bcp-transit-third-country"));
+        private IWebElement transitDestinationCountry => _driver.WaitForElement(By.Id("third-country-transit"));
+        private IReadOnlyCollection<IWebElement> internalMarketSubOptions => internalMarketConditional.FindElements(By.CssSelector("input[type='radio'][name='internal-market']"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -115,8 +131,8 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             var subOptionRadioButton = GetInternalMarketSubOption(subOption);
             subOptionRadioButton.Click();
-        } 
-        
+        }
+
         public void SelectExitBorderControlPost(string exitBCP)
         {
             new SelectElement(txtExitBCP).SelectByText(exitBCP);
@@ -140,6 +156,29 @@ namespace Defra.UI.Tests.Pages.Classes
             txtMinutes.SendKeys(minutes);
         }
 
+        public string EnterConsignmentDepartureDate()
+        {
+            var futureDate = DateTime.Now.AddDays(7);
+
+            txtDay.SendKeys(futureDate.Day.ToString());
+            txtMonth.SendKeys(futureDate.Month.ToString());
+            txtYear.SendKeys(futureDate.Year.ToString());
+
+            var leavingFromGBDate = futureDate.ToString("dd MMMM yyyy");
+            return leavingFromGBDate;
+        }
+
+        public string EnterConsignmentDepartureTime()
+        {
+            var futureDate = DateTime.Now.AddDays(7);
+            var leavingFromGBTime = futureDate.ToString("HH:mm");
+            
+            txtHours.SendKeys(futureDate.Hour.ToString());
+            txtMinutes.SendKeys(futureDate.Minute.ToString());
+
+            return leavingFromGBTime;
+        }
+
         public void SelectTransitedCountry(string transitedCountry)
         {
             new SelectElement(txtTransitedCountry).SelectByText(transitedCountry);
@@ -150,9 +189,167 @@ namespace Defra.UI.Tests.Pages.Classes
             new SelectElement(txtDestinationCountry).SelectByText(destinationCountry);
         }
 
+        public void SelectDestinationCountryBasedOnContext(string destinationCountry)
+        {
+            // Determine which dropdown to use based on what's currently visible
+            try
+            {
+                // Check if Transit dropdown is displayed
+                if (txtDestinationCountry.Displayed)
+                {
+                    new SelectElement(txtDestinationCountry).SelectByText(destinationCountry);
+                    return;
+                }
+            }
+            catch (NoSuchElementException) { }
+            catch (ElementNotInteractableException) { }
+
+            try
+            {
+                // Check if Transhipment dropdown is displayed
+                if (txtTranshipmentDestination.Displayed)
+                {
+                    new SelectElement(txtTranshipmentDestination).SelectByText(destinationCountry);
+                    return;
+                }
+            }
+            catch (NoSuchElementException) { }
+            catch (ElementNotInteractableException) { }
+
+            throw new InvalidOperationException("No visible Destination Country dropdown found. Ensure the correct import reason (Transit or Transhipment) is selected.");
+        }
+
         public void SelectTranshipmentDestination(string transhipmentCountry)
         {
             new SelectElement(txtTranshipmentDestination).SelectByText(transhipmentCountry);
+        }
+
+        public void AddPlaceOfExit(string placeOfExit)
+        {
+            _driver.WaitForElementCondition(ExpectedConditions.ElementIsVisible(txtPointOfExitBy));
+            txtPointOfExit.SendKeys(placeOfExit);
+        }      
+        public void EnterExitDate(int daysFromToday)
+        {
+            var exitDate = DateTime.Now.AddDays(daysFromToday);
+            txtExitDateDay.Click();
+            txtExitDateDay.SendKeys(exitDate.Day.ToString());
+            txtExitDateMonth.Click();
+            txtExitDateMonth.SendKeys(exitDate.Month.ToString());
+            txtExitDateYear.Click();
+            txtExitDateYear.SendKeys(exitDate.Year.ToString());
+        }
+
+        public void SelectExitBCP(string exitBCP)
+        {
+            new SelectElement(ddlExitBCP).SelectByText(exitBCP);
+        }
+
+        public void SelectExitBCPBasedOnContext(string exitBCP)
+        {
+            // Determine which dropdown to use based on what's currently visible
+            try
+            {
+                // Check if Transit dropdown is displayed
+                if (transitExitBCP.Displayed)
+                {
+                    new SelectElement(transitExitBCP).SelectByText(exitBCP);
+                    return;
+                }
+            }
+            catch (NoSuchElementException) { }
+            catch (ElementNotInteractableException) { }
+
+            try
+            {
+                // Check if Temporary Admission dropdown is displayed
+                if (ddlExitBCP.Displayed)
+                {
+                    new SelectElement(ddlExitBCP).SelectByText(exitBCP);
+                    return;
+                }
+            }
+            catch (NoSuchElementException) { }
+            catch (ElementNotInteractableException) { }
+
+            throw new InvalidOperationException("No visible Exit BCP dropdown found. Ensure the correct import reason is selected.");
+        }
+
+        public bool VerifyInternalMarketHasSubOptions(int expectedCount)
+        {
+            try
+            {
+                return internalMarketSubOptions.Count == expectedCount;
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
+        }
+
+        public bool VerifyTranshipmentHasDestinationCountryDropdown()
+        {
+            try
+            {
+                return IsElementPresent(txtTranshipmentDestination) && txtTranshipmentDestination.TagName == "select";
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
+        }
+
+        public bool VerifyTransitHasExitBCPAndDestinationDropdowns()
+        {
+            try
+            {
+                return IsElementPresent(transitExitBCP) && transitExitBCP.TagName == "select"
+                    && IsElementPresent(transitDestinationCountry) && transitDestinationCountry.TagName == "select";
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
+        }
+
+        public bool VerifyReentryHasNoSubOptions()
+        {
+            try
+            {
+                // Verify the radio button exists and is displayed
+                bool radioButtonExists = rdoReentry.Displayed;
+
+                // Verify there is no conditional div for Re-entry
+                try
+                {
+                    var conditionalDiv = _driver.FindElement(reentryConditionalLocator);
+                    // If we found the conditional div, Re-entry has sub-options (unexpected)
+                    return false;
+                }
+                catch (NoSuchElementException)
+                {
+                    // No conditional div found - this is expected for Re-entry
+                    return radioButtonExists;
+                }
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
+        }
+
+        public bool VerifyTemporaryAdmissionHasExitDateAndBCPDropdown()
+        {
+            try
+            {
+                return txtExitDateDay.Displayed && txtExitDateMonth.Displayed
+                    && txtExitDateYear.Displayed && ddlExitBCP.Displayed
+                    && ddlExitBCP.TagName == "select";
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
         }
     }
 }

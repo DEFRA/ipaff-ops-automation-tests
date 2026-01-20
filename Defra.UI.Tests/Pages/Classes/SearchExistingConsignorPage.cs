@@ -4,7 +4,6 @@ using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
 using Reqnroll.BoDi;
 
-
 namespace Defra.UI.Tests.Pages.Classes
 {
     public class SearchExistingConsignorPage : ISearchExistingConsignorPage
@@ -13,12 +12,17 @@ namespace Defra.UI.Tests.Pages.Classes
         private IObjectContainer _objectContainer;
 
         #region Page Objects
+
         private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
         private IWebElement secondaryTitle => _driver.WaitForElement(By.Id("page-secondary-title"), true);
-        private IWebElement btnSelect => _driver.WaitForElement(By.XPath("//*[@id='Table-SearchResults']//button[normalize-space()='Select']"));
-        private IWebElement selectedConsignorName => _driver.WaitForElement(By.XPath("//*[@id='Table-SearchResults']//td[1]"));
-        private IWebElement selectedConsignorAddress => _driver.WaitForElement(By.XPath("//*[@id='Table-SearchResults']//td[2]"));
-        private IWebElement selectedConsignorCountry => _driver.WaitForElement(By.XPath("//*[@id='Table-SearchResults']//td[3]"));
+        private IWebElement GetSelectButtonForConsignor(string consignorName) =>
+            _driver.WaitForElement(By.XPath($"//td[contains(@class,'economic-operator-name') and normalize-space()='{consignorName}']/following-sibling::td//button[@name='add-id']"));
+        private IWebElement GetConsignorNameElement(string consignorName) =>
+            _driver.WaitForElement(By.XPath($"//td[contains(@class,'economic-operator-name') and normalize-space()='{consignorName}']"));
+        private IWebElement GetConsignorAddressElement(string consignorName) =>
+            _driver.WaitForElement(By.XPath($"//td[contains(@class,'economic-operator-name') and normalize-space()='{consignorName}']/following-sibling::td[contains(@class,'economic-operator-address')]"));
+        private IWebElement GetConsignorCountryElement(string consignorName) =>
+            _driver.WaitForElement(By.XPath($"//td[contains(@class,'economic-operator-name') and normalize-space()='{consignorName}']/following-sibling::td[2]"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -34,23 +38,22 @@ namespace Defra.UI.Tests.Pages.Classes
                 && primaryTitle.Text.Contains("Search for an existing consignor or exporter");
         }
 
-        public string GetSelectedConsignor()
+        public string GetSelectedConsignor(string consignorName)
         {
-            var consignorName = selectedConsignorName.Text.Trim();
-            var consignorAddress = selectedConsignorAddress.Text.Trim();
-            var consignorCountry = selectedConsignorCountry.Text.Trim();
-            var consignorDetails = consignorName + "\n" + consignorAddress + "," + consignorCountry;
+            var name = GetConsignorNameElement(consignorName).Text.Trim();
+            var address = GetConsignorAddressElement(consignorName).Text.Trim();
+            var country = GetConsignorCountryElement(consignorName).Text.Trim();
+            var consignorDetails = name + "\n" + address + "," + country;
             return consignorDetails;
         }
 
-        public void ClickSelect() 
-        { 
-            btnSelect.Click(); 
+        public void ClickSelect(string consignorName)
+        {
+            GetSelectButtonForConsignor(consignorName).Click();
         }
 
-        public string GetSelectedConsignorName() => selectedConsignorName.Text.Trim();
-        public string GetSelectedConsignorAddress() => selectedConsignorAddress.Text.Trim();
-        public string GetSelectedConsignorCountry() => selectedConsignorCountry.Text.Trim();
-
+        public string GetSelectedConsignorName(string consignorName) => GetConsignorNameElement(consignorName).Text.Trim();
+        public string GetSelectedConsignorAddress(string consignorName) => GetConsignorAddressElement(consignorName).Text.Trim();
+        public string GetSelectedConsignorCountry(string consignorName) => GetConsignorCountryElement(consignorName).Text.Trim();
     }
 }

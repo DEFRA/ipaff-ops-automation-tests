@@ -39,6 +39,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
             ValidateIfExists("MainReasonForImport", reviewPage?.GetMainReasonForImport(), ref allDataMatches, mismatches);
             ValidateIfExists("Purpose", reviewPage?.GetPurpose(), ref allDataMatches, mismatches);
             ValidateIfExists("ConsignmentReferenceNumber", reviewPage?.GetConsignmentReferenceNumber(), ref allDataMatches, mismatches);
+            ValidateIfExists("ExitDate", reviewPage?.GetExitDate(), ref allDataMatches, mismatches);
+            ValidateIfExists("ExitBCP", reviewPage?.GetExitBCP(), ref allDataMatches, mismatches);
+            ValidateIfExists("DestinationCountry", reviewPage?.GetDestinationCountry(), ref allDataMatches, mismatches);
 
             // Commodity details  
             ValidateIfExists("CommodityCode", reviewPage?.GetCommodityCode(), ref allDataMatches, mismatches);
@@ -48,6 +51,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             // Animal details
             ValidateIfExists("CertificationOption", reviewPage?.GetCertificationOption(), ref allDataMatches, mismatches);
+            ValidateIfExists("EarTag", reviewPage?.GetEarTag(), ref allDataMatches, mismatches);
+            ValidateIfExists("UnweanedAnimalsOption", reviewPage?.GetUnweanedAnimalsOption(), ref allDataMatches, mismatches);
+            ValidateIfExists("HorseName", reviewPage?.GetHorseName(), ref allDataMatches, mismatches);
+            ValidateIfExists("MicrochipNumber", reviewPage?.GetMicrochipNumber(), ref allDataMatches, mismatches);
+            ValidateIfExists("PassportNumber", reviewPage?.GetPassportNumber(), ref allDataMatches, mismatches);
 
             // Documents
             ValidateIfExists("HealthCertificateReference", reviewPage?.GetHealthCertificateReference(), ref allDataMatches, mismatches);
@@ -65,19 +73,27 @@ namespace Defra.UI.Tests.Steps.IPAFF
             ValidateIfExists("ConsigneeAddress", reviewPage?.GetConsigneeAddress(), ref allDataMatches, mismatches);
             ValidateIfExists("ImporterName", reviewPage?.GetImporterName(), ref allDataMatches, mismatches);
             ValidateIfExists("ImporterAddress", reviewPage?.GetImporterAddress(), ref allDataMatches, mismatches);
-            ValidateIfExists("DestinationName", reviewPage?.GetDestinationName(), ref allDataMatches, mismatches);
-            ValidateIfExists("DestinationAddress", reviewPage?.GetDestinationAddress(), ref allDataMatches, mismatches);
+            ValidateIfExists("PlaceOfDestinationName", reviewPage?.GetDestinationName(), ref allDataMatches, mismatches);
+            ValidateIfExists("PlaceOfDestinationAddress", reviewPage?.GetDestinationAddress(), ref allDataMatches, mismatches);
 
             // Transport details
             ValidateIfExists("PortOfEntry", reviewPage?.GetPortOfEntry(), ref allDataMatches, mismatches);
             ValidateIfExists("MeansOfTransport", reviewPage?.GetMeansOfTransport(), ref allDataMatches, mismatches);
             ValidateIfExists("TransportId", reviewPage?.GetTransportId(), ref allDataMatches, mismatches);
             ValidateIfExists("AreContainers", reviewPage?.GetContainerUsage(), ref allDataMatches, mismatches);
+            ValidateIfExists("ContainerNumber", reviewPage?.GetContainerNumber(), ref allDataMatches, mismatches);
+            ValidateIfExists("SealNumber", reviewPage?.GetSealNumber(), ref allDataMatches, mismatches);
+            ValidateIfExists("OfficialSealAffixed", reviewPage?.GetOfficialSeal(), ref allDataMatches, mismatches);
             ValidateIfExists("EnterTransportDocRef", reviewPage?.GetTransportDocumentReference(), ref allDataMatches, mismatches);
             ValidateIfExists("EstimatedArrivalDate", reviewPage?.GetEstimatedArrivalDate(), ref allDataMatches, mismatches);
             ValidateIfExists("EstimatedArrivalTime", reviewPage?.GetEstimatedArrivalTime(), ref allDataMatches, mismatches);
             ValidateIfExists("EstimatedJourneyTime", reviewPage?.GetEstimatedJourneyTime(), ref allDataMatches, mismatches);
             ValidateIfExists("IsGVMS", reviewPage?.GetGVMSUsage(), ref allDataMatches, mismatches);
+            ValidateIfExists("MeansOfTransportAfterBCP", reviewPage?.GetMeansOfTransportAfterBCP(), ref allDataMatches, mismatches);
+            ValidateIfExists("TransportIdentificationAfterBCP", reviewPage?.GetTransportIdentificationAfterBCP(), ref allDataMatches, mismatches);
+            ValidateIfExists("TransportDocumentReferenceAfterBCP", reviewPage?.GetTransportDocumentReferenceAfterBCP(), ref allDataMatches, mismatches);
+            ValidateIfExists("DepartureDateFromBCP", reviewPage?.GetDepartureDateFromBCP(), ref allDataMatches, mismatches);
+            ValidateIfExists("DepartureTimeFromBCP", reviewPage?.GetDepartureTimeFromBCP(), ref allDataMatches, mismatches);
 
             // Transporter details
             ValidateIfExists("TransporterName", reviewPage?.GetTransporterName(), ref allDataMatches, mismatches);
@@ -116,15 +132,34 @@ namespace Defra.UI.Tests.Steps.IPAFF
             ValidateIfExists("ConsignmentReferenceNumber", reviewPage?.GetConsignmentReferenceNumber(), ref allDataMatches, mismatches);
             ValidateIfExists("MainReasonForImport", reviewPage?.GetMainReasonForImport(), ref allDataMatches, mismatches);
 
-            ValidateIfExists("CommodityCodeFirstCommodity", reviewPage?.GetCommodityCodeList(0), ref allDataMatches, mismatches);
-            ValidateIfExists("NetWeightFirstCommodity", reviewPage?.GetNetWeightList(0), ref allDataMatches, mismatches);
-            ValidateIfExists("NumberOfPackagesFirstCommodity", reviewPage?.GetNumPackagesList(0), ref allDataMatches, mismatches);
-            ValidateIfExists("TypeOfPackageFirstCommodity", reviewPage?.GetTypeOfPackagesList(0), ref allDataMatches, mismatches);
+            if (_scenarioContext.ContainsKey("PlaceOfExit"))
+            {
+                var dateTime = reviewPage?.GetConsignmentDepartureDateTime();
 
-            ValidateIfExists("CommodityCodeSecondCommodity", reviewPage?.GetCommodityCodeList(1), ref allDataMatches, mismatches);
-            ValidateIfExists("NetWeightSecondCommodity", reviewPage?.GetNetWeightList(1), ref allDataMatches, mismatches);
-            ValidateIfExists("NumOfPackagesSecondCommodity", reviewPage?.GetNumPackagesList(1), ref allDataMatches, mismatches);
-            ValidateIfExists("TypeOfPackageSecondCommodity", reviewPage?.GetTypeOfPackagesList(1), ref allDataMatches, mismatches);
+                ValidateIfExists("PlaceOfExit", reviewPage?.GetPointOfExit, ref allDataMatches, mismatches);
+                ValidateIfExists("ConsignmentLeavingFromGBDate", dateTime.Value.departureDate, ref allDataMatches, mismatches);
+                ValidateIfExists("ConsignmentLeavingFromGBTime", dateTime.Value.departureTime, ref allDataMatches, mismatches);
+            }
+
+            if (_scenarioContext.ContainsKey("CommodityCodeFirstCommodity"))
+            {
+                ValidateIfExists("CommodityCodeFirstCommodity", reviewPage?.GetCommodityCodeList(0), ref allDataMatches, mismatches);
+                ValidateIfExists("NetWeightFirstCommodity", reviewPage?.GetNetWeightList(0), ref allDataMatches, mismatches);
+                ValidateIfExists("NumberOfPackagesFirstCommodity", reviewPage?.GetNumPackagesList(0), ref allDataMatches, mismatches);
+                ValidateIfExists("TypeOfPackageFirstCommodity", reviewPage?.GetTypeOfPackagesList(0), ref allDataMatches, mismatches);
+
+                ValidateIfExists("CommodityCodeSecondCommodity", reviewPage?.GetCommodityCodeList(1), ref allDataMatches, mismatches);
+                ValidateIfExists("NetWeightSecondCommodity", reviewPage?.GetNetWeightList(1), ref allDataMatches, mismatches);
+                ValidateIfExists("NumOfPackagesSecondCommodity", reviewPage?.GetNumPackagesList(1), ref allDataMatches, mismatches);
+                ValidateIfExists("TypeOfPackageSecondCommodity", reviewPage?.GetTypeOfPackagesList(1), ref allDataMatches, mismatches);
+            }
+            else
+            {
+                ValidateIfExists("CommodityCode", reviewPage?.GetCommodityCodeList(0), ref allDataMatches, mismatches);
+                ValidateIfExists("NetWeight", reviewPage?.GetNetWeightList(0), ref allDataMatches, mismatches);
+                ValidateIfExists("NumberOfPackages", reviewPage?.GetNumPackagesList(0), ref allDataMatches, mismatches);
+                ValidateIfExists("PackageType", reviewPage?.GetTypeOfPackagesList(0), ref allDataMatches, mismatches);
+            }
 
             ValidateIfExists("TotalNetWeight", reviewPage?.GetTotalNetWeight(), ref allDataMatches, mismatches);
             ValidateIfExists("TotalPackages", reviewPage?.GetTotalPackages(), ref allDataMatches, mismatches);
@@ -147,8 +182,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
             ValidateIfExists("ConsigneeAddress", reviewPage?.GetConsigneeAddress(), ref allDataMatches, mismatches);
             ValidateIfExists("ImporterName", reviewPage?.GetImporterName(), ref allDataMatches, mismatches);
             ValidateIfExists("ImporterAddress", reviewPage?.GetImporterAddress(), ref allDataMatches, mismatches);
-            ValidateIfExists("DestinationName", reviewPage?.GetDestinationName(), ref allDataMatches, mismatches);
-            ValidateIfExists("DestinationAddress", reviewPage?.GetDestinationAddress(), ref allDataMatches, mismatches);
+            ValidateIfExists("PlaceOfDestinationName", reviewPage?.GetDestinationName(), ref allDataMatches, mismatches);
+            ValidateIfExists("PlaceOfDestinationAddress", reviewPage?.GetDestinationAddress(), ref allDataMatches, mismatches);
 
             // Transport details
             ValidateIfExists("PortOfEntry", reviewPage?.GetPortOfEntry(), ref allDataMatches, mismatches);
@@ -179,19 +214,90 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             if (_scenarioContext.ContainsKey(contextKey))
             {
-                string expectedValue = null;
-                try
-                {
-                    expectedValue = _scenarioContext.Get<string>(contextKey);
-                }
-                catch (InvalidCastException)
-                {
-                    expectedValue = _scenarioContext.Get<string[]>(contextKey)?.FirstOrDefault();
-                }
+                object contextValue = _scenarioContext[contextKey];
 
+                // Handle List<string> (for multiple countries)
+                if (contextValue is List<string> countryList)
+                {
+                    // Join the list with line breaks to match the HTML format
+                    var expectedValue = string.Join("\n", countryList).Trim();
+
+                    // The review page displays countries with <br> which Selenium converts to \n
+                    var actualValue = reviewValue?.Trim().Replace("\r\n", "\n").Replace("\r", "\n");
+
+                    var isMatch = expectedValue.Equals(actualValue, StringComparison.OrdinalIgnoreCase);
+                    if (!isMatch)
+                    {
+                        allDataMatches = false;
+                        mismatches.Add($"{contextKey}: Expected '{expectedValue}', Found '{actualValue}'");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
+                    }
+                }
+                // Handle string[] (for documents)
+                else if (contextValue is string[] stringArray)
+                {
+                    var expectedValue = stringArray.FirstOrDefault();
+                    if (!string.IsNullOrEmpty(expectedValue))
+                    {
+                        var isMatch = expectedValue.Equals(reviewValue?.Trim(), StringComparison.OrdinalIgnoreCase);
+                        if (!isMatch)
+                        {
+                            allDataMatches = false;
+                            mismatches.Add($"{contextKey}: Expected '{expectedValue}', Found '{reviewValue?.Trim()}'");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[REVIEW VALIDATION] ⊘ {contextKey}: Skipped (empty value in array)");
+                    }
+                }
+                // Handle single string value
+                else if (contextValue is string expectedValue)
+                {
+                    if (!string.IsNullOrEmpty(expectedValue))
+                    {
+                        var isMatch = expectedValue.Equals(reviewValue?.Trim(), StringComparison.OrdinalIgnoreCase);
+                        if (!isMatch)
+                        {
+                            allDataMatches = false;
+                            mismatches.Add($"{contextKey}: Expected '{expectedValue}', Found '{reviewValue?.Trim()}'");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[REVIEW VALIDATION] ⊘ {contextKey}: Skipped (empty value in context)");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"[REVIEW VALIDATION] ⊘ {contextKey}: Skipped (unsupported type: {contextValue.GetType().Name})");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[REVIEW VALIDATION] ⊘ {contextKey}: Skipped (not in context)");
+            }
+        }
+
+        private void ValidateIfContains(string contextKey, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
+        {
+            if (_scenarioContext.ContainsKey(contextKey))
+            {
+                var expectedValue = _scenarioContext.Get<string>(contextKey);
                 if (!string.IsNullOrEmpty(expectedValue))
                 {
-                    var isMatch = expectedValue.Equals(reviewValue?.Trim(), StringComparison.OrdinalIgnoreCase);
+                    var isMatch = expectedValue.Contains(reviewValue?.Trim(), StringComparison.OrdinalIgnoreCase);
                     if (!isMatch)
                     {
                         allDataMatches = false;
@@ -202,14 +308,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
                     }
                 }
-                else
-                {
-                    Console.WriteLine($"[REVIEW VALIDATION] ⊘ {contextKey}: Skipped (empty value in context)");
-                }
-            }
-            else
-            {
-                Console.WriteLine($"[REVIEW VALIDATION] ⊘ {contextKey}: Skipped (not in context)");
             }
         }
 
@@ -257,32 +355,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
             }
         }
 
-        private void ValidateIfContains(string contextKey, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
-        {
-            if (_scenarioContext.ContainsKey(contextKey))
-            {
-                var expectedValue = _scenarioContext.Get<string>(contextKey);
-                if (!string.IsNullOrEmpty(expectedValue))
-                {
-                    var isMatch = expectedValue.Contains(reviewValue?.Trim(), StringComparison.OrdinalIgnoreCase);
-                    if (!isMatch)
-                    {
-                        allDataMatches = false;
-                        mismatches.Add($"{contextKey}: Expected '{expectedValue}', Found '{reviewValue?.Trim()}'");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
-                    }
-                }
-            }
-        }
-
-        [Then("the user verifies all the data displayed in review page")]
-        public void ThenTheUserVerifiesAllTheDataDisplayedInReviewPage()
+        [Then("the user verifies all the data displayed in review page for commodity code {string}")]
+        public void ThenTheUserVerifiesAllTheDataDisplayedInReviewPageForCommodityCode(string code)
         {
             VerifyAboutTheConsignment();
-            VerifyDescriptionOfTheGoods();
+            VerifyDescriptionOfTheGoods(code);
             VerifyDocuments();
             VerifyTraders();
             VerifyTransportAndConsignmentContactDetails();
@@ -314,7 +391,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.AreEqual(riskCategory.ToUpper(), summary?.RiskCategory.ToUpper(), $"Risk category is not matching in {pageName} page!");
         }
 
-        private void VerifyDescriptionOfTheGoods()
+        private void VerifyDescriptionOfTheGoods(string code)
         {
             var summary = summaryPage?.GetSummaryDetails();
             var pageName = "Review your notification";
@@ -333,7 +410,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var temperature = _scenarioContext.Get<string>("Temperature");
 
             Assert.AreEqual(commodityCode, summary?.CommodityCode, $"Commodity Code is not matching in {pageName} page!");
-            Assert.AreEqual(typeOfCommodity, commodityCode.StartsWith("16042005") ? summary?.TypeOfCommodity1 : summary?.TypeOfCommodity, $"Type Of Commodity is not matching in {pageName} page!");
+            Assert.AreEqual(typeOfCommodity, commodityCode.StartsWith(code) ? summary?.TypeOfCommodity1 : summary?.TypeOfCommodity, $"Type Of Commodity is not matching in {pageName} page!");
             Assert.AreEqual(species, summary?.Species, $"Species is not matching in {pageName} page!");
             Assert.AreEqual(netWeight, summary?.NetWeight, $"NetWeight is not matching in {pageName} page!");
             Assert.AreEqual(packages, summary?.NumberOfPackages, $"Number Of Packages is not matching in {pageName} page!");
@@ -433,6 +510,211 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenIClickTheChangeLinkUnderHeading(string heading)
         {
             reviewPage?.ClickChangeLink(heading);
+        }
+
+        [Then("the user should not see an error message {string} in review page")]
+        public void ThenTheUserShouldNotSeeAnErrorMessageInReviewPage(string errorMessage)
+        {
+            var (hasError, errorMessages) = reviewPage?.VerifyErrorMsgDisplayed(errorMessage)
+                ?? (false, string.Empty);
+
+            if (hasError)
+            {
+                Assert.Fail($"Error message '{errorMessage}' is still present on the review page. " +
+                           $"All error messages found: {errorMessages}");
+            }
+
+            // If hasError is false, the assertion passes (no error banner or specific error not found)
+            Assert.False(hasError, "Error validation passed - no error message found");
+        }
+
+        [Then("the user should not see any error messages in review page")]
+        public void ThenTheUserShouldNotSeeAnyErrorMessagesInReviewPage()
+        {
+            var (hasError, errorMessages) = reviewPage?.VerifyErrorMsgDisplayed(string.Empty)
+                ?? (false, string.Empty);
+
+            if (hasError)
+            {
+                Assert.Fail($"Unexpected error messages found on the review page: {errorMessages}");
+            }
+
+            Assert.False(hasError, "Error validation passed - no error messages found");
+        }
+
+        [Then("the Copy as new button should be available")]
+        public void ThenTheCopyAsNewButtonShouldBeAvailable()
+        {
+            Assert.True(reviewPage?.IsCopyAsNewButtonDisplayed(), "Copy as new button is not displayed");
+        }
+
+        [Then("the View CHED button should be available")]
+        public void ThenTheViewCHEDButtonShouldBeAvailable()
+        {
+            Assert.True(reviewPage?.IsViewCHEDButtonDisplayed(), "View CHED button is not displayed");
+        }
+
+        [Then("the Change links should not be available")]
+        public void ThenTheChangeLinksShouldNotBeAvailable()
+        {
+            Assert.True(reviewPage?.AreChangeLinksNotDisplayed(), "Change links should not be displayed but were found");
+        }
+
+        [When("the user clicks on the Dashboard link")]
+        public void WhenTheUserClicksOnTheDashboardLink()
+        {
+            reviewPage?.ClickDashboardLink();
+        }
+
+        [Given("the user gets the CHED reference from the Review your notification page")]
+        [When("the user gets the CHED reference from the Review your notification page")]
+        [Then("the user gets the CHED reference from the Review your notification page")]
+        public void WhenTheUserGetsTheCHEDReferenceFromTheReviewYourNotificationPage()
+        {
+            var chedReference = reviewPage?.GetCHEDReference();
+
+            if (string.IsNullOrEmpty(chedReference))
+            {
+                Assert.Fail("CHED reference not found on Review your notification page");
+            }
+
+            _scenarioContext.Set(chedReference, "CHEDReference");
+
+            Console.WriteLine($"[CHED REFERENCE] Retrieved and stored: {chedReference}");
+        }
+
+        [Then("the Consignor or exporter shows the new trader {string} on the review page")]
+        public void ThenTheConsignorOrExporterShowsTheNewTraderOnTheReviewPage(string operatorType)
+        {
+            // Get the original operator details from address book (source of truth)
+            var expectedName = _scenarioContext[$"{operatorType}Name"]?.ToString();
+            var expectedAddress = _scenarioContext[$"{operatorType}Address"]?.ToString();
+            var expectedCountry = _scenarioContext[$"{operatorType}Country"]?.ToString();
+
+            // Get what's displayed on the review page
+            var displayedName = reviewPage?.GetConsignorName();
+            var displayedAddress = reviewPage?.GetConsignorAddress();
+            var displayedCountry = reviewPage?.GetConsignorCountry();
+
+            // Validate they match
+            Assert.AreEqual(expectedName, displayedName,
+                $"Consignor name mismatch. Expected: {expectedName}, Actual: {displayedName}");
+            Assert.AreEqual(expectedAddress, displayedAddress,
+                $"Consignor address mismatch. Expected: {expectedAddress}, Actual: {displayedAddress}");
+            Assert.AreEqual(expectedCountry, displayedCountry,
+                $"Consignor country mismatch. Expected: {expectedCountry}, Actual: {displayedCountry}");
+
+            Console.WriteLine($"[REVIEW VALIDATION] ✓ Consignor from address book ({operatorType}) matches: {expectedName}, {expectedAddress}, {expectedCountry}");
+        }
+
+        [Then("the Consignee shows the new {string} on the review page")]
+        public void ThenTheConsigneeShowsTheNewOnTheReviewPage(string operatorType)
+        {
+            // Get the original operator details from address book (source of truth)
+            var expectedName = _scenarioContext[$"{operatorType}Name"]?.ToString();
+            var expectedAddress = _scenarioContext[$"{operatorType}Address"]?.ToString();
+            var expectedCountry = _scenarioContext[$"{operatorType}Country"]?.ToString();
+
+            // Get what's displayed on the review page
+            var displayedName = reviewPage?.GetConsigneeName();
+            var displayedAddress = reviewPage?.GetConsigneeAddress();
+            var displayedCountry = reviewPage?.GetConsigneeCountry();
+
+            // Validate they match
+            Assert.AreEqual(expectedName, displayedName,
+                $"Consignee name mismatch. Expected: {expectedName}, Actual: {displayedName}");
+            Assert.AreEqual(expectedAddress, displayedAddress,
+                $"Consignee address mismatch. Expected: {expectedAddress}, Actual: {displayedAddress}");
+            Assert.AreEqual(expectedCountry, displayedCountry,
+                $"Consignee country mismatch. Expected: {expectedCountry}, Actual: {displayedCountry}");
+
+            Console.WriteLine($"[REVIEW VALIDATION] ✓ Consignee from address book ({operatorType}) matches: {expectedName}, {expectedAddress}, {expectedCountry}");
+        }
+
+        [Then("the Importer shows the new {string} on the review page")]
+        public void ThenTheImporterShowsTheNewOnTheReviewPage(string operatorType)
+        {
+            // Get the original operator details from address book (source of truth)
+            var expectedName = _scenarioContext[$"{operatorType}Name"]?.ToString();
+            var expectedAddress = _scenarioContext[$"{operatorType}Address"]?.ToString();
+            var expectedCountry = _scenarioContext[$"{operatorType}Country"]?.ToString();
+
+            // Get what's displayed on the review page
+            var displayedName = reviewPage?.GetImporterName();
+            var displayedAddress = reviewPage?.GetImporterAddress();
+            var displayedCountry = reviewPage?.GetImporterCountry();
+
+            // Validate they match
+            Assert.AreEqual(expectedName, displayedName,
+                $"Importer name mismatch. Expected: {expectedName}, Actual: {displayedName}");
+            Assert.AreEqual(expectedAddress, displayedAddress,
+                $"Importer address mismatch. Expected: {expectedAddress}, Actual: {displayedAddress}");
+            Assert.AreEqual(expectedCountry, displayedCountry,
+                $"Importer country mismatch. Expected: {expectedCountry}, Actual: {displayedCountry}");
+
+            Console.WriteLine($"[REVIEW VALIDATION] ✓ Importer from address book ({operatorType}) matches: {expectedName}, {expectedAddress}, {expectedCountry}");
+        }
+
+        [Then("the Place of destination shows the new {string} on the review page")]
+        public void ThenThePlaceOfDestinationShowsTheNewOnTheReviewPage(string operatorType)
+        {
+            // Get the original operator details from address book (source of truth)
+            var expectedName = _scenarioContext[$"{operatorType}Name"]?.ToString();
+            var expectedAddress = _scenarioContext[$"{operatorType}Address"]?.ToString();
+            var expectedCountry = _scenarioContext[$"{operatorType}Country"]?.ToString();
+
+            // Get what's displayed on the review page
+            var displayedName = reviewPage?.GetDestinationName();
+            var displayedAddress = reviewPage?.GetDestinationAddress();
+            var displayedCountry = reviewPage?.GetPlaceOfDestinationCountry();
+
+            // Validate they match
+            Assert.AreEqual(expectedName, displayedName,
+                $"Place of destination name mismatch. Expected: {expectedName}, Actual: {displayedName}");
+            Assert.AreEqual(expectedAddress, displayedAddress,
+                $"Place of destination address mismatch. Expected: {expectedAddress}, Actual: {displayedAddress}");
+            Assert.AreEqual(expectedCountry, displayedCountry,
+                $"Place of destination country mismatch. Expected: {expectedCountry}, Actual: {displayedCountry}");
+
+            Console.WriteLine($"[REVIEW VALIDATION] ✓ Place of destination from address book ({operatorType}) matches: {expectedName}, {expectedAddress}, {expectedCountry}");
+        }
+
+        [Then("the Transporter shows the new {string} on the review page")]
+        public void ThenTheTransporterShowsTheNewOnTheReviewPage(string operatorType)
+        {
+            // Get the original operator details from address book (source of truth)
+            var expectedName = _scenarioContext[$"{operatorType}Name"]?.ToString();
+            var expectedAddress = _scenarioContext[$"{operatorType}Address"]?.ToString();
+            var expectedCountry = _scenarioContext[$"{operatorType}Country"]?.ToString();
+            var expectedApprovalNumber = _scenarioContext[$"{operatorType}ApprovalNumber"]?.ToString();
+            var expectedType = _scenarioContext[$"{operatorType}Type"]?.ToString();
+
+            // Get what's displayed on the review page
+            var displayedName = reviewPage?.GetTransporterName();
+            var displayedAddress = reviewPage?.GetTransporterAddressWithoutContact(); // ← Use the NEW method here
+            var displayedCountry = reviewPage?.GetTransporterCountry();
+            var displayedApprovalNumber = reviewPage?.GetTransporterApprovalNumber();
+            var displayedType = reviewPage?.GetTransporterType();
+
+            // Validate they match
+            Assert.AreEqual(expectedName, displayedName,
+                $"Transporter name mismatch. Expected: {expectedName}, Actual: {displayedName}");
+            Assert.AreEqual(expectedAddress, displayedAddress,
+                $"Transporter address mismatch. Expected: {expectedAddress}, Actual: {displayedAddress}");
+            Assert.AreEqual(expectedCountry, displayedCountry,
+                $"Transporter country mismatch. Expected: {expectedCountry}, Actual: {displayedCountry}");
+
+            // Approval number might be empty, so handle that
+            if (!string.IsNullOrEmpty(expectedApprovalNumber))
+            {
+                Assert.AreEqual(expectedApprovalNumber, displayedApprovalNumber,
+                    $"Transporter approval number mismatch. Expected: {expectedApprovalNumber}, Actual: {displayedApprovalNumber}");
+            }
+
+            Assert.AreEqual(expectedType, displayedType,
+                $"Transporter type mismatch. Expected: {expectedType}, Actual: {displayedType}");
+
+            Console.WriteLine($"[REVIEW VALIDATION] ✓ Transporter from address book ({operatorType}) matches: {expectedName}, {expectedAddress}, {expectedCountry}");
         }
     }
 }

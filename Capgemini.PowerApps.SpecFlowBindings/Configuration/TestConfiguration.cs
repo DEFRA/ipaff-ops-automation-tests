@@ -16,6 +16,33 @@ public class TestConfiguration
     /// The name of the file that stores the test configuration.
     /// </summary>
     public const string FileName = "power-apps-bindings.yml";
+    public const string IdcomsFileName = "power-apps-bindings.idcoms.yml";
+    public const string PimsFileName = "power-apps-bindings.pims.yml";
+
+    public static string ResolveFileName(string appHint = null)
+    {
+        var explicitFile = Environment.GetEnvironmentVariable("POWERAPPS_BINDINGS_FILE");
+        if (!string.IsNullOrWhiteSpace(explicitFile))
+        {
+            return explicitFile;
+        }
+
+        var hint = appHint ?? Environment.GetEnvironmentVariable("APP_UNDER_TEST");
+        if (string.IsNullOrWhiteSpace(hint))
+        {
+            return FileName;
+        }
+
+        switch (hint.Trim().ToUpperInvariant())
+        {
+            case "IDCOMS":
+                return IdcomsFileName;
+            case "PIMS":          
+                return PimsFileName;
+            default:
+                return FileName;
+        }
+    }
 
     private const string GetUserException = "Unable to retrieve user configuration. Please ensure a user with the given alias exists in the config.";
 
@@ -32,6 +59,12 @@ public class TestConfiguration
     {
         this.BrowserOptions = new BrowserOptionsWithProfileSupport();
     }
+
+    /// <summary>
+    /// Add optional app name support in configuration (to open the correct model-driven app
+    /// </summary>
+    [YamlMember(Alias = "appName")]
+    public string AppName { get; set; }
 
     /// <summary>
     /// Sets the URL of the target Dynamics 365 instance.

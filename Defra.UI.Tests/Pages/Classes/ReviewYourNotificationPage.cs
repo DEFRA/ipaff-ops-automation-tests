@@ -13,14 +13,26 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects
         private IWebElement pageTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
+        private By CopyAsNewButtonBy => By.XPath("//button[@type='submit' and @value='Copy as new']");
+        private By ViewCHEDButtonBy => By.Id("show-notification");
+        private By ChangeLinksBy => By.XPath("//a[text()='Change']");
+        private IWebElement lnkChange(string section) => _driver.FindElement(By.XPath($"(//*[normalize-space()='{section}']/following::a)[1]"));
+        private By DashboardLinkBy => By.XPath("//a[@class='govuk-breadcrumbs__link' and @href='/notification/pre/protected/notifications']");
+        private IWebElement chedReference => _driver.FindElement(By.Id("reference-number"));
 
         // About the consignment
         private IWebElement importType => _driver.FindElement(By.Id("importing"));
         private IWebElement countryOfOrigin => _driver.FindElement(By.Id("country-of-origin"));
         private IWebElement countryFromWhereConsigned => _driver.FindElement(By.XPath("//dt[text()='Country from where consigned']//following-sibling::dd"));
         private IWebElement mainReasonForImport => _driver.FindElement(By.Id("purpose-of-consignment-value"));
+        private IWebElement pointOfExit => _driver.FindElement(By.XPath("//dt[@id='point-of-exit-header']/following-sibling::dd"));
+        private IWebElement consignmentDepartureDateTime => _driver.FindElement(By.Id("estimated-departure-date-time-value"));
         private IWebElement purpose => _driver.FindElement(By.XPath("//dt[text()='Purpose in the internal market']//following-sibling::dd"));
         private IWebElement consignmentReferenceNumber => _driver.FindElement(By.XPath("//dt[text()='Consignment reference number']//following-sibling::dd"));
+        private IWebElement exitDate => _driver.FindElement(By.Id("exit-date-value"));
+        private By exitBCPTemporaryAdmissionLocator => By.Id("designated-bip-horses-value");
+        private By exitBCPTransitLocator => By.XPath("//dt[@id='exit-border-control-post-header']/following-sibling::dd");
+        private IWebElement destinationCountry => _driver.FindElement(By.XPath("//dt[@id='destination-country-header']/following-sibling::dd"));
 
         // Commodity details
         private IWebElement commodityCode => _driver.FindElement(By.XPath("//td[text()='Commodity code']//following-sibling::td[1]"));
@@ -42,6 +54,11 @@ namespace Defra.UI.Tests.Pages.Classes
 
         // Animal details
         private IWebElement certificationOption => _driver.FindElement(By.XPath("//td[text()='Certified for']//following-sibling::td"));
+        private IWebElement GetHorseNameElement(int index) => _driver.FindElement(By.XPath($"//table[@id='animal-identification-details-table']//tbody//tr[{index + 1}]//td[@headers='horseName-01']"));
+        private IWebElement GetMicrochipElement(int index) => _driver.FindElement(By.XPath($"//table[@id='animal-identification-details-table']//tbody//tr[{index + 1}]//td[@headers='microchip-01']"));
+        private IWebElement GetPassportElement(int index) => _driver.FindElement(By.XPath($"//table[@id='animal-identification-details-table']//tbody//tr[{index + 1}]//td[@headers='passport-01']"));
+        private IWebElement GetEarTagElement(int index) => _driver.FindElement(By.XPath($"//table[contains(@aria-describedby,'animalProduct')]//tbody//tr[{index + 1}]//td[@headers='earTag-01']"));
+        private IWebElement unweanedAnimalsOption => _driver.FindElement(By.XPath("//td[contains(text(),'Includes unweaned animals')]/following-sibling::td"));
 
         // Documents
         private IWebElement healthCertificateReference => _driver.FindElement(By.Id("latest-health-document-reference"));
@@ -69,6 +86,14 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement estimatedJourneyTime => _driver.FindElement(By.XPath("//th[text()='Estimated total journey time of the animals']//following-sibling::td"));
         private IWebElement ctcUsage => _driver.FindElement(By.XPath("//td[contains(text(),'Using the Common Transit Convention')]/following-sibling::td"));
         private IWebElement gvmsUsage => _driver.FindElement(By.Id("goods-movement-services-route"));
+        private IWebElement GetContainerNumberElement(int index) => _driver.FindElement(By.Id($"container-number-{index}"));
+        private IWebElement GetSealNumberElement(int index) => _driver.FindElement(By.Id($"seal-number-{index}"));
+        private IWebElement GetOfficialSealElement(int index) => _driver.FindElement(By.Id($"official-seal-present-{index}"));
+        private IWebElement meansOfTransportAfterBCP => _driver.FindElement(By.XPath("//th[contains(text(),'Means of transport after BCP or Port of entry')]//following-sibling::td"));
+        private IWebElement transportIdentificationAfterBCP => _driver.FindElement(By.XPath("//table[@id='review-table-transport']//th[text()='Transport identification']//following-sibling::td"));
+        private IWebElement transportDocumentReferenceAfterBCP => _driver.FindElement(By.XPath("//table[@id='review-table-transport']//th[text()='Transport document reference']//following-sibling::td"));
+        private IWebElement departureDateFromBCP => _driver.FindElement(By.XPath("//th[text()='Departure date from port of entry']//following-sibling::td"));
+        private IWebElement departureTimeFromBCP => _driver.FindElement(By.XPath("//th[text()='Departure time from port of entry']//following-sibling::td"));
 
         // Transporter details
         private IWebElement transporterName => _driver.FindElement(By.Id("transporter-name"));
@@ -83,11 +108,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement consignmentContactAddress => _driver.FindElement(By.Id("organisation-branch-address-address"));
         private IReadOnlyCollection<IWebElement> divAboutTheConsignmentDetails => _driver.WaitForElements(By.XPath("//div[@id='document-pet-card']//dl/div"));
                 
-        private IWebElement lnkChange(string section) => _driver.FindElement(By.XPath($"(//*[text()='{section}']/following::a)[1]"));
-
-
         //Error Message
-        private IReadOnlyCollection<IWebElement> lblErrorMessages => _driver.WaitForElements(By.XPath("//div[@class='govuk-error-summary']/div/ul/li"));
+        private IReadOnlyCollection<IWebElement> lblErrorMessages => _driver.FindElements(By.XPath("//div[@class='govuk-error-summary']/div/ul/li"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -149,7 +171,6 @@ namespace Defra.UI.Tests.Pages.Classes
             catch { return null; }
         }
 
-
         public string? GetPurpose()
         {
             try
@@ -186,6 +207,22 @@ namespace Defra.UI.Tests.Pages.Classes
             }
         }
 
+        public string GetPointOfExit => pointOfExit?.Text?.Trim() ?? string.Empty;
+
+        public (string departureDate, string departureTime) GetConsignmentDepartureDateTime()
+        {
+            try
+            {
+                var departureDateTime = consignmentDepartureDateTime.Text.Trim();
+                var dateTimeParts = departureDateTime.Split(',', StringSplitOptions.TrimEntries);
+                return (DateTime.Parse(dateTimeParts[0]).ToString("dd MMMM yyyy"), dateTimeParts.Length > 1 ? dateTimeParts[1] : string.Empty);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error while getting date and time: {ex.Message}");
+                return (string.Empty, string.Empty);
+            }
+        }
 
         public string? GetCommodityCode()
         {
@@ -349,10 +386,98 @@ namespace Defra.UI.Tests.Pages.Classes
             return totalGrossWeightText;
         }
 
+        public string? GetExitDate()
+        {
+            try
+            {
+                var text = exitDate.Text.Trim();
+                // Convert "14 January 2026" to "14 January 2026" format (matches stored format)
+                if (DateTime.TryParse(text, out DateTime date))
+                {
+                    return date.ToString("dd MMMM yyyy");
+                }
+                return text;
+            }
+            catch { return null; }
+        }
+
+        public string? GetExitBCP()
+        {
+            try
+            {
+                // First, check what the main reason for import is
+                var mainReason = GetMainReasonForImport();
+
+                if (mainReason?.Contains("Transit", StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    // For Transit, use the exit-border-control-post-header locator
+                    var transitExitBCP = _driver.FindElement(exitBCPTransitLocator);
+                    return transitExitBCP.Text.Trim();
+                }
+                else if (mainReason?.Contains("Temporary admission", StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    // For Temporary Admission Horses, use the designated-bip-horses-value locator
+                    var tempAdmissionExitBCP = _driver.FindElement(exitBCPTemporaryAdmissionLocator);
+                    return tempAdmissionExitBCP.Text.Trim();
+                }
+                else
+                {
+                    // Fallback: Try both locators
+                    try
+                    {
+                        var transitExitBCP = _driver.FindElement(exitBCPTransitLocator);
+                        if (!string.IsNullOrEmpty(transitExitBCP.Text))
+                            return transitExitBCP.Text.Trim();
+                    }
+                    catch { }
+
+                    try
+                    {
+                        var tempAdmissionExitBCP = _driver.FindElement(exitBCPTemporaryAdmissionLocator);
+                        if (!string.IsNullOrEmpty(tempAdmissionExitBCP.Text))
+                            return tempAdmissionExitBCP.Text.Trim();
+                    }
+                    catch { }
+
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"GetExitBCP failed: {ex.Message}");
+                return null;
+            }
+        }
+
+        public string? GetDestinationCountry()
+        {
+            try { return destinationCountry.Text.Trim(); } catch { return null; }
+        }
+
         // Animal details
         public string? GetCertificationOption()
         {
             try { return certificationOption.Text.Trim(); } catch { return null; }
+        }
+
+        public string? GetHorseName(int index = 0)
+        {
+            try { return GetHorseNameElement(index).Text.Trim(); } catch { return null; }
+        }
+
+        public string? GetMicrochipNumber(int index = 0)
+        {
+            try { return GetMicrochipElement(index).Text.Trim(); } catch { return null; }
+        }
+
+        public string? GetPassportNumber(int index = 0)
+        {
+            try { return GetPassportElement(index).Text.Trim(); } catch { return null; }
+        }
+
+        public string? GetEarTag(int index = 0)
+        {
+            try { return GetEarTagElement(index).Text.Trim(); } catch { return null; }
         }
 
         //Additional details
@@ -365,6 +490,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public string? GetTemperature()
         {
             try { return temperature.Text.Trim(); } catch { return null; }
+        }
+
+        public string? GetUnweanedAnimalsOption()
+        {
+            try { return unweanedAnimalsOption.Text.Trim(); } catch { return null; }
         }
 
         // Documents
@@ -504,6 +634,46 @@ namespace Defra.UI.Tests.Pages.Classes
             catch { return null; }
         }
 
+        public string? GetConsignorCountry()
+        {
+            try
+            {
+                var fullText = consignorDetails.Text.Trim();
+                return ExtractCountryFromAddressText(fullText);
+            }
+            catch { return null; }
+        }
+
+        public string? GetConsigneeCountry()
+        {
+            try
+            {
+                var fullText = consigneeDetails.Text.Trim();
+                return ExtractCountryFromAddressText(fullText);
+            }
+            catch { return null; }
+        }
+
+        public string? GetImporterCountry()
+        {
+            try
+            {
+                var fullText = importerDetails.Text.Trim();
+                return ExtractCountryFromAddressText(fullText);
+            }
+            catch { return null; }
+        }
+
+        public string? GetPlaceOfDestinationCountry()
+        {
+            try
+            {
+                var fullText = destinationDetails.Text.Trim();
+                return ExtractCountryFromAddressText(fullText);
+            }
+            catch { return null; }
+        }
+
         // Transport details
         public string? GetPortOfEntry()
         {
@@ -566,6 +736,58 @@ namespace Defra.UI.Tests.Pages.Classes
             try { return gvmsUsage.Text.Trim(); } catch { return null; }
         }
 
+        // Transport to BCP - Containers
+        public string? GetContainerNumber(int index = 0)
+        {
+            try { return GetContainerNumberElement(index).Text.Trim(); } catch { return null; }
+        }
+
+        public string? GetSealNumber(int index = 0)
+        {
+            try { return GetSealNumberElement(index).Text.Trim(); } catch { return null; }
+        }
+
+        public string? GetOfficialSeal(int index = 0)
+        {
+            try { return GetOfficialSealElement(index).Text.Trim(); } catch { return null; }
+        }
+
+        // Transport after BCP
+        public string? GetMeansOfTransportAfterBCP()
+        {
+            try { return meansOfTransportAfterBCP.Text.Trim(); } catch { return null; }
+        }
+
+        public string? GetTransportIdentificationAfterBCP()
+        {
+            try { return transportIdentificationAfterBCP.Text.Trim(); } catch { return null; }
+        }
+
+        public string? GetTransportDocumentReferenceAfterBCP()
+        {
+            try { return transportDocumentReferenceAfterBCP.Text.Trim(); } catch { return null; }
+        }
+
+        public string? GetDepartureDateFromBCP()
+        {
+            try
+            {
+                var text = departureDateFromBCP.Text.Trim();
+                // Convert "17 January 2026" to "17 Jan 2026" format
+                if (DateTime.TryParse(text, out DateTime date))
+                {
+                    return date.ToString("dd MMM yyyy");
+                }
+                return text;
+            }
+            catch { return null; }
+        }
+
+        public string? GetDepartureTimeFromBCP()
+        {
+            try { return departureTimeFromBCP.Text.Trim(); } catch { return null; }
+        }
+
         // Transporter details
         public string? GetTransporterName()
         {
@@ -575,6 +797,27 @@ namespace Defra.UI.Tests.Pages.Classes
         public string? GetTransporterAddress()
         {
             try { return transporterAddress.Text.Trim(); } catch { return null; }
+        }
+
+        public string? GetTransporterAddressWithoutContact()
+        {
+            try
+            {
+                var fullAddress = transporterAddress.Text.Trim();
+
+                // Transporter address format: "street, city, postcode, phone, email"
+                // We only want: "street, city, postcode"
+                var parts = fullAddress.Split(',', StringSplitOptions.TrimEntries);
+
+                if (parts.Length >= 3)
+                {
+                    // Take first 3 parts (street, city, postcode) - exclude phone and email
+                    return string.Join(", ", parts.Take(3));
+                }
+
+                return fullAddress;
+            }
+            catch { return null; }
         }
 
         public string? GetTransporterCountry()
@@ -621,21 +864,48 @@ namespace Defra.UI.Tests.Pages.Classes
             return lines.Length > 0 ? lines[0].Trim() : "";
         }
 
-        // Update address extraction methods to only return the street address part:
         private string ExtractAddressFromAddressText(string fullText)
         {
             var lines = fullText.Split('\n', StringSplitOptions.RemoveEmptyEntries);
             if (lines.Length > 1)
             {
                 var addressLine = lines[1].Trim();
-                // Extract only the street address portion before additional details
-                var parts = addressLine.Split(',');
+
+                // The review page shows: "street, city, postcode, country, phone"
+                // We only want: "street, city, postcode"
+
+                var parts = addressLine.Split(',', StringSplitOptions.TrimEntries);
+
+                // Take only the first 3 parts (street, city/region, postcode)
+                // This excludes both country and phone number
+                if (parts.Length >= 3)
+                {
+                    var addressWithoutCountryAndPhone = string.Join(", ", parts.Take(3));
+                    return addressWithoutCountryAndPhone;
+                }
+
+                return addressLine;
+            }
+            return "";
+        }
+
+        private string ExtractCountryFromAddressText(string fullText)
+        {
+            var lines = fullText.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+            if (lines.Length > 1)
+            {
+                var addressLine = lines[1].Trim();
+
+                // The review page shows: "street, city, postcode, country, phone"
+                // Country is the 4th part (index 3)
+
+                var parts = addressLine.Split(',', StringSplitOptions.TrimEntries);
+
+                // Return the 4th part (country) if it exists
                 if (parts.Length >= 4)
                 {
-                    // Return only the first 4 parts: street, city, region, postcode
-                    return string.Join(", ", parts.Take(4).Select(p => p.Trim()));
+                    return parts[3].Trim();
                 }
-                return addressLine;
             }
             return "";
         }
@@ -648,6 +918,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public string? GetContainerUsage()
         {
             try { return containerUsage.Text.Trim(); } catch { return null; }
+        }
+
+        public string? GetCHEDReference()
+        {
+            try { return chedReference.Text.Trim(); } catch { return null; }
         }
 
         public bool IsError(string errorMessage)
@@ -665,6 +940,67 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickChangeLink(string heading)
         {
             lnkChange(heading).Click();
+        }
+
+        public (bool hasError, string errorMessages) VerifyErrorMsgDisplayed(string errorMessage)
+        {
+            // Check if error message banner is present
+            if (lblErrorMessages.Count == 0)
+            {
+                // No error banner present - this is what we want (test should pass)
+                return (false, string.Empty);
+            }
+
+            // Error banner is present - collect all error messages
+            var errorMessagesList = new List<string>();
+            foreach (var element in lblErrorMessages)
+            {
+                errorMessagesList.Add(element.Text.Trim());
+            }
+
+            var allErrorMessages = string.Join("; ", errorMessagesList);
+
+            // Check if the specific error message we're looking for is in the list
+            var containsSpecificError = errorMessagesList.Any(msg =>
+                msg.Contains(errorMessage, StringComparison.OrdinalIgnoreCase));
+
+            return (containsSpecificError, allErrorMessages);
+        }
+
+        public bool IsCopyAsNewButtonDisplayed()
+        {
+            return _driver.IsElementDisplayed(CopyAsNewButtonBy);
+        }
+
+        public bool IsViewCHEDButtonDisplayed()
+        {
+            return _driver.IsElementDisplayed(ViewCHEDButtonBy);
+        }
+
+        public bool AreChangeLinksNotDisplayed()
+        {
+            try
+            {
+                var changeLinks = _driver.FindElements(ChangeLinksBy);
+                var displayedLinks = changeLinks.Where(link => link.IsElementDisplayed()).ToList();
+
+                if (displayedLinks.Count == 0)
+                {
+                    return true;
+                }
+
+                Console.WriteLine($"✗ Found {displayedLinks.Count} Change link(s) displayed when expecting none");
+                return false;
+            }
+            catch (NoSuchElementException)
+            {
+                return true;
+            }
+        }
+
+        public void ClickDashboardLink()
+        {
+            _driver.FindElement(DashboardLinkBy).Click();
         }
     }
 }

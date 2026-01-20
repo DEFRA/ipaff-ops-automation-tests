@@ -85,7 +85,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When(@"I have provided the IPAFF credentials and signin")]
         public void WhenIHaveProvidedTheIPAFFCredentialsAndSignin()
         {
-            var jsonData = UserObject?.GetUser("IPAFF","User");
+            var jsonData = UserObject?.GetUser("IPAFF", "User");
             var userObject = new User
             {
                 UserName = jsonData.UserName,
@@ -119,7 +119,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             };
 
             _signInPage?.SignIn(userObject.UserName, userObject.Credential);
-        }
+        }        
 
         [When("I have provided the IPAFF Heathrow Inspector credentials and signin")]
         public void WhenIHaveProvidedTheIPAFFHeathrowInspectorCredentialsAndSignin()
@@ -158,6 +158,5 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             governmentGatewayTypePage?.ClickSignInButton();
         }
-
     }
 }

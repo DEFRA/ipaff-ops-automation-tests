@@ -1,6 +1,4 @@
-﻿using OpenQA.Selenium;
-
-namespace Defra.UI.Tests.Pages.Interfaces
+﻿namespace Defra.UI.Tests.Pages.Interfaces
 {
     public interface IDecisionPage
     {
@@ -12,5 +10,12 @@ namespace Defra.UI.Tests.Pages.Interfaces
         bool VerifyPrepopulatedTransitDetails(string exitBCP, string transitedCountry, string destinationCountry);
         bool VerifyTransitRadioButtonPrePopulated();
         void SelectAcceptableFor(string acceptableFor, string subOption);
+        void EnterReason(string reason);
+        void SelectNotAcceptableFor(string acceptableFor, string subOption);
+        bool IsRadioButtonPreSelected(string radioButtonName);
+        string GetExitDate();
+        string GetExitBCP();
+        string GetDestinationCountry();
+        string GetTransitExitBCP();
     }
 }

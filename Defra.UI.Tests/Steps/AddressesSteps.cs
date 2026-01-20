@@ -46,10 +46,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         "Consignor details do not match");
         }
 
-        [Then("the chosen consignor or exporter should be displayed on the Addresses page")]
-        public void ThenTheChosenConsignorOrExporterShouldBeDisplayedOnTheAddressesPage()
+        [Then("the chosen consignor or exporter {string} should be displayed on the Addresses page")]
+        public void ThenTheChosenConsignorOrExporterShouldBeDisplayedOnTheAddressesPage(string consignor)
         {
-            Assert.True(addressesPage?.VerifySelectedConsignor());
+            Assert.True(addressesPage?.VerifySelectedConsignor(consignor));
         }
 
 
@@ -70,23 +70,23 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         "Consignee details do not match");
         }
 
-        [Then("the chosen consignee should be displayed on the Addresses page")]
-        public void ThenTheChosenConsigneeShouldBeDisplayedOnTheAddressesPage()
+        [Then("the chosen consignee {string} should be displayed on the Addresses page")]
+        public void ThenTheChosenConsigneeShouldBeDisplayedOnTheAddressesPage(string consigneeName)
         {
-            Assert.True(addressesPage?.VerifySelectedConsignee());
+            Assert.True(addressesPage?.VerifySelectedConsignee(consigneeName));
         }
 
         [When("the user clicks Same as consignee for the Importer")]
         public void WhenTheUserClicksSameAsConsigneeForTheImporter()
         {
             addressesPage?.ClickImporterSameAsConsignee();
-            _scenarioContext.Add("ImporterDetails", addressesPage.GetSelectedImporter());
+            _scenarioContext["ImporterDetails"] = addressesPage.GetSelectedImporter();
         }
 
-        [Then("the importer should be populated with the same details as the consignee on the Addresses page")]
-        public void ThenTheImporterShouldBePopulatedWithTheSameDetailsAsTheConsigneeOnTheAddressesPage()
+        [Then("the importer should be populated with the same details as the consignee {string} on the Addresses page")]
+        public void ThenTheImporterShouldBePopulatedWithTheSameDetailsAsTheConsigneeOnTheAddressesPage(string consigneeName)
         {
-            Assert.True(addressesPage?.VerifySelectedConsignee());
+            Assert.True(addressesPage?.VerifySelectedConsignee(consigneeName));
         }
 
         [Then("the importer should be populated with the same details as the consignee")]
@@ -102,7 +102,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext.Add("ImporterCountry", consigneeCountry);
 
             // Verify importer shows same details as consignee
-            Assert.True(addressesPage?.VerifySelectedConsignee(consigneeName, consigneeAddress, consigneeCountry),
+            Assert.True(addressesPage?.VerifySelectedImporter(consigneeName, consigneeAddress, consigneeCountry),
                         "Importer details do not match consignee");
         }
 
@@ -133,19 +133,19 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the chosen place of destination should be displayed")]
         public void ThenTheChosenPlaceOfDestinationShouldBeDisplayed()
         {
-            var destinationName = _scenarioContext.Get<string>("DestinationName");
-            var destinationAddress = _scenarioContext.Get<string>("DestinationAddress");
-            var destinationCountry = _scenarioContext.Get<string>("DestinationCountry");
+            var destinationName = _scenarioContext.Get<string>("PlaceOfDestinationName");
+            var destinationAddress = _scenarioContext.Get<string>("PlaceOfDestinationAddress");
+            var destinationCountry = _scenarioContext.Get<string>("PlaceOfDestinationCountry");
 
             Assert.True(addressesPage?.VerifySelectedDestination(destinationName, destinationAddress, destinationCountry),
             "Destination details do not match");
         }
 
-        [Then ("the place of destination should be populated with the same details as the consignee on the Addresses page")]
-        [Then("the chosen place of destination should be displayed on the Addresses page")]
-        public void ThenTheChosenPlaceOfDestinationShouldBeDisplayedOnTheAddressesPage()
+        [Then ("the place of destination should be populated with the same details as the consignee {string} on the Addresses page")]
+        [Then("the chosen place of destination {string} should be displayed on the Addresses page")]
+        public void ThenTheChosenPlaceOfDestinationShouldBeDisplayedOnTheAddressesPage(string destination)
         {
-            Assert.True(addressesPage?.VerifySelectedDestination());
+            Assert.True(addressesPage?.VerifySelectedDestination(destination));
         }
 
         [When("the user clicks Same as consignee for Place of destination")]
@@ -160,6 +160,84 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserClicksOnChangeLinkUnderConsignorOrExporter(string link)
         {
             addressesPage?.ClickChangeInAddressPage(link);
+        }
+
+        [Then("the place of destination should be populated with the same details as the consignee")]
+        public void ThenThePlaceOfDestinationShouldBePopulatedWithTheSameDetailsAsTheConsignee()
+        {
+            var consigneeName = _scenarioContext.Get<string>("ConsigneeName");
+            var consigneeAddress = _scenarioContext.Get<string>("ConsigneeAddress");
+            var consigneeCountry = _scenarioContext.Get<string>("ConsigneeCountry");
+
+            // Since place of destination uses same data as consignee, store it in context
+            // Use indexer assignment instead of .Add() to handle cases where key might already exist
+            _scenarioContext["PlaceOfDestinationName"] = consigneeName;
+            _scenarioContext["PlaceOfDestinationAddress"] = consigneeAddress;
+            _scenarioContext["PlaceOfDestinationCountry"] = consigneeCountry;
+
+            // Verify place of destination shows same details as consignee
+            Assert.True(addressesPage?.VerifySelectedDestination(consigneeName, consigneeAddress, consigneeCountry),
+                        "Place of destination details do not match consignee");
+        }
+
+        [Then("the chosen consignor from the address book should be displayed on the Addresses page {string}")]
+        public void ThenTheChosenConsignorFromTheAddressBookShouldBeDisplayedOnTheAddressesPage(string operatorType)
+        {
+            // Get the ORIGINAL operator details from address book (source of truth)
+            var expectedName = _scenarioContext[$"{operatorType}Name"]?.ToString();
+            var expectedAddress = _scenarioContext[$"{operatorType}Address"]?.ToString();
+            var expectedCountry = _scenarioContext[$"{operatorType}Country"]?.ToString();
+
+            // Verify using existing page method
+            var isDisplayed = addressesPage?.VerifySelectedConsignor(expectedName, expectedAddress, expectedCountry);
+
+            Assert.IsTrue(isDisplayed,
+                $"Consignor from address book ({operatorType}) not displayed correctly. Expected: {expectedName}, {expectedAddress}, {expectedCountry}");
+        }
+
+        [Then("the chosen consignee from the address book should be displayed on the Addresses page {string}")]
+        public void ThenTheChosenConsigneeFromTheAddressBookShouldBeDisplayedOnTheAddressesPage(string operatorType)
+        {
+            // Get the ORIGINAL operator details from address book (source of truth)
+            var expectedName = _scenarioContext[$"{operatorType}Name"]?.ToString();
+            var expectedAddress = _scenarioContext[$"{operatorType}Address"]?.ToString();
+            var expectedCountry = _scenarioContext[$"{operatorType}Country"]?.ToString();
+
+            // Verify using existing page method
+            var isDisplayed = addressesPage?.VerifySelectedConsignee(expectedName, expectedAddress, expectedCountry);
+
+            Assert.IsTrue(isDisplayed,
+                $"Consignee from address book ({operatorType}) not displayed correctly. Expected: {expectedName}, {expectedAddress}, {expectedCountry}");
+        }
+
+        [Then("the chosen importer from the address book should be displayed on the Addresses page {string}")]
+        public void ThenTheChosenImporterFromTheAddressBookShouldBeDisplayedOnTheAddressesPage(string operatorType)
+        {
+            // Get the ORIGINAL operator details from address book (source of truth)
+            var expectedName = _scenarioContext[$"{operatorType}Name"]?.ToString();
+            var expectedAddress = _scenarioContext[$"{operatorType}Address"]?.ToString();
+            var expectedCountry = _scenarioContext[$"{operatorType}Country"]?.ToString();
+
+            // Verify using existing page method
+            var isDisplayed = addressesPage?.VerifySelectedImporter(expectedName, expectedAddress, expectedCountry);
+
+            Assert.IsTrue(isDisplayed,
+                $"Importer from address book ({operatorType}) not displayed correctly. Expected: {expectedName}, {expectedAddress}, {expectedCountry}");
+        }
+
+        [Then("the chosen place of destination from the address book should be displayed on the Addresses page {string}")]
+        public void ThenTheChosenPlaceOfDestinationFromTheAddressBookShouldBeDisplayedOnTheAddressesPage(string operatorType)
+        {
+            // Get the ORIGINAL operator details from address book (source of truth)
+            var expectedName = _scenarioContext[$"{operatorType}Name"]?.ToString();
+            var expectedAddress = _scenarioContext[$"{operatorType}Address"]?.ToString();
+            var expectedCountry = _scenarioContext[$"{operatorType}Country"]?.ToString();
+
+            // Verify using existing page method
+            var isDisplayed = addressesPage?.VerifySelectedDestination(expectedName, expectedAddress, expectedCountry);
+
+            Assert.IsTrue(isDisplayed,
+                $"Place of destination from address book ({operatorType}) not displayed correctly. Expected: {expectedName}, {expectedAddress}, {expectedCountry}");
         }
     }
 }

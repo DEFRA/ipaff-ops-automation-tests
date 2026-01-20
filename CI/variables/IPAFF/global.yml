@@ -17,8 +17,6 @@ parameters:
     type: string
   - name: emulateDeviceInfo
     type: string
-  - name: idcomsPassword
-    type: string
   - name: isAccessibilityEnabled
     type: boolean
     default: false
@@ -34,6 +32,9 @@ variables:
   BSBrowserVersion: ${{ parameters.bsBrowserVersion }}  
   Target: ${{ parameters.target }}
   IsEmulationEnabled: ${{ parameters.isEmulationEnabled }}
-  EmulateDeviceInfo: ${{ parameters.emulateDeviceInfo }}  
-  IDCOMSPassword: ${{ parameters.idcomsPassword }}
+  EmulateDeviceInfo: ${{ parameters.emulateDeviceInfo }}
   IsAccessibilityEnabled: ${{ parameters.isAccessibilityEnabled }}
+  PIMSUser: $(PIMS_USERNAME)
+  PIMSPassword: $(PIMS_PASSWORD)
+  IDCOMSUser: $(IDCOMS_USERNAME)
+  IDCOMSPassword: $(IDCOMS_PASSWORD)

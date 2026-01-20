@@ -15,7 +15,11 @@ namespace Defra.UI.Tests.Pages.Classes
         #region Page Objects
         private IReadOnlyCollection<IWebElement> primaryTitle => _driver.WaitForElements(By.Id("page-primary-title"), true);
         private IReadOnlyCollection<IWebElement> secondaryTitle => _driver.WaitForElements(By.Id("page-secondary-title"), true);
-        private IReadOnlyCollection<IWebElement> btnSaveAndContinueList => _driver.WaitForElements(By.XPath("//button[text()='Save and continue']"));
+        private IReadOnlyCollection<IWebElement> btnSaveAndContinueList => _driver.FindElements(By.XPath("//button[text()='Save and continue']"));
+        private IWebElement lnkRatesAndEligibility => _driver.FindElement(By.Id("read-rates"));
+        private IWebElement lnkTermsAndConditions => _driver.FindElement(By.Id("read-terms"));
+        private IWebElement ratesPageTitle => _driver.FindElement(By.XPath("//h1[@class='gem-c-heading__text govuk-heading-l']"));
+        private IWebElement termsAndConditionsPageTitle => _driver.FindElement(By.Id("read-rates"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -41,6 +45,42 @@ namespace Defra.UI.Tests.Pages.Classes
             {
                 btnSaveAndContinueList.FirstOrDefault().Click();
             }
+        }
+
+        public void ClickRatesAndEligibilityLink()
+        {
+            lnkRatesAndEligibility.Click();
+        }
+
+        public bool VerifyPageOpensInNewTab(string pageName)
+        {
+            var windowHandles = _driver.WindowHandles;
+            if (windowHandles.Count > 1)
+            {
+                _driver.SwitchTo().Window(windowHandles.Last());
+                return ratesPageTitle.Text.Trim().Contains(pageName);
+            }
+            return false;
+        }
+
+        public void CloseTheNewTab()
+        {
+            var windowHandles = _driver.WindowHandles;
+            if (windowHandles.Count > 1)
+            {
+                _driver.Close();
+                _driver.SwitchTo().Window(windowHandles.First());
+            }
+        }
+
+        public bool VerifyNewTabClosed()
+        {
+            return _driver.WindowHandles.Count == 1;
+        }
+
+        public void ClickTermsAndConditionsLink()
+        {
+            lnkTermsAndConditions.Click();
         }
     }
 }

@@ -26,7 +26,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement rdoSpecificWarehouse => _driver.FindElement(By.Id("acceptability-nonconforming"));
         private IWebElement rdoNotAcceptable => _driver.FindElement(By.Id("acceptability-refused"));
         private IWebElement rdoDestruction => _driver.FindElement(By.Id("notAcceptAction-destruction"));
-        private IWebElement rdoReDispatching => _driver.FindElement(By.Id("notAcceptAction-reexport"));
+        private IWebElement rdoDestructionReason => _driver.FindElement(By.Id("notAcceptableDestructionReason"));
+        private IWebElement rdoReDispatching => _driver.FindElement(By.Id("notAcceptAction-redispatch"));
         private IWebElement rdoTransformation => _driver.FindElement(By.Id("notAcceptAction-transformation"));
         private IWebElement rdoOther => _driver.FindElement(By.Id("notAcceptAction-other"));
         private IWebElement txtNotAcceptableDay => _driver.FindElement(By.Id("not-acceptable-day"));
@@ -39,6 +40,13 @@ namespace Defra.UI.Tests.Pages.Classes
         // Dynamic helper to get sub-option radio button within conditional radios
         private IWebElement GetConditionalRadioButtonByLabel(string labelText) =>
             _driver.FindElement(By.XPath($"//div[contains(@class, 'govuk-radios--conditional')]//label[normalize-space(text())='{labelText}']/preceding-sibling::input[@type='radio']"));
+        private IWebElement rdoNotAccptableSubOption(string subOption) =>
+            _driver.FindElement(By.XPath($"//label[normalize-space(text())='{subOption}']"));
+        private IWebElement txtExitDateDay => _driver.FindElement(By.Id("temp-deadline-day"));
+        private IWebElement txtExitDateMonth => _driver.FindElement(By.Id("temp-deadline-month"));
+        private IWebElement txtExitDateYear => _driver.FindElement(By.Id("temp-deadline-year"));
+        private IWebElement ddlExitBCP => _driver.FindElement(By.Id("temporaryExitBipUk"));
+        
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -131,12 +139,75 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void EnterCurrentDateInDecisionPage(string day, string month, string year)
         {
-            txtNotAcceptableDay.Click();
             txtNotAcceptableDay.SendKeys(day);
-            txtNotAcceptableMonth.Click();
             txtNotAcceptableMonth.SendKeys(month);
-            txtNotAcceptableYear.Click();
             txtNotAcceptableYear.SendKeys(year);
+        }
+
+        public void EnterReason(string reason)
+        {
+            rdoDestructionReason.Click();
+            rdoDestructionReason.SendKeys(reason);
+        }
+
+        public void SelectNotAcceptableFor(string acceptableFor, string subOption)
+        {
+            GetRadioButtonByLabel(acceptableFor).Click();
+            rdoNotAccptableSubOption(subOption).Click();
+        }
+
+        public bool IsRadioButtonPreSelected(string radioButtonName)
+        {
+            try
+            {
+                var radioButton = GetRadioButtonByLabel(radioButtonName);
+                return radioButton.GetAttribute("checked") != null;
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
+        }
+
+        public string GetExitDate()
+        {
+            var day = txtExitDateDay.GetAttribute("value");
+            var month = txtExitDateMonth.GetAttribute("value");
+            var year = txtExitDateYear.GetAttribute("value");
+
+            return $"{day}/{month}/{year}";
+        }
+
+        public string GetExitBCP()
+        {
+            var selectElement = new SelectElement(ddlExitBCP);
+            return selectElement.SelectedOption.Text;
+        }
+
+        public string GetDestinationCountry()
+        {
+            try
+            {
+                var selectElement = new SelectElement(drpDestinationCountry);
+                return selectElement.SelectedOption.Text.Trim();
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+
+        public string GetTransitExitBCP()
+        {
+            try
+            {
+                var selectElement = new SelectElement(drpExitBCP);
+                return selectElement.SelectedOption.Text.Trim();
+            }
+            catch
+            {
+                return string.Empty;
+            }
         }
     }
 }

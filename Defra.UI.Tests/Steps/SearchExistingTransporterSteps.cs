@@ -47,5 +47,47 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             searchExistingTranspoterPage?.ClickSelect();
         }
+
+        [When("the user searches for the transporter from the address book {string}")]
+        public void WhenTheUserSearchesForTheTransporterFromTheAddressBook(string operatorType)
+        {
+            // Retrieve the operator name that was stored when adding to address book
+            var operatorNameKey = $"{operatorType}Name";
+
+            if (!_scenarioContext.ContainsKey(operatorNameKey))
+            {
+                Assert.Fail($"Operator name for {operatorType} not found in scenario context. Key: {operatorNameKey}");
+            }
+
+            var transporterName = _scenarioContext[operatorNameKey]?.ToString();
+
+            // Search for the transporter by name
+            searchExistingTranspoterPage?.SearchForTransporter(transporterName);
+        }
+
+        [When("the user selects the transporter from the address book {string}")]
+        public void WhenTheUserSelectsTheTransporterFromTheAddressBook(string operatorType)
+        {
+            // Retrieve the operator name that was stored when adding to address book
+            var operatorNameKey = $"{operatorType}Name";
+
+            if (!_scenarioContext.ContainsKey(operatorNameKey))
+            {
+                Assert.Fail($"Operator name for {operatorType} not found in scenario context. Key: {operatorNameKey}");
+            }
+
+            var transporterName = _scenarioContext[operatorNameKey]?.ToString();
+
+            // Get the transporter details before clicking select
+            var selectedApprovalNumber = searchExistingTranspoterPage?.GetSelectedTransporterApprovalNumber(transporterName);
+            var selectedType = searchExistingTranspoterPage?.GetSelectedTransporterType(transporterName);
+
+            // Update scenario context with the selected transporter details for validation
+            _scenarioContext["TransporterApprovalNumber"] = selectedApprovalNumber;
+            _scenarioContext["TransporterType"] = selectedType;
+
+            // Click Select button
+            searchExistingTranspoterPage?.ClickSelectForTransporter(transporterName);
+        }
     }
 }

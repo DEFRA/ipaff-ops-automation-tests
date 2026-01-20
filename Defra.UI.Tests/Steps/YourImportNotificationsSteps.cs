@@ -1,6 +1,5 @@
 ﻿using Reqnroll.BoDi;
 using NUnit.Framework;
-using OpenQA.Selenium;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
 
@@ -23,6 +22,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
         [Then("the user should be logged into Notification page")]        
         [Then("the dashboard page should be displayed")]
+        [Then("the user is taken to the Your import notifications page")]
+        [Then("the Your notifications page is displayed")]
         public void ThenTheDashboardShouldBeDisplayed()
         {
             Assert.True(importNotificationsPage?.IsPageLoaded(), "Dashboard not displayed");
@@ -34,6 +35,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             importNotificationsPage?.ClickCreateNotification();
         }
 
+        [When("the user searches for the import notification")]
         [When("user searches for the import notification")]
         public void WhenUserSearchesForTheImportNotification()
         {
@@ -68,6 +70,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(importNotificationsPage?.VerifyDataInCertificate(chedReference), "Certificate data verification failed");
         }
 
+        [When("the user closes the newly opened tab")]
         [When("the user closes the PDF browser tab")]
         public void WhenTheUserClosesThePDFBrowserTab()
         {
@@ -93,5 +96,91 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext.Add("CHEDReference", reference);
             importNotificationsPage?.SearchForNotification(reference);
         }
+
+
+        [When("the user clicks Cookies link from the footer of the page")]
+        public void WhenTheUserClicksCookiesLinkFromTheFooterOfThePage()
+        {
+            importNotificationsPage?.ClickCookiesLink();
+        }
+
+        [Then("the notification returned in the search has the status {string}")]
+        public void ThenTheNotificationReturnedInTheSearchHasTheStatus(string expectedStatus)
+        {
+            var actualStatus = importNotificationsPage?.GetNotificationStatus();
+            Assert.AreEqual(expectedStatus, actualStatus, $"Expected status '{expectedStatus}' but found '{actualStatus}'");
+        }
+
+        [Then("the Amend link should be available for the notification")]
+        public void ThenTheAmendLinkShouldBeAvailableForTheNotification()
+        {
+            var chedReference = _scenarioContext.Get<string>("CHEDReference");
+            Assert.True(importNotificationsPage?.IsAmendLinkPresent(chedReference), "Amend link is not present");
+        }
+
+        [Then("the Amend link should not be available for the notification")]
+        public void ThenTheAmendLinkShouldNotBeAvailableForTheNotification()
+        {
+            var chedReference = _scenarioContext.Get<string>("CHEDReference");
+            Assert.True(importNotificationsPage?.IsAmendLinkNotPresent(chedReference), "Amend link should not be present but was found");
+        }
+
+        [Then("the Copy as new link should be available for the notification")]
+        public void ThenTheCopyAsNewLinkShouldBeAvailableForTheNotification()
+        {
+            var chedReference = _scenarioContext.Get<string>("CHEDReference");
+            Assert.True(importNotificationsPage?.IsCopyAsNewLinkPresent(chedReference), "Copy as new link is not present");
+        }
+
+        [Then("the View details link should be available for the notification")]
+        public void ThenTheViewDetailsLinkShouldBeAvailableForTheNotification()
+        {
+            var chedReference = _scenarioContext.Get<string>("CHEDReference");
+            Assert.True(importNotificationsPage?.IsViewDetailsLinkPresent(chedReference), "View details link is not present");
+        }
+
+        [Then("the Show notification link should be available for the notification")]
+        public void ThenTheShowNotificationLinkShouldBeAvailableForTheNotification()
+        {
+            var chedReference = _scenarioContext.Get<string>("CHEDReference");
+            Assert.True(importNotificationsPage?.IsShowNotificationLinkPresent(chedReference), "Show notification link is not present");
+        }
+
+        [When("the user clicks View details for the notification")]
+        public void WhenTheUserClicksViewDetailsForTheNotification()
+        {
+            var chedReference = _scenarioContext.Get<string>("CHEDReference");
+            importNotificationsPage?.ClickViewDetails(chedReference);
+        }
+
+        [When(@"the user clicks Address book link")]
+        [When("the user clicks the Address book link on the Your import notifications page")]
+        public void WhenTheUserClicksAddressBookLink()
+        {
+            importNotificationsPage?.ClickAddressBookLink();
+        }
+
+        [When("the user clicks Contact link on the footer")]
+        public void WhenTheUserClicksContactLinkOnTheFooter()
+        {
+            importNotificationsPage?.ClickContactLink();
+        }
+
+        [Then("the Search notifications by section displays all the fields on the Your import notifications page")]
+        public void ThenTheSearchNotificationsBySectionDisplaysAllTheFieldsOnTheYourImportNotificationsPage()
+        {
+            Assert.Multiple(() =>
+            {
+                Assert.True(importNotificationsPage?.IsSearchNotiByPanelDisplayed, "Search notifications by panel is not displayed on the Your import notifications page");
+                Assert.True(importNotificationsPage?.AreAllSearchFieldsDisplayed(), "Not all search fields are displayed under Search notifications by panel");
+            });
+        }
+
+        [When("the user clicks the View details link")]
+        public void WhenTheUserClicksTheViewDetailsLink()
+        {
+            importNotificationsPage?.ClickViewDetailsLink();
+        }
+
     }
 }

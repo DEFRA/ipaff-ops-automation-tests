@@ -16,7 +16,8 @@ public class NavigationSteps : PowerAppsStepDefiner
     /// </summary>
     /// <param name="subAreaName">The name of the sub-area.</param>
     /// <param name="areaName">The name of the area.</param>
-    [When("I open the sub area '(.*)' under the '(.*)' area")]
+    [When("I open the sub area {string} under the {string} area")]
+    [Then("I open the sub area {string} under the {string} area")]
     public static void WhenIOpenTheSubAreaUnderTheArea(string subAreaName, string areaName)
     {
         XrmApp.Navigation.OpenSubArea(areaName, subAreaName);

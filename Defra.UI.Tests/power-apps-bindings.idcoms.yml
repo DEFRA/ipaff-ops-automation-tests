@@ -1,0 +1,14 @@
+url: '#{{ IDCOMSUrl }}'
+useProfiles: false
+browserOptions:
+  browserType: Remote
+  remoteBrowserType: Chrome
+  driversPath: ''
+  headless: false
+  privateMode: false
+  remoteHubServer: '#{{ SeleniumGrid }}'
+users:
+  - username: '#{{ IDCOMSUser }}'
+    password: '#{{ IDCOMSPassword }}'
+    alias: 'Caseworker'
+appName: 'IDCOMS'

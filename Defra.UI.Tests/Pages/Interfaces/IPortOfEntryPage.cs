@@ -1,8 +1,4 @@
-﻿using DocumentFormat.OpenXml.Drawing.Charts;
-using Faker;
-using OpenQA.Selenium;
-
-namespace Defra.UI.Tests.Pages.Interfaces
+﻿namespace Defra.UI.Tests.Pages.Interfaces
 {
     public interface IPortOfEntryPage
     {
@@ -16,6 +12,9 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void EnterEstimatedArrivalTime(string hour, string minutes);
         void EnterEstimatedJourneyTime(string hours);
         void EnterContainerDetails(string containerNumber, string sealNumber);
-        void SelectAreConsignmentsInContainer(string option);
+        void SelectAreTrailersOrContainersUsed(string option);
+        void EnterContainerNumber(string containerNumber);
+        void EnterSealNumber(string sealNumber);
+        void TickOfficialSealCheckbox();
     }
 }
