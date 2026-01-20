@@ -39,9 +39,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var consignorAddress = searchExistingConsignorPage?.GetSelectedConsignorAddress(consignorName);
             var consignorCountry = searchExistingConsignorPage?.GetSelectedConsignorCountry(consignorName);
 
-            _scenarioContext.Add("ConsignorName", selectedConsignorName);
-            _scenarioContext.Add("ConsignorAddress", consignorAddress);
-            _scenarioContext.Add("ConsignorCountry", consignorCountry);
+            _scenarioContext["ConsignorName"] = selectedConsignorName;
+            _scenarioContext["ConsignorAddress"] = consignorAddress;
+            _scenarioContext["ConsignorCountry"] = consignorCountry;
+            _scenarioContext["ConsignorDetails"] = searchExistingConsignorPage?.GetSelectedConsignor(consignorName);
 
             searchExistingConsignorPage?.ClickSelect(consignorName);
         }

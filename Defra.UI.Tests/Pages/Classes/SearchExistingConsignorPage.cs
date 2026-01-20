@@ -35,7 +35,7 @@ namespace Defra.UI.Tests.Pages.Classes
         public bool IsPageLoaded()
         {
             return secondaryTitle.Text.Contains("Traders")
-                && primaryTitle.Text.Contains("Search for an existing consignor or exporter");
+                    && primaryTitle.Text.Contains("Search for an existing consignor or exporter");
         }
 
         public string GetSelectedConsignor(string consignorName)
@@ -55,5 +55,6 @@ namespace Defra.UI.Tests.Pages.Classes
         public string GetSelectedConsignorName(string consignorName) => GetConsignorNameElement(consignorName).Text.Trim();
         public string GetSelectedConsignorAddress(string consignorName) => GetConsignorAddressElement(consignorName).Text.Trim();
         public string GetSelectedConsignorCountry(string consignorName) => GetConsignorCountryElement(consignorName).Text.Trim();
+
     }
 }

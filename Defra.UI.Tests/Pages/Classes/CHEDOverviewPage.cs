@@ -14,6 +14,9 @@ namespace Defra.UI.Tests.Pages.Classes
         #region Page Objects
         private IWebElement primaryTitle => _driver.WaitForElement(By.XPath("//h1[@class='govuk-heading-xl ']"), true);
         private IWebElement btnRaiseBorderNotification => _driver.FindElement(By.Id("raise-border-notification"));
+        private IWebElement btnCopyAsReplacement => _driver.FindElement(By.Id("replace-certificate"));
+        private IWebElement lnkReplacedBy => _driver.FindElement(By.Id("replaced-by"));
+        private IWebElement lnkReplacedCertificate => _driver.FindElement(By.Id("replaced-certificate"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -31,6 +34,36 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickRaiseBorderNotification()
         {
             btnRaiseBorderNotification.Click();
+        }
+
+        public void ClickCopyAsReplacement()
+        {
+            btnCopyAsReplacement.Click();
+        }
+
+        public bool VerifyCHEDReference(string type, string chedReference, string replacementChedReference)
+        {
+            if (type.Equals("original"))
+                return primaryTitle.Text.Contains(chedReference);
+            else if (type.Equals("replacement"))
+                return primaryTitle.Text.Contains(replacementChedReference);
+            else
+                return false;
+        }
+
+        public bool VerifyReplacedByLink(string type, string chedReference, string replacementChedReference)
+        {
+            if (type.Equals("original"))
+                return lnkReplacedCertificate.Text.Contains("Replaced certificate: " + chedReference);
+            else if (type.Equals("replacement"))
+                return lnkReplacedBy.Text.Contains("Replaced by: " + replacementChedReference);
+            else
+                return false;
+        }
+
+        public void ClickReplacedByLink()
+        {
+            lnkReplacedBy.Click();
         }
     }
 }

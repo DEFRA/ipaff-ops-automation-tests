@@ -29,19 +29,20 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(btmsSearchResultPage?.IsPageLoaded(CHEDPREFNum), "Showing result for CHED page not loaded");
         }
 
+        [Then("the BTMS search result screen should be displayed for the replacement CHED reference")]
+        public void ThenTheBTMSSearchResultScreenShouldBeDisplayedForTheReplacementCHEDReference()
+        {
+            var ReplacementCHEDPREFNum = _scenarioContext.Get<string>("ReplacementCHEDReference");
+            Assert.True(btmsSearchResultPage?.IsPageLoadedForReplacementCHED(ReplacementCHEDPREFNum), "Showing result for CHED page not loaded");
+        }
 
+        [Then("the user checks commodity code {string}, description {string}, quantity {string}, authority {string} and decision {string} after the decision given")]
         [Then("the user checks commodity code {string}, description {string}, quantity {string}, authority {string} and decision {string}")]
         public void ThenTheUserChecksCommodityCodeDescriptionQuantityAuthorityAndDecision(string commodityCode, string commodityDescription, string commodityQuantity, string authority, string decision)
         {
             Assert.True(btmsSearchResultPage?.ValidateBTMSSearchResult(commodityCode, commodityDescription, commodityQuantity, authority, decision));
-        }
-       
-        
-        [Then("the user checks commodity code {string}, description {string}, quantity {string}, authority {string} and decision {string} after the decision given")]
-        public void ThenTheUserChecksCommodityCodeDescriptionQuantityAuthorityAndDecisionAfterTheDecisionGiven(string commodityCode, string commodityDescription, string commodityQuantity, string authority, string decision)
-        {
-            Assert.True(btmsSearchResultPage?.ValidateBTMSSearchResult(commodityCode, commodityDescription, commodityQuantity, authority, decision));
-        }
+
+        }  
 
         [Then("the user validates the commodity code {string}, description {string}, quantity {string}, authority {string} and decision {string} for commodity {string} after the decision is given")]
         public void ThenTheUserValidatesTheCommodityCodeDescriptionQuantityAuthorityAndDecisionForCommodityAfterTheDecisionIsGiven(string commCode, string desc, string quantity, string authority, string decision, string commodityNum)
@@ -60,6 +61,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserLogsOutOfBTMS()
         {
             signOutPage?.BTMSSignOut();
+        }
+
+        [Then("the CHED status should be {string} in BTMS search result page")]
+        public void ThenTheCHEDStatusShouldBeInBTMSSearchResultPage(string status)
+        {
+            Assert.True(btmsSearchResultPage?.VerifyStatus(status));
         }
     }
 }
