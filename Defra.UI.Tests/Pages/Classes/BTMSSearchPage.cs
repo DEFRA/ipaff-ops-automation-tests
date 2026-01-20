@@ -31,6 +31,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void SearchForChed(string chedRef)
         {
+            txtCHEDRefInput.Clear();
             txtCHEDRefInput.SendKeys(chedRef);
             btnSearch.Click();
         }

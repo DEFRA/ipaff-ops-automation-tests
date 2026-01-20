@@ -98,6 +98,8 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<BorderNotificationSubmittedPage, IBorderNotificationSubmittedPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<BorderNotificationsPage, IBorderNotificationsPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<BorderNotificationOverviewPage, IBorderNotificationOverviewPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ReplaceCHEDPage, IReplaceCHEDPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<NotificationOverviewPage, INotificationOverviewPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<TransportAfterPortOfEntryPage, ITransportAfterPortOfEntryPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<AddressBookPage, IAddressBookPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<DocumentsPage, IDocumentsPage>());

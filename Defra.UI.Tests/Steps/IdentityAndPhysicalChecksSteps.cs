@@ -36,8 +36,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user selects {string} under {string} in identity check")]
         public void WhenTheUserSelectsUnderInIdentityCheck(string decision, string checkType)
         {
-            _scenarioContext.Add("IdentityCheckType", checkType);
-            _scenarioContext.Add("IdentityCheckDecision", decision);
+            _scenarioContext["IdentityCheckType"] = checkType;
+            _scenarioContext["IdentityCheckDecision"] = decision;
             identityAndPhysicalChecksPage?.ClickIdentityCheckOption(decision, checkType);
         }
 
@@ -45,7 +45,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user selects {string} for physical check")]
         public void WhenTheUserSelectsForPhysicalCheck(string decision)
         {
-            _scenarioContext.Add("PhysicalCheckDecision", decision);
+            _scenarioContext["PhysicalCheckDecision"] = decision;
             identityAndPhysicalChecksPage?.SelectPhysicalCheck(decision);
         }
 

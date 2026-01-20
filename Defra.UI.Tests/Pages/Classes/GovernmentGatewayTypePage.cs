@@ -58,5 +58,10 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             btnSignIn.Click();
         }
+
+        public void OpenNewTab()
+        {
+            _driver.SwitchTo().NewWindow(WindowType.Tab);
+        }
     }
 }

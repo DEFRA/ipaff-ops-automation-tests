@@ -6,5 +6,6 @@
         void SelectLoginType(string loginType);
         void ClickContinueButton();
         void ClickSignInButton();
+        void OpenNewTab();
     }
 }
