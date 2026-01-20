@@ -43,6 +43,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext.Add("ConsigneeName", selectedConsigneeName);
             _scenarioContext.Add("ConsigneeAddress", consigneeAddress);
             _scenarioContext.Add("ConsigneeCountry", consigneeCountry);
+            _scenarioContext["ConsigneeDetails"] = searchExistingConsigneePage?.GetSelectedConsignee(consigneeName);
 
             searchExistingConsigneePage?.ClickSelect(consigneeName);
         }

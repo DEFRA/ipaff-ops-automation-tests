@@ -7,10 +7,10 @@
         bool VerifySelectedCountryOfOrigin(string country);
         void ClickSelectEstablishment();
         bool VerifySelectedEstablismentName(string establishmentListFirstName);
-        string GetSubtotalNetWeight();
-        string GetSubtotalPackages();
-        string GetTotalNetWeight();
-        string GetTotalPackages();
+        string GetSelectedEstablishmentName();
+        string GetSelectedEstablishmentCountry();
+        string GetSelectedEstablishmentType();
+        string GetSelectedEstablishmentApprovalNumber();
         string GetEstablishmentListFirstName();
         void ClickRemoveEstablishment();
         bool VerifySelectedCountryOnlyDisplayed(string country);
