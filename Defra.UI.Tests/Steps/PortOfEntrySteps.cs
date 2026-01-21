@@ -67,6 +67,89 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["EstimatedJourneyTime"] = journeyTimeHours;
         }
 
+        [When("the user enters BCP or Port of entry {string}")]
+        public void WhenTheUserEntersBCPOrPortOfEntry(string port)
+        {
+            portOfEntryPage?.EnterPortOfEntry(port);
+            _scenarioContext["PortOfEntry"] = port;
+        }
+
+        [When("the user selects means of transport to BCP or Port of entry {string}")]
+        public void WhenTheUserSelectsMeansOfTransportToBCPOrPortOfEntry(string mode)
+        {
+            portOfEntryPage?.SelectMeansOfTransport(mode);
+            _scenarioContext["MeansOfTransport"] = mode;
+        }
+
+        [When("the user enters transport identification {string}")]
+        public void WhenTheUserEntersTransportIdentification(string transId)
+        {
+            portOfEntryPage?.EnterTransportId(transId);
+            _scenarioContext["TransportId"] = transId;
+        }
+
+        [When("the user selects {string} for Are any road trailers or shipping containers being used to transport the consignment")]
+        public void WhenTheUserSelectsForAreAnyRoadTrailersOrShippingContainersBeingUsedToTransportTheConsignment(string option)
+        {
+            portOfEntryPage?.SelectAreTrailersOrContainersUsed(option);
+            _scenarioContext["AreContainers"] = option;
+        }
+
+        [When("the user enters transport document reference {string}")]
+        public void WhenTheUserEntersTransportDocumentReference(string documentRef)
+        {
+            portOfEntryPage?.EnterTransportDocRef(documentRef);
+            _scenarioContext["EnterTransportDocRef"] = documentRef;
+        }
+
+        [When("the user enters arrival date at BCP or Port of entry {string} days from now")]
+        public void WhenTheUserEntersArrivalDateAtBCPOrPortOfEntryDaysFromNow(string daysFromNow)
+        {
+            int days = int.Parse(daysFromNow);
+            var arrivalDate = DateTime.Now.AddDays(days);
+
+            var day = arrivalDate.Day.ToString();
+            var month = arrivalDate.Month.ToString();
+            var year = arrivalDate.Year.ToString();
+
+            portOfEntryPage?.EnterEstimatedArrivalDate(day, month, year);
+
+            var formattedDate = arrivalDate.ToString("dd MMM yyyy");
+            _scenarioContext["EstimatedArrivalDate"] = formattedDate;
+        }
+
+        [When("the user enters estimated arrival time at BCP with future time")]
+        public void WhenTheUserEntersEstimatedArrivalTimeAtBCPWithFutureTime()
+        {
+            // Use current time + 2 hours as a future time
+            var futureTime = DateTime.Now.AddHours(2);
+            var hour = futureTime.Hour.ToString();
+            var minutes = futureTime.Minute.ToString();
+
+            portOfEntryPage?.EnterEstimatedArrivalTime(hour, minutes);
+
+            var formattedTime = futureTime.ToString("HH:mm");
+            _scenarioContext["EstimatedArrivalTime"] = formattedTime;
+        }
+
+        [When("the user enters estimated arrival time at BCP {string}")]
+        public void WhenTheUserEntersEstimatedArrivalTimeAtBCP(string time)
+        {
+            var timeParts = time.Split(':');
+            var hour = timeParts[0];
+            var minutes = timeParts[1];
+
+            portOfEntryPage?.EnterEstimatedArrivalTime(hour, minutes);
+            _scenarioContext["EstimatedArrivalTime"] = time;
+        }
+
+        [When("the user enters estimated total journey time of the animals {string} hours")]
+        public void WhenTheUserEntersEstimatedTotalJourneyTimeOfTheAnimalsHours(string hours)
+        {
+            portOfEntryPage?.EnterEstimatedJourneyTime(hours);
+            _scenarioContext["EstimatedJourneyTime"] = hours;
+        }
+
         [When("the user enters Container Number {string}")]
         public void WhenTheUserEntersContainerNumber(string containerNumber)
         {
@@ -86,6 +169,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             portOfEntryPage?.TickOfficialSealCheckbox();
             _scenarioContext.Add("OfficialSealAffixed", "Yes");
-        }        
+        }
     }
 }

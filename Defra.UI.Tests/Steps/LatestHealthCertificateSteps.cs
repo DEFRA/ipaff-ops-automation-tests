@@ -35,9 +35,22 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["HealthCertificateReference"] = reference;
         }
 
-        [When("the user enters Latest Health Certificate date of issue {string}{string}{string}")]    
+        [When("the user enters Latest Health Certificate date of issue {string}{string}{string}")]
         public void WhenTheUserEntersLatestHealthCertificateDateOfIssue(string day, string month, string year)
         {
+            latestHealthCertificatePage?.EnterDateOfIssue(day, month, year);
+            var dateofIssue = day + " " + month + " " + year;
+            _scenarioContext["HealthCertificateDateOfIssue"] = dateofIssue;
+        }
+
+        [When("the user enters Latest Health Certificate date of issue from yesterday")]
+        public void WhenTheUserEntersLatestHealthCertificateDateOfIssueFromYesterday()
+        {
+            var yesterday = DateTime.Now.AddDays(-1);
+            var day = yesterday.Day.ToString("D2");
+            var month = yesterday.Month.ToString("D2");
+            var year = yesterday.Year.ToString();
+
             latestHealthCertificatePage?.EnterDateOfIssue(day, month, year);
             var dateofIssue = day + " " + month + " " + year;
             _scenarioContext["HealthCertificateDateOfIssue"] = dateofIssue;
