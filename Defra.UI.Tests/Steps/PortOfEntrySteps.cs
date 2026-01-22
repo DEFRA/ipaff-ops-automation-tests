@@ -74,6 +74,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["PortOfEntry"] = port;
         }
 
+        [When("the user changes means of transport to BCP or Port of entry to {string}")]
         [When("the user selects means of transport to BCP or Port of entry {string}")]
         public void WhenTheUserSelectsMeansOfTransportToBCPOrPortOfEntry(string mode)
         {
@@ -81,6 +82,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["MeansOfTransport"] = mode;
         }
 
+        [When("the user changes transport identification to {string}")]
         [When("the user enters transport identification {string}")]
         public void WhenTheUserEntersTransportIdentification(string transId)
         {
@@ -88,6 +90,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["TransportId"] = transId;
         }
 
+        [When("the user changes Are any road trailers or shipping containers being used to transport the consignment to {string}")]
         [When("the user selects {string} for Are any road trailers or shipping containers being used to transport the consignment")]
         public void WhenTheUserSelectsForAreAnyRoadTrailersOrShippingContainersBeingUsedToTransportTheConsignment(string option)
         {
@@ -118,6 +121,21 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["EstimatedArrivalDate"] = formattedDate;
         }
 
+        [When("the user enters arrival date at BCP or Port of entry as today's date")]
+        public void WhenTheUserEntersArrivalDateAtBCPOrPortOfEntryAsTodaysDate()
+        {
+            var arrivalDate = DateTime.Now;
+
+            var day = arrivalDate.Day.ToString();
+            var month = arrivalDate.Month.ToString();
+            var year = arrivalDate.Year.ToString();
+
+            portOfEntryPage?.EnterEstimatedArrivalDate(day, month, year);
+
+            var formattedDate = arrivalDate.ToString("dd MMM yyyy");
+            _scenarioContext["EstimatedArrivalDate"] = formattedDate;
+        }
+
         [When("the user enters estimated arrival time at BCP with future time")]
         public void WhenTheUserEntersEstimatedArrivalTimeAtBCPWithFutureTime()
         {
@@ -132,6 +150,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["EstimatedArrivalTime"] = formattedTime;
         }
 
+        [When("the user changes the estimated arrival time at BCP to {string}")]
         [When("the user enters estimated arrival time at BCP {string}")]
         public void WhenTheUserEntersEstimatedArrivalTimeAtBCP(string time)
         {
@@ -143,6 +162,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["EstimatedArrivalTime"] = time;
         }
 
+        [When("the user changes the estimated total journey time of the animals to {string} hours")]
         [When("the user enters estimated total journey time of the animals {string} hours")]
         public void WhenTheUserEntersEstimatedTotalJourneyTimeOfTheAnimalsHours(string hours)
         {
@@ -154,21 +174,21 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserEntersContainerNumber(string containerNumber)
         {
             portOfEntryPage?.EnterContainerNumber(containerNumber);
-            _scenarioContext.Add("ContainerNumber", containerNumber);
+            _scenarioContext["ContainerNumber"] = containerNumber;
         }
 
         [When("the user enters Seal Number {string}")]
         public void WhenTheUserEntersSealNumber(string sealNumber)
         {
             portOfEntryPage?.EnterSealNumber(sealNumber);
-            _scenarioContext.Add("SealNumber", sealNumber);
+            _scenarioContext["SealNumber"] = sealNumber;
         }
 
         [When("the user ticks the checkbox to confirm an official seal is affixed")]
         public void WhenTheUserTicksTheCheckboxToConfirmAnOfficialSealIsAffixed()
         {
             portOfEntryPage?.TickOfficialSealCheckbox();
-            _scenarioContext.Add("OfficialSealAffixed", "Yes");
+            _scenarioContext["OfficialSealAffixed"] = "Yes";
         }
     }
 }

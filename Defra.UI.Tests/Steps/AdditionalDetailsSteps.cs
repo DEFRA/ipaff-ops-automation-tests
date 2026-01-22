@@ -48,11 +48,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext.Add("CommodityIntendedFor", commIntendedForOption);
         }
 
+        [When("the user changes What are the animals certified for? to {string}")]
         [When("the user selects {string} for What are the animals certified for?")]
         public void WhenTheUserSelectsForWhatAreTheAnimalsCertifiedFor(string certificationOption)
         {
             additionalDetailsPage?.SelectAnimalCertification(certificationOption);
-            _scenarioContext.Add("CertificationOption", certificationOption);
+            _scenarioContext["CertificationOption"] = certificationOption;  
         }
 
         [When("the user selects {string} for Does the consignment contain any unweaned animals?")]
