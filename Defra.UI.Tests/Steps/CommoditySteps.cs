@@ -301,5 +301,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
             commodityPage?.EnterEarTag(earTag);
             _scenarioContext.Add("EarTag", earTag);
         }
+
+        [When("the user clicks on Save and return to hub on the Commodity page")]
+        public void WhenTheUserClicksOnSaveAndReturnToHubOnTheCommodityPage()
+        {
+            commodityPage?.ClickSaveAndReturnToHub();
+        }
     }
 }

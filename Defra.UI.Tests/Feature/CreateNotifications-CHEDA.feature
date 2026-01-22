@@ -1310,11 +1310,9 @@ Scenario: User creates and amends a CHEDA notification, inspector requests amend
 	When the user clicks Same as consignee for Place of destination
 	Then the place of destination should be populated with the same details as the consignee
 	When the user clicks Save and continue
-	Then the Add the County Parish Holding number (CPH) page should be displayed
-	When the user clicks Save and continue
 	Then the Transport to the BCP or Port of entry page should be displayed
 	When the user enters BCP or Port of entry 'London Borough of Hillingdon Heathrow Airport Imported Food Office - ADADA'
-	And the user selects means of transport to BCP or Port of entry 'Road Vehicle'
+	And the user selects means of transport to BCP or Port of entry 'Road vehicle'
 	And the user enters transport identification 'QR184'
 	And the user selects 'No' for Are any road trailers or shipping containers being used to transport the consignment
 	And the user enters transport document reference 'Doc1234'
@@ -1362,7 +1360,7 @@ Scenario: User creates and amends a CHEDA notification, inspector requests amend
 	And the notification version should be 'V2'
 	When the user clicks on 'Origin of the import' link
 	Then the Origin of the import page should be displayed
-	When the user changes the consigned country to 'Malaysia'
+	When the user changes the Country of origin to 'Malaysia'
 	And the user clicks on Save and return to hub
 	Then the Notification Hub page should be displayed
 	When the user clicks on 'Main reason for importing the animals' link
@@ -1374,7 +1372,7 @@ Scenario: User creates and amends a CHEDA notification, inspector requests amend
 	Then the Commodity page should be displayed with the commodity and description entered
 	When the user changes the Number of animals to '2'
 	And the user changes the Number of packages to '1'
-	And the user clicks on Save and return to hub
+	And the user clicks on Save and return to hub on the Commodity page
 	Then the Notification Hub page should be displayed
 	When the user clicks on 'Additional animal details' link
 	Then the Additional animal details page should be displayed
@@ -1416,184 +1414,188 @@ Scenario: User creates and amends a CHEDA notification, inspector requests amend
 	And the user clicks Submit notification
 	Then the Confirmation page should be displayed with the initial risk assessment
 	And the user records the IPAFFS User details and CHED Reference
+	When the user clicks Return to your dashboard
+	Then the dashboard page should be displayed
+	When user searches for the import notification
+	Then the notification should be present in the list
+	When the user clicks View details for the notification
+	Then the Review your notification page should be displayed
+	And the notification version should be 'V2'
+	When the user clicks on the back link
+	Then the dashboard page should be displayed
+	When the user clicks Show notification
+	Then the certificate should be displayed in a new browser tab
+	When the user checks that the data in the certificate matches the data entered into the notification
+	And the user closes the PDF browser tab
+	Then the browser tab is closed	
+	When the user logs out of IPAFFS Part 1
+	Then the user should be logged out successfully
+	When I navigate to the IPAFF Inspector application
+	Then I should see type of Gateway login page
+	And I have selected 'Sign in with Government Gateway' as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF Heathrow Inspector credentials and signin
+	Then the user should be logged into Import notifications page
+	When the user searches for the newly created notification on the Import notifications page
 
-	#And the notification version should be 'V2'
-	#When the user clicks Return to your dashboard
-	#Then the dashboard page should be displayed
-	#When user searches for the import notification
-	#Then the notification should be present in the list
-	#When the user clicks Show notification
-	#Then the certificate should be displayed in a new browser tab
-	#When the user checks that the data in the certificate matches the data entered into the notification
-	#And the user closes the PDF browser tab
-	#Then the browser tab is closed
-	#When the user logs out of IPAFFS Part 1
-	#Then the user should be logged out successfully
-	#When I navigate to the IPAFF Inspector application
-	#Then I should see type of Gateway login page
-	#And I have selected 'Sign in with Government Gateway' as login type
-	#When I click Continue button from How do you want to sign in page
-	#Then I should redirected to the IPAFF Sign in using Government Gateway page
-	#When I have provided the IPAFF Heathrow Inspector credentials and signin
-	#Then the user should be logged into Import notifications page
-	#When the user searches for the newly created notification on the Import notifications page
-	#Then the user clicks the notification found with status 'NEW'
-	#And the Decision Hub page should be displayed
-	#When the user clicks Save and set as in progress
-	#Then the notification status should change from 'NEW' to 'IN PROGRESS'
-	#When the user clicks View notification of consignment
-	#Then the Review your notification page should be displayed
-	#When the user clicks Request amendment
-	#Then the Request that the responsible person amends this CHED page should be displayed
-	#When the user clicks Request amendment button
-	#Then the Import notifications dashboard page should be displayed
-	#When the user searches for the newly created notification on the Import notifications page
-	#Then the notification should not be present in the inspector workflow
-	#When the user logs out of IPAFFS Part 2
-	#Then the user should be logged out successfully
-	#When I navigate to the IPAFF application
-	#Then I should see type of Gateway login page
-	#And I have selected 'Sign in with Government Gateway' as login type
-	#When I click Continue button from How do you want to sign in page
-	#Then I should redirected to the IPAFF Sign in using Government Gateway page
-	#When I have provided the IPAFF credentials and signin
-	#Then the user should be logged into Notification page
-	#When user searches for the import notification
-	#Then the notification should be present in the list
-	#And the notification returned in the search has the status 'AMEND'
-	#When the user clicks Amend
-	#Then the Notification Hub page should be displayed
-	#When the user clicks on 'Origin of the import' link
-	#Then the Origin of the import page should be displayed
-	#When the user changes the consigned country to 'Singapore'
-	#And the user clicks on Save and return to hub
-	#Then the Notification Hub page should be displayed
-	#When the user clicks on 'Review and submit' link
-	#Then the Review your notification page should be displayed
-	#When the user clicks Save and continue
-	#Then the Declaration page should be displayed
-	#When the user ticks the checkbox to declare that the information is true and correct
-	#And the user clicks Submit notification
-	#Then the Confirmation page should be displayed with the initial risk assessment
-	#And the notification version should be 'V3'
-	#When the user logs out of IPAFFS Part 1
-	#Then the user should be logged out successfully
-	#When I navigate to the IPAFF Inspector application
-	#Then I should see type of Gateway login page
-	#And I have selected 'Sign in with Government Gateway' as login type
-	#When I click Continue button from How do you want to sign in page
-	#Then I should redirected to the IPAFF Sign in using Government Gateway page
-	#When I have provided the IPAFF Heathrow Inspector credentials and signin
-	#Then the user should be logged into Import notifications page
-	#When the user searches for the newly created notification on the Import notifications page
-	#Then the user clicks the notification found with status 'NEW'
-	#And the Decision Hub page should be displayed
-	#When the user clicks Save and set as in progress
-	#Then the notification status should change from 'NEW' to 'IN PROGRESS'
-	#When the user clicks Local reference number link in Record checks
-	#Then Local reference number page should be displayed
-	#When the user enters a local reference number and clicks Save and continue
-	#Then the Documentary check page should be displayed
-	#When the user selects 'Satisfactory' for the Documentary check and clicks Save and continue
-	#Then the Identity, physical and welfare checks page should be displayed
-	#When the user selects 'Satisfactory' for Identity check
-	#And the user selects 'Satisfactory' for Physical check
-	#And the user selects '5' for Number of animals checked
-	#And the user selects 'Satisfactory' for Welfare check
-	#And the user selects '0' '%' for Number of dead animals
-	#And the user selects '0' 'unit' for Number of unfit animals
-	#And the user selects '0' for Number of births or abortions
-	#And the user clicks Save and continue
-	#Then the Seal numbers page should be displayed
-	#When the user selects 'Yes' for Are new seal numbers required?
-	#And the user enters new seal number 'NEWSEAL123'
-	#And the user clicks Save and continue
-	#Then the Laboratory tests page should be displayed
-	#When the user selects 'Yes' radio button for Would you like to record laboratory tests?
-	#And the user clicks Save and continue
-	#Then the Laboratory tests Reason for testing page should be displayed
-	#When the user selects 'Emergency measures' radio button for Reason for testing
-	#And the user clicks Save and continue
-	#Then the Laboratory tests Select the commodity sampled page should be displayed
-	#When the user clicks the Select link for the '0103' commodity code
-	#Then the Laboratory tests Commodity to be tested page should be displayed
-	#When the user selects any Laboratory test from the displayed list
-	#Then the Laboratory tests Commodity sampled page should be displayed
-	#When the user populates the commodity sample details 'Initial analysis' 'Campden BRI' 'EMR001' '2' 'Blood' 'Chilled'
-	#And the user clicks Save and continue
-	#Then the Laboratory tests Review page should be displayed
-	#When the user clicks Add another test
-	#Then the Laboratory tests Select the commodity sampled page should be displayed
-	#When the user clicks the Select link for the '0103' commodity code
-	#Then the Laboratory tests Commodity to be tested page should be displayed
-	#When the user selects '.ANTITHYROID AGENTS' from the list of Laboratory tests
-	#Then the Laboratory tests Commodity sampled page should be displayed
-	#When the user populates the commodity sample details 'Initial analysis' 'Concept Life Sciences' 'EMR002' '2' 'Blood' 'Frozen'
-	#And the user clicks Save and continue
-	#Then the Laboratory tests Review page should be displayed
-	#When the user clicks Add another test
-	#Then the Laboratory tests Select the commodity sampled page should be displayed
-	#When the user clicks the Select link for the '0103' commodity code
-	#Then the Laboratory tests Commodity to be tested page should be displayed
-	#When the user selects '.CHEMICAL ELEMENTS' from the list of Laboratory tests
-	#Then the Laboratory tests Commodity sampled page should be displayed
-	#When the user populates the commodity sample details 'Initial analysis' 'Campden BRI' 'EMR003' '1' 'Blood' 'Ambient'
-	#And the user clicks Save and continue
-	#Then the Laboratory tests Review page should be displayed
-	#And the user verifies multiple Laboratory tests are entered with Results 'Pending'
-	#When the user clicks Save and continue
-	#Then the Decision page should be displayed
-	#When the user selects Acceptable for 'Internal market' 'Approved bodies'
-	#And the user clicks Save and continue
-	#Then the Select a controlled destination page should be displayed
-	#When the user clicks Add a controlled destination
-	#Then the Search for an existing controlled destination page should be displayed
-	#When the user selects a controlled destination
-	#Then the chosen controlled destination should be displayed
-	#When the user clicks Save and continue
-	#Then the Review outcome decision page should be displayed
-	#And the user should see an error message 'Lab results pending for this consignment' in review page
-	#When the user Clicks the change link under 'Laboratory tests'
-	#Then the Laboratory tests page should be displayed
-	#When the user clicks Save and continue
-	#Then the Laboratory tests Reason for testing page should be displayed
-	#When the user clicks Save and continue
-	#Then the Laboratory tests Review page should be displayed
-	#When the user clicks on the first Laboratory test
-	#Then the Record laboratory test information page should be displayed
-	#When the user enters Sample use by date as '15''12''2025'
-	#When the user enters Released date as '16''12''2025'
-	#When the user selects 'Satisfactory' for Conclusion
-	#And the user clicks Save and continue
-	#Then the Laboratory tests Review page should be displayed
-	#When the user clicks on the second Laboratory test
-	#Then the Record laboratory test information page should be displayed
-	#When the user enters Sample use by date as '15''12''2025'
-	#When the user enters Released date as '16''12''2025'
-	#When the user selects 'Satisfactory' for Conclusion
-	#And the user clicks Save and continue
-	#Then the Laboratory tests Review page should be displayed
-	#When the user clicks on the third Laboratory test
-	#Then the Record laboratory test information page should be displayed
-	#When the user enters Sample use by date as '15''12''2025'
-	#When the user enters Released date as '16''12''2025'
-	#When the user selects 'Satisfactory' for Conclusion
-	#And the user clicks Save and continue
-	#Then the Laboratory tests Review page should be displayed
-	#And the user verifies all Laboratory tests are displayed with Results 'Satisfactory'
-	#When the user clicks Save and Return
-	#Then the Decision Hub page should be displayed
-	#When the user clicks Review And Submit link
-	#Then the Review outcome decision page should be displayed
-	#And the user should not see an error message 'Lab results pending for this consignment' in review page
-	#When the user selects the radio button to declare that the checks have been carried out in accordance with EU law
-	#And user clicks Submit decision
-	#Then the Your checks have been submitted page should be displayed
-	#When the user clicks View or print CHED
-	#Then the certificate should be displayed in a new browser tab
-	#When the user checks that the data in the certificate matches the data entered into the notification
-	#And the user closes the PDF browser tab
-	#Then the browser tab is closed
-	#And the notification status should be 'VALID'
-	#When the user logs out of IPAFFS Part 2
-	#Then the user should be logged out successfully
+#	Then the user clicks the notification found with status 'NEW'
+#	And the Decision Hub page should be displayed
+#	When the user clicks Save and set as in progress
+#	Then the notification status should change from 'NEW' to 'IN PROGRESS'
+#	When the user clicks View notification of consignment
+#	Then the Review your notification page should be displayed
+#	When the user clicks Request amendment
+#	Then the Request that the responsible person amends this CHED page should be displayed
+#	When the user clicks Request amendment button
+#	Then the Import notifications dashboard page should be displayed
+#	When the user searches for the newly created notification on the Import notifications page
+#	Then the notification should not be present in the inspector workflow
+#	When the user logs out of IPAFFS Part 2
+#	Then the user should be logged out successfully
+#	When I navigate to the IPAFF application
+#	Then I should see type of Gateway login page
+#	And I have selected 'Sign in with Government Gateway' as login type
+#	When I click Continue button from How do you want to sign in page
+#	Then I should redirected to the IPAFF Sign in using Government Gateway page
+#	When I have provided the IPAFF credentials and signin
+#	Then the user should be logged into Notification page
+#	When user searches for the import notification
+#	Then the notification should be present in the list
+#	And the notification returned in the search has the status 'AMEND'
+#	When the user clicks Amend
+#	Then the Notification Hub page should be displayed
+#	When the user clicks on 'Origin of the import' link
+#	Then the Origin of the import page should be displayed
+#	When the user changes the consigned country to 'Singapore'
+#	And the user clicks on Save and return to hub
+#	Then the Notification Hub page should be displayed
+#	When the user clicks on 'Review and submit' link
+#	Then the Review your notification page should be displayed
+#	When the user clicks Save and continue
+#	Then the Declaration page should be displayed
+#	When the user ticks the checkbox to declare that the information is true and correct
+#	And the user clicks Submit notification
+#	Then the Confirmation page should be displayed with the initial risk assessment
+#	And the notification version should be 'V3'
+#	When the user logs out of IPAFFS Part 1
+#	Then the user should be logged out successfully
+#	When I navigate to the IPAFF Inspector application
+#	Then I should see type of Gateway login page
+#	And I have selected 'Sign in with Government Gateway' as login type
+#	When I click Continue button from How do you want to sign in page
+#	Then I should redirected to the IPAFF Sign in using Government Gateway page
+#	When I have provided the IPAFF Heathrow Inspector credentials and signin
+#	Then the user should be logged into Import notifications page
+#	When the user searches for the newly created notification on the Import notifications page
+#	Then the user clicks the notification found with status 'NEW'
+#	And the Decision Hub page should be displayed
+#	When the user clicks Save and set as in progress
+#	Then the notification status should change from 'NEW' to 'IN PROGRESS'
+#	When the user clicks Local reference number link in Record checks
+#	Then Local reference number page should be displayed
+#	When the user enters a local reference number and clicks Save and continue
+#	Then the Documentary check page should be displayed
+#	When the user selects 'Satisfactory' for the Documentary check and clicks Save and continue
+#	Then the Identity, physical and welfare checks page should be displayed
+#	When the user selects 'Satisfactory' for Identity check
+#	And the user selects 'Satisfactory' for Physical check
+#	And the user selects '5' for Number of animals checked
+#	And the user selects 'Satisfactory' for Welfare check
+#	And the user selects '0' '%' for Number of dead animals
+#	And the user selects '0' 'unit' for Number of unfit animals
+#	And the user selects '0' for Number of births or abortions
+#	And the user clicks Save and continue
+#	Then the Seal numbers page should be displayed
+#	When the user selects 'Yes' for Are new seal numbers required?
+#	And the user enters new seal number 'NEWSEAL123'
+#	And the user clicks Save and continue
+#	Then the Laboratory tests page should be displayed
+#	When the user selects 'Yes' radio button for Would you like to record laboratory tests?
+#	And the user clicks Save and continue
+#	Then the Laboratory tests Reason for testing page should be displayed
+#	When the user selects 'Emergency measures' radio button for Reason for testing
+#	And the user clicks Save and continue
+#	Then the Laboratory tests Select the commodity sampled page should be displayed
+#	When the user clicks the Select link for the '0103' commodity code
+#	Then the Laboratory tests Commodity to be tested page should be displayed
+#	When the user selects any Laboratory test from the displayed list
+#	Then the Laboratory tests Commodity sampled page should be displayed
+#	When the user populates the commodity sample details 'Initial analysis' 'Campden BRI' 'EMR001' '2' 'Blood' 'Chilled'
+#	And the user clicks Save and continue
+#	Then the Laboratory tests Review page should be displayed
+#	When the user clicks Add another test
+#	Then the Laboratory tests Select the commodity sampled page should be displayed
+#	When the user clicks the Select link for the '0103' commodity code
+#	Then the Laboratory tests Commodity to be tested page should be displayed
+#	When the user selects '.ANTITHYROID AGENTS' from the list of Laboratory tests
+#	Then the Laboratory tests Commodity sampled page should be displayed
+#	When the user populates the commodity sample details 'Initial analysis' 'Concept Life Sciences' 'EMR002' '2' 'Blood' 'Frozen'
+#	And the user clicks Save and continue
+#	Then the Laboratory tests Review page should be displayed
+#	When the user clicks Add another test
+#	Then the Laboratory tests Select the commodity sampled page should be displayed
+#	When the user clicks the Select link for the '0103' commodity code
+#	Then the Laboratory tests Commodity to be tested page should be displayed
+#	When the user selects '.CHEMICAL ELEMENTS' from the list of Laboratory tests
+#	Then the Laboratory tests Commodity sampled page should be displayed
+#	When the user populates the commodity sample details 'Initial analysis' 'Campden BRI' 'EMR003' '1' 'Blood' 'Ambient'
+#	And the user clicks Save and continue
+#	Then the Laboratory tests Review page should be displayed
+#	And the user verifies multiple Laboratory tests are entered with Results 'Pending'
+#	When the user clicks Save and continue
+#	Then the Decision page should be displayed
+#	When the user selects Acceptable for 'Internal market' 'Approved bodies'
+#	And the user clicks Save and continue
+#	Then the Select a controlled destination page should be displayed
+#	When the user clicks Add a controlled destination
+#	Then the Search for an existing controlled destination page should be displayed
+#	When the user selects a controlled destination
+#	Then the chosen controlled destination should be displayed
+#	When the user clicks Save and continue
+#	Then the Review outcome decision page should be displayed
+#	And the user should see an error message 'Lab results pending for this consignment' in review page
+#	When the user Clicks the change link under 'Laboratory tests'
+#	Then the Laboratory tests page should be displayed
+#	When the user clicks Save and continue
+#	Then the Laboratory tests Reason for testing page should be displayed
+#	When the user clicks Save and continue
+#	Then the Laboratory tests Review page should be displayed
+#	When the user clicks on the first Laboratory test
+#	Then the Record laboratory test information page should be displayed
+#	When the user enters Sample use by date as '15''12''2025'
+#	When the user enters Released date as '16''12''2025'
+#	When the user selects 'Satisfactory' for Conclusion
+#	And the user clicks Save and continue
+#	Then the Laboratory tests Review page should be displayed
+#	When the user clicks on the second Laboratory test
+#	Then the Record laboratory test information page should be displayed
+#	When the user enters Sample use by date as '15''12''2025'
+#	When the user enters Released date as '16''12''2025'
+#	When the user selects 'Satisfactory' for Conclusion
+#	And the user clicks Save and continue
+#	Then the Laboratory tests Review page should be displayed
+#	When the user clicks on the third Laboratory test
+#	Then the Record laboratory test information page should be displayed
+#	When the user enters Sample use by date as '15''12''2025'
+#	When the user enters Released date as '16''12''2025'
+#	When the user selects 'Satisfactory' for Conclusion
+#	And the user clicks Save and continue
+#	Then the Laboratory tests Review page should be displayed
+#	And the user verifies all Laboratory tests are displayed with Results 'Satisfactory'
+#	When the user clicks Save and Return
+#	Then the Decision Hub page should be displayed
+#	When the user clicks Review And Submit link
+#	Then the Review outcome decision page should be displayed
+#	And the user should not see an error message 'Lab results pending for this consignment' in review page
+#	When the user selects the radio button to declare that the checks have been carried out in accordance with EU law
+#	And user clicks Submit decision
+#	Then the Your checks have been submitted page should be displayed
+#	When the user clicks View or print CHED
+#	Then the certificate should be displayed in a new browser tab
+#	When the user checks that the data in the certificate matches the data entered into the notification
+#	And the user closes the PDF browser tab
+#	Then the browser tab is closed
+#	And the notification status should be 'VALID'
+#	When the user logs out of IPAFFS Part 2
+#	Then the user should be logged out successfully
