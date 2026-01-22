@@ -54,10 +54,10 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public string GetNotificationVersion()
         {
-            // The text contains " - V2" so we need to trim and extract just the version
+            // The text contains "- V2" so we need to trim and extract just the version
             string versionText = spanVersionNumber.Text.Trim();
-            // Remove the leading " - " if present
-            return versionText.Replace(" - ", "").Trim();
+            // Remove the leading "- " if present (note: dash followed by space)
+            return versionText.TrimStart('-', ' ');
         }
     }
 }

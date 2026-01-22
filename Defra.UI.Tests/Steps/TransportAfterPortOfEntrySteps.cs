@@ -24,6 +24,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the Transport after the BCP or Port of entry page should be displayed")]
         public void ThenTheTransportAfterTheBCPOrPortOfEntryPageShouldBeDisplayed()
         {
+            // Remove GVMS keys since Transport After BCP page means airplane transport
+            // (GVMS page is skipped for airplane transport)
+            RemoveGVMSKeys();
+
             Assert.True(transportAfterPortOfEntryPage?.IsPageLoaded(), "Transport after the BCP or Port of entry page not loaded");
         }
 
@@ -31,21 +35,21 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserSelectsMeansOfTransportAfterBCP(string mode)
         {
             transportAfterPortOfEntryPage?.SelectMeansOfTransportAfterBCP(mode);
-            _scenarioContext.Add("MeansOfTransportAfterBCP", mode);
+            _scenarioContext["MeansOfTransportAfterBCP"] = mode;
         }
 
         [When("the user enters transport identification after BCP {string}")]
         public void WhenTheUserEntersTransportIdentificationAfterBCP(string transportId)
         {
             transportAfterPortOfEntryPage?.EnterTransportIdentificationAfterBCP(transportId);
-            _scenarioContext.Add("TransportIdentificationAfterBCP", transportId);
+            _scenarioContext["TransportIdentificationAfterBCP"] = transportId;
         }
 
         [When("the user enters transport document reference after BCP {string}")]
         public void WhenTheUserEntersTransportDocumentReferenceAfterBCP(string documentRef)
         {
             transportAfterPortOfEntryPage?.EnterTransportDocumentReferenceAfterBCP(documentRef);
-            _scenarioContext.Add("TransportDocumentReferenceAfterBCP", documentRef);
+            _scenarioContext["TransportDocumentReferenceAfterBCP"] = documentRef;
         }
 
         [When("the user enters departure date from BCP {string} days later than arrival date")]
@@ -62,14 +66,33 @@ namespace Defra.UI.Tests.Steps.IPAFF
             transportAfterPortOfEntryPage?.EnterDepartureDateFromBCP(departureDate);
 
             var formattedDepartureDate = departureDate.ToString("dd MMM yyyy");
-            _scenarioContext.Add("DepartureDateFromBCP", formattedDepartureDate);
+            _scenarioContext["DepartureDateFromBCP"] = formattedDepartureDate;
         }
 
         [When("the user enters departure time from BCP {string}")]
         public void WhenTheUserEntersDepartureTimeFromBCP(string time)
         {
             transportAfterPortOfEntryPage?.EnterDepartureTimeFromBCP(time);
-            _scenarioContext.Add("DepartureTimeFromBCP", time);
+            _scenarioContext["DepartureTimeFromBCP"] = time;
+        }
+
+        /// <summary>
+        /// Removes GVMS context keys when Transport After BCP page is displayed
+        /// (indicating airplane transport mode where GVMS page is skipped)
+        /// </summary>
+        private void RemoveGVMSKeys()
+        {
+            var keysToRemove = new[]
+            {
+                "IsGVMS"            };
+
+            foreach (var key in keysToRemove)
+            {
+                if (_scenarioContext.ContainsKey(key))
+                {
+                    _scenarioContext.Remove(key);
+                }
+            }
         }
     }
 }

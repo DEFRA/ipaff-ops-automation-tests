@@ -1,12 +1,13 @@
-﻿using Reqnroll.BoDi;
-using Defra.UI.Tests.Data.Users;
+﻿using Defra.UI.Tests.Data.Users;
+using Defra.UI.Tests.Pages.Classes;
+using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
+using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using Reqnroll;
-using Defra.UI.Tests.Pages.Classes;
-using Defra.UI.Tests.Pages.Interfaces;
-using DocumentFormat.OpenXml.Drawing.Charts;
+using Reqnroll.BoDi;
 
 namespace Defra.UI.Tests.Steps.IPAFF
 {
@@ -37,7 +38,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserSelectsForShouldWeNotifyAnyTransportContactsAboutInspections(string option)
         {
             transportContactsPage?.SelectTransportContactNotification(option);
-            _scenarioContext.Add("ShouldNotifyTransportContacts", option);
+            _scenarioContext["ShouldNotifyTransportContacts"] = option;
         }
     }
 }
