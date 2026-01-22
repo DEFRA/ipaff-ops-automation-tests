@@ -26,6 +26,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext = context;
         }
 
+        [Then("the Should we notify any transport contacts about inspections? page should be displayed")]
         [Then("the Transport Contacts page should be displayed")]
         public void ThenTheTransportContactsPageShouldBeDisplayed()
         {

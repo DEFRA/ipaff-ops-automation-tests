@@ -21,6 +21,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement lnkCountriesConsignmentTravel => _driver.WaitForElement(By.XPath("//a[contains(text(), 'Countries the consignment will travel through')]"));
         private IWebElement lnkCommodity => _driver.WaitForElement(By.Id("commodity-details-link"), true);
         private IWebElement lnkNotificationHub(string link) => _driver.WaitForElement(By.XPath($"//a[normalize-space(text())='{link}']"), true);
+        private IWebElement spanVersionNumber => _driver.WaitForElement(By.Id("cved-version-number"), true);
 
         #endregion
 
@@ -49,6 +50,14 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickLink(string link)
         {
             lnkNotificationHub(link).Click();
+        }
+
+        public string GetNotificationVersion()
+        {
+            // The text contains " - V2" so we need to trim and extract just the version
+            string versionText = spanVersionNumber.Text.Trim();
+            // Remove the leading " - " if present
+            return versionText.Replace(" - ", "").Trim();
         }
     }
 }
