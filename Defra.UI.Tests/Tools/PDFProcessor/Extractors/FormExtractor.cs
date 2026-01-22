@@ -1,8 +1,11 @@
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
 
-namespace Defra.UI.Tests.Tools.PDFProcessor.Extractors
+namespace PdfExtraction.Extractors
 {
+    /// <summary>
+    /// Extracts form field data using text analysis
+    /// </summary>
     public class FormExtractor
     {
         public Dictionary<string, string> ExtractFormFields(Page page, PdfDocument document)

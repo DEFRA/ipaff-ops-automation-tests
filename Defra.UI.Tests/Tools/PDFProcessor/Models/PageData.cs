@@ -1,5 +1,8 @@
-namespace Defra.UI.Tests.Tools.PDFProcessor.Models
+namespace PdfExtraction.Models
 {
+    /// <summary>
+    /// Represents data extracted from a single PDF page
+    /// </summary>
     public class PageData
     {
         public int PageNumber { get; set; }

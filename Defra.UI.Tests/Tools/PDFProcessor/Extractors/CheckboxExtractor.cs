@@ -2,10 +2,16 @@ using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.Core;
 
-namespace Defra.UI.Tests.Tools.PDFProcessor.Extractors
+namespace PdfExtraction.Extractors
 {
+    /// <summary>
+    /// Extracts checkbox states from PDF using AcroForms and Vector Path Analysis (visual fallback)
+    /// </summary>
     public class CheckboxExtractor
     {
+        /// <summary>
+        /// Extracts checkbox field values from a PDF page using AcroForms or Visual Path Analysis
+        /// </summary>
         public Dictionary<string, string> ExtractCheckboxes(Page page, PdfDocument document)
         {
             var checkboxes = new Dictionary<string, string>();
