@@ -1,4 +1,6 @@
-namespace PdfExtraction.Models
+using PdfExtraction.Models;
+
+namespace Defra.UI.Tests.Tools.PDFProcessor.Models
 {
     public class ChedRootObject : List<ChedPageObject> { }
 

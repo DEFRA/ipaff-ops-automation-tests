@@ -1,3 +1,4 @@
+using Defra.UI.Tests.Tools.PDFProcessor.Models;
 using Newtonsoft.Json;
 
 namespace PdfExtraction.Models

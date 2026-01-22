@@ -1,3 +1,5 @@
+using Defra.UI.Tests.Tools.PDFProcessor.Models;
+
 namespace PdfExtraction.Models
 {
     public class ExtractedPage

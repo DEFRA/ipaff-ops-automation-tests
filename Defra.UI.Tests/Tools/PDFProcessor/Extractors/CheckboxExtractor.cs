@@ -2,7 +2,7 @@ using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.Core;
 
-namespace PdfExtraction.Extractors
+namespace Defra.UI.Tests.Tools.PDFProcessor.Extractors
 {
     /// <summary>
     /// Extracts checkbox states from PDF using AcroForms and Vector Path Analysis (visual fallback)

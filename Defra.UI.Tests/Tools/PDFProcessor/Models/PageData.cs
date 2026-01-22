@@ -1,4 +1,4 @@
-namespace PdfExtraction.Models
+namespace Defra.UI.Tests.Tools.PDFProcessor.Models
 {
     /// <summary>
     /// Represents data extracted from a single PDF page
