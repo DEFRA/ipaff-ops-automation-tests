@@ -23,6 +23,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement lnkOverrideRiskDecision => _driver.FindElement(By.Id("override-risk-decision-link"));
         private IWebElement txtRiskAssesmentTitle => _driver.FindElement(By.Id("risk-assessment-banner-title"));
         private IWebElement txtRiskAssesmentMessage => _driver.FindElement(By.XPath("//p[@class='govuk-body']"));
+        private IWebElement lnkViewNotification => _driver.WaitForElement(By.Id("view-notification"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -85,6 +86,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public bool VerifyInspectionRequiredMessage(string message)
         {
             return txtRiskAssesmentMessage.Text.Trim().Equals(message);
+        }
+
+        public void ClickViewNotificationOfConsignment()
+        {
+            lnkViewNotification.Click();
         }
     }
 }
