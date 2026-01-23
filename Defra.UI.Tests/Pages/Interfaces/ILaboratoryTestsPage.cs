@@ -30,7 +30,7 @@ namespace Defra.UI.Tests.Pages.Interfaces
         bool VerifyLabTestsReviewPage(string commodityCode, string commodityDescription, string commoditySpecies, string labTestName);
         bool IsReasonForTestingPageLoaded();
         bool IsSelectCommoditySampledPageLoaded();
-        bool IsCommodityToBeTestedPageLoaded();        
+        bool IsCommodityToBeTestedPageLoaded();
         string GetSampleDate();
         string GetSampleTime();
         bool IsAddAnotherTestLinkDisplayed();
@@ -39,5 +39,6 @@ namespace Defra.UI.Tests.Pages.Interfaces
         int GetLabTestCount();
         bool VerifyMultipleLabTestsWithPendingResults(int expectedMinimumCount = 2);
         bool VerifyMultipleLabTestsWithSatisfactoryResults(int expectedMinimumCount = 2);
+        bool AreLabTestReasonRadioButtonsDisplayed(params string[] reasonOptions);
     }
 }
