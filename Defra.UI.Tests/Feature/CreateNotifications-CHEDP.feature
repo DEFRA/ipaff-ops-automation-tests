@@ -3,7 +3,7 @@ Feature: Create Notification CHEDP
 
 Create a notification for CHEDP type
 
-Scenario: User creates and submits a B2C consignment notification - CHEDP
+Scenario: User creates and submits a B2C consignment notification - CHEDP HappyPath
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
@@ -170,7 +170,7 @@ Scenario: User creates and submits a B2C consignment notification - CHEDP
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
 
-Scenario: User creates and submits a B2C consignment notification for Transit Reason - CHEDP
+Scenario: User creates and submits a B2C consignment notification for Transit Reason - CHEDP 7369
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
@@ -349,7 +349,7 @@ Scenario: User creates and submits a B2C consignment notification for Transit Re
 	When the user searches for the newly created notification on the Import notifications page
 	Then the user clicks the notification found with status "Valid"
 
-Scenario: User creates and submits a B2C consignment notification for Transhipment or onward travel Reason - CHEDP
+Scenario: User creates and submits a B2C consignment notification for Transhipment or onward travel Reason - CHEDP 7370
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
@@ -517,7 +517,7 @@ Scenario: User creates and submits a B2C consignment notification for Transhipme
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
 
-Scenario: User creates and submits 2 B2C consignment notification with existing Billing details - CHEDP
+Scenario: User creates and submits 2 B2C consignment notification with existing Billing details - CHEDP 7365
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
@@ -734,7 +734,7 @@ Scenario: User creates and submits 2 B2C consignment notification with existing 
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
 
-Scenario: Admin submits a notification and records decision and validate cookies page as normal user - CHEDP
+Scenario: Admin submits a notification and records decision and validate cookies page as normal user - CHEDP 7368
 	Given that I navigate to the IPAFF Inspector application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
@@ -907,7 +907,7 @@ Scenario: Admin submits a notification and records decision and validate cookies
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
 
-Scenario: User creates a B2C consignment notification, updates it from the review page, submits it, amends the notification, and sends it for laboratory tests - CHEDP
+Scenario: User creates a B2C consignment notification, updates it from the review page, submits it, amends the notification, and sends it for laboratory tests - CHEDP 7371
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
@@ -1182,7 +1182,7 @@ Scenario: User creates a B2C consignment notification, updates it from the revie
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
 
-Scenario: User creates and submits a notification, override the risk decision and reject the notification - CHEDP
+Scenario: User creates and submits a notification, override the risk decision and reject the notification - CHEDP 7372
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
@@ -1412,7 +1412,7 @@ Scenario: User creates and submits a notification, override the risk decision an
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
 
-Scenario: User submits a notification as no inspection required, override the risk decision and checks Inspection required box - CHEDP
+Scenario: User submits a notification as no inspection required, override the risk decision and checks Inspection required box - CHEDP 8582
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
@@ -1565,7 +1565,7 @@ Scenario: User submits a notification as no inspection required, override the ri
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
 
-Scenario: User submits a notification, inspector copy it as replacement, update and submit decision - CHED P
+Scenario: User submits a notification, inspector copy it as replacement, update and submit decision - CHEDP 9112
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
