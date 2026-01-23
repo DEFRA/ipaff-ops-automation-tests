@@ -28,6 +28,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(notificationOverviewPage?.IsPageLoaded(), "Notification overview page not loaded");
         }
 
+        [Then("the notification status should be {string}")]
         [Then("the status should be {string}")]
         public void ThenTheStatusShouldBe(string status)
         {
