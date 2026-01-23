@@ -3,7 +3,7 @@ Feature: Create Notification CHEDP
 
 Create a notification for CHEDP type
 
-Scenario: User creates and submits a B2C consignment notification - CHEDP HappyPath
+Scenario: User creates and submits a B2C consignment notification - CHEDP Happy Path
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
