@@ -214,6 +214,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             commodityPage?.ClickSaveAndContinue();
         }
 
+        [When("the user clicks on the back button in the browser")]
         [When("I click the back button in the browser")]
         public void WhenIClickTheBackButtonInTheBrowser()
         {
