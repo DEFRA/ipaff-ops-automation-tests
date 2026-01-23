@@ -84,5 +84,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             Assert.True(decisionHubPage?.VerifyInspectionRequiredMessage(message));
         }
+
+        [When("the user clicks View notification of consignment")]
+        public void WhenTheUserClicksViewNotificationOfConsignment()
+        {
+            decisionHubPage?.ClickViewNotificationOfConsignment();
+        }
     }
 }

@@ -71,5 +71,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             notificationOverviewPage?.ClickRecordChecksButton();
         }
+
+        [When("the user clicks Request amendment")]
+        public void WhenTheUserClicksRequestAmendment()
+        {
+            notificationOverviewPage?.ClickRequestAmendment();
+        }
     }
 }
