@@ -6,5 +6,6 @@
         bool IsContactAddressForConsignmentPageLoaded();
         bool IsPageLoadedWithoutSecondaryTitle();
         string GetSelectedContactAddress();
+        string GetDraftCHEDRefNumber { get; }
     }
 }

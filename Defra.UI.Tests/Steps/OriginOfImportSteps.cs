@@ -1,4 +1,5 @@
 ﻿using Defra.UI.Tests.Pages.Interfaces;
+using Faker;
 using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;
@@ -67,6 +68,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
         [When("the user clicks on Save and return to hub")]
+        [Then("the user clicks on Save and return to hub")]
+        [Then("the user clicks the Save and return to hub button")]
         public void WhenTheUserClicksOnSaveAndReturnToHub()
         {
             originOfImportPage?.ClickSaveAndReturnToHub();
@@ -94,6 +97,28 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             originOfImportPage?.SelectConsignedCountry(consignedCountry);
             _scenarioContext["ContryFromWhereConsigned"] = consignedCountry;
+        }
+
+        [Then("the user verifies and enters any missing data on the Origin of the import page")]
+        public void ThenTheUserVerifiesAndEntersAnyMissingDataOnTheOriginOfTheImportPage()
+        {
+            var countryOfOrigin = originOfImportPage?.GetOriginCountryText;
+            if (!string.IsNullOrEmpty(countryOfOrigin) || !countryOfOrigin.Contains("Select"))
+                _scenarioContext["ContryFromWhereConsigned"] = countryOfOrigin;
+            else
+                WhenTheUserChangesTheConsignedCountryTo("Australia");
+
+            var regionCodeRadio = originOfImportPage?.GetRegionCodeRadioLabelText;
+            if (!string.IsNullOrEmpty(regionCodeRadio))
+                _scenarioContext["IsRegionOfOriginCodeRequired"] = regionCodeRadio;
+            else
+                WhenTheUserChoosesForDoesYourConsignmentRequireARegionCode("No");
+
+            var countryFromWhereConsigned = originOfImportPage?.GetConsignedCountryText;
+            if (!string.IsNullOrEmpty(countryFromWhereConsigned) || !countryFromWhereConsigned.Contains("Select"))
+                _scenarioContext["ContryFromWhereConsigned"] = countryFromWhereConsigned;
+            else
+                WhenTheUserChangesTheConsignedCountryTo("Australia");
         }
     }
 }

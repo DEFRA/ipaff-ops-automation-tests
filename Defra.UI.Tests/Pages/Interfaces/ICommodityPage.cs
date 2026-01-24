@@ -28,5 +28,6 @@
         string GetSubtotalPackages();
         string GetTotalNetWeight();
         string GetTotalPackages();
+        int GetAddedCommoditiesCount { get; }
     }
 }

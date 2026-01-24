@@ -18,5 +18,6 @@
         void ClickContactLink();
         void ClickAddressBookLink();
         void ClickViewDetailsLink();
+        void ClickCopyAsNewLink();
     }
 }

@@ -28,6 +28,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement originCountrySelectedVal => _driver.FindElement(By.XPath("//select[@id='origin-country']/option[@selected]"));
         private IWebElement consignedCountrySelectedVal => _driver.FindElement(By.XPath("//select[@id='consigned-country']/option[@selected]"));
         private IWebElement ddlConsignedCountry => _driver.FindElement(By.Id("consigned-country"));
+        private IWebElement selectedRadioLabel => _driver.FindElement(By.XPath("//input[contains(@class,'govuk-radios__input') and @checked]/following-sibling::label"));
+
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -85,7 +87,9 @@ namespace Defra.UI.Tests.Pages.Classes
         public string GetOriginCountryText => originCountrySelectedVal.Text.Trim();
         
         public string GetConsignedCountryText => consignedCountrySelectedVal.Text.Trim();
-        
+
+        public string GetRegionCodeRadioLabelText => selectedRadioLabel.Text.Trim() ?? string.Empty;
+
         public bool IsRegionCodeRadioSelected(string regionCodeRadioOption)
         {
             return rdoRegionCode(regionCodeRadioOption).GetAttribute("checked") != null;

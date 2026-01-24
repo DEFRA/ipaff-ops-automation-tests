@@ -20,6 +20,10 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement lnksameAsConsignee => _driver.WaitForElement(By.Id("populate-importer"));
         private IWebElement lnksameAsConsigneePlaceOfDestination => _driver.FindElement(By.Id("populate-place-of-destination"));
         private IWebElement lnkAddDestination => _driver.WaitForElement(By.LinkText("Add a place of destination"));
+        private List<IWebElement> consignorRowsList => _driver.FindElements(By.XPath("//table[@id='traders-table-consignor']/tbody/tr")).ToList();
+        private List<IWebElement> consigneeRowsList => _driver.FindElements(By.XPath("//table[@id='traders-table-consignee']/tbody/tr")).ToList();
+        private List<IWebElement> importerRowsList => _driver.FindElements(By.XPath("//table[@id='traders-table-importer']/tbody/tr")).ToList();
+        private List<IWebElement> destinationRowsList => _driver.FindElements(By.XPath("//table[@id='traders-table-place-of-destination']/tbody/tr")).ToList();
         private IWebElement selectedConsignor => _driver.WaitForElement(By.XPath("//*[@id='traders-table-consignor']//td[1]"));
         private IWebElement selectedConsignee => _driver.WaitForElement(By.XPath("//*[@id='traders-table-consignee']//td[1]"));
         private IWebElement selectedDestination => _driver.WaitForElement(By.XPath("//*[@id='traders-table-place-of-destination']//td[1]"));
@@ -153,5 +157,10 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             lnkChange(section).Click();
         }
+
+        public int GetConsignorRowsCount() => consignorRowsList?.Count ?? 0;
+        public int GetConsigneeRowsCount() => consigneeRowsList?.Count ?? 0;
+        public int GetImporterRowsCount() => importerRowsList?.Count ?? 0;
+        public int GetDestinationRowsCount() => destinationRowsList?.Count ?? 0;
     }
 }

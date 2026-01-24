@@ -11,6 +11,7 @@
         void ClickSaveAndReturnToHub();
         string GetOriginCountryText { get; }
         string GetConsignedCountryText { get; }
+        string GetRegionCodeRadioLabelText { get; }
         bool IsRegionCodeRadioSelected(string regionCodeRadioOption);
         void SelectConsignedCountry(string consignedCountry);
     }
