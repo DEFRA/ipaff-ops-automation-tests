@@ -24,6 +24,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the dashboard page should be displayed")]
         [Then("the user is taken to the Your import notifications page")]
         [Then("the Your notifications page is displayed")]
+        [Then("the user is taken back to the dashboard page")]
         public void ThenTheDashboardShouldBeDisplayed()
         {
             Assert.True(importNotificationsPage?.IsPageLoaded(), "Dashboard not displayed");
@@ -50,6 +51,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
         [When("the user clicks Show notification")]
+        [When("the user clicks the Show notification link")]
         public void WhenTheUserClicksShowNotification()
         {
             var chedReference = _scenarioContext.Get<string>("CHEDReference");
@@ -129,6 +131,33 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserClicksTheViewDetailsLink()
         {
             importNotificationsPage?.ClickViewDetailsLink();
+        }
+
+        [Then("the user searches for the Draft CHED reference on the dashboard")]
+        public void ThenTheUserSearchesForTheDraftCHEDReferenceOnTheDashboard()
+        {
+            var draftCHEDReference = _scenarioContext.Get<string>("DraftCHEDReference");
+            importNotificationsPage?.SearchForNotification(draftCHEDReference);
+        }
+
+        [Then("the draft notification should be present in the list")]
+        public void ThenTheDraftNotificationShouldBePresentInTheList()
+        {
+            var draftCHEDReference = _scenarioContext.Get<string>("DraftCHEDReference");
+            Assert.True(importNotificationsPage?.VerifyNotificationInList(draftCHEDReference), "Draft notification not found in the list");
+        }
+
+        [When("the user clicks the Amend link")]
+        public void WhenTheUserClicksTheAmendLink()
+        {
+            var draftCHEDReference = _scenarioContext.Get<string>("DraftCHEDReference");
+            importNotificationsPage?.ClickAmend(draftCHEDReference);
+        }
+
+        [When("the user clicks the Copy as new link for the notification")]
+        public void WhenTheUserClicksTheCopyAsNewLinkForTheNotification()
+        {
+            importNotificationsPage?.ClickCopyAsNewLink();
         }
 
     }

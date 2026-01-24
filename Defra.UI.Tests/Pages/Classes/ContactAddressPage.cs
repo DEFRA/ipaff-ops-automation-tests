@@ -16,6 +16,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
         private IWebElement secondaryTitle => _driver.WaitForElement(By.Id("page-secondary-title"), true);
         private IWebElement firstContactAddressLabel => _driver.FindElement(By.XPath("//label[contains(@for, 'branch-address')]"));
+        private IWebElement draftChedRefNumber => _driver.FindElement(By.Id("reference-number"));
+
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -53,5 +55,7 @@ namespace Defra.UI.Tests.Pages.Classes
             lines.RemoveAt(lines.Count - 1); 
             return string.Join("\n", lines).Trim();
         }
+
+        public string GetDraftCHEDRefNumber => draftChedRefNumber?.Text.Trim() ?? string.Empty;
     }
 }

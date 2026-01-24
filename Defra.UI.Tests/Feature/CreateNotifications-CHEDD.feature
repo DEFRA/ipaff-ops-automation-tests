@@ -631,3 +631,214 @@ Scenario: User verifies Address book page search, submits notification for 'Non-
 	And the user validates the commodity code "100610", description "Rice in the husk (paddy or rough)", quantity "1000", authority "FNAO" and decision "Non Acceptable" for commodity "1" after the decision is given
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
+
+Scenario:SPS-9111
+	Given that I navigate to the IPAFF application
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF credentials and signin
+	Then the user should be logged into Notification page
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'High risk food and feed of non-animal origin' option
+	And the user clicks Save and continue
+	#Then the Origin of the plants plant product or other objects page should be displayed -- change
+	Then the Origin of the animal or product page should be displayed
+	When the user chooses "Australia" from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing "Australia" as the Country of origin and Country from where consigned
+	When the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
+	And the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When I click the back button in the browser
+	Then the Origin of the import page should be displayed
+	When I click the forward button in the browser
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches for first commodity code '12024200'
+	Then the commodity details should be populated '12024200' 'Shelled, whether or not broken' for first commodity
+	When the user selects "No" for Do you want to add another commodity?
+	When the user clicks Save and continue
+	Then What is the main reason for importing the consignment? page should be displayed with radio buttons for CHEDD
+	When The user selects 'Internal market' radio option
+	And the user clicks Save and continue
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	When the user populates Net weight as '19000' for first commodity
+	And the user populates Number of packages as '1' for first commodity
+	And the user selects type of package as 'Case' for the commodity '12024200' for first commodity
+	And the user clicks the Add commodity link
+	And the user clicks the 'CEREALS' in the parent commodity tree
+	And the sub commodity list expands
+	And the user clicks '1006' 'Rice' under the parent commodity
+	And the sub commodity list expands
+	And the user selects the second commodity '100610' 'Rice in the husk (paddy or rough)' under the parent commodity
+	Then the Commodity page should be displayed
+	When the user selects "No" for Do you want to add another commodity?
+	And the user clicks Save and continue
+	When the user populates Net weight as '18000' for the second commodity '100610'
+	And the user populates Number of packages as '1' for the second commodity '100610'
+	And the user selects type of package as 'Box' for the second commodity '100610'
+	When the user clicks the Update total button after adding all the commodities
+	Then the total gross weight should be greater than the net weight '40000'
+	When the user clicks Save and continue in commodity page
+	Then the Additional details page should be displayed
+	When the user selects 'Human consumption' radio button under Commodity intended for on the Additional details page
+	When the user selects 'Chilled' radio button on the Additional details page
+	And the user clicks Save and continue
+	Then the Accompanying documents page should be displayed
+	When the user selects Document type "Air waybill"
+	And the user enters Document reference "INV12345"
+	And the user selects a future date from the date picker
+	And the user clicks on Add attachment link
+	And the user uploads the document 'IPAFFS Test Document' in the format '.docx'
+	Then the document 'IPAFFS Test Document' '.docx' is uploaded successfully
+	When the user download the document attached in accompanying documents
+	Then the user switch to next tab and open the browser downloads
+	And verifies the document 'IPAFFS Test Document' downloaded successfully
+	When the user closes the newly opened tab
+	Then the browser tab is closed
+	And the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects one of the displayed consignors or exporters "ABC"
+	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee "DEF"
+	Then the chosen consignee should be displayed
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee
+	When the user clicks Add a place of destination
+	Then the Search for an existing place of destination page should be displayed
+	When the user selects a place of destination 'DEF'
+	Then the chosen place of destination should be displayed
+	When the user clicks Save and continue
+	Then the Transport to the port of entry page should be displayed
+	When the user populates the transport details 'LONDON GATEWAY (GBLGP)' 'No' 'Road vehicle' '123456' 'Doc1234'
+	When the user clicks Save and continue
+	Then the Goods movement services page should be displayed
+	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user clicks Save and continue
+	Then the Contact details page should be displayed, pre-populated with the user's details
+	When the user clicks Save and continue
+	Then the Nominated contacts page should be displayed
+	When the user clicks Save and continue
+	Then the Contacts - Contact address for consignment page should be displayed
+	#Add step to record Draft CHED number here
+	And the user records the Draft CHED number
+	When the user logs out of IPAFFS Part 1
+	Then the user should be logged out successfully
+	#Add simplified steps to login back
+	When the user logs back into IPAFFS application
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF credentials and signin
+	Then the user should be logged into Notification page
+	And the user searches for the Draft CHED reference on the dashboard
+	Then the draft notification should be present in the list
+	When the user clicks the Amend link
+	Then the Notification Hub page should be displayed
+	#Add step to validate data (line 33)
+	#Also check with Simon on what to validate on the Notification Hub page
+	When the user clicks Contact address for consignment link
+	Then the Contacts - Contact address for consignment page should be displayed
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	#Added step 35 - Check
+	And the data presented for review matches the data entered into the notification for CHED D	
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	When the user records the IPAFFS User details and CHED Reference
+	Then the details should be recorded
+	#check below step if works
+	When the user clicks return to you dashboard link
+	Then the dashboard page should be displayed
+	#reword the below to search for the submitted noti
+	When user searches for the import notification
+	Then the notification should be present in the list
+	When the user clicks the Show notification link
+	#Add steps 41,42,43,44,45 to 54
+	Then the certificate should be displayed in a new browser tab
+	When the user checks that the data in the certificate matches the data entered into the notification
+	And the user closes the PDF browser tab
+	Then the browser tab is closed
+	And the dashboard page should be displayed
+	And the user is taken back to the dashboard page
+	When the user clicks the Copy as new link for the notification
+	Then the Notification Hub page of a new draft notification should be displayed
+	When the user clicks on 'Origin of the import' link
+	Then the user verifies and enters any missing data on the Origin of the import page
+	And the user clicks the Save and return to hub button
+	When the user clicks on 'Main reason for importing the consignment' link
+	Then the user verifies and enters any missing data on the Main reason for importing the consignment page
+	And the user clicks the Save and return to hub button
+	When the user clicks on 'Commodity' link
+	Then the user verifies and enters any missing data on the Commodity page
+	And the user clicks the Save and return to hub button
+	When the user clicks on 'Additional details' link
+	Then the user verifies and enters any missing data on the Additional details page
+	And the user clicks the Save and return to hub button
+	When the user clicks on 'Accompanying documents' link
+	#Then the user verifies and enters any missing data on the Main reason for importing the consignment page
+	#And the user uploads the document 'IPAFFS Test Document' in the format '.docx'
+	And the user uploads the document 'IPAFFS Test Document' in the format '.docx' as no document is attached by the copy
+	Then the document 'IPAFFS Test Document' '.docx' is uploaded successfully
+	And the user clicks the Save and return to hub button
+	When the user clicks on 'Addresses' link
+	Then the user verifies and enters any missing data on the Addresses page
+	And the user clicks the Save and return to hub button
+	When the user clicks on 'Transport to the port of entry' link
+	Then the user verifies and enters any missing data on the Transport to the port of entry page
+	And the user clicks the Save and return to hub button
+	When the user clicks on 'Goods movement services' link
+	Then the user verifies and enters any missing data on the Goods movement services page
+	And the user clicks the Save and return to hub button
+	When the user clicks on 'Contact details' link
+	Then the user verifies and enters any missing data on the Contact details page
+	And the user clicks the Save and return to hub button
+	#Check if needed as this is optional field. Test case says required fields.
+	When the user clicks on 'Nominated contacts (optional)' link
+	Then the user verifies and enters any missing data on the Main reason for importing the consignment page
+	And the user clicks the Save and return to hub button
+	When the user clicks on 'Contact address for consignment' link
+	Then the user verifies and enters any missing data on the Contact address for consignment page
+	And the user clicks the Save and return to hub button
+
+	When the user searches for the newly created notification on the Import notifications page
+	Then the user clicks the notificaiton found with status "NEW"
+	Then the Decision Hub page should be displayed
+	When the user clicks Save and set as in progress
+	Then the notification status should change from "NEW" to "IN PROGRESS"
+	When the user clicks Local reference number link in Record checks
+	Then Local reference number page should be displayed
+	When the user clicks Save and continue without entering the local reference number data
+	Then the Checks page should be displayed
+	When the user selects 'Satisfactory' radio button under Documentary check on the Checks page
+	And the user selects 'Yes' radio button under Identity check on the Checks page
+	And the user selects 'Satisfactory' sub radio button under the Identity check main radio
+	And the user selects 'Yes' radio button under Physical check on the Checks page
+	And the user selects 'Satisfactory' sub radio button under the Physical check main radio
+	And the user clicks on Save and continue button on the Checks page
+	Then the Seal numbers page should be displayed
+	When the user select 'No' radio button on the Seal numbers page
+	And the user clicks Save and continue
+	Then the Laboratory tests page should be displayed
+	When the user select 'No' radio button on the Laboratory tests page
+	And the user clicks Save and continue
+	Then the Decision page should be displayed
+	And the main radio option 'Internal market' and the sub radio option 'Human consumption' are selected by default
+	And the user clicks Save and continue
+
+
+
+
+
+	

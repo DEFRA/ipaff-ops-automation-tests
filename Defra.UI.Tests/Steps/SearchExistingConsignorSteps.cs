@@ -14,7 +14,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
         private ISearchExistingConsignorPage? searchExistingConsignorPage => _objectContainer.IsRegistered<ISearchExistingConsignorPage>() ? _objectContainer.Resolve<ISearchExistingConsignorPage>() : null;
 
-
         public SearchExistingConsignorSteps(IObjectContainer container, ScenarioContext scenarioContext)
         {
             _objectContainer = container;

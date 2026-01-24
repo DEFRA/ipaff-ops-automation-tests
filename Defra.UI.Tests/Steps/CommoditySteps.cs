@@ -26,7 +26,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(commodityPage?.IsPageLoaded(), "Description of the goods Commodity page not loaded");
         }
 
-
         [When("the user searches {string} commodity code")]
         public void WhenTheUserSearchesCommodityCode(string code)
         {
@@ -48,7 +47,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["TypeOfCommodity"] = type;
         }
 
-
         [When("the user selects species of commodity {string}")]
         public void WhenTheUserSelectsSpeciesOfCommodity(string species)
         {
@@ -56,13 +54,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["Species"] = species;
         }
 
-
         [When("the user selects {string} for Do you want to add another commodity?")]
         public void WhenTheUserSelectsForDoYouWantToAddAnotherCommodity(string option)
         {
             commodityPage?.AddAnotherCommodity(option);
         }
-
 
         [Then("the Commodity page should be displayed with the commodity and description entered")]
         public void ThenTheCommodityPageShouldBeDisplayedWithTheCommodityAndDescriptionEntered()
@@ -93,7 +89,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             commodityPage?.EnterNumberOfPackages(packages);
             _scenarioContext["NumberOfPackages"] = packages;
         }
-
 
         [When("the user selects type of package as {string}")]
         public void WhenTheUserSelectsTypeOfPackageAs(string type)
@@ -241,6 +236,26 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             commodityPage?.EnterEarTag(earTag);
             _scenarioContext.Add("EarTag", earTag);
+        }
+
+        [Then("the user verifies and enters any missing data on the Commodity page")]
+        public void ThenTheUserVerifiesAndEntersAnyMissingDataOnTheCommodityPage()
+        {
+            Assert.False(commodityPage?.GetAddedCommoditiesCount == 0, "No commodities were added on the commodity page");
+            /*WhenTheUserPopulatesNetWeightAsForFirstCommodity("");
+            WhenTheUserPopulatesNumberOfPackagesAsForFirstCommodity("");
+            WhenTheUserSelectsTypeOfPackageAsForTheCommodityForFirstCommodity("");*/
+
+            WhenTheUserPopulatesNetWeightAsForTheAdditionalCommodity("19000", "12024200");
+            WhenTheUserPopulatesNumberOfPackagesAsForTheAdditionalCommodity("1", "12024200");
+            WhenTheUserSelectsTypeOfPackageAsForTheAdditionalCommodity("Case", "12024200");
+
+            WhenTheUserPopulatesNetWeightAsForTheAdditionalCommodity("18000", "100610");
+            WhenTheUserPopulatesNumberOfPackagesAsForTheAdditionalCommodity("1", "100610");
+            WhenTheUserSelectsTypeOfPackageAsForTheAdditionalCommodity("Box", "100610");
+
+            WhenTheUserClicksTheUpdateTotalButtonAfterAddingAllTheCommodities();
+            ThenTheTotalGrossWeightShouldBeGreaterThanTheNetWeight("40000");
         }
     }
 }

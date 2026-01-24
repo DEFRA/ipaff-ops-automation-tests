@@ -13,7 +13,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
         private IContactAddressPage? contactAddressPage => _objectContainer.IsRegistered<IContactAddressPage>() ? _objectContainer.Resolve<IContactAddressPage>() : null;
 
-
         public ContactAddressSteps(IObjectContainer container, ScenarioContext scenarioContext)
         {
             _objectContainer = container;
@@ -43,6 +42,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             var selectedAddress = contactAddressPage?.GetSelectedContactAddress();
             _scenarioContext["ConsignmentContactAddress"] = selectedAddress;
+        }
+
+        [Then("the user records the Draft CHED number")]
+        public void ThenTheUserRecordsTheDraftCHEDNumber()
+        {
+            _scenarioContext["DraftCHEDReference"] = contactAddressPage?.GetDraftCHEDRefNumber;
         }
     }
 }

@@ -144,6 +144,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user uploads the document {string} in the format {string}")]
         [When("the user uploads the document {string} in the format {string} that exceeds size limit")]
         [When("the user uploads a document with a filename longer than {int} characters {string} in the format {string}")]
+        [When("the user uploads the document {string} in the format {string} as no document is attached by the copy")]
         public void WhenTheUserUploadsTheDocumentInTheFormat(string name, string format)
         {
             var filename = name + format;
