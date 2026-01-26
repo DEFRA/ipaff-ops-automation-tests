@@ -1613,7 +1613,6 @@ Scenario: User creates and amends a CHEDA notification, inspector requests amend
 	When the user clicks return to your dashboard link in decision submitted page
 	Then the Import notifications dashboard page should be displayed	
 	When the user searches for the newly created notification on the Import notifications page
-	Then the notification should be present in the list
-	And the notification returned in the search has the status 'VALID'
+	Then the notification returned in the search has the status 'VALID' on the Import notifications page
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully

@@ -107,5 +107,10 @@ namespace Defra.UI.Tests.Pages.Classes
                 return false;
             }
         }
+
+        public string GetNotificationStatus()
+        {
+            return lnkChedStatusSearcResult.Text.Trim();
+        }
     }
 }
