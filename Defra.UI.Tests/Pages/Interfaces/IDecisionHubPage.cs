@@ -13,6 +13,7 @@
         void ClickOverrideRiskDecisionLink();
         bool VerifyInspectionRequiredBox(string msgboxTitle);
         bool VerifyInspectionRequiredMessage(string message);
+        void ClickChecksLink();
         void ClickViewNotificationOfConsignment();
     }
 }
