@@ -38,6 +38,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             }
         }
 
+        [When("the user selects {string} radio button for Would you like to record laboratory tests?")]
         [When("the user select {string} radio button on the Laboratory tests page")]
         public void WhenISelectRadioButtonOnTheLaboratoryTestsPage(string labTestsOption)
         {
@@ -45,11 +46,20 @@ namespace Defra.UI.Tests.Steps.IPAFF
             laboratoryTestsPage?.SelectLabTestsRadio(labTestsOption);
         }
 
+        [When("the user selects {string} radio button for Reason for testing")]
         [When("the user select {string} reason radio button on the Laboratory tests page")]
         public void WhenISelectReasonRadioButtonOnTheLaboratoryTestsPage(string labTestsReason)
         {
             _scenarioContext["LaboratoryTestsReason"] = labTestsReason;
             laboratoryTestsPage?.SelectLabTestsReason(labTestsReason);
+        }
+
+        [Then("the user verifies {string} {string} and {string} radio buttons are displayed")]
+        public void ThenTheUserVerifiesRadioButtonsAreDisplayed(string reason1, string reason2, string reason3)
+        {
+            var isDisplayed = laboratoryTestsPage?.AreLabTestReasonRadioButtonsDisplayed(reason1, reason2, reason3);
+            Assert.True(isDisplayed,
+                $"Not all lab test reason radio buttons are displayed. Expected: '{reason1}', '{reason2}', '{reason3}'");
         }
 
         [When("the user clicks the Select link for the {string} commodity code")]
@@ -60,7 +70,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["SelectedCommoditySampledSpecies"] = laboratoryTestsPage?.GetSelectedCommoditySampledSpecies();
             laboratoryTestsPage?.ClickSelectForCommodityCode(commodityCode);
         }
-        
+
         [When("the user clicks on the Test {string}")]
         public void WhentheUserClicksOnTest(string testName)
         {
@@ -72,7 +82,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             laboratoryTestsPage?.SelectLaboratoryTestCategory(category);
         }
-        
+
         [When("the user selects {string} in Laboratory test subcategory")]
         public void WhenTheUserSelectsLaboratoryTestSubCategory(string category)
         {
@@ -81,7 +91,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
         [When("the user selects {string} from the list of Laboratory tests")]
         public void WhenTheUserSelectsFromTheListOfLaboratoryTests(string test)
-        {           
+        {
             _scenarioContext["LaboratoryTestName"] = test;
             laboratoryTestsPage?.SelectLaboratoryTest(test);
             // Capture system date and time AFTER clicking the Select link
@@ -106,16 +116,17 @@ namespace Defra.UI.Tests.Steps.IPAFF
             laboratoryTestsPage?.SelectSampleType(sampleType);
             laboratoryTestsPage?.SelectStorageTemperature(storageTemperature);
 
-            _scenarioContext["AnalysisType"] = analysisType;        
+            _scenarioContext["AnalysisType"] = analysisType;
             _scenarioContext["SampleDate"] = laboratoryTestsPage?.GetSampleDate();
             _scenarioContext["SampleTime"] = laboratoryTestsPage?.GetSampleTime();
         }
 
+        [When("the user selects any Laboratory test from the displayed list")]
         [When("the user clicks select link of one of the Laboratory test")]
-         public void WhenTheUserClicksSelectLinkOfOneOfTheLaboratoryTest()
-         {
-             _scenarioContext["LaboratoryTestName"] = laboratoryTestsPage?.GetLaboratoryTestName();
-             laboratoryTestsPage?.ClickSelectLaboratoryTest();
+        public void WhenTheUserClicksSelectLinkOfOneOfTheLaboratoryTest()
+        {
+            _scenarioContext["LaboratoryTestName"] = laboratoryTestsPage?.GetLaboratoryTestName();
+            laboratoryTestsPage?.ClickSelectLaboratoryTest();
 
             // Capture system date and time AFTER clicking the Select link
             var labTestSelectedDateTime = DateTime.Now;
@@ -123,11 +134,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["LabTestSelectedTime"] = labTestSelectedDateTime.ToString("HH:mm");
         }
 
-         [Then("the Laboratory tests Commodity sampled page should be displayed")]
-         public void ThenTheLaboratoryTestsCommoditySampledPageShouldBeDisplayed()
-         {
-             Assert.True(laboratoryTestsPage?.IsCommoditySampledPageLoaded(), "Laboratory tests Commodity sampled page is not displayed");
-         }
+        [Then("the Laboratory tests Commodity sampled page should be displayed")]
+        public void ThenTheLaboratoryTestsCommoditySampledPageShouldBeDisplayed()
+        {
+            Assert.True(laboratoryTestsPage?.IsCommoditySampledPageLoaded(), "Laboratory tests Commodity sampled page is not displayed");
+        }
 
         [Then("the Sample date and time is todays date with the time the lab test was selected")]
         public void ThenTheSampleDateAndTimeIsTodaysDateWithTheTimeTheLabTestWasSelected()
@@ -201,6 +212,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(laboratoryTestsPage?.IsCommodityToBeTestedPageLoaded(), "Laboratory tests Commodity to be tested page is not displayed");
         }
 
+        [When("the user clicks Add another test")]
         [When("the user clicks the Add a laboratory test link")]
         public void WhenTheUserClicksTheAddALaboratoryTestLink()
         {
