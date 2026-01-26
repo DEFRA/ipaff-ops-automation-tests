@@ -1504,113 +1504,116 @@ Scenario: User creates and amends a CHEDA notification, inspector requests amend
 	When the user searches for the newly created notification on the Import notifications page
 	Then the user clicks the notification found with status 'NEW'
 	And the Decision Hub page should be displayed
-	And the CHED status is 'NEW'
-	#When the user clicks Save and set as in progress
-	#Then the notification status should change from 'NEW' to 'IN PROGRESS'
-	#When the user clicks Local reference number link in Record checks
-	#Then Local reference number page should be displayed
-	#When the user enters a local reference number and clicks Save and continue
-	#Then the Documentary check page should be displayed
-	#When the user selects 'Satisfactory' for the Documentary check and clicks Save and continue
-	#Then the Identity, physical and welfare checks page should be displayed
-	#When the user selects 'Satisfactory' for Identity check
-	#And the user selects 'Satisfactory' for Physical check
-	#And the user selects '5' for Number of animals checked
-	#And the user selects 'Satisfactory' for Welfare check
-	#And the user selects '0' '%' for Number of dead animals
-	#And the user selects '0' 'unit' for Number of unfit animals
-	#And the user selects '0' for Number of births or abortions
-	#And the user clicks Save and continue
-	#Then the Seal numbers page should be displayed
-	#When the user selects 'Yes' for Are new seal numbers required?
-	#And the user enters new seal number 'NEWSEAL123'
-	#And the user clicks Save and continue
-	#Then the Laboratory tests page should be displayed
-	#When the user selects 'Yes' radio button for Would you like to record laboratory tests?
-	#And the user clicks Save and continue
-	#Then the Laboratory tests Reason for testing page should be displayed
-	#When the user selects 'Emergency measures' radio button for Reason for testing
-	#And the user clicks Save and continue
-	#Then the Laboratory tests Select the commodity sampled page should be displayed
-	#When the user clicks the Select link for the '0103' commodity code
-	#Then the Laboratory tests Commodity to be tested page should be displayed
-	#When the user selects any Laboratory test from the displayed list
-	#Then the Laboratory tests Commodity sampled page should be displayed
-	#When the user populates the commodity sample details 'Initial analysis' 'Campden BRI' 'EMR001' '2' 'Blood' 'Chilled'
-	#And the user clicks Save and continue
-	#Then the Laboratory tests Review page should be displayed
-	#When the user clicks Add another test
-	#Then the Laboratory tests Select the commodity sampled page should be displayed
-	#When the user clicks the Select link for the '0103' commodity code
-	#Then the Laboratory tests Commodity to be tested page should be displayed
-	#When the user selects '.ANTITHYROID AGENTS' from the list of Laboratory tests
-	#Then the Laboratory tests Commodity sampled page should be displayed
-	#When the user populates the commodity sample details 'Initial analysis' 'Concept Life Sciences' 'EMR002' '2' 'Blood' 'Frozen'
-	#And the user clicks Save and continue
-	#Then the Laboratory tests Review page should be displayed
-	#When the user clicks Add another test
-	#Then the Laboratory tests Select the commodity sampled page should be displayed
-	#When the user clicks the Select link for the '0103' commodity code
-	#Then the Laboratory tests Commodity to be tested page should be displayed
-	#When the user selects '.CHEMICAL ELEMENTS' from the list of Laboratory tests
-	#Then the Laboratory tests Commodity sampled page should be displayed
-	#When the user populates the commodity sample details 'Initial analysis' 'Campden BRI' 'EMR003' '1' 'Blood' 'Ambient'
-	#And the user clicks Save and continue
-	#Then the Laboratory tests Review page should be displayed
-	#And the user verifies multiple Laboratory tests are entered with Results 'Pending'
-	#When the user clicks Save and continue
-	#Then the Decision page should be displayed
-	#When the user selects Acceptable for 'Internal market' 'Approved bodies'
-	#And the user clicks Save and continue
-	#Then the Select a controlled destination page should be displayed
-	#When the user clicks Add a controlled destination
-	#Then the Search for an existing controlled destination page should be displayed
-	#When the user selects a controlled destination
-	#Then the chosen controlled destination should be displayed
-	#When the user clicks Save and continue
-	#Then the Review outcome decision page should be displayed
-	#And the user should see an error message 'Lab results pending for this consignment' in review page
-	#When the user Clicks the change link under 'Laboratory tests'
-	#Then the Laboratory tests page should be displayed
-	#When the user clicks Save and continue
-	#Then the Laboratory tests Reason for testing page should be displayed
-	#When the user clicks Save and continue
-	#Then the Laboratory tests Review page should be displayed
-	#When the user clicks on the first Laboratory test
-	#Then the Record laboratory test information page should be displayed
-	#When the user enters Sample use by date as '15''12''2025'
-	#When the user enters Released date as '16''12''2025'
-	#When the user selects 'Satisfactory' for Conclusion
-	#And the user clicks Save and continue
-	#Then the Laboratory tests Review page should be displayed
-	#When the user clicks on the second Laboratory test
-	#Then the Record laboratory test information page should be displayed
-	#When the user enters Sample use by date as '15''12''2025'
-	#When the user enters Released date as '16''12''2025'
-	#When the user selects 'Satisfactory' for Conclusion
-	#And the user clicks Save and continue
-	#Then the Laboratory tests Review page should be displayed
-	#When the user clicks on the third Laboratory test
-	#Then the Record laboratory test information page should be displayed
-	#When the user enters Sample use by date as '15''12''2025'
-	#When the user enters Released date as '16''12''2025'
-	#When the user selects 'Satisfactory' for Conclusion
-	#And the user clicks Save and continue
-	#Then the Laboratory tests Review page should be displayed
-	#And the user verifies all Laboratory tests are displayed with Results 'Satisfactory'
-	#When the user clicks Save and Return
-	#Then the Decision Hub page should be displayed
-	#When the user clicks Review And Submit link
-	#Then the Review outcome decision page should be displayed
-	#And the user should not see an error message 'Lab results pending for this consignment' in review page
-	#When the user selects the radio button to declare that the checks have been carried out in accordance with EU law
-	#And user clicks Submit decision
-	#Then the Your checks have been submitted page should be displayed
-	#When the user clicks View or print CHED
-	#Then the certificate should be displayed in a new browser tab
-	#When the user checks that the data in the certificate matches the data entered into the notification
-	#And the user closes the PDF browser tab
-	#Then the browser tab is closed
-	#And the notification status should be 'VALID'
-	#When the user logs out of IPAFFS Part 2
-	#Then the user should be logged out successfully
+	And the notification status should change from 'AMEND' to 'NEW'
+	When the user clicks Save and set as in progress
+	Then the notification status should change from 'NEW' to 'IN PROGRESS'
+	When the user clicks Local reference number link in Record checks
+	Then Local reference number page should be displayed
+	When the user enters a local reference number and clicks Save and continue
+	Then the Documentary check page should be displayed
+	When the user selects 'Satisfactory' for the Documentary check and clicks Save and continue
+	Then the Identity, physical and welfare checks page should be displayed
+	When the user selects 'Satisfactory' for Identity check
+	And the user selects 'Satisfactory' for Physical check
+	And the user selects '5' for Number of animals checked
+	And the user selects 'Satisfactory' for Welfare check
+	And the user selects '0' '%' for Number of dead animals
+	And the user selects '0' 'unit' for Number of unfit animals
+	And the user selects '0' for Number of births or abortions
+	And the user clicks Save and continue
+	Then the Seal numbers page should be displayed
+	When the user select 'Yes' radio button on the Seal numbers page
+	And the user enters new seal number 'NEWSEAL123'
+	And the user clicks Save and continue
+	Then the Laboratory tests page should be displayed
+	When the user selects 'Yes' radio button for Would you like to record laboratory tests?
+	And the user clicks Save and continue
+	Then the Laboratory tests Reason for testing page should be displayed
+	When the user selects 'Emergency measures' radio button for Reason for testing
+	And the user clicks Save and continue
+	Then the Laboratory tests Select the commodity sampled page should be displayed
+	When the user clicks the Select link for the '0101' commodity code
+	Then the Laboratory tests Commodity to be tested page should be displayed
+	When the user selects '.AMINOGLYCOSIDE/AMINOSIDE' from the list of Laboratory tests
+	Then the Laboratory tests Commodity sampled page should be displayed
+	When the user populates the commodity sample details 'Initial analysis' 'Campden BRI' 'EMR001' '2' 'Blood' 'Chilled'
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	When the user clicks Add another test
+	Then the Laboratory tests Select the commodity sampled page should be displayed
+	When the user clicks the Select link for the '0101' commodity code
+	Then the Laboratory tests Commodity to be tested page should be displayed
+	When the user selects '.ANTITHYROID AGENTS' from the list of Laboratory tests
+	Then the Laboratory tests Commodity sampled page should be displayed
+	When the user populates the commodity sample details 'Initial analysis' 'Concept Life Sciences' 'EMR002' '2' 'Blood' 'Frozen'
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	When the user clicks Add another test
+	Then the Laboratory tests Select the commodity sampled page should be displayed
+	When the user clicks the Select link for the '0101' commodity code
+	Then the Laboratory tests Commodity to be tested page should be displayed
+	When the user selects '.CHEMICAL ELEMENTS' from the list of Laboratory tests
+	Then the Laboratory tests Commodity sampled page should be displayed
+	When the user populates the commodity sample details 'Initial analysis' 'Campden BRI' 'EMR003' '1' 'Blood' 'Ambient'
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	And the user verifies multiple Laboratory tests are entered with Results 'Pending'
+	When the user clicks Save and continue
+	Then the Decision page should be displayed
+	When the user selects Acceptable for 'Internal market' 'Approved bodies'
+	And the user clicks Save and continue
+	Then the Select a controlled destination page should be displayed
+	When the user clicks Add a controlled destination
+	Then the Search for an existing controlled destination page should be displayed
+	When the user selects a controlled destination
+	Then the chosen controlled destination should be displayed
+	When the user clicks Save and continue
+	Then the Review outcome decision page should be displayed
+	And the user should see an error message 'Lab results pending for this consignment' in review page
+	When the user Clicks the change link under 'Laboratory tests'
+	Then the Laboratory tests page should be displayed
+	When the user clicks Save and continue
+	Then the Laboratory tests Reason for testing page should be displayed
+	When the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	When the user clicks on the Test '.AMINOGLYCOSIDE/AMINOSIDE'
+	Then the Record laboratory test information page should be displayed
+	When the user enters Sample use by date as '15''12''2025'
+	When the user enters Released date as '16''12''2025'
+	When the user selects 'Satisfactory' for Conclusion
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	When the user clicks on the Test '.ANTITHYROID AGENTS'
+	Then the Record laboratory test information page should be displayed
+	When the user enters Sample use by date as '15''12''2025'
+	When the user enters Released date as '16''12''2025'
+	When the user selects 'Satisfactory' for Conclusion
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	When the user clicks on the Test '.CHEMICAL ELEMENTS'
+	Then the Record laboratory test information page should be displayed
+	When the user enters Sample use by date as '15''12''2025'
+	When the user enters Released date as '16''12''2025'
+	When the user selects 'Satisfactory' for Conclusion
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	When the user clicks Save and Return
+	Then the Decision Hub page should be displayed
+	When the user clicks Review And Submit link
+	Then the Review outcome decision page should be displayed
+	And the user should not see an error message 'Lab results pending for this consignment' in review page
+	When the user selects the radio button to declare that the checks have been carried out in accordance with EU law
+	And user clicks Submit decision
+	Then the Your checks have been submitted page should be displayed
+	When the user clicks View or print CHED
+	Then the certificate should be displayed in a new browser tab
+	When the user checks that the data in the certificate matches the data entered into the notification
+	And the user closes the PDF browser tab
+	Then the browser tab is closed
+	When the user clicks return to your dashboard link in decision submitted page
+	Then the Import notifications dashboard page should be displayed	
+	When the user searches for the newly created notification on the Import notifications page
+	Then the notification should be present in the list
+	And the notification returned in the search has the status 'VALID'
+	When the user logs out of IPAFFS Part 2
+	Then the user should be logged out successfully
