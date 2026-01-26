@@ -1565,7 +1565,7 @@ Scenario: User submits a notification as no inspection required, override the ri
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
 
-Scenario: User submits a notification, inspector copy it as replacement, update and submit decision - CHED P
+Scenario: Create and Submit B2C Consignment with Two Commodities and Catch Certificates, Submits decision and CHED Verification in BTMS_SPS_9113
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
@@ -1578,27 +1578,27 @@ Scenario: User submits a notification, inspector copy it as replacement, update 
 	When the user chooses 'Products of animal origin, germinal products or animal by-products' option
 	And the user clicks Save and continue
 	Then the Origin of the plants plant product or other objects page should be displayed
-	When the user chooses "China" from the dropdown for Country of origin
+	When the user chooses "Italy" from the dropdown for Country of origin
 	And the user clicks Save and continue
-	Then the Origin of the import page should be displayed, showing "China" as the Country of origin and Country from where consigned
+	And the user changes the consigned country to 'Sweden'
 	When the user chooses "No" for Does your consignment require a region code?
 	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
 	When the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
 	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
 	When the user clicks Save and continue
 	Then the Description of the goods/Commodity page should be displayed
-	When the user searches '230910' commodity code
-	Then the commodity details should be populated '230910' 'Dog or cat food, put up for retail sale'
-	When the user selects the type of commodity 'By-products / feedingstuff'
-	And the user selects species of commodity 'Ungulates'
-	When the user selects "Yes" for Do you want to add another commodity?
+	When the user searches for first commodity code '03061792'
+	Then the commodity details should be populated '03061792' 'Shrimps of the genus Penaeus' for first commodity
+	When the user selects the type of commodity 'Farmed stock'
+	When the user selects species of commodity 'Penaeus spp.'
+	And the user selects "Yes" for Do you want to add another commodity?
 	And the user clicks Save and continue
-	When the user searches '42050090' commodity code
-	Then the commodity details should be populated '42050090' 'Other'
-	When the user selects the type of commodity 'By-products / feedingstuff'
-	And the user selects species of commodity 'Suidae'
-	When the user selects "No" for Do you want to add another commodity?
-	And the user clicks Save and continue
+	And the user searches '16052190' commodity code
+	Then the commodity details should be populated '16052190' 'Other' for second commodity
+	When the user selects the type of commodity 'Composite products'
+	And the user selects species of commodity 'Penaeus (Litopenaeus) vannamei'
+	And the user selects "No" for Do you want to add another commodity?
+	When the user clicks Save and continue
 	Then What is the main reason for importing the consignment? page should be displayed with radio buttons
 	When the user chooses "Internal market" and the sub-option "Animal feedingstuff"
 	And the user clicks Save and continue
@@ -1609,54 +1609,97 @@ Scenario: User submits a notification, inspector copy it as replacement, update 
 	When the user clicks continue button
 	Then the Notification Hub page should be displayed
 	When the user clicks the Commodity hyperlink
-	Then the Commodity page should be displayed with the commodity and description entered
-	When the user populates Net weight as '3114,7113'
-	And the user populates Number of packages as '10,15'
-	And the user selects type of package as 'Box,Case'
-	When the user clicks the Update total button
-	Then the Total Net weight should be populated as '10227'
-	And the Total Number of packages should be populated as '25'
-	Then the total gross weight should be greater than the net weight '15000'
+	Then the Commodity page should be displayed
+	When the user populates Net weight as '13300' for first commodity
+	And the user populates Number of packages as '1' for first commodity
+	And the user selects type of package as 'Case' for the commodity '03061792' for first commodity
+	When the user populates Net weight as '3240' for the second commodity '16052190'
+	And the user populates Number of packages as '1' for the second commodity '16052190'
+	And the user selects type of package as 'Box' for the second commodity '16052190'
+	When the user clicks the Update total button after adding all the commodities
+	Then the total gross weight should be greater than the net weight '400000'
 	When the user clicks Save and continue in commodity page
 	Then the Additional details page should be displayed
-	When the user selects 'Ambient' radio button on the Additional details page
+	When the user selects 'Frozen' radio button on the Additional details page
+	And the user clicks Save and continue
+	Then the Catch cerificates page should be displayed
+	When the user selects "Yes" option
+	And the user clicks Save and continue 
+	Then Upload catch certificates page is displayed
+	When the user uploads the document 'IPAFFS Test Document 1' in the format '.docx'
+	Then Manage catch certificates page is displayed
+	When the user selects the 'Yes' option for Do you need to upload more catch certificates?
+	And the user clicks Save and continue
+	When the user uploads the document 'IPAFFS Test Document' in the format '.docx'
+	Then Manage catch certificates page is displayed
+	And the user verifies there are '2' certificates attached
+	When the user selects the 'No' option for Do you need to upload more catch certificates?
+	And the user clicks Save and continue
+	Then Add catch certificate details page should be displayed
+	And 'Number of catch certificates in this attachment' is displayed in Add catch certificate page
+	And 'Change' is displayed in Add catch certificate page
+	When the user enters 'CatchRef123' in catch certificate reference
+	And the user enters Data of issue as '23''01''2026' in Add catch certificate page
+	And the user enters 'United Kingdom of Great Britain and Northern Ireland' in Flag state of catching vessels
+	Then the calendar icon is displayed in Add catch certificate page
+	Then 'Select species being imported under this catch certificate' is displayed in Add catch certificate page
+	And 'Select all' is displayed in Add catch certificate page
+	And 'Save and return to manage catch certificates' is displayed in Add catch certificate page
+	And 'Save and return to hub' is displayed in Add catch certificate page
+	When the user selects the '1' species under Select species being imported under this catch certificate
+	And the user clicks Save and continue
+	Then Add catch certificate details page should be displayed
+	And 'Number of catch certificates in this attachment' is displayed in Add catch certificate page
+	And 'Change' is displayed in Add catch certificate page
+	When the user enters 'CatchRef456' in catch certificate reference
+	And the user enters Data of issue as '22''01''2026' in Add catch certificate page
+	And the user enters 'France' in Flag state of catching vessels
+	Then the calendar icon is displayed in Add catch certificate page
+	Then 'Select species being imported under this catch certificate' is displayed in Add catch certificate page
+	And 'Select all' is displayed in Add catch certificate page
+	And 'Save and return to manage catch certificates' is displayed in Add catch certificate page
+	And 'Save and return to hub' is displayed in Add catch certificate page
+	When the user selects the '2' species under Select species being imported under this catch certificate
+	And the user clicks Save and continue
+	Then Manage catch certificates page is displayed
+	When the user selects the 'No' option for Do you need to upload more catch certificates?
 	And the user clicks Save and continue
 	Then the Latest Health Certificate page should be displayed
-	When the user enters Latest Health Certificate Document reference "INV12345"
-	And the user enters Latest Health Certificate date of issue "24""10""2025"
-	And the user clicks Latest Health Certificate add attachment link
-	And the user uploads the Latest Health Certificate document 'IPAFFS Test Document' in the format '.docx'
-	Then the Latest Health Certificate document 'IPAFFS Test Document' '.docx' is uploaded successfully
-	And the user clicks Save and continue
+	When the user enters Latest Health Certificate Document reference 'VHC12345'
+	And the user enters Latest Health Certificate date of issue '01''12''2025'
+	And the user clicks on Add attachment link on the Latest Health Certificate page
+	And the user uploads the Veterinary Health Certificate 'IPAFFS Test Health Certificate' in the format '.docx'
+	Then the Veterinary Health Certificate 'IPAFFS Test Health Certificate' '.docx' is uploaded successfully
+	When the user clicks Save and continue
 	Then the Accompanying documents page should be displayed
-	When the user selects Document type "Commercial invoice"
-	And the user enters Document reference "INV12345"
-	And the user enters date of issue "24/11/2025"
+	When the user selects Document type 'Commercial invoice'
+	And the user enters Document reference 'INV12345'
+	And the user enters date of issue '24/11/2025'
 	And the user clicks on Add attachment link
-	And the user uploads the document 'IPAFFS Test Health Certificate' in the format '.docx'
-	Then the document 'IPAFFS Test Health Certificate' '.docx' is uploaded successfully
-	Then the user clicks Save and continue
-	And the Approved establishment of origin page should be displayed
+	And the user uploads the document 'IPAFFS Test Document with a long file name to check the limit of filename length exceeding 100 characters' in the format '.docx'
+	Then the document 'IPAFFS Test Document with a long file name to check the limit of filename length exceeding 100 characters' '.docx' is uploaded successfully
+	When the user clicks Save and continue
+	Then the Approved establishment of origin page should be displayed
 	When the user clicks Search for an approved establishment
-	Then the list of establishments should be displayed, filtered by Country of origin "China" type "Freezing Vessel" status "Approved"
+	Then the list of establishments should be displayed, filtered by Country of origin "Italy" type "ABP Transport" status "Approved"
 	When the user clicks Select for one of the establishments in the list
 	Then the Approved establishment of origin page should be displayed with the selected establishment
 	When the user clicks Save and continue
 	Then the Addresses page should be displayed
 	When the user clicks Add a consignor or exporter
 	Then the Search for an existing consignor or exporter page should be displayed
-	When the user selects a consignor or exporter 'ABC'
+	When the user selects one of the displayed consignors or exporters "ABC"
 	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
 	When the user clicks Add a consignee
 	Then the Search for an existing consignee page should be displayed
-	When the user selects a consignee "DEF"
-	Then the chosen consignee "DEF" should be displayed on the Addresses page
+	When the user selects a consignee 'DEF'
+	Then the chosen consignee should be displayed
 	When the user clicks Same as consignee for the Importer
-	Then the importer should be populated with the same details as the consignee "DEF" on the Addresses page
+	Then the importer should be populated with the same details as the consignee
 	When the user clicks Add a place of destination
 	Then the Search for an existing place of destination page should be displayed
-	When the user selects a place of destination "DEF" with a UK country
-	Then the chosen place of destination "DEF" should be displayed on the Addresses page
+	When the user selects a place of destination 'DEF'
+	Then the chosen place of destination should be displayed
 	When the user clicks Save and continue
 	Then the Transport to the port of entry page should be displayed
 	When the user populates the transport details "BRISTOL (GBBRS)" "No" "Road vehicle" "123456" "Doc1234"
@@ -1682,23 +1725,6 @@ Scenario: User submits a notification, inspector copy it as replacement, update 
 	Then the details should be recorded
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
-	When the user navigate to the BTMS application
-	Then I click Sign in button
-	And I should see type of Gateway login page
-	And I have selected "Government Gateway" as login type
-	And I click Sign in button
-	Then I should see type of Gateway login page
-	And I have selected "Sign in with Government Gateway" as login type
-	When I click Continue button from How do you want to sign in page
-	Then I should redirected to the BTMS Sign in using Government Gateway page
-	When I have provided the BTMS credentials and signin
-	Then the BTMS search screen should be displayed
-	When the user searches for the CHED created earlier
-	Then the BTMS search result screen should be displayed
-	And the user checks commodity code "230910", description "Ungulates", quantity "3114", authority "POAO" and decision "Decision not given"
-	And the user checks commodity code "42050090", description "Suidae", quantity "7113", authority "POAO" and decision "Decision not given"
-	When the user logs out of BTMS
-	Then the user should be logged out successfully
 	When I navigate to the IPAFF Inspector application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
@@ -1708,12 +1734,15 @@ Scenario: User submits a notification, inspector copy it as replacement, update 
 	Then the user should be logged into Import notifications page
 	When the user searches for the newly created notification on the Import notifications page
 	Then the user clicks the notification found with status "NEW"
-	And the Decision Hub page should be displayed
+	Then the Decision Hub page should be displayed
 	When the user clicks Save and set as in progress
 	Then the notification status should change from "NEW" to "IN PROGRESS"
 	When the user clicks Local reference number link in Record checks
 	Then Local reference number page should be displayed
 	When the user enters a local reference number and clicks Save and continue
+	Then the IUU page should be displayed
+	When the user selects "No" and sub-option as "" for the IUU check
+	And the user clicks Save and continue
 	Then the Documentary check page should be displayed
 	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
 	Then the Identity and physical checks page should be displayed
@@ -1734,88 +1763,11 @@ Scenario: User submits a notification, inspector copy it as replacement, update 
 	When the user populates the Date and time of checks
 	And user clicks Submit decision
 	Then the Your checks have been submitted page should be displayed
-	When the users opens a new tab
-	And the user navigate to the BTMS application
-	Then I click Sign in button
-	And I should see type of Gateway login page
-	And I have selected "Government Gateway" as login type
-	And I click Sign in button
-	Then I should see type of Gateway login page
-	And I have selected "Sign in with Government Gateway" as login type
-	When I click Continue button from How do you want to sign in page
-	Then I should redirected to the BTMS Sign in using Government Gateway page
-	When I have provided the BTMS credentials and signin
-	Then the BTMS search screen should be displayed
-	When the user searches for the CHED created earlier
-	Then the BTMS search result screen should be displayed
-	And the user checks commodity code "230910", description "Ungulates", quantity "3114", authority "POAO" and decision "Acceptable for Internal Market" after the decision given
-	And the user checks commodity code "42050090", description "Suidae", quantity "7113", authority "POAO" and decision "Acceptable for Internal Market" after the decision given
-	When the user logs out of BTMS
-	Then the user should be logged out successfully
-	When the user closes the tab
-	Then the new tab should be closed
-	When the user clicks return to your dashboard link in decision submitted page
-	Then the Import notifications dashboard page should be displayed
-	When the user searches for the newly created notification on the Import notifications page
-	Then the user clicks the notification found with status "VALID"
-	And the CHED overview page should be displayed
-	When the user clicks Copy as replacement button
-	Then the Replace CHED page should be displayed
-	When the user clicks Yes, replace this CHED
-	Then the Notification overview page should be displayed
-	And the status should be "IN PROGRESS"
-	Then the user records replaced CHED Reference number, Customs declaration reference and document code
-	When the user clicks change in commodity section
-	Then the Commodity page should be displayed with the commodity and description entered
-	When the user populates Net weight as '1000,1000'
-	And the user clicks the Update total button
-	Then the Total Net weight should be populated as '2000'
-	Then the total gross weight should be greater than the net weight '3000'
-	When the user clicks Save and continue in commodity page
-	Then the Additional details page should be displayed
-	When the user selects 'Ambient' radio button on the Additional details page
-	And the user clicks on Save and review
-	Then the Notification overview page should be displayed
-	And the status should be "MODIFY"
-	Then the total net weight should be updated to '2000 kg/units'
-	And the total gross weight should be updated to '3000 kg/units'
-	When the user clicks Set to in Progress button
-	Then the status should be "IN PROGRESS"
-	When the user clicks Record checks button
-	Then Local reference number page should be displayed
-	When the user enters a local reference number and clicks Save and continue
-	Then the Documentary check page should be displayed
-	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
-	Then the Identity and physical checks page should be displayed
-	When the user selects "Satisfactory" under "Full identity check" in identity check
-	And the user selects "Satisfactory" for physical check
-	And the user clicks Save and continue
-	Then the Seal numbers page should be displayed
-	And 'No' is pre-selected for Are new seal numbers required?
-	When the user clicks Save and continue
-	Then the Laboratory tests page should be displayed
-	And 'No' is pre-selected for Would you like to record laboratory tests?
-	When the user clicks Save and continue
-	Then the Decision page should be displayed
-	When the user selects Acceptable for 'Internal market' 'Human consumption'
-	And the user clicks Save and continue
-	Then the Review outcome decision page should be displayed
-	And the details reflect the information added
-	When the user populates the Date and time of checks
-	And user clicks Submit decision
-	Then the Your checks have been submitted page should be displayed
-	When the user clicks return to your dashboard link in decision submitted page
-	Then the Import notifications dashboard page should be displayed
-	When the user searches for the replacement notification
-	Then the 'replacement' notification should be displayed with status "VALID"
-	When the user searches for the original notification
-	Then the 'original' notification should be displayed with status "REPLACED"
-	And the user clicks the notification found with status "REPLACED"
-	And the CHED overview page should be displayed for the 'original' notification
-	And link should be displayed as Replaced by along with 'replacement' notification number
-	When the user clicks Replaced by link
-	Then the CHED overview page should be displayed for the 'replacement' notification
-	And link should be displayed as Replaced by along with 'original' notification number
+	When the user clicks View or print CHED button
+	Then the certificate should be displayed in a new browser tab
+	When the user checks that the data in the certificate matches the data entered into the notification
+	And the user closes the PDF browser tab
+	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
 	When the user navigate to the BTMS application
@@ -1831,11 +1783,7 @@ Scenario: User submits a notification, inspector copy it as replacement, update 
 	Then the BTMS search screen should be displayed
 	When the user searches for the CHED created earlier
 	Then the BTMS search result screen should be displayed
-	And the CHED status should be "Replaced" in BTMS search result page
-	When I click the back button in the browser
-	Then the BTMS search screen should be displayed
-	When the user searches for the replacement CHED reference
-	Then the BTMS search result screen should be displayed for the replacement CHED reference
-	And the CHED status should be "Valid" in BTMS search result page
+	And the user checks commodity code "03061792", description "Penaeus spp.", quantity "13300", authority "POAO IUU" and decision "Acceptable for Internal Market Decision not given" after the decision given
+	And the user checks commodity code "16052190", description "Penaeus (Litopenaeus) vannamei", quantity "3240", authority "POAO IUU" and decision "Acceptable for Internal Market Decision not given" after the decision given
 	When the user logs out of BTMS
 	Then the user should be logged out successfully

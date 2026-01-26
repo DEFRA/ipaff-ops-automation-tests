@@ -44,9 +44,9 @@ namespace Defra.UI.Tests.Pages.Classes
                 return cells[1].Text.Trim().Equals(commodityCode)
                     && cells[2].Text.Trim().Equals(commodityDescription)
                     && cells[3].Text.Trim().Equals(commodityQuantity)
-                    && cells[4].Text.Trim().Equals(authority)
-                    && cells[5].Text.Trim().Equals(decision);
-            });
+                    && cells[4].Text.Trim().Replace("\r\n", " ").Equals(authority)
+                    && cells[5].Text.Trim().Replace("\r\n", " ").Equals(decision);
+            });            
         }
 
         public string GetCommodityCode(string commodityNum)
