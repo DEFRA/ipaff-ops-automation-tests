@@ -98,8 +98,20 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<BorderNotificationSubmittedPage, IBorderNotificationSubmittedPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<BorderNotificationsPage, IBorderNotificationsPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<BorderNotificationOverviewPage, IBorderNotificationOverviewPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ReplaceCHEDPage, IReplaceCHEDPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<NotificationOverviewPage, INotificationOverviewPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<TransportAfterPortOfEntryPage, ITransportAfterPortOfEntryPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<AddressBookPage, IAddressBookPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<DocumentsPage, IDocumentsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ChooseAddressTypePage, IChooseAddressTypePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ChooseOperatorTypePage, IChooseOperatorTypePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<AddOperatorDetailsPage, IAddOperatorDetailsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<TheAddressHasBeenAddedPage, ITheAddressHasBeenAddedPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SelectTheTransporterTypePage, ISelectTheTransporterTypePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ViewOperatorPage, IViewOperatorPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<DeleteAddressPage, IDeleteAddressPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<TheAddressHasBeenDeletedPage, ITheAddressHasBeenDeletedPage>());
+
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CookiesPage, ICookiesPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ContactPage, IContactPage>());
 

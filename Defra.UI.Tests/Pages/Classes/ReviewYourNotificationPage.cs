@@ -13,96 +13,100 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects
         private IWebElement pageTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
-     
+        private By CopyAsNewButtonBy => By.XPath("//button[@type='submit' and @value='Copy as new']");
+        private By ViewCHEDButtonBy => By.Id("show-notification");
+        private By ChangeLinksBy => By.XPath("//a[text()='Change']");
+        private IWebElement lnkChange(string section) => _driver.FindElement(By.XPath($"(//*[normalize-space()='{section}']/following::a)[1]"));
+        private By DashboardLinkBy => By.XPath("//a[@class='govuk-breadcrumbs__link' and @href='/notification/pre/protected/notifications']");
+        private By chedReferenceBy => By.Id("reference-number");
+
         // About the consignment
-        private IWebElement importType => _driver.FindElement(By.Id("importing"));
-        private IWebElement countryOfOrigin => _driver.FindElement(By.Id("country-of-origin"));
-        private IWebElement countryFromWhereConsigned => _driver.FindElement(By.XPath("//dt[text()='Country from where consigned']//following-sibling::dd"));
-        private IWebElement mainReasonForImport => _driver.FindElement(By.Id("purpose-of-consignment-value"));
-        private IWebElement pointOfExit => _driver.FindElement(By.XPath("//dt[@id='point-of-exit-header']/following-sibling::dd"));
-        private IWebElement consignmentDepartureDateTime => _driver.FindElement(By.Id("estimated-departure-date-time-value"));
-        private IWebElement purpose => _driver.FindElement(By.XPath("//dt[text()='Purpose in the internal market']//following-sibling::dd"));
-        private IWebElement consignmentReferenceNumber => _driver.FindElement(By.XPath("//dt[text()='Consignment reference number']//following-sibling::dd"));
-        private IWebElement exitDate => _driver.FindElement(By.Id("exit-date-value"));
+        private By importTypeBy => By.Id("importing");
+        private By countryOfOriginBy => By.Id("country-of-origin");
+        private By countryFromWhereConsignedBy => By.XPath("//dt[text()='Country from where consigned']//following-sibling::dd");
+        private By mainReasonForImportBy => By.Id("purpose-of-consignment-value");
+        private By pointOfExitBy => By.XPath("//dt[@id='point-of-exit-header']/following-sibling::dd");
+        private By consignmentDepartureDateTimeBy => By.Id("estimated-departure-date-time-value");
+        private By purposeBy => By.XPath("//dt[text()='Purpose in the internal market']//following-sibling::dd");
+        private By consignmentReferenceNumberBy => By.XPath("//dt[text()='Consignment reference number']//following-sibling::dd");
+        private By exitDateBy => By.Id("exit-date-value");
         private By exitBCPTemporaryAdmissionLocator => By.Id("designated-bip-horses-value");
         private By exitBCPTransitLocator => By.XPath("//dt[@id='exit-border-control-post-header']/following-sibling::dd");
-        private IWebElement destinationCountry => _driver.FindElement(By.XPath("//dt[@id='destination-country-header']/following-sibling::dd"));
+        private By destinationCountryBy => By.XPath("//dt[@id='destination-country-header']/following-sibling::dd");
 
         // Commodity details
-        private IWebElement commodityCode => _driver.FindElement(By.XPath("//td[text()='Commodity code']//following-sibling::td[1]"));
-        private IWebElement species => _driver.FindElement(By.XPath("//table[@id='review-table-consignment-0']//tbody//tr[1]//td[1]"));
-        private IWebElement numberOfAnimals => _driver.FindElement(By.XPath("//table[@id='review-consignment-total-table']//tbody//tr//td[1]"));
-        private IWebElement numberOfPackages => _driver.FindElement(By.XPath("//table[@id='review-consignment-total-table']//tbody//tr//td[2]"));
-        
+        private By commodityCodeBy => By.XPath("//td[text()='Commodity code']//following-sibling::td[1]");
+        private By speciesBy => By.XPath("//table[@id='review-table-consignment-0']//tbody//tr[1]//td[1]");
+        private By numberOfAnimalsBy => By.XPath("//table[@id='review-consignment-total-table']//tbody//tr//td[1]");
+        private By numberOfPackagesBy => By.XPath("//table[@id='review-consignment-total-table']//tbody//tr//td[2]");
+
         private List<IWebElement> commodityCodeList => _driver.WaitForElements(By.XPath("//table[contains(@id,'review-table-commodity-attributes')]//td[text()='Commodity code']//following-sibling::td[1]")).ToList();
         private List<IWebElement> netWeightList => _driver.WaitForElements(By.XPath("//table[contains(@class,'data-table-commodities')]//tr/td[1]")).ToList();
         private List<IWebElement> numPackagesList => _driver.WaitForElements(By.XPath("//table[contains(@class,'data-table-commodities')]//tr/td[2]")).ToList();
         private List<IWebElement> typeOfPackagesList => _driver.WaitForElements(By.XPath("//table[contains(@class,'data-table-commodities')]//tr/td[3]")).ToList();
-        private IWebElement totalNetWeight => _driver.FindElement(By.XPath("//td[text()='Total net weight']//following-sibling::td[1]"));
-        private IWebElement totalPackages => _driver.FindElement(By.XPath("//td[text()='Total packages']//following-sibling::td[1]"));
-        private IWebElement totalGrossWeight => _driver.FindElement(By.XPath("//td[text()='Total gross weight ']//following-sibling::td[1]"));
+        private By totalNetWeightBy => By.XPath("//td[text()='Total net weight']//following-sibling::td[1]");
+        private By totalPackagesBy => By.XPath("//td[text()='Total packages']//following-sibling::td[1]");
+        private By totalGrossWeightBy => By.XPath("//td[text()='Total gross weight ']//following-sibling::td[1]");
 
         //Additional details
-        private IWebElement commodityIntendedFor => _driver.FindElement(By.XPath("//dt[text()='Commodity intended for']//following-sibling::dd"));
-        private IWebElement temperature => _driver.FindElement(By.XPath("//dt[text()='Temperature']//following-sibling::dd"));
+        private By commodityIntendedForBy => By.XPath("//dt[text()='Commodity intended for']//following-sibling::dd");
+        private By temperatureBy => By.XPath("//dt[text()='Temperature']//following-sibling::dd");
 
         // Animal details
-        private IWebElement certificationOption => _driver.FindElement(By.XPath("//td[text()='Certified for']//following-sibling::td"));
-        private IWebElement GetHorseNameElement(int index) => _driver.FindElement(By.XPath($"//table[@id='animal-identification-details-table']//tbody//tr[{index + 1}]//td[@headers='horseName-01']"));
-        private IWebElement GetMicrochipElement(int index) => _driver.FindElement(By.XPath($"//table[@id='animal-identification-details-table']//tbody//tr[{index + 1}]//td[@headers='microchip-01']"));
-        private IWebElement GetPassportElement(int index) => _driver.FindElement(By.XPath($"//table[@id='animal-identification-details-table']//tbody//tr[{index + 1}]//td[@headers='passport-01']"));
-        private IWebElement GetEarTagElement(int index) => _driver.FindElement(By.XPath($"//table[contains(@aria-describedby,'animalProduct')]//tbody//tr[{index + 1}]//td[@headers='earTag-01']"));
-        private IWebElement unweanedAnimalsOption => _driver.FindElement(By.XPath("//td[contains(text(),'Includes unweaned animals')]/following-sibling::td"));
+        private By certificationOptionBy => By.XPath("//td[text()='Certified for']//following-sibling::td");
+        private By GetHorseNameBy(int index) => By.XPath($"//table[@id='animal-identification-details-table']//tbody//tr[{index + 1}]//td[@headers='horseName-01']");
+        private By GetMicrochipBy(int index) => By.XPath($"//table[@id='animal-identification-details-table']//tbody//tr[{index + 1}]//td[@headers='microchip-01']");
+        private By GetPassportBy(int index) => By.XPath($"//table[@id='animal-identification-details-table']//tbody//tr[{index + 1}]//td[@headers='passport-01']");
+        private By GetEarTagBy(int index) => By.XPath($"//table[contains(@aria-describedby,'animalProduct')]//tbody//tr[{index + 1}]//td[@headers='earTag-01']");
+        private By unweanedAnimalsOptionBy => By.XPath("//td[contains(text(),'Includes unweaned animals')]/following-sibling::td");
 
         // Documents
-        private IWebElement healthCertificateReference => _driver.FindElement(By.Id("latest-health-document-reference"));
-        private IWebElement healthCertificateDateOfIssue => _driver.FindElement(By.Id("latest-health-document-issue-date"));
-        private IWebElement healthCertificateFileName => _driver.FindElement(By.XPath("//table[@id='latest-health-certificate-table']//a[contains(@id,'attachment-view')]"));
-        private IWebElement additionalDocumentType => _driver.FindElement(By.Id("veterinary-document-type-1"));
-        private IWebElement additionalDocumentReference => _driver.FindElement(By.Id("veterinary-document-reference-1"));
-        private IWebElement additionalDocumentDateOfIssue => _driver.FindElement(By.Id("veterinary-document-issue-date-1"));
-        private IWebElement additionalDocumentFileName => _driver.FindElement(By.XPath("//table[@id='additional-documents-table']//a[contains(@id,'attachment-view')]"));
+        private By healthCertificateReferenceBy => By.Id("latest-health-document-reference");
+        private By healthCertificateDateOfIssueBy => By.Id("latest-health-document-issue-date");
+        private By healthCertificateFileNameBy => By.XPath("//table[@id='latest-health-certificate-table']//a[contains(@id,'attachment-view')]");
+        private By additionalDocumentTypeBy => By.Id("veterinary-document-type-1");
+        private By additionalDocumentReferenceBy => By.Id("veterinary-document-reference-1");
+        private By additionalDocumentDateOfIssueBy => By.Id("veterinary-document-issue-date-1");
+        private By additionalDocumentFileNameBy => By.XPath("//table[@id='additional-documents-table']//a[contains(@id,'attachment-view')]");
 
         // Addresses
-        private IWebElement consignorDetails => _driver.FindElement(By.Id("consignor"));
-        private IWebElement consigneeDetails => _driver.FindElement(By.Id("consignee"));
-        private IWebElement importerDetails => _driver.FindElement(By.Id("importer"));
-        private IWebElement destinationDetails => _driver.FindElement(By.Id("final-destination"));
+        private By consignorDetailsBy => By.Id("consignor");
+        private By consigneeDetailsBy => By.Id("consignee");
+        private By importerDetailsBy => By.Id("importer");
+        private By destinationDetailsBy => By.Id("final-destination");
 
         // Transport details
-        private IWebElement portOfEntry => _driver.FindElement(By.XPath("//th[contains(text(),'Port of entry')]//following-sibling::td"));
-        private IWebElement meansOfTransport => _driver.FindElement(By.XPath("//th[contains(text(),'Means of transport')]//following-sibling::td"));
-        private IWebElement transportId => _driver.FindElement(By.XPath("//th[text()='Transport identification']//following-sibling::td"));
-        private IWebElement containerUsage => _driver.FindElement(By.Id("imported-in-containers"));
-        private IWebElement transportDocumentReference => _driver.FindElement(By.XPath("//th[text()='Transport document reference']//following-sibling::td"));
-        private IWebElement estimatedArrivalDate => _driver.FindElement(By.XPath("//th[text()='Estimated arrival date at BCP or Port of entry']//following-sibling::td"));
-        private IWebElement estimatedArrivalTime => _driver.FindElement(By.XPath("//th[contains(text(),'Estimated arrival time at')]//following-sibling::td"));
-        private IWebElement estimatedJourneyTime => _driver.FindElement(By.XPath("//th[text()='Estimated total journey time of the animals']//following-sibling::td"));
-        private IWebElement ctcUsage => _driver.FindElement(By.XPath("//td[contains(text(),'Using the Common Transit Convention')]/following-sibling::td"));
-        private IWebElement gvmsUsage => _driver.FindElement(By.Id("goods-movement-services-route"));
-        private IWebElement GetContainerNumberElement(int index) => _driver.FindElement(By.Id($"container-number-{index}"));
-        private IWebElement GetSealNumberElement(int index) => _driver.FindElement(By.Id($"seal-number-{index}"));
-        private IWebElement GetOfficialSealElement(int index) => _driver.FindElement(By.Id($"official-seal-present-{index}"));
-        private IWebElement meansOfTransportAfterBCP => _driver.FindElement(By.XPath("//th[contains(text(),'Means of transport after BCP or Port of entry')]//following-sibling::td"));
-        private IWebElement transportIdentificationAfterBCP => _driver.FindElement(By.XPath("//table[@id='review-table-transport']//th[text()='Transport identification']//following-sibling::td"));
-        private IWebElement transportDocumentReferenceAfterBCP => _driver.FindElement(By.XPath("//table[@id='review-table-transport']//th[text()='Transport document reference']//following-sibling::td"));
-        private IWebElement departureDateFromBCP => _driver.FindElement(By.XPath("//th[text()='Departure date from port of entry']//following-sibling::td"));
-        private IWebElement departureTimeFromBCP => _driver.FindElement(By.XPath("//th[text()='Departure time from port of entry']//following-sibling::td"));
+        private By portOfEntryBy => By.XPath("//th[contains(text(),'Port of entry')]//following-sibling::td");
+        private By meansOfTransportBy => By.XPath("//th[contains(text(),'Means of transport')]//following-sibling::td");
+        private By transportIdBy => By.XPath("//th[text()='Transport identification']//following-sibling::td");
+        private By containerUsageBy => By.Id("imported-in-containers");
+        private By transportDocumentReferenceBy => By.XPath("//th[text()='Transport document reference']//following-sibling::td");
+        private By estimatedArrivalDateBy => By.XPath("//th[text()='Estimated arrival date at BCP or Port of entry']//following-sibling::td");
+        private By estimatedArrivalTimeBy => By.XPath("//th[contains(text(),'Estimated arrival time at')]//following-sibling::td");
+        private By estimatedJourneyTimeBy => By.XPath("//th[text()='Estimated total journey time of the animals']//following-sibling::td");
+        private By ctcUsageBy => By.XPath("//td[contains(text(),'Using the Common Transit Convention')]/following-sibling::td");
+        private By gvmsUsageBy => By.Id("goods-movement-services-route");
+        private By GetContainerNumberBy(int index) => By.Id($"container-number-{index}");
+        private By GetSealNumberBy(int index) => By.Id($"seal-number-{index}");
+        private By GetOfficialSealBy(int index) => By.Id($"official-seal-present-{index}");
+        private By meansOfTransportAfterBCPBy => By.XPath("//th[contains(text(),'Means of transport after BCP or Port of entry')]//following-sibling::td");
+        private By transportIdentificationAfterBCPBy => By.XPath("//table[@id='review-table-transport']//th[text()='Transport identification']//following-sibling::td");
+        private By transportDocumentReferenceAfterBCPBy => By.XPath("//table[@id='review-table-transport']//th[text()='Transport document reference']//following-sibling::td");
+        private By departureDateFromBCPBy => By.XPath("//th[text()='Departure date from port of entry']//following-sibling::td");
+        private By departureTimeFromBCPBy => By.XPath("//th[text()='Departure time from port of entry']//following-sibling::td");
 
         // Transporter details
-        private IWebElement transporterName => _driver.FindElement(By.Id("transporter-name"));
-        private IWebElement transporterAddress => _driver.FindElement(By.Id("transporter-address"));
-        private IWebElement transporterCountry => _driver.FindElement(By.Id("transporter-country"));
-        private IWebElement transporterApprovalNumber => _driver.FindElement(By.Id("transporter-approval-number"));
-        private IWebElement transporterType => _driver.FindElement(By.Id("transporter-type"));
+        private By transporterNameBy => By.Id("transporter-name");
+        private By transporterAddressBy => By.Id("transporter-address");
+        private By transporterCountryBy => By.Id("transporter-country");
+        private By transporterApprovalNumberBy => By.Id("transporter-approval-number");
+        private By transporterTypeBy => By.Id("transporter-type");
 
         // Route and contacts
-        private IWebElement routeCountries => _driver.FindElement(By.XPath("//td[text()='Route']//following-sibling::td"));
-        private IWebElement notifyTransportContacts => _driver.FindElement(By.Id("transporter-contact-yesnoindicator"));
-        private IWebElement consignmentContactAddress => _driver.FindElement(By.Id("organisation-branch-address-address"));
+        private By routeCountriesBy => By.XPath("//td[text()='Route']//following-sibling::td");
+        private By notifyTransportContactsBy => By.Id("transporter-contact-yesnoindicator");
+        private By consignmentContactAddressBy => By.Id("organisation-branch-address-address");
         private IReadOnlyCollection<IWebElement> divAboutTheConsignmentDetails => _driver.WaitForElements(By.XPath("//div[@id='document-pet-card']//dl/div"));
-                
-        private IWebElement lnkChange(string section) => _driver.FindElement(By.XPath($"(//*[normalize-space()='{section}']/following::a)[1]"));
 
         //Error Message
         private IReadOnlyCollection<IWebElement> lblErrorMessages => _driver.FindElements(By.XPath("//div[@class='govuk-error-summary']/div/ul/li"));
@@ -120,43 +124,40 @@ namespace Defra.UI.Tests.Pages.Classes
             return pageTitle.Text.Contains("Review your notification");
         }
 
-        // About the consignment
-        public string? GetImportType()
-        {
-            try { return importType.Text.Trim(); } catch { return null; }
-        }
+        // About the consignment - Simple getters using SafelyGetText
+        public string GetImportType() => _driver.SafelyGetText(importTypeBy);
+        public string GetCountryOfOrigin() => _driver.SafelyGetText(countryOfOriginBy);
+        public string GetCountryFromWhereConsigned() => _driver.SafelyGetText(countryFromWhereConsignedBy);
+        public string GetConsignmentReferenceNumber() => _driver.SafelyGetText(consignmentReferenceNumberBy);
+        public string GetDestinationCountry() => _driver.SafelyGetText(destinationCountryBy);
 
-        public string? GetPartOfImportType()
+        // Complex methods with logic - Keep try-catch
+        public string GetPartOfImportType()
         {
-            var importTypeText = string.Empty;
             try
             {
-                importTypeText = importType.Text.Trim();
+                var importTypeText = _driver.SafelyGetText(importTypeBy);
+                if (string.IsNullOrEmpty(importTypeText))
+                    return string.Empty;
+
                 var words = importTypeText.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                importTypeText = string.Join(" ", words.Take(3)); 
+                return string.Join(" ", words.Take(3));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                Console.WriteLine($"GetPartOfImportType failed: {ex}");   
+                Console.WriteLine($"GetPartOfImportType failed: {ex}");
+                return string.Empty;
             }
-            return importTypeText;
         }
 
-        public string? GetCountryOfOrigin()
-        {
-            try { return countryOfOrigin.Text.Trim(); } catch { return null; }
-        }
-
-        public string? GetCountryFromWhereConsigned()
-        {
-            try { return countryFromWhereConsigned.Text.Trim(); } catch { return null; }
-        }
-
-        public string? GetMainReasonForImport()
+        public string GetMainReasonForImport()
         {
             try
             {
-                var text = mainReasonForImport.Text.Trim();
+                var text = _driver.SafelyGetText(mainReasonForImportBy);
+                if (string.IsNullOrEmpty(text))
+                    return string.Empty;
+
                 // Convert "For internal market" to "Internal market"
                 if (text.StartsWith("For "))
                 {
@@ -164,10 +165,13 @@ namespace Defra.UI.Tests.Pages.Classes
                 }
                 return text;
             }
-            catch { return null; }
+            catch
+            {
+                return string.Empty;
+            }
         }
 
-        public string? GetPurpose()
+        public string GetPurpose()
         {
             try
             {
@@ -177,14 +181,13 @@ namespace Defra.UI.Tests.Pages.Classes
                 if (mainReason?.Contains("internal market") == true)
                 {
                     // For internal market, look for "Purpose in the internal market"
-                    var internalMarketPurpose = _driver.FindElement(By.XPath("//dt[contains(text(),'Purpose in the internal market')]//following-sibling::dd"));
-                    return internalMarketPurpose.Text.Trim();
-                }                
+                    return _driver.SafelyGetText(By.XPath("//dt[contains(text(),'Purpose in the internal market')]//following-sibling::dd"));
+                }
                 else
                 {
                     // Try to find any purpose-related value after the main reason
                     var purposeElements = _driver.FindElements(By.XPath("//dt[contains(text(),'Purpose')]//following-sibling::dd"));
-                    return purposeElements.FirstOrDefault()?.Text.Trim();
+                    return purposeElements.FirstOrDefault()?.SafelyGetText() ?? string.Empty;
                 }
             }
             catch
@@ -193,23 +196,25 @@ namespace Defra.UI.Tests.Pages.Classes
                 try
                 {
                     // Look for the next review-summary-list__value after the main reason
-                    var nextValue = _driver.FindElement(By.XPath("//dd[@id='purpose-of-consignment-value']//following::div[@class='review-summary-list__row'][1]//dd[@class='review-summary-list__value']"));
-                    return nextValue?.Text.Trim();
+                    return _driver.SafelyGetText(By.XPath("//dd[@id='purpose-of-consignment-value']//following::div[@class='review-summary-list__row'][1]//dd[@class='review-summary-list__value']"));
                 }
                 catch
                 {
-                    return null;
+                    return string.Empty;
                 }
             }
         }
 
-        public string GetPointOfExit => pointOfExit?.Text?.Trim() ?? string.Empty;
+        public string GetPointOfExit => _driver.SafelyGetText(pointOfExitBy);
 
         public (string departureDate, string departureTime) GetConsignmentDepartureDateTime()
         {
             try
             {
-                var departureDateTime = consignmentDepartureDateTime.Text.Trim();
+                var departureDateTime = _driver.SafelyGetText(consignmentDepartureDateTimeBy);
+                if (string.IsNullOrEmpty(departureDateTime))
+                    return (string.Empty, string.Empty);
+
                 var dateTimeParts = departureDateTime.Split(',', StringSplitOptions.TrimEntries);
                 return (DateTime.Parse(dateTimeParts[0]).ToString("dd MMMM yyyy"), dateTimeParts.Length > 1 ? dateTimeParts[1] : string.Empty);
             }
@@ -220,113 +225,86 @@ namespace Defra.UI.Tests.Pages.Classes
             }
         }
 
-        public string? GetCommodityCode()
-        {
-            try
-            {
-                // Look for the commodity code value in the table cell next to "Commodity code" header
-                var codeElement = commodityCode;
-                return codeElement.Text.Trim();
-            }
-            catch { return null; }
-        }
+        // Commodity details - Simple getters
+        public string GetCommodityCode() => _driver.SafelyGetText(commodityCodeBy);
+        public string GetSpecies() => _driver.SafelyGetText(speciesBy);
+        public string GetNumberOfAnimals() => _driver.SafelyGetText(numberOfAnimalsBy);
+        public string GetNumberOfPackages() => _driver.SafelyGetText(numberOfPackagesBy);
 
-        public string? GetSpecies()
-        {
-            try { return species.Text.Trim(); } catch { return null; }
-        }
-
-        public string? GetNumberOfAnimals()
-        {
-            try { return numberOfAnimals.Text.Trim(); } catch { return null; }
-        }
-
-        public string? GetNumberOfPackages()
-        {
-            try { return numberOfPackages.Text.Trim(); } catch { return null; }
-        }
-
-        public string? GetCommodityCodeList(int index)
+        public string GetCommodityCodeList(int index)
         {
             try
             {
                 var allcommodityCodesList = GetItemsList(commodityCodeList);
 
                 if (allcommodityCodesList == null || allcommodityCodesList.Count == 0)
-                    return null;
+                    return string.Empty;
 
                 var commCode = allcommodityCodesList[index];
-                return string.IsNullOrWhiteSpace(commCode) ? null : commCode;
+                return string.IsNullOrWhiteSpace(commCode) ? string.Empty : commCode;
             }
-
             catch (Exception ex)
             {
                 Console.WriteLine($"GetCommodityCodeList failed: {ex}");
-                return null;
+                return string.Empty;
             }
         }
 
-        public string? GetNetWeightList(int index)
+        public string GetNetWeightList(int index)
         {
-            var netWeight = string.Empty;
             try
             {
                 var allNetWeightList = GetItemsList(netWeightList);
 
                 if (allNetWeightList == null || allNetWeightList.Count == 0)
-                    return null;
+                    return string.Empty;
 
-                netWeight = allNetWeightList[index];
+                var netWeight = allNetWeightList[index];
                 netWeight = netWeight.Replace("kg/units", "").Trim();
-                return string.IsNullOrWhiteSpace(netWeight) ? null : netWeight;
+                return string.IsNullOrWhiteSpace(netWeight) ? string.Empty : netWeight;
             }
-
             catch (Exception ex)
             {
                 Console.WriteLine($"GetNetWeightList failed: {ex}");
-                return netWeight;
+                return string.Empty;
             }
         }
 
-        public string? GetNumPackagesList(int index)
+        public string GetNumPackagesList(int index)
         {
-            var numOfPackage = string.Empty;
             try
             {
                 var allNumPackagesList = GetItemsList(numPackagesList);
 
                 if (allNumPackagesList == null || allNumPackagesList.Count == 0)
-                    return null;
+                    return string.Empty;
 
-                numOfPackage = allNumPackagesList[index];
-                return string.IsNullOrWhiteSpace(numOfPackage) ? null : numOfPackage;
+                var numOfPackage = allNumPackagesList[index];
+                return string.IsNullOrWhiteSpace(numOfPackage) ? string.Empty : numOfPackage;
             }
-
             catch (Exception ex)
             {
                 Console.WriteLine($"GetNumPackagesList failed: {ex}");
-                return numOfPackage;
+                return string.Empty;
             }
         }
 
-        public string? GetTypeOfPackagesList(int index)
+        public string GetTypeOfPackagesList(int index)
         {
-            var typeOfPackage = string.Empty;
             try
             {
                 var allTypeOfPackagesList = GetItemsList(typeOfPackagesList);
 
                 if (allTypeOfPackagesList == null || allTypeOfPackagesList.Count == 0)
-                    return null;
+                    return string.Empty;
 
-                typeOfPackage = allTypeOfPackagesList[index];
-                return string.IsNullOrWhiteSpace(typeOfPackage) ? null : typeOfPackage;
+                var typeOfPackage = allTypeOfPackagesList[index];
+                return string.IsNullOrWhiteSpace(typeOfPackage) ? string.Empty : typeOfPackage;
             }
-
             catch (Exception ex)
             {
                 Console.WriteLine($"GetTypeOfPackagesList failed: {ex}");
-                return typeOfPackage;
+                return string.Empty;
             }
         }
 
@@ -335,58 +313,60 @@ namespace Defra.UI.Tests.Pages.Classes
             List<string> itemsList = new List<string>();
             foreach (var item in inputList)
             {
-                itemsList.Add(item.Text.Trim());
+                itemsList.Add(item.SafelyGetText());
             }
             return itemsList;
         }
 
-        public string? GetTotalNetWeight()
+        public string GetTotalNetWeight()
         {
-            string totalNetWeightText = string.Empty;
             try
             {
-                totalNetWeightText = totalNetWeight.Text.Replace("kg/units", "").Trim();
+                var text = _driver.SafelyGetText(totalNetWeightBy);
+                return text.Replace("kg/units", "").Trim();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine($"GetTotalNetWeight failed: {ex.Message}");
+                return string.Empty;
             }
-            return totalNetWeightText;
         }
 
-        public string? GetTotalPackages()
+        public string GetTotalPackages()
         {
-            string totalPackagesText = string.Empty;
             try
             {
-                totalPackagesText = totalPackages.Text.Trim();
+                return _driver.SafelyGetText(totalPackagesBy);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"GetTotalPackages failed: {ex.Message}");
+                return string.Empty;
             }
-            return totalPackagesText;
         }
 
-        public string? GetTotalGrossWeight()
+        public string GetTotalGrossWeight()
         {
-            string totalGrossWeightText = string.Empty;
             try
             {
-                totalGrossWeightText = totalGrossWeight.Text.Replace("kg/units", "").Trim();
+                var text = _driver.SafelyGetText(totalGrossWeightBy);
+                return text.Replace("kg/units", "").Trim();
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"GetTotalGrossWeight failed: {ex.Message}");
+                return string.Empty;
             }
-            return totalGrossWeightText;
         }
 
-        public string? GetExitDate()
+        public string GetExitDate()
         {
             try
             {
-                var text = exitDate.Text.Trim();
+                var text = _driver.SafelyGetText(exitDateBy);
+                if (string.IsNullOrEmpty(text))
+                    return string.Empty;
+
                 // Convert "14 January 2026" to "14 January 2026" format (matches stored format)
                 if (DateTime.TryParse(text, out DateTime date))
                 {
@@ -394,10 +374,13 @@ namespace Defra.UI.Tests.Pages.Classes
                 }
                 return text;
             }
-            catch { return null; }
+            catch
+            {
+                return string.Empty;
+            }
         }
 
-        public string? GetExitBCP()
+        public string GetExitBCP()
         {
             try
             {
@@ -407,103 +390,62 @@ namespace Defra.UI.Tests.Pages.Classes
                 if (mainReason?.Contains("Transit", StringComparison.OrdinalIgnoreCase) == true)
                 {
                     // For Transit, use the exit-border-control-post-header locator
-                    var transitExitBCP = _driver.FindElement(exitBCPTransitLocator);
-                    return transitExitBCP.Text.Trim();
+                    return _driver.SafelyGetText(exitBCPTransitLocator);
                 }
                 else if (mainReason?.Contains("Temporary admission", StringComparison.OrdinalIgnoreCase) == true)
                 {
                     // For Temporary Admission Horses, use the designated-bip-horses-value locator
-                    var tempAdmissionExitBCP = _driver.FindElement(exitBCPTemporaryAdmissionLocator);
-                    return tempAdmissionExitBCP.Text.Trim();
+                    return _driver.SafelyGetText(exitBCPTemporaryAdmissionLocator);
                 }
                 else
                 {
                     // Fallback: Try both locators
-                    try
-                    {
-                        var transitExitBCP = _driver.FindElement(exitBCPTransitLocator);
-                        if (!string.IsNullOrEmpty(transitExitBCP.Text))
-                            return transitExitBCP.Text.Trim();
-                    }
-                    catch { }
+                    var transitExitBCP = _driver.SafelyGetText(exitBCPTransitLocator);
+                    if (!string.IsNullOrEmpty(transitExitBCP))
+                        return transitExitBCP;
 
-                    try
-                    {
-                        var tempAdmissionExitBCP = _driver.FindElement(exitBCPTemporaryAdmissionLocator);
-                        if (!string.IsNullOrEmpty(tempAdmissionExitBCP.Text))
-                            return tempAdmissionExitBCP.Text.Trim();
-                    }
-                    catch { }
+                    var tempAdmissionExitBCP = _driver.SafelyGetText(exitBCPTemporaryAdmissionLocator);
+                    if (!string.IsNullOrEmpty(tempAdmissionExitBCP))
+                        return tempAdmissionExitBCP;
 
-                    return null;
+                    return string.Empty;
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"GetExitBCP failed: {ex.Message}");
-                return null;
+                return string.Empty;
             }
         }
 
-        public string? GetDestinationCountry()
-        {
-            try { return destinationCountry.Text.Trim(); } catch { return null; }
-        }
+        // Animal details - Simple getters
+        public string GetCertificationOption() => _driver.SafelyGetText(certificationOptionBy);
+        public string GetHorseName(int index = 0) => _driver.SafelyGetText(GetHorseNameBy(index));
+        public string GetMicrochipNumber(int index = 0) => _driver.SafelyGetText(GetMicrochipBy(index));
+        public string GetPassportNumber(int index = 0) => _driver.SafelyGetText(GetPassportBy(index));
+        public string GetEarTag(int index = 0) => _driver.SafelyGetText(GetEarTagBy(index));
 
-        // Animal details
-        public string? GetCertificationOption()
-        {
-            try { return certificationOption.Text.Trim(); } catch { return null; }
-        }
+        // Additional details - Simple getters
+        public string GetCommodityIntendedFor() => _driver.SafelyGetText(commodityIntendedForBy);
+        public string GetTemperature() => _driver.SafelyGetText(temperatureBy);
+        public string GetUnweanedAnimalsOption() => _driver.SafelyGetText(unweanedAnimalsOptionBy);
 
-        public string? GetHorseName(int index = 0)
-        {
-            try { return GetHorseNameElement(index).Text.Trim(); } catch { return null; }
-        }
+        // Documents - Simple getters
+        public string GetHealthCertificateReference() => _driver.SafelyGetText(healthCertificateReferenceBy);
+        public string GetAdditionalDocumentType() => _driver.SafelyGetText(additionalDocumentTypeBy);
+        public string GetAdditionalDocumentReference() => _driver.SafelyGetText(additionalDocumentReferenceBy);
+        public string GetHealthCertificateFileName() => _driver.SafelyGetText(healthCertificateFileNameBy);
+        public string GetAdditionalDocumentFileName() => _driver.SafelyGetText(additionalDocumentFileNameBy);
 
-        public string? GetMicrochipNumber(int index = 0)
-        {
-            try { return GetMicrochipElement(index).Text.Trim(); } catch { return null; }
-        }
-
-        public string? GetPassportNumber(int index = 0)
-        {
-            try { return GetPassportElement(index).Text.Trim(); } catch { return null; }
-        }
-
-        public string? GetEarTag(int index = 0)
-        {
-            try { return GetEarTagElement(index).Text.Trim(); } catch { return null; }
-        }
-
-        //Additional details
-
-        public string? GetCommodityIntendedFor()
-        {
-            try { return commodityIntendedFor.Text.Trim(); } catch { return null; }
-        }
-
-        public string? GetTemperature()
-        {
-            try { return temperature.Text.Trim(); } catch { return null; }
-        }
-
-        public string? GetUnweanedAnimalsOption()
-        {
-            try { return unweanedAnimalsOption.Text.Trim(); } catch { return null; }
-        }
-
-        // Documents
-        public string? GetHealthCertificateReference()
-        {
-            try { return healthCertificateReference.Text.Trim(); } catch { return null; }
-        }
-
-        public string? GetHealthCertificateDateOfIssue()
+        // Date methods with parsing logic
+        public string GetHealthCertificateDateOfIssue()
         {
             try
             {
-                var text = healthCertificateDateOfIssue.Text.Trim();
+                var text = _driver.SafelyGetText(healthCertificateDateOfIssueBy);
+                if (string.IsNullOrEmpty(text))
+                    return string.Empty;
+
                 // Convert "1 December 2025" to "01 12 2025" format
                 if (DateTime.TryParse(text, out DateTime date))
                 {
@@ -511,24 +453,20 @@ namespace Defra.UI.Tests.Pages.Classes
                 }
                 return text;
             }
-            catch { return null; }
+            catch
+            {
+                return string.Empty;
+            }
         }
 
-        public string? GetAdditionalDocumentType()
-        {
-            try { return additionalDocumentType.Text.Trim(); } catch { return null; }
-        }
-
-        public string? GetAdditionalDocumentReference()
-        {
-            try { return additionalDocumentReference.Text.Trim(); } catch { return null; }
-        }
-
-        public string? GetAdditionalDocumentDateOfIssue()
+        public string GetAdditionalDocumentDateOfIssue()
         {
             try
             {
-                var text = additionalDocumentDateOfIssue.Text.Trim();
+                var text = _driver.SafelyGetText(additionalDocumentDateOfIssueBy);
+                if (string.IsNullOrEmpty(text))
+                    return string.Empty;
+
                 // Convert "24 November 2025" to "24 11 2025" format  
                 if (DateTime.TryParse(text, out DateTime date))
                 {
@@ -536,126 +474,104 @@ namespace Defra.UI.Tests.Pages.Classes
                 }
                 return text;
             }
-            catch { return null; }
-        }
-
-        public string? GetHealthCertificateFileName()
-        {
-            try { return healthCertificateFileName.Text.Trim(); } catch { return null; }
-        }
-
-        public string? GetAdditionalDocumentFileName()
-        {
-            try { return additionalDocumentFileName.Text.Trim(); } catch { return null; }
-        }
-
-        // Addresses
-        public string? GetConsignorName()
-        {
-            try
+            catch
             {
-                var fullText = consignorDetails.Text.Trim();
-                return ExtractNameFromAddressText(fullText);
+                return string.Empty;
             }
-            catch { return null; }
         }
 
-        public string? GetConsignorAddress()
+        // Addresses - Using helper methods with extraction logic
+        public string GetConsignorName()
+        {
+            var fullText = _driver.SafelyGetText(consignorDetailsBy);
+            return ExtractNameFromAddressText(fullText);
+        }
+
+        public string GetConsignorAddress()
+        {
+            var fullText = _driver.SafelyGetText(consignorDetailsBy);
+            return ExtractAddressFromAddressText(fullText);
+        }
+
+        public string GetConsigneeName()
+        {
+            var fullText = _driver.SafelyGetText(consigneeDetailsBy);
+            return ExtractNameFromAddressText(fullText);
+        }
+
+        public string GetConsigneeAddress()
+        {
+            var fullText = _driver.SafelyGetText(consigneeDetailsBy);
+            return ExtractAddressFromAddressText(fullText);
+        }
+
+        public string GetImporterName()
+        {
+            var fullText = _driver.SafelyGetText(importerDetailsBy);
+            return ExtractNameFromAddressText(fullText);
+        }
+
+        public string GetImporterAddress()
+        {
+            var fullText = _driver.SafelyGetText(importerDetailsBy);
+            return ExtractAddressFromAddressText(fullText);
+        }
+
+        public string GetDestinationName()
+        {
+            var fullText = _driver.SafelyGetText(destinationDetailsBy);
+            return ExtractNameFromAddressText(fullText);
+        }
+
+        public string GetDestinationAddress()
+        {
+            var fullText = _driver.SafelyGetText(destinationDetailsBy);
+            return ExtractAddressFromAddressText(fullText);
+        }
+
+        public string GetConsignorCountry()
+        {
+            var fullText = _driver.SafelyGetText(consignorDetailsBy);
+            return ExtractCountryFromAddressText(fullText);
+        }
+
+        public string GetConsigneeCountry()
+        {
+            var fullText = _driver.SafelyGetText(consigneeDetailsBy);
+            return ExtractCountryFromAddressText(fullText);
+        }
+
+        public string GetImporterCountry()
+        {
+            var fullText = _driver.SafelyGetText(importerDetailsBy);
+            return ExtractCountryFromAddressText(fullText);
+        }
+
+        public string GetPlaceOfDestinationCountry()
+        {
+            var fullText = _driver.SafelyGetText(destinationDetailsBy);
+            return ExtractCountryFromAddressText(fullText);
+        }
+
+        // Transport details - Simple getters
+        public string GetPortOfEntry() => _driver.SafelyGetText(portOfEntryBy);
+        public string GetMeansOfTransport() => _driver.SafelyGetText(meansOfTransportBy);
+        public string GetTransportId() => _driver.SafelyGetText(transportIdBy);
+        public string GetTransportDocumentReference() => _driver.SafelyGetText(transportDocumentReferenceBy);
+        public string GetEstimatedArrivalTime() => _driver.SafelyGetText(estimatedArrivalTimeBy);
+        public string GetCTCUsage() => _driver.SafelyGetText(ctcUsageBy);
+        public string GetGVMSUsage() => _driver.SafelyGetText(gvmsUsageBy);
+        public string GetContainerUsage() => _driver.SafelyGetText(containerUsageBy);
+
+        // Transport dates with parsing
+        public string GetEstimatedArrivalDate()
         {
             try
             {
-                var fullText = consignorDetails.Text.Trim();
-                return ExtractAddressFromAddressText(fullText);
-            }
-            catch { return null; }
-        }
+                var text = _driver.SafelyGetText(estimatedArrivalDateBy);
+                if (string.IsNullOrEmpty(text))
+                    return string.Empty;
 
-        public string? GetConsigneeName()
-        {
-            try
-            {
-                var fullText = consigneeDetails.Text.Trim();
-                return ExtractNameFromAddressText(fullText);
-            }
-            catch { return null; }
-        }
-
-        public string? GetConsigneeAddress()
-        {
-            try
-            {
-                var fullText = consigneeDetails.Text.Trim();
-                return ExtractAddressFromAddressText(fullText);
-            }
-            catch { return null; }
-        }
-
-        public string? GetImporterName()
-        {
-            try
-            {
-                var fullText = importerDetails.Text.Trim();
-                return ExtractNameFromAddressText(fullText);
-            }
-            catch { return null; }
-        }
-
-        public string? GetImporterAddress()
-        {
-            try
-            {
-                var fullText = importerDetails.Text.Trim();
-                return ExtractAddressFromAddressText(fullText);
-            }
-            catch { return null; }
-        }
-
-        public string? GetDestinationName()
-        {
-            try
-            {
-                var fullText = destinationDetails.Text.Trim();
-                return ExtractNameFromAddressText(fullText);
-            }
-            catch { return null; }
-        }
-
-        public string? GetDestinationAddress()
-        {
-            try
-            {
-                var fullText = destinationDetails.Text.Trim();
-                return ExtractAddressFromAddressText(fullText);
-            }
-            catch { return null; }
-        }
-
-        // Transport details
-        public string? GetPortOfEntry()
-        {
-            try { return portOfEntry.Text.Trim(); } catch { return null; }
-        }
-
-        public string? GetMeansOfTransport()
-        {
-            try { return meansOfTransport.Text.Trim(); } catch { return null; }
-        }
-
-        public string? GetTransportId()
-        {
-            try { return transportId.Text.Trim(); } catch { return null; }
-        }
-
-        public string? GetTransportDocumentReference()
-        {
-            try { return transportDocumentReference.Text.Trim(); } catch { return null; }
-        }
-
-        public string? GetEstimatedArrivalDate()
-        {
-            try
-            {
-                var text = estimatedArrivalDate.Text.Trim();
                 // Convert "4 December 2025" to "04 Dec 2025" format
                 if (DateTime.TryParse(text, out DateTime date))
                 {
@@ -663,72 +579,48 @@ namespace Defra.UI.Tests.Pages.Classes
                 }
                 return text;
             }
-            catch { return null; }
+            catch
+            {
+                return string.Empty;
+            }
         }
 
-        public string? GetEstimatedArrivalTime()
-        {
-            try { return estimatedArrivalTime.Text.Trim(); } catch { return null; }
-        }
-
-        public string? GetEstimatedJourneyTime()
+        public string GetEstimatedJourneyTime()
         {
             try
             {
-                var text = estimatedJourneyTime.Text.Trim();
+                var text = _driver.SafelyGetText(estimatedJourneyTimeBy);
+                if (string.IsNullOrEmpty(text))
+                    return string.Empty;
+
                 // Extract just the number from "8 hrs" to return "8"
                 return text.Replace(" hrs", "").Trim();
             }
-            catch { return null; }
-        }
-
-        public string? GetCTCUsage()
-        {
-            try { return ctcUsage.Text.Trim(); } catch { return null; }
-        }
-
-        public string? GetGVMSUsage()
-        {
-            try { return gvmsUsage.Text.Trim(); } catch { return null; }
+            catch
+            {
+                return string.Empty;
+            }
         }
 
         // Transport to BCP - Containers
-        public string? GetContainerNumber(int index = 0)
-        {
-            try { return GetContainerNumberElement(index).Text.Trim(); } catch { return null; }
-        }
+        public string GetContainerNumber(int index = 0) => _driver.SafelyGetText(GetContainerNumberBy(index));
+        public string GetSealNumber(int index = 0) => _driver.SafelyGetText(GetSealNumberBy(index));
+        public string GetOfficialSeal(int index = 0) => _driver.SafelyGetText(GetOfficialSealBy(index));
 
-        public string? GetSealNumber(int index = 0)
-        {
-            try { return GetSealNumberElement(index).Text.Trim(); } catch { return null; }
-        }
+        // Transport after BCP - Simple getters
+        public string GetMeansOfTransportAfterBCP() => _driver.SafelyGetText(meansOfTransportAfterBCPBy);
+        public string GetTransportIdentificationAfterBCP() => _driver.SafelyGetText(transportIdentificationAfterBCPBy);
+        public string GetTransportDocumentReferenceAfterBCP() => _driver.SafelyGetText(transportDocumentReferenceAfterBCPBy);
+        public string GetDepartureTimeFromBCP() => _driver.SafelyGetText(departureTimeFromBCPBy);
 
-        public string? GetOfficialSeal(int index = 0)
-        {
-            try { return GetOfficialSealElement(index).Text.Trim(); } catch { return null; }
-        }
-
-        // Transport after BCP
-        public string? GetMeansOfTransportAfterBCP()
-        {
-            try { return meansOfTransportAfterBCP.Text.Trim(); } catch { return null; }
-        }
-
-        public string? GetTransportIdentificationAfterBCP()
-        {
-            try { return transportIdentificationAfterBCP.Text.Trim(); } catch { return null; }
-        }
-
-        public string? GetTransportDocumentReferenceAfterBCP()
-        {
-            try { return transportDocumentReferenceAfterBCP.Text.Trim(); } catch { return null; }
-        }
-
-        public string? GetDepartureDateFromBCP()
+        public string GetDepartureDateFromBCP()
         {
             try
             {
-                var text = departureDateFromBCP.Text.Trim();
+                var text = _driver.SafelyGetText(departureDateFromBCPBy);
+                if (string.IsNullOrEmpty(text))
+                    return string.Empty;
+
                 // Convert "17 January 2026" to "17 Jan 2026" format
                 if (DateTime.TryParse(text, out DateTime date))
                 {
@@ -736,71 +628,83 @@ namespace Defra.UI.Tests.Pages.Classes
                 }
                 return text;
             }
-            catch { return null; }
+            catch
+            {
+                return string.Empty;
+            }
         }
 
-        public string? GetDepartureTimeFromBCP()
-        {
-            try { return departureTimeFromBCP.Text.Trim(); } catch { return null; }
-        }
+        // Transporter details - Simple getters
+        public string GetTransporterName() => _driver.SafelyGetText(transporterNameBy);
+        public string GetTransporterAddress() => _driver.SafelyGetText(transporterAddressBy);
+        public string GetTransporterCountry() => _driver.SafelyGetText(transporterCountryBy);
+        public string GetTransporterApprovalNumber() => _driver.SafelyGetText(transporterApprovalNumberBy);
+        public string GetTransporterType() => _driver.SafelyGetText(transporterTypeBy);
 
-        // Transporter details
-        public string? GetTransporterName()
-        {
-            try { return transporterName.Text.Trim(); } catch { return null; }
-        }
-
-        public string? GetTransporterAddress()
-        {
-            try { return transporterAddress.Text.Trim(); } catch { return null; }
-        }
-
-        public string? GetTransporterCountry()
-        {
-            try { return transporterCountry.Text.Trim(); } catch { return null; }
-        }
-
-        public string? GetTransporterApprovalNumber()
-        {
-            try { return transporterApprovalNumber.Text.Trim(); } catch { return null; }
-        }
-
-        public string? GetTransporterType()
-        {
-            try { return transporterType.Text.Trim(); } catch { return null; }
-        }
-
-        // Route and contacts
-        public string? GetRouteCountries()
-        {
-            try { return routeCountries.Text.Trim(); } catch { return null; }
-        }
-
-        public string? GetNotifyTransportContacts()
-        {
-            try { return notifyTransportContacts.Text.Trim(); } catch { return null; }
-        }
-
-        public string? GetConsignmentContactAddress()
+        public string GetTransporterAddressWithoutContact()
         {
             try
             {
-                var text = consignmentContactAddress.Text.Trim();
+                var fullAddress = _driver.SafelyGetText(transporterAddressBy);
+                if (string.IsNullOrEmpty(fullAddress))
+                    return string.Empty;
+
+                // Transporter address format: "street, city, postcode, phone, email"
+                // We only want: "street, city, postcode"
+                var parts = fullAddress.Split(',', StringSplitOptions.TrimEntries);
+
+                if (parts.Length >= 3)
+                {
+                    // Take first 3 parts (street, city, postcode) - exclude phone and email
+                    return string.Join(", ", parts.Take(3));
+                }
+
+                return fullAddress;
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+
+        // Route and contacts - Simple getters
+        public string GetRouteCountries() => _driver.SafelyGetText(routeCountriesBy);
+        public string GetNotifyTransportContacts() => _driver.SafelyGetText(notifyTransportContactsBy);
+
+        public string GetConsignmentContactAddress()
+        {
+            try
+            {
+                var text = _driver.SafelyGetText(consignmentContactAddressBy);
+                if (string.IsNullOrEmpty(text))
+                    return string.Empty;
+
                 // Convert comma-separated to multi-line format to match expected
                 return text.Replace(", ", "\n");
             }
-            catch { return null; }
+            catch
+            {
+                return string.Empty;
+            }
         }
+
+        public string GetCHEDReference() => _driver.SafelyGetText(chedReferenceBy);
 
         // Helper methods to extract name and address from combined text
         private string ExtractNameFromAddressText(string fullText)
         {
+            if (string.IsNullOrEmpty(fullText))
+                return string.Empty;
+
             var lines = fullText.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-            return lines.Length > 0 ? lines[0].Trim() : "";
+            return lines.Length > 0 ? lines[0].Trim() : string.Empty;
         }
 
         private string ExtractAddressFromAddressText(string fullText)
         {
+            if (string.IsNullOrEmpty(fullText))
+                return string.Empty;
+
             var lines = fullText.Split('\n', StringSplitOptions.RemoveEmptyEntries);
             if (lines.Length > 1)
             {
@@ -821,17 +725,31 @@ namespace Defra.UI.Tests.Pages.Classes
 
                 return addressLine;
             }
-            return "";
+            return string.Empty;
         }
 
-        public string? GetConsignmentReferenceNumber()
+        private string ExtractCountryFromAddressText(string fullText)
         {
-            try { return consignmentReferenceNumber.Text.Trim(); } catch { return null; }
-        }
+            if (string.IsNullOrEmpty(fullText))
+                return string.Empty;
 
-        public string? GetContainerUsage()
-        {
-            try { return containerUsage.Text.Trim(); } catch { return null; }
+            var lines = fullText.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+            if (lines.Length > 1)
+            {
+                var addressLine = lines[1].Trim();
+
+                // The review page shows: "street, city, postcode, country, phone"
+                // Country is the 4th part (index 3)
+
+                var parts = addressLine.Split(',', StringSplitOptions.TrimEntries);
+
+                // Return the 4th part (country) if it exists
+                if (parts.Length >= 4)
+                {
+                    return parts[3].Trim();
+                }
+            }
+            return string.Empty;
         }
 
         public bool IsError(string errorMessage)
@@ -874,6 +792,42 @@ namespace Defra.UI.Tests.Pages.Classes
                 msg.Contains(errorMessage, StringComparison.OrdinalIgnoreCase));
 
             return (containsSpecificError, allErrorMessages);
+        }
+
+        public bool IsCopyAsNewButtonDisplayed()
+        {
+            return _driver.IsElementDisplayed(CopyAsNewButtonBy);
+        }
+
+        public bool IsViewCHEDButtonDisplayed()
+        {
+            return _driver.IsElementDisplayed(ViewCHEDButtonBy);
+        }
+
+        public bool AreChangeLinksNotDisplayed()
+        {
+            try
+            {
+                var changeLinks = _driver.FindElements(ChangeLinksBy);
+                var displayedLinks = changeLinks.Where(link => link.IsElementDisplayed()).ToList();
+
+                if (displayedLinks.Count == 0)
+                {
+                    return true;
+                }
+
+                Console.WriteLine($"✗ Found {displayedLinks.Count} Change link(s) displayed when expecting none");
+                return false;
+            }
+            catch (NoSuchElementException)
+            {
+                return true;
+            }
+        }
+
+        public void ClickDashboardLink()
+        {
+            _driver.FindElement(DashboardLinkBy).Click();
         }
     }
 }

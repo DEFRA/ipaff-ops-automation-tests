@@ -33,13 +33,14 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement lnkCancel => _driver.WaitForElement(By.XPath("//a[contains(text(),'Cancel')]"));
         private IWebElement lnkAddADocument => _driver.WaitForElement(By.Id("button-display-additional-document-row"));
         private List<IWebElement> documentRows => _driver.WaitForElements(By.XPath("//div[@class='additional-documents__grid-row additional-document-info']")).ToList();
-        private IWebElement fileName => _driver.FindElement(By.XPath("//a[contains(@id,'attachment-view-')] | //a[contains(@id,'attachment-name-0')]"));
+        private List<IWebElement> fileNames => _driver.FindElements(By.XPath("//a[contains(@id,'attachment-view-')] | //a[contains(@id,'attachment-name-0')]")).ToList();
         private List<IWebElement> datePickerDateList => _driver.WaitForElements(By.XPath("//table[@class='date-picker__date-table']//tr/td")).ToList();
         private IWebElement errorSummaryTitle => _driver.WaitForElement(By.Id("error-summary-title"));
         private IWebElement errorSummaryMsg => _driver.WaitForElement(By.XPath("//ul[contains(@class,'govuk-error-summary__list')]/li/a"));
-        private IWebElement  errorMsgFieldLevel=> _driver.WaitForElement(By.Id("fileUpload-error"));
-        private IWebElement downloadAttachmentLink => _driver.FindElement(By.XPath("//a[contains(@id,'attachment-download-')] | //a[contains(@id,'download-attachment-')]"));
-        private IWebElement removeAttachmentButton => _driver.FindElement(By.XPath("//button[contains(@id,'remove-attachment-')]"));
+        private IWebElement errorMsgFieldLevel => _driver.WaitForElement(By.Id("fileUpload-error"));
+        private By downloadAttachmentLinkLocator => By.XPath("//a[contains(@aria-label,'Download') and contains(@href,'/attachment/')]");
+        private By downloadAttachmentLinkChedPLocator => By.XPath("//a[(contains(@aria-label,'View') and contains(@href,'/attachment/') and contains(@id,'attachment-view-')) or (@id='download-attachment-0')]");
+        private IWebElement removeAttachmentButton => _driver.FindElement(By.XPath("//button[contains(@id,'remove-attachment-')] | //a[@id='remove-attachment-0']"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -62,19 +63,19 @@ namespace Defra.UI.Tests.Pages.Classes
         }
 
         public void SelectDocumentType(string type)
-        { 
-            new SelectElement(ddlDocumentType).SelectByText(type); 
+        {
+            new SelectElement(ddlDocumentType).SelectByText(type);
         }
-      
+
         public void EnterDocumentReference(string reference)
-        { 
-            txtDocumentReference.Click(); 
-            txtDocumentReference.Clear(); 
-            txtDocumentReference.SendKeys(reference); 
+        {
+            txtDocumentReference.Click();
+            txtDocumentReference.Clear();
+            txtDocumentReference.SendKeys(reference);
         }
 
         public void EnterDateOfIssue(string day, string month, string year)
-        { 
+        {
             txtDay.SendKeys(day);
             txtMonth.SendKeys(month);
             txtYear.SendKeys(year);
@@ -126,15 +127,19 @@ namespace Defra.UI.Tests.Pages.Classes
 
                     attachmentsLocator.SendKeys(docPath);
                 }
-            }     
+            }
             nextButton.Click();
         }
 
         public void ClickCancelLink() => lnkCancel.Click();
 
-        public string GetFileName => fileName.Text;
+        public string GetFileName => fileNames
+            .Select(e => e.Text.Trim())
+            .Where(text => !string.IsNullOrWhiteSpace(text))
+            .LastOrDefault() ?? string.Empty;
 
-        public int GetFileLength => fileName.Text.Trim().Length;
+
+        public int GetFileLength => GetFileName.Length;
 
         public void ClickAddADocument()
         {
@@ -159,7 +164,21 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             try
             {
-                return downloadAttachmentLink.Displayed && downloadAttachmentLink.Text.Contains("Download");
+                // Try CHED-A/CHED-D format first
+                var chedADLinks = _driver.FindElements(downloadAttachmentLinkLocator);
+                if (chedADLinks.Count > 0 && chedADLinks[0].Displayed)
+                {
+                    return chedADLinks[0].Text.Contains("Download");
+                }
+
+                // Try CHED-P format
+                var chedPLinks = _driver.FindElements(downloadAttachmentLinkChedPLocator);
+                if (chedPLinks.Count > 0 && chedPLinks[0].Displayed)
+                {
+                    // For CHED-P, just check if the link is displayed with any text (document name)
+                    return !string.IsNullOrWhiteSpace(chedPLinks[0].Text);
+                }
+                return false;
             }
             catch (NoSuchElementException)
             {

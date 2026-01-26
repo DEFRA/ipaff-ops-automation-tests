@@ -84,5 +84,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             Assert.True(decisionHubPage?.VerifyInspectionRequiredMessage(message));
         }
+
+        [When("the user clicks Checks link in Record checks")]
+        public void WhenTheUserClicksChecksLinkInRecordChecks()
+        {
+            decisionHubPage?.ClickChecksLink();
+        }
     }
 }

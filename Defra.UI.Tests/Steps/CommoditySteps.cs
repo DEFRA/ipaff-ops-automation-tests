@@ -29,29 +29,69 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user searches {string} commodity code")]
         public void WhenTheUserSearchesCommodityCode(string code)
         {
+            List<string> commodityCodes;
+            if(_scenarioContext.ContainsKey("CommodityCode"))
+            {
+                commodityCodes = _scenarioContext.Get<List<string>>("CommodityCode");
+            }
+            else
+            {
+                commodityCodes = new List<string>();
+            }
+            commodityCodes.Add(code);
+            _scenarioContext["CommodityCode"] = commodityCodes;
             commodityPage?.EnterCommodityCode(code);
-            _scenarioContext["CommodityCode"] = code;
         }
 
         [Then("the commodity details should be populated {string} {string}")]
         public void ThenTheCommodityDetailsShouldBePopulated(string code, string description)
         {
-            Assert.True(commodityPage?.VerifyCommdityDetails(code,description));
-            _scenarioContext["CommodityDescription"] = description;
+            List<string> commodityDescriptions;
+            if (_scenarioContext.ContainsKey("CommodityDescription"))
+            {
+                commodityDescriptions = _scenarioContext.Get<List<string>>("CommodityDescription");
+            }
+            else
+            {
+                commodityDescriptions = new List<string>();
+            }
+            commodityDescriptions.Add(description);
+            _scenarioContext["CommodityDescription"] = commodityDescriptions;
+            Assert.True(commodityPage?.VerifyCommodityDetails(code,description));
         }
 
         [When("the user selects the type of commodity {string}")]
         public void WhenTheUserSelectsTheTypeOfCommodity(string type)
         {
-            commodityPage?.SelectTypeOfCommodity(type);
-            _scenarioContext["TypeOfCommodity"] = type;
+            List<string> commoditytypes;
+            if (_scenarioContext.ContainsKey("TypeOfCommodity"))
+            {
+                commoditytypes = _scenarioContext.Get<List<string>>("TypeOfCommodity");
+            }
+            else
+            {
+                commoditytypes = new List<string>();
+            }
+            commoditytypes.Add(type);
+            _scenarioContext["TypeOfCommodity"] = commoditytypes;
+            commodityPage?.SelectTypeOfCommodity(type);         
         }
 
         [When("the user selects species of commodity {string}")]
         public void WhenTheUserSelectsSpeciesOfCommodity(string species)
         {
+            List<string> speciesList;
+            if (_scenarioContext.ContainsKey("Species"))
+            {
+                speciesList = _scenarioContext.Get<List<string>>("Species");
+            }
+            else
+            {
+                speciesList = new List<string>();
+            }
+            speciesList.Add(species);
+            _scenarioContext["Species"] = speciesList;
             commodityPage?.SelectCommoditySpecies(species);
-            _scenarioContext["Species"] = species;
         }
 
         [When("the user selects {string} for Do you want to add another commodity?")]
@@ -63,8 +103,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the Commodity page should be displayed with the commodity and description entered")]
         public void ThenTheCommodityPageShouldBeDisplayedWithTheCommodityAndDescriptionEntered()
         {
-            var code = _scenarioContext.Get<string>("CommodityCode");
-            var description = _scenarioContext.Get<string>("CommodityDescription");
+            var code = _scenarioContext.Get<List<string>>("CommodityCode");
+            var description = _scenarioContext.Get<List<string>>("CommodityDescription");
             Assert.True(commodityPage?.IsPageLoaded(), "Description of the goods Commodity page not loaded");
             Assert.True(commodityPage?.VerifyEnteredCommdityDetails(code, description));
         }
@@ -72,8 +112,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user populates Net weight as {string}")]
         public void WhenTheUserPopulatesNetWeightAs(string weight)
         {
-            commodityPage?.EnterNetWeight(weight);
-            _scenarioContext["NetWeight"] = weight;
+            List<string> values = weight.Split(',').Select(x => x.Trim()).ToList();
+            commodityPage?.EnterNetWeight(values);
+            _scenarioContext["NetWeight"] = values;
         }
 
         [When("the user populates Number of animals as {string}")]
@@ -86,15 +127,17 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user populates Number of packages as {string}")]
         public void WhenTheUserPopulatesNumberOfPackagesAs(string packages)
         {
-            commodityPage?.EnterNumberOfPackages(packages);
-            _scenarioContext["NumberOfPackages"] = packages;
+            List<string> values = packages.Split(',').Select(x => x.Trim()).ToList();
+            commodityPage?.EnterNumberOfPackages(values);
+            _scenarioContext["NumberOfPackages"] = values;
         }
 
         [When("the user selects type of package as {string}")]
         public void WhenTheUserSelectsTypeOfPackageAs(string type)
         {
-            commodityPage?.SelectPackageType(type);
-            _scenarioContext["PackageType"] = type;
+            List<string> values = type.Split(',').Select(x => x.Trim()).ToList();
+            commodityPage?.SelectPackageType(values);
+            _scenarioContext["PackageType"] = values;
         }
 
         [When("the user clicks the Update total button")]
@@ -106,6 +149,18 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["SubtotalPackages"] = commodityPage?.GetSubtotalPackages();
             _scenarioContext["TotalNetWeight"] = commodityPage?.GetTotalNetWeight();
             _scenarioContext["TotalPackages"] = commodityPage?.GetTotalPackages();
+        }
+
+        [Then("the Total Net weight should be populated as {string}")]
+        public void ThenTheTotalNetWeightShouldBePopulatedAs(string totalNetWeight)
+        {
+            commodityPage?.VerifyTotalNetWeight(totalNetWeight);
+        }
+
+        [Then("the Total Number of packages should be populated as {string}")]
+        public void ThenTheTotalNumberOfPackagesShouldBePopulatedAs(string numOfPackages)
+        {
+            commodityPage?.VerifyNumberOfPackages(numOfPackages);
         }
 
         [When("the user populates Net weight as {string} for the second commodity {string}")]
@@ -167,7 +222,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the commodity details should be populated {string} {string} for first commodity")]
         public void ThenTheCommodityDetailsShouldBePopulatedForFirstCommodity(string code, string description)
         {
-            Assert.True(commodityPage?.VerifyCommdityDetails(code, description));
+            Assert.True(commodityPage?.VerifyCommodityDetails(code, description));
             _scenarioContext.Add("CommodityCodeFirstCommodity", code);
             _scenarioContext.Add("CommodityDescFirstCommodity", description);
         }
@@ -175,14 +230,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user populates Net weight as {string} for first commodity")]
         public void WhenTheUserPopulatesNetWeightAsForFirstCommodity(string weight)
         {
-            commodityPage?.EnterNetWeight(weight);
+            List<string> values = weight.Split(',').Select(x => x.Trim()).ToList();
+            commodityPage?.EnterNetWeight(values);
             _scenarioContext.Add("NetWeightFirstCommodity", weight);
         }
 
         [When("the user populates Number of packages as {string} for first commodity")]
         public void WhenTheUserPopulatesNumberOfPackagesAsForFirstCommodity(string packages)
         {
-            commodityPage?.EnterNumberOfPackages(packages);
+            List<string> values = packages.Split(',').Select(x => x.Trim()).ToList();
+            commodityPage?.EnterNumberOfPackages(values);
             _scenarioContext.Add("NumberOfPackagesFirstCommodity", packages);
         }
 

@@ -43,6 +43,22 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext.Add("ConsigneeName", selectedConsigneeName);
             _scenarioContext.Add("ConsigneeAddress", consigneeAddress);
             _scenarioContext.Add("ConsigneeCountry", consigneeCountry);
+            _scenarioContext["ConsigneeDetails"] = searchExistingConsigneePage?.GetSelectedConsignee(consigneeName);
+
+            searchExistingConsigneePage?.ClickSelect(consigneeName);
+        }
+
+        [When("the user selects the consignee from the address book {string}")]
+        public void WhenTheUserSelectsTheConsigneeFromTheAddressBook(string operatorType)
+        {
+            var operatorNameKey = $"{operatorType}Name";
+
+            var consigneeName = _scenarioContext.ContainsKey(operatorNameKey)
+                ? _scenarioContext[operatorNameKey]?.ToString()
+                : null;
+
+            Assert.That(consigneeName, Is.Not.Null.And.Not.Empty,
+                $"Operator name for type '{operatorType}' not found in scenario context (expected key: '{operatorNameKey}')");
 
             searchExistingConsigneePage?.ClickSelect(consigneeName);
         }

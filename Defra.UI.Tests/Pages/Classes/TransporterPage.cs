@@ -22,10 +22,12 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement secondaryTitle => _driver.WaitForElement(By.Id("page-secondary-title"), true);
         private IWebElement lnkAddTransporter => _driver.WaitForElement(By.Id("add-transporter-from-bip"));
         private IWebElement selectedTransporter => _driver.WaitForElement(By.XPath("//td[contains(@headers, 'transporter-company-name-address-country')]"));
-        private IWebElement btnSaveAndContinue => _driver.WaitForElement(By.Id("save-and-return-button-desktop"));
+        private IWebElement btnSaveAndReturnToHub => _driver.WaitForElement(By.Id("save-and-return-button-desktop"));
+        private IWebElement btnSaveAndContinue => _driver.WaitForElement(By.Id("button-save-and-continue-desktop"));
         private IWebElement verifyTransporterNameAddressCountry => _driver.FindElement(By.XPath("//td[@headers='transporter-company-name-address-country']"));
         private IWebElement verifyTransporterApprovalNumber => _driver.FindElement(By.XPath("//td[@headers='transporter-number']"));
         private IWebElement verifyTransporterType => _driver.FindElement(By.XPath("//td[@headers='transporter-type']"));
+        private IWebElement lnkChangeTransporter => _driver.WaitForElement(By.Id("edit-transporter-from-bip"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -56,6 +58,11 @@ namespace Defra.UI.Tests.Pages.Classes
             btnSaveAndContinue.Click();
         }
 
+        public void ClickSaveAndReturnToHub()
+        {
+            btnSaveAndReturnToHub.Click();
+        }
+
         public bool VerifySelectedTransporter(string name, string address, string country, string approvalNumber, string type)
         {
             try
@@ -81,6 +88,11 @@ namespace Defra.UI.Tests.Pages.Classes
             {
                 return false;
             }
+        }
+
+        public void ClickChangeTransporter()
+        {
+            lnkChangeTransporter.Click();
         }
     }
 }

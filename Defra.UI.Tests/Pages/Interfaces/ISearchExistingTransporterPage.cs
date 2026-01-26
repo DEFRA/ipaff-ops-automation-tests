@@ -12,5 +12,12 @@ namespace Defra.UI.Tests.Pages.Interfaces
         string GetSelectedTransporterCountry();
         string GetSelectedTransporterApprovalNumber();
         string GetSelectedTransporterType();
+        void SearchForTransporter(string transporterName);
+        void ClickSelectForTransporter(string transporterName);
+        string GetSelectedTransporterName(string transporterName);
+        string GetSelectedTransporterAddress(string transporterName);
+        string GetSelectedTransporterCountry(string transporterName);
+        string GetSelectedTransporterApprovalNumber(string transporterName);
+        string GetSelectedTransporterType(string transporterName);
     }
 }

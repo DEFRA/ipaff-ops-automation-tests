@@ -24,8 +24,12 @@ namespace Defra.UI.Tests.Pages.Classes
         private List<IWebElement> consigneeRowsList => _driver.FindElements(By.XPath("//table[@id='traders-table-consignee']/tbody/tr")).ToList();
         private List<IWebElement> importerRowsList => _driver.FindElements(By.XPath("//table[@id='traders-table-importer']/tbody/tr")).ToList();
         private List<IWebElement> destinationRowsList => _driver.FindElements(By.XPath("//table[@id='traders-table-place-of-destination']/tbody/tr")).ToList();
-        private IWebElement selectedConsignor => _driver.WaitForElement(By.XPath("//*[@id='traders-table-consignor']//td[1]"));
-        private IWebElement selectedConsignee => _driver.WaitForElement(By.XPath("//*[@id='traders-table-consignee']//td[1]"));
+        private IWebElement selectedConsignorName => _driver.WaitForElement(By.XPath("//*[@id='traders-table-consignor']//td[1]"));
+        //private IWebElement selectedConsignorAddress => _driver.WaitForElement(By.XPath("//*[@id='traders-table-consignor']//td[2]"));
+        //private IWebElement selectedConsignorCountry => _driver.WaitForElement(By.XPath("//*[@id='traders-table-consignor']//td[3]"));
+        private IWebElement selectedConsigneeName => _driver.WaitForElement(By.XPath("//*[@id='traders-table-consignee']//td[1]"));
+        //private IWebElement selectedConsigneeAddress => _driver.WaitForElement(By.XPath("//*[@id='traders-table-consignee']//td[2]"));
+        //private IWebElement selectedConsigneeCountry => _driver.WaitForElement(By.XPath("//*[@id='traders-table-consignee']//td[3]"));
         private IWebElement selectedDestination => _driver.WaitForElement(By.XPath("//*[@id='traders-table-place-of-destination']//td[1]"));
         private IWebElement selectedImporterName => _driver.WaitForElement(By.XPath("//*[@id='traders-table-importer']//td[1]"));
         private IWebElement selectedImporterAddress => _driver.WaitForElement(By.XPath("//*[@id='traders-table-importer']//td[2]"));
@@ -69,7 +73,25 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool VerifySelectedConsignor(string consignor)
         {
-            return selectedConsignor.Text.Trim().Equals(consignor);
+            return selectedConsignorName.Text.Trim().Equals(consignor);
+        }
+
+        public string GetSelectedConsignor()
+        {
+            var consignorName = selectedConsignorName.Text.Trim();
+            var consignorAddress = verifyConsignorAddress.Text.Trim();
+            var consignorCountry = verifyConsignorCountry.Text.Trim();
+            var consignorDetails = consignorName + "\n" + consignorAddress + "," + consignorCountry;
+            return consignorDetails;
+        }
+
+        public string GetSelectedConsignee()
+        {
+            var consigneeName = selectedConsignorName.Text.Trim();
+            var consigneeAddress = verifyConsignorAddress.Text.Trim();
+            var consigneeCountry = verifyConsignorCountry.Text.Trim();
+            var consigneeDetails = consigneeName + "\n" + consigneeAddress + "," + consigneeCountry;
+            return consigneeDetails;
         }
 
         public void ClickAddConsignee() 
@@ -79,13 +101,14 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool VerifySelectedConsignee(string consigneeName)
         {
-            return selectedConsignee.Text.Trim().Equals(consigneeName);
+            return selectedConsigneeName.Text.Trim().Equals(consigneeName);
         }
 
         public void ClickImporterSameAsConsignee()
         {
             lnksameAsConsignee.Click();
         }
+
         public string GetSelectedImporter()
         {
             var importerName = selectedImporterName.Text.Trim();

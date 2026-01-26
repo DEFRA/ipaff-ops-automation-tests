@@ -4,14 +4,14 @@
     { 
         bool IsPageLoaded();
         void EnterCommodityCode(string code);
-        bool VerifyCommdityDetails(string code, string description);
+        bool VerifyCommodityDetails(string code, string description);
         void SelectTypeOfCommodity(string type);
         void SelectCommoditySpecies(string species);
         void AddAnotherCommodity(string option);
-        bool VerifyEnteredCommdityDetails(string code, string description);
-        void EnterNetWeight(string weight);
-        void EnterNumberOfPackages(string packages);
-        void SelectPackageType(string type);
+        bool VerifyEnteredCommdityDetails(List<string> code, List<string> description);
+        void EnterNetWeight(List<string> weight);
+        void EnterNumberOfPackages(List<string> packages);
+        void SelectPackageType(List<string> type);
         void AddNetWeightForCommodityCode(string netWeight, string commodityCode);
         void AddNumOfPackagesForCommodityCode(string numOfPackages, string commodityCode);
         void SelectPackageTypeForCommodityCode(string typeOfPackage, string commodityCode);
@@ -29,5 +29,7 @@
         string GetTotalNetWeight();
         string GetTotalPackages();
         int GetAddedCommoditiesCount { get; }
+        bool VerifyTotalNetWeight(string totalNetWeight);
+        bool VerifyNumberOfPackages(string numOfPackages);
     }
 }

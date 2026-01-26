@@ -395,13 +395,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             var summary = summaryPage?.GetSummaryDetails();
             var pageName = "Review your notification";
+            var expectedList = new List<string>();
 
-            var commodityCode = _scenarioContext.Get<string>("CommodityCode");
-            var typeOfCommodity = _scenarioContext.Get<string>("TypeOfCommodity");
-            var species = _scenarioContext.Get<string>("Species");
-            var netWeight = _scenarioContext.Get<string>("NetWeight");
-            var packages = _scenarioContext.Get<string>("NumberOfPackages");
-            var packageType = _scenarioContext.Get<string>("PackageType");
+            var commodityCode = _scenarioContext["CommodityCode"] as List<string>;
+            var typeOfCommodity = _scenarioContext.Get<List<string>>("TypeOfCommodity");
+            var species = _scenarioContext["Species"] as List<string>;
+            var netWeight = _scenarioContext["NetWeight"] as List<string>;
+            var packages = _scenarioContext["NumberOfPackages"] as List<string>;
+            var packageType = _scenarioContext["PackageType"] as List<string>;
             var subtotalNetWeight = _scenarioContext.Get<string>("SubtotalNetWeight");
             var subtotalPackages = _scenarioContext.Get<string>("SubtotalPackages");
             var totalNetWeight = _scenarioContext.Get<string>("TotalNetWeight");
@@ -410,11 +411,30 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var temperature = _scenarioContext.Get<string>("Temperature");
 
             Assert.AreEqual(commodityCode, summary?.CommodityCode, $"Commodity Code is not matching in {pageName} page!");
-            Assert.AreEqual(typeOfCommodity, commodityCode.StartsWith(code) ? summary?.TypeOfCommodity1 : summary?.TypeOfCommodity, $"Type Of Commodity is not matching in {pageName} page!");
+            
+            foreach(var item in commodityCode.Where(c => c.StartsWith("160")))
+            {
+                expectedList.AddRange(summary?.TypeOfCommodity1);
+            }
+            if(commodityCode.Any(c => !c.StartsWith("160")))
+            {
+                expectedList.AddRange(summary?.TypeOfCommodity);
+            }
+            Assert.AreEqual(typeOfCommodity, expectedList);
+
             Assert.AreEqual(species, summary?.Species, $"Species is not matching in {pageName} page!");
-            Assert.AreEqual(netWeight, summary?.NetWeight, $"NetWeight is not matching in {pageName} page!");
-            Assert.AreEqual(packages, summary?.NumberOfPackages, $"Number Of Packages is not matching in {pageName} page!");
-            Assert.AreEqual(packageType, summary?.PackageType, $"Package Type is not matching in {pageName} page!");
+            for (int i = 0; i < netWeight.Count; i++)
+            {
+                Assert.AreEqual(netWeight[i], summary?.NetWeight[i], $"NetWeight is not matching in {pageName} page!");
+            }
+            for (int i = 0; i < packages.Count; i++)
+            {
+                Assert.AreEqual(packages[i], summary?.NumberOfPackages[i], $"Number Of Packages is not matching in {pageName} page!");
+            }
+            for (int i = 0; i < packageType.Count; i++)
+            {
+                Assert.AreEqual(packageType[i], summary?.PackageType[i], $"Package Type is not matching in {pageName} page!");
+            }
             Assert.AreEqual(subtotalNetWeight, summary?.SubtotalNetWeight, $"Subtotal NetWeight is not matching in {pageName} page!");
             Assert.AreEqual(subtotalPackages, summary?.SubtotalPackages, $"Subtotal Packages is not matching in {pageName} page!");
             Assert.AreEqual(totalNetWeight, summary?.TotalNetWeight, $"Total NetWeight is not matching in {pageName} page!");
@@ -526,6 +546,193 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             // If hasError is false, the assertion passes (no error banner or specific error not found)
             Assert.False(hasError, "Error validation passed - no error message found");
+        }
+
+        [Then("the user should not see any error messages in review page")]
+        public void ThenTheUserShouldNotSeeAnyErrorMessagesInReviewPage()
+        {
+            var (hasError, errorMessages) = reviewPage?.VerifyErrorMsgDisplayed(string.Empty)
+                ?? (false, string.Empty);
+
+            if (hasError)
+            {
+                Assert.Fail($"Unexpected error messages found on the review page: {errorMessages}");
+            }
+
+            Assert.False(hasError, "Error validation passed - no error messages found");
+        }
+
+        [Then("the Copy as new button should be available")]
+        public void ThenTheCopyAsNewButtonShouldBeAvailable()
+        {
+            Assert.True(reviewPage?.IsCopyAsNewButtonDisplayed(), "Copy as new button is not displayed");
+        }
+
+        [Then("the View CHED button should be available")]
+        public void ThenTheViewCHEDButtonShouldBeAvailable()
+        {
+            Assert.True(reviewPage?.IsViewCHEDButtonDisplayed(), "View CHED button is not displayed");
+        }
+
+        [Then("the Change links should not be available")]
+        public void ThenTheChangeLinksShouldNotBeAvailable()
+        {
+            Assert.True(reviewPage?.AreChangeLinksNotDisplayed(), "Change links should not be displayed but were found");
+        }
+
+        [When("the user clicks on the Dashboard link")]
+        public void WhenTheUserClicksOnTheDashboardLink()
+        {
+            reviewPage?.ClickDashboardLink();
+        }
+
+        [Given("the user gets the CHED reference from the Review your notification page")]
+        [When("the user gets the CHED reference from the Review your notification page")]
+        [Then("the user gets the CHED reference from the Review your notification page")]
+        public void WhenTheUserGetsTheCHEDReferenceFromTheReviewYourNotificationPage()
+        {
+            var chedReference = reviewPage?.GetCHEDReference();
+
+            Assert.That(chedReference, Is.Not.Null.And.Not.Empty,
+                "CHED reference not found on Review your notification page");
+
+            _scenarioContext.Set(chedReference, "CHEDReference");
+
+            Console.WriteLine($"[CHED REFERENCE] Retrieved and stored: {chedReference}");
+        }
+
+        [Then("the Consignor or exporter shows the new trader {string} on the review page")]
+        public void ThenTheConsignorOrExporterShowsTheNewTraderOnTheReviewPage(string operatorType)
+        {
+            // Get the original operator details from address book (source of truth)
+            var expectedName = _scenarioContext[$"{operatorType}Name"]?.ToString();
+            var expectedAddress = _scenarioContext[$"{operatorType}Address"]?.ToString();
+            var expectedCountry = _scenarioContext[$"{operatorType}Country"]?.ToString();
+
+            // Get what's displayed on the review page
+            var displayedName = reviewPage?.GetConsignorName();
+            var displayedAddress = reviewPage?.GetConsignorAddress();
+            var displayedCountry = reviewPage?.GetConsignorCountry();
+
+            // Validate they match
+            Assert.AreEqual(expectedName, displayedName,
+                $"Consignor name mismatch. Expected: {expectedName}, Actual: {displayedName}");
+            Assert.AreEqual(expectedAddress, displayedAddress,
+                $"Consignor address mismatch. Expected: {expectedAddress}, Actual: {displayedAddress}");
+            Assert.AreEqual(expectedCountry, displayedCountry,
+                $"Consignor country mismatch. Expected: {expectedCountry}, Actual: {displayedCountry}");
+
+            Console.WriteLine($"[REVIEW VALIDATION] ✓ Consignor from address book ({operatorType}) matches: {expectedName}, {expectedAddress}, {expectedCountry}");
+        }
+
+        [Then("the Consignee shows the new {string} on the review page")]
+        public void ThenTheConsigneeShowsTheNewOnTheReviewPage(string operatorType)
+        {
+            // Get the original operator details from address book (source of truth)
+            var expectedName = _scenarioContext[$"{operatorType}Name"]?.ToString();
+            var expectedAddress = _scenarioContext[$"{operatorType}Address"]?.ToString();
+            var expectedCountry = _scenarioContext[$"{operatorType}Country"]?.ToString();
+
+            // Get what's displayed on the review page
+            var displayedName = reviewPage?.GetConsigneeName();
+            var displayedAddress = reviewPage?.GetConsigneeAddress();
+            var displayedCountry = reviewPage?.GetConsigneeCountry();
+
+            // Validate they match
+            Assert.AreEqual(expectedName, displayedName,
+                $"Consignee name mismatch. Expected: {expectedName}, Actual: {displayedName}");
+            Assert.AreEqual(expectedAddress, displayedAddress,
+                $"Consignee address mismatch. Expected: {expectedAddress}, Actual: {displayedAddress}");
+            Assert.AreEqual(expectedCountry, displayedCountry,
+                $"Consignee country mismatch. Expected: {expectedCountry}, Actual: {displayedCountry}");
+
+            Console.WriteLine($"[REVIEW VALIDATION] ✓ Consignee from address book ({operatorType}) matches: {expectedName}, {expectedAddress}, {expectedCountry}");
+        }
+
+        [Then("the Importer shows the new {string} on the review page")]
+        public void ThenTheImporterShowsTheNewOnTheReviewPage(string operatorType)
+        {
+            // Get the original operator details from address book (source of truth)
+            var expectedName = _scenarioContext[$"{operatorType}Name"]?.ToString();
+            var expectedAddress = _scenarioContext[$"{operatorType}Address"]?.ToString();
+            var expectedCountry = _scenarioContext[$"{operatorType}Country"]?.ToString();
+
+            // Get what's displayed on the review page
+            var displayedName = reviewPage?.GetImporterName();
+            var displayedAddress = reviewPage?.GetImporterAddress();
+            var displayedCountry = reviewPage?.GetImporterCountry();
+
+            // Validate they match
+            Assert.AreEqual(expectedName, displayedName,
+                $"Importer name mismatch. Expected: {expectedName}, Actual: {displayedName}");
+            Assert.AreEqual(expectedAddress, displayedAddress,
+                $"Importer address mismatch. Expected: {expectedAddress}, Actual: {displayedAddress}");
+            Assert.AreEqual(expectedCountry, displayedCountry,
+                $"Importer country mismatch. Expected: {expectedCountry}, Actual: {displayedCountry}");
+
+            Console.WriteLine($"[REVIEW VALIDATION] ✓ Importer from address book ({operatorType}) matches: {expectedName}, {expectedAddress}, {expectedCountry}");
+        }
+
+        [Then("the Place of destination shows the new {string} on the review page")]
+        public void ThenThePlaceOfDestinationShowsTheNewOnTheReviewPage(string operatorType)
+        {
+            // Get the original operator details from address book (source of truth)
+            var expectedName = _scenarioContext[$"{operatorType}Name"]?.ToString();
+            var expectedAddress = _scenarioContext[$"{operatorType}Address"]?.ToString();
+            var expectedCountry = _scenarioContext[$"{operatorType}Country"]?.ToString();
+
+            // Get what's displayed on the review page
+            var displayedName = reviewPage?.GetDestinationName();
+            var displayedAddress = reviewPage?.GetDestinationAddress();
+            var displayedCountry = reviewPage?.GetPlaceOfDestinationCountry();
+
+            // Validate they match
+            Assert.AreEqual(expectedName, displayedName,
+                $"Place of destination name mismatch. Expected: {expectedName}, Actual: {displayedName}");
+            Assert.AreEqual(expectedAddress, displayedAddress,
+                $"Place of destination address mismatch. Expected: {expectedAddress}, Actual: {displayedAddress}");
+            Assert.AreEqual(expectedCountry, displayedCountry,
+                $"Place of destination country mismatch. Expected: {expectedCountry}, Actual: {displayedCountry}");
+
+            Console.WriteLine($"[REVIEW VALIDATION] ✓ Place of destination from address book ({operatorType}) matches: {expectedName}, {expectedAddress}, {expectedCountry}");
+        }
+
+        [Then("the Transporter shows the new {string} on the review page")]
+        public void ThenTheTransporterShowsTheNewOnTheReviewPage(string operatorType)
+        {
+            // Get the original operator details from address book (source of truth)
+            var expectedName = _scenarioContext[$"{operatorType}Name"]?.ToString();
+            var expectedAddress = _scenarioContext[$"{operatorType}Address"]?.ToString();
+            var expectedCountry = _scenarioContext[$"{operatorType}Country"]?.ToString();
+            var expectedApprovalNumber = _scenarioContext[$"{operatorType}ApprovalNumber"]?.ToString();
+            var expectedType = _scenarioContext[$"{operatorType}Type"]?.ToString();
+
+            // Get what's displayed on the review page
+            var displayedName = reviewPage?.GetTransporterName();
+            var displayedAddress = reviewPage?.GetTransporterAddressWithoutContact(); // ← Use the NEW method here
+            var displayedCountry = reviewPage?.GetTransporterCountry();
+            var displayedApprovalNumber = reviewPage?.GetTransporterApprovalNumber();
+            var displayedType = reviewPage?.GetTransporterType();
+
+            // Validate they match
+            Assert.AreEqual(expectedName, displayedName,
+                $"Transporter name mismatch. Expected: {expectedName}, Actual: {displayedName}");
+            Assert.AreEqual(expectedAddress, displayedAddress,
+                $"Transporter address mismatch. Expected: {expectedAddress}, Actual: {displayedAddress}");
+            Assert.AreEqual(expectedCountry, displayedCountry,
+                $"Transporter country mismatch. Expected: {expectedCountry}, Actual: {displayedCountry}");
+
+            // Approval number might be empty, so handle that
+            if (!string.IsNullOrEmpty(expectedApprovalNumber))
+            {
+                Assert.AreEqual(expectedApprovalNumber, displayedApprovalNumber,
+                    $"Transporter approval number mismatch. Expected: {expectedApprovalNumber}, Actual: {displayedApprovalNumber}");
+            }
+
+            Assert.AreEqual(expectedType, displayedType,
+                $"Transporter type mismatch. Expected: {expectedType}, Actual: {displayedType}");
+
+            Console.WriteLine($"[REVIEW VALIDATION] ✓ Transporter from address book ({operatorType}) matches: {expectedName}, {expectedAddress}, {expectedCountry}");
         }
     }
 }

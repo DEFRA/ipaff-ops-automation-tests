@@ -10,13 +10,13 @@
         public string MainReasonForImport { get; set; }
         public string Purpose { get; set; }
         public string RiskCategory { get; set; }
-        public string CommodityCode { get; set; }
-        public string TypeOfCommodity { get; set; }
-        public string TypeOfCommodity1 { get; set; }
-        public string Species { get; set; }
-        public string NetWeight { get; set; }
-        public string NumberOfPackages { get; set; }
-        public string PackageType { get; set; }
+        public List<string> CommodityCode { get; set; }
+        public List<string> TypeOfCommodity { get; set; }
+        public List<string> TypeOfCommodity1 { get; set; }
+        public List<string> Species { get; set; }
+        public List<string> NetWeight { get; set; }
+        public List<string> NumberOfPackages { get; set; }
+        public List<string> PackageType { get; set; }
         public string SubtotalNetWeight { get; set; }
         public string SubtotalPackages { get; set; }
         public string TotalNetWeight { get; set; }

@@ -24,11 +24,11 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement rdoYesAnotherCommodity => _driver.FindElement(By.Id("addCommodity"));
         private IWebElement rdoNoAnotherCommodity => _driver.FindElement(By.Id("addCommodity-2"));
         private IWebElement txtCommoditySpecies(string species) => _driver.FindElement(By.XPath($"//input[@class='govuk-checkboxes__input' and @id='{species}-checkbox']"));
-        private IWebElement txtEnteredCommodityValue => _driver.WaitForElement(By.XPath("//*[@class='govuk-table__row  ']/td[1]"));
-        private IWebElement txtEnteredCommodityDesc => _driver.WaitForElement(By.XPath("//*[@class='govuk-table__row  ']/td[2]"));
-        private IWebElement txtNetWeight => _driver.FindElement(By.XPath("//*[@class='govuk-table species-table-cheda']//input[@class='govuk-input net-weight ']"));
-        private IWebElement txtNumberOfPackages => _driver.FindElement(By.XPath("//*[@class='govuk-table species-table-cheda']//input[@class='govuk-input number-of-packages ']"));
-        private IWebElement ddlPackageType => _driver.FindElement(By.XPath("//*[@class='govuk-table species-table-cheda']//*[contains(@class,'type-of-package')]"));
+        private IWebElement txtDisplayedCommodityCodeAndDesc => _driver.FindElement(By.Id("commodity-table"));
+        private IWebElement txtDisplayedCommodityTable => _driver.FindElement(By.Id("commodity-table-desktop"));
+        private IReadOnlyCollection<IWebElement> txtNetWeight => _driver.FindElements(By.XPath("//*[@class='govuk-table species-table-cheda']//input[@class='govuk-input net-weight ']"));
+        private IReadOnlyCollection<IWebElement> txtNumberOfPackages => _driver.FindElements(By.XPath("//*[@class='govuk-table species-table-cheda']//input[@class='govuk-input number-of-packages ']"));
+        private IReadOnlyCollection<IWebElement> ddlPackageType => _driver.FindElements(By.XPath("//*[@class='govuk-table species-table-cheda']//*[contains(@class,'type-of-package')]"));
         private IWebElement speciesTable => _driver.FindElement(By.XPath("//*[@class='govuk-table species-table-cheda']"));
         private List<IWebElement> commodityTreeList => _driver.WaitForElements(By.XPath("//ul[@class='commodity-tree']/li//span[@class='commodity-description-links-container']/button")).ToList();
         private List<IWebElement> parentCommodityItemList => _driver.WaitForElements(By.XPath("//div[@class='commodity-list']/ul/li")).ToList();
@@ -64,10 +64,10 @@ namespace Defra.UI.Tests.Pages.Classes
             btnSearch.Click();
         }
 
-        public bool VerifyCommdityDetails(string code, string description)
+        public bool VerifyCommodityDetails(string code, string description)
         {
-            return txtCommodityCodeValue.Text.Contains(code)
-                && txtCommodityCodeDesc.Text.Contains(description);
+            return txtDisplayedCommodityCodeAndDesc.Text.Contains(code)
+                && txtDisplayedCommodityCodeAndDesc.Text.Contains(description);
         }
 
         public void SelectTypeOfCommodity(string type)
@@ -88,27 +88,34 @@ namespace Defra.UI.Tests.Pages.Classes
                 rdoNoAnotherCommodity.Click();
         }
 
-        public bool VerifyEnteredCommdityDetails(string code, string description)
+        public bool VerifyEnteredCommdityDetails(List<string> code, List<string> description)
         {
-            return txtEnteredCommodityValue.Text.Contains(code)
-                && txtEnteredCommodityDesc.Text.Contains(description);
+            return code.All(item => txtDisplayedCommodityTable.Text.Contains(item));
         }
 
-        public void EnterNetWeight(string weight)
-        { 
-            txtNetWeight.Clear(); 
-            txtNetWeight.SendKeys(weight); 
-        }
-
-        public void EnterNumberOfPackages(string packages)
+        public void EnterNetWeight(List<string> weight)
         {
-            txtNumberOfPackages.Clear(); 
-            txtNumberOfPackages.SendKeys(packages); 
+            for (int i = 0; i < weight.Count; i++)
+            {
+                txtNetWeight.ElementAt(i).Clear();
+                txtNetWeight.ElementAt(i).SendKeys(weight[i]);
+            }
+        }
+        public void EnterNumberOfPackages(List<string> packages)
+        {
+            for (int i = 0; i < packages.Count; i++)
+            {
+                txtNumberOfPackages.ElementAt(i).Clear();
+                txtNumberOfPackages.ElementAt(i).SendKeys(packages[i]);
+            }
         }
 
-        public void SelectPackageType(string type)
-        { 
-            new SelectElement(ddlPackageType).SelectByText(type); 
+        public void SelectPackageType(List<string> type)
+        {
+            for (int i = 0; i < type.Count; i++)
+            {
+                new SelectElement(ddlPackageType.ElementAt(i)).SelectByText(type[i]);
+            }
         }
 
         public void AddNetWeightForCommodityCode(string netWeight, string commodityCode)
@@ -211,5 +218,14 @@ namespace Defra.UI.Tests.Pages.Classes
         }
 
         public int GetAddedCommoditiesCount => addedCommoditiesList?.Count ?? 0;
+        public bool VerifyTotalNetWeight(string totalNetWeight)
+        {
+            return txtTotalNetWeight.Text.Trim().Contains(totalNetWeight);
+        }
+
+        public bool VerifyNumberOfPackages(string numOfPackages)
+        {
+            return txtTotalPackages.Text.Trim().Contains(numOfPackages);
+        }
     }
 }

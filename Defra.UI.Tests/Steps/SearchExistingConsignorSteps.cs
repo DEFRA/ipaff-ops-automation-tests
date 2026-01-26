@@ -3,7 +3,6 @@ using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
 
-
 namespace Defra.UI.Tests.Steps.IPAFF
 {
     [Binding]
@@ -25,26 +24,42 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             Assert.True(searchExistingConsignorPage?.IsPageLoaded(), "Traders Search for an existing consignor or exporter page not loaded");
         }
-        
+
         [When("the user selects one of the displayed consignors or exporters {string}")]
-        public void WhenTheUserSelectsOneOfTheDisplayedConsignorsOrExporters(string consignor)
+        public void WhenTheUserSelectsOneOfTheDisplayedConsignorsOrExporters(string consignorName)
         {
-            _scenarioContext["ConsignorDetails"] = searchExistingConsignorPage.GetSelectedConsignor(consignor);
-            searchExistingConsignorPage?.ClickSelect(consignor);
+            _scenarioContext["ConsignorDetails"] = searchExistingConsignorPage?.GetSelectedConsignor(consignorName);
+            searchExistingConsignorPage?.ClickSelect(consignorName);
         }
 
         [When("the user selects a consignor or exporter {string}")]
-        public void WhenTheUserSelectsAConsignorOrExporter(string consignor)
+        public void WhenTheUserSelectsAConsignorOrExporter(string consignorName)
         {
-            var consignorName = searchExistingConsignorPage?.GetSelectedConsignorName(consignor);
-            var consignorAddress = searchExistingConsignorPage?.GetSelectedConsignorAddress(consignor);
-            var consignorCountry = searchExistingConsignorPage?.GetSelectedConsignorCountry(consignor);
+            var selectedConsignorName = searchExistingConsignorPage?.GetSelectedConsignorName(consignorName);
+            var consignorAddress = searchExistingConsignorPage?.GetSelectedConsignorAddress(consignorName);
+            var consignorCountry = searchExistingConsignorPage?.GetSelectedConsignorCountry(consignorName);
 
-            _scenarioContext.Add("ConsignorName", consignorName);
-            _scenarioContext.Add("ConsignorAddress", consignorAddress);
-            _scenarioContext.Add("ConsignorCountry", consignorCountry);
+            _scenarioContext["ConsignorName"] = selectedConsignorName;
+            _scenarioContext["ConsignorAddress"] = consignorAddress;
+            _scenarioContext["ConsignorCountry"] = consignorCountry;
+            _scenarioContext["ConsignorDetails"] = searchExistingConsignorPage?.GetSelectedConsignor(consignorName);
 
-            searchExistingConsignorPage?.ClickSelect(consignor);
+            searchExistingConsignorPage?.ClickSelect(consignorName);
+        }
+
+        [When("the user selects the consignor or exporter from the address book {string}")]
+        public void WhenTheUserSelectsTheConsignorOrExporterFromTheAddressBook(string operatorType)
+        {
+            var operatorNameKey = $"{operatorType}Name";
+
+            var consignorName = _scenarioContext.ContainsKey(operatorNameKey)
+                ? _scenarioContext[operatorNameKey]?.ToString()
+                : null;
+
+            Assert.That(consignorName, Is.Not.Null.And.Not.Empty,
+                $"Operator name for type '{operatorType}' not found in scenario context (expected key: '{operatorNameKey}')");
+
+            searchExistingConsignorPage?.ClickSelect(consignorName);
         }
     }
 }
