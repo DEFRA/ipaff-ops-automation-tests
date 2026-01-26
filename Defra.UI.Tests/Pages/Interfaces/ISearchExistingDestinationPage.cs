@@ -3,7 +3,7 @@
     public interface ISearchExistingDestinationPage
     {
         bool IsPageLoaded();
-        void ClickSelect(string destination);
+        void ClickSelect(string destinationName);
         string GetSelectedPlaceOfDestination(string destinationName);
         string GetSelectedDestinationName(string destinationName);
         string GetSelectedDestinationAddress(string destinationName);

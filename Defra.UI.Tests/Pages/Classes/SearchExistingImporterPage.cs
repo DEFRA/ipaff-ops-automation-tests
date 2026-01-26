@@ -5,10 +5,12 @@ using OpenQA.Selenium;
 using Reqnroll.BoDi;
 
 namespace Defra.UI.Tests.Pages.Classes
+
 {
     public class SearchExistingImporterPage : ISearchExistingImporterPage
     {
         private string Platform => ConfigSetup.BaseConfiguration.TestConfiguration.Platform;
+
         private IObjectContainer _objectContainer;
 
         #region Page Objects
@@ -22,7 +24,6 @@ namespace Defra.UI.Tests.Pages.Classes
             _driver.WaitForElement(By.XPath($"//td[contains(@class,'economic-operator-name') and normalize-space()='{importerName}']/following-sibling::td[contains(@class,'economic-operator-address')]"));
         private IWebElement GetImporterCountryElement(string importerName) =>
             _driver.WaitForElement(By.XPath($"//td[contains(@class,'economic-operator-name') and normalize-space()='{importerName}']/following-sibling::td[2]"));
-
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();

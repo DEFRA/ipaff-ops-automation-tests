@@ -60,10 +60,21 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             var establishmentListFirstName = _scenarioContext.Get<string>("EstablishmentListFirstName");
             approvedEstablishmentPage?.VerifySelectedEstablismentName(establishmentListFirstName);
-            _scenarioContext["ApprovedEstablishmentName"] = approvedEstablishmentPage?.GetSubtotalNetWeight();
-            _scenarioContext["ApprovedEstablishmentCountry"] = approvedEstablishmentPage?.GetSubtotalPackages();
-            _scenarioContext["ApprovedEstablishmentType"] = approvedEstablishmentPage?.GetTotalNetWeight();
-            _scenarioContext["ApprovedEstablishmentApprovalNum"] = approvedEstablishmentPage?.GetTotalPackages();
+            _scenarioContext["ApprovedEstablishmentName"] = approvedEstablishmentPage?.GetSelectedEstablishmentName();
+            _scenarioContext["ApprovedEstablishmentCountry"] = approvedEstablishmentPage?.GetSelectedEstablishmentCountry();
+            _scenarioContext["ApprovedEstablishmentType"] = approvedEstablishmentPage?.GetSelectedEstablishmentType();
+            _scenarioContext["ApprovedEstablishmentApprovalNum"] = approvedEstablishmentPage?.GetSelectedEstablishmentApprovalNumber();
+        }
+
+        [Then("the Approved establishment of origin page should be displayed with the next selected establishment")]
+        public void ThenTheApprovedEstablishmentOfOriginPageShouldBeDisplayedWithTheNextSelectedEstablishment()
+        {
+            var establishmentListFirstName = _scenarioContext.Get<string>("EstablishmentListFirstName");
+            approvedEstablishmentPage?.VerifySelectedEstablismentName(establishmentListFirstName);
+            _scenarioContext["ApprovedEstablishmentName2"] = approvedEstablishmentPage?.GetSelectedEstablishmentName();
+            _scenarioContext["ApprovedEstablishmentCountry2"] = approvedEstablishmentPage?.GetSelectedEstablishmentCountry();
+            _scenarioContext["ApprovedEstablishmentType2"] = approvedEstablishmentPage?.GetSelectedEstablishmentType();
+            _scenarioContext["ApprovedEstablishmentApprovalNum2"] = approvedEstablishmentPage?.GetSelectedEstablishmentApprovalNumber();
         }
 
         [When(@"the user removes the establishment of origin")]

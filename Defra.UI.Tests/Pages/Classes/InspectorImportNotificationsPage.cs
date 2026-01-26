@@ -46,7 +46,7 @@ namespace Defra.UI.Tests.Pages.Classes
             Thread.Sleep(2000);
         }
 
-        public void VerifyNotificationStatus(string chedRef, string status)
+        public void VerifyNotificationStatusAndClick(string chedRef, string status)
         {
             if (lnkChedRefNumSearcResult.Text.Trim().Contains(chedRef)
                 && lnkChedStatusSearcResult.Text.Trim().Equals(status))
@@ -78,6 +78,18 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickRecordDecision()
         {
             lnkRecordDecision.Click();
+        }
+
+        public bool VerifyNotificationIsPresentWithStatus(string type, string chedRef, string replacementChedReference, string status)
+        {
+            if (type.Equals("original"))
+                return lnkChedRefNumSearcResult.Text.Trim().Contains(chedRef)
+                    && lnkChedStatusSearcResult.Text.Trim().Equals(status);
+            else if (type.Equals("replacement"))
+                return lnkChedRefNumSearcResult.Text.Trim().Contains(replacementChedReference)
+                    && lnkChedStatusSearcResult.Text.Trim().Equals(status);
+            else
+                return false;
         }
     }
 }

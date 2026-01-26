@@ -112,7 +112,7 @@ Scenario: User creates and submits a B2C consignment notification - CHED D
 	When I have provided the IPAFF Gateway Inspector credentials and signin
 	Then the user should be logged into Import notifications page
 	When the user searches for the newly created notification on the Import notifications page
-	Then the user clicks the notificaiton found with status "NEW"
+	Then the user clicks the notification found with status "NEW"
 	Then the Decision Hub page should be displayed
 	When the user clicks Save and set as in progress
 	Then the notification status should change from "NEW" to "IN PROGRESS"
@@ -294,7 +294,7 @@ Scenario: User creates and submits a notification, override the risk decision, r
 	When I have provided the IPAFF Gateway Inspector credentials and signin
 	Then the user should be logged into Import notifications page
 	When the user searches for the newly created notification on the Import notifications page
-	Then the user clicks the notificaiton found with status "NEW"
+	Then the user clicks the notification found with status "NEW"
 	Then the Decision Hub page should be displayed
 	When the user clicks Save and set as in progress
 	Then the notification status should change from "NEW" to "IN PROGRESS"
@@ -533,7 +533,7 @@ Scenario: User verifies Address book page search, submits notification for 'Non-
 	When I have provided the IPAFF Gateway Inspector credentials and signin
 	Then the user should be logged into Import notifications page
 	When the user searches for the newly created notification on the Import notifications page
-	Then the user clicks the notificaiton found with status "NEW"
+	Then the user clicks the notification found with status "NEW"
 	Then the Decision Hub page should be displayed
 	When the user clicks Save and set as in progress
 	Then the notification status should change from "NEW" to "IN PROGRESS"
@@ -644,7 +644,6 @@ Scenario:SPS-9111
 	Then the About the consignment/What are you importing? page should be displayed with radio buttons
 	When the user chooses 'High risk food and feed of non-animal origin' option
 	And the user clicks Save and continue
-	#Then the Origin of the plants plant product or other objects page should be displayed -- change
 	Then the Origin of the animal or product page should be displayed
 	When the user chooses "Australia" from the dropdown for Country of origin
 	And the user clicks Save and continue
@@ -728,11 +727,9 @@ Scenario:SPS-9111
 	Then the Nominated contacts page should be displayed
 	When the user clicks Save and continue
 	Then the Contacts - Contact address for consignment page should be displayed
-	#Add step to record Draft CHED number here
 	And the user records the Draft CHED number
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
-	#Add simplified steps to login back
 	When the user logs back into IPAFFS application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
@@ -758,10 +755,8 @@ Scenario:SPS-9111
 	Then the Confirmation page should be displayed with the initial risk assessment
 	When the user records the IPAFFS User details and CHED Reference
 	Then the details should be recorded
-	#check below step if works
 	When the user clicks return to you dashboard link
 	Then the dashboard page should be displayed
-	#reword the below to search for the submitted noti
 	When user searches for the import notification
 	Then the notification should be present in the list
 	When the user clicks the Show notification link
@@ -836,9 +831,3 @@ Scenario:SPS-9111
 	Then the Decision page should be displayed
 	And the main radio option 'Internal market' and the sub radio option 'Human consumption' are selected by default
 	And the user clicks Save and continue
-
-
-
-
-
-	

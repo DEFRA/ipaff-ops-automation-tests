@@ -17,7 +17,13 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement secondaryTitle => _driver.WaitForElement(By.XPath("//h2[@class='govuk-heading-s govuk-!-margin-bottom-1  ']"), true);
         private IWebElement secondaryTitleReview => _driver.WaitForElement(By.XPath("//h2[@class='govuk-heading-m']"), true);
         private IWebElement labTestsRadio(string labTestsOption) => _driver.FindElement(By.XPath($"//input[@class='govuk-radios__input']/following-sibling::label[contains(text(),'{labTestsOption}')]"));
-        private IWebElement labTestsReasonRadio(string labTestsReason) => _driver.FindElement(By.XPath($"//input[@value='{labTestsReason}']"));
+        private IWebElement GetLabTestsReasonRadioButton(string labelText)
+        {
+            var label = _driver.FindElement(
+                By.XPath($"//label[@class='govuk-label govuk-radios__label' and normalize-space()='{labelText}']"));
+            var inputId = label.GetAttribute("for");
+            return _driver.FindElement(By.Id(inputId));
+        }
         private IWebElement selectForCommodityCode(string commodityCode) => _driver.FindElement(By.XPath($"(//td[text()='{commodityCode}']/following::a[text()='Select'])[1]"));
         private IWebElement lnkTestName(string testName) => _driver.FindElement(By.XPath($"//td/button[normalize-space(text())='{testName}']"));
         private IWebElement lnkSelectLabTest(string testName) => _driver.FindElement(By.XPath($"//td[text()='{testName}']/following::a[1]"));
@@ -34,7 +40,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement selectStorageTemperature => _driver.FindElement(By.Id("conservationOfSample"));
         private IWebElement txtCommodityCode => _driver.FindElement(By.XPath("//*[@class='govuk-table__body']/tr[1]/td[1]"));
         private IWebElement txtDescription => _driver.FindElement(By.XPath("//*[@class='govuk-table__body']/tr[1]/td[2]"));
-        private IWebElement txtSpecies => _driver.FindElement(By.XPath("//*[@class='govuk-table__body']/tr[1]/td[3]"));  
+        private IWebElement txtSpecies => _driver.FindElement(By.XPath("//*[@class='govuk-table__body']/tr[1]/td[3]"));
         private IWebElement lnkLabTestSelect => _driver.FindElement(By.Id("choose-laboratory-test-0"));
         private IWebElement txtLabTestName => _driver.FindElement(By.XPath("//*[@class='govuk-table__body']/tr[1]/td[1]"));
         private IReadOnlyCollection<IWebElement> reviewTableFirstRow => _driver.FindElements(By.XPath("//*[@class='govuk-table__body']"));
@@ -48,6 +54,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtSampleTimeMinutes => _driver.FindElement(By.Id("sample-time-minutes"));
         private IWebElement lnkAddAnotherTest => _driver.FindElement(By.Id("AddAnotherTest"));
         private IWebElement GetLabTestResultElement(int index) => _driver.FindElement(By.XPath($"//tr[@id='lab-tests-row-{index}']//td[6]"));
+        private IReadOnlyCollection<IWebElement> labTestRows => _driver.FindElements(By.XPath("//table[@id='LabTestsTable']//tbody//tr[contains(@id, 'lab-tests-row-')]"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -66,7 +73,7 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             labTestsRadio(labTestsOption).Click();
         }
-              
+
         public bool IsLabTestsNoPreselected()
         {
             return rdoLabTestsNo.GetAttribute("checked") != null;
@@ -74,19 +81,20 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void SelectLabTestsReason(string labTestsReason)
         {
-            labTestsReasonRadio(labTestsReason).Click();
+            var radioInput = GetLabTestsReasonRadioButton(labTestsReason);
+            radioInput.Click();
         }
 
         public void ClickSelectForCommodityCode(string commodityCode)
         {
             selectForCommodityCode(commodityCode).Click();
         }
-        
+
         public void SelectTest(string testName)
         {
             lnkTestName(testName).Click();
         }
-        
+
         public void ClickSearch()
         {
             btnSearch.Click();
@@ -96,12 +104,12 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             new SelectElement(selectLabTestCategory).SelectByText(category);
         }
-        
+
         public void SelectLaboratoryTestSubCategory(string category)
         {
             new SelectElement(selectLabTestSubCategory).SelectByText(category);
         }
-        
+
         public void SelectLaboratoryTest(string test)
         {
             lnkSelectLabTest(test).Click();
@@ -176,7 +184,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool VerifyLabTestsReviewPage(string commodityCode, string commodityDescription, string commoditySpecies, string labTestName)
         {
-            foreach(var row in reviewTableFirstRow)
+            foreach (var row in reviewTableFirstRow)
             {
                 string rowText = row.Text;
                 return rowText.Contains(commodityCode)
@@ -232,6 +240,84 @@ namespace Defra.UI.Tests.Pages.Classes
         public string GetLabTestResult(int index = 0)
         {
             return GetLabTestResultElement(index).SafelyGetText();
+        }
+
+        public void ClickAddAnotherTest()
+        {
+            lnkAddAnotherTest.Click();
+        }
+
+        public int GetLabTestCount() => labTestRows?.Count ?? 0;
+
+        public bool VerifyMultipleLabTestsWithPendingResults(int expectedMinimumCount = 2)
+        {
+            var testCount = GetLabTestCount();
+
+            if (testCount < expectedMinimumCount)
+            {
+                Console.WriteLine($"Expected at least {expectedMinimumCount} lab tests, but found {testCount}");
+                return false;
+            }
+
+            // Verify all tests have "Pending" status
+            for (int i = 0; i < testCount; i++)
+            {
+                var result = GetLabTestResult(i);
+                if (!result.Equals("Pending", StringComparison.OrdinalIgnoreCase))
+                {
+                    Console.WriteLine($"Lab test at index {i} has result '{result}', expected 'Pending'");
+                    return false;
+                }
+            }
+
+            Console.WriteLine($"Verified {testCount} lab tests, all with 'Pending' results");
+            return true;
+        }
+
+        public bool VerifyMultipleLabTestsWithSatisfactoryResults(int expectedMinimumCount = 2)
+        {
+            var testCount = GetLabTestCount();
+
+            if (testCount < expectedMinimumCount)
+            {
+                Console.WriteLine($"Expected at least {expectedMinimumCount} lab tests, but found {testCount}");
+                return false;
+            }
+
+            // Verify all tests have "Satisfactory" status
+            for (int i = 0; i < testCount; i++)
+            {
+                var result = GetLabTestResult(i);
+                if (!result.Equals("Satisfactory", StringComparison.OrdinalIgnoreCase))
+                {
+                    Console.WriteLine($"Lab test at index {i} has result '{result}', expected 'Satisfactory'");
+                    return false;
+                }
+            }
+
+            Console.WriteLine($"Verified {testCount} lab tests, all with 'Satisfactory' results");
+            return true;
+        }
+
+        public bool AreLabTestReasonRadioButtonsDisplayed(params string[] reasonOptions)
+        {
+            try
+            {
+                foreach (var reason in reasonOptions)
+                {
+                    var radioInput = GetLabTestsReasonRadioButton(reason);
+                    var container = radioInput.FindElement(By.XPath("./.."));
+                    if (!container.Displayed)
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
         }
     }
 }

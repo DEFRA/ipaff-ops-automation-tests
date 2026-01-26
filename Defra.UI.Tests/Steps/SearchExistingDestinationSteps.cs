@@ -3,7 +3,6 @@ using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
 
-
 namespace Defra.UI.Tests.Steps.IPAFF
 {
     [Binding]
@@ -13,7 +12,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
         private readonly ScenarioContext _scenarioContext;
 
         private ISearchExistingDestinationPage? searchExistingDestinationPage => _objectContainer.IsRegistered<ISearchExistingDestinationPage>() ? _objectContainer.Resolve<ISearchExistingDestinationPage>() : null;
-
 
         public SearchExistingDestinationSteps(IObjectContainer container, ScenarioContext scenarioContext)
         {
@@ -28,24 +26,40 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
         [When("the user selects a place of destination {string} with a UK country")]
-        public void WhenTheUserSelectsAPlaceOfDestinationWithAUKCountry(string destination)
+        public void WhenTheUserSelectsAPlaceOfDestinationWithAUKCountry(string destinationName)
         {
-            _scenarioContext["PlaceOfDestinationDetails"] = searchExistingDestinationPage?.GetSelectedPlaceOfDestination(destination);
-            searchExistingDestinationPage?.ClickSelect(destination);
+            _scenarioContext["PlaceOfDestinationDetails"] = searchExistingDestinationPage?.GetSelectedPlaceOfDestination(destinationName);
+            searchExistingDestinationPage?.ClickSelect(destinationName);
         }
 
         [When("the user selects a place of destination {string}")]
-        public void WhenTheUserSelectsAPlaceOfDestination(string destination)
+        public void WhenTheUserSelectsAPlaceOfDestination(string destinationName)
         {
-            var destinationName = searchExistingDestinationPage?.GetSelectedDestinationName(destination);
-            var destinationAddress = searchExistingDestinationPage?.GetSelectedDestinationAddress(destination);
-            var destinationCountry = searchExistingDestinationPage?.GetSelectedDestinationCountry(destination);
+            var selectedDestinationName = searchExistingDestinationPage?.GetSelectedDestinationName(destinationName);
+            var destinationAddress = searchExistingDestinationPage?.GetSelectedDestinationAddress(destinationName);
+            var destinationCountry = searchExistingDestinationPage?.GetSelectedDestinationCountry(destinationName);
 
-            _scenarioContext.Add("PlaceOfDestinationName", destinationName);
+            _scenarioContext.Add("PlaceOfDestinationName", selectedDestinationName);
             _scenarioContext.Add("PlaceOfDestinationAddress", destinationAddress);
             _scenarioContext.Add("PlaceOfDestinationCountry", destinationCountry);
+            _scenarioContext["PlaceOfDestinationDetails"] = searchExistingDestinationPage?.GetSelectedPlaceOfDestination(destinationName);
 
-            searchExistingDestinationPage?.ClickSelect(destination);
+            searchExistingDestinationPage?.ClickSelect(destinationName);
+        }
+
+        [When("the user selects the place of destination from the address book {string}")]
+        public void WhenTheUserSelectsThePlaceOfDestinationFromTheAddressBook(string operatorType)
+        {
+            var operatorNameKey = $"{operatorType}Name";
+
+            var destinationName = _scenarioContext.ContainsKey(operatorNameKey)
+                ? _scenarioContext[operatorNameKey]?.ToString()
+                : null;
+
+            Assert.That(destinationName, Is.Not.Null.And.Not.Empty,
+                $"Operator name for type '{operatorType}' not found in scenario context (expected key: '{operatorNameKey}')");
+
+            searchExistingDestinationPage?.ClickSelect(destinationName);
         }
     }
 }

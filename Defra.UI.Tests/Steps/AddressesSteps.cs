@@ -180,15 +180,76 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void ThenTheUserVerifiesAndEntersAnyMissingDataOnTheAddressesPage()
         {
             if (addressesPage?.GetConsignorRowsCount() == 1)
-                _scenarioContext["PlaceOfDestinationDetails"] = addressesPage?.GetSelectedPlaceOfDestination();
+                _scenarioContext["ConsignorDetails"] = addressesPage.GetSelectedConsignor();
             else
             {
                 WhenTheUserClicksAddAConsignorOrExporter();
                 Assert.True(searchExistingConsignorPage?.IsPageLoaded(), "Traders Search for an existing consignor or exporter page not loaded");
-
+                _scenarioContext["ConsignorDetails"] = searchExistingConsignorPage?.GetSelectedConsignor("ABC");
+                searchExistingConsignorPage?.ClickSelect("ABC");
+                Assert.True(addressesPage?.VerifySelectedConsignor("ABC"));
 
             }
+        }
 
+        [Then("the chosen consignor from the address book should be displayed on the Addresses page {string}")]
+        public void ThenTheChosenConsignorFromTheAddressBookShouldBeDisplayedOnTheAddressesPage(string operatorType)
+        {
+            // Get the ORIGINAL operator details from address book (source of truth)
+            var expectedName = _scenarioContext[$"{operatorType}Name"]?.ToString();
+            var expectedAddress = _scenarioContext[$"{operatorType}Address"]?.ToString();
+            var expectedCountry = _scenarioContext[$"{operatorType}Country"]?.ToString();
+
+            // Verify using existing page method
+            var isDisplayed = addressesPage?.VerifySelectedConsignor(expectedName, expectedAddress, expectedCountry);
+
+            Assert.IsTrue(isDisplayed,
+                $"Consignor from address book ({operatorType}) not displayed correctly. Expected: {expectedName}, {expectedAddress}, {expectedCountry}");
+        }
+
+        [Then("the chosen consignee from the address book should be displayed on the Addresses page {string}")]
+        public void ThenTheChosenConsigneeFromTheAddressBookShouldBeDisplayedOnTheAddressesPage(string operatorType)
+        {
+            // Get the ORIGINAL operator details from address book (source of truth)
+            var expectedName = _scenarioContext[$"{operatorType}Name"]?.ToString();
+            var expectedAddress = _scenarioContext[$"{operatorType}Address"]?.ToString();
+            var expectedCountry = _scenarioContext[$"{operatorType}Country"]?.ToString();
+
+            // Verify using existing page method
+            var isDisplayed = addressesPage?.VerifySelectedConsignee(expectedName, expectedAddress, expectedCountry);
+
+            Assert.IsTrue(isDisplayed,
+                $"Consignee from address book ({operatorType}) not displayed correctly. Expected: {expectedName}, {expectedAddress}, {expectedCountry}");
+        }
+
+        [Then("the chosen importer from the address book should be displayed on the Addresses page {string}")]
+        public void ThenTheChosenImporterFromTheAddressBookShouldBeDisplayedOnTheAddressesPage(string operatorType)
+        {
+            // Get the ORIGINAL operator details from address book (source of truth)
+            var expectedName = _scenarioContext[$"{operatorType}Name"]?.ToString();
+            var expectedAddress = _scenarioContext[$"{operatorType}Address"]?.ToString();
+            var expectedCountry = _scenarioContext[$"{operatorType}Country"]?.ToString();
+
+            // Verify using existing page method
+            var isDisplayed = addressesPage?.VerifySelectedImporter(expectedName, expectedAddress, expectedCountry);
+
+            Assert.IsTrue(isDisplayed,
+                $"Importer from address book ({operatorType}) not displayed correctly. Expected: {expectedName}, {expectedAddress}, {expectedCountry}");
+        }
+
+        [Then("the chosen place of destination from the address book should be displayed on the Addresses page {string}")]
+        public void ThenTheChosenPlaceOfDestinationFromTheAddressBookShouldBeDisplayedOnTheAddressesPage(string operatorType)
+        {
+            // Get the ORIGINAL operator details from address book (source of truth)
+            var expectedName = _scenarioContext[$"{operatorType}Name"]?.ToString();
+            var expectedAddress = _scenarioContext[$"{operatorType}Address"]?.ToString();
+            var expectedCountry = _scenarioContext[$"{operatorType}Country"]?.ToString();
+
+            // Verify using existing page method
+            var isDisplayed = addressesPage?.VerifySelectedDestination(expectedName, expectedAddress, expectedCountry);
+
+            Assert.IsTrue(isDisplayed,
+                $"Place of destination from address book ({operatorType}) not displayed correctly. Expected: {expectedName}, {expectedAddress}, {expectedCountry}");
         }
     }
 }

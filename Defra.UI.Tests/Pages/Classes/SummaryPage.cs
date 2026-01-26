@@ -2,7 +2,6 @@
 using Defra.UI.Tests.Contracts;
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
-using DocumentFormat.OpenXml.Drawing.Diagrams;
 using OpenQA.Selenium;
 using Reqnroll.BoDi;
 
@@ -15,30 +14,30 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects
         private IReadOnlyCollection<IWebElement> divAboutConsignment => _driver.WaitForElements(By.XPath("//*[@id='review-table-about-notification']/div"));
-        private IWebElement txtCommodityCode => _driver.WaitForElement(By.XPath("//*[normalize-space()='Commodity code']//following-sibling::td[1]"));
-        private IWebElement txtCommodityType => _driver.WaitForElement(By.XPath("//*[normalize-space()='Description of the goods']/following::tr[3]//following-sibling::td[2]"));
-        private IWebElement txtCommodityType1 => _driver.WaitForElement(By.XPath("(//*[normalize-space()='Description of the goods']/following::td)[1]"));
-        private IWebElement txtSpecies => _driver.WaitForElement(By.XPath("//*[normalize-space()='Species']/../../following-sibling::tbody//td[1]"));
-        private IWebElement txtNetWeight => _driver.WaitForElement(By.XPath("//*[@class='govuk-table__cell govuk-table__cell--numeric consignment-net-weight']"));
-        private IWebElement txtPackages => _driver.WaitForElement(By.XPath("//*[@class='govuk-table__cell govuk-table__cell--numeric consignment-net-weight']//following-sibling::td[1]"));
-        private IWebElement txtPackageType => _driver.WaitForElement(By.XPath("//*[@class='govuk-table__cell govuk-table__cell--numeric consignment-net-weight']//following-sibling::td[2]"));
-        private IWebElement txtSubtotalNetWeight => _driver.WaitForElement(By.XPath("//*[normalize-space()='Subtotal']//following-sibling::td[1]"));
-        private IWebElement txtSubtotalPackages => _driver.WaitForElement(By.XPath("//*[normalize-space()='Subtotal']//following-sibling::td[2]"));
-        private IWebElement txtTotalNetWeight => _driver.WaitForElement(By.XPath("//*[normalize-space()='Total net weight']//following-sibling::td"));
-        private IWebElement txtTotalPackages => _driver.WaitForElement(By.XPath("//*[normalize-space()='Total packages']//following-sibling::td"));
-        private IWebElement txtTotalGrossWeight => _driver.WaitForElement(By.XPath("//*[normalize-space()='Total gross weight']//following-sibling::td[1]"));
-        private IWebElement txtTemperature => _driver.WaitForElement(By.XPath("//*[normalize-space()='Temperature']//following-sibling::dd"));
-        private IReadOnlyCollection<IWebElement> txtDocumentType => _driver.WaitForElements(By.XPath("//td[contains(@id,'veterinary-document-type')]"));
-        private IReadOnlyCollection<IWebElement> txtDocumentReference => _driver.WaitForElements(By.XPath("//td[contains(@id,'veterinary-document-reference')]"));
-        private IReadOnlyCollection<IWebElement> txtDateOfIssue => _driver.WaitForElements(By.XPath("//td[contains(@id,'veterinary-document-issue-date')]"));
-        private IWebElement txtApprovedEstablishmentName => _driver.WaitForElement(By.XPath("//*[@id='establishments-row-1']/td[1]"));
-        private IWebElement txtApprovedEstablishmentCountry => _driver.WaitForElement(By.XPath("//*[@id='establishments-row-1']/td[2]"));
-        private IWebElement txtApprovedEstablishmentType => _driver.WaitForElement(By.XPath("//*[@id='establishments-row-1']/td[3]"));
-        private IWebElement txtApprovedEstablishmentApprovalNum => _driver.WaitForElement(By.XPath("//*[@id='establishments-row-1']/td[4]"));
-        private IWebElement txtConsignorDetails => _driver.WaitForElement(By.Id("consignor"));
-        private IWebElement txtConsigneeDetails => _driver.WaitForElement(By.Id("consignee"));
-        private IWebElement txtImporterDetails => _driver.WaitForElement(By.Id("importer"));
-        private IWebElement txtplaceOfDestination => _driver.WaitForElement(By.Id("final-destination"));
+        private IReadOnlyCollection<IWebElement> txtCommodityCode => _driver.FindElements(By.XPath("//*[normalize-space()='Commodity code']//following-sibling::td[1]"));
+        private IReadOnlyCollection<IWebElement> txtCommodityType => _driver.FindElements(By.XPath("//*[normalize-space()='Type of commodity']/following::td[1]"));
+        private IReadOnlyCollection<IWebElement> txtCommodityType1 => _driver.FindElements(By.XPath("(//*[normalize-space()='Description of the goods']/following::td)[1]"));
+        private IReadOnlyCollection<IWebElement> txtSpecies => _driver.FindElements(By.XPath("//*[normalize-space()='Species']/../../following-sibling::tbody//td[1]"));
+        private IReadOnlyCollection<IWebElement> txtNetWeight => _driver.FindElements(By.XPath("//*[@class='govuk-table__cell govuk-table__cell--numeric consignment-net-weight']"));
+        private IReadOnlyCollection<IWebElement> txtPackages => _driver.FindElements(By.XPath("//*[@class='govuk-table__cell govuk-table__cell--numeric consignment-net-weight']//following-sibling::td[1]"));
+        private IReadOnlyCollection<IWebElement> txtPackageType => _driver.FindElements(By.XPath("//*[@class='govuk-table__cell govuk-table__cell--numeric consignment-net-weight']//following-sibling::td[2]"));
+        private IWebElement txtSubtotalNetWeight => _driver.FindElement(By.XPath("//*[normalize-space()='Subtotal']//following-sibling::td[1]"));
+        private IWebElement txtSubtotalPackages => _driver.FindElement(By.XPath("//*[normalize-space()='Subtotal']//following-sibling::td[2]"));
+        private IWebElement txtTotalNetWeight => _driver.FindElement(By.XPath("//*[normalize-space()='Total net weight']//following-sibling::td"));
+        private IWebElement txtTotalPackages => _driver.FindElement(By.XPath("//*[normalize-space()='Total packages']//following-sibling::td"));
+        private IWebElement txtTotalGrossWeight => _driver.FindElement(By.XPath("//*[normalize-space()='Total gross weight']//following-sibling::td[1]"));
+        private IWebElement txtTemperature => _driver.FindElement(By.XPath("//*[normalize-space()='Temperature']//following-sibling::dd"));
+        private IReadOnlyCollection<IWebElement> txtDocumentType => _driver.FindElements(By.XPath("//td[contains(@id,'veterinary-document-type')]"));
+        private IReadOnlyCollection<IWebElement> txtDocumentReference => _driver.FindElements(By.XPath("//td[contains(@id,'veterinary-document-reference')]"));
+        private IReadOnlyCollection<IWebElement> txtDateOfIssue => _driver.FindElements(By.XPath("//td[contains(@id,'veterinary-document-issue-date')]"));
+        private IWebElement txtApprovedEstablishmentName => _driver.FindElement(By.XPath("//*[@id='establishments-row-1']/td[1]"));
+        private IWebElement txtApprovedEstablishmentCountry => _driver.FindElement(By.XPath("//*[@id='establishments-row-1']/td[2]"));
+        private IWebElement txtApprovedEstablishmentType => _driver.FindElement(By.XPath("//*[@id='establishments-row-1']/td[3]"));
+        private IWebElement txtApprovedEstablishmentApprovalNum => _driver.FindElement(By.XPath("//*[@id='establishments-row-1']/td[4]"));
+        private IWebElement txtConsignorDetails => _driver.FindElement(By.Id("consignor"));
+        private IWebElement txtConsigneeDetails => _driver.FindElement(By.Id("consignee"));
+        private IWebElement txtImporterDetails => _driver.FindElement(By.Id("importer"));
+        private IWebElement txtplaceOfDestination => _driver.FindElement(By.Id("final-destination"));
 
         //Inspector
         private IWebElement txtBCPRefNum => _driver.WaitForElement(By.XPath("//*[@id='reference-row-1']/td[1]"));
@@ -93,13 +92,13 @@ namespace Defra.UI.Tests.Pages.Classes
                 }
             }
 
-            summary.CommodityCode = txtCommodityCode.Text.Trim();
-            summary.TypeOfCommodity = txtCommodityType.Text.Trim();
-            summary.TypeOfCommodity1 = txtCommodityType1.Text.Trim();
-            summary.Species = txtSpecies.Text.Trim();
-            summary.NetWeight = txtNetWeight.Text.Trim().Replace(" kg/units", "");
-            summary.NumberOfPackages = txtPackages.Text.Trim();
-            summary.PackageType = txtPackageType.Text.Trim();
+            summary.CommodityCode = txtCommodityCode.Select(x =>x.Text.Trim()).ToList();
+            summary.TypeOfCommodity = txtCommodityType.Select(x => x.Text.Trim()).ToList();
+            summary.TypeOfCommodity1 = txtCommodityType1.Select(x => x.Text.Trim()).ToList();
+            summary.Species = txtSpecies.Select(x => x.Text.Trim()).ToList();
+            summary.NetWeight = txtNetWeight.Select(x => x.Text.Trim().Replace(" kg/units", "")).ToList();
+            summary.NumberOfPackages = txtPackages.Select(x => x.Text.Trim()).ToList();
+            summary.PackageType = txtPackageType.Select(x => x.Text.Trim()).ToList();
             summary.SubtotalNetWeight = txtSubtotalNetWeight.Text.Trim().Replace(" kg/units", "");
             summary.SubtotalPackages = txtSubtotalPackages.Text.Trim();
             summary.TotalNetWeight = txtTotalNetWeight.Text.Trim().Replace(" kg/units", "");
