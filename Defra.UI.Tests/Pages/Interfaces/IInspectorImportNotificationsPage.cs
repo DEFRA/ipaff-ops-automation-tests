@@ -13,5 +13,6 @@
         bool VerifyNotificationIsPresentWithStatus(string type, string chedRef, string replacementChedReference, string status);
         bool VerifyNotificationIsNotPresent();
         void ClickNotification();
+        string GetNotificationStatus();
     }
 }

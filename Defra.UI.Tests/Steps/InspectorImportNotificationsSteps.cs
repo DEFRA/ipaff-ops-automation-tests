@@ -112,5 +112,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             inspectorImportNotificationsPage?.ClickNotification();
         }
+
+        [Then("the notification returned in the search has the status {string} on the Import notifications page")]
+        public void ThenTheNotificationReturnedInTheSearchHasTheStatusOnTheImportNotificationsPage(string expectedStatus)
+        {
+            var actualStatus = inspectorImportNotificationsPage?.GetNotificationStatus();
+            Assert.AreEqual(expectedStatus, actualStatus,
+                $"Expected notification status '{expectedStatus}' but found '{actualStatus}'");
+        }
     }
 }
