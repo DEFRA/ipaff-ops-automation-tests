@@ -5,5 +5,6 @@
         bool IsPageLoaded();
         void SelectSealNumRadio(string sealNumOption);
         bool IsSealNumbersNoPreselected();
+        void EnterNewSealNumber(string sealNumber);
     }
 }

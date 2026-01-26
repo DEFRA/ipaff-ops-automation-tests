@@ -16,6 +16,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement sealNumRadio(string sealNumOption) => _driver.FindElement(By.XPath($"//input[@class='govuk-radios__input']/following-sibling::label[contains(text(),'{sealNumOption}')]"));
         private IWebElement rdoSealNumbersYes => _driver.FindElement(By.Id("radio-container-seals-yes"));
         private IWebElement rdoSealNumbersNo => _driver.FindElement(By.Id("radio-container-seals-no"));
+        private IWebElement txtSealNumber => _driver.FindElement(By.Id("seal-number-0"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -38,6 +39,12 @@ namespace Defra.UI.Tests.Pages.Classes
         public bool IsSealNumbersNoPreselected()
         {
             return rdoSealNumbersNo.GetAttribute("checked") != null;
+        }
+
+        public void EnterNewSealNumber(string sealNumber)
+        {
+            txtSealNumber.Clear();
+            txtSealNumber.SendKeys(sealNumber);
         }
     }
 }
