@@ -73,7 +73,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             }
             commoditytypes.Add(type);
             _scenarioContext["TypeOfCommodity"] = commoditytypes;
-            commodityPage?.SelectTypeOfCommodity(type);         
+            commodityPage?.SelectTypeOfCommodity(type);        
         }
 
         [When("the user selects species of commodity {string}")]
@@ -146,8 +146,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             commodityPage?.ClickUpdateTotal();
             Thread.Sleep(1000);
-            _scenarioContext["SubtotalNetWeight"] = commodityPage?.GetSubtotalNetWeight();
-            _scenarioContext["SubtotalPackages"] = commodityPage?.GetSubtotalPackages();
+            _scenarioContext["SubtotalNetWeight"] = commodityPage?.GetSubtotalsOfNetWeight();
+            _scenarioContext["SubtotalPackages"] = commodityPage?.GetSubtotalsOfPackages();
             _scenarioContext["TotalNetWeight"] = commodityPage?.GetTotalNetWeight();
             _scenarioContext["TotalPackages"] = commodityPage?.GetTotalPackages();
         }
@@ -192,6 +192,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Thread.Sleep(2000);
             _scenarioContext["TotalNetWeight"] = commodityPage.GetTotalNetWeight();
             _scenarioContext["TotalPackages"] = commodityPage.GetTotalPackages();
+            _scenarioContext["SubtotalNetWeight"] = commodityPage?.GetSubtotalsOfNetWeight();
+            _scenarioContext["SubtotalPackages"] = commodityPage?.GetSubtotalsOfPackages();            
+            _scenarioContext["TotalNetWeight"] = commodityPage.GetTotalNetWeight();
+            _scenarioContext["TotalPackages"] = commodityPage.GetTotalPackages();
         }
 
         [When("the total gross weight should be greater than the net weight {string}")]
@@ -227,6 +231,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(commodityPage?.VerifyCommodityDetails(code, description));
             _scenarioContext.Add("CommodityCodeFirstCommodity", code);
             _scenarioContext.Add("CommodityDescFirstCommodity", description);
+        }
+        
+        [Then("the commodity details should be populated {string} {string} for second commodity")]
+        public void ThenTheCommodityDetailsShouldBePopulatedForSecondCommodity(string code, string description)
+        {
+            Assert.True(commodityPage?.VerifyCommodityDetails(code, description));
+            _scenarioContext["CommodityCodeSecondCommodity"] = code;
+            _scenarioContext["CommodityDescSecondCommodity"] = description;
         }
 
         [When("the user populates Net weight as {string} for first commodity")]
