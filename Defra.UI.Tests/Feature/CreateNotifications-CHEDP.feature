@@ -1565,7 +1565,7 @@ Scenario: User submits a notification as no inspection required, override the ri
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
 
-	Scenario: User submits a notification, inspector copy it as replacement, update and submit decision - CHEDP 9112
+Scenario: User submits a notification, inspector copy it as replacement, update and submit decision - CHEDP 9112
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
@@ -1840,7 +1840,7 @@ Scenario: User submits a notification as no inspection required, override the ri
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
 
-Scenario: Create and Submit B2C Consignment with Two Commodities and Catch Certificates, Submits decision and CHED Verification in BTMS_SPS_9113
+Scenario: Create and Submit B2C Consignment with Two Commodities and Catch Certificates, Submits decision and CHED Verification in BTMS CHEDP_SPS_9113
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
