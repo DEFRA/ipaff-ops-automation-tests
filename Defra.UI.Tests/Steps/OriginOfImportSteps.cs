@@ -1,6 +1,4 @@
-﻿using System;
-using Defra.UI.Tests.Pages.Interfaces;
-using Faker;
+﻿using Defra.UI.Tests.Pages.Interfaces;
 using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;

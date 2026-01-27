@@ -13,7 +13,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
         private readonly ScenarioContext _scenarioContext;
 
         private IAddressesPage? addressesPage => _objectContainer.IsRegistered<IAddressesPage>() ? _objectContainer.Resolve<IAddressesPage>() : null;
-        private ISearchExistingConsignorPage? searchExistingConsignorPage => _objectContainer.IsRegistered<ISearchExistingConsignorPage>() ? _objectContainer.Resolve<ISearchExistingConsignorPage>() : null;
 
         public AddressesSteps(ScenarioContext context, IObjectContainer container)
         {
@@ -192,12 +191,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
             if (addressesPage?.GetImporterRowsCount() == 1)
                 _scenarioContext["ImporterDetails"] = addressesPage.GetSelectedImporter();
             else
-                Assert.Fail($"Unexpected importer rows count: {addressesPage?.GetConsigneeRowsCount()}. Add importer flow logic not implemented.");
+                Assert.Fail($"Unexpected importer rows count: {addressesPage?.GetImporterRowsCount()}. Add importer flow logic not implemented.");
 
             if (addressesPage?.GetDestinationRowsCount() == 1)
                 _scenarioContext["PlaceOfDestinationDetails"] = addressesPage.GetSelectedPlaceOfDestination();
             else
-                Assert.Fail($"Unexpected place of destination rows count: {addressesPage?.GetConsigneeRowsCount()}. Add place of destination flow logic not implemented.");
+                Assert.Fail($"Unexpected place of destination rows count: {addressesPage?.GetDestinationRowsCount()}. Add place of destination flow logic not implemented.");
         }
 
         [Then("the chosen consignor from the address book should be displayed on the Addresses page {string}")]

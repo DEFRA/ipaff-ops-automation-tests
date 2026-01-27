@@ -25,11 +25,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private List<IWebElement> importerRowsList => _driver.FindElements(By.XPath("//table[@id='traders-table-importer']/tbody/tr")).ToList();
         private List<IWebElement> destinationRowsList => _driver.FindElements(By.XPath("//table[@id='traders-table-place-of-destination']/tbody/tr")).ToList();
         private IWebElement selectedConsignorName => _driver.WaitForElement(By.XPath("//*[@id='traders-table-consignor']//td[1]"));
-        //private IWebElement selectedConsignorAddress => _driver.WaitForElement(By.XPath("//*[@id='traders-table-consignor']//td[2]"));
-        //private IWebElement selectedConsignorCountry => _driver.WaitForElement(By.XPath("//*[@id='traders-table-consignor']//td[3]"));
         private IWebElement selectedConsigneeName => _driver.WaitForElement(By.XPath("//*[@id='traders-table-consignee']//td[1]"));
-        //private IWebElement selectedConsigneeAddress => _driver.WaitForElement(By.XPath("//*[@id='traders-table-consignee']//td[2]"));
-        //private IWebElement selectedConsigneeCountry => _driver.WaitForElement(By.XPath("//*[@id='traders-table-consignee']//td[3]"));
         private IWebElement selectedDestination => _driver.WaitForElement(By.XPath("//*[@id='traders-table-place-of-destination']//td[1]"));
         private IWebElement selectedImporterName => _driver.WaitForElement(By.XPath("//*[@id='traders-table-importer']//td[1]"));
         private IWebElement selectedImporterAddress => _driver.WaitForElement(By.XPath("//*[@id='traders-table-importer']//td[2]"));
@@ -44,7 +40,6 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement verifyDestinationAddress => _driver.FindElement(By.XPath("//td[@headers='place-of-destination-address']"));
         private IWebElement verifyDestinationCountry => _driver.FindElement(By.XPath("//td[@headers='place-of-destination-country']"));
         private IWebElement lnkChange(string section) => _driver.FindElement(By.XPath($"(//h2[normalize-space(text())='{section}']/following::a)[1]"));
-
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();

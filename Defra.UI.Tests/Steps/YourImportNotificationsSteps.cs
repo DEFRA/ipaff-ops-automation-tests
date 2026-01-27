@@ -210,6 +210,5 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             importNotificationsPage?.ClickCopyAsNewLink();
         }
-
     }
 }

@@ -2,8 +2,6 @@
 using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
-using DocumentFormat.OpenXml.Drawing.Charts;
-
 
 namespace Defra.UI.Tests.Steps.IPAFF
 {
@@ -170,7 +168,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserPopulatesNetWeightAsForTheAdditionalCommodity(string netWeight, string commodityCode)
         {
             commodityPage?.AddNetWeightForCommodityCode(netWeight, commodityCode);
-            //_scenarioContext.Add("NetWeightSecondCommodity", netWeight);
             _scenarioContext["NetWeightSecondCommodity"] = netWeight;
         }
 
@@ -178,16 +175,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserPopulatesNumberOfPackagesAsForTheAdditionalCommodity(string numOfPackages, string commodityCode)
         {
             commodityPage?.AddNumOfPackagesForCommodityCode(numOfPackages, commodityCode);
-            //_scenarioContext.Add("NumOfPackagesSecondCommodity", numOfPackages);
             _scenarioContext["NumOfPackagesSecondCommodity"] = numOfPackages;
-
         }
 
         [When("the user selects type of package as {string} for the second commodity {string}")]
         public void WhenTheUserSelectsTypeOfPackageAsForTheAdditionalCommodity(string typeOfPackage, string commodityCode)
         {
             commodityPage?.SelectPackageTypeForCommodityCode(typeOfPackage, commodityCode);
-            //_scenarioContext.Add("TypeOfPackageSecondCommodity", typeOfPackage);
             _scenarioContext["TypeOfPackageSecondCommodity"] = typeOfPackage;
         }
 
@@ -196,8 +190,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             commodityPage?.ClickUpdateTotal();
             Thread.Sleep(2000);
-            //_scenarioContext.Add("TotalNetWeight", commodityPage.GetTotalNetWeight());
-            //_scenarioContext.Add("TotalPackages", commodityPage.GetTotalPackages());
             _scenarioContext["TotalNetWeight"] = commodityPage.GetTotalNetWeight();
             _scenarioContext["TotalPackages"] = commodityPage.GetTotalPackages();
         }
@@ -242,7 +234,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             List<string> values = weight.Split(',').Select(x => x.Trim()).ToList();
             commodityPage?.EnterNetWeight(values);
-            //_scenarioContext.Add("NetWeightFirstCommodity", weight);
             _scenarioContext["NetWeightFirstCommodity"] = weight;
         }
 
@@ -251,7 +242,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             List<string> values = packages.Split(',').Select(x => x.Trim()).ToList();
             commodityPage?.EnterNumberOfPackages(values);
-            //_scenarioContext.Add("NumberOfPackagesFirstCommodity", packages);
             _scenarioContext["NumberOfPackagesFirstCommodity"] = packages;
         }
 
@@ -259,9 +249,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserSelectsTypeOfPackageAsForTheCommodityForFirstCommodity(string typeOfPackage, string commodityCode)
         {
             commodityPage?.SelectPackageTypeForCommodityCode(typeOfPackage, commodityCode);
-            //_scenarioContext.Add("TypeOfPackageFirstCommodity", typeOfPackage);
             _scenarioContext["TypeOfPackageFirstCommodity"] = typeOfPackage;
-
         }
 
         [When("the user clicks the Add commodity link")]

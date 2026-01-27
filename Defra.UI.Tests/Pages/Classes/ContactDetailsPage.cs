@@ -32,10 +32,6 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool ValidateIfContactDetailsArePopulated()
         {
-            var a = !string.IsNullOrEmpty(txtName.GetAttribute("value"));
-            var b = !string.IsNullOrEmpty(txtEmailAddress.GetAttribute("value"));
-            var c = !string.IsNullOrEmpty(txtMobileNumber.GetAttribute("value"));
-
             return !string.IsNullOrEmpty(txtName.GetAttribute("value")) &&
                 !string.IsNullOrEmpty(txtEmailAddress.GetAttribute("value")) &&
                 !string.IsNullOrEmpty(txtMobileNumber.GetAttribute("value"));

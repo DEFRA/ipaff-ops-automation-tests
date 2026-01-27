@@ -4,7 +4,6 @@ using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
 using Reqnroll.BoDi;
 
-
 namespace Defra.UI.Tests.Pages.Classes
 {
     public class ContactAddressPage : IContactAddressPage
@@ -18,7 +17,6 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement firstContactAddressLabel => _driver.FindElement(By.XPath("//label[contains(@for, 'branch-address')]"));
         private IWebElement rdoContactAddress => _driver.FindElement(By.XPath("//label[contains(@for, 'branch-address')]/preceding-sibling::input[contains(@id,'branch-address')]"));
         private IWebElement draftChedRefNumber => _driver.FindElement(By.Id("reference-number"));
-
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();

@@ -1,7 +1,6 @@
 ﻿using Defra.UI.Tests.Configuration;
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
-using Dynamitey;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
@@ -32,7 +31,6 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement rdoAreConsignmentsInContainerYes => _driver.FindElement(By.Id("are-consignments-in-containers-yes"));
         private IWebElement rdoAreConsignmentsInContainerNo => _driver.FindElement(By.Id("are-consignments-in-containers-no"));
         private List<IWebElement> verifyPortOfEntry => _driver.WaitForElements(By.XPath("//input[@aria-describedby='bcp__assistiveHint']")).ToList();
-
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();

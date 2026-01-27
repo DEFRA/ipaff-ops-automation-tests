@@ -22,7 +22,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the Decision Hub page should be displayed")]
         public void ThenTheDecisionHubPageShouldBeDisplayed()
         {
-            Thread.Sleep(10000);
             Assert.True(decisionHubPage?.IsPageLoaded());
         }
 
