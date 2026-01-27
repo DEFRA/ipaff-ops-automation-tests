@@ -114,6 +114,7 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<UploadCatchCertificatesPage, IUploadCatchCertificatesPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ManageCatchCertificatesPage, IManageCatchCertificatesPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<AddCatchCertificateDetailsPage, IAddCatchCertificateDetailsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<RequestAmendmentPage, IRequestAmendmentPage>());
 
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CookiesPage, ICookiesPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ContactPage, IContactPage>());
