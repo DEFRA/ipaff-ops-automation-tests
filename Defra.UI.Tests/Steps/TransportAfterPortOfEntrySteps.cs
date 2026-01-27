@@ -3,7 +3,7 @@ using NUnit.Framework;
 using OpenQA.Selenium;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
-
+using Defra.UI.Tests.Tools;
 
 namespace Defra.UI.Tests.Steps.IPAFF
 {
@@ -26,7 +26,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             // Remove GVMS keys since Transport After BCP page means airplane transport
             // (GVMS page is skipped for airplane transport)
-            RemoveGVMSKeys();
+            _scenarioContext.RemoveContextKeys("IsGVMS");
 
             Assert.True(transportAfterPortOfEntryPage?.IsPageLoaded(), "Transport after the BCP or Port of entry page not loaded");
         }
@@ -74,25 +74,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             transportAfterPortOfEntryPage?.EnterDepartureTimeFromBCP(time);
             _scenarioContext["DepartureTimeFromBCP"] = time;
-        }
-
-        /// <summary>
-        /// Removes GVMS context keys when Transport After BCP page is displayed
-        /// (indicating airplane transport mode where GVMS page is skipped)
-        /// </summary>
-        private void RemoveGVMSKeys()
-        {
-            var keysToRemove = new[]
-            {
-                "IsGVMS"            };
-
-            foreach (var key in keysToRemove)
-            {
-                if (_scenarioContext.ContainsKey(key))
-                {
-                    _scenarioContext.Remove(key);
-                }
-            }
         }
     }
 }
