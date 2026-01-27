@@ -1,8 +1,10 @@
-﻿using Reqnroll.BoDi;
+﻿using Defra.UI.Tests.Pages.Classes;
+using Defra.UI.Tests.Pages.Interfaces;
+using Defra.UI.Tests.Tools;
+using FluentAssertions.Execution;
 using NUnit.Framework;
 using Reqnroll;
-using Defra.UI.Tests.Pages.Interfaces;
-using Defra.UI.Tests.Pages.Classes;
+using Reqnroll.BoDi;
 
 
 namespace Defra.UI.Tests.Steps.IPAFF
@@ -31,14 +33,21 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserSelectsAsReasonForRefusal(string reason)
         {
             reasonForRefusalPage?.SelectReasonForRefusal(reason);
-            _scenarioContext.Add("ReasonForRefusal", reason);
+            _scenarioContext.AddOrUpdate("ReasonForRefusal", reason);
+        }
+
+        [When("the user provides the reason as {string} in Reason for refusal page")]
+        public void WhenTheUserProvidesTheReasonAsInReasonForRefusalPage(string reasonText)
+        {
+            reasonForRefusalPage?.EnterReasonTextForOther(reasonText);
+            _scenarioContext.AddOrUpdate("ReasonForRefusalText", reasonText);
         }
 
         [When("the user selects {string} as another reason for refusal")]
         public void WhenTheUserSelectsAdditionalReasonForRefusal(string reason)
         {
             reasonForRefusalPage?.SelectReasonForRefusal(reason);
-            _scenarioContext.Add("AdditionalReasonForRefusal", reason);
+            _scenarioContext.AddOrUpdate("AdditionalReasonForRefusal", reason);
         }
     }
 }

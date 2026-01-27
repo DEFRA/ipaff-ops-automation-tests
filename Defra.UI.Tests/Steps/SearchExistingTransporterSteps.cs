@@ -39,11 +39,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var transporterApprovalNumber = searchExistingTranspoterPage?.GetSelectedTransporterApprovalNumber();
             var transporterType = searchExistingTranspoterPage?.GetSelectedTransporterType();
 
-            _scenarioContext.Add("TransporterName", transporterName);
-            _scenarioContext.Add("TransporterAddress", transporterAddress);
-            _scenarioContext.Add("TransporterCountry", transporterCountry);
-            _scenarioContext.Add("TransporterApprovalNumber", transporterApprovalNumber);
-            _scenarioContext.Add("TransporterType", transporterType);
+            _scenarioContext.AddOrUpdate("TransporterName", transporterName);
+            _scenarioContext.AddOrUpdate("TransporterAddress", transporterAddress);
+            _scenarioContext.AddOrUpdate("TransporterCountry", transporterCountry);
+            _scenarioContext.AddOrUpdate("TransporterApprovalNumber", transporterApprovalNumber);
+            _scenarioContext.AddOrUpdate("TransporterType", transporterType);
 
             searchExistingTranspoterPage?.ClickSelect();
         }
@@ -53,9 +53,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             var operatorNameKey = $"{operatorType}Name";
 
-            var transporterName = _scenarioContext.ContainsKey(operatorNameKey)
-                ? _scenarioContext[operatorNameKey]?.ToString()
-                : null;
+            var transporterName = _scenarioContext.GetFromContext<string>(operatorNameKey);
 
             Assert.That(transporterName, Is.Not.Null.And.Not.Empty,
                 $"Operator name for type '{operatorType}' not found in scenario context (expected key: '{operatorNameKey}')");
@@ -68,9 +66,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             var operatorNameKey = $"{operatorType}Name";
 
-            var transporterName = _scenarioContext.ContainsKey(operatorNameKey)
-                ? _scenarioContext[operatorNameKey]?.ToString()
-                : null;
+            var transporterName = _scenarioContext.GetFromContext<string>(operatorNameKey);
 
             Assert.That(transporterName, Is.Not.Null.And.Not.Empty,
                 $"Operator name for type '{operatorType}' not found in scenario context (expected key: '{operatorNameKey}')");
@@ -80,8 +76,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var selectedType = searchExistingTranspoterPage?.GetSelectedTransporterType(transporterName);
 
             // Update scenario context with the selected transporter details for validation
-            _scenarioContext["TransporterApprovalNumber"] = selectedApprovalNumber;
-            _scenarioContext["TransporterType"] = selectedType;
+            _scenarioContext.AddOrUpdate("TransporterApprovalNumber", selectedApprovalNumber);
+            _scenarioContext.AddOrUpdate("TransporterType",selectedType);
 
             // Click Select button
             searchExistingTranspoterPage?.ClickSelectForTransporter(transporterName);

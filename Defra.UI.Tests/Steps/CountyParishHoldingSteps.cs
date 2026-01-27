@@ -3,6 +3,7 @@ using NUnit.Framework;
 using OpenQA.Selenium;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
+using Defra.UI.Tests.Tools;
 
 namespace Defra.UI.Tests.Steps.IPAFF
 {
@@ -32,7 +33,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserEntersTheCPHNumber(string cphNumber)
         {
             countyParishHoldingPage?.EnterCPHNumber(cphNumber);
-            _scenarioContext.Add("CPHnumber", cphNumber);
+            _scenarioContext.AddOrUpdate("CPHnumber", cphNumber);
         }
     }
 }
