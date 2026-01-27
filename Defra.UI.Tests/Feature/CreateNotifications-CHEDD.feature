@@ -848,7 +848,7 @@ Scenario: User submits B2C consignment notification, inspector rejects and creat
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
 
-Scenario: User submits B2C consignment notification, reason for refusal and creates border notification - CHED D 7381
+Scenario: User submits B2C consignment notification, reason for refusal and creates border notification - CHED D SPS-7381
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
