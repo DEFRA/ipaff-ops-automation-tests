@@ -38,15 +38,17 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
         [When(@"the user clicks on '(.*)' link")]
-        public void WhenTheUserClicksOn(string link) 
+        public void WhenTheUserClicksOn(string link)
         {
             notificationHubPage?.ClickLink(link);
         }
 
-        [When("the user clicks the Transport contacts hyperlink")]
-        public void WhenTheUserClicksTheTransportContactsHyperlink()
+        [Then("the notification version should be {string}")]
+        public void ThenTheNotificationVersionShouldBe(string expectedVersion)
         {
-            notificationHubPage?.ClickLink("Transport contacts");
+            string actualVersion = notificationHubPage?.GetNotificationVersion() ?? string.Empty;
+            Assert.That(actualVersion, Is.EqualTo(expectedVersion),
+                $"Expected notification version to be '{expectedVersion}' but was '{actualVersion}'");
         }
     }
 }

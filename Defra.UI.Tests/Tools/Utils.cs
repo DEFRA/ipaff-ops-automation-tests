@@ -1,5 +1,6 @@
 ﻿using Bogus;
 using OpenQA.Selenium;
+using Reqnroll;
 using System.Globalization;
 
 namespace Defra.UI.Tests.Tools
@@ -173,6 +174,27 @@ namespace Defra.UI.Tests.Tools
             catch (StaleElementReferenceException)
             {
                 return string.Empty;
+            }
+        }
+
+        #endregion
+
+        #region ScenarioContext Extension Methods
+
+        /// <summary>
+        /// Removes multiple keys from ScenarioContext if they exist.
+        /// Useful for cleaning up context when workflow changes (e.g., transport mode changes).
+        /// </summary>
+        /// <param name="scenarioContext">The ScenarioContext instance</param>
+        /// <param name="keys">Array of keys to remove from context</param>
+        public static void RemoveContextKeys(this ScenarioContext scenarioContext, params string[] keys)
+        {
+            foreach (var key in keys)
+            {
+                if (scenarioContext.ContainsKey(key))
+                {
+                    scenarioContext.Remove(key);
+                }
             }
         }
 
