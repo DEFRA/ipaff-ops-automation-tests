@@ -1,4 +1,6 @@
-﻿namespace Defra.UI.Tests.Contracts
+﻿using System.Collections;
+
+namespace Defra.UI.Tests.Contracts
 {
     public class Summary
     {
@@ -17,15 +19,19 @@
         public List<string> NetWeight { get; set; }
         public List<string> NumberOfPackages { get; set; }
         public List<string> PackageType { get; set; }
-        public string SubtotalNetWeight { get; set; }
-        public string SubtotalPackages { get; set; }
+        public string[] SubtotalNetWeight { get; set; }
+        public string[] SubtotalPackages { get; set; }
         public string TotalNetWeight { get; set; }
         public string TotalPackages { get; set; }
         public string TotalGrossWeight { get; set; }
         public string Temperature { get; set; }
+        public string[] CommodityTypes { get; set; }
         public string[] DocumentType { get; set; }
         public string[] DocumentReference { get; set; }
         public string[] DateOfIssue { get; set; }
+        public string[] FlagStateOfCatchingVessel { get; set; }
+        public string[] CatchCertificateReference { get; set; }
+        public string[] DateOfIssueCatchCertificate { get; set; }
         public string ApprovedEstablishmentName { get; set; }
         public string ApprovedEstablishmentCountry { get; set; }
         public string ApprovedEstablishmentType { get; set; }
@@ -34,5 +40,13 @@
         public string ConsigneeDetails { get; set; }
         public string ImporterDetails { get; set; }
         public string PlaceOfDestination { get; set; }
+        public string CommodityCodeFirstCommodity { get; set; }
+        public string CommodityCodeSecondCommodity { get; set; }
+        public string NetWeightFirstCommodity { get; set; }
+        public string NetWeightSecondCommodity { get; set; }
+        public string NumberOfPackagesFirstCommodity { get; set; }
+        public string NumberOfPackagesSecondCommodity { get; set; }
+        public string TypeOfPackageFirstCommodity { get; set; }
+        public string TypeOfPackageSecondCommodity { get; set; }
     }
 }
