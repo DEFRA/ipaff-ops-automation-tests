@@ -43,6 +43,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext.Add("MainReasonForImport", reasonForImport);
         }
 
+        [When("the user changes the main reason for importing to {string} and the sub-option {string}")]
         [When("the user chooses {string} and the sub-option {string}")]
         public void WhenTheUserChoosesAndTheSub_Option(string option, string subOption)
         {

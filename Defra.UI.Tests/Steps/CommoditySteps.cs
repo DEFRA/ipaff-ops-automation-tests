@@ -121,13 +121,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["NetWeight"] = values;
         }
 
+        [When("the user changes the Number of animals to {string}")]
         [When("the user populates Number of animals as {string}")]
         public void WhenTheUserPopulatesNumberOfAnimalsAs(string quantity)
         {
             commodityPage?.EnterNumberOfAnimals(quantity);
-            _scenarioContext.Add("NumberOfAnimals", quantity);
+            _scenarioContext["NumberOfAnimals"] = quantity;
         }
 
+        [When("the user changes the Number of packages to {string}")]
         [When("the user populates Number of packages as {string}")]
         public void WhenTheUserPopulatesNumberOfPackagesAs(string packages)
         {
@@ -212,6 +214,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             commodityPage?.ClickSaveAndContinue();
         }
 
+        [When("the user clicks on the back button in the browser")]
         [When("I click the back button in the browser")]
         public void WhenIClickTheBackButtonInTheBrowser()
         {
@@ -298,6 +301,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             commodityPage?.EnterEarTag(earTag);
             _scenarioContext.Add("EarTag", earTag);
+        }
+
+        [When("the user clicks on Save and return to hub on the Commodity page")]
+        public void WhenTheUserClicksOnSaveAndReturnToHubOnTheCommodityPage()
+        {
+            commodityPage?.ClickSaveAndReturnToHub();
         }
     }
 }

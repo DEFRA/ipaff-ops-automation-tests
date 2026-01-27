@@ -90,5 +90,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             decisionHubPage?.ClickChecksLink();
         }
+
+        [When("the user clicks View notification of consignment")]
+        public void WhenTheUserClicksViewNotificationOfConsignment()
+        {
+            decisionHubPage?.ClickViewNotificationOfConsignment();
+        }
     }
 }

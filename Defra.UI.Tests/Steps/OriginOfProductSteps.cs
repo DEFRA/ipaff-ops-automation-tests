@@ -28,6 +28,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(originOfProductPage?.IsPageLoaded(), "About the consignment Origin of the animal or product? page not loaded");
         }
 
+        [When("the user changes the Country of origin to {string}")]
         [When("the user chooses {string} from the dropdown for Country of origin")]
         public void WhenTheUserChoosesFromTheDropdownForCountryOfOrigin(string country)
         {
