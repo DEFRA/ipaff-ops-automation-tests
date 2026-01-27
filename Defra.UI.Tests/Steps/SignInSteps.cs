@@ -26,9 +26,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext = context;
             _objectContainer = container;
         }
-
-        [When(@"I navigate to the IPAFF application")]
+       
         [Given(@"that I navigate to the IPAFF application")]
+        [When(@"I navigate to the IPAFF application")]
+        [When("the user logs back into IPAFFS application")]
         public void GivenThatINavigateToThePortCheckerApplication()
         {
             var url = urlBuilder.Default().BuildApp();
