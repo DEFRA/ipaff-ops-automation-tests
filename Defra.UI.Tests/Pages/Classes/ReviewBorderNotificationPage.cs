@@ -40,9 +40,11 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement lastUpdatedTime => _driver.FindElement(By.Id("last-updated-time"));
         
         private IWebElement btnSubmit => _driver.FindElement(By.Id("submit-button"));
-        private IWebElement lnkDocument => _driver.FindElement(By.Id("download-attachment-0"));
 
         private IWebElement lnkAttachedDocument => _driver.FindElement(By.Id("attachment-name-0"));
+        private IWebElement lnkDocument => _driver.FindElement(By.XPath("//a[contains(@id,'download-attachment') or contains(@id,'attachment-download')]"));
+
+        //private IReadOnlyCollection <IWebElement> lnkDownloadedFile => _driver.FindElements(By.Id("file-link"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();

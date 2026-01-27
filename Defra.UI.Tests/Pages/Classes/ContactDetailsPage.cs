@@ -4,7 +4,6 @@ using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
 using Reqnroll.BoDi;
 
-
 namespace Defra.UI.Tests.Pages.Classes
 {
     public class ContactDetailsPage : IContactDetailsPage
@@ -14,6 +13,9 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//*[@class='govuk-fieldset__heading']"), true);
+        private IWebElement txtName => _driver.FindElement(By.Id("name"));
+        private IWebElement txtEmailAddress => _driver.FindElement(By.Id("email"));
+        private IWebElement txtMobileNumber => _driver.FindElement(By.Id("telephone"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -26,6 +28,13 @@ namespace Defra.UI.Tests.Pages.Classes
         public bool IsPageLoaded()
         {
             return pageTitle.Text.Trim().Contains("Contact details");
+        }
+
+        public bool ValidateIfContactDetailsArePopulated()
+        {
+            return !string.IsNullOrEmpty(txtName.GetAttribute("value")) &&
+                !string.IsNullOrEmpty(txtEmailAddress.GetAttribute("value")) &&
+                !string.IsNullOrEmpty(txtMobileNumber.GetAttribute("value"));
         }
     }
 }

@@ -4,7 +4,6 @@ using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;
 
-
 namespace Defra.UI.Tests.Steps.IPAFF
 {
     [Binding]
@@ -57,7 +56,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             commodityPage?.SelectTypeOfCommodity(type);
         }
 
-
         [When("the user selects species of commodity {string}")]
         public void WhenTheUserSelectsSpeciesOfCommodity(string species)
         {            
@@ -67,13 +65,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
             commodityPage?.SelectCommoditySpecies(species);
         }
 
-
         [When("the user selects {string} for Do you want to add another commodity?")]
         public void WhenTheUserSelectsForDoYouWantToAddAnotherCommodity(string option)
         {
             commodityPage?.AddAnotherCommodity(option);
         }
-
 
         [Then("the Commodity page should be displayed with the commodity and description entered")]
         public void ThenTheCommodityPageShouldBeDisplayedWithTheCommodityAndDescriptionEntered()
@@ -109,7 +105,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["NumberOfPackages"] = values;
         }
 
-
         [When("the user selects type of package as {string}")]
         public void WhenTheUserSelectsTypeOfPackageAs(string type)
         {
@@ -123,10 +118,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             commodityPage?.ClickUpdateTotal();
             Thread.Sleep(1000);
-            _scenarioContext["SubtotalNetWeight"] = commodityPage?.GetSubtotalNetWeight();
-            _scenarioContext["SubtotalPackages"] = commodityPage?.GetSubtotalPackages();
-            _scenarioContext["TotalNetWeight"] = commodityPage?.GetTotalNetWeight();
-            _scenarioContext["TotalPackages"] = commodityPage?.GetTotalPackages();
+            _scenarioContext.AddToContext("SubtotalNetWeight",commodityPage?.GetSubtotalsOfNetWeight());
+            _scenarioContext.AddToContext("SubtotalPackages", commodityPage?.GetSubtotalsOfPackages());
+            _scenarioContext.AddToContext("TotalNetWeight", commodityPage?.GetTotalNetWeight());
+            _scenarioContext.AddToContext("TotalPackages", commodityPage?.GetTotalPackages());
         }
 
         [Then("the Total Net weight should be populated as {string}")]
@@ -167,6 +162,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             commodityPage?.ClickUpdateTotal();
             Thread.Sleep(2000);
+            _scenarioContext.AddOrUpdate("SubtotalNetWeight",commodityPage?.GetSubtotalsOfNetWeight());
+            _scenarioContext.AddOrUpdate("SubtotalPackages",commodityPage?.GetSubtotalsOfPackages());            
             _scenarioContext.AddOrUpdate("TotalNetWeight", commodityPage.GetTotalNetWeight());
             _scenarioContext.AddOrUpdate("TotalPackages", commodityPage.GetTotalPackages());
         }
@@ -205,6 +202,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             _scenarioContext.AddOrUpdate("CommodityCodeFirstCommodity", code);
             _scenarioContext.AddOrUpdate("CommodityDescFirstCommodity", description);
+        }
+        
+        [Then("the commodity details should be populated {string} {string} for second commodity")]
+        public void ThenTheCommodityDetailsShouldBePopulatedForSecondCommodity(string code, string description)
+        {
+            Assert.True(commodityPage?.VerifyCommodityDetails(code, description));
+            _scenarioContext["CommodityCodeSecondCommodity"] = code;
+            _scenarioContext["CommodityDescSecondCommodity"] = description;
         }
 
         [When("the user populates Net weight as {string} for first commodity")]
@@ -275,7 +280,25 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext.AddOrUpdate("EarTag", earTag);
         }
 
+        [Then("the user verifies and enters any missing data on the Commodity page")]
+        public void ThenTheUserVerifiesAndEntersAnyMissingDataOnTheCommodityPage()
+        {
+            Assert.False(commodityPage?.GetAddedCommoditiesCount == 0, "No commodities were added on the commodity page");
+
+            WhenTheUserPopulatesNetWeightAsForFirstCommodity("19000");
+            WhenTheUserPopulatesNumberOfPackagesAsForFirstCommodity("1");
+            WhenTheUserSelectsTypeOfPackageAsForTheCommodityForFirstCommodity("Case", "12024200");
+
+            WhenTheUserPopulatesNetWeightAsForTheAdditionalCommodity("18000", "100610");
+            WhenTheUserPopulatesNumberOfPackagesAsForTheAdditionalCommodity("1", "100610");
+            WhenTheUserSelectsTypeOfPackageAsForTheAdditionalCommodity("Box", "100610");
+
+            WhenTheUserClicksTheUpdateTotalButtonAfterAddingAllTheCommodities();
+            ThenTheTotalGrossWeightShouldBeGreaterThanTheNetWeight("40000");
+        }
+
         [When("the user clicks on Save and return to hub on the Commodity page")]
+        [Then("the user clicks on Save and return to hub on the Commodity page")]
         public void WhenTheUserClicksOnSaveAndReturnToHubOnTheCommodityPage()
         {
             commodityPage?.ClickSaveAndReturnToHub();
