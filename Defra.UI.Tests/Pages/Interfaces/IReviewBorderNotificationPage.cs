@@ -28,5 +28,6 @@
         void ClickSubmitButton();
         void OpenDownloadsInNewTab();
         bool VerifyFileDownloaded(string fileName);
+        void ClickAttachedDocumentLink();
     }
 }

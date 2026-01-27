@@ -1,5 +1,6 @@
 ﻿using Defra.UI.Tests.Pages.Classes;
 using Defra.UI.Tests.Pages.Interfaces;
+using Defra.UI.Tests.Tools;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using Reqnroll;
@@ -53,7 +54,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             latestHealthCertificatePage?.EnterDateOfIssue(day, month, year);
             var dateofIssue = day + " " + month + " " + year;
-            _scenarioContext["HealthCertificateDateOfIssue"] = dateofIssue;
+            _scenarioContext.AddOrUpdate("HealthCertificateDateOfIssue",dateofIssue);
         }
 
         [When("the user clicks on Add attachment link on the Latest Health Certificate page")]
@@ -67,7 +68,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             var filename = name + format;
             latestHealthCertificatePage?.AddHealthCertificate(filename);
-            _scenarioContext.Add("HealthCertificateFileName", filename);
+            _scenarioContext.AddOrUpdate("HealthCertificateFileName", filename);
         }
 
         [Then("the Veterinary Health Certificate {string} {string} is uploaded successfully")]
@@ -110,7 +111,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             var filename = name + format;
             accompanyingDocumentsPage?.AddAccompanyingDocument(filename);
-            _scenarioContext["LatestHealthCertificateDocumentName"] = filename;
+            _scenarioContext.AddOrUpdate("LatestHealthCertificateDocumentName",filename);
         }
 
         [Then("the Latest Health Certificate document {string} {string} is uploaded successfully")]
@@ -121,7 +122,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             //The date selected from date picker gets populated only after the document is uploaded. Hence, we are adding date to scenario context after attaching the document.
             var dateOfIssue = latestHealthCertificatePage?.GetDocumentIssueDate();
-            _scenarioContext["LatestHealthCertificateDocumentDateOfIssue"] = dateOfIssue;
+            _scenarioContext.AddOrUpdate("LatestHealthCertificateDocumentDateOfIssue",dateOfIssue);
         }
     }
 }

@@ -106,6 +106,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
             reviewBorderNotificationPage?.ClickDocumentLink();
         }
 
+        [When("the user downloads the document attached in accompanying documents")]
+        public void WhenTheUserDownloadsTheDocumentAttachedInAccompanyingDocuments()
+        {
+            reviewBorderNotificationPage?.ClickAttachedDocumentLink();
+        }
+
         [When("the user clicks submit button")]
         [When("the user clicks on the Submit button")]
         public void WhenTheUserClicksSubmitButton()

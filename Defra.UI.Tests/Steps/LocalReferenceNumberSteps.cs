@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
+using Defra.UI.Tests.Tools;
 
 namespace Defra.UI.Tests.Steps.IPAFF
 {
@@ -31,7 +32,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserEntersALocalReferenceNumberAndClicksSaveAndContinue()
         {
             var customDeclarionRef = _scenarioContext.Get<string>("CustomsDeclarationReference");
-            _scenarioContext["BorderControlPostReference"] = customDeclarionRef;
+            _scenarioContext.AddOrUpdate("BorderControlPostReference", customDeclarionRef);
             localReferenceNumberPage?.EnterLocalReferenceNumber(customDeclarionRef);
             localReferenceNumberPage?.ClickSaveAndContinue();
         }
@@ -39,7 +40,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user clicks Save and continue without entering the local reference number data")]
         public void WhenTheUserClicksSaveAndContinueWithoutEnteringTheLocalReferenceNumberData()
         {
-            _scenarioContext.Add("BorderControlPostReference", "");
+            _scenarioContext.AddOrUpdate("BorderControlPostReference", "");
             localReferenceNumberPage?.ClickSaveAndContinue();
         }
     }

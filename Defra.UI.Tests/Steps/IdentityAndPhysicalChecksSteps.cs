@@ -1,4 +1,5 @@
 ﻿using Defra.UI.Tests.Pages.Interfaces;
+using Defra.UI.Tests.Tools;
 using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;
@@ -45,14 +46,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user selects {string} for physical check")]
         public void WhenTheUserSelectsForPhysicalCheck(string decision)
         {
-            _scenarioContext["PhysicalCheckDecision"] = decision;
+            _scenarioContext.AddOrUpdate("PhysicalCheckDecision", decision);
             identityAndPhysicalChecksPage?.SelectPhysicalCheck(decision);
         }
 
         [When("the user selects {string} for Identity check")]
         public void WhenTheUserSelectsForIdentityCheck(string decision)
         {
-            _scenarioContext.Add("IdentityCheckDecision", decision);
+            _scenarioContext.AddOrUpdate("IdentityCheckDecision", decision);
             identityAndPhysicalChecksPage?.SelectIdentityCheck(decision);
         }
 
@@ -61,7 +62,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             if (!string.IsNullOrEmpty(numberOfAnimals))
             {
-                _scenarioContext.Add("NumberOfAnimalsChecked", numberOfAnimals);
+                _scenarioContext.AddOrUpdate("NumberOfAnimalsChecked", numberOfAnimals);
             }
             identityAndPhysicalChecksPage?.EnterNumberOfAnimalsChecked(numberOfAnimals);
         }
@@ -71,7 +72,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             if (!string.IsNullOrEmpty(decision))
             {
-                _scenarioContext.Add("WelfareCheckDecision", decision);
+                _scenarioContext.AddOrUpdate("WelfareCheckDecision", decision);
             }
             identityAndPhysicalChecksPage?.SelectWelfareCheck(decision);
         }
@@ -81,11 +82,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             if (!string.IsNullOrEmpty(numberOfDeadAnimals))
             {
-                _scenarioContext.Add("NumberOfDeadAnimals", numberOfDeadAnimals);
+                _scenarioContext.AddOrUpdate("NumberOfDeadAnimals", numberOfDeadAnimals);
             }
             if (!string.IsNullOrEmpty(unit))
             {
-                _scenarioContext.Add("NumberOfDeadAnimalsUnit", unit);
+                _scenarioContext.AddOrUpdate("NumberOfDeadAnimalsUnit", unit);
             }
             identityAndPhysicalChecksPage?.EnterNumberOfDeadAnimals(numberOfDeadAnimals, unit);
         }
@@ -95,11 +96,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             if (!string.IsNullOrEmpty(numberOfUnfitAnimals))
             {
-                _scenarioContext.Add("NumberOfUnfitAnimals", numberOfUnfitAnimals);
+                _scenarioContext.AddOrUpdate("NumberOfUnfitAnimals", numberOfUnfitAnimals);
             }
             if (!string.IsNullOrEmpty(unit))
             {
-                _scenarioContext.Add("NumberOfUnfitAnimalsUnit", unit);
+                _scenarioContext.AddOrUpdate("NumberOfUnfitAnimalsUnit", unit);
             }
             identityAndPhysicalChecksPage?.EnterNumberOfUnfitAnimals(numberOfUnfitAnimals, unit);
         }
@@ -109,7 +110,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             if (!string.IsNullOrEmpty(numberOfBirths))
             {
-                _scenarioContext.Add("NumberOfBirthsOrAbortions", numberOfBirths);
+                _scenarioContext.AddOrUpdate("NumberOfBirthsOrAbortions", numberOfBirths);
             }
             identityAndPhysicalChecksPage?.EnterNumberOfBirthsOrAbortions(numberOfBirths);
         }

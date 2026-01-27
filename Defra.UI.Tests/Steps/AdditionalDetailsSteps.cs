@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
+using Defra.UI.Tests.Tools;
 
 
 namespace Defra.UI.Tests.Steps.IPAFF
@@ -38,14 +39,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserSelectsAnyRadioButtonOnTheAdditionalDetailsPage(string option)
         {
             additionalDetailsPage?.ClickImportingProduct(option);
-            _scenarioContext["Temperature"] = option;
+            _scenarioContext.AddOrUpdate("Temperature", option);
         }
 
         [When("the user selects {string} radio button under Commodity intended for on the Additional details page")]
         public void WhenTheUserSelectsRadioButtonUnderCommodityIntendedForOnTheAdditionalDetailsPage(string commIntendedForOption)
         {
             Assert.True(additionalDetailsPage?.SelectCommodityIntendedForRadio(commIntendedForOption), "Commodity intended for radio is not selected on the Additional details page");
-            _scenarioContext.Add("CommodityIntendedFor", commIntendedForOption);
+            _scenarioContext.AddOrUpdate("CommodityIntendedFor", commIntendedForOption);
         }
 
         [When("the user changes What are the animals certified for? to {string}")]
@@ -53,14 +54,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserSelectsForWhatAreTheAnimalsCertifiedFor(string certificationOption)
         {
             additionalDetailsPage?.SelectAnimalCertification(certificationOption);
-            _scenarioContext["CertificationOption"] = certificationOption;  
+            _scenarioContext.AddOrUpdate("CertificationOption", certificationOption);
         }
 
         [When("the user selects {string} for Does the consignment contain any unweaned animals?")]
         public void WhenTheUserSelectsForDoesTheConsignmentContainAnyUnweanedAnimals(string unweanedAnimalsOption)
         {
             additionalDetailsPage?.SelectUnweanedAnimalsOption(unweanedAnimalsOption);
-            _scenarioContext.Add("UnweanedAnimalsOption", unweanedAnimalsOption);
+            _scenarioContext.AddOrUpdate("UnweanedAnimalsOption", unweanedAnimalsOption);
         }
 
         [When(@"the user clicks on Save and review")]

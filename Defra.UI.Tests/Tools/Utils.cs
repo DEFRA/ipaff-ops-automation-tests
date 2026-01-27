@@ -198,6 +198,28 @@ namespace Defra.UI.Tests.Tools
             }
         }
 
+        public static void AddOrUpdate(this ScenarioContext scenarioContext, string key, object value)
+        {
+            if (scenarioContext.ContainsKey(key))
+            {
+                scenarioContext[key] = value;
+            }
+            else
+            {
+                scenarioContext.Add(key, value);
+            }
+        }
+
+        public static T GetFromContext<T>(this ScenarioContext context, string key, T defaultValue = default!)
+        {
+            if (context.ContainsKey(key))
+            {
+                return context.Get<T>(key);
+            }
+
+            return defaultValue;
+        }
+
         #endregion
 
         #region Operator Details Generation

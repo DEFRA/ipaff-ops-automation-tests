@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
+using Defra.UI.Tests.Tools;
 
 
 namespace Defra.UI.Tests.Steps.IPAFF
@@ -29,7 +30,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user selects a consignee {string} with a UK country")]
         public void WhenTheUserSelectsAConsigneeWithAUKCountry(string consigneeName)
         {
-            _scenarioContext["ConsigneeDetails"] = searchExistingConsigneePage?.GetSelectedConsignee(consigneeName);
+            _scenarioContext.AddOrUpdate("ConsigneeDetails",searchExistingConsigneePage?.GetSelectedConsignee(consigneeName));
             searchExistingConsigneePage?.ClickSelect(consigneeName);
         }
 
@@ -40,10 +41,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var consigneeAddress = searchExistingConsigneePage?.GetSelectedConsigneeAddress(consigneeName);
             var consigneeCountry = searchExistingConsigneePage?.GetSelectedConsigneeCountry(consigneeName);
 
-            _scenarioContext.Add("ConsigneeName", selectedConsigneeName);
-            _scenarioContext.Add("ConsigneeAddress", consigneeAddress);
-            _scenarioContext.Add("ConsigneeCountry", consigneeCountry);
-            _scenarioContext["ConsigneeDetails"] = searchExistingConsigneePage?.GetSelectedConsignee(consigneeName);
+            _scenarioContext.AddOrUpdate("ConsigneeName", selectedConsigneeName);
+            _scenarioContext.AddOrUpdate("ConsigneeAddress", consigneeAddress);
+            _scenarioContext.AddOrUpdate("ConsigneeCountry", consigneeCountry);
+            _scenarioContext.AddOrUpdate("ConsigneeDetails",searchExistingConsigneePage?.GetSelectedConsignee(consigneeName));
 
             searchExistingConsigneePage?.ClickSelect(consigneeName);
         }
