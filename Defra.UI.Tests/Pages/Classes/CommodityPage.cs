@@ -38,7 +38,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement addCommodityLink => _driver.WaitForElement(By.Id("add-commodity-desktop"));
         private IWebElement txtTotalGrossWeight => _driver.FindElement(By.Id("gross-weight-desktop"));
         private IWebElement txtSubtotalNetWeight => _driver.FindElement(By.XPath("//*[@class='govuk-table species-table-cheda']/tfoot//td[2]"));
+        private List<IWebElement> txtSubtotalsNetWeight => _driver.WaitForElements(By.XPath("//*[@class='govuk-table species-table-cheda']/tfoot//td[2]")).ToList();
         private IWebElement txtSubtotalPackages => _driver.FindElement(By.XPath("//*[@class='govuk-table species-table-cheda']/tfoot//td[3]"));
+        private List<IWebElement> txtSubtotalsPackages => _driver.FindElements(By.XPath("//*[@class='govuk-table species-table-cheda']/tfoot//td[3]")).ToList();
         private IWebElement txtTotalNetWeight => _driver.FindElement(By.XPath("//*[@id='commodity-details-page']//form[2]//*[normalize-space()='Net weight (kg/units)']/following-sibling::dt"));
         private IWebElement txtTotalPackages => _driver.FindElement(By.XPath("//*[@id='commodity-details-page']//form[2]//*[normalize-space()='Number of packages']/following-sibling::dt"));
         private IWebElement btnSaveAndContinue => _driver.WaitForElement(By.Id("button-save-and-continue-desktop"));
@@ -120,21 +122,21 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void AddNetWeightForCommodityCode(string netWeight, string commodityCode)
         {
-            var netWeightSelector = "//input[@id='" + commodityCode + "-.net-weight-desktop']";
+            var netWeightSelector = "//input[starts-with(@id, '"+ commodityCode + "') and contains(@id, '.net-weight-desktop')]";
             var netWeightElement = _driver.FindElement(By.XPath(netWeightSelector));
             netWeightElement.SendKeys(netWeight);
         }
 
         public void AddNumOfPackagesForCommodityCode(string numOfPackages, string commodityCode)
         {
-            var numOfPackageSelector = "//input[@id='" + commodityCode + "-.num-packages-desktop']";
+            var numOfPackageSelector = "//input[starts-with(@id, '" + commodityCode + "') and contains(@id, '.num-packages-desktop')]";
             var numOfPackagesElement = _driver.FindElement(By.XPath(numOfPackageSelector));
             numOfPackagesElement.SendKeys(numOfPackages);
         }
 
         public void SelectPackageTypeForCommodityCode(string typeOfPackage, string commodityCode)
         {
-            var typeOfPackageSelector = "//select[@id='" + commodityCode + "-.package-type-desktop']";
+            var typeOfPackageSelector = "//select[starts-with(@id, '"+ commodityCode + "-') and contains(@id, '.package-type-desktop')]";
             var typeOfPackageSelectorFull = speciesTable.FindElement(By.XPath(typeOfPackageSelector));
             
             new SelectElement(typeOfPackageSelectorFull).SelectByText(typeOfPackage);
@@ -207,9 +209,19 @@ namespace Defra.UI.Tests.Pages.Classes
             return txtSubtotalNetWeight.Text.Trim();
         }
 
+        public string[] GetSubtotalsOfNetWeight()
+        {
+            return txtSubtotalsNetWeight.Select(element => element.Text).ToArray();
+        }
+
         public string GetSubtotalPackages()
         {
             return txtSubtotalPackages.Text.Trim();
+        }
+        
+        public string[] GetSubtotalsOfPackages()
+        {
+            return txtSubtotalsPackages.Select(element => element.Text).ToArray();
         }
 
         public string GetTotalNetWeight()
