@@ -49,8 +49,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
             ValidateIfExists("NumberOfAnimals", reviewPage?.GetNumberOfAnimals(), ref allDataMatches, mismatches);
             ValidateIfExists("NumberOfPackages", reviewPage?.GetNumberOfPackages(), ref allDataMatches, mismatches);
 
-            // Animal details
-            ValidateIfExists("CertificationOption", reviewPage?.GetCertificationOption(), ref allDataMatches, mismatches);
+            // Animal details - Use custom validation for CertificationOption
+            ValidateCertificationOption(reviewPage?.GetCertificationOption(), ref allDataMatches, mismatches);
             ValidateIfExists("EarTag", reviewPage?.GetEarTag(), ref allDataMatches, mismatches);
             ValidateIfExists("UnweanedAnimalsOption", reviewPage?.GetUnweanedAnimalsOption(), ref allDataMatches, mismatches);
             ValidateIfExists("HorseName", reviewPage?.GetHorseName(), ref allDataMatches, mismatches);
@@ -208,6 +208,65 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 }
             }
             Assert.True(allDataMatches, $"Review page data validation failed. Mismatches: {string.Join(", ", mismatches)}");
+        }
+
+        /// <summary>
+        /// Custom validation for Certification Option with special handling for abbreviated values
+        /// on the review page (e.g., "Breeding and/or production" displays as "Breeding")
+        /// </summary>
+        private void ValidateCertificationOption(string? reviewValue, ref bool allDataMatches, List<string> mismatches)
+        {
+            const string contextKey = "CertificationOption";
+
+            if (!_scenarioContext.ContainsKey(contextKey))
+            {
+                Console.WriteLine($"[REVIEW VALIDATION] ⊘ {contextKey}: Skipped (not in context)");
+                return;
+            }
+
+            var expectedValue = _scenarioContext.Get<string>(contextKey);
+            if (string.IsNullOrEmpty(expectedValue))
+            {
+                Console.WriteLine($"[REVIEW VALIDATION] ⊘ {contextKey}: Skipped (empty value in context)");
+                return;
+            }
+
+            var actualValue = reviewValue?.Trim();
+
+            // Define mapping for certification options that display differently on review page
+            var certificationMappings = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                { "Approved bodies", "Approved bodies" },
+                { "Breeding and/or production", "Breeding" },
+                { "Pets", "Pets" },
+                { "Registered equidae", "Registered" },
+                { "Slaughter", "Slaughter" },
+                { "Other", "Other" }
+            };
+
+            // Get the expected display value (handles the mapping)
+            var expectedDisplayValue = certificationMappings.ContainsKey(expectedValue)
+                ? certificationMappings[expectedValue]
+                : expectedValue;
+
+            var isMatch = expectedDisplayValue.Equals(actualValue, StringComparison.OrdinalIgnoreCase);
+
+            if (!isMatch)
+            {
+                allDataMatches = false;
+                mismatches.Add($"{contextKey}: Expected '{expectedValue}' (displays as '{expectedDisplayValue}'), Found '{actualValue}'");
+            }
+            else
+            {
+                if (expectedValue != expectedDisplayValue)
+                {
+                    Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedValue}' matches (displays as '{expectedDisplayValue}')");
+                }
+                else
+                {
+                    Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
+                }
+            }
         }
 
         private void ValidateIfExists(string contextKey, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
@@ -375,13 +434,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var contryFromWhereConsigned = _scenarioContext.Get<string>("ContryFromWhereConsigned");
             var consignmentConformToRegulatoryRequirements = _scenarioContext.Get<string>("ConsignmentConformToRegulatoryRequirements");
             var consignmentRefNum = _scenarioContext.Get<string>("ConsignmentReferenceNumber");
-            var mainReasonForImport = "For "+_scenarioContext.Get<string>("MainReasonForImport");
+            var mainReasonForImport = "For " + _scenarioContext.Get<string>("MainReasonForImport");
             var riskCategory = _scenarioContext.Get<string>("RiskCategory");
             if (_scenarioContext.TryGetValue("Purpose", out string purpose) &&
                 !string.IsNullOrWhiteSpace(purpose))
             {
                 Assert.AreEqual(purpose.Replace(" ", "").ToUpper(), summary?.Purpose.Replace(" ", "").ToUpper(), $"Purpose is not matching in {pageName} page!");
-            }         
+            }
             Assert.AreEqual(importType, summary?.ImportType, $"Import type is not matching in {pageName} page!");
             Assert.AreEqual(countryOfOrigin, summary?.CountryOfOrigin, $"Country of origin is not matching in {pageName} page!");
             Assert.AreEqual(contryFromWhereConsigned, summary?.ContryFromWhereConsigned, $"Country from where consigned is not matching in {pageName} page!");
@@ -411,12 +470,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var temperature = _scenarioContext.Get<string>("Temperature");
 
             Assert.AreEqual(commodityCode, summary?.CommodityCode, $"Commodity Code is not matching in {pageName} page!");
-            
-            foreach(var item in commodityCode.Where(c => c.StartsWith("160")))
+
+            foreach (var item in commodityCode.Where(c => c.StartsWith("160")))
             {
                 expectedList.AddRange(summary?.TypeOfCommodity1);
             }
-            if(commodityCode.Any(c => !c.StartsWith("160")))
+            if (commodityCode.Any(c => !c.StartsWith("160")))
             {
                 expectedList.AddRange(summary?.TypeOfCommodity);
             }
@@ -505,7 +564,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var isGVMS = _scenarioContext.Get<string>("IsGVMS");
             var consignmentContactAddress = _scenarioContext.Get<string>("ConsignmentContactAddress");
 
-            Assert.AreEqual(portOfEntry , reviewPage?.GetPortOfEntry(), $"Port of Entry is not matching in {pageName} page!");
+            Assert.AreEqual(portOfEntry, reviewPage?.GetPortOfEntry(), $"Port of Entry is not matching in {pageName} page!");
             Assert.AreEqual(meansOfTransport, reviewPage?.GetMeansOfTransport(), $"Means of Transport is not matching in {pageName} page!");
             Assert.AreEqual(transportId, reviewPage?.GetTransportId(), $"Transport Id is not matching in {pageName} page!");
             Assert.AreEqual(areContainers, reviewPage?.GetContainerUsage(), $"Containers is not matching in {pageName} page!");

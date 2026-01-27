@@ -99,5 +99,26 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var chedReference = _scenarioContext.Get<string>("ReplacementCHEDReference");
             inspectorImportNotificationsPage?.SearchForChed(chedReference);
         }
+
+        [Then("the notification should not be present in the inspector workflow")]
+        public void ThenTheNotificationShouldNotBePresentInTheInspectorWorkflow()
+        {
+            Assert.True(inspectorImportNotificationsPage?.VerifyNotificationIsNotPresent(),
+                "Expected no notifications to be found, but results were displayed");
+        }
+
+        [When("the user clicks into the notification")]
+        public void WhenTheUserClicksIntoTheNotification()
+        {
+            inspectorImportNotificationsPage?.ClickNotification();
+        }
+
+        [Then("the notification returned in the search has the status {string} on the Import notifications page")]
+        public void ThenTheNotificationReturnedInTheSearchHasTheStatusOnTheImportNotificationsPage(string expectedStatus)
+        {
+            var actualStatus = inspectorImportNotificationsPage?.GetNotificationStatus();
+            Assert.AreEqual(expectedStatus, actualStatus,
+                $"Expected notification status '{expectedStatus}' but found '{actualStatus}'");
+        }
     }
 }
