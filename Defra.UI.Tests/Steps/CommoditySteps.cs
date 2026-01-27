@@ -151,8 +151,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             commodityPage?.ClickUpdateTotal();
             Thread.Sleep(1000);
-            _scenarioContext["SubtotalNetWeight"] = commodityPage?.GetSubtotalNetWeight();
-            _scenarioContext["SubtotalPackages"] = commodityPage?.GetSubtotalPackages();
+            _scenarioContext["SubtotalNetWeight"] = commodityPage?.GetSubtotalsOfNetWeight();
+            _scenarioContext["SubtotalPackages"] = commodityPage?.GetSubtotalsOfPackages();
             _scenarioContext["TotalNetWeight"] = commodityPage?.GetTotalNetWeight();
             _scenarioContext["TotalPackages"] = commodityPage?.GetTotalPackages();
         }
