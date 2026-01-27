@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
+using Defra.UI.Tests.Pages.Classes;
 
 namespace Defra.UI.Tests.Steps.IPAFF
 {
@@ -48,6 +49,20 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void ThenTheUserRecordsTheDraftCHEDNumber()
         {
             _scenarioContext["DraftCHEDReference"] = contactAddressPage?.GetDraftCHEDRefNumber;
+        }
+
+        [Then("the user verifies and enters any missing data on the Contact address for consignment page")]
+        public void ThenTheUserVerifiesAndEntersAnyMissingDataOnTheContactAddressForConsignmentPage()
+        {
+            Assert.True(contactAddressPage?.IsContactAddressForConsignmentPageLoaded(), "Contact address for consignment page not loaded");
+
+            if (contactAddressPage.IsContactAddressRadioButtonSelected())
+                ThenTheUserSelectsAContactAddressForTheConsignment();
+            else
+            {
+                contactAddressPage?.SelectContactAddressRadio();
+                ThenTheUserSelectsAContactAddressForTheConsignment();
+            }
         }
     }
 }

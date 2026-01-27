@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
+using DocumentFormat.OpenXml.Drawing.Charts;
 
 
 namespace Defra.UI.Tests.Steps.IPAFF
@@ -167,21 +168,25 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserPopulatesNetWeightAsForTheAdditionalCommodity(string netWeight, string commodityCode)
         {
             commodityPage?.AddNetWeightForCommodityCode(netWeight, commodityCode);
-            _scenarioContext.Add("NetWeightSecondCommodity", netWeight);
+            //_scenarioContext.Add("NetWeightSecondCommodity", netWeight);
+            _scenarioContext["NetWeightSecondCommodity"] = netWeight;
         }
 
         [When("the user populates Number of packages as {string} for the second commodity {string}")]
         public void WhenTheUserPopulatesNumberOfPackagesAsForTheAdditionalCommodity(string numOfPackages, string commodityCode)
         {
             commodityPage?.AddNumOfPackagesForCommodityCode(numOfPackages, commodityCode);
-            _scenarioContext.Add("NumOfPackagesSecondCommodity", numOfPackages);
+            //_scenarioContext.Add("NumOfPackagesSecondCommodity", numOfPackages);
+            _scenarioContext["NumOfPackagesSecondCommodity"] = numOfPackages;
+
         }
 
         [When("the user selects type of package as {string} for the second commodity {string}")]
         public void WhenTheUserSelectsTypeOfPackageAsForTheAdditionalCommodity(string typeOfPackage, string commodityCode)
         {
             commodityPage?.SelectPackageTypeForCommodityCode(typeOfPackage, commodityCode);
-            _scenarioContext.Add("TypeOfPackageSecondCommodity", typeOfPackage);
+            //_scenarioContext.Add("TypeOfPackageSecondCommodity", typeOfPackage);
+            _scenarioContext["TypeOfPackageSecondCommodity"] = typeOfPackage;
         }
 
         [When("the user clicks the Update total button after adding all the commodities")]
@@ -189,8 +194,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             commodityPage?.ClickUpdateTotal();
             Thread.Sleep(2000);
-            _scenarioContext.Add("TotalNetWeight", commodityPage.GetTotalNetWeight());
-            _scenarioContext.Add("TotalPackages", commodityPage.GetTotalPackages());
+            //_scenarioContext.Add("TotalNetWeight", commodityPage.GetTotalNetWeight());
+            //_scenarioContext.Add("TotalPackages", commodityPage.GetTotalPackages());
+            _scenarioContext["TotalNetWeight"] = commodityPage.GetTotalNetWeight();
+            _scenarioContext["TotalPackages"] = commodityPage.GetTotalPackages();
         }
 
         [When("the total gross weight should be greater than the net weight {string}")]
@@ -232,7 +239,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             List<string> values = weight.Split(',').Select(x => x.Trim()).ToList();
             commodityPage?.EnterNetWeight(values);
-            _scenarioContext.Add("NetWeightFirstCommodity", weight);
+            //_scenarioContext.Add("NetWeightFirstCommodity", weight);
+            _scenarioContext["NetWeightFirstCommodity"] = weight;
         }
 
         [When("the user populates Number of packages as {string} for first commodity")]
@@ -240,14 +248,17 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             List<string> values = packages.Split(',').Select(x => x.Trim()).ToList();
             commodityPage?.EnterNumberOfPackages(values);
-            _scenarioContext.Add("NumberOfPackagesFirstCommodity", packages);
+            //_scenarioContext.Add("NumberOfPackagesFirstCommodity", packages);
+            _scenarioContext["NumberOfPackagesFirstCommodity"] = packages;
         }
 
         [When("the user selects type of package as {string} for the commodity {string} for first commodity")]
         public void WhenTheUserSelectsTypeOfPackageAsForTheCommodityForFirstCommodity(string typeOfPackage, string commodityCode)
         {
             commodityPage?.SelectPackageTypeForCommodityCode(typeOfPackage, commodityCode);
-            _scenarioContext.Add("TypeOfPackageFirstCommodity", typeOfPackage);
+            //_scenarioContext.Add("TypeOfPackageFirstCommodity", typeOfPackage);
+            _scenarioContext["TypeOfPackageFirstCommodity"] = typeOfPackage;
+
         }
 
         [When("the user clicks the Add commodity link")]
@@ -299,13 +310,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void ThenTheUserVerifiesAndEntersAnyMissingDataOnTheCommodityPage()
         {
             Assert.False(commodityPage?.GetAddedCommoditiesCount == 0, "No commodities were added on the commodity page");
-            /*WhenTheUserPopulatesNetWeightAsForFirstCommodity("");
-            WhenTheUserPopulatesNumberOfPackagesAsForFirstCommodity("");
-            WhenTheUserSelectsTypeOfPackageAsForTheCommodityForFirstCommodity("");*/
 
-            WhenTheUserPopulatesNetWeightAsForTheAdditionalCommodity("19000", "12024200");
+            WhenTheUserPopulatesNetWeightAsForFirstCommodity("19000");
+            WhenTheUserPopulatesNumberOfPackagesAsForFirstCommodity("1");
+            WhenTheUserSelectsTypeOfPackageAsForTheCommodityForFirstCommodity("Case", "12024200");
+
+            /*WhenTheUserPopulatesNetWeightAsForTheAdditionalCommodity("19000", "12024200");
             WhenTheUserPopulatesNumberOfPackagesAsForTheAdditionalCommodity("1", "12024200");
-            WhenTheUserSelectsTypeOfPackageAsForTheAdditionalCommodity("Case", "12024200");
+            WhenTheUserSelectsTypeOfPackageAsForTheAdditionalCommodity("Case", "12024200");*/
 
             WhenTheUserPopulatesNetWeightAsForTheAdditionalCommodity("18000", "100610");
             WhenTheUserPopulatesNumberOfPackagesAsForTheAdditionalCommodity("1", "100610");
@@ -313,6 +325,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             WhenTheUserClicksTheUpdateTotalButtonAfterAddingAllTheCommodities();
             ThenTheTotalGrossWeightShouldBeGreaterThanTheNetWeight("40000");
+        }
+
+        [Then("the user clicks the Save and return to hub button on the Commodity page")]
+        public void ThenTheUserClicksTheSaveAndReturnToHubButtonOnTheCommodityPage()
+        {
+            commodityPage?.ClickSaveAndReturnToHubButton();
         }
     }
 }

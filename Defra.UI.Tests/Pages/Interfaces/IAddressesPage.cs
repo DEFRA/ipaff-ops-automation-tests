@@ -25,5 +25,6 @@
         int GetImporterRowsCount();
         int GetDestinationRowsCount();
         string GetSelectedConsignor();
+        string GetSelectedConsignee();
     }
 }

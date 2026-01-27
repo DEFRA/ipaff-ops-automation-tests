@@ -170,5 +170,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
             portOfEntryPage?.TickOfficialSealCheckbox();
             _scenarioContext.Add("OfficialSealAffixed", "Yes");
         }
+
+        [Then("the user verifies and enters any missing data on the Transport to the port of entry page")]
+        public void ThenTheUserVerifiesAndEntersAnyMissingDataOnTheTransportToThePortOfEntryPage()
+        {
+            Assert.True(portOfEntryPage?.IsPageLoaded(), "Transport Transport to the port of entry page not loaded");
+            if (portOfEntryPage.VerifyPortOfEntryIfNotAlreadyPopulated())
+                WhenTheUserPopulatesTheTransportDetails("LONDON GATEWAY (GBLGP)", "No", "Road vehicle", "123456", "Doc1234");
+            else
+                Assert.Fail("Port of entry data should not be prefilled");
+        }
     }
 }

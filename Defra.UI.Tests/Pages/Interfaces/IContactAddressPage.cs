@@ -6,6 +6,8 @@
         bool IsContactAddressForConsignmentPageLoaded();
         bool IsPageLoadedWithoutSecondaryTitle();
         string GetSelectedContactAddress();
+        void SelectContactAddressRadio();
+        bool IsContactAddressRadioButtonSelected();
         string GetDraftCHEDRefNumber { get; }
     }
 }

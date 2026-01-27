@@ -1,4 +1,5 @@
-﻿using Defra.UI.Tests.Pages.Interfaces;
+﻿using System;
+using Defra.UI.Tests.Pages.Interfaces;
 using Faker;
 using NUnit.Framework;
 using Reqnroll;
@@ -119,6 +120,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 _scenarioContext["ContryFromWhereConsigned"] = countryFromWhereConsigned;
             else
                 WhenTheUserChangesTheConsignedCountryTo("Australia");
+
+            if(originOfImportPage.IsConsignmentRefNumAdded)
+                _scenarioContext["ConsignmentReferenceNumber"] = originOfImportPage?.GetConsignmentRefNum;
+            else
+            {
+                originOfImportPage?.EnterConsignmentRefNum("12345");
+                _scenarioContext["ConsignmentReferenceNumber"] = "12345";
+            }
         }
     }
 }

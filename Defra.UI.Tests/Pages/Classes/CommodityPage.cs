@@ -42,6 +42,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtTotalNetWeight => _driver.FindElement(By.XPath("//*[@id='commodity-details-page']//form[2]//*[normalize-space()='Net weight (kg/units)']/following-sibling::dt"));
         private IWebElement txtTotalPackages => _driver.FindElement(By.XPath("//*[@id='commodity-details-page']//form[2]//*[normalize-space()='Number of packages']/following-sibling::dt"));
         private IWebElement btnSaveAndContinue => _driver.WaitForElement(By.Id("button-save-and-continue-desktop"));
+        private IWebElement btnSaveAndReturnToHub => _driver.WaitForElement(By.Id("save-and-return-button-desktop"));
         private List<IWebElement> addedCommoditiesList => _driver.FindElements(By.XPath("//table[@id='commodity-table-desktop']/tbody/tr")).ToList();
         #endregion
 
@@ -155,6 +156,8 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             btnSaveAndContinue.Click();
         }
+
+        public void ClickSaveAndReturnToHubButton() => btnSaveAndReturnToHub.Click();
 
         public void ClickBrowserBackButton()
         {

@@ -69,6 +69,10 @@ namespace Defra.UI.Tests.Pages.Classes
                 rdoNoAfterBCP.Click();
         }
 
+        public bool IsConsignmentRefNumAdded => !string.IsNullOrEmpty(txtReferenceNumber.GetAttribute("value"));
+
+        public string GetConsignmentRefNum => txtReferenceNumber?.GetAttribute("value").Trim() ?? string.Empty;
+
         public void EnterConsignmentRefNum(string refNum)
         {
             txtReferenceNumber.SendKeys(refNum);

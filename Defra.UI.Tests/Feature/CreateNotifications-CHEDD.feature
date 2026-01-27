@@ -3,7 +3,7 @@ Feature: CreateNotification CHEDD
 
 Create a notification for CHEDD type
 
-Scenario: User creates and submits a B2C consignment notification - CHED D
+Scenario: User creates and submits a B2C consignment notification - CHEDD
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
@@ -741,13 +741,10 @@ Scenario:SPS-9111
 	Then the draft notification should be present in the list
 	When the user clicks the Amend link
 	Then the Notification Hub page should be displayed
-	#Add step to validate data (line 33)
-	#Also check with Simon on what to validate on the Notification Hub page
 	When the user clicks Contact address for consignment link
 	Then the Contacts - Contact address for consignment page should be displayed
 	When the user clicks Save and continue
 	Then the Review your notification page should be displayed
-	#Added step 35 - Check
 	And the data presented for review matches the data entered into the notification for CHED D	
 	When the user clicks Save and continue
 	Then the Declaration page should be displayed
@@ -755,12 +752,11 @@ Scenario:SPS-9111
 	Then the Confirmation page should be displayed with the initial risk assessment
 	When the user records the IPAFFS User details and CHED Reference
 	Then the details should be recorded
-	When the user clicks return to you dashboard link
+	When the user clicks return to your dashboard link
 	Then the dashboard page should be displayed
 	When user searches for the import notification
 	Then the notification should be present in the list
 	When the user clicks the Show notification link
-	#Add steps 41,42,43,44,45 to 54
 	Then the certificate should be displayed in a new browser tab
 	When the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
@@ -777,13 +773,15 @@ Scenario:SPS-9111
 	And the user clicks the Save and return to hub button
 	When the user clicks on 'Commodity' link
 	Then the user verifies and enters any missing data on the Commodity page
-	And the user clicks the Save and return to hub button
+	And the user clicks the Save and return to hub button on the Commodity page
 	When the user clicks on 'Additional details' link
 	Then the user verifies and enters any missing data on the Additional details page
 	And the user clicks the Save and return to hub button
 	When the user clicks on 'Accompanying documents' link
-	#Then the user verifies and enters any missing data on the Main reason for importing the consignment page
-	#And the user uploads the document 'IPAFFS Test Document' in the format '.docx'
+	When the user selects Document type "Air waybill"
+	And the user enters Document reference "INV12345"
+	And the user selects a future date from the date picker
+	And the user clicks on Add attachment link
 	And the user uploads the document 'IPAFFS Test Document' in the format '.docx' as no document is attached by the copy
 	Then the document 'IPAFFS Test Document' '.docx' is uploaded successfully
 	And the user clicks the Save and return to hub button
@@ -799,16 +797,37 @@ Scenario:SPS-9111
 	When the user clicks on 'Contact details' link
 	Then the user verifies and enters any missing data on the Contact details page
 	And the user clicks the Save and return to hub button
-	#Check if needed as this is optional field. Test case says required fields.
-	When the user clicks on 'Nominated contacts (optional)' link
-	Then the user verifies and enters any missing data on the Main reason for importing the consignment page
-	And the user clicks the Save and return to hub button
 	When the user clicks on 'Contact address for consignment' link
 	Then the user verifies and enters any missing data on the Contact address for consignment page
 	And the user clicks the Save and return to hub button
-
+	When the user clicks on 'Review and submit' link
+	Then the Review your notification page should be displayed
+	And the data presented for review matches the data entered into the notification for CHED D
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	When the user records the IPAFFS User details and CHED Reference
+	When the user clicks Return to your dashboard
+	Then the dashboard page should be displayed
+	When user searches for the import notification
+	Then the notification should be present in the list
+	When the user clicks Show notification
+	Then the certificate should be displayed in a new browser tab
+	When the user checks that the data in the certificate matches the data entered into the notification
+	And the user closes the PDF browser tab
+	Then the browser tab is closed
+	When the user logs out of IPAFFS Part 1
+	Then the user should be logged out successfully
+	When I navigate to the IPAFF Inspector application
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF Gateway Inspector credentials and signin
+	Then the user should be logged into Import notifications page
 	When the user searches for the newly created notification on the Import notifications page
-	Then the user clicks the notificaiton found with status "NEW"
+	Then the user clicks the notification found with status "NEW"
 	Then the Decision Hub page should be displayed
 	When the user clicks Save and set as in progress
 	Then the notification status should change from "NEW" to "IN PROGRESS"
@@ -831,3 +850,33 @@ Scenario:SPS-9111
 	Then the Decision page should be displayed
 	And the main radio option 'Internal market' and the sub radio option 'Human consumption' are selected by default
 	And the user clicks Save and continue
+	Then the Review outcome decision page should be displayed
+	And the details reflect the information added for CHED D
+	When the user selects the radio button to declare that the checks have been carried out in accordance with EU law
+	When the user populates the Date and time of checks
+	And user clicks Submit decision
+	Then the Your checks have been submitted page should be displayed
+	When the user clicks View or print CHED
+	Then the certificate should be displayed in a new browser tab
+	When the user checks that the data in the certificate matches the data entered into the notification
+	And the user closes the PDF browser tab
+	Then the browser tab is closed
+	When the user logs out of IPAFFS Part 2
+	Then the user should be logged out successfully
+	When the user navigate to the BTMS application
+	Then I click Sign in button
+	And I should see type of Gateway login page
+	And I have selected "Government Gateway" as login type
+	And I click Sign in button
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the BTMS Sign in using Government Gateway page
+	When I have provided the BTMS credentials and signin
+	Then the BTMS search screen should be displayed
+	When the user searches for the CHED created earlier
+	Then the BTMS search result screen should be displayed
+	And the user validates the commodity code "12024200", description "Shelled, whether or not broken", quantity "19000", authority "FNAO" and decision "Acceptable for Internal Market" for commodity "1" after the decision is given
+	And the user validates the commodity code "100610", description "Rice in the husk (paddy or rough)", quantity "18000", authority "FNAO" and decision "Acceptable for Internal Market" for commodity "2" after the decision is given	
+	When the user logs out of BTMS
+	Then the user should be logged out successfully

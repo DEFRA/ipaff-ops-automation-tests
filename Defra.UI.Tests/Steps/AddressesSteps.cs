@@ -182,14 +182,22 @@ namespace Defra.UI.Tests.Steps.IPAFF
             if (addressesPage?.GetConsignorRowsCount() == 1)
                 _scenarioContext["ConsignorDetails"] = addressesPage.GetSelectedConsignor();
             else
-            {
-                WhenTheUserClicksAddAConsignorOrExporter();
-                Assert.True(searchExistingConsignorPage?.IsPageLoaded(), "Traders Search for an existing consignor or exporter page not loaded");
-                _scenarioContext["ConsignorDetails"] = searchExistingConsignorPage?.GetSelectedConsignor("ABC");
-                searchExistingConsignorPage?.ClickSelect("ABC");
-                Assert.True(addressesPage?.VerifySelectedConsignor("ABC"));
+                Assert.Fail($"Unexpected consignor rows count: {addressesPage?.GetConsignorRowsCount()}. Add consignor flow logic not implemented.");
 
-            }
+            if (addressesPage?.GetConsigneeRowsCount() == 1)
+                _scenarioContext["ConsigneeDetails"] = addressesPage.GetSelectedConsignee();
+            else
+                Assert.Fail($"Unexpected consignee rows count: {addressesPage?.GetConsigneeRowsCount()}. Add consignee flow logic not implemented.");
+
+            if (addressesPage?.GetImporterRowsCount() == 1)
+                _scenarioContext["ImporterDetails"] = addressesPage.GetSelectedImporter();
+            else
+                Assert.Fail($"Unexpected importer rows count: {addressesPage?.GetConsigneeRowsCount()}. Add importer flow logic not implemented.");
+
+            if (addressesPage?.GetDestinationRowsCount() == 1)
+                _scenarioContext["PlaceOfDestinationDetails"] = addressesPage.GetSelectedPlaceOfDestination();
+            else
+                Assert.Fail($"Unexpected place of destination rows count: {addressesPage?.GetConsigneeRowsCount()}. Add place of destination flow logic not implemented.");
         }
 
         [Then("the chosen consignor from the address book should be displayed on the Addresses page {string}")]

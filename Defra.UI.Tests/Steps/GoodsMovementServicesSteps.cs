@@ -37,6 +37,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             goodsMovementServicesPage?.GVMSToMoveGoods(option);
             _scenarioContext["IsGVMS"] = option;
-        }       
+        }
+
+        [Then("the user verifies and enters any missing data on the Goods movement services page")]
+        public void ThenTheUserVerifiesAndEntersAnyMissingDataOnTheGoodsMovementServicesPage()
+        {
+            WhenTheUserSelectsForAreYouUsingTheCommonTransitConventionCTC("No");
+            WhenTheUserSelectsForWillTheTransportUseTheGoodsVehicleMovementServiceGVMS("No");
+        }
     }
 }
