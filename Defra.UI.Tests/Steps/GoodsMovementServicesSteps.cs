@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
+using Defra.UI.Tests.Tools;
 
 namespace Defra.UI.Tests.Steps.IPAFF
 {
@@ -24,7 +25,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             // Remove "Transport After BCP" keys since GVMS page means no airplane transport
             // These keys would have been set in a previous amendment and are no longer valid
-            RemoveTransportAfterBCPKeys();
+            _scenarioContext.RemoveContextKeys(
+                "MeansOfTransportAfterBCP",
+                "TransportIdentificationAfterBCP",
+                "TransportDocumentReferenceAfterBCP",
+                "DepartureDateFromBCP",
+                "DepartureTimeFromBCP"
+            );
 
             Assert.True(goodsMovementServicesPage?.IsPageLoaded(), "Transport Goods movement services page not loaded");
         }
@@ -41,30 +48,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             goodsMovementServicesPage?.GVMSToMoveGoods(option);
             _scenarioContext["IsGVMS"] = option;
-        }
-
-        /// <summary>
-        /// Removes Transport After BCP context keys when GVMS page is displayed
-        /// (indicating non-airplane transport mode)
-        /// </summary>
-        private void RemoveTransportAfterBCPKeys()
-        {
-            var keysToRemove = new[]
-            {
-                "MeansOfTransportAfterBCP",
-                "TransportIdentificationAfterBCP",
-                "TransportDocumentReferenceAfterBCP",
-                "DepartureDateFromBCP",
-                "DepartureTimeFromBCP"
-            };
-
-            foreach (var key in keysToRemove)
-            {
-                if (_scenarioContext.ContainsKey(key))
-                {
-                    _scenarioContext.Remove(key);
-                }
-            }
         }
     }
 }
