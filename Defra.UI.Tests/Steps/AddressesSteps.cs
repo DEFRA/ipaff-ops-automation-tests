@@ -5,7 +5,6 @@ using Defra.UI.Tests.Pages.Interfaces;
 using AventStack.ExtentReports.Gherkin.Model;
 using Defra.UI.Tests.Tools;
 
-
 namespace Defra.UI.Tests.Steps.IPAFF
 {
     [Binding]
@@ -15,7 +14,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
         private readonly ScenarioContext _scenarioContext;
 
         private IAddressesPage? addressesPage => _objectContainer.IsRegistered<IAddressesPage>() ? _objectContainer.Resolve<IAddressesPage>() : null;
-
 
         public AddressesSteps(ScenarioContext context, IObjectContainer container)
         {
@@ -35,7 +33,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             addressesPage?.ClickAddConsignor();
         }
 
-
         [Then("the chosen consignor or exporter should be displayed")]
         public void ThenTheChosenConsignorOrExporterShouldBeDisplayed()
         {
@@ -52,7 +49,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             Assert.True(addressesPage?.VerifySelectedConsignor(consignor));
         }
-
 
         [When("the user clicks Add a consignee")]
         public void WhenTheUserClicksAddAConsignee()
@@ -178,6 +174,30 @@ namespace Defra.UI.Tests.Steps.IPAFF
             // Verify place of destination shows same details as consignee
             Assert.True(addressesPage?.VerifySelectedDestination(consigneeName, consigneeAddress, consigneeCountry),
                         "Place of destination details do not match consignee");
+        }
+
+        [Then("the user verifies and enters any missing data on the Addresses page")]
+        public void ThenTheUserVerifiesAndEntersAnyMissingDataOnTheAddressesPage()
+        {
+            if (addressesPage?.GetConsignorRowsCount() == 1)
+                _scenarioContext["ConsignorDetails"] = addressesPage.GetSelectedConsignor();
+            else
+                Assert.Fail($"Unexpected consignor rows count: {addressesPage?.GetConsignorRowsCount()}. Add consignor flow logic not implemented.");
+
+            if (addressesPage?.GetConsigneeRowsCount() == 1)
+                _scenarioContext["ConsigneeDetails"] = addressesPage.GetSelectedConsignee();
+            else
+                Assert.Fail($"Unexpected consignee rows count: {addressesPage?.GetConsigneeRowsCount()}. Add consignee flow logic not implemented.");
+
+            if (addressesPage?.GetImporterRowsCount() == 1)
+                _scenarioContext["ImporterDetails"] = addressesPage.GetSelectedImporter();
+            else
+                Assert.Fail($"Unexpected importer rows count: {addressesPage?.GetImporterRowsCount()}. Add importer flow logic not implemented.");
+
+            if (addressesPage?.GetDestinationRowsCount() == 1)
+                _scenarioContext["PlaceOfDestinationDetails"] = addressesPage.GetSelectedPlaceOfDestination();
+            else
+                Assert.Fail($"Unexpected place of destination rows count: {addressesPage?.GetDestinationRowsCount()}. Add place of destination flow logic not implemented.");
         }
 
         [Then("the chosen consignor from the address book should be displayed on the Addresses page {string}")]

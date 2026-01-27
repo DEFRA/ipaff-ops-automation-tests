@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
+using Defra.UI.Tests.Pages.Classes;
 using Defra.UI.Tests.Tools;
 
 
@@ -75,6 +76,22 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             List<string> commOptionsListExpected = new List<string>() { radioOne, radioTwo, radioThree, radioFour };
             Assert.True(additionalDetailsPage?.AreAllCommIntendedForRadioOptionsDisplayed(commOptionsListExpected), "Not all Commodity intended for radio options are displayed on the Additional details page");
+        }
+
+        [Then("the user verifies and enters any missing data on the Additional details page")]
+        public void ThenTheUserVerifiesAndEntersAnyMissingDataOnTheAdditionalDetailsPage()
+         {
+            var commIntendedForRadio = additionalDetailsPage?.GetCommIntendedForRadioLabelText;
+            if (!string.IsNullOrEmpty(commIntendedForRadio))
+                _scenarioContext["CommodityIntendedFor"] = commIntendedForRadio;
+            else
+                WhenTheUserSelectsRadioButtonUnderCommodityIntendedForOnTheAdditionalDetailsPage("Human consumption");
+
+            var temperatureRadio = additionalDetailsPage?.GetTemperatureRadioLabelText;
+            if (!string.IsNullOrEmpty(temperatureRadio))
+                _scenarioContext["Temperature"] = temperatureRadio;
+            else
+                WhenTheUserSelectsAnyRadioButtonOnTheAdditionalDetailsPage("Chilled");
         }
     }
 }

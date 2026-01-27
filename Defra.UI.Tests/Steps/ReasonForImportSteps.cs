@@ -4,7 +4,6 @@ using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 
-
 namespace Defra.UI.Tests.Steps.IPAFF
 {
     [Binding]
@@ -182,6 +181,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             reasonForImportPage?.SelectDestinationCountryBasedOnContext(destinationCountry);
             _scenarioContext.AddOrUpdate("DestinationCountry", destinationCountry);
+        }
+
+        [Then("the user verifies and enters any missing data on the Main reason for importing the consignment page")]
+        public void ThenTheUserVerifiesAndEntersAnyMissingDataOnTheMainReasonForImportingTheConsignmentPage()
+        {
+            var reasonForImportRadio = reasonForImportPage?.GetReasonForImportRadioLabelText;
+            if (!string.IsNullOrEmpty(reasonForImportRadio))
+                _scenarioContext["IsRegionOfOriginCodeRequired"] = reasonForImportRadio;
+            else
+                WhenTheUserSelectsRadioOption("Internal market");
         }
     }
 }
