@@ -29,7 +29,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user searches {string} commodity code")]
         public void WhenTheUserSearchesCommodityCode(string code)
         {
-            var commodityCodes = _scenarioContext.GetFromContext<List<string>>("CommodityCode");
+            var commodityCodes = _scenarioContext.GetFromContext<List<string>>("CommodityCode", []);
             commodityCodes.Add(code);
 
             _scenarioContext["CommodityCode"] = commodityCodes;
@@ -39,7 +39,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the commodity details should be populated {string} {string}")]
         public void ThenTheCommodityDetailsShouldBePopulated(string code, string description)
         {
-            var commodityDescriptions = _scenarioContext.GetFromContext<List<string>>("CommodityDescription");
+            var commodityDescriptions = _scenarioContext.GetFromContext<List<string>>("CommodityDescription", []);
             commodityDescriptions.Add(description);
 
             _scenarioContext["CommodityDescription"] = commodityDescriptions;
@@ -49,7 +49,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user selects the type of commodity {string}")]
         public void WhenTheUserSelectsTheTypeOfCommodity(string type)
         {
-            var commoditytypes = _scenarioContext.GetFromContext<List<string>>("TypeOfCommodity");
+            var commoditytypes = _scenarioContext.GetFromContext<List<string>>("TypeOfCommodity", []);
             
             commoditytypes.Add(type);
             _scenarioContext["TypeOfCommodity"] = commoditytypes;
@@ -59,7 +59,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user selects species of commodity {string}")]
         public void WhenTheUserSelectsSpeciesOfCommodity(string species)
         {            
-            var speciesList = _scenarioContext.GetFromContext<List<string>>("Species");
+            var speciesList = _scenarioContext.GetFromContext<List<string>>("Species", []);
             speciesList.Add(species);
             _scenarioContext["Species"] = speciesList;
             commodityPage?.SelectCommoditySpecies(species);
