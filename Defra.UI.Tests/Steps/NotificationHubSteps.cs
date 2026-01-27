@@ -25,10 +25,23 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(notificationHubPage?.IsPageLoaded(), "Notification Hub page not loaded");
         }
 
+        [Then("the Notification Hub page of a new draft notification should be displayed")]
+        public void ThenTheNotificationHubPageOfANewDraftNotificationShouldBeDisplayed()
+        {
+            Assert.True(notificationHubPage?.IsPageLoaded(), "Notification Hub page not loaded");
+            Assert.True(notificationHubPage?.GetRefNumber.Contains("DRAFT.GB"), "The Notification page does not display the newly created draft application");
+        }
+
         [When("the user clicks the Commodity hyperlink")]
         public void WhenTheUserClicksTheCommodityHyperlink()
         {
             notificationHubPage?.ClickCommodityLink();
+        }
+
+        [When("the user clicks Contact address for consignment link")]
+        public void WhenTheUserClicksContactAddressForConsignmentLink()
+        {
+            notificationHubPage?.ClickContactAddressForConsignmentLink();
         }
 
         [When("the user clicks the Countries the consignment will travel through hyperlink")]
