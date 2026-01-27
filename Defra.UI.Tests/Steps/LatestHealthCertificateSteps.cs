@@ -54,7 +54,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             latestHealthCertificatePage?.EnterDateOfIssue(day, month, year);
             var dateofIssue = day + " " + month + " " + year;
-            _scenarioContext.AddOrUpdate("HealthCertificateDateOfIssue",dateofIssue);
+            _scenarioContext["HealthCertificateDateOfIssue"] = dateofIssue;
         }
 
         [When("the user clicks on Add attachment link on the Latest Health Certificate page")]
@@ -68,7 +68,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             var filename = name + format;
             latestHealthCertificatePage?.AddHealthCertificate(filename);
-            _scenarioContext.AddOrUpdate("HealthCertificateFileName", filename);
+            _scenarioContext["HealthCertificateFileName"] = filename;
         }
 
         [Then("the Veterinary Health Certificate {string} {string} is uploaded successfully")]
@@ -111,7 +111,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             var filename = name + format;
             accompanyingDocumentsPage?.AddAccompanyingDocument(filename);
-            _scenarioContext.AddOrUpdate("LatestHealthCertificateDocumentName",filename);
+            _scenarioContext["LatestHealthCertificateDocumentName"] = filename;
         }
 
         [Then("the Latest Health Certificate document {string} {string} is uploaded successfully")]
@@ -122,7 +122,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             //The date selected from date picker gets populated only after the document is uploaded. Hence, we are adding date to scenario context after attaching the document.
             var dateOfIssue = latestHealthCertificatePage?.GetDocumentIssueDate();
-            _scenarioContext.AddOrUpdate("LatestHealthCertificateDocumentDateOfIssue",dateOfIssue);
+            _scenarioContext["LatestHealthCertificateDocumentDateOfIssue"] = dateOfIssue;
         }
     }
 }

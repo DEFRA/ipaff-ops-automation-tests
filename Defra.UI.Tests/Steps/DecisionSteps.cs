@@ -59,7 +59,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserSelectsInDecisionPage(string subOption, string decision)
         {
             decisionPage?.SelectDecision(subOption, decision);
-            _scenarioContext.AddOrUpdate("RefusalDecision", subOption);
+            _scenarioContext["RefusalDecision"] = subOption;
         }
 
         [When("the user provides the reason as {string} for destruction option in decision page")]

@@ -39,11 +39,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var transporterApprovalNumber = searchExistingTranspoterPage?.GetSelectedTransporterApprovalNumber();
             var transporterType = searchExistingTranspoterPage?.GetSelectedTransporterType();
 
-            _scenarioContext.AddOrUpdate("TransporterName", transporterName);
-            _scenarioContext.AddOrUpdate("TransporterAddress", transporterAddress);
-            _scenarioContext.AddOrUpdate("TransporterCountry", transporterCountry);
-            _scenarioContext.AddOrUpdate("TransporterApprovalNumber", transporterApprovalNumber);
-            _scenarioContext.AddOrUpdate("TransporterType", transporterType);
+            _scenarioContext["TransporterName"] = transporterName;
+            _scenarioContext["TransporterAddress"] = transporterAddress;
+            _scenarioContext["TransporterCountry"] = transporterCountry;
+            _scenarioContext["TransporterApprovalNumber"] = transporterApprovalNumber;
+            _scenarioContext["TransporterType"] = transporterType;
 
             searchExistingTranspoterPage?.ClickSelect();
         }
@@ -76,8 +76,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var selectedType = searchExistingTranspoterPage?.GetSelectedTransporterType(transporterName);
 
             // Update scenario context with the selected transporter details for validation
-            _scenarioContext.AddOrUpdate("TransporterApprovalNumber", selectedApprovalNumber);
-            _scenarioContext.AddOrUpdate("TransporterType",selectedType);
+            _scenarioContext["TransporterApprovalNumber"] = selectedApprovalNumber;
+            _scenarioContext["TransporterType"] = selectedType;
 
             // Click Select button
             searchExistingTranspoterPage?.ClickSelectForTransporter(transporterName);

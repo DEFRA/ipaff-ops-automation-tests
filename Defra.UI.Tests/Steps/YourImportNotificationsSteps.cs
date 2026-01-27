@@ -95,7 +95,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("user searches for the '(.*)' import notification")]
         public void WhenUserSearchesForTheImportNotification(string reference)
         {
-            _scenarioContext.AddOrUpdate("CHEDReference", reference);
+            _scenarioContext["CHEDReference"] = reference;
             importNotificationsPage?.SearchForNotification(reference);
         }
 

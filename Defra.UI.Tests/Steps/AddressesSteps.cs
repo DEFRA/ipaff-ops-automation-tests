@@ -94,9 +94,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var consigneeCountry = _scenarioContext.Get<string>("ConsigneeCountry");
 
             // Since importer uses same data as consignee, store it in context
-            _scenarioContext.AddOrUpdate("ImporterName", consigneeName);
-            _scenarioContext.AddOrUpdate("ImporterAddress", consigneeAddress);
-            _scenarioContext.AddOrUpdate("ImporterCountry", consigneeCountry);
+            _scenarioContext["ImporterName"] = consigneeName;
+            _scenarioContext["ImporterAddress"] = consigneeAddress;
+            _scenarioContext["ImporterCountry"] = consigneeCountry;
 
             // Verify importer shows same details as consignee
             Assert.True(addressesPage?.VerifySelectedImporter(consigneeName, consigneeAddress, consigneeCountry),
@@ -149,7 +149,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserClicksSameAsConsigneeForPlaceOfDestination()
         {
             addressesPage?.ClickPlaceOfDestinationSameAsConsignee();
-            _scenarioContext.AddOrUpdate("PlaceOfDestinationDetails",addressesPage?.GetSelectedPlaceOfDestination());
+            _scenarioContext["PlaceOfDestinationDetails"]=addressesPage?.GetSelectedPlaceOfDestination();
         }
 
         [When(@"the user clicks on Change link under '(.*)'")]
@@ -167,9 +167,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             // Since place of destination uses same data as consignee, store it in context
             // Use indexer assignment instead of .Add() to handle cases where key might already exist
-            _scenarioContext.AddOrUpdate("PlaceOfDestinationName", consigneeName);
-            _scenarioContext.AddOrUpdate("PlaceOfDestinationAddress", consigneeAddress);
-            _scenarioContext.AddOrUpdate("PlaceOfDestinationCountry", consigneeCountry);
+            _scenarioContext["PlaceOfDestinationName"] = consigneeName;
+            _scenarioContext["PlaceOfDestinationAddress"] = consigneeAddress;
+            _scenarioContext["PlaceOfDestinationCountry"] = consigneeCountry;
 
             // Verify place of destination shows same details as consignee
             Assert.True(addressesPage?.VerifySelectedDestination(consigneeName, consigneeAddress, consigneeCountry),

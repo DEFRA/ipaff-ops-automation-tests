@@ -33,21 +33,21 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserSelectsAsReasonForRefusal(string reason)
         {
             reasonForRefusalPage?.SelectReasonForRefusal(reason);
-            _scenarioContext.AddOrUpdate("ReasonForRefusal", reason);
+            _scenarioContext["ReasonForRefusal"] = reason;
         }
 
         [When("the user provides the reason as {string} in Reason for refusal page")]
         public void WhenTheUserProvidesTheReasonAsInReasonForRefusalPage(string reasonText)
         {
             reasonForRefusalPage?.EnterReasonTextForOther(reasonText);
-            _scenarioContext.AddOrUpdate("ReasonForRefusalText", reasonText);
+            _scenarioContext["ReasonForRefusalText"] = reasonText;
         }
 
         [When("the user selects {string} as another reason for refusal")]
         public void WhenTheUserSelectsAdditionalReasonForRefusal(string reason)
         {
             reasonForRefusalPage?.SelectReasonForRefusal(reason);
-            _scenarioContext.AddOrUpdate("AdditionalReasonForRefusal", reason);
+            _scenarioContext["AdditionalReasonForRefusal"] = reason;
         }
     }
 }

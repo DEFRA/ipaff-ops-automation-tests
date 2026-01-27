@@ -45,21 +45,21 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserPopulatesTheHorseNameAs(string horseName)
         {
             animalIdentificationDetailsPage?.EnterHorseName(horseName);
-            _scenarioContext.AddOrUpdate("HorseName", horseName);
+            _scenarioContext["HorseName"] = horseName;
         }
 
         [When("the user populates the Microchip number as {string}")]
         public void WhenTheUserPopulatesTheMicrochipNumberAs(string microchipNumber)
         {
             animalIdentificationDetailsPage?.EnterMicrochipNumber(microchipNumber);
-            _scenarioContext.AddOrUpdate("MicrochipNumber", microchipNumber);
+            _scenarioContext["MicrochipNumber"]=microchipNumber;
         }
 
         [When("the user populates the Passport number as {string}")]
         public void WhenTheUserPopulatesThePassportNumberAs(string passportNumber)
         {
             animalIdentificationDetailsPage?.EnterPassportNumber(passportNumber);
-            _scenarioContext.AddOrUpdate("PassportNumber", passportNumber);
+            _scenarioContext["PassportNumber"] = passportNumber;
         }
     }
 }
