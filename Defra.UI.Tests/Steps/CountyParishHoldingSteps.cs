@@ -33,7 +33,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserEntersTheCPHNumber(string cphNumber)
         {
             countyParishHoldingPage?.EnterCPHNumber(cphNumber);
-            _scenarioContext.AddOrUpdate("CPHnumber", cphNumber);
+            _scenarioContext["CPHnumber"] = cphNumber;
         }
     }
 }

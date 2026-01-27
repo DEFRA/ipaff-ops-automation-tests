@@ -30,7 +30,7 @@ namespace Defra.UI.Tests.Steps
         public void WhenTheUserSelectsRadioButtonUnderDocumentaryCheckOnTheChecksPage(string docCheckOption)
         {
             checksPage?.SelectDocCheckRadio(docCheckOption);
-            _scenarioContext.AddOrUpdate("DocumentaryCheckDecision", docCheckOption);
+            _scenarioContext["DocumentaryCheckDecision"] = docCheckOption;
         }
 
         [When("the user selects {string} radio button under Identity check on the Checks page")]
@@ -43,7 +43,7 @@ namespace Defra.UI.Tests.Steps
         public void WhenTheUserSelectsSubRadioButtonUnderTheIdentityCheckMainRadio(string identityCheckSubOption)
         {
             checksPage?.SelectIdentityCheckSubRadio(identityCheckSubOption);
-            _scenarioContext.AddOrUpdate("IdentityCheckDecision", identityCheckSubOption);
+            _scenarioContext["IdentityCheckDecision"] = identityCheckSubOption;
         }
 
         [When("the user selects {string} radio button under Physical check on the Checks page")]
@@ -56,7 +56,7 @@ namespace Defra.UI.Tests.Steps
         public void WhenTheUserSelectsSubRadioButtonUnderThePhysicalCheckMainRadio(string physicalCheckSubOption)
         {
             checksPage?.SelectPhysicalCheckSubRadio(physicalCheckSubOption);
-            _scenarioContext.AddOrUpdate("PhysicalCheckDecision", physicalCheckSubOption);
+            _scenarioContext["PhysicalCheckDecision"] = physicalCheckSubOption;
         }
 
         [When("the user clicks on Save and continue button on the Checks page")]

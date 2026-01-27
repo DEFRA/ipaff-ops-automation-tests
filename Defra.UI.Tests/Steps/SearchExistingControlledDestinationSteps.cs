@@ -38,10 +38,10 @@ namespace Defra.UI.Tests.Steps.CP
             var controlledDestinationType = searchExistingControlledDestinationPage?.GetSelectedControlledDestinationType();
             var controlledDestinationApprovalNumber = searchExistingControlledDestinationPage?.GetSelectedControlledDestinationApprovalNumber();
 
-            _scenarioContext.AddOrUpdate("ControlledDestinationName", controlledDestinationName);
-            _scenarioContext.AddOrUpdate("ControlledDestinationAddress", controlledDestinationAddress);
-            _scenarioContext.AddOrUpdate("ControlledDestinationType", controlledDestinationType);
-            _scenarioContext.AddOrUpdate("ControlledDestinationApprovalNumber", controlledDestinationApprovalNumber);
+            _scenarioContext["ControlledDestinationName"] = controlledDestinationName;
+            _scenarioContext["ControlledDestinationAddress"] = controlledDestinationAddress;
+            _scenarioContext["ControlledDestinationType"] = controlledDestinationType;
+            _scenarioContext["ControlledDestinationApprovalNumber"] = controlledDestinationApprovalNumber;
 
             searchExistingControlledDestinationPage?.ClickSelect();
         }

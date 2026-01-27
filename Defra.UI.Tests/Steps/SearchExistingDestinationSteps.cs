@@ -29,7 +29,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user selects a place of destination {string} with a UK country")]
         public void WhenTheUserSelectsAPlaceOfDestinationWithAUKCountry(string destinationName)
         {
-            _scenarioContext.AddOrUpdate("PlaceOfDestinationDetails",searchExistingDestinationPage?.GetSelectedPlaceOfDestination(destinationName));
+            _scenarioContext["PlaceOfDestinationDetails"]=searchExistingDestinationPage?.GetSelectedPlaceOfDestination(destinationName);
             searchExistingDestinationPage?.ClickSelect(destinationName);
         }
 
@@ -40,10 +40,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var destinationAddress = searchExistingDestinationPage?.GetSelectedDestinationAddress(destinationName);
             var destinationCountry = searchExistingDestinationPage?.GetSelectedDestinationCountry(destinationName);
 
-            _scenarioContext.AddOrUpdate("PlaceOfDestinationName", selectedDestinationName);
-            _scenarioContext.AddOrUpdate("PlaceOfDestinationAddress", destinationAddress);
-            _scenarioContext.AddOrUpdate("PlaceOfDestinationCountry", destinationCountry);
-            _scenarioContext.AddOrUpdate("PlaceOfDestinationDetails", searchExistingDestinationPage?.GetSelectedPlaceOfDestination(destinationName));
+            _scenarioContext["PlaceOfDestinationName"] = selectedDestinationName;
+            _scenarioContext["PlaceOfDestinationAddress"] = destinationAddress;
+            _scenarioContext["PlaceOfDestinationCountry"] = destinationCountry;
+            _scenarioContext["PlaceOfDestinationDetails"] = searchExistingDestinationPage?.GetSelectedPlaceOfDestination(destinationName);
 
             searchExistingDestinationPage?.ClickSelect(destinationName);
         }
