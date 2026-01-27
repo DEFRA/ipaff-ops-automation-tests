@@ -480,9 +480,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var approvedEstablishmentCountry = _scenarioContext.Get<string>("ApprovedEstablishmentCountry");
             var approvedEstablishmentType = _scenarioContext.Get<string>("ApprovedEstablishmentType");
             var approvedEstablishmentApprovalNum = _scenarioContext.Get<string>("ApprovedEstablishmentApprovalNum");
-            var catchCertificateReference = _scenarioContext.Get<string[]>("CatchCertificateReference");
-            var flagStateOfCatchingVessel = _scenarioContext.Get<string[]>("FlagStateOfCatchingVessel");
-            var dateOfIssueCatchCertificate = _scenarioContext.Get<string[]>("DateOfIssueCatchCertificate");
+            if (_scenarioContext.ContainsKey("CatchCertificateReference"))
+            {
+                var catchCertificateReference = _scenarioContext.Get<string[]>("CatchCertificateReference");
+                var flagStateOfCatchingVessel = _scenarioContext.Get<string[]>("FlagStateOfCatchingVessel");
+                var dateOfIssueCatchCertificate = _scenarioContext.Get<string[]>("DateOfIssueCatchCertificate");
+                CollectionAssert.AreEqual(catchCertificateReference, summary?.CatchCertificateReference, $"Catch Certificate Reference is not matching in {pageName} page!");
+                CollectionAssert.AreEqual(flagStateOfCatchingVessel, summary?.FlagStateOfCatchingVessel, $"Flag Stat eOf Catching Vessel is not matching in {pageName} page!");
+                CollectionAssert.AreEqual(dateOfIssueCatchCertificate, summary?.DateOfIssueCatchCertificate, $"Date of Issue is not matching in {pageName} page!");
+            }
 
             CollectionAssert.AreEqual(documentType, summary?.DocumentType, $"Document Type is not matching in {pageName} page!");
             CollectionAssert.AreEqual(documentReference, summary?.DocumentReference, $"Document Reference is not matching in {pageName} page!");
@@ -491,9 +497,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.AreEqual(approvedEstablishmentCountry, summary?.ApprovedEstablishmentCountry, $"Approved Establishment Country is not matching in {pageName} page!");
             Assert.AreEqual(approvedEstablishmentType, summary?.ApprovedEstablishmentType, $"Approved Establishment Type is not matching in {pageName} page!");
             Assert.AreEqual(approvedEstablishmentApprovalNum, summary?.ApprovedEstablishmentApprovalNum, $"Approved Establishment Approval Number is not matching in {pageName} page!");
-            CollectionAssert.AreEqual(catchCertificateReference, summary?.CatchCertificateReference, $"Catch Certificate Reference is not matching in {pageName} page!");
-            CollectionAssert.AreEqual(flagStateOfCatchingVessel, summary?.FlagStateOfCatchingVessel, $"Flag Stat eOf Catching Vessel is not matching in {pageName} page!");
-            CollectionAssert.AreEqual(dateOfIssueCatchCertificate, summary?.DateOfIssueCatchCertificate, $"Date of Issue is not matching in {pageName} page!");
+            
         }
 
         private void VerifyTraders()

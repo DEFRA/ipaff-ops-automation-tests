@@ -43,13 +43,13 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtImporterDetails => _driver.FindElement(By.Id("importer"));
         private IWebElement txtplaceOfDestination => _driver.FindElement(By.Id("final-destination"));
         private IWebElement txtFirstCommodityCode => _driver.FindElement(By.XPath("(//*[contains(@id,\"review-table-commodity-attribute\")]/tbody/tr[3]/td[2])[1]"));
-        private IWebElement txtSecondCommodityCode => _driver.FindElement(By.XPath("(//*[contains(@id,\"review-table-commodity-attribute\")]/tbody/tr[3]/td[2])[2]"));
+        private IReadOnlyCollection<IWebElement> txtSecondCommodityCode => _driver.FindElements(By.XPath("(//*[contains(@id,\"review-table-commodity-attribute\")]/tbody/tr[3]/td[2])[2]"));
         private IWebElement txtNetWeightFirstCommodity => _driver.FindElement(By.XPath("(//*[contains(@id,'review-table-consignment')]/tfoot/tr/td[2])[1]"));
-        private IWebElement txtNetWeightSecondCommodity => _driver.FindElement(By.XPath("(//*[contains(@id,\"review-table-consignment\")]/tfoot/tr/td[2])[2]"));
+        private IReadOnlyCollection<IWebElement> txtNetWeightSecondCommodity => _driver.FindElements(By.XPath("(//*[contains(@id,\"review-table-consignment\")]/tfoot/tr/td[2])[2]"));
         private IWebElement txtNumberOfPackagesFirstCommodity => _driver.FindElement(By.XPath("(//*[contains(@id,\"review-table-consignment\")]/tfoot/tr/td[3])[1]"));
-        private IWebElement txtNumberOfPackagesSecondCommodity => _driver.FindElement(By.XPath("(//*[contains(@id,\"review-table-consignment\")]/tfoot/tr/td[3])[2]"));
+        private IReadOnlyCollection<IWebElement> txtNumberOfPackagesSecondCommodity => _driver.FindElements(By.XPath("(//*[contains(@id,\"review-table-consignment\")]/tfoot/tr/td[3])[2]"));
         private IWebElement txtTypeOfPackageFirstCommodity => _driver.FindElement(By.XPath("(//*[contains(@id,\"review-table-consignment\")]/tbody/tr/td[4])[1]"));
-        private IWebElement txtTypeOfPackageSecondCommodity => _driver.FindElement(By.XPath("(//*[contains(@id,\"review-table-consignment\")]/tbody/tr/td[4])[2]"));
+        private IReadOnlyCollection<IWebElement> txtTypeOfPackageSecondCommodity => _driver.FindElements(By.XPath("(//*[contains(@id,\"review-table-consignment\")]/tbody/tr/td[4])[2]"));
 
         //Inspector
         private IWebElement txtBCPRefNum => _driver.WaitForElement(By.XPath("//*[@id='reference-row-1']/td[1]"));
@@ -136,13 +136,13 @@ namespace Defra.UI.Tests.Pages.Classes
             summary.ImporterDetails = txtImporterDetails.Text.Trim();
             summary.PlaceOfDestination = txtplaceOfDestination.Text.Trim();
             summary.CommodityCodeFirstCommodity = txtFirstCommodityCode.Text.Trim();
-            summary.CommodityCodeSecondCommodity = txtSecondCommodityCode.Text.Trim();
+            summary.CommodityCodeSecondCommodity = txtSecondCommodityCode?.FirstOrDefault(e => e.Displayed)?.Text?.Trim()??string.Empty;
             summary.NetWeightFirstCommodity = txtNetWeightFirstCommodity.Text.Replace(" kg/units", "").Trim();
-            summary.NetWeightSecondCommodity = txtNetWeightSecondCommodity.Text.Replace(" kg/units", "").Trim();
+            summary.NetWeightSecondCommodity = txtNetWeightSecondCommodity?.FirstOrDefault(e => e.Displayed)?.Text?.Replace(" kg/units", "")?.Trim() ?? string.Empty;
             summary.NumberOfPackagesFirstCommodity = txtNumberOfPackagesFirstCommodity.Text.Trim();
-            summary.NumberOfPackagesSecondCommodity = txtNumberOfPackagesSecondCommodity.Text.Trim();
+            summary.NumberOfPackagesSecondCommodity = txtNumberOfPackagesSecondCommodity?.FirstOrDefault(e => e.Displayed)?.Text?.Trim() ?? string.Empty;
             summary.TypeOfPackageFirstCommodity = txtTypeOfPackageFirstCommodity.Text.Trim();
-            summary.TypeOfPackageSecondCommodity = txtTypeOfPackageSecondCommodity.Text.Trim();
+            summary.TypeOfPackageSecondCommodity = txtTypeOfPackageSecondCommodity?.FirstOrDefault(e => e.Displayed)?.Text?.Trim() ?? string.Empty;
 
             return summary;
         }
