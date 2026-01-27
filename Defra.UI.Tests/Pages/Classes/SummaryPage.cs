@@ -21,15 +21,19 @@ namespace Defra.UI.Tests.Pages.Classes
         private IReadOnlyCollection<IWebElement> txtNetWeight => _driver.FindElements(By.XPath("//*[@class='govuk-table__cell govuk-table__cell--numeric consignment-net-weight']"));
         private IReadOnlyCollection<IWebElement> txtPackages => _driver.FindElements(By.XPath("//*[@class='govuk-table__cell govuk-table__cell--numeric consignment-net-weight']//following-sibling::td[1]"));
         private IReadOnlyCollection<IWebElement> txtPackageType => _driver.FindElements(By.XPath("//*[@class='govuk-table__cell govuk-table__cell--numeric consignment-net-weight']//following-sibling::td[2]"));
-        private IWebElement txtSubtotalNetWeight => _driver.FindElement(By.XPath("//*[normalize-space()='Subtotal']//following-sibling::td[1]"));
-        private IWebElement txtSubtotalPackages => _driver.FindElement(By.XPath("//*[normalize-space()='Subtotal']//following-sibling::td[2]"));
+        private IReadOnlyCollection<IWebElement> txtSubtotalNetWeight => _driver.FindElements(By.XPath("//*[normalize-space()='Subtotal']//following-sibling::td[1]"));
+        private IReadOnlyCollection<IWebElement> txtSubtotalPackages => _driver.FindElements(By.XPath("//*[normalize-space()='Subtotal']//following-sibling::td[2]"));
         private IWebElement txtTotalNetWeight => _driver.FindElement(By.XPath("//*[normalize-space()='Total net weight']//following-sibling::td"));
         private IWebElement txtTotalPackages => _driver.FindElement(By.XPath("//*[normalize-space()='Total packages']//following-sibling::td"));
         private IWebElement txtTotalGrossWeight => _driver.FindElement(By.XPath("//*[normalize-space()='Total gross weight']//following-sibling::td[1]"));
         private IWebElement txtTemperature => _driver.FindElement(By.XPath("//*[normalize-space()='Temperature']//following-sibling::dd"));
+        private IReadOnlyCollection<IWebElement> txtCommodityTypeMultiple => _driver.FindElements(By.XPath("//*[contains(@id,\"review-table-commodity-attributes\")]/tbody/tr[2]/td[1]"));
         private IReadOnlyCollection<IWebElement> txtDocumentType => _driver.FindElements(By.XPath("//td[contains(@id,'veterinary-document-type')]"));
         private IReadOnlyCollection<IWebElement> txtDocumentReference => _driver.FindElements(By.XPath("//td[contains(@id,'veterinary-document-reference')]"));
         private IReadOnlyCollection<IWebElement> txtDateOfIssue => _driver.FindElements(By.XPath("//td[contains(@id,'veterinary-document-issue-date')]"));
+        private IReadOnlyCollection<IWebElement> txtFlagStateOfCatchingVessel => _driver.FindElements(By.XPath("//*[@id='catch-certificate-summary-flag-state']"));
+        private IReadOnlyCollection<IWebElement> txtCatchCertificateReference => _driver.FindElements(By.XPath("//*[@id='catch-certificate-summary-reference']"));
+        private IReadOnlyCollection<IWebElement> txtDateOfIssueCatchCertificate => _driver.FindElements(By.XPath("//*[@id='catch-certificate-summary-issue-date']"));
         private IWebElement txtApprovedEstablishmentName => _driver.FindElement(By.XPath("//*[@id='establishments-row-1']/td[1]"));
         private IWebElement txtApprovedEstablishmentCountry => _driver.FindElement(By.XPath("//*[@id='establishments-row-1']/td[2]"));
         private IWebElement txtApprovedEstablishmentType => _driver.FindElement(By.XPath("//*[@id='establishments-row-1']/td[3]"));
@@ -38,6 +42,14 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtConsigneeDetails => _driver.FindElement(By.Id("consignee"));
         private IWebElement txtImporterDetails => _driver.FindElement(By.Id("importer"));
         private IWebElement txtplaceOfDestination => _driver.FindElement(By.Id("final-destination"));
+        private IWebElement txtFirstCommodityCode => _driver.FindElement(By.XPath("(//*[contains(@id,\"review-table-commodity-attribute\")]/tbody/tr[3]/td[2])[1]"));
+        private IReadOnlyCollection<IWebElement> txtSecondCommodityCode => _driver.FindElements(By.XPath("(//*[contains(@id,\"review-table-commodity-attribute\")]/tbody/tr[3]/td[2])[2]"));
+        private IWebElement txtNetWeightFirstCommodity => _driver.FindElement(By.XPath("(//*[contains(@id,'review-table-consignment')]/tfoot/tr/td[2])[1]"));
+        private IReadOnlyCollection<IWebElement> txtNetWeightSecondCommodity => _driver.FindElements(By.XPath("(//*[contains(@id,\"review-table-consignment\")]/tfoot/tr/td[2])[2]"));
+        private IWebElement txtNumberOfPackagesFirstCommodity => _driver.FindElement(By.XPath("(//*[contains(@id,\"review-table-consignment\")]/tfoot/tr/td[3])[1]"));
+        private IReadOnlyCollection<IWebElement> txtNumberOfPackagesSecondCommodity => _driver.FindElements(By.XPath("(//*[contains(@id,\"review-table-consignment\")]/tfoot/tr/td[3])[2]"));
+        private IWebElement txtTypeOfPackageFirstCommodity => _driver.FindElement(By.XPath("(//*[contains(@id,\"review-table-consignment\")]/tbody/tr/td[4])[1]"));
+        private IReadOnlyCollection<IWebElement> txtTypeOfPackageSecondCommodity => _driver.FindElements(By.XPath("(//*[contains(@id,\"review-table-consignment\")]/tbody/tr/td[4])[2]"));
 
         //Inspector
         private IWebElement txtBCPRefNum => _driver.WaitForElement(By.XPath("//*[@id='reference-row-1']/td[1]"));
@@ -99,13 +111,14 @@ namespace Defra.UI.Tests.Pages.Classes
             summary.NetWeight = txtNetWeight.Select(x => x.Text.Trim().Replace(" kg/units", "")).ToList();
             summary.NumberOfPackages = txtPackages.Select(x => x.Text.Trim()).ToList();
             summary.PackageType = txtPackageType.Select(x => x.Text.Trim()).ToList();
-            summary.SubtotalNetWeight = txtSubtotalNetWeight.Text.Trim().Replace(" kg/units", "");
-            summary.SubtotalPackages = txtSubtotalPackages.Text.Trim();
+            summary.SubtotalNetWeight = txtSubtotalNetWeight.Select(e => e.Text.Replace(" kg/units", "").Trim()).ToArray();
+            summary.SubtotalPackages = txtSubtotalPackages.Select(e => e.Text.Trim()).ToArray();
             summary.TotalNetWeight = txtTotalNetWeight.Text.Trim().Replace(" kg/units", "");
             summary.TotalPackages = txtTotalPackages.Text.Trim();
             summary.TotalGrossWeight = txtTotalGrossWeight.Text.Trim().Replace(" kg/units", "");
             summary.Temperature = txtTemperature.Text.Trim();
 
+            summary.CommodityTypes = txtCommodityTypeMultiple.Select(e => e.Text).ToArray();
             summary.DocumentType = txtDocumentType.Select(e => e.Text).ToArray();
             summary.DocumentReference = txtDocumentReference.Select(e => e.Text).ToArray();
             summary.DateOfIssue = txtDateOfIssue.Select(e => e.Text).ToArray();
@@ -114,10 +127,22 @@ namespace Defra.UI.Tests.Pages.Classes
             summary.ApprovedEstablishmentType = txtApprovedEstablishmentType.Text.Trim();
             summary.ApprovedEstablishmentApprovalNum = txtApprovedEstablishmentApprovalNum.Text.Trim();
 
+            summary.FlagStateOfCatchingVessel = txtFlagStateOfCatchingVessel.Select(e => e.Text).ToArray();
+            summary.CatchCertificateReference = txtCatchCertificateReference.Select(e => e.Text).ToArray();
+            summary.DateOfIssueCatchCertificate = txtDateOfIssueCatchCertificate.Select(e => e.Text).ToArray();
+
             summary.ConsignorDetails = txtConsignorDetails.Text.Trim();
             summary.ConsigneeDetails = txtConsigneeDetails.Text.Trim();
             summary.ImporterDetails = txtImporterDetails.Text.Trim();
             summary.PlaceOfDestination = txtplaceOfDestination.Text.Trim();
+            summary.CommodityCodeFirstCommodity = txtFirstCommodityCode.Text.Trim();
+            summary.CommodityCodeSecondCommodity = txtSecondCommodityCode?.FirstOrDefault(e => e.Displayed)?.Text?.Trim()??string.Empty;
+            summary.NetWeightFirstCommodity = txtNetWeightFirstCommodity.Text.Replace(" kg/units", "").Trim();
+            summary.NetWeightSecondCommodity = txtNetWeightSecondCommodity?.FirstOrDefault(e => e.Displayed)?.Text?.Replace(" kg/units", "")?.Trim() ?? string.Empty;
+            summary.NumberOfPackagesFirstCommodity = txtNumberOfPackagesFirstCommodity.Text.Trim();
+            summary.NumberOfPackagesSecondCommodity = txtNumberOfPackagesSecondCommodity?.FirstOrDefault(e => e.Displayed)?.Text?.Trim() ?? string.Empty;
+            summary.TypeOfPackageFirstCommodity = txtTypeOfPackageFirstCommodity.Text.Trim();
+            summary.TypeOfPackageSecondCommodity = txtTypeOfPackageSecondCommodity?.FirstOrDefault(e => e.Displayed)?.Text?.Trim() ?? string.Empty;
 
             return summary;
         }

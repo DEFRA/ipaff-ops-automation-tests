@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
+using YamlDotNet.Core;
 
 namespace Defra.UI.Tests.Steps.IPAFF
 {
@@ -423,7 +424,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             VerifyTraders();
             VerifyTransportAndConsignmentContactDetails();
         }
-
+       
         private void VerifyAboutTheConsignment()
         {
             var summary = summaryPage?.GetSummaryDetails();
@@ -455,47 +456,71 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var summary = summaryPage?.GetSummaryDetails();
             var pageName = "Review your notification";
             var expectedList = new List<string>();
-
+            
+            var subtotalNetWeight = _scenarioContext.Get<string[]>("SubtotalNetWeight");
+            var subtotalPackages = _scenarioContext.Get<string[]>("SubtotalPackages");
             var commodityCode = _scenarioContext["CommodityCode"] as List<string>;
             var typeOfCommodity = _scenarioContext.Get<List<string>>("TypeOfCommodity");
             var species = _scenarioContext["Species"] as List<string>;
-            var netWeight = _scenarioContext["NetWeight"] as List<string>;
-            var packages = _scenarioContext["NumberOfPackages"] as List<string>;
-            var packageType = _scenarioContext["PackageType"] as List<string>;
-            var subtotalNetWeight = _scenarioContext.Get<string>("SubtotalNetWeight");
-            var subtotalPackages = _scenarioContext.Get<string>("SubtotalPackages");
+            
             var totalNetWeight = _scenarioContext.Get<string>("TotalNetWeight");
             var totalPackages = _scenarioContext.Get<string>("TotalPackages");
             var totalGrossWeight = _scenarioContext.Get<string>("TotalGrossWeight");
             var temperature = _scenarioContext.Get<string>("Temperature");
-
-            Assert.AreEqual(commodityCode, summary?.CommodityCode, $"Commodity Code is not matching in {pageName} page!");
-
-            foreach (var item in commodityCode.Where(c => c.StartsWith("160")))
+            if (_scenarioContext.ContainsKey("CommodityCodeFirstCommodity"))
             {
-                expectedList.AddRange(summary?.TypeOfCommodity1);
-            }
-            if (commodityCode.Any(c => !c.StartsWith("160")))
-            {
-                expectedList.AddRange(summary?.TypeOfCommodity);
-            }
-            Assert.AreEqual(typeOfCommodity, expectedList);
+                var commodityCodeFirstCommodity = _scenarioContext.Get<string>("CommodityCodeFirstCommodity");
+                var netWeightFirstCommodity = _scenarioContext.Get<string>("NetWeightFirstCommodity");
+                var numberOfPackagesFirstCommodity = _scenarioContext.Get<string>("NumberOfPackagesFirstCommodity");
+                var typeOfPackageFirstCommodity = _scenarioContext.Get<string>("TypeOfPackageFirstCommodity");
+                var commodityCodeSecondCommodity = _scenarioContext.Get<string>("CommodityCodeSecondCommodity");
+                var netWeightSecondCommodity = _scenarioContext.Get<string>("NetWeightSecondCommodity");
+                var numberOfPackagesSecondCommodity = _scenarioContext.Get<string>("NumOfPackagesSecondCommodity");
+                var typeOfPackageSecondCommodity = _scenarioContext.Get<string>("TypeOfPackageSecondCommodity");
 
+                Assert.AreEqual(commodityCodeFirstCommodity, summary?.CommodityCodeFirstCommodity, $"CommodityCode for First Commodity is not matching in {pageName} page!");
+                Assert.AreEqual(netWeightFirstCommodity, summary?.NetWeightFirstCommodity, $"NetWeight for First Commodity is not matching in {pageName} page!");
+                Assert.AreEqual(numberOfPackagesFirstCommodity, summary?.NumberOfPackagesFirstCommodity, $"Number Of Packages for First Commodity is not matching in {pageName} page!");
+                Assert.AreEqual(typeOfPackageFirstCommodity, summary?.TypeOfPackageFirstCommodity, $"Type Of Package for First Commodity is not matching in {pageName} page!");
+                Assert.AreEqual(commodityCodeSecondCommodity, summary?.CommodityCodeSecondCommodity, $"CommodityCode for Second Commodity is not matching in {pageName} page!");
+                Assert.AreEqual(netWeightSecondCommodity, summary?.NetWeightSecondCommodity, $"NetWeight for Second Commodity is not matching in {pageName} page!");
+                Assert.AreEqual(numberOfPackagesSecondCommodity, summary?.NumberOfPackagesSecondCommodity, $"Number Of Packages for Second Commodity is not matching in {pageName} page!");
+                Assert.AreEqual(typeOfPackageSecondCommodity, summary?.TypeOfPackageSecondCommodity, $"Type Of Package for Second Commodity is not matching in {pageName} page!");
+                CollectionAssert.AreEqual(typeOfCommodity, summary?.CommodityTypes, $"Type Of Package for Second Commodity is not matching in {pageName} page!");
+            }
+            else
+            {
+                var netWeight = _scenarioContext["NetWeight"] as List<string>;
+                var packages = _scenarioContext["NumberOfPackages"] as List<string>;
+                var packageType = _scenarioContext["PackageType"] as List<string>;
+                Assert.AreEqual(commodityCode, summary?.CommodityCode, $"Commodity Code is not matching in {pageName} page!");
+                for (int i = 0; i < netWeight.Count; i++)
+                {
+                    Assert.AreEqual(netWeight[i], summary?.NetWeight[i], $"NetWeight is not matching in {pageName} page!");
+                }
+                for (int i = 0; i < packages.Count; i++)
+                {
+                    Assert.AreEqual(packages[i], summary?.NumberOfPackages[i], $"Number Of Packages is not matching in {pageName} page!");
+                }
+                for (int i = 0; i < packageType.Count; i++)
+                {
+                    Assert.AreEqual(packageType[i], summary?.PackageType[i], $"Package Type is not matching in {pageName} page!");
+                }
+
+                foreach (var item in commodityCode.Where(c => c.StartsWith("160")))
+                {
+                    expectedList.AddRange(summary?.TypeOfCommodity1);
+                }
+                if (commodityCode.Any(c => !c.StartsWith("160")))
+                {
+                    expectedList.AddRange(summary?.TypeOfCommodity);
+                }
+                Assert.AreEqual(typeOfCommodity, expectedList);
+            }
+            
             Assert.AreEqual(species, summary?.Species, $"Species is not matching in {pageName} page!");
-            for (int i = 0; i < netWeight.Count; i++)
-            {
-                Assert.AreEqual(netWeight[i], summary?.NetWeight[i], $"NetWeight is not matching in {pageName} page!");
-            }
-            for (int i = 0; i < packages.Count; i++)
-            {
-                Assert.AreEqual(packages[i], summary?.NumberOfPackages[i], $"Number Of Packages is not matching in {pageName} page!");
-            }
-            for (int i = 0; i < packageType.Count; i++)
-            {
-                Assert.AreEqual(packageType[i], summary?.PackageType[i], $"Package Type is not matching in {pageName} page!");
-            }
-            Assert.AreEqual(subtotalNetWeight, summary?.SubtotalNetWeight, $"Subtotal NetWeight is not matching in {pageName} page!");
-            Assert.AreEqual(subtotalPackages, summary?.SubtotalPackages, $"Subtotal Packages is not matching in {pageName} page!");
+            CollectionAssert.AreEqual(subtotalNetWeight, summary?.SubtotalNetWeight, $"Subtotal NetWeight is not matching in {pageName} page!");
+            CollectionAssert.AreEqual(subtotalPackages, summary?.SubtotalPackages, $"Subtotal Packages is not matching in {pageName} page!"); 
             Assert.AreEqual(totalNetWeight, summary?.TotalNetWeight, $"Total NetWeight is not matching in {pageName} page!");
             Assert.AreEqual(totalPackages, summary?.TotalPackages, $"Total Packages is not matching in {pageName} page!");
             Assert.AreEqual(totalGrossWeight, summary?.TotalGrossWeight, $"Total Gross Weight is not matching in {pageName} page!");
@@ -514,6 +539,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var approvedEstablishmentCountry = _scenarioContext.Get<string>("ApprovedEstablishmentCountry");
             var approvedEstablishmentType = _scenarioContext.Get<string>("ApprovedEstablishmentType");
             var approvedEstablishmentApprovalNum = _scenarioContext.Get<string>("ApprovedEstablishmentApprovalNum");
+            if (_scenarioContext.ContainsKey("CatchCertificateReference"))
+            {
+                var catchCertificateReference = _scenarioContext.Get<string[]>("CatchCertificateReference");
+                var flagStateOfCatchingVessel = _scenarioContext.Get<string[]>("FlagStateOfCatchingVessel");
+                var dateOfIssueCatchCertificate = _scenarioContext.Get<string[]>("DateOfIssueCatchCertificate");
+                CollectionAssert.AreEqual(catchCertificateReference, summary?.CatchCertificateReference, $"Catch Certificate Reference is not matching in {pageName} page!");
+                CollectionAssert.AreEqual(flagStateOfCatchingVessel, summary?.FlagStateOfCatchingVessel, $"Flag Stat eOf Catching Vessel is not matching in {pageName} page!");
+                CollectionAssert.AreEqual(dateOfIssueCatchCertificate, summary?.DateOfIssueCatchCertificate, $"Date of Issue is not matching in {pageName} page!");
+            }
 
             CollectionAssert.AreEqual(documentType, summary?.DocumentType, $"Document Type is not matching in {pageName} page!");
             CollectionAssert.AreEqual(documentReference, summary?.DocumentReference, $"Document Reference is not matching in {pageName} page!");
@@ -522,6 +556,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.AreEqual(approvedEstablishmentCountry, summary?.ApprovedEstablishmentCountry, $"Approved Establishment Country is not matching in {pageName} page!");
             Assert.AreEqual(approvedEstablishmentType, summary?.ApprovedEstablishmentType, $"Approved Establishment Type is not matching in {pageName} page!");
             Assert.AreEqual(approvedEstablishmentApprovalNum, summary?.ApprovedEstablishmentApprovalNum, $"Approved Establishment Approval Number is not matching in {pageName} page!");
+            
         }
 
         private void VerifyTraders()

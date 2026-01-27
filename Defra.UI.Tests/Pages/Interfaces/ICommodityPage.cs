@@ -31,5 +31,7 @@
         string GetTotalPackages();
         bool VerifyTotalNetWeight(string totalNetWeight);
         bool VerifyNumberOfPackages(string numOfPackages);
+        string[] GetSubtotalsOfNetWeight();
+        string[] GetSubtotalsOfPackages();
     }
 }
