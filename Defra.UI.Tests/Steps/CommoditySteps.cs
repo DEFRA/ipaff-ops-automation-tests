@@ -327,6 +327,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
         [When("the user clicks on Save and return to hub on the Commodity page")]
+        [Then("the user clicks on Save and return to hub on the Commodity page")]
         public void WhenTheUserClicksOnSaveAndReturnToHubOnTheCommodityPage()
         {
             commodityPage?.ClickSaveAndReturnToHub();

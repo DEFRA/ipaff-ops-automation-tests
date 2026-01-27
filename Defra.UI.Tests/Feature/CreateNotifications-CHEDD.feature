@@ -3,7 +3,7 @@ Feature: CreateNotification CHEDD
 
 Create a notification for CHEDD type
 
-Scenario: User creates and submits a B2C consignment notification - CHEDD
+Scenario: User creates and submits a B2C consignment notification - CHEDD Happy path
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
@@ -166,7 +166,7 @@ Scenario: User creates and submits a B2C consignment notification - CHEDD
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
 
-Scenario: User creates and submits a notification, override the risk decision, reject the notification and creates border notification - CHED D
+Scenario: User creates and submits a notification, override the risk decision, reject the notification and creates border notification - CHEDD - SPS-9107
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
@@ -394,7 +394,7 @@ Scenario: User creates and submits a notification, override the risk decision, r
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
 
-Scenario: User verifies Address book page search, submits notification for 'Non-Internal market' reason,  override the risk decision, reject the notification and creates border notification - CHED D
+Scenario: User verifies Address book page search, submits notification for 'Non-Internal market' reason,  override the risk decision, reject the notification and creates border notification - CHEDD - SPS-9106
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
@@ -632,7 +632,7 @@ Scenario: User verifies Address book page search, submits notification for 'Non-
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
 
-Scenario: User submits B2C consignment notification, inspector rejects and creates border notification - CHED D 7378
+Scenario: User submits B2C consignment notification, inspector rejects and creates border notification - CHEDD - SPS-7378
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
