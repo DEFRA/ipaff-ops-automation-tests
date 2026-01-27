@@ -27,6 +27,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtTotalGrossWeight => _driver.FindElement(By.XPath("//*[@id='review-table-commodities-total']//tr[3]/td[2]"));
         private IWebElement btnSetToInProgress => _driver.FindElement(By.Id("button-save-and-continue"));
         private IWebElement btnRecordChecks => _driver.FindElement(By.Id("enter-local-reference-number-button"));
+        private IWebElement btnRequestAmendment => _driver.WaitForElement(By.Id("amend"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -87,6 +88,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickRecordChecksButton()
         {
             btnRecordChecks.Click();
+        }
+
+        public void ClickRequestAmendment()
+        {
+            btnRequestAmendment.Click();
         }
     }
 }

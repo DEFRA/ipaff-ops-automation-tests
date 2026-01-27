@@ -18,7 +18,7 @@
         void ClickUpdateTotal();
         void EnterTotalGrossWeight(string weight);
         void ClickSaveAndContinue();
-        void ClickSaveAndReturnToHubButton();
+        void ClickSaveAndReturnToHub();
         void ClickBrowserBackButton();
         void ClickAddCommodityLink();
         bool SelectCommodityInTheCommTree(string commodity);

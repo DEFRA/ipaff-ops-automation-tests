@@ -97,6 +97,7 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             try
             {
+                txtEstimatedJourneyTimeHour.Clear();
                 txtEstimatedJourneyTimeHour.SendKeys(hours);
             }
             catch (NoSuchElementException)

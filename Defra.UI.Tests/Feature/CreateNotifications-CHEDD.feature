@@ -988,7 +988,7 @@ Scenario: User creates and submits a notification, Copy the notification and sub
 	And the user clicks the Save and return to hub button
 	When the user clicks on 'Commodity' link
 	Then the user verifies and enters any missing data on the Commodity page
-	And the user clicks the Save and return to hub button on the Commodity page
+	And the user clicks on Save and return to hub on the Commodity page
 	When the user clicks on 'Additional details' link
 	Then the user verifies and enters any missing data on the Additional details page
 	And the user clicks the Save and return to hub button

@@ -43,7 +43,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenISelectRadioButtonOnTheSealNumbersPage(string sealNum)
         {
             sealNumbersPage?.SelectSealNumRadio(sealNum);
-            _scenarioContext.Add("AreNewSealNumbersRequired", sealNum);
+            _scenarioContext["AreNewSealNumbersRequired"] = sealNum;
+        }
+
+        [When("the user enters new seal number {string}")]
+        public void WhenTheUserEntersNewSealNumber(string sealNumber)
+        {
+            sealNumbersPage?.EnterNewSealNumber(sealNumber);
+            _scenarioContext["NewSealNumber"] = sealNumber;
         }
     }
 }

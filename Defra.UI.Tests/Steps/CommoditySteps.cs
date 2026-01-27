@@ -118,13 +118,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["NetWeight"] = values;
         }
 
+        [When("the user changes the Number of animals to {string}")]
         [When("the user populates Number of animals as {string}")]
         public void WhenTheUserPopulatesNumberOfAnimalsAs(string quantity)
         {
             commodityPage?.EnterNumberOfAnimals(quantity);
-            _scenarioContext.Add("NumberOfAnimals", quantity);
+            _scenarioContext["NumberOfAnimals"] = quantity;
         }
 
+        [When("the user changes the Number of packages to {string}")]
         [When("the user populates Number of packages as {string}")]
         public void WhenTheUserPopulatesNumberOfPackagesAs(string packages)
         {
@@ -214,6 +216,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             commodityPage?.ClickSaveAndContinue();
         }
 
+        [When("the user clicks on the back button in the browser")]
         [When("I click the back button in the browser")]
         public void WhenIClickTheBackButtonInTheBrowser()
         {
@@ -315,10 +318,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             WhenTheUserPopulatesNumberOfPackagesAsForFirstCommodity("1");
             WhenTheUserSelectsTypeOfPackageAsForTheCommodityForFirstCommodity("Case", "12024200");
 
-            /*WhenTheUserPopulatesNetWeightAsForTheAdditionalCommodity("19000", "12024200");
-            WhenTheUserPopulatesNumberOfPackagesAsForTheAdditionalCommodity("1", "12024200");
-            WhenTheUserSelectsTypeOfPackageAsForTheAdditionalCommodity("Case", "12024200");*/
-
             WhenTheUserPopulatesNetWeightAsForTheAdditionalCommodity("18000", "100610");
             WhenTheUserPopulatesNumberOfPackagesAsForTheAdditionalCommodity("1", "100610");
             WhenTheUserSelectsTypeOfPackageAsForTheAdditionalCommodity("Box", "100610");
@@ -327,10 +326,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
             ThenTheTotalGrossWeightShouldBeGreaterThanTheNetWeight("40000");
         }
 
-        [Then("the user clicks the Save and return to hub button on the Commodity page")]
-        public void ThenTheUserClicksTheSaveAndReturnToHubButtonOnTheCommodityPage()
+        [When("the user clicks on Save and return to hub on the Commodity page")]
+        public void WhenTheUserClicksOnSaveAndReturnToHubOnTheCommodityPage()
         {
-            commodityPage?.ClickSaveAndReturnToHubButton();
+            commodityPage?.ClickSaveAndReturnToHub();
         }
     }
 }

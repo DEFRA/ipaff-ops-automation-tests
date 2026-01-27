@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
+using Defra.UI.Tests.Tools;
 
 namespace Defra.UI.Tests.Steps.IPAFF
 {
@@ -22,6 +23,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the Goods movement services page should be displayed")]
         public void ThenTheGoodsMovementServicesPageShouldBeDisplayed()
         {
+            // Remove "Transport After BCP" keys since GVMS page means no airplane transport
+            // These keys would have been set in a previous amendment and are no longer valid
+            _scenarioContext.RemoveContextKeys(
+                "MeansOfTransportAfterBCP",
+                "TransportIdentificationAfterBCP",
+                "TransportDocumentReferenceAfterBCP",
+                "DepartureDateFromBCP",
+                "DepartureTimeFromBCP"
+            );
+
             Assert.True(goodsMovementServicesPage?.IsPageLoaded(), "Transport Goods movement services page not loaded");
         }
 

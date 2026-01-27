@@ -44,6 +44,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement btnSaveAndContinue => _driver.WaitForElement(By.Id("button-save-and-continue-desktop"));
         private IWebElement btnSaveAndReturnToHub => _driver.WaitForElement(By.Id("save-and-return-button-desktop"));
         private List<IWebElement> addedCommoditiesList => _driver.FindElements(By.XPath("//table[@id='commodity-table-desktop']/tbody/tr")).ToList();
+
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -157,7 +158,10 @@ namespace Defra.UI.Tests.Pages.Classes
             btnSaveAndContinue.Click();
         }
 
-        public void ClickSaveAndReturnToHubButton() => btnSaveAndReturnToHub.Click();
+        public void ClickSaveAndReturnToHub()
+        {
+            btnSaveAndReturnToHub.Click();
+        }
 
         public void ClickBrowserBackButton()
         {
