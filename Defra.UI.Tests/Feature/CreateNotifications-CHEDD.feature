@@ -1550,7 +1550,7 @@ Scenario: User submits consignment notification, inspector overrides the risk de
 	Then the user clicks the notification found with status "NEW"
 	Then the Decision Hub page should be displayed
 	When the user clicks override the risk decision
-	Then the user selects 'Override risk decision as inspection required' option
+	Then the user selects 'Override risk decision as no inspection' option
 	When the user clicks Yes, override risk decision button
 	Then the Decision Hub page should be displayed
 	And the notification status should change from "NEW" to "IN PROGRESS"
