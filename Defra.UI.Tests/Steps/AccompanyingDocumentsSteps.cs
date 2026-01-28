@@ -121,6 +121,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
             accompanyingDocumentsPage?.SelectDateFromDatePicker();
         }
 
+        [When("the user selects a previous date from the date picker")]
+        public void WhenTheUserSelectsAPreviousDateFromTheDatePicker()
+        {
+            var yesterdayDate = DateTime.Now.AddDays(-1);
+            var previousDay = yesterdayDate.Day.ToString();
+
+            Assert.True(accompanyingDocumentsPage?.IsDatePickerIconDisplayed(), "Date picker icon is not displayed on the Accompanying documents page");
+            accompanyingDocumentsPage?.SelectPreviousDateFromDatePicker(previousDay);
+        }
+
         [When("the user clicks on Add attachment link")]
         public void WhenTheUserClicksOnAddAttachmentLink()
         {
