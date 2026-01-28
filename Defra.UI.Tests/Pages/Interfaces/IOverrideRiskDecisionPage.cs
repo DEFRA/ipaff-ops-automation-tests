@@ -4,5 +4,6 @@
     {
         bool IsPageLoaded();
         void ClickYesOverrideRiskDecisionButton();
+        void ClickOverrideDecisionOption(string option);
     }
 }
