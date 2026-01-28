@@ -41,6 +41,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private By downloadAttachmentLinkLocator => By.XPath("//a[contains(@aria-label,'Download') and contains(@href,'/attachment/')]");
         private By downloadAttachmentLinkChedPLocator => By.XPath("//a[(contains(@aria-label,'View') and contains(@href,'/attachment/') and contains(@id,'attachment-view-')) or (@id='download-attachment-0')]");
         private IWebElement removeAttachmentButton => _driver.FindElement(By.XPath("//button[contains(@id,'remove-attachment-')] | //a[@id='remove-attachment-0']"));
+        private By additionalDocumentRowsLocator => By.XPath("//div[@class='additional-documents__grid-row additional-document-info']");
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -191,6 +192,21 @@ namespace Defra.UI.Tests.Pages.Classes
             try
             {
                 return removeAttachmentButton.Displayed && removeAttachmentButton.Text.Contains("Remove attachment");
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
+        }
+
+        public bool AreDocumentsPresent()
+        {
+            try
+            {
+                // Check if any document rows are present on the page
+                // Using the existing documentRows locator from page objects region
+                var documents = _driver.FindElements(additionalDocumentRowsLocator);
+                return documents.Count > 0;
             }
             catch (NoSuchElementException)
             {

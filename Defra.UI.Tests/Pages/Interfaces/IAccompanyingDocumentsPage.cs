@@ -20,5 +20,6 @@
         bool ValidateDocUploadErrors();
         bool IsDownloadAttachmentLinkPresent();
         bool IsRemoveAttachmentLinkPresent();
+        bool AreDocumentsPresent();
     }
 }

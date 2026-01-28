@@ -133,5 +133,18 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             Assert.True(originOfImportPage?.IsRegionCodeDefaultedToNo, "Does your consignment require a region code? is not defaulted to 'No'");
         }
+
+        [Then("the Country of origin should be copied from the original notification")]
+        public void ThenTheCountryOfOriginShouldBeCopiedFromTheOriginalNotification()
+        {
+            var expectedCountry = _scenarioContext.ContainsKey("CountryOfOrigin")
+                ? _scenarioContext["CountryOfOrigin"]?.ToString() ?? string.Empty
+                : string.Empty;
+
+            string actualCountry = originOfImportPage?.GetOriginCountryText ?? string.Empty;
+
+            Assert.That(actualCountry, Is.EqualTo(expectedCountry),
+                $"Expected Country of origin to be '{expectedCountry}' but was '{actualCountry}'");
+        }
     }
 }

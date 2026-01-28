@@ -56,13 +56,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
             UpdateStringToScenarioContextArray(_scenarioContext, "DocumentType", type);
         }
 
-        
+
         public void UpdateStringToScenarioContextArray(ScenarioContext context, string key, string value)
         {
             if (context.TryGetValue(key, out var existing) && existing is string[] current)
             {
                 var updated = new string[current.Length];
-                Array.Copy(current,1,updated,0,current.Length - 1);
+                Array.Copy(current, 1, updated, 0, current.Length - 1);
                 updated[current.Length - 1] = value;
                 context[key] = updated;
             }
@@ -136,7 +136,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var filename = name + format;
             accompanyingDocumentsPage?.AddAccompanyingDocument(filename);
 
-            if(!filename.Contains("Exceeds size"))
+            if (!filename.Contains("Exceeds size"))
                 _scenarioContext["DocumentName"] = filename;
         }
 
@@ -244,6 +244,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserClicksOnCancelLink()
         {
             accompanyingDocumentsPage?.ClickCancelLink();
+        }
+
+        [Then("there are no accompanying document details copied from the original notification")]
+        public void ThereAreNoAccompanyingDocumentDetailsCopiedFromTheOriginalNotification()
+        {
+            bool documentsArePresent = accompanyingDocumentsPage?.AreDocumentsPresent() ?? false;
+
+            Assert.False(documentsArePresent,
+                "Accompanying documents should not be copied from the original notification, but documents were found on the page");
         }
     }
 }
