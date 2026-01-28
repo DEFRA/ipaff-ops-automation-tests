@@ -1,7 +1,4 @@
-﻿using Faker;
-using OpenQA.Selenium;
-
-namespace Defra.UI.Tests.Pages.Interfaces
+﻿namespace Defra.UI.Tests.Pages.Interfaces
 {
     public interface IAddressesPage
     { 
@@ -23,5 +20,11 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void ClickAddImporter();
         bool VerifySelectedImporter(string importerName, string importerAddress, string importerCountry);
         void ClickChangeInAddressPage(string link);
+        int GetConsignorRowsCount();
+        int GetConsigneeRowsCount();
+        int GetImporterRowsCount();
+        int GetDestinationRowsCount();
+        string GetSelectedConsignor();
+        string GetSelectedConsignee();
     }
 }

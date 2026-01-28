@@ -42,6 +42,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement GetNotificationStatus(string chedRef) => _driver.FindElement(By.Id("status-0"));
         private IWebElement lnkAddressBook => _driver.FindElement(By.Id("address-book-link"));
         private IWebElement lnkViewDetails => _driver.FindElement(By.Name("viewDetails"));
+        private IWebElement lnkCopyAsNew => _driver.FindElement(By.CssSelector("button[id*='copy-as-new']"));
         private IWebElement lnkContact => _driver.FindElement(By.XPath("//a[contains(text(),'Contact')]"));
         private IWebElement lnkCookies => _driver.FindElement(By.Id("button-cookies"));
         private By NotificationStatusBy => By.Id("status-0");
@@ -142,6 +143,7 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickAddressBookLink() => lnkAddressBook.Click();
         public void ClickViewDetailsLink() => lnkViewDetails.Click();
         public void ClickContactLink() => lnkContact.Click();
+        public void ClickCopyAsNewLink() => lnkCopyAsNew.Click();
 
         public bool IsSearchNotiByPanelDisplayed => searchNotificationsPanel != null && searchNotificationsPanel.Displayed;
         public bool AreAllSearchFieldsDisplayed()

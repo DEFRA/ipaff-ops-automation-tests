@@ -14,6 +14,7 @@ namespace Defra.UI.Tests.Pages.Classes
         #region Page Objects
         private IWebElement primaryTitle => _driver.WaitForElement(By.XPath("//h1[@class='govuk-heading-xl govuk-!-margin-bottom-6 govuk-!-margin-top-6 ']"), true);
         private IWebElement getReasonForRefusalCheckBoxes(string reason) => _driver.FindElement(By.XPath($"//label[normalize-space()='{reason}']"));
+        private IWebElement txtOtherReason => _driver.FindElement(By.Id("other-textbox"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -35,6 +36,12 @@ namespace Defra.UI.Tests.Pages.Classes
                 var reasonCheckBox = getReasonForRefusalCheckBoxes(reason);
                 reasonCheckBox.Click();
             }
+        }
+
+        public void EnterReasonTextForOther(string reasonText)
+        {
+            txtOtherReason.Clear();
+            txtOtherReason.SendKeys(reasonText);
         }
     }
 }

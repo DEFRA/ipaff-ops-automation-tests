@@ -23,6 +23,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement rdoUnweanedAnimalsYes => _driver.FindElement(By.XPath("//*[@id='includingNonablactedyes']/following-sibling::label"));
         private IWebElement rdoUnweanedAnimalsNo => _driver.FindElement(By.XPath("//*[@id='includingNonAblactedno']/following-sibling::label"));
         private IWebElement btnSaveAndReview => _driver.FindElement(By.XPath("//button[text()='Save and review']"));
+        private IWebElement commIntendedForSelectedRadioLabel => _driver.FindElement(By.XPath("//input[contains(@name,'commodity-intended-for') and @checked]/following-sibling::label"));
+        private IWebElement temperatureSelectedRadioLabel => _driver.FindElement(By.XPath("//input[contains(@name,'temperature') and @checked]/following-sibling::label"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -99,5 +101,9 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             btnSaveAndReview.Click();
         }
+
+        public string GetCommIntendedForRadioLabelText => commIntendedForSelectedRadioLabel.Text.Trim() ?? string.Empty;
+        
+        public string GetTemperatureRadioLabelText => temperatureSelectedRadioLabel.Text.Trim() ?? string.Empty;
     }
 }

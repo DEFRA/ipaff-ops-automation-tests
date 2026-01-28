@@ -39,11 +39,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var transporterApprovalNumber = searchExistingTranspoterPage?.GetSelectedTransporterApprovalNumber();
             var transporterType = searchExistingTranspoterPage?.GetSelectedTransporterType();
 
-            _scenarioContext.Add("TransporterName", transporterName);
-            _scenarioContext.Add("TransporterAddress", transporterAddress);
-            _scenarioContext.Add("TransporterCountry", transporterCountry);
-            _scenarioContext.Add("TransporterApprovalNumber", transporterApprovalNumber);
-            _scenarioContext.Add("TransporterType", transporterType);
+            _scenarioContext["TransporterName"] = transporterName;
+            _scenarioContext["TransporterAddress"] = transporterAddress;
+            _scenarioContext["TransporterCountry"] = transporterCountry;
+            _scenarioContext["TransporterApprovalNumber"] = transporterApprovalNumber;
+            _scenarioContext["TransporterType"] = transporterType;
 
             searchExistingTranspoterPage?.ClickSelect();
         }
@@ -53,9 +53,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             var operatorNameKey = $"{operatorType}Name";
 
-            var transporterName = _scenarioContext.ContainsKey(operatorNameKey)
-                ? _scenarioContext[operatorNameKey]?.ToString()
-                : null;
+            var transporterName = _scenarioContext.GetFromContext<string>(operatorNameKey);
 
             Assert.That(transporterName, Is.Not.Null.And.Not.Empty,
                 $"Operator name for type '{operatorType}' not found in scenario context (expected key: '{operatorNameKey}')");
@@ -68,9 +66,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             var operatorNameKey = $"{operatorType}Name";
 
-            var transporterName = _scenarioContext.ContainsKey(operatorNameKey)
-                ? _scenarioContext[operatorNameKey]?.ToString()
-                : null;
+            var transporterName = _scenarioContext.GetFromContext<string>(operatorNameKey);
 
             Assert.That(transporterName, Is.Not.Null.And.Not.Empty,
                 $"Operator name for type '{operatorType}' not found in scenario context (expected key: '{operatorNameKey}')");

@@ -17,7 +17,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement chedReferenceVersion => _driver.WaitForElement(By.Id("cved-version-number"));
         private IWebElement outcomeValue => _driver.WaitForElement(By.XPath("//*[@class='govuk-!-font-weight-bold']"));
         private IWebElement btnViewOrPrintCHED => _driver.WaitForElement(By.Id("print"));
-        private IWebElement lnkReturnToDashboard => _driver.FindElement(By.Id("return-to-home-page"));
+        private IWebElement lnkReturnToDashboard => _driver.FindElement(By.XPath("//a[contains(@id,'return-to-home-page') or contains(@id,'manage-notifications')]"));
         private IWebElement lblErrorMessageTitle => _driver.FindElement(By.XPath("//div[@id='border-notification-banner']/h2"));
         private IReadOnlyCollection<IWebElement> lblErrorMessages => _driver.FindElements(By.XPath("//div[@id='border-notification-banner']/div/ul/li"));
         private IWebElement txtInNextSteps => _driver.FindElement(By.XPath("//*[normalize-space()='Next steps']/following-sibling::p"));
