@@ -1733,7 +1733,7 @@ Scenario: User creates and submits a CHEDA notification, copies it as new and ve
 	And the user records the new CHED Reference number
 	When the user clicks on 'Origin of the import' link
 	Then the Origin of the import page should be displayed
-	And the Country of origin 'Thailand' should be copied from the original notification
+	And the Country of origin should be copied from the original notification
 	When the user clicks on Save and return to hub
 	Then the Notification Hub page should be displayed
 	When the user clicks on 'Commodity' link
@@ -1745,8 +1745,8 @@ Scenario: User creates and submits a CHEDA notification, copies it as new and ve
 	Then the Notification Hub page should be displayed
 	When the user clicks on 'Transport to the BCP or Port of entry' link
 	Then the Transport to the BCP or Port of entry page should be displayed
-	And the BCP or Port of entry 'London Borough of Hillingdon Heathrow Airport Imported Food Office - ADADA' should be copied from the original notification
-	And the Means of transport to BCP 'Road vehicle' should be copied from the original notification
+	And the BCP or Port of entry should be copied from the original notification
+	And the Means of transport to BCP should be copied from the original notification
 	When the user enters transport identification 'BA999'
 	And the user enters transport document reference 'Doc9999'
 	And the user enters arrival date at BCP or Port of entry '1' days from now

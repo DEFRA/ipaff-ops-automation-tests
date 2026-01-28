@@ -17,5 +17,7 @@
         void EnterSealNumber(string sealNumber);
         void TickOfficialSealCheckbox();
         bool VerifyPortOfEntryIfNotAlreadyPopulated();
+        string GetPortOfEntry { get; }
+        string GetMeansOfTransport { get; }
     }
 }
