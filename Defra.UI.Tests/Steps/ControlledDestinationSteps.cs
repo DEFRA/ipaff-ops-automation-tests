@@ -45,5 +45,6 @@ namespace Defra.UI.Tests.Steps.CP
             Assert.True(controlledDestinationPage?.VerifySelectedControlledDestination(controlledDestinationName, controlledDestinationAddress, controlledDestinationType),
                         "Controlled destination details do not match");
         }
+
     }
 }

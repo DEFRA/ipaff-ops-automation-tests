@@ -16,6 +16,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement lnkChedRefNumSearcResult => _driver.FindElement(By.XPath("//*[normalize-space()='Reference Number']//following-sibling::dd"));
         private IWebElement lnkChedStatusSearcResult => _driver.FindElement(By.XPath("//*[normalize-space()='CHED status']//following-sibling::dd/strong"));
         private IWebElement lnkChedRefNum => _driver.FindElement(By.XPath("//*[normalize-space()='Reference Number']/following-sibling::dd"));
+        private IWebElement lblControlStatus => _driver.FindElement(By.XPath("//*[contains(@id,'control-status')]"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -39,6 +40,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickCHEDReferencNum()
         {
             lnkChedRefNum.Click();
+        }
+        
+        public bool VerifyControlStatus(string controlStatus)
+        {
+            return lblControlStatus.Text.Equals(controlStatus);
         }
     }
 }

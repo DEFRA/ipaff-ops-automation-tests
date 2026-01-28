@@ -213,14 +213,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["CommodityDescSecondCommodity"] = description;
         }
         
-        [Then("the commodity details should be populated {string} {string} for second commodity")]
-        public void ThenTheCommodityDetailsShouldBePopulatedForSecondCommodity(string code, string description)
-        {
-            Assert.True(commodityPage?.VerifyCommodityDetails(code, description));
-            _scenarioContext["CommodityCodeSecondCommodity"] = code;
-            _scenarioContext["CommodityDescSecondCommodity"] = description;
-        }
-
         [When("the user populates Net weight as {string} for first commodity")]
         public void WhenTheUserPopulatesNetWeightAsForFirstCommodity(string weight)
         {

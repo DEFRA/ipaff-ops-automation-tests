@@ -17,5 +17,6 @@
         string GetExitBCP();
         string GetDestinationCountry();
         string GetTransitExitBCP();
+        void EnterDestructionReason(string reason);
     }
 }
