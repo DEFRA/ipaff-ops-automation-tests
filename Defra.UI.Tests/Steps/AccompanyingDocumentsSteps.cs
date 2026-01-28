@@ -1,4 +1,4 @@
-﻿using AventStack.ExtentReports.Gherkin.Model;
+﻿    using AventStack.ExtentReports.Gherkin.Model;
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using NUnit.Framework;
@@ -124,8 +124,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user selects a previous date from the date picker")]
         public void WhenTheUserSelectsAPreviousDateFromTheDatePicker()
         {
-            var yesterdayDate = DateTime.Now.AddDays(-1);
-            var previousDay = yesterdayDate.Day.ToString();
+            var previousDay = DateTime.Now.AddDays(-1).Day.ToString();
 
             Assert.True(accompanyingDocumentsPage?.IsDatePickerIconDisplayed(), "Date picker icon is not displayed on the Accompanying documents page");
             accompanyingDocumentsPage?.SelectPreviousDateFromDatePicker(previousDay);
