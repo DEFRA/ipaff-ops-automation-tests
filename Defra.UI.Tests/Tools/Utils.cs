@@ -33,11 +33,6 @@ namespace Defra.UI.Tests.Tools
             return phoneNumber;
         }
 
-        public static string GenerateMicrochipNumber()
-        {
-            return DateTime.Now.ToString("ddMMyyHHmmssfff");
-        }
-
         public static string GenerateRandomNumber()
         {
             return DateTime.Now.ToString("ddMMyyHHmmss");
@@ -85,6 +80,21 @@ namespace Defra.UI.Tests.Tools
         public static void ScrollToElement(this IWebElement element, IWebDriver driver)
         {
             ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView()", element);
+        }
+
+        public static void AppendStringToScenarioContextArray(ScenarioContext context, string key, string value)
+        {
+            if (context.TryGetValue(key, out var existing) && existing is string[] current)
+            {
+                var updated = new string[current.Length + 1];
+                Array.Copy(current, updated, current.Length);
+                updated[current.Length] = value;
+                context[key] = updated;
+            }
+            else
+            {
+                context[key] = new[] { value };
+            }
         }
 
         #region WebDriver Extension Methods for Element Safety
@@ -196,6 +206,16 @@ namespace Defra.UI.Tests.Tools
                     scenarioContext.Remove(key);
                 }
             }
+        }
+
+        public static T GetFromContext<T>(this ScenarioContext context, string key, T defaultValue = default!)
+        {
+            if (context.ContainsKey(key))
+            {
+                return context.Get<T>(key);
+            }
+
+            return defaultValue;
         }
 
         #endregion

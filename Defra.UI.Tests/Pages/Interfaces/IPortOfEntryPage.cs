@@ -16,5 +16,6 @@
         void EnterContainerNumber(string containerNumber);
         void EnterSealNumber(string sealNumber);
         void TickOfficialSealCheckbox();
+        bool VerifyPortOfEntryIfNotAlreadyPopulated();
     }
 }

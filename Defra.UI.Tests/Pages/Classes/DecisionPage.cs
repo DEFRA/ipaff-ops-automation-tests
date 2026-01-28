@@ -149,7 +149,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void EnterReason(string reason)
         {
-            rdoDestructionReason.Click();
+            rdoDestructionReason.Clear();
             rdoDestructionReason.SendKeys(reason);
         }
 
