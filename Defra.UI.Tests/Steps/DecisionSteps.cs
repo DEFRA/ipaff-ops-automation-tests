@@ -1,7 +1,10 @@
-﻿using Reqnroll.BoDi;
+﻿using Defra.UI.Tests.Pages.Interfaces;
+using Defra.UI.Tests.Tools;
+using FluentAssertions.Execution;
+using Microsoft.VisualBasic.FileIO;
 using NUnit.Framework;
 using Reqnroll;
-using Defra.UI.Tests.Pages.Interfaces;
+using Reqnroll.BoDi;
 
 namespace Defra.UI.Tests.Steps.IPAFF
 {
@@ -56,7 +59,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserSelectsInDecisionPage(string subOption, string decision)
         {
             decisionPage?.SelectDecision(subOption, decision);
-            _scenarioContext.Add("RefusalDecision", subOption);
+            _scenarioContext["RefusalDecision"] = subOption;
+        }
+
+        [When("the user provides the reason as {string} for destruction option in decision page")]
+        public void WhenTheUserProvidesTheReasonAsForDestructionOptionInDecisionPage(string reason)
+        {
+            decisionPage?.EnterReason(reason);
         }
 
         [When("the user enters currendate in decision page")]

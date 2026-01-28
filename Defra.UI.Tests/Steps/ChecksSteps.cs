@@ -1,4 +1,5 @@
 ﻿using Defra.UI.Tests.Pages.Interfaces;
+using Defra.UI.Tests.Tools;
 using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;
@@ -29,7 +30,7 @@ namespace Defra.UI.Tests.Steps
         public void WhenTheUserSelectsRadioButtonUnderDocumentaryCheckOnTheChecksPage(string docCheckOption)
         {
             checksPage?.SelectDocCheckRadio(docCheckOption);
-            _scenarioContext.Add("DocumentaryCheckDecision", docCheckOption);
+            _scenarioContext["DocumentaryCheckDecision"] = docCheckOption;
         }
 
         [When("the user selects {string} radio button under Identity check on the Checks page")]
@@ -42,7 +43,7 @@ namespace Defra.UI.Tests.Steps
         public void WhenTheUserSelectsSubRadioButtonUnderTheIdentityCheckMainRadio(string identityCheckSubOption)
         {
             checksPage?.SelectIdentityCheckSubRadio(identityCheckSubOption);
-            _scenarioContext.Add("IdentityCheckDecision", identityCheckSubOption);
+            _scenarioContext["IdentityCheckDecision"] = identityCheckSubOption;
         }
 
         [When("the user selects {string} radio button under Physical check on the Checks page")]
@@ -55,7 +56,7 @@ namespace Defra.UI.Tests.Steps
         public void WhenTheUserSelectsSubRadioButtonUnderThePhysicalCheckMainRadio(string physicalCheckSubOption)
         {
             checksPage?.SelectPhysicalCheckSubRadio(physicalCheckSubOption);
-            _scenarioContext.Add("PhysicalCheckDecision", physicalCheckSubOption);
+            _scenarioContext["PhysicalCheckDecision"] = physicalCheckSubOption;
         }
 
         [When("the user clicks on Save and continue button on the Checks page")]

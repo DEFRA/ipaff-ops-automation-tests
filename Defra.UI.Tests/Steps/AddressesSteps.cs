@@ -3,6 +3,7 @@ using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
 using AventStack.ExtentReports.Gherkin.Model;
+using Defra.UI.Tests.Tools;
 
 namespace Defra.UI.Tests.Steps.IPAFF
 {
@@ -93,9 +94,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var consigneeCountry = _scenarioContext.Get<string>("ConsigneeCountry");
 
             // Since importer uses same data as consignee, store it in context
-            _scenarioContext.Add("ImporterName", consigneeName);
-            _scenarioContext.Add("ImporterAddress", consigneeAddress);
-            _scenarioContext.Add("ImporterCountry", consigneeCountry);
+            _scenarioContext["ImporterName"] = consigneeName;
+            _scenarioContext["ImporterAddress"] = consigneeAddress;
+            _scenarioContext["ImporterCountry"] = consigneeCountry;
 
             // Verify importer shows same details as consignee
             Assert.True(addressesPage?.VerifySelectedImporter(consigneeName, consigneeAddress, consigneeCountry),
@@ -148,7 +149,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserClicksSameAsConsigneeForPlaceOfDestination()
         {
             addressesPage?.ClickPlaceOfDestinationSameAsConsignee();
-            _scenarioContext["PlaceOfDestinationDetails"] = addressesPage?.GetSelectedPlaceOfDestination();
+            _scenarioContext["PlaceOfDestinationDetails"]=addressesPage?.GetSelectedPlaceOfDestination();
         }
 
         [When(@"the user clicks on Change link under '(.*)'")]

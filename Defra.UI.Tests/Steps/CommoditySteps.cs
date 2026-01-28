@@ -1,7 +1,8 @@
-﻿using Reqnroll.BoDi;
+﻿using Defra.UI.Tests.Pages.Interfaces;
+using Defra.UI.Tests.Tools;
 using NUnit.Framework;
 using Reqnroll;
-using Defra.UI.Tests.Pages.Interfaces;
+using Reqnroll.BoDi;
 
 namespace Defra.UI.Tests.Steps.IPAFF
 {
@@ -28,16 +29,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user searches {string} commodity code")]
         public void WhenTheUserSearchesCommodityCode(string code)
         {
-            List<string> commodityCodes;
-            if(_scenarioContext.ContainsKey("CommodityCode"))
-            {
-                commodityCodes = _scenarioContext.Get<List<string>>("CommodityCode");
-            }
-            else
-            {
-                commodityCodes = new List<string>();
-            }
+            var commodityCodes = _scenarioContext.GetFromContext<List<string>>("CommodityCode", []);
             commodityCodes.Add(code);
+
             _scenarioContext["CommodityCode"] = commodityCodes;
             commodityPage?.EnterCommodityCode(code);
         }
@@ -45,49 +39,27 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the commodity details should be populated {string} {string}")]
         public void ThenTheCommodityDetailsShouldBePopulated(string code, string description)
         {
-            List<string> commodityDescriptions;
-            if (_scenarioContext.ContainsKey("CommodityDescription"))
-            {
-                commodityDescriptions = _scenarioContext.Get<List<string>>("CommodityDescription");
-            }
-            else
-            {
-                commodityDescriptions = new List<string>();
-            }
+            var commodityDescriptions = _scenarioContext.GetFromContext<List<string>>("CommodityDescription", []);
             commodityDescriptions.Add(description);
+
             _scenarioContext["CommodityDescription"] = commodityDescriptions;
-            Assert.True(commodityPage?.VerifyCommodityDetails(code,description));
+            Assert.True(commodityPage?.VerifyCommodityDetails(code, description));
         }
 
         [When("the user selects the type of commodity {string}")]
         public void WhenTheUserSelectsTheTypeOfCommodity(string type)
         {
-            List<string> commoditytypes;
-            if (_scenarioContext.ContainsKey("TypeOfCommodity"))
-            {
-                commoditytypes = _scenarioContext.Get<List<string>>("TypeOfCommodity");
-            }
-            else
-            {
-                commoditytypes = new List<string>();
-            }
+            var commoditytypes = _scenarioContext.GetFromContext<List<string>>("TypeOfCommodity", []);
+            
             commoditytypes.Add(type);
             _scenarioContext["TypeOfCommodity"] = commoditytypes;
-            commodityPage?.SelectTypeOfCommodity(type);        
+            commodityPage?.SelectTypeOfCommodity(type);
         }
 
         [When("the user selects species of commodity {string}")]
         public void WhenTheUserSelectsSpeciesOfCommodity(string species)
-        {
-            List<string> speciesList;
-            if (_scenarioContext.ContainsKey("Species"))
-            {
-                speciesList = _scenarioContext.Get<List<string>>("Species");
-            }
-            else
-            {
-                speciesList = new List<string>();
-            }
+        {            
+            var speciesList = _scenarioContext.GetFromContext<List<string>>("Species", []);
             speciesList.Add(species);
             _scenarioContext["Species"] = speciesList;
             commodityPage?.SelectCommoditySpecies(species);
@@ -146,7 +118,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             commodityPage?.ClickUpdateTotal();
             Thread.Sleep(1000);
-            _scenarioContext["SubtotalNetWeight"] = commodityPage?.GetSubtotalsOfNetWeight();
+
+            _scenarioContext["SubtotalNetWeight"]=commodityPage?.GetSubtotalsOfNetWeight();
             _scenarioContext["SubtotalPackages"] = commodityPage?.GetSubtotalsOfPackages();
             _scenarioContext["TotalNetWeight"] = commodityPage?.GetTotalNetWeight();
             _scenarioContext["TotalPackages"] = commodityPage?.GetTotalPackages();
@@ -190,11 +163,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             commodityPage?.ClickUpdateTotal();
             Thread.Sleep(2000);
-            _scenarioContext["TotalNetWeight"] = commodityPage.GetTotalNetWeight();
-            _scenarioContext["TotalPackages"] = commodityPage.GetTotalPackages();
-            _scenarioContext["SubtotalNetWeight"] = commodityPage?.GetSubtotalsOfNetWeight();
+            _scenarioContext["SubtotalNetWeight"]=commodityPage?.GetSubtotalsOfNetWeight();
             _scenarioContext["SubtotalPackages"] = commodityPage?.GetSubtotalsOfPackages();            
-            _scenarioContext["TotalNetWeight"] = commodityPage.GetTotalNetWeight();
+            _scenarioContext["TotalNetWeight"]=commodityPage.GetTotalNetWeight();
             _scenarioContext["TotalPackages"] = commodityPage.GetTotalPackages();
         }
 
@@ -229,8 +200,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void ThenTheCommodityDetailsShouldBePopulatedForFirstCommodity(string code, string description)
         {
             Assert.True(commodityPage?.VerifyCommodityDetails(code, description));
-            _scenarioContext.Add("CommodityCodeFirstCommodity", code);
-            _scenarioContext.Add("CommodityDescFirstCommodity", description);
+
+            _scenarioContext["CommodityCodeFirstCommodity"] = code;
+            _scenarioContext["CommodityDescFirstCommodity"] = description;
         }
         
         [Then("the commodity details should be populated {string} {string} for second commodity")]
@@ -291,8 +263,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user selects the second commodity {string} {string} under the parent commodity")]
         public void WhenTheUserSelectsTheFirstAdditionalCommodityUnderTheParentCommodity(string additionalCommCode, string additionalcommDescription)
         {
-            _scenarioContext.Add("CommodityCodeSecondCommodity", additionalCommCode);
-            _scenarioContext.Add("CommodityDescSecondCommodity", additionalcommDescription);
+            _scenarioContext["CommodityCodeSecondCommodity"]=additionalCommCode;
+            _scenarioContext["CommodityDescSecondCommodity"] = additionalcommDescription;
             commodityPage?.SelectCommodityInTheCommTree(additionalcommDescription);
         }
 
@@ -306,7 +278,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserPopulatesTheEarTagAs(string earTag)
         {
             commodityPage?.EnterEarTag(earTag);
-            _scenarioContext.Add("EarTag", earTag);
+            _scenarioContext["EarTag"] = earTag;
         }
 
         [Then("the user verifies and enters any missing data on the Commodity page")]
