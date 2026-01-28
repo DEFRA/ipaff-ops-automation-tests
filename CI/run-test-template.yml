@@ -7,7 +7,6 @@
     type: string
   - name: seleniumGrid
     type: string
-    default: 'http://localhost:4444'
   - name: deviceName
     type: string
   - name: bsOSVersion
