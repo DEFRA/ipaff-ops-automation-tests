@@ -119,13 +119,19 @@ namespace Defra.UI.Tests.Steps.IPAFF
             else
                 WhenTheUserChangesTheConsignedCountryTo("Australia");
 
-            if(originOfImportPage.IsConsignmentRefNumAdded)
+            if (originOfImportPage.IsConsignmentRefNumAdded)
                 _scenarioContext["ConsignmentReferenceNumber"] = originOfImportPage?.GetConsignmentRefNum;
             else
             {
                 originOfImportPage?.EnterConsignmentRefNum("12345");
                 _scenarioContext["ConsignmentReferenceNumber"] = "12345";
             }
+        }
+
+        [Then("Does your consignment require a region code? defaults to 'No'")]
+        public void ThenDoesYourConsignmentRequireARegionCodeDefaultsToNo()
+        {
+            Assert.True(originOfImportPage?.IsRegionCodeDefaultedToNo, "Does your consignment require a region code? is not defaulted to 'No'");
         }
     }
 }
