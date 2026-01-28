@@ -46,6 +46,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtExitDateMonth => _driver.FindElement(By.Id("temp-deadline-month"));
         private IWebElement txtExitDateYear => _driver.FindElement(By.Id("temp-deadline-year"));
         private IWebElement ddlExitBCP => _driver.FindElement(By.Id("temporaryExitBipUk"));
+        private IWebElement txtDestructionReason => _driver.FindElement(By.Id("notAcceptableDestructionReason"));
         
         #endregion
 
@@ -211,6 +212,11 @@ namespace Defra.UI.Tests.Pages.Classes
             {
                 return string.Empty;
             }
+        }
+
+        public void EnterDestructionReason(String reason)
+        {
+            txtDestructionReason.SendKeys(reason);
         }
     }
 }

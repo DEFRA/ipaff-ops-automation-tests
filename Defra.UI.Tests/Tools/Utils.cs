@@ -97,6 +97,35 @@ namespace Defra.UI.Tests.Tools
             }
         }
 
+
+        public static (string day, string month, string year) GetDayMonthYear(string dateString)
+        {
+            if (string.IsNullOrWhiteSpace(dateString))
+                throw new ArgumentException("Date string cannot be empty.", nameof(dateString));
+
+            dateString = dateString.Trim().ToLowerInvariant();
+
+            DateTime date =
+                dateString == "today" ? DateTime.Today :
+                dateString == "yesterday" ? DateTime.Today.AddDays(-1) :
+                dateString == "tomorrow" ? DateTime.Today.AddDays(1) :
+                dateString == "future" ? DateTime.Today.AddDays(10) :
+                DateTime.ParseExact(
+                    dateString,
+                    new[] { "dd/MM/yyyy", "dd-MM-yyyy", "d/M/yyyy", "d-M-yyyy" },
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.None
+                );
+
+            string day = date.Day.ToString("00", CultureInfo.InvariantCulture);
+            string month = date.Month.ToString("00", CultureInfo.InvariantCulture);
+            string year = date.Year.ToString(CultureInfo.InvariantCulture);
+
+            return (day, month, year);
+        }
+
+
+
         #region WebDriver Extension Methods for Element Safety
 
         /// <summary>
