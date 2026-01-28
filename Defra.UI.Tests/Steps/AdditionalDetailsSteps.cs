@@ -1,7 +1,7 @@
-﻿using Reqnroll.BoDi;
+﻿using Defra.UI.Tests.Pages.Interfaces;
 using NUnit.Framework;
 using Reqnroll;
-using Defra.UI.Tests.Pages.Interfaces;
+using Reqnroll.BoDi;
 
 
 namespace Defra.UI.Tests.Steps.IPAFF
@@ -38,14 +38,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserSelectsAnyRadioButtonOnTheAdditionalDetailsPage(string option)
         {
             additionalDetailsPage?.ClickImportingProduct(option);
-            _scenarioContext["Temperature"] = option;
+            _scenarioContext["Temperature"]=option;
         }
 
         [When("the user selects {string} radio button under Commodity intended for on the Additional details page")]
         public void WhenTheUserSelectsRadioButtonUnderCommodityIntendedForOnTheAdditionalDetailsPage(string commIntendedForOption)
         {
             Assert.True(additionalDetailsPage?.SelectCommodityIntendedForRadio(commIntendedForOption), "Commodity intended for radio is not selected on the Additional details page");
-            _scenarioContext.Add("CommodityIntendedFor", commIntendedForOption);
+            _scenarioContext["CommodityIntendedFor"] = commIntendedForOption;
         }
 
         [When("the user changes What are the animals certified for? to {string}")]
@@ -53,14 +53,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserSelectsForWhatAreTheAnimalsCertifiedFor(string certificationOption)
         {
             additionalDetailsPage?.SelectAnimalCertification(certificationOption);
-            _scenarioContext["CertificationOption"] = certificationOption;  
+            _scenarioContext["CertificationOption"] = certificationOption;
         }
 
         [When("the user selects {string} for Does the consignment contain any unweaned animals?")]
         public void WhenTheUserSelectsForDoesTheConsignmentContainAnyUnweanedAnimals(string unweanedAnimalsOption)
         {
             additionalDetailsPage?.SelectUnweanedAnimalsOption(unweanedAnimalsOption);
-            _scenarioContext.Add("UnweanedAnimalsOption", unweanedAnimalsOption);
+            _scenarioContext["UnweanedAnimalsOption"] = unweanedAnimalsOption;
         }
 
         [When(@"the user clicks on Save and review")]
@@ -74,6 +74,22 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             List<string> commOptionsListExpected = new List<string>() { radioOne, radioTwo, radioThree, radioFour };
             Assert.True(additionalDetailsPage?.AreAllCommIntendedForRadioOptionsDisplayed(commOptionsListExpected), "Not all Commodity intended for radio options are displayed on the Additional details page");
+        }
+
+        [Then("the user verifies and enters any missing data on the Additional details page")]
+        public void ThenTheUserVerifiesAndEntersAnyMissingDataOnTheAdditionalDetailsPage()
+         {
+            var commIntendedForRadio = additionalDetailsPage?.GetCommIntendedForRadioLabelText;
+            if (!string.IsNullOrEmpty(commIntendedForRadio))
+                _scenarioContext["CommodityIntendedFor"] = commIntendedForRadio;
+            else
+                WhenTheUserSelectsRadioButtonUnderCommodityIntendedForOnTheAdditionalDetailsPage("Human consumption");
+
+            var temperatureRadio = additionalDetailsPage?.GetTemperatureRadioLabelText;
+            if (!string.IsNullOrEmpty(temperatureRadio))
+                _scenarioContext["Temperature"] = temperatureRadio;
+            else
+                WhenTheUserSelectsAnyRadioButtonOnTheAdditionalDetailsPage("Chilled");
         }
     }
 }

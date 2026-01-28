@@ -39,7 +39,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserSelectsDocumentType(string type)
         {
             accompanyingDocumentsPage?.SelectDocumentType(type);
-            AppendStringToScenarioContextArray(_scenarioContext, "DocumentType", type);
+            Utils.AppendStringToScenarioContextArray(_scenarioContext, "DocumentType", type);
         }
 
         [When("the user selects Document type {string} for creating border notification")]
@@ -56,21 +56,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             UpdateStringToScenarioContextArray(_scenarioContext, "DocumentType", type);
         }
 
-        public void AppendStringToScenarioContextArray(ScenarioContext context, string key, string value)
-        {
-            if (context.TryGetValue(key, out var existing) && existing is string[] current)
-            {
-                var updated = new string[current.Length + 1];
-                Array.Copy(current, updated, current.Length);
-                updated[current.Length] = value;
-                context[key] = updated;
-            }
-            else
-            {
-                context[key] = new[] { value };
-            }
-        }
-
+        
         public void UpdateStringToScenarioContextArray(ScenarioContext context, string key, string value)
         {
             if (context.TryGetValue(key, out var existing) && existing is string[] current)
@@ -91,7 +77,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserEntersDocumentReference(string reference)
         {
             accompanyingDocumentsPage?.EnterDocumentReference(reference);
-            AppendStringToScenarioContextArray(_scenarioContext, "DocumentReference", reference);
+            Utils.AppendStringToScenarioContextArray(_scenarioContext, "DocumentReference", reference);
         }
 
         [When("the user enters Document reference {string} for creating border notification")]
@@ -115,7 +101,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             accompanyingDocumentsPage?.EnterDateOfIssue(date.Day.ToString(), date.Month.ToString(), date.Year.ToString());
             var monthName = date.ToString("MMMM", CultureInfo.InvariantCulture);
             var dateofIssue = date.Day.ToString() + " " + monthName + " " + date.Year.ToString();
-            AppendStringToScenarioContextArray(_scenarioContext, "DateOfIssue", dateofIssue);
+            Utils.AppendStringToScenarioContextArray(_scenarioContext, "DateOfIssue", dateofIssue);
         }
 
         [When("the user enters date of issue for the next notification {string}")]
@@ -144,6 +130,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user uploads the document {string} in the format {string}")]
         [When("the user uploads the document {string} in the format {string} that exceeds size limit")]
         [When("the user uploads a document with a filename longer than {int} characters {string} in the format {string}")]
+        [When("the user uploads the document {string} in the format {string} as no document is attached by the copy")]
         public void WhenTheUserUploadsTheDocumentInTheFormat(string name, string format)
         {
             var filename = name + format;

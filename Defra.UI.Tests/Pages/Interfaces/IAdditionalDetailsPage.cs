@@ -10,5 +10,7 @@
         void SelectUnweanedAnimalsOption(string option);
         void ClickSaveAndReview();
         bool AreAllCommIntendedForRadioOptionsDisplayed(List<string> commOptionsListExpected);
+        string GetCommIntendedForRadioLabelText { get; }
+        string GetTemperatureRadioLabelText { get; }
     }
 }

@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
+using Defra.UI.Tests.Tools;
 
 namespace Defra.UI.Tests.Steps.IPAFF
 {
@@ -11,7 +12,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
         private readonly IObjectContainer _objectContainer;
         private readonly ScenarioContext _scenarioContext;
 
-
         private IYourImportNotificationsPage? importNotificationsPage => _objectContainer.IsRegistered<IYourImportNotificationsPage>() ? _objectContainer.Resolve<IYourImportNotificationsPage>() : null;
 
         public YourImportNotificationsSteps(IObjectContainer container, ScenarioContext scenarioContext)
@@ -20,10 +20,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext = scenarioContext;
         }
 
-        [Then("the user should be logged into Notification page")]        
+        [Then("the user should be logged into Notification page")]
         [Then("the dashboard page should be displayed")]
         [Then("the user is taken to the Your import notifications page")]
         [Then("the Your notifications page is displayed")]
+        [Then("the user is taken back to the dashboard page")]
         public void ThenTheDashboardShouldBeDisplayed()
         {
             Assert.True(importNotificationsPage?.IsPageLoaded(), "Dashboard not displayed");
@@ -51,6 +52,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
         [When("the user clicks Show notification")]
+        [When("the user clicks the Show notification link")]
         public void WhenTheUserClicksShowNotification()
         {
             var chedReference = _scenarioContext.Get<string>("CHEDReference");
@@ -93,7 +95,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("user searches for the '(.*)' import notification")]
         public void WhenUserSearchesForTheImportNotification(string reference)
         {
-            _scenarioContext.Add("CHEDReference", reference);
+            _scenarioContext["CHEDReference"] = reference;
             importNotificationsPage?.SearchForNotification(reference);
         }
 
@@ -182,5 +184,31 @@ namespace Defra.UI.Tests.Steps.IPAFF
             importNotificationsPage?.ClickViewDetailsLink();
         }
 
+        [Then("the user searches for the Draft CHED reference on the dashboard")]
+        public void ThenTheUserSearchesForTheDraftCHEDReferenceOnTheDashboard()
+        {
+            var draftCHEDReference = _scenarioContext.Get<string>("DraftCHEDReference");
+            importNotificationsPage?.SearchForNotification(draftCHEDReference);
+        }
+
+        [Then("the draft notification should be present in the list")]
+        public void ThenTheDraftNotificationShouldBePresentInTheList()
+        {
+            var draftCHEDReference = _scenarioContext.Get<string>("DraftCHEDReference");
+            Assert.True(importNotificationsPage?.VerifyNotificationInList(draftCHEDReference), "Draft notification not found in the list");
+        }
+
+        [When("the user clicks the Amend link")]
+        public void WhenTheUserClicksTheAmendLink()
+        {
+            var draftCHEDReference = _scenarioContext.Get<string>("DraftCHEDReference");
+            importNotificationsPage?.ClickAmend(draftCHEDReference);
+        }
+
+        [When("the user clicks the Copy as new link for the notification")]
+        public void WhenTheUserClicksTheCopyAsNewLinkForTheNotification()
+        {
+            importNotificationsPage?.ClickCopyAsNewLink();
+        }
     }
 }
