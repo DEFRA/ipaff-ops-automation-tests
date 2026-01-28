@@ -71,6 +71,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             commodityPage?.AddAnotherCommodity(option);
         }
 
+        [Then("the Commodity code and Description should be copied from the original notification")]
         [Then("the Commodity page should be displayed with the commodity and description entered")]
         public void ThenTheCommodityPageShouldBeDisplayedWithTheCommodityAndDescriptionEntered()
         {
