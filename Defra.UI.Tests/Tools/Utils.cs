@@ -208,6 +208,16 @@ namespace Defra.UI.Tests.Tools
             }
         }
 
+        public static T GetFromContext<T>(this ScenarioContext context, string key, T defaultValue = default!)
+        {
+            if (context.ContainsKey(key))
+            {
+                return context.Get<T>(key);
+            }
+
+            return defaultValue;
+        }
+
         #endregion
 
         #region Operator Details Generation

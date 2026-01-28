@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
+using Defra.UI.Tests.Tools;
 
 namespace Defra.UI.Tests.Steps.IPAFF
 {
@@ -39,7 +40,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user clicks Save and continue without entering the local reference number data")]
         public void WhenTheUserClicksSaveAndContinueWithoutEnteringTheLocalReferenceNumberData()
         {
-            _scenarioContext.Add("BorderControlPostReference", "");
+            _scenarioContext["BorderControlPostReference"] = string.Empty;
             localReferenceNumberPage?.ClickSaveAndContinue();
         }
     }

@@ -80,6 +80,9 @@
     <None Update="Data\Documents\IPAFFS Test Document - Exceeds size.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Data\Documents\IPAFFS Test Document 1.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Data\Documents\IPAFFS Test Document with a long file name to check the limit of filename length exceeding 100 characters.docx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
