@@ -1,4 +1,4 @@
-﻿    using AventStack.ExtentReports.Gherkin.Model;
+﻿using AventStack.ExtentReports.Gherkin.Model;
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using NUnit.Framework;
