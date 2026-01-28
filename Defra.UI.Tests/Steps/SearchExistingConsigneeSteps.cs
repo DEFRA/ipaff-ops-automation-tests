@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
+using Defra.UI.Tests.Tools;
 
 
 namespace Defra.UI.Tests.Steps.IPAFF
@@ -40,9 +41,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var consigneeAddress = searchExistingConsigneePage?.GetSelectedConsigneeAddress(consigneeName);
             var consigneeCountry = searchExistingConsigneePage?.GetSelectedConsigneeCountry(consigneeName);
 
-            _scenarioContext.Add("ConsigneeName", selectedConsigneeName);
-            _scenarioContext.Add("ConsigneeAddress", consigneeAddress);
-            _scenarioContext.Add("ConsigneeCountry", consigneeCountry);
+            _scenarioContext["ConsigneeName"] = selectedConsigneeName;
+            _scenarioContext["ConsigneeAddress"] = consigneeAddress;
+            _scenarioContext["ConsigneeCountry"] = consigneeCountry;
             _scenarioContext["ConsigneeDetails"] = searchExistingConsigneePage?.GetSelectedConsignee(consigneeName);
 
             searchExistingConsigneePage?.ClickSelect(consigneeName);

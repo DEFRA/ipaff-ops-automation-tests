@@ -37,8 +37,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["CustomsDeclarationReference"] = confirmationPage.GetCustomsDeclarationReference();
             _scenarioContext["CustomsDocumentCode"] = confirmationPage.GetCustomsDocumentCode();
         }
-       
+
         [When("the user clicks Return to your dashboard")]
+        [When("the user clicks return to your dashboard link")]
         public void WhenTheUserClicksReturnToYourDashboard()
         {
             confirmationPage?.ClickReturnToDashboard();
@@ -48,6 +49,18 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void ThenTheDetailsShouldBeRecorded()
         {
             //No Implementation
+        }
+
+        [Then("the user verified the banner message {string}")]
+        public void ThenTheUserVerifiedTheBannerMessage(string message)
+        {
+            Assert.True(confirmationPage?.VerifyBannerMessage(message), $"Banner doesn't contain a message '{message}'");
+        }
+
+        [When("the user clicks Return to your dashboard link")]
+        public void WhenTheUserClicksReturnToYourDashboardLink()
+        {
+            confirmationPage?.ClickReturnToDashboardLink();
         }
     }
 }

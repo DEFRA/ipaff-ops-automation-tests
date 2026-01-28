@@ -11,5 +11,7 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void SignedOut();
         bool VerifySignedOutPage();
         void ClickReturnToDashboard();
+        bool VerifyBannerMessage(string message);
+        void ClickReturnToDashboardLink();
     }
 }

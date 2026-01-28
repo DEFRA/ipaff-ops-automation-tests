@@ -54,6 +54,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement transitExitBCP => _driver.FindElement(By.Id("bcp-transit-third-country"));
         private IWebElement transitDestinationCountry => _driver.WaitForElement(By.Id("third-country-transit"));
         private IReadOnlyCollection<IWebElement> internalMarketSubOptions => internalMarketConditional.FindElements(By.CssSelector("input[type='radio'][name='internal-market']"));
+        private IWebElement selectedReasonForImportRadioLabel => _driver.FindElement(By.XPath("//input[contains(@class,'govuk-radios__input') and @checked]/following-sibling::label"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -140,19 +141,14 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void EnterConsignmentLeavingDate(string day, string month, string year)
         {
-            txtDay.Click();
             txtDay.SendKeys(day);
-            txtMonth.Click();
             txtMonth.SendKeys(month);
-            txtYear.Click();
             txtYear.SendKeys(year);
         }
 
         public void EnterConsignmentLeavingTime(string hours, string minutes)
         {
-            txtHours.Click();
             txtHours.SendKeys(hours);
-            txtMinutes.Click();
             txtMinutes.SendKeys(minutes);
         }
 
@@ -351,5 +347,7 @@ namespace Defra.UI.Tests.Pages.Classes
                 return false;
             }
         }
+
+        public string GetReasonForImportRadioLabelText => selectedReasonForImportRadioLabel.Text.Trim() ?? string.Empty;
     }
 }

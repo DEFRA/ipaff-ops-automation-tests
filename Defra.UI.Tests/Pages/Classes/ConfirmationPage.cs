@@ -2,12 +2,7 @@
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
-using SeleniumExtras.WaitHelpers;
-using Microsoft.Dynamics365.UIAutomation.Browser;
-using System.Collections.ObjectModel;
-using Defra.Trade.Plants.SpecFlowBindings.Helpers;
 
 namespace Defra.UI.Tests.Pages.Classes
 {
@@ -27,6 +22,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement signOut => _driver.WaitForElement(By.Id("sign-out-link"));
         private IWebElement logOutPageHeading => _driver.WaitForElement(By.XPath("//h1[@class='govuk-heading-xl']"), true);
         private IWebElement lnkReturnToDashboard => _driver.FindElement(By.Id("manage-notifications"));
+        private IWebElement lblBanner => _driver.FindElement(By.Id("border-notification-banner"));
+        private IWebElement lnkReturnToDashboardLink => _driver.FindElement(By.Id("return-to-home-page"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -61,18 +58,29 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void SignedOut()
         {
-            signOut.Click();          
+            signOut.Click();
         }
 
         public bool VerifySignedOutPage()
         {
-             return logOutPageHeading.Text.Contains("You have signed out") 
-                || logOutPageHeading.Text.Contains("Your Defra account");
+            return logOutPageHeading.Text.Contains("You have signed out")
+               || logOutPageHeading.Text.Contains("Your Defra account");
         }
 
         public void ClickReturnToDashboard()
         {
             lnkReturnToDashboard.Click();
+        }
+
+        public bool VerifyBannerMessage(string message)
+        {
+            var bannerText = System.Text.RegularExpressions.Regex.Replace(lblBanner.Text.Trim(), @"\s+", " ").Trim();
+            return bannerText.Contains(message);
+        }
+
+        public void ClickReturnToDashboardLink()
+        {
+            lnkReturnToDashboardLink.Click();
         }
     }
 }
