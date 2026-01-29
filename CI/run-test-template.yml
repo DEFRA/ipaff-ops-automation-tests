@@ -42,7 +42,7 @@ jobs:
     ${{ if contains(parameters.seleniumGrid, 'localhost') }}:
       name: 'DEFRA-COMMON-ubuntu2004-SSV3'
     ${{ if contains(parameters.seleniumGrid, 'browserstack') }}:
-      name: 'DEFRA-COMMON-WINDOWS-SSV3'
+      name: 'DEFRA-TRD'
 
   variables:
     - group: 'IPAFFPREPROD'
