@@ -44,5 +44,19 @@ namespace Defra.UI.Tests.Pages.Classes
             else if (option.Equals("No") || rdoTransportContactNo.Text.Contains(option))
                 rdoTransportContactNo.Click();
         }
+
+        public bool IsTransportContactNotificationNotSelected()
+        {
+            // Get the radio button input elements
+            var rdoYesInput = rdoTransportContactYes;
+            var rdoNoInput = rdoTransportContactNo;
+
+            // Check if neither radio button is selected
+            var isYesSelected = rdoYesInput.Selected;
+            var isNoSelected = rdoNoInput.Selected;
+
+            // Return true if neither is selected (i.e., not copied from original)
+            return !isYesSelected && !isNoSelected;
+        }
     }
 }
