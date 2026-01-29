@@ -358,10 +358,10 @@ jobs:
             Write-Host "Processing $($htmlFile.Name)..."
             $content = Get-Content $htmlFile.FullName -Raw
             
-            # Replace absolute paths to TestResults with relative paths to Screenshots
-            # Matches: /agent/_work/.../Defra.UI.Tests/TestResults/guid.png
+            # Replace absolute paths (Unix or Windows) with relative paths to Screenshots
+            # Matches: /agent/_work/.../Defra.UI.Tests/TestResults/guid.png or C:\a\_work\...\Defra.UI.Tests\Reports\Screenshots\guid.png
             # Replaces with: Screenshots/guid.png
-            $content = $content -replace '(?<=["\(])/agent/_work/[^"()]+/Defra\.UI\.Tests/TestResults/([^"/)]+\.png)', 'Screenshots/$1'
+            $content = $content -replace '(?<=["\(])(?:/agent/_work/[^"()]+/Defra\.UI\.Tests/TestResults/|C:\\a\\_work\\[^"()]+\\Defra\.UI\.Tests\\Reports\\Screenshots\\)([^"/)]+\.png)', 'Screenshots/$1'
             
             # Save the modified content
             Set-Content -Path $htmlFile.FullName -Value $content
