@@ -318,15 +318,33 @@ jobs:
           artifactName: TestExecution_${{ parameters.jobName }}
           targetPath: '$(System.DefaultWorkingDirectory)/Defra.UI.Tests/TestExecution_${{ parameters.jobName }}.json'
     
-    - script: |
-        mkdir -p $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/Screenshots
-        mkdir -p $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports
+    - powershell: |
+        # Create directories if they don't exist
+        $screenshotsDir = "$(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/Screenshots"
+        $reportsDir = "$(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports"
         
-        # Find and copy all PNG files from TestResults
-        find $(System.DefaultWorkingDirectory)/Defra.UI.Tests/TestResults -name "*.png" -exec cp {} $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/Screenshots/ \;
+        if (-not (Test-Path $screenshotsDir)) {
+            New-Item -ItemType Directory -Path $screenshotsDir -Force | Out-Null
+        }
+        if (-not (Test-Path $reportsDir)) {
+            New-Item -ItemType Directory -Path $reportsDir -Force | Out-Null
+        }
+        
+        # Copy all PNG files from TestResults to Screenshots
+        $testResultsDir = "$(System.DefaultWorkingDirectory)/Defra.UI.Tests/TestResults"
+        if (Test-Path $testResultsDir) {
+            Get-ChildItem -Path $testResultsDir -Filter "*.png" -Recurse | ForEach-Object {
+                Copy-Item -Path $_.FullName -Destination $screenshotsDir -Force
+            }
+        }
         
         # Copy HTML reports if they exist
-        find $(System.DefaultWorkingDirectory)/Defra.UI.Tests -name "TestExecutionReport_*.html" -exec cp {} $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/ \;
+        $sourceDir = "$(System.DefaultWorkingDirectory)/Defra.UI.Tests"
+        if (Test-Path $sourceDir) {
+            Get-ChildItem -Path $sourceDir -Filter "TestExecutionReport_*.html" -Recurse | ForEach-Object {
+                Copy-Item -Path $_.FullName -Destination $reportsDir -Force
+            }
+        }
       displayName: 'Copy reports and screenshots'
       condition: always()
       continueOnError: true    
@@ -340,10 +358,10 @@ jobs:
             Write-Host "Processing $($htmlFile.Name)..."
             $content = Get-Content $htmlFile.FullName -Raw
             
-            # Replace absolute paths with relative paths
-            # Matches: /agent/_work/1/s/Defra.UI.Tests/Reports/Screenshots/guid.png
+            # Replace absolute paths to TestResults with relative paths to Screenshots
+            # Matches: /agent/_work/.../Defra.UI.Tests/TestResults/guid.png
             # Replaces with: Screenshots/guid.png
-            $content = $content -replace '(?<=["\(])/agent/_work/[^"()]+/Defra\.UI\.Tests/Reports/Screenshots/([^"/)]+\.png)', 'Screenshots/$1'
+            $content = $content -replace '(?<=["\(])/agent/_work/[^"()]+/Defra\.UI\.Tests/TestResults/([^"/)]+\.png)', 'Screenshots/$1'
             
             # Save the modified content
             Set-Content -Path $htmlFile.FullName -Value $content
