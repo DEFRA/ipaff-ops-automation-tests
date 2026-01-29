@@ -338,10 +338,10 @@ jobs:
             }
         }
         
-        # Copy HTML reports if they exist
+        # Copy HTML reports if they exist, excluding those already in Reports
         $sourceDir = "$(System.DefaultWorkingDirectory)/Defra.UI.Tests"
         if (Test-Path $sourceDir) {
-            Get-ChildItem -Path $sourceDir -Filter "TestExecutionReport_*.html" -Recurse | ForEach-Object {
+            Get-ChildItem -Path $sourceDir -Filter "TestExecutionReport_*.html" -Recurse | Where-Object { $_.FullName -notlike "*\Reports\*" } | ForEach-Object {
                 Copy-Item -Path $_.FullName -Destination $reportsDir -Force
             }
         }
