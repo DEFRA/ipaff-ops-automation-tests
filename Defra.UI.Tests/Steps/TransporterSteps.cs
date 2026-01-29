@@ -38,7 +38,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             transporterPage?.ClickAddTransporter();
         }
 
-        [Then("the Transporter should be copied from the original notification")]
         [Then("the chosen transporter should be displayed on the Transporter page")]
         public void ThenTheChosenTransporterShouldBeDisplayedOnTheTransporterPage()
         {
@@ -68,8 +67,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserClicksOnChangeLinkNextToTransporter()
         {
             transporterPage?.ClickChangeTransporter();
-        }        
-    
+        }
+
         [Then("the chosen transporter from the address book should be displayed on the Transporter page {string}")]
         public void ThenTheChosenTransporterFromTheAddressBookShouldBeDisplayedOnTheTransporterPage(string operatorType)
         {
@@ -85,6 +84,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             Assert.IsTrue(isDisplayed,
                 $"Transporter from address book ({operatorType}) not displayed correctly. Expected: {expectedName}, {expectedAddress}, {expectedCountry}, {expectedApprovalNumber}, {expectedType}");
+        }
+
+        [Then("the Transporter should not be copied from the original notification")]
+        public void ThenTheTransporterShouldNotBeCopiedFromTheOriginalNotification()
+        {
+            var isTransporterEmpty = transporterPage?.IsTransporterEmpty();
+            Assert.IsTrue(isTransporterEmpty, "Transporter details should not be populated when copying a notification");
         }
     }
 }
