@@ -75,5 +75,7 @@ namespace Defra.UI.Tests.Pages.Classes
             txtEarTag.Clear();
             txtEarTag.SendKeys(earTag);
         }
+
+        public string GetEarTag => txtEarTag.GetAttribute("value")?.Trim() ?? string.Empty;
     }
 }

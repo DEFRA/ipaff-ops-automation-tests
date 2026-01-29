@@ -11,5 +11,6 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void EnterMicrochipNumber(string microchipNumber);
         void EnterPassportNumber(string passportNumber);
         void EnterEarTag(string earTag);
+        string GetEarTag { get; }
     }
 }

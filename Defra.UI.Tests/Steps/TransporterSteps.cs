@@ -38,6 +38,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             transporterPage?.ClickAddTransporter();
         }
 
+        [Then("the Transporter should be copied from the original notification")]
         [Then("the chosen transporter should be displayed on the Transporter page")]
         public void ThenTheChosenTransporterShouldBeDisplayedOnTheTransporterPage()
         {
