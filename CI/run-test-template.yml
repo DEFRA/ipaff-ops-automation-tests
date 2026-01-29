@@ -40,7 +40,7 @@ jobs:
 
   pool:
     ${{ if contains(parameters.seleniumGrid, 'localhost') }}:
-      name: 'DEFRA_COMMON_WINDOWS_SSV3'
+      name: 'DEFRA-COMMON-WINDOWS-SSV3'
     ${{ if contains(parameters.seleniumGrid, 'browserstack') }}:
       name: 'DEFRA-TRD'
 
