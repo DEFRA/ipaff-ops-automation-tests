@@ -1,4 +1,5 @@
-﻿using Defra.UI.Tests.Pages.Interfaces;
+﻿using Defra.UI.Tests.Pages.Classes;
+using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using NUnit.Framework;
 using OpenQA.Selenium;
@@ -60,6 +61,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             animalIdentificationDetailsPage?.EnterPassportNumber(passportNumber);
             _scenarioContext["PassportNumber"] = passportNumber;
+        }
+
+        [When("the user populates the Ear tag as {string}")]
+        public void WhenTheUserPopulatesTheEarTagAs(string earTag)
+        {
+            animalIdentificationDetailsPage?.EnterEarTag(earTag);
+            _scenarioContext["EarTag"] = earTag;
         }
     }
 }

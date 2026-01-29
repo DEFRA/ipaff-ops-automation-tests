@@ -1767,7 +1767,7 @@ Scenario: User creates and submits a CHEDA notification, copies it as new and ve
 	Then the Notification Hub page should be displayed
 	When the user clicks on 'Animal identification details' link
 	Then the Enter animal identification details page should be displayed
-	#And the Number of animals should not be copied from the original notification
+	And the Ear tag should not be copied from the original notification
 	#When the user clicks change link next to animal identification details
 	#When the user populates the Ear tag as 'ET5678'
 	#And the user clicks the Save and return to hub button
