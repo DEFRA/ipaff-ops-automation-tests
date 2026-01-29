@@ -3,6 +3,7 @@ Feature: CreateNotification CHEDD
 
 Create a notification for CHEDD type
 
+@Regression
 Scenario: User creates and submits a B2C consignment notification - CHEDD Happy path
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page

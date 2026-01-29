@@ -359,9 +359,9 @@ jobs:
             $content = Get-Content $htmlFile.FullName -Raw
             
             # Replace absolute paths (Unix or Windows) with relative paths to Screenshots
-            # Matches: /agent/_work/.../Defra.UI.Tests/TestResults/guid.png or C:\a\_work\...\Defra.UI.Tests\Reports\Screenshots\guid.png
+            # Matches: /agent/_work/.../Defra.UI.Tests/TestResults/guid.png or D:\_work\...\Defra.UI.Tests\Reports\Screenshots\guid.png (any drive letter)
             # Replaces with: Screenshots/guid.png
-            $content = $content -replace '(?<=["\(])(?:/agent/_work/[^"()]+/Defra\.UI\.Tests/TestResults/|C:\\a\\_work\\[^"()]+\\Defra\.UI\.Tests\\Reports\\Screenshots\\)([^"/)]+\.png)', 'Screenshots/$1'
+            $content = $content -replace '(?<=["\(])(?:/agent/_work/[^"()]+/Defra\.UI\.Tests/TestResults/|[A-Za-z]:\\[^"()]+\\Defra\.UI\.Tests\\Reports\\Screenshots\\)([^"/)]+\.png)', 'Screenshots/$1'
             
             # Save the modified content
             Set-Content -Path $htmlFile.FullName -Value $content
