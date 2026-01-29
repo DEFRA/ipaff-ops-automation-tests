@@ -24,7 +24,6 @@
         bool SelectCommodityInTheCommTree(string commodity);
         bool IsSubCommodityListDisplayed();
         void EnterNumberOfAnimals(string numberOfAnimals);
-        void EnterEarTag(string earTag);
         string GetSubtotalNetWeight();
         string GetSubtotalPackages();
         string GetTotalNetWeight();

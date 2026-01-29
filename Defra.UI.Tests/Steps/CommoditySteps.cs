@@ -273,14 +273,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void ThenTheCommodityPageShouldBeDisplayed()
         {
             Assert.True(commodityPage?.IsPageLoaded(), "Description of the goods Commodity page not loaded");
-        }
-
-        [When("the user populates the Ear tag as {string}")]
-        public void WhenTheUserPopulatesTheEarTagAs(string earTag)
-        {
-            commodityPage?.EnterEarTag(earTag);
-            _scenarioContext["EarTag"] = earTag;
-        }
+        }        
 
         [Then("the user verifies and enters any missing data on the Commodity page")]
         public void ThenTheUserVerifiesAndEntersAnyMissingDataOnTheCommodityPage()
