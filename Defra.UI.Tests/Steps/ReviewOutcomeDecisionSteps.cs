@@ -175,6 +175,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             // Decision
             ValidateIfExists("AcceptableFor", reviewOutcomeDecisionPage?.GetAcceptanceDecision(), ref allDataMatches, mismatches);
             ValidateIfExists("AcceptableForSubOption", GetAcceptableForSubOptionValue(), ref allDataMatches, mismatches);
+            ValidateIfExists("RefusalReason", GetAcceptableForSubOptionValue(), ref allDataMatches, mismatches);
 
             if (!allDataMatches)
             {
