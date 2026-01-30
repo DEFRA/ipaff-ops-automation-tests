@@ -1115,9 +1115,13 @@ Scenario: User submits B2C consignment notification, reason for refusal and crea
 	Then the Origin of the import page should be displayed, showing "Australia" as the Country of origin and Country from where consigned
 	When the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
 	And the user clicks Save and continue
-	Then the Description of the goods/Commodity page should be displayed
-	When the user searches for first commodity code '12024200'
-	Then the commodity details should be populated '12024200' 'Shelled, whether or not broken' for first commodity
+	Then the Description of the goods/Commodity page should be displayed	
+	When the user clicks the 'OIL SEEDS AND OLEAGINOUS FRUITS; MISCELLANEOUS GRAINS, SEEDS AND FRUIT; INDUSTRIAL OR MEDICINAL PLANTS; STRAW AND FODDER' in the parent commodity tree
+	And the sub commodity list expands
+	And the user clicks '' 'Groundnuts, not roasted or otherwise cooked, whether or not shelled or broken' under the parent commodity
+	And the user clicks '' 'Other' under the parent commodity
+	And the user selects the '12024200' 'Shelled, whether or not broken' under the parent commodity
+	Then the Commodity page should be displayed
 	When the user selects "No" for Do you want to add another commodity?
 	And the user clicks Save and continue
 	Then What is the main reason for importing the consignment? page should be displayed with radio buttons for CHEDD
@@ -1620,7 +1624,7 @@ Scenario: User creates a notification and the inspector revises the decision thr
 	And the sub commodity list expands
 	And the user clicks '1006' 'Rice' under the parent commodity
 	And the sub commodity list expands
-	And the user selects the second commodity '100610' 'Rice in the husk (paddy or rough)' under the parent commodity
+	And the user selects the '100610' 'Rice in the husk (paddy or rough)' under the parent commodity
 	Then the Commodity page should be displayed
 	When the user selects "No" for Do you want to add another commodity?
 	And the user clicks Save and continue

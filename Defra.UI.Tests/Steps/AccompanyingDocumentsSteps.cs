@@ -1,7 +1,6 @@
 ﻿using AventStack.ExtentReports.Gherkin.Model;
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
-using DocumentFormat.OpenXml.VariantTypes;
 using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;
@@ -100,7 +99,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             var date = Utils.ConvertToDate(dateString);
             accompanyingDocumentsPage?.EnterDateOfIssue(date.Day.ToString(), date.Month.ToString(), date.Year.ToString());
-            var monthName = date.ToString("MMMM", CultureInfo.InvariantCulture);
+            var monthName = date.ToString("MMMM");
             var dateofIssue = date.Day.ToString() + " " + monthName + " " + date.Year.ToString();
             Utils.AppendStringToScenarioContextArray(_scenarioContext, "DateOfIssue", dateofIssue);
         }

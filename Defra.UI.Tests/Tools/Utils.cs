@@ -117,9 +117,9 @@ namespace Defra.UI.Tests.Tools
                     DateTimeStyles.None
                 );
 
-            string day = date.Day.ToString("00", CultureInfo.InvariantCulture);
-            string month = date.Month.ToString("00", CultureInfo.InvariantCulture);
-            string year = date.Year.ToString(CultureInfo.InvariantCulture);
+            string day = date.ToString("dd");
+            string month = date.ToString("MM");
+            string year = date.Year.ToString();
 
             return (day, month, year);
         }
