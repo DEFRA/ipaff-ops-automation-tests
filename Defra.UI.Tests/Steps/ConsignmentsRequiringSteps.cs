@@ -40,5 +40,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             consignmentsRequiringControlPage?.ClickCHEDReferencNum();
         }
+        
+        [Then("the user verifies the control status is {string}")]
+        public void WhenTheUserVerifiesTheControlStatus(string controlStatus)
+        {
+            Assert.IsTrue(consignmentsRequiringControlPage?.VerifyControlStatus(controlStatus), "The Control status is not " +controlStatus);
+        }
     }
 }
