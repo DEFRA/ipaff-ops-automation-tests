@@ -58,7 +58,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user changes the selection to {string} {string} in the decision page")]
         public void WhenTheUserSelectsInDecisionPage(string subOption, string decision)
         {
-            _scenarioContext["RefusalDecision"] = subOption;
+            _scenarioContext["AcceptableFor"] = decision;
+            _scenarioContext["AcceptableForSubOption"] = subOption;
             subOption = subOption == "Use for other purpose" ? "Other" : subOption;
             decisionPage?.SelectDecision(subOption, decision);
         }
@@ -82,6 +83,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the main radio option {string} and the sub radio option {string} are selected by default")]
         public void ThenTheMainRadioOptionAndTheSubRadioOptionAreSelectedByDefault(string mainRadio, string subRadio)
         {
+            _scenarioContext["AcceptableFor"] = mainRadio;
+            _scenarioContext["AcceptableForSubOption"] = subRadio;
             Assert.Multiple(() =>
             {
                 Assert.True(decisionPage?.IsAcceptableForRadioSelected(mainRadio), $"The main radio option {mainRadio} is not selected by default on the Decision page");

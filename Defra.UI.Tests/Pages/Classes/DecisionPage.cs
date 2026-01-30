@@ -22,7 +22,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement drpDestinationCountry => _driver.FindElement(By.Id("transitDestinationCountry"));
         private IWebElement rdoTranshipment => _driver.FindElement(By.Id("acceptability-transhipment"));
         private IWebElement rdoChannelled => _driver.FindElement(By.Id("acceptability-channelled"));
+        private IWebElement rdoNonInternalMarket => _driver.FindElement(By.Id("acceptability-noninternalmarket"));
         private IWebElement rdoInternalMarket => _driver.FindElement(By.Id("acceptability-internalmarket"));
+        private IWebElement rdoInternalMarketSubOption(string label) => _driver.FindElement(By.XPath($"//*[@id='internal']/div/fieldset/div/div/label[text()='{label}']"));
         private IWebElement rdoSpecificWarehouse => _driver.FindElement(By.Id("acceptability-nonconforming"));
         private IWebElement rdoNotAcceptable => _driver.FindElement(By.Id("acceptability-refused"));
         private IWebElement rdoDestruction => _driver.FindElement(By.Id("notAcceptAction-destruction"));
@@ -123,7 +125,18 @@ namespace Defra.UI.Tests.Pages.Classes
                 case "Transhipment / Onward travel": rdoTranshipment.Click(); break;
                 case "Transit": rdoTransit.Click(); break;
                 case "Channelled": rdoChannelled.Click(); break;
-                case "Internal market": rdoInternalMarket.Click(); break;
+                case "Non-internal market": rdoNonInternalMarket.Click(); break;
+                case "Internal market": 
+                    rdoInternalMarket.Click();
+                    switch (subOption)
+                    {
+                        case "Feedingstuff":
+                        case "Further process":
+                        case "Human consumption": 
+                        case "Other": 
+                            rdoInternalMarketSubOption(subOption).Click(); break;
+                    }
+                    break;
                 case "Specific warehouse procedure": rdoSpecificWarehouse.Click(); break;
                 case "Not acceptable":
                     rdoNotAcceptable.Click();
