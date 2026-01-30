@@ -26,6 +26,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement datePickerIcon => _driver.WaitForElement(By.ClassName("date-picker__reveal__icon"));
         private IWebElement nextMonthButton => _driver.WaitForElement(By.ClassName("date-picker__button__next-month"));
         private IWebElement firstDateOfTheMonth => _driver.WaitForElement(By.XPath("//td/button[text()='1']"));
+        private IWebElement selectDate(string previousDay) => _driver.FindElement(By.XPath($"//td/button[text()='{previousDay}']"));
         private By documentDateBy => By.XPath("//div[contains(@id,'additional-document-date-value')]");
         private IWebElement documentDate => _driver.WaitForElement(documentDateBy);
         private IWebElement addAttachmentLink => _driver.WaitForElement(By.XPath("//button[contains(@Name,'add-attachment')]"));
@@ -196,6 +197,12 @@ namespace Defra.UI.Tests.Pages.Classes
             {
                 return false;
             }
+        }
+
+        public void SelectPreviousDateFromDatePicker(string previousDay)
+        {
+            _driver.WaitForElementCondition(ExpectedConditions.ElementToBeClickable(datePickerIcon)).Click();
+            selectDate(previousDay).Click();
         }
     }
 }
