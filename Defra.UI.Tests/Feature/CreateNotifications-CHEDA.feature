@@ -1806,7 +1806,7 @@ Scenario: User creates and submits a CHEDA notification, copies it as new and ve
 	When the user enters the CPH number 'NEW/345/6789/0001'
 	And the user clicks on Save and return to hub
 	Then the Notification Hub page should be displayed
-	#And the 'Transport contacts' task should have the status 'TO DO' 
+	And the 'Transport contacts' task should have the status 'TO DO' 
 	When the user clicks on 'Transport contacts' link
 	Then the Transport Contacts page should be displayed
 	And the Should we notify any transport contacts about inspections? should not be copied from the original notification
@@ -1814,7 +1814,7 @@ Scenario: User creates and submits a CHEDA notification, copies it as new and ve
 	And the user clicks on Save and return to hub
 	When the user clicks on 'Contact address for consignment' link
 	Then the Contact address for consignment page should be displayed without the secondary title
-	#And the Contact address for consignment should be copied from the original notification
+	And the Contact address for consignment should default to the first address on the list
 	When the user clicks on Save and return to hub
 	Then the Notification Hub page should be displayed
 	When the user clicks on 'Review and submit' link

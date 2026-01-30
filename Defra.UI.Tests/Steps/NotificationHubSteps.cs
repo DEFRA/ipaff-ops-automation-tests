@@ -74,5 +74,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.False(string.IsNullOrEmpty(refNumber), "Unable to retrieve the CHED Reference number from the Notification Hub page");
             _scenarioContext["NewCHEDReferenceNumber"] = refNumber;
         }
+
+        [Then(@"the '(.*)' task should have the status '(.*)'")]
+        public void ThenTheTaskShouldHaveTheStatus(string taskName, string expectedStatus)
+        {
+            var actualStatus = notificationHubPage?.GetTaskStatus(taskName) ?? string.Empty;
+            Assert.That(actualStatus, Is.EqualTo(expectedStatus).IgnoreCase,
+                $"Expected task '{taskName}' to have status '{expectedStatus}', but found '{actualStatus}'");
+        }
     }
 }
