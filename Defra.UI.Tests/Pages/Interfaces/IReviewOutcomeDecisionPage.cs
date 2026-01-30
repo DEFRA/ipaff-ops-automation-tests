@@ -59,6 +59,10 @@
         string? GetExitBCP();
         string? GetTransitExitBCP();
         string? GetTransitDestinationCountry();
+        string? GetRefusalReason();
+        string? GetDecisionSubOption();
+
+
 
         // Controlled Destination
         string? GetControlledDestinationName();

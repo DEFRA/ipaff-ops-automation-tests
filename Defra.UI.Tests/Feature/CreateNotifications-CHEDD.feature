@@ -1597,7 +1597,7 @@ Scenario: User submits consignment notification, inspector overrides the risk de
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
 
-Scenario: SPS 7380 - CHED D 
+Scenario: User creates a notification and the inspector revises the decision throughout the Record Decision workflow CHEDD - SPS-7380
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
@@ -1751,7 +1751,7 @@ Scenario: SPS 7380 - CHED D
 	When the user selects '' 'Not acceptable' in decision page
 	Then the user clicks Save and continue
 	And the Reason for Refusal page should be displayed
-	When the user selects "Chemical Contamination" as another reason for refusal
+	When the user selects "Chemical Contamination" as reason for refusal
 	And the user clicks Save and continue
 	Then the Review outcome decision page should be displayed
 	And the details reflect the information added for CHED D
