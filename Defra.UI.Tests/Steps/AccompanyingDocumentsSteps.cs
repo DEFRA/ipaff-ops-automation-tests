@@ -99,7 +99,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             var date = Utils.ConvertToDate(dateString);
             accompanyingDocumentsPage?.EnterDateOfIssue(date.Day.ToString(), date.Month.ToString(), date.Year.ToString());
-            var monthName = date.ToString("MMMM", CultureInfo.InvariantCulture);
+            var monthName = date.ToString("MMMM");
             var dateofIssue = date.Day.ToString() + " " + monthName + " " + date.Year.ToString();
             Utils.AppendStringToScenarioContextArray(_scenarioContext, "DateOfIssue", dateofIssue);
         }
@@ -107,11 +107,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user enters date of issue for the next notification {string}")]
         public void WhenTheUserEntersDateOfIssueForTheNextNotification(string dateString)
         {
-            var date = Utils.ConvertToDate(dateString);
-            accompanyingDocumentsPage?.EnterDateOfIssue(date.Day.ToString(), date.Month.ToString(), date.Year.ToString());
-            var monthName = date.ToString("MMMM", CultureInfo.InvariantCulture);
-            var dateofIssue = date.Day.ToString() + " " + monthName + " " + date.Year.ToString();
-            UpdateStringToScenarioContextArray(_scenarioContext, "DateOfIssue", dateofIssue);
+            var (day, month, year) = Utils.GetDayMonthYear(dateString);
+            accompanyingDocumentsPage?.EnterDateOfIssue(day, month, year);
+
+            var display = new DateTime(int.Parse(year, CultureInfo.InvariantCulture), int.Parse(month, CultureInfo.InvariantCulture), int.Parse(day, CultureInfo.InvariantCulture)).ToString("d MMMM yyyy", CultureInfo.InvariantCulture);
+            UpdateStringToScenarioContextArray(_scenarioContext, "DateOfIssue", display);
         }
 
         [When("the user selects a future date from the date picker")]
