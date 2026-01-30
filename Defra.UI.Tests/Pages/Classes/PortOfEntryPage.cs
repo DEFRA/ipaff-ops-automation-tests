@@ -78,8 +78,11 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void EnterEstimatedArrivalDate(string day, string month, string year)
         {
+            txtDay.Clear();
             txtDay.SendKeys(day);
+            txtMonth.Clear();
             txtMonth.SendKeys(month);
+            txtYear.Clear();
             txtYear.SendKeys(year);
         }
 
