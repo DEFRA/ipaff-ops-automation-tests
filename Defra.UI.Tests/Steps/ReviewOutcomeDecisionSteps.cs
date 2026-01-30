@@ -173,12 +173,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
             ValidateFileNameWithTruncation("DocumentName", reviewOutcomeDecisionPage?.GetAdditionalDocumentFileName(), ref allDataMatches, mismatches);
 
             // Decision
-            if (!_scenarioContext["AcceptableFor"].Equals(reviewOutcomeDecisionPage?.GetAcceptanceDecision()))
+            if (_scenarioContext.ContainsKey("AcceptableFor") && !_scenarioContext["AcceptableFor"].Equals(reviewOutcomeDecisionPage?.GetAcceptanceDecision()))
             {
                 allDataMatches = false;
                 mismatches.Add($"AcceptableFor: Expected '{_scenarioContext["AcceptableFor"]}', Found '{reviewOutcomeDecisionPage?.GetAcceptanceDecision()}'");
             }
-            //ValidateIfExists("AcceptableFor", reviewOutcomeDecisionPage?.GetAcceptanceDecision(), ref allDataMatches, mismatches);
             ValidateIfExists("AcceptableForSubOption", GetAcceptableForSubOptionValue(), ref allDataMatches, mismatches);
             ValidateIfExists("ReasonForRefusal", reviewOutcomeDecisionPage?.GetRefusalReason(), ref allDataMatches, mismatches);
 

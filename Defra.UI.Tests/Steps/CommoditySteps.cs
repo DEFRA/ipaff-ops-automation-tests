@@ -212,7 +212,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["CommodityCodeSecondCommodity"] = code;
             _scenarioContext["CommodityDescSecondCommodity"] = description;
         }
-        
+
         [When("the user populates Net weight as {string} for first commodity")]
         public void WhenTheUserPopulatesNetWeightAsForFirstCommodity(string weight)
         {
