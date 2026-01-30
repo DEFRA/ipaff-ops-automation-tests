@@ -1754,15 +1754,14 @@ Scenario: User creates and submits a CHEDA notification, copies it as new and ve
 	And the user enters estimated total journey time of the animals '10' hours
 	And the user clicks on Save and return to hub
 	Then the Notification Hub page should be displayed
-	When the user clicks on 'Accompanying documents' link
-	Then the Accompanying documents page should be displayed
-	And there are no accompanying document details copied from the original notification
-	When the user selects Document type 'Commercial invoice'
-	And the user enters Document reference 'INV67890'
-	And the user enters date of issue from last week
-	And the user clicks on Add attachment link
-	And the user uploads the document 'IPAFFS Test Document' in the format '.docx'
-	Then the document 'IPAFFS Test Document' '.docx' is uploaded successfully
+	When the user clicks on 'Latest health certificate' link
+	Then the Latest Health Certificate page should be displayed
+	And there are no Latest Health Certificate details copied from the original notification
+	When the user enters Latest Health Certificate Document reference 'VHC67890'
+	And the user enters Latest Health Certificate date of issue from yesterday
+	And the user clicks on Add attachment link on the Latest Health Certificate page
+	And the user uploads the Veterinary Health Certificate 'IPAFFS Test Health Certificate' in the format '.docx'
+	Then the Veterinary Health Certificate 'IPAFFS Test Health Certificate' '.docx' is uploaded successfully	
 	When the user clicks on Save and return to hub
 	Then the Notification Hub page should be displayed
 	When the user clicks on 'Animal identification details' link
