@@ -177,7 +177,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             {
                 allDataMatches = false;
                 mismatches.Add($"AcceptableFor: Expected '{_scenarioContext["AcceptableFor"]}', Found '{reviewOutcomeDecisionPage?.GetAcceptanceDecision()}'");
-            }
+            }            
             ValidateIfExists("AcceptableForSubOption", GetAcceptableForSubOptionValue(), ref allDataMatches, mismatches);
             ValidateIfExists("ReasonForRefusal", reviewOutcomeDecisionPage?.GetRefusalReason(), ref allDataMatches, mismatches);
 
