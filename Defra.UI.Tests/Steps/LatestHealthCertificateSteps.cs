@@ -124,5 +124,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var dateOfIssue = latestHealthCertificatePage?.GetDocumentIssueDate();
             _scenarioContext["LatestHealthCertificateDocumentDateOfIssue"] = dateOfIssue;
         }
+
+        [Then("there are no Latest Health Certificate details copied from the original notification")]
+        public void ThenThereAreNoLatestHealthCertificateDetailsCopiedFromTheOriginalNotification()
+        {
+            bool documentsArePresent = latestHealthCertificatePage?.AreHealthCertificatesPresent() ?? false;
+
+            Assert.False(documentsArePresent,
+                "Latest Health Certificate should not be copied from the original notification, but documents were found on the page");
+        }
+
     }
 }
