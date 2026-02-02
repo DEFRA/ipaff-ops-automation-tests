@@ -82,7 +82,7 @@ namespace Defra.UI.Tests.Hooks
 
             // Store scenario in ScenarioContext so PIMS hook can access it
             _scenarioContext.Set(_scenario, "ExtentScenario");
-            
+
             if (isRunOnce)
             {
                 GovernmentGateway.Initialize(_objectContainer);
@@ -185,7 +185,7 @@ namespace Defra.UI.Tests.Hooks
         public void AfterStep()
         {
             var stepInfo = _scenarioContext.StepContext.StepInfo.Text;
-            
+
             // Skip if this is a PIMS step (let PIMS hook handle it)
             bool isPimsStep = stepInfo.Contains("PIMS", StringComparison.OrdinalIgnoreCase) ||
                              stepInfo.Contains("logged in to the", StringComparison.OrdinalIgnoreCase) ||
@@ -193,7 +193,7 @@ namespace Defra.UI.Tests.Hooks
                              stepInfo.Contains("Importer Notifications", StringComparison.OrdinalIgnoreCase) ||
                              stepInfo.Contains("open the record", StringComparison.OrdinalIgnoreCase) ||
                              stepInfo.Contains("in the grid", StringComparison.OrdinalIgnoreCase);
-            
+
             if (isPimsStep)
             {
                 return;
@@ -247,9 +247,12 @@ namespace Defra.UI.Tests.Hooks
             }
 
             var screenshot = ((ITakesScreenshot)Driver).GetScreenshot();
-            var filePath = Path.Combine(screenshotsDir, $"{Guid.NewGuid()}.png");
+            var uniqueFileName = $"{Guid.NewGuid()}.png";
+            var filePath = Path.Combine(screenshotsDir, uniqueFileName);
+
             screenshot.SaveAsFile(filePath);
-            return filePath;
+
+            return $"./Screenshots/{uniqueFileName}";
         }
 
         private void CloseBrowsers()
