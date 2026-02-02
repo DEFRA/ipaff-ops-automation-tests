@@ -89,7 +89,7 @@ namespace Defra.UI.Tests.Pages.Classes
         }
 
         public string GetOriginCountryText => originCountrySelectedVal.Text.Trim();
-        
+
         public string GetConsignedCountryText => consignedCountrySelectedVal.Text.Trim();
 
         public string GetRegionCodeRadioLabelText => selectedRadioLabel.Text.Trim() ?? string.Empty;
@@ -103,5 +103,7 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             new SelectElement(ddlConsignedCountry).SelectByText(consignedCountry);
         }
+
+        public bool IsRegionCodeDefaultedToNo => rdoNoRegionCode.GetAttribute("checked") != null;
     }
 }

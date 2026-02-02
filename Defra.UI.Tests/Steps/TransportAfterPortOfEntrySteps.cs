@@ -75,5 +75,54 @@ namespace Defra.UI.Tests.Steps.IPAFF
             transportAfterPortOfEntryPage?.EnterDepartureTimeFromBCP(time);
             _scenarioContext["DepartureTimeFromBCP"] = time;
         }
+
+        [Then("the Means of transport after BCP should be copied from the original notification")]
+        public void ThenTheMeansOfTransportAfterBCPShouldBeCopiedFromTheOriginalNotification()
+        {
+            var expectedMeansOfTransport = _scenarioContext.ContainsKey("MeansOfTransportAfterBCP")
+                ? _scenarioContext["MeansOfTransportAfterBCP"]?.ToString() ?? string.Empty
+                : string.Empty;
+
+            string actualMeansOfTransport = transportAfterPortOfEntryPage?.GetMeansOfTransportAfterBCP ?? string.Empty;
+
+            Assert.That(actualMeansOfTransport, Is.EqualTo(expectedMeansOfTransport),
+                $"Expected Means of transport after BCP to be '{expectedMeansOfTransport}' but was '{actualMeansOfTransport}'");
+        }
+
+        [Then("the Transport identification should not be copied from the original notification")]
+        public void ThenTheTransportIdentificationShouldNotBeCopiedFromTheOriginalNotification()
+        {
+            string actualTransportIdentification = transportAfterPortOfEntryPage?.GetTransportIdentificationAfterBCP ?? string.Empty;
+
+            Assert.That(actualTransportIdentification, Is.Empty,
+                $"Transport identification should not be copied from the original notification, but found '{actualTransportIdentification}'");
+        }
+
+        [Then("the Transport document reference should not be copied from the original notification")]
+        public void ThenTheTransportDocumentReferenceShouldNotBeCopiedFromTheOriginalNotification()
+        {
+            string actualTransportDocumentReference = transportAfterPortOfEntryPage?.GetTransportDocumentReferenceAfterBCP ?? string.Empty;
+
+            Assert.That(actualTransportDocumentReference, Is.Empty,
+                $"Transport document reference should not be copied from the original notification, but found '{actualTransportDocumentReference}'");
+        }
+
+        [Then("the Departure date from BCP should not be copied from the original notification")]
+        public void ThenTheDepartureDateFromBCPShouldNotBeCopiedFromTheOriginalNotification()
+        {
+            string actualDepartureDate = transportAfterPortOfEntryPage?.GetDepartureDateFromBCP ?? string.Empty;
+
+            Assert.That(actualDepartureDate.Trim(), Is.Empty.Or.EqualTo("  "),
+                $"Departure date from BCP should not be copied from the original notification, but found '{actualDepartureDate}'");
+        }
+
+        [Then("the Departure time from BCP should not be copied from the original notification")]
+        public void ThenTheDepartureTimeFromBCPShouldNotBeCopiedFromTheOriginalNotification()
+        {
+            string actualDepartureTime = transportAfterPortOfEntryPage?.GetDepartureTimeFromBCP ?? string.Empty;
+
+            Assert.That(actualDepartureTime.Trim(), Is.Empty.Or.EqualTo(":"),
+                $"Departure time from BCP should not be copied from the original notification, but found '{actualDepartureTime}'");
+        }
     }
 }

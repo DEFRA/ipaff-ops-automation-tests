@@ -663,7 +663,7 @@ namespace Defra.UI.Tests.Pages.Classes
                 if (string.IsNullOrEmpty(text))
                     return text;
 
-                // Convert "14 January 2026" to "d MMMM yyyy" format
+                // Convert "14 January 2026" to "dd MMMM yyyy" format
                 if (DateTime.TryParse(text, out DateTime date))
                 {
                     return date.ToString("dd MMMM yyyy");
