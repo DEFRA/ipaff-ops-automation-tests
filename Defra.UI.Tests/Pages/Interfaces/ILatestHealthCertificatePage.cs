@@ -9,5 +9,6 @@
         void AddHealthCertificate(string fileName);
         string GetFileName { get; }
         string GetDocumentIssueDate();
+        bool AreHealthCertificatesPresent();
     }
 }

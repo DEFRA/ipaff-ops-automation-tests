@@ -40,5 +40,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
             transportContactsPage?.SelectTransportContactNotification(option);
             _scenarioContext["ShouldNotifyTransportContacts"] = option;
         }
+
+        [Then("the Should we notify any transport contacts about inspections? should not be copied from the original notification")]
+        public void ThenTheShouldWeNotifyAnyTransportContactsAboutInspectionsShouldNotBeCopiedFromTheOriginalNotification()
+        {
+            var isNotificationNotSelected = transportContactsPage?.IsTransportContactNotificationNotSelected();
+            Assert.IsTrue(isNotificationNotSelected, "Transport contact notification should not be selected when copying a notification");
+        }
     }
 }

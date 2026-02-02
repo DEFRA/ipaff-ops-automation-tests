@@ -20,14 +20,16 @@ namespace Defra.UI.Tests.Pages.Classes
         #region Page Objects
         private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
         private IWebElement secondaryTitle => _driver.WaitForElement(By.Id("page-secondary-title"), true);
-        private IWebElement lnkAddTransporter => _driver.WaitForElement(By.Id("add-transporter-from-bip"));
-        private IWebElement selectedTransporter => _driver.WaitForElement(By.XPath("//td[contains(@headers, 'transporter-company-name-address-country')]"));
+        private IWebElement lnkAddTransporter => _driver.WaitForElement(lnkAddTransporterBy);
+        private IWebElement selectedTransporter => _driver.WaitForElement(selectedTransporterBy);
         private IWebElement btnSaveAndReturnToHub => _driver.WaitForElement(By.Id("save-and-return-button-desktop"));
         private IWebElement btnSaveAndContinue => _driver.WaitForElement(By.Id("button-save-and-continue-desktop"));
         private IWebElement verifyTransporterNameAddressCountry => _driver.FindElement(By.XPath("//td[@headers='transporter-company-name-address-country']"));
         private IWebElement verifyTransporterApprovalNumber => _driver.FindElement(By.XPath("//td[@headers='transporter-number']"));
         private IWebElement verifyTransporterType => _driver.FindElement(By.XPath("//td[@headers='transporter-type']"));
         private IWebElement lnkChangeTransporter => _driver.WaitForElement(By.Id("edit-transporter-from-bip"));
+        private By selectedTransporterBy => By.XPath("//td[contains(@headers, 'transporter-company-name-address-country')]");
+        private By lnkAddTransporterBy => By.Id("add-transporter-from-bip");
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -77,7 +79,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
                 var displayedApprovalNumber = verifyTransporterApprovalNumber.Text.Trim();
                 var displayedType = verifyTransporterType.Text.Trim();
-                
+
                 return displayedName.Equals(name) &&
                        displayedAddress.Equals(address) &&
                        displayedCountry.Equals(country) &&
@@ -93,6 +95,18 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickChangeTransporter()
         {
             lnkChangeTransporter.Click();
+        }
+
+        public bool IsTransporterEmpty()
+        {
+            // Check if all transporter detail cells contain only whitespace or are empty
+            var nameAddressCountryText = verifyTransporterNameAddressCountry.Text.Trim();
+            var approvalNumberText = verifyTransporterApprovalNumber.Text.Trim();
+            var typeText = verifyTransporterType.Text.Trim();
+
+            return string.IsNullOrWhiteSpace(nameAddressCountryText) &&
+                   string.IsNullOrWhiteSpace(approvalNumberText) &&
+                   string.IsNullOrWhiteSpace(typeText);
         }
     }
 }

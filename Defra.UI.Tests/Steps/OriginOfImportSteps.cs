@@ -119,13 +119,32 @@ namespace Defra.UI.Tests.Steps.IPAFF
             else
                 WhenTheUserChangesTheConsignedCountryTo("Australia");
 
-            if(originOfImportPage.IsConsignmentRefNumAdded)
+            if (originOfImportPage.IsConsignmentRefNumAdded)
                 _scenarioContext["ConsignmentReferenceNumber"] = originOfImportPage?.GetConsignmentRefNum;
             else
             {
                 originOfImportPage?.EnterConsignmentRefNum("12345");
                 _scenarioContext["ConsignmentReferenceNumber"] = "12345";
             }
+        }
+
+        [Then("Does your consignment require a region code? defaults to 'No'")]
+        public void ThenDoesYourConsignmentRequireARegionCodeDefaultsToNo()
+        {
+            Assert.True(originOfImportPage?.IsRegionCodeDefaultedToNo, "Does your consignment require a region code? is not defaulted to 'No'");
+        }
+
+        [Then("the Country of origin should be copied from the original notification")]
+        public void ThenTheCountryOfOriginShouldBeCopiedFromTheOriginalNotification()
+        {
+            var expectedCountry = _scenarioContext.ContainsKey("CountryOfOrigin")
+                ? _scenarioContext["CountryOfOrigin"]?.ToString() ?? string.Empty
+                : string.Empty;
+
+            string actualCountry = originOfImportPage?.GetOriginCountryText ?? string.Empty;
+
+            Assert.That(actualCountry, Is.EqualTo(expectedCountry),
+                $"Expected Country of origin to be '{expectedCountry}' but was '{actualCountry}'");
         }
     }
 }
