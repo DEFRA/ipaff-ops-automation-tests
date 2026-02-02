@@ -65,13 +65,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(importNotificationsPage?.VerifyCertificateInNewTab(), "Certificate not displayed in new browser tab");
         }
 
-        [When("the user checks that the data in the certificate matches the data entered into the notification")]
-        public void WhenTheUserChecksThatTheDataInTheCertificateMatchesTheDataEnteredIntoTheNotification()
-        {
-            var chedReference = _scenarioContext.Get<string>("CHEDReference");
-            Assert.True(importNotificationsPage?.VerifyDataInCertificate(chedReference), "Certificate data verification failed");
-        }
-
         [When("the user closes the newly opened tab")]
         [When("the user closes the PDF browser tab")]
         public void WhenTheUserClosesThePDFBrowserTab()

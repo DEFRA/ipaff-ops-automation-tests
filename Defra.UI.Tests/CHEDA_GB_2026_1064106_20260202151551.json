@@ -1,0 +1,257 @@
+[
+  {
+    "PageNumber": 1,
+    "Sections": {
+      "PartIDescriptionOfConsignment": {
+        "Value": ""
+      },
+      "I3LocalReference": {
+        "Value": ""
+      },
+      "I4BorderControlPostControlPointControlUnit": {
+        "IsoCode": "of",
+        "Value": "London Borough of Hillingdon Heathrow Airport Imported Food Office"
+      },
+      "I2ChedReference": {
+        "Id": "CHEDA.GB.2026.1064106"
+      },
+      "I5BorderControlPostControlPointControlUnitCode": {
+        "Value": "ADADA"
+      },
+      "I1ConsignorExporter": {
+        "Name": "ABC",
+        "Address": "15 Walter Square, Bristol, BS7 0PP",
+        "Country": "England",
+        "IsoCode": "GB-ENG",
+        "Value": "Name ABC Address 15 Walter Square, Bristol, BS7 0PP Country England ISO Code GB-ENG"
+      },
+      "I6ConsigneeImporter": {
+        "Name": "DEF",
+        "Address": "11 John Childs Way, Rayleigh, SS6 8QG",
+        "Country": "England",
+        "IsoCode": "GB-ENG",
+        "Value": "Name DEF Address 11 John Childs Way, Rayleigh, SS6 8QG Country England ISO Code GB-ENG"
+      },
+      "I7PlaceOfDestination": {
+        "Name": "DEF",
+        "Address": "11 John Childs Way, Rayleigh, SS6 8QG",
+        "Country": "England",
+        "IsoCode": "GB-ENG",
+        "Value": "Name DEF Address 11 John Childs Way, Rayleigh, SS6 8QG Country England ISO Code GB-ENG"
+      },
+      "I8OperatorResponsibleForTheConsignment": {
+        "Name": "IPaff Automation",
+        "Organisation": "IPAFF Automation",
+        "Address": "1 WREN STREET, WEST MIDLANDS, COVENTRY, CV2 4FT",
+        "Country": "United Kingdom of Great Britain and Northern Ireland",
+        "IsoCode": "GB"
+      },
+      "I9AccompanyingDocuments": {
+        "DocumentReference": "",
+        "DateOfIssue": "Veterinary health VHC12345 1 December certificate 2025 Commercial invoice INV12345 24 November 2025",
+        "Type": ""
+      },
+      "I10PriorNotification": {
+        "Date": "07.02.2026 +0000 GMT",
+        "Time": "15:15:00 +0000 GMT"
+      },
+      "I11CountryOfOrigin": {
+        "IsoCode": "TZ",
+        "Value": "Tanzania"
+      },
+      "I13MeansOfTransport": {
+        "Mode": "ROAD VEHICLE",
+        "InternationalTransportDocument": "DOC1234",
+        "Identification": "123456"
+      },
+      "I12RegionOfOrigin": {
+        "Value": ""
+      },
+      "I15EstablishmentOfOrigin": {
+        "ApprovalNumber": "",
+        "IsoCode": "",
+        "Address": "",
+        "Name": "",
+        "Country": "",
+        "Value": "Name Address Approval Number Country ISO Code"
+      },
+      "I17ContainerNoSealNo": {
+        "Value": ""
+      },
+      "I18GoodsCertifiedAs": {
+        "Value": "Approved Bodies"
+      },
+      "I23ForInternalMarket": {
+        "Value": "true"
+      },
+      "I27MeansOfTransportAfterBcpStorage": {
+        "InternationalTransportDocument": "",
+        "Identification": "",
+        "Mode": ""
+      },
+      "I28Transporter": {
+        "Name": "Deijne Zeeland Beheer BV",
+        "Address": "Wissington Grange, Nayland, Colchester, CO6 4NH",
+        "Country": "United Kingdom of",
+        "IsoCode": "GB",
+        "Yes": "false",
+        "No": "true",
+        "Identification": "00106407",
+        "ApprovalNumber": "UK/BURY/T2/00106407"
+      },
+      "I29DateOfDeparture": {
+        "Value": ""
+      },
+      "I30JourneyLog": {
+        "Value": ""
+      },
+      "I31DescriptionOfTheGoods": [
+        {
+          "Commodity": "Species Quantity",
+          "CountryOfOrigin": "Tanzania (TZ)",
+          "PackageCount": "3 Units",
+          "Value": "1. 01 LIVE ANIMALS 0103 Live swine Commodity Species Quantity Package count Country of Origin Includes unweaned animals 0103 Sus scrofa domesticus 3 Units 3 Tanzania (TZ)"
+        }
+      ]
+    }
+  },
+  {
+    "PageNumber": 2,
+    "Sections": {
+      "I32TotalNumberOfPackages": {
+        "Value": "3"
+      },
+      "I33Quantity": {
+        "PackageCount": "3 Units",
+        "Value": "3 Units"
+      },
+      "I34AIdentificationDetails": {
+        "Value": "Identification details Description Sus scrofa domesticus 1 Ear tag - ET1234"
+      },
+      "I35Declaration": {
+        "AndIAmResponsibleUntilItHasEither": "",
+        "IConfirmThatIAmAccountableFor": "",
+        "PlaceOfDestination": "as stated on the health certificate or notification I confirm that I am accountable for: any payment for the official controls at the border any arrangements to re-dispatch the consignment any costs needed for quarantine or isolation of consignments any costs needed for destruction and disposal of consignments, when instructed by the authorities I am authorised as being accountable for these things if raising notifications on behalf of a third party. I can legally act on behalf of a third party in relation to the conditions of this",
+        "NameOfSignatory": "IPaff Automation",
+        "DateOfSignature": "02 February 2026 15:15:40 +0000 GMT",
+        "Declaration": ".",
+        "Signature": "",
+        "Value": "I am the contact for the authorities and located in the UK. I am complying with the requirements of Regulation (EU) 2017/625 including on animal health and welfare. I confirm I am responsible for this consignment. I am responsible from the submission of this notification to when it enters Great Britain. And I am responsible until it has either: cleared official checks at the border reached the Place of Destination as stated on the health certificate or notification I confirm that I am accountable for: any payment for the official controls at the border any arrangements to re-dispatch the consignment any costs needed for quarantine or isolation of consignments any costs needed for destruction and disposal of consignments, when instructed by the authorities I am authorised as being accountable for these things if raising notifications on behalf of a third party. I can legally act on behalf of a third party in relation to the conditions of this declaration. Date of signature Name of signatory Signature 02 February 2026 15:15:40 +0000 GMT IPaff Automation"
+      }
+    }
+  },
+  {
+    "PageNumber": 3,
+    "Sections": {
+      "PartIiControls": {
+        "Value": ""
+      },
+      "Ii1PreviousChed": {
+        "Value": ""
+      },
+      "Ii2ChedReference": {
+        "Id": "CHEDA.GB.2026.1064106"
+      },
+      "Ii24SubsequentCheds": {
+        "Value": ""
+      },
+      "Ii3DocumentaryCheck": {
+        "Satisfactory": "false",
+        "NotSatisfactory": "false",
+        "EuStandard": "",
+        "SatisfactoryFollowingOfficialIntervention": "false",
+        "NotDone": "false"
+      },
+      "Ii4IdentityCheck": {
+        "SealCheckOnly": "false",
+        "FullIdentityCheck": "false",
+        "Satisfactory": "false",
+        "NotSatisfactory": "false",
+        "Yes": "false",
+        "No": "false"
+      },
+      "Ii5PhysicalCheck": {
+        "Satisfactory": "false",
+        "NotSatisfactory": "false",
+        "Yes": "false",
+        "No": "false"
+      },
+      "Ii6LaboratoryTests": {
+        "Satisfactory": "false",
+        "NotSatisfactory": "false",
+        "Yes": "false",
+        "No": "false",
+        "Random": "false",
+        "Suspicion": "false",
+        "IntensifiedControls": "false",
+        "Pending": "false"
+      },
+      "Ii7WelfareCheck": {
+        "Satisfactory": "true",
+        "NotSatisfactory": "true",
+        "Yes": "true",
+        "No": "true",
+        "IsoCode": "No",
+        "Value": "Yes No Satisfactory Not Satisfactory"
+      },
+      "Ii8ImpactOnTransportAnimals": {
+        "IsoCode": "of",
+        "Value": "Number of dead animals Units (Accurate) Number of unfit animals Units (Accurate) Number of birth or abortion"
+      },
+      "Ii20IdentificationOfBcp": {
+        "UnitNumber": "ADADA",
+        "Stamp": "Hillingdon Heathrow Airport Imported Food Office",
+        "IsoCode": "of",
+        "Bcp": "London Borough of"
+      },
+      "Ii21CertifyingOfficer": {
+        "Date": "of",
+        "CertifyingOfficer": ", certify that the checks on the consignment have been carried out in accordance with EU retained law.",
+        "DateOfSignature": "",
+        "Signature": "",
+        "FullName": "",
+        "Name": "I, the undersigned certifying ficer"
+      },
+      "Ii22InspectionFees": {},
+      "Ii23CustomsDocumentReference": {}
+    }
+  },
+  {
+    "PageNumber": 4,
+    "Sections": {
+      "PartIiiFollowUp": {
+        "Value": ""
+      },
+      "Iii1PreviousChed": {
+        "Value": ""
+      },
+      "Iii2ChedReference": {
+        "Id": "CHEDA.GB.2026.1064106"
+      },
+      "Iii24SubsequentChed": {
+        "Value": ""
+      },
+      "Iii4DetailsOnReDispatching": {
+        "CountryOfDestination": "",
+        "IsoCode": "",
+        "ExitAuthority": "",
+        "Code": "",
+        "Mode": "",
+        "InternationalTransportDocument": "",
+        "Identification": ""
+      },
+      "Iii5FollowUp": {
+        "ComplianceOfTheConsignment": "",
+        "ControlAtDestination": "",
+        "LocalCompetentAuthority": "false",
+        "SecondEntryPoint": "false",
+        "ArrivalOfConsignment": "false"
+      },
+      "Iii6OfficialInspector": {
+        "FullName": "",
+        "DateOfSignature": "",
+        "Signature": ""
+      }
+    }
+  }
+]

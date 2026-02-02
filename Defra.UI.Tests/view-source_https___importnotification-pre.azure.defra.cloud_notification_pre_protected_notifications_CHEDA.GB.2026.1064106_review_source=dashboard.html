@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en" class="govuk-template app-html-class">
+
+<head>
+  <meta charset="utf-8">
+  <title>Review Notification - Import and export applications - GOV.UK</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="blue">
+  <meta name="format-detection" content="telephone=no">
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="/notification/pre/public/images/favicon.ico" type="image/x-icon">
+  <link rel="mask-icon" href="/notification/pre/public/images/govuk-mask-icon.svg" color="blue">
+  <link rel="apple-touch-icon" sizes="180x180" href="/notification/pre/public/images/govuk-apple-touch-icon-180x180.png">
+  <link rel="apple-touch-icon" sizes="167x167" href="/notification/pre/public/images/govuk-apple-touch-icon-167x167.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/notification/pre/public/images/govuk-apple-touch-icon-152x152.png">
+  <link rel="apple-touch-icon" href="/notification/pre/public/images/govuk-apple-touch-icon.png">
+
+  <link href="/notification/pre/public/stylesheets/application.css?v=1.0.3942" rel="stylesheet">
+  <link href="/notification/pre/public/stylesheets/accessible-autocomplete.min.css?v=1.0.3942" rel="stylesheet">
+  <link href="/notification/pre/public/stylesheets/datepicker.min.css?v=1.0.3942" rel="stylesheet">
+
+  <meta property="og:image" content="/public/images/govuk-opengraph-image.png">
+
+  <script src="/notification/pre/public/javascripts/jquery.js?v=1.0.3942"></script>
+  <script src="/notification/pre/public/javascripts/datepicker.min.js?v=1.0.3942"></script>
+  <!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NHS2VQP');</script>
+<!-- End Google Tag Manager -->
+
+</head>
+
+<body class="govuk-template__body">
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NHS2VQP"
+                    title="google-tag-manager" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
+
+<a href="#main-content" class="govuk-skip-link">Skip to content</a>
+
+<div id="global-cookie-message">
+  
+  <div class="global-accepted-cookie-message">
+  <div class="global-cookie-wrapper">
+    <div class="govuk-width-container" tabindex="-1">
+      <p>You’ve accepted all cookies. You can <a class="govuk-link" href="/notification/pre/protected/notifications/cookies?returnUrl=%2Fprotected%2Fnotifications%2FCHEDA.GB.2026.1064106%2Freview%3Fsource%3Ddashboard" data-module="track-click" data-track-category="cookieBanner" data-track-action="Cookie banner settings clicked from confirmation">change your cookie settings</a> at any time.</p>
+      <a id="hide-accepted-cookies" class="govuk-link govuk-link--right" href="#" data-hide-cookie-banner="true" data-module="track-click" data-track-category="cookieBanner" data-track-action="Hide cookie banner">Hide</a>
+    </div>
+  </div>
+</div>
+<script src="/notification/pre/public/javascripts/cookies.js?v=1.0.3942"></script>
+</div>
+
+<header class="govuk-header " role="banner" data-module="govuk-header">
+  <div class="govuk-header__container govuk-width-container application-title">
+    <div class="govuk-header__logo">
+      <a href="https://www.gov.uk" title="Go to the GOV.UK homepage" class="govuk-header__link govuk-header__link--homepage">
+        <svg aria-hidden="true" focusable="false" class="govuk-header__logotype-crown" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 30" height="30" width="32">
+          <path fill="currentColor" fill-rule="evenodd" d="M22.6 10.4c-1 .4-2-.1-2.4-1-.4-.9.1-2 1-2.4.9-.4 2 .1 2.4 1s-.1 2-1 2.4m-5.9 6.7c-.9.4-2-.1-2.4-1-.4-.9.1-2 1-2.4.9-.4 2 .1 2.4 1s-.1 2-1 2.4m10.8-3.7c-1 .4-2-.1-2.4-1-.4-.9.1-2 1-2.4.9-.4 2 .1 2.4 1s0 2-1 2.4m3.3 4.8c-1 .4-2-.1-2.4-1-.4-.9.1-2 1-2.4.9-.4 2 .1 2.4 1s-.1 2-1 2.4M17 4.7l2.3 1.2V2.5l-2.3.7-.2-.2.9-3h-3.4l.9 3-.2.2c-.1.1-2.3-.7-2.3-.7v3.4L15 4.7c.1.1.1.2.2.2l-1.3 4c-.1.2-.1.4-.1.6 0 1.1.8 2 1.9 2.2h.7c1-.2 1.9-1.1 1.9-2.1 0-.2 0-.4-.1-.6l-1.3-4c-.1-.2 0-.2.1-.3m-7.6 5.7c.9.4 2-.1 2.4-1 .4-.9-.1-2-1-2.4-.9-.4-2 .1-2.4 1s0 2 1 2.4m-5 3c.9.4 2-.1 2.4-1 .4-.9-.1-2-1-2.4-.9-.4-2 .1-2.4 1s.1 2 1 2.4m-3.2 4.8c.9.4 2-.1 2.4-1 .4-.9-.1-2-1-2.4-.9-.4-2 .1-2.4 1s0 2 1 2.4m14.8 11c4.4 0 8.6.3 12.3.8 1.1-4.5 2.4-7 3.7-8.8l-2.5-.9c.2 1.3.3 1.9 0 2.7-.4-.4-.8-1.1-1.1-2.3l-1.2 4c.7-.5 1.3-.8 2-.9-1.1 2.5-2.6 3.1-3.5 3-1.1-.2-1.7-1.2-1.5-2.1.3-1.2 1.5-1.5 2.1-.1 1.1-2.3-.8-3-2-2.3 1.9-1.9 2.1-3.5.6-5.6-2.1 1.6-2.1 3.2-1.2 5.5-1.2-1.4-3.2-.6-2.5 1.6.9-1.4 2.1-.5 1.9.8-.2 1.1-1.7 2.1-3.5 1.9-2.7-.2-2.9-2.1-2.9-3.6.7-.1 1.9.5 2.9 1.9l.4-4.3c-1.1 1.1-2.1 1.4-3.2 1.4.4-1.2 2.1-3 2.1-3h-5.4s1.7 1.9 2.1 3c-1.1 0-2.1-.2-3.2-1.4l.4 4.3c1-1.4 2.2-2 2.9-1.9-.1 1.5-.2 3.4-2.9 3.6-1.9.2-3.4-.8-3.5-1.9-.2-1.3 1-2.2 1.9-.8.7-2.3-1.2-3-2.5-1.6.9-2.2.9-3.9-1.2-5.5-1.5 2-1.3 3.7.6 5.6-1.2-.7-3.1 0-2 2.3.6-1.4 1.8-1.1 2.1.1.2.9-.3 1.9-1.5 2.1-.9.2-2.4-.5-3.5-3 .6 0 1.2.3 2 .9l-1.2-4c-.3 1.1-.7 1.9-1.1 2.3-.3-.8-.2-1.4 0-2.7l-2.9.9C1.3 23 2.6 25.5 3.7 30c3.7-.5 7.9-.8 12.3-.8"></path>
+          <image src="/notification/pre/public/images/govuk-logotype-tudor-crown.png" xlink:href="" class="govuk-header__logotype-crown-fallback-image" width="32" height="30" alt="GOV.UK Crown Logo"></image>
+        </svg>
+          <span class="govuk-header__logotype-text">
+            GOV.UK
+          </span>
+        </span>
+      </a>
+    </div>
+    <div class="govuk-header__content">
+  <a href="/notification/pre/protected/notifications" id="proposition-name" class="govuk-header__link govuk-header__link--service-name govuk-!-margin-0">
+    Import of products, animals, food and feed service
+  </a>
+</div>
+
+  </div>
+</header>
+
+<div class="govuk-width-container app-width-container--wide">
+  <div class="govuk-phase-banner">
+  <p class="govuk-phase-banner__content">
+    <strong class="govuk-tag govuk-phase-banner__content__tag">BETA</strong>
+    <span class="govuk-phase-banner__text">This is a new service – your <a rel="noopener noreferrer" class="govuk-link" id="link-feedback" target="_blank" href="https://www.smartsurvey.co.uk/s/7YJV5/">feedback</a> will help us to improve it.</span>
+  </p>
+</div>
+<div class="navigation-links">
+  <div id="sign-out-section" class="information-banner">
+    <p class="information-banner__content">
+      <span>IPaff Automation</span>
+      <span>|</span>
+      <a class="govuk-link govuk-link--no-visited-state"
+         id="address-book-link"
+         href="/notification/pre/protected/notifications/address-book">
+        Address book
+      </a>
+        <span>|</span>
+        <a class="govuk-link govuk-link--no-visited-state"
+           id="manage-account-link"
+           href="/notification/pre/protected/manage?returnUrl=%2Fprotected%2Fnotifications%2FCHEDA.GB.2026.1064106%2Freview%3Fsource%3Ddashboard">
+          Manage account
+        </a>
+        <span>|</span>
+        <a class="govuk-link govuk-link--no-visited-state"
+           id="manage-trade-partners-link"
+           href="/notification/pre/protected/notifications/trade-partners/filter">
+          Manage trade partners
+        </a>
+      <span>|</span>
+      <a class="govuk-link govuk-link--no-visited-state"
+         id="sign-out-link"
+         href="/protected/logout">
+        Sign out
+      </a>
+    </p>
+  </div>
+  <div class="navigation-links__left-block">
+      <a href="#" id="back-link" class="govuk-back-link back-link--next-to-breadcrumbs">Back</a>
+    <div class="navigation-links__divider">|</div>
+    <div class="govuk-breadcrumbs breadcrumbs--next-to-back">
+      <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+          <a class="govuk-breadcrumbs__link" href="/notification/pre/protected/notifications">Dashboard</a>
+        </li>
+      </ol>
+    </div>  </div>
+</div>
+
+
+
+<div class="govuk-!-padding-top-6">
+    <span class="heading-tertiary">
+        <span id="reference-number">CHEDA.GB.2026.1064106</span>
+        <span id="cved-version-number"> - V1</span>
+    </span>
+</div>
+<main class="govuk-main-wrapper" id="main-content">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+
+
+
+        <h1 class="govuk-heading-xl " id="page-primary-title">Review your notification</h1>
+
+
+
+      <div class="govuk-grid-row audit-flag">
+        <div class="govuk-grid-column-one-half">
+          <p id="last-updated-date" class="audit-flag__date">Last updated 2 February 2026, 15:15</p>
+          <p id="last-updated-by" class="audit-flag__user">by IPaff Automation</p>
+        </div>
+        <div class="govuk-grid-column-one-half">
+          <p id="last-submission-date" class="audit-flag__date">
+              Submitted 2 February 2026, 15:15
+          </p>
+            <p id="submitted-by" class="audit-flag__user">by IPaff Automation</p>
+        </div>
+      </div>
+
+          <div class="action-button-container">
+              <form method="post" action="/notification/pre/protected/notifications/CHEDA.GB.2026.1064106/duplicate" class="govuk-!-display-inline">
+                <input name="crumb" type="hidden" value="-YXW9pbUeYByz-aGS8W2HnqZdxH7QNerrNy2qaXtMYJ"/>
+                <input name="etag" type="hidden" value="&quot;00000000001757F2&quot;">
+                <button type="submit" name="submit_param" value="Copy as new"
+                        class="govuk-button govuk-button--secondary govuk-!-margin-bottom-4 button-small action-button" data-prevent-double-click=true>Copy as new</button>
+              </form>
+              <form action="/notification/pre/protected/notifications/CHEDA.GB.2026.1064106/review" method="post" class="govuk-!-display-inline">
+                <input name="crumb" type="hidden" value="-YXW9pbUeYByz-aGS8W2HnqZdxH7QNerrNy2qaXtMYJ"/>
+                <input name="etag" type="hidden" value="&quot;00000000001757F2&quot;">
+                <button type="submit" name="amend" id="amend-certificate-CHEDA.GB.2026.1064106"
+                        value="CHEDA.GB.2026.1064106"
+                        class="govuk-button govuk-button--secondary govuk-!-margin-bottom-4 button-small action-button" data-prevent-double-click=true>
+                  Amend
+                </button>
+              </form>
+              <form method="get" action="/notification/pre/protected/notifications/CHEDA.GB.2026.1064106/certificate/pdf"
+                    target="_blank" class="govuk-!-display-inline">
+                <button type="submit" value="Show notification" id="show-notification"
+                        class="govuk-button govuk-button--secondary govuk-!-margin-bottom-4 button-small action-button" data-prevent-double-click=true>View CHED</button>
+              </form>
+              <a href="/notification/pre/protected/notifications/CHEDA.GB.2026.1064106/delete"
+                 id="delete-notification"
+                 class="govuk-button govuk-button--secondary govuk-!-margin-bottom-4 button-small action-button">
+                Delete notification
+              </a>
+          </div>
+          <div class="govuk-!-padding-bottom-6"></div>
+
+
+       <h2 class="govuk-heading-l">Import reference numbers</h2>
+     <dl class="govuk-summary-list govuk-!-margin-bottom-1" id="review-table-about-notification">
+       <div class="govuk-summary-list__row">
+         <dt class="govuk-summary-list__key govuk-!-width-one-half">CHED reference</dt>
+         <dd class="govuk-summary-list__value" id="reference-number">CHEDA.GB.2026.1064106</dd>
+         <dd class="govuk-summary-list__actions">
+           <button data-prevent-double-click=true
+                   type="submit"
+                   id="copy-customs-declaration-reference-number"
+                   class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0 hidden copy-button"
+                   data-copy-value="CHEDA.GB.2026.1064106">
+             Copy
+           </button>
+         </dd>
+       </div>
+       <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
+         <dt class="govuk-summary-list__key govuk-!-width-one-half">Reference for your customs declaration</dt>
+         <dd class="govuk-summary-list__value" id="reference-number-customs">GBCHD2026.1064106</dd>
+         <dd class="govuk-summary-list__actions">
+           <button data-prevent-double-click=true
+                   type="submit"
+                   id="copy-customs-declaration-reference-number"
+                   class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0 hidden copy-button"
+                   data-copy-value="GBCHD2026.1064106">
+             Copy
+           </button>
+         </dd>
+       </div>
+       <div class="govuk-summary-list__row  govuk-summary-list__row--no-border">
+         <dt class="govuk-summary-list__key govuk-!-width-one-half">Customs document code</dt>
+         <dd class="govuk-summary-list__value" id="reference-number-document">C640</dd>
+         <dd class="govuk-summary-list__actions">
+           <button data-prevent-double-click=true
+                   type="submit"
+                   id="copy-customs-doc-code"
+                   class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0 hidden copy-button"
+                   data-copy-value="C640">
+             Copy
+           </button>
+         </dd>
+       </div>
+     </dl>
+     
+     <div class="govuk-warning-text">
+       <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+       <strong class="govuk-warning-text__text">
+         <span class="govuk-warning-text__assistive">Warning</span>
+         You must use the correct reference and code on the customs declaration or your consignment will be delayed.
+       </strong>
+     </div>
+     
+     <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+
+
+
+
+
+
+          <h2 class="govuk-heading-l">About the consignment</h2>
+          
+          
+          
+          
+          
+          
+          
+          <dl class="review-summary-list" id="review-table-about-notification">
+            <div class="review-summary-list__row  review-summary-list__row-border-bottom ">
+              <dt class="review-summary-list__key" id="importing-header">Import type</dt>
+              <dd class="review-summary-list__value" id="importing">Live Animals</dd>
+            </div>
+              <div class="review-summary-list__row ">
+                <dt class="review-summary-list__key" id="responsible-person">Responsible person</dt>
+                <dt class="review-summary-list__value">IPaff Automation</dt>
+              </div>
+              <div class="review-summary-list__row ">
+                <dt class="review-summary-list__key">Telephone</dt>
+                <dt class="review-summary-list__value">07551552868</dt>
+              </div>
+              <div class="review-summary-list__row ">
+                <dt class="review-summary-list__key">Email</dt>
+                <dt class="review-summary-list__value">ipaffautomation20251124@team553512.testinator.com</dt>
+              </div>
+              <div class="review-summary-list__row ">
+                <dt class="review-summary-list__key">Organisation Name</dt>
+                <dt class="review-summary-list__value" id="responsible-organisation-name">IPAFF Automation</dt>
+              </div>
+              <div class="review-summary-list__row ">
+                <dt class="review-summary-list__key">Organisation Address</dt>
+                <dt class="review-summary-list__value">1 WREN STREET,WEST MIDLANDS,COVENTRY,CV2 4FT</dt>
+              </div>
+              <div class="review-summary-list__row review-summary-list__row-border-bottom ">
+                <dt class="review-summary-list__key">Organisation Telephone</dt>
+                <dt class="review-summary-list__value">07551552868</dt>
+              </div>
+              <div class="review-summary-list__row  ">
+                <dt class="review-summary-list__key">Country of origin</dt>
+                <dd class="review-summary-list__value" id="country-of-origin">Tanzania</dd>
+              </div>
+                <div class="review-summary-list__row ">
+                  <dt class="review-summary-list__key">Region of origin code</dt>
+                  <dd class="review-summary-list__value" id="region-of-consignment-value">
+                    
+                  </dd>
+                </div>
+              <div class="review-summary-list__row review-summary-list__row-border-bottom ">
+                <dt class="review-summary-list__key">Consignment reference number</dt>
+                <dd class="review-summary-list__value">This is a CHED-A test</dd>
+              </div>
+          
+            <div class="review-summary-list__row  review-summary-list__row-border-bottom    ">
+              <dt class="review-summary-list__key" id="purpose-of-consignment-header">
+                Main reason for importing the animals
+              </dt>
+              <dd class="review-summary-list__value" id="purpose-of-consignment-value">
+                  For internal market
+                    </dd>
+            </div>
+                <div class="review-summary-list__row ">
+                  <dt class="review-summary-list__key" id="purpose-for-internal-market">
+                    Purpose in the internal market
+                  </dt>
+                  <dd class="review-summary-list__value">Research</dd>
+                </div>
+          </dl>
+          
+          <div class="govuk-grid-row">
+            <h2 class="govuk-heading-l govuk-!-margin-top-9 govuk-grid-column-one-half">Description of the goods</h2>
+          </div>
+          
+            <hr class="govuk-section-break govuk-section-break--visible">
+              <div class="table-responsive">
+                <table class="govuk-table presentation-table review-table govuk-!-margin-bottom-0" id="review-table-commodity-attributes-0" role="presentation">
+                  <tbody class="govuk-table__head">
+                    <tr id="0103/expired" class="presentation-table__section ">
+                  <tr>
+                    <td class="govuk-table__header ">Commodity code</td>
+                    <td class="govuk-table__cell ">
+                      0103
+                        
+                    </td>
+                      <td class="govuk-table__cell change ">
+                      </td>
+                  </tr>
+                      <tr class="presentation-table__row--no-border">
+                        <td class="govuk-table__header">Type of commodity</td>
+                        <td class="govuk-table__cell">Domestic</td>
+                        <td class="govuk-table__cell"></td>
+                      </tr>
+                  <tr></tr>
+                  </tbody>
+                </table>
+              </div>
+          
+                <div class="table-responsive">
+                  <table class="govuk-table presentation-table data-table-commodities"
+                         id="review-table-consignment-0">
+                    <caption class="govuk-visually-hidden">Review Consignment 0</caption>
+                    <thead class="govuk-table__head">
+                      <tr>
+                        <th class="govuk-table__header species"
+                            scope="col">
+                          Species
+                        </th>
+                        <th scope="col" class="govuk-table__header govuk-table__header--numeric animals">
+                          Number of animals
+                        </th>
+                        <th scope="col" class="govuk-table__header govuk-table__header--numeric packages">
+                          Number of packages
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="
+                                   ">
+                          <td class="govuk-table__cell">
+                            Sus scrofa domesticus
+                          </td>
+                          <td class="govuk-table__cell govuk-table__cell--numeric">3</td>
+                          <td class="govuk-table__cell govuk-table__cell--numeric">3</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <th scope="row" class="govuk-table__header">
+                          Subtotal
+                        </th>
+                        <td class="govuk-table__cell govuk-table__cell--numeric">3</td>
+                        <td class="govuk-table__cell govuk-table__cell--numeric">3</td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+          
+          
+              <table class="govuk-table presentation-table review-table" id="review-consignment-total-table" aria-describedby="consignmentTotalTable">
+                <thead class="govuk-table__head">
+                  <tr>
+                    <th class="govuk-table__header species"
+                        scope="col">
+                    </th>
+                    <th scope="col" class="govuk-table__header govuk-table__header--numeric animals">
+                      Number of animals
+                    </th>
+                    <th scope="col" class="govuk-table__header govuk-table__header--numeric packages">
+                      Number of packages
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row" class="govuk-table__header">
+                      Total
+                    </th>
+                    <td class="govuk-table__cell govuk-table__cell--numeric">3</td>
+                    <td class="govuk-table__cell govuk-table__cell--numeric">3</td>
+                  </tr>
+                </tbody>
+              </table>
+          
+          
+            <div class="heading-with-change-link govuk-!-margin-top-8">
+              <h3 class="govuk-heading-m">Animal identification details</h3>
+            </div>
+          
+            <div class="table-responsive govuk-!-margin-bottom-9">
+              <table class="govuk-table presentation-table review-table" id="animal-identification-details-table" aria-describedby="animalIdentificationDetailsTable">
+                      <tr class="presentation-table__row--no-border">
+                        <th scope="col" class="govuk-table__header">Sus scrofa domesticus identification details</th>
+                        <td class="govuk-table__cell"></td>
+                        <td class="govuk-table__cell change">
+                        </td>
+                      </tr>
+                    <tr class="presentation-table__row--no-border">
+                      <td colspan="3" class="govuk-table__cell govuk-!-padding-0">
+                        <div id="identifiers-01" class="accordion-target ">
+                          <table class="govuk-table presentation-table data-table govuk-!-margin-bottom-0" aria-describedby="animalProduct-01">
+                            <thead class="govuk-table__head">
+                              <tr>
+                                <th scope="col" class="govuk-table__header" id="animalProduct-01">Animal</th>
+                                    <th scope="col" class="govuk-table__header" id="earTag-01">Ear tag</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="">
+                                  <td class="govuk-table__cell govuk-!-width-one-quarter" headers="animalProduct-01">
+                                    Sus scrofa domesticus 1
+                                  </td>
+                                    <td class="govuk-table__cell govuk-!-width-one-quarter" headers="earTag-01">ET1234</td>
+                                </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </td>
+                    </tr>
+              </table>
+            </div>
+          
+            <div class="heading-with-change-link govuk-!-margin-top-8">
+                <h3 class="govuk-heading-m">Additional animal details</h3>
+            </div>
+          
+          <div class="table-responsive govuk-!-margin-bottom-9">
+            <table class="govuk-table presentation-table review-table" role="presentation"
+                   id="review-consignment-details-table">
+              <tbody>
+          
+          
+          
+          
+          
+          
+          
+          
+          
+                <tr class="
+                        presentation-table__section">
+                  <td class="govuk-table__header">Certified for</td>
+                  <td class="govuk-table__cell">Approved bodies</td>
+                </tr>
+          
+                  <tr>
+                      <td class="govuk-table__header">
+                        Includes unweaned animals
+                      </td>
+                    <td class="govuk-table__cell" colspan="2">
+                      No
+                    </td>
+                  </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          
+          
+          
+          <div class="govuk-!-margin-bottom-9" id="accompanying-documents-section">
+              <h2 class="govuk-heading-l" id="documents-section-heading">Documents</h2>
+              <div class="table-responsive">
+                  
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                  
+                  <div class="heading-with-change-link">
+                    <h3 class="govuk-heading-m" id="latest-health-certificate-heading">Latest health certificate</h3>
+                  </div>
+                  
+                  <div class="table-responsive">
+                    <p id="latestHealthCertificateTableDesc" class="govuk-visually-hidden">Latest health certificate table</p>
+                    <table id="latest-health-certificate-table" aria-describedby="latestHealthCertificateTableDesc" class="govuk-table presentation-table review-latest-health-certificate-table">
+                      <thead class="govuk-table__head">
+                        <tr>
+                          <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">Document type</th>
+                          <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">Document reference</th>
+                          <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">Date of issue</th>
+                          <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">Attachments</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr class="presentation-table__section ">
+                          <td class="govuk-table__cell" id="latest-health-document-type">
+                            Veterinary health certificate
+                          </td>
+                          <td class="govuk-table__cell break-word" id="latest-health-document-reference">
+                            VHC12345
+                          </td>
+                          <td class="govuk-table__cell" id="latest-health-document-issue-date">
+                            1 December 2025
+                          </td>
+                          <td class="govuk-table__cell">
+                            <a class="govuk-link ellipsis"
+                               id="attachment-view-c3e35298-4fd1-4d94-addf-a51404c85e4c"
+                               title="IPAFFS Test Health Cer.docx"
+                               rel="noopener noreferrer"
+                               target="_blank"
+                               href="/notification/pre/protected/notifications/CHEDA.GB.2026.1064106/attachment/c3e35298-4fd1-4d94-addf-a51404c85e4c?source=dashboard">
+                              IPAFFS Test Health Cer.docx
+                            </a>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                
+                  
+                
+                <div class="heading-with-change-link">
+                    <h3 class="{govuk-heading-m{else}}govuk-heading-s" id="additional-documents-sub-heading">1 additional document</h3>
+                </div>
+                
+                  <div class="table-responsive">
+                    <table id="additional-documents-table" class="govuk-table presentation-table review-additional-documents-table" aria-labelledby="additional-documents-sub-heading">
+                      <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                          <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">Document type</th>
+                          <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">Document reference</th>
+                          <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">Date of issue</th>
+                          <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">Attachments</th>
+                        </tr>
+                      </thead>
+                      <tbody class="govuk-table__body">
+                              <tr class="govuk-table__row presentation-table__section ">
+                                <td class="govuk-table__cell" id="veterinary-document-type-1">
+                                  Commercial invoice
+                                </td>
+                                <td class="govuk-table__cell break-word" id="veterinary-document-reference-1">
+                                  INV12345
+                                </td>
+                                <td class="govuk-table__cell" id="veterinary-document-issue-date-1">
+                                  24 November 2025
+                                </td>
+                                <td class="govuk-table__cell">
+                                  <a class="govuk-link ellipsis"
+                                     id="attachment-view-3ae16d2e-0b32-4e67-9613-fe9ba699a915"
+                                     title="IPAFFS Test Document.docx"
+                                     rel="noopener noreferrer"
+                                     target="_blank"
+                                     href="/notification/pre/protected/notifications/CHEDA.GB.2026.1064106/attachment/3ae16d2e-0b32-4e67-9613-fe9ba699a915?source=dashboard">
+                                    IPAFFS Test Document.docx
+                                  </a>
+                                </td>
+                              </tr>
+                      </tbody>
+                    </table>
+                  </div>
+              </div>
+          </div>
+          
+          
+            <h2 class="govuk-heading-l">Addresses</h2>
+            <div class="heading-with-change-link">
+              <h3 class="govuk-heading-m">Consignor or Exporter, Consignee, Importer and Place of Destination</h3>
+            </div>
+          
+          
+          
+          
+          <dl class="review-summary-list" id="review-table-traders">
+            <div class="review-summary-list__row  ">
+              <dt class="review-summary-list__key">Consignor or exporter</dt>
+              <dd class="review-summary-list__value" id="consignor">
+                ABC<br>
+                15 Walter Square, Bristol, BS7 0PP, England, 07880373659, abc@gmail.com
+              </dd>
+            </div>
+            <div class="review-summary-list__row ">
+              <dt class="review-summary-list__key">Consignee</dt>
+              <dd class="review-summary-list__value" id="consignee">
+                DEF<br>
+                11 John Childs Way, Rayleigh, SS6 8QG, England, +440241772739, DEF@test.com
+              </dd>
+            </div>
+            <div class="review-summary-list__row ">
+              <dt class="review-summary-list__key">Importer</dt>
+              <dd class="review-summary-list__value" id="importer">
+                DEF<br>
+                11 John Childs Way, Rayleigh, SS6 8QG, England, +440241772739, DEF@test.com</dd>
+            </div>
+            <div class="review-summary-list__row ">
+              <dt class="review-summary-list__key">
+                Place of Destination
+              </dt>
+              <dd class="review-summary-list__value" id="final-destination">
+                DEF<br>
+                11 John Childs Way, Rayleigh, SS6 8QG, England, +440241772739, DEF@test.com
+              </dd>
+            </div>
+              <div class="review-summary-list__row ">
+                <dt class="review-summary-list__key">County Parish Holding number</dt>
+                <dd class="review-summary-list__value" id="cph-number">12/345/6789/0001</dd>
+              </div>
+          </dl>
+          
+            <h2 class="govuk-heading-l">Transport</h2>
+            <div class="heading-with-change-link">
+              <h2 class="govuk-heading-m">Transport to the BCP or Port of entry</h2>
+            </div>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <div class="table-responsive govuk-!-margin-bottom-9">
+              <table class="govuk-table review-table presentation-table" id="review-table-bip-details">
+                <caption class="govuk-visually-hidden">Transport to the BCP or Port of entry</caption>
+                <tbody>
+                <tr class="">
+                  <th scope="row" class="govuk-table__header">BCP or Port of entry</th>
+                  <td class="govuk-table__cell">London Borough of Hillingdon Heathrow Airport Imported Food Office - ADADA</td>
+                </tr>
+                <tr class="">
+                  <th scope="row" class="govuk-table__header">Means of transport to BCP or Port of entry</th>
+                  <td class="govuk-table__cell">Road vehicle</td>
+                </tr>
+                  <tr class="">
+                    <th scope="row" class="govuk-table__header">Transport identification</th>
+                    <td class="govuk-table__cell">123456</td>
+                  </tr>
+                  <tr>
+                    <th scope="row" class="govuk-table__header">Using road trailers or containers?</th>
+                    <td class="govuk-table__cell" id="imported-in-containers">No</td>
+                  </tr>
+                  
+                  <tr class="">
+                      <th scope="row" class="govuk-table__header">Transport document reference</th>
+                    <td class="govuk-table__cell">Doc1234</td>
+                  </tr>
+                <tr class="">
+                  <th scope="row" class="govuk-table__header">Estimated arrival date at BCP or Port of entry</th>
+                  <td class="govuk-table__cell">7 February 2026</td>
+                </tr>
+                <tr class="">
+                  <th scope="row" class="govuk-table__header">Estimated arrival time at BCP</th>
+                  <td class="govuk-table__cell">15:15</td>
+                </tr>
+                  <tr class="">
+                    <th scope="row" class="govuk-table__header">Estimated total journey time of the animals</th>
+                    <td class="govuk-table__cell">8 hrs</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            
+            <div class="heading-with-change-link">
+              <h2 class="govuk-heading-m">Goods movement services</h2>
+            </div>
+            
+            
+            <div class="table-responsive govuk-!-margin-bottom-9">
+              <table class="govuk-table presentation-table review-table"
+                     id="review-table-goods-movement-services"
+                     role="presentation">
+                <tbody>
+                  <tr class="">
+                    <td class="govuk-table__header">Using the Goods Vehicle Movement Service (GVMS)
+                    </td>
+                    <td class="govuk-table__cell" id="goods-movement-services-route">No</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+                <div class="heading-with-change-link">
+                  <h2 class="govuk-heading-m">Transporter</h2>
+                </div>
+                  <div class="table-responsive govuk-!-margin-bottom-9">
+                    <table class="govuk-table presentation-table review-table" id="review-table-transporter" role="presentation">
+                      <tbody>
+            <tr id="review-transporter-details" class="presentation-table__section ">
+              <td class="govuk-table__header">Name</td>
+              <td class="govuk-table__cell" id="transporter-name">Deijne Zeeland Beheer BV</td>
+            </tr>
+            <tr >
+              <td class="govuk-table__header">Type</td>
+              <td class="govuk-table__cell" id="transporter-type">commercial transporter</td>
+              <td class="govuk-table__cell"></td>
+            </tr>
+            <tr >
+              <td class="govuk-table__header">Address</td>
+              <td class="govuk-table__cell" id="transporter-address">Wissington Grange, Nayland, Colchester, CO6 4NH</td>
+              <td class="govuk-table__cell"></td>
+            </tr>
+            <tr >
+              <td class="govuk-table__header">Country</td>
+              <td class="govuk-table__cell" id="transporter-country">United Kingdom of Great Britain and Northern Ireland</td>
+              <td class="govuk-table__cell"></td>
+            </tr>
+            <tr >
+              <td class="govuk-table__header">Approval number</td>
+              <td class="govuk-table__cell" id="transporter-approval-number">UK/BURY/T2/00106407</td>
+              <td class="govuk-table__cell"></td>
+            </tr>
+                </tbody>
+              </table>
+            </div>
+                <div class="heading-with-change-link">
+                  <h2 class="govuk-heading-m">Countries the consignment will travel through</h2>
+                </div>
+                <div class="table-responsive govuk-!-margin-bottom-9">
+                  <table class="govuk-table presentation-table review-table" id="review-table-route" role="presentation">
+                    <tbody>
+                <tr id="review-route-details" class="presentation-table__section">
+                  <td class="govuk-table__header">Route</td>
+                    <td class="govuk-table__cell">
+                        Kenya <br>
+                    </td>
+                </tr>
+                    </tbody>
+                  </table>
+                </div>
+          
+          <div class="heading-with-change-link">
+            <h2 class="govuk-heading-m">Transport contacts</h2>
+          </div>
+          <div class="table-responsive govuk-!-margin-bottom-9">
+            <table class="govuk-table presentation-table review-table" id="review-table-transporter" role="presentation">
+              <tbody>
+              <tr id="review-transporter-details" class="presentation-table__section 
+                     ">
+          
+                <td class="govuk-table__header">Notify transport contacts about inspections</td>
+                <td class="govuk-table__cell" id="transporter-contact-yesnoindicator">
+                  No
+                </td>
+              </tr>
+          
+              </tbody>
+            </table>
+          </div>
+          
+          
+            <table class="govuk-table presentation-table review-table" id="submission-table">
+              <caption class="govuk-table__caption govuk-heading-m">
+                Submission information
+              </caption>
+              <tbody>
+                <tr class="govuk-table__row">
+                  <th scope="row" class="govuk-table__header">Notification submitted by</th>
+                  <td class="govuk-table__cell" id="submitted-by-name">IPaff Automation</td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <th scope="row" class="govuk-table__header">Submission date</th>
+                  <td class="govuk-table__cell" id="submission-date"> 2 February 2026</td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <th scope="row" class="govuk-table__header">Submission time</th>
+                  <td class="govuk-table__cell" id="submission-time">15:15</td>
+                </tr>
+              </tbody>
+            </table>
+          
+          <div class="heading-with-change-link">
+            <h2 class="govuk-heading-m" id="organisation-address-section-heading">Contact address for consignment</h2>
+          </div>
+          
+          <div class="table-responsive govuk-!-margin-bottom-9">
+            <table class="govuk-table presentation-table review-table" id="review-table-organisation-address" role="presentation">
+              <tbody>
+                <tr >
+                  <td class="govuk-table__header" id="organisation-address-header">Contact address</td>
+                  <td class="govuk-table__cell" id="organisation-branch-address-address">1 WREN STREET, WEST MIDLANDS, COVENTRY, CV2 4FT</td>
+                  <td class="govuk-table__cell change">
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          
+    </div>
+  </div>
+</main>
+<script src="/notification/pre/public/javascripts/copy_reference_number.js?v=1.0.3942"></script>
+
+</div>
+
+<footer class="govuk-footer" role="contentinfo">
+  <div class="govuk-width-container ">
+    <div class="govuk-footer__meta">
+      <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
+        <h2 class="govuk-visually-hidden">Support links</h2>
+        <ul class="govuk-footer__inline-list">
+  <li class="govuk-footer__inline-list-item">
+    <a class="govuk-footer__link" href="/notification/pre/protected/notifications/contact">
+      Contact
+    </a>
+  </li>
+  <li class="govuk-footer__inline-list-item">
+    <a class="govuk-footer__link" id="button-accessibility-statement" href="/notification/pre/protected/notifications/accessibility-statement">
+      Accessibility
+    </a>
+  </li>
+  <li class="govuk-footer__inline-list-item">
+    <a class="govuk-footer__link" href="/notification/pre/protected/notifications/privacy-notice">
+      Privacy
+    </a>
+  </li>
+  <li class="govuk-footer__inline-list-item">
+    <form action="/notification/pre/protected/notifications/cookies" method="post">
+      <input name="crumb" type="hidden" value="-YXW9pbUeYByz-aGS8W2HnqZdxH7QNerrNy2qaXtMYJ"/>
+      <input name="returnUrl" type="hidden" value="%2Fprotected%2Fnotifications%2FCHEDA.GB.2026.1064106%2Freview%3Fsource%3Ddashboard"/>
+      <input name="fromFooterHeader" type="hidden" value="true"/>
+      <button class="govuk-footer__link footer__button-link" type="submit" id="button-cookies" name="cookies">
+        Cookies
+      </button>
+    </form>
+  </li>
+</ul>
+
+        <svg aria-hidden="true" focusable="false" class="govuk-footer__licence-logo" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 483.2 195.7" height="17" width="41">
+          <path fill="currentColor" d="M421.5 142.8V.1l-50.7 32.3v161.1h112.4v-50.7zm-122.3-9.6A47.12 47.12 0 0 1 221 97.8c0-26 21.1-47.1 47.1-47.1 16.7 0 31.4 8.7 39.7 21.8l42.7-27.2A97.63 97.63 0 0 0 268.1 0c-36.5 0-68.3 20.1-85.1 49.7A98 98 0 0 0 97.8 0C43.9 0 0 43.9 0 97.8s43.9 97.8 97.8 97.8c36.5 0 68.3-20.1 85.1-49.7a97.76 97.76 0 0 0 149.6 25.4l19.4 22.2h3v-87.8h-80l24.3 27.5zM97.8 145c-26 0-47.1-21.1-47.1-47.1s21.1-47.1 47.1-47.1 47.2 21 47.2 47S123.8 145 97.8 145" />
+        </svg>
+        <span class="govuk-footer__licence-description">
+            All content is available under the
+            <a class="govuk-footer__link" href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence v3.0</a>
+            , except where otherwise stated
+          </span>
+      </div>
+      <div class="govuk-footer__meta-item">
+        <a class="govuk-footer__link govuk-footer__copyright-logo" href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/">© Crown copyright</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="/notification/pre/public/javascripts/all.js?v=1.0.3942"></script>
+<script src="/notification/pre/public/javascripts/application.js?v=1.0.3942"></script>
+<script src="/notification/pre/public/javascripts/accordion.js?v=1.0.3942"></script>
+<script src="/notification/pre/public/javascripts/accessible-autocomplete.min.js?v=1.0.3942"></script>
+<script src="/notification/pre/public/javascripts/datepickers.js?v=1.0.3942"></script>
+</body>
+
+</html>

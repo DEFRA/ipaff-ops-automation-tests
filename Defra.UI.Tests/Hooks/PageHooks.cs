@@ -25,7 +25,7 @@ namespace Defra.UI.Tests.Hooks
         [BeforeScenario(Order = (int)HookRunOrder.Pages)]
         public void BeforeScenario()
         {
-              BindAllPages();
+            BindAllPages();
         }
 
         private void BindAllPages()
@@ -118,6 +118,9 @@ namespace Defra.UI.Tests.Hooks
 
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CookiesPage, ICookiesPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ContactPage, IContactPage>());
+
+            // PDF Certificate Page
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<NotificationCertificatePage, INotificationCertificatePage>());
 
             //Read Email
             _objectContainer.RegisterInstanceAs(GetBaseWithScenarioContext<FetchCodeFromEmail, IFetchCodeFromEmail>());

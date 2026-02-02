@@ -10,7 +10,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
     public partial class PdfToJsonConverter
     {
         private readonly CheckboxExtractor _checkboxExtractor;
-        private readonly FormExtractor _formExtractor; 
+        private readonly FormExtractor _formExtractor;
 
         private static readonly string[] KnownKeywords = new[] {
             "Country and place of issue", "Name", "Address", "ISO Code",
@@ -46,7 +46,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
         public PdfToJsonConverter()
         {
             _checkboxExtractor = new CheckboxExtractor();
-            _formExtractor = new FormExtractor(); 
+            _formExtractor = new FormExtractor();
         }
 
         public string ConvertToJson(string pdfPath)
@@ -278,7 +278,6 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
 
                 if (isSectionStart)
                 {
-                    // If we were building a previous section, save it
                     if (currentHeaderWords.Any())
                     {
                         result.Add(new SubSectionInfo
@@ -333,7 +332,6 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
             List<string> contentLines, Dictionary<string, string> formFields, Dictionary<string, string> checkboxes)
         {
             // Heuristic: Check if first line of content is a continuation of the header
-            // e.g. "I.4..." header, and content starts with "/Control Unit"
             while (contentLines.Count > 0 && contentLines[0].Trim().StartsWith("/"))
             {
                 sectionHeader += " " + contentLines[0].Trim();
@@ -341,7 +339,6 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
             }
 
             // Cleanup header common artifacts
-            // e.g. "I.11. Country of Origin ISO Code" -> "I.11. Country of Origin"
             if (sectionHeader.EndsWith(" ISO Code"))
             {
                 sectionHeader = sectionHeader.Substring(0, sectionHeader.Length - 9).Trim();
@@ -364,10 +361,9 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
             }
 
             // Special handling for I.31 to support array of objects for multi-row values
-            if (sectionHeader.Contains("I.31", StringComparison.OrdinalIgnoreCase) && 
+            if (sectionHeader.Contains("I.31", StringComparison.OrdinalIgnoreCase) &&
                 sectionHeader.Contains("Description of the goods", StringComparison.OrdinalIgnoreCase))
             {
-                // Check for "Descriptions followed by Table" pattern (Grouped layout)
                 var headerIndex = contentLines.FindIndex(l => l.Contains("Commodity", StringComparison.OrdinalIgnoreCase) && l.Contains("Net weight", StringComparison.OrdinalIgnoreCase));
                 if (headerIndex > 0)
                 {
@@ -390,14 +386,12 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                     var dataRows = new List<string>();
                     foreach (var line in tableLines)
                     {
-                        // Check if line starts with commodity code (approx 4-10 digits)
                         if (Regex.IsMatch(line.Trim(), @"^\d{4,10}\b"))
                         {
                             dataRows.Add(line.Trim());
                         }
                         else if (dataRows.Any())
                         {
-                            // Append continuation lines to the last row
                             dataRows[dataRows.Count - 1] += " " + line.Trim();
                         }
                     }
@@ -410,10 +404,10 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                             var combinedContent = new List<string> { descriptions[i], "Commodity Country of Origin Net weight Package count", dataRows[i] };
                             var chunkData = new Dictionary<string, object>();
                             ParseContent(chunkData, sectionHeader, combinedContent, formFields, checkboxes);
-                            
+
                             chunkData["Value"] = string.Join(" ", combinedContent);
                             var cleanChunk = new Dictionary<string, object>();
-                            foreach(var kvp in chunkData) cleanChunk[SanitizePropertyName(kvp.Key)] = kvp.Value;
+                            foreach (var kvp in chunkData) cleanChunk[SanitizePropertyName(kvp.Key)] = kvp.Value;
                             descItems.Add(cleanChunk);
                         }
                         sections[SanitizePropertyName(sectionHeader)] = descItems;
@@ -437,7 +431,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                                 var chunkData = new Dictionary<string, object>();
                                 ParseContent(chunkData, sectionHeader, currentChunk, formFields, checkboxes);
                                 var cleanChunk = new Dictionary<string, object>();
-                                foreach(var kvp in chunkData) cleanChunk[SanitizePropertyName(kvp.Key)] = kvp.Value;
+                                foreach (var kvp in chunkData) cleanChunk[SanitizePropertyName(kvp.Key)] = kvp.Value;
                                 items.Add(cleanChunk);
                             }
                             currentChunk = new List<string>();
@@ -447,7 +441,6 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                 }
                 else
                 {
-                    // Treat as single chunk if no numbering found
                     currentChunk = new List<string>(contentLines);
                 }
 
@@ -455,8 +448,13 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                 {
                     var chunkData = new Dictionary<string, object>();
                     ParseContent(chunkData, sectionHeader, currentChunk, formFields, checkboxes);
+
+                    // Enhanced I.31 parsing for ImportType, Species, IncludesUnweanedAnimals
+                    var fullText = string.Join(" ", currentChunk);
+                    ExtractEnhancedCommodityFields(chunkData, fullText);
+
                     var cleanChunk = new Dictionary<string, object>();
-                    foreach(var kvp in chunkData) cleanChunk[SanitizePropertyName(kvp.Key)] = kvp.Value;
+                    foreach (var kvp in chunkData) cleanChunk[SanitizePropertyName(kvp.Key)] = kvp.Value;
                     items.Add(cleanChunk);
                 }
 
@@ -464,27 +462,309 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                 return;
             }
 
-            var sectionData = new Dictionary<string, object>();
-
-            // Parse content to find key-value pairs
-            ParseContent(sectionData, sectionHeader, contentLines, formFields, checkboxes);
-
-            // Sanitize keys for valid C# property names
-            var cleanSectionData = new Dictionary<string, object>();
-            foreach (var kvp in sectionData)
+            // Special handling for I.9 Accompanying Documents - parse as table
+            if (sectionHeader.Contains("I.9", StringComparison.OrdinalIgnoreCase) &&
+                sectionHeader.Contains("Accompanying documents", StringComparison.OrdinalIgnoreCase))
             {
-                cleanSectionData[SanitizePropertyName(kvp.Key)] = kvp.Value;
+                var sectionData = new Dictionary<string, object>();
+                var fullText = string.Join(" ", contentLines);
+
+                // Parse documents table
+                var documents = ParseAccompanyingDocuments(fullText);
+                sectionData["Documents"] = documents;
+                sectionData["Value"] = fullText;
+
+                var cleanSectionData = new Dictionary<string, object>();
+                foreach (var kvp in sectionData)
+                {
+                    cleanSectionData[SanitizePropertyName(kvp.Key)] = kvp.Value;
+                }
+
+                sections[SanitizePropertyName(sectionHeader)] = cleanSectionData;
+                return;
+            }
+
+            var sectionDataGeneric = new Dictionary<string, object>();
+
+            ParseContent(sectionDataGeneric, sectionHeader, contentLines, formFields, checkboxes);
+
+            // Post-processing for I.28 Transporter - fix multi-line Address and Country
+            if (sectionHeader.Contains("I.28", StringComparison.OrdinalIgnoreCase))
+            {
+                FixTransporterMultiLineFields(sectionDataGeneric, contentLines);
+            }
+
+            // Post-processing for I.1 Consignor - fix multi-line fields
+            if (sectionHeader.Contains("I.1", StringComparison.OrdinalIgnoreCase) &&
+                sectionHeader.Contains("Consignor", StringComparison.OrdinalIgnoreCase))
+            {
+                FixAddressMultiLineFields(sectionDataGeneric, contentLines, "I1");
+            }
+
+            // Post-processing for I.6 Consignee - fix multi-line fields
+            if (sectionHeader.Contains("I.6", StringComparison.OrdinalIgnoreCase) &&
+                sectionHeader.Contains("Consignee", StringComparison.OrdinalIgnoreCase))
+            {
+                FixAddressMultiLineFields(sectionDataGeneric, contentLines, "I6");
+            }
+
+            // Post-processing for I.7 Place of Destination - fix multi-line fields
+            if (sectionHeader.Contains("I.7", StringComparison.OrdinalIgnoreCase) &&
+                sectionHeader.Contains("Place of Destination", StringComparison.OrdinalIgnoreCase))
+            {
+                FixAddressMultiLineFields(sectionDataGeneric, contentLines, "I7");
+            }
+
+            var cleanSectionDataGeneric = new Dictionary<string, object>();
+            foreach (var kvp in sectionDataGeneric)
+            {
+                cleanSectionDataGeneric[SanitizePropertyName(kvp.Key)] = kvp.Value;
             }
 
             var cleanHeader = SanitizePropertyName(sectionHeader);
 
-            if (cleanSectionData.Any())
+            if (cleanSectionDataGeneric.Any())
             {
-                sections[cleanHeader] = cleanSectionData;
+                sections[cleanHeader] = cleanSectionDataGeneric;
             }
             else
             {
                 sections[cleanHeader] = new Dictionary<string, object>();
+            }
+        }
+
+        /// <summary>
+        /// Extracts enhanced commodity fields (ImportType, Species, IncludesUnweanedAnimals) from I.31 text
+        /// </summary>
+        private void ExtractEnhancedCommodityFields(Dictionary<string, object> chunkData, string fullText)
+        {
+            // Extract ImportType (e.g., "LIVE ANIMALS", "PRODUCTS")
+            var importTypeMatch = Regex.Match(fullText, @"\d+\.\s+\d+\s+([A-Z\s]+?)(?=\s+\d{4})", RegexOptions.IgnoreCase);
+            if (importTypeMatch.Success)
+            {
+                var importType = importTypeMatch.Groups[1].Value.Trim();
+                // Clean up - remove numbers and extra spaces
+                importType = Regex.Replace(importType, @"\s+", " ").Trim();
+                if (!string.IsNullOrEmpty(importType))
+                {
+                    chunkData["ImportType"] = importType;
+                }
+            }
+
+            // Extract Species from text (e.g., "Sus scrofa domesticus")
+            var speciesMatch = Regex.Match(fullText, @"(?:0103|0101|0102|0104|0105|0106)\s+[A-Za-z\s]+?\s+([A-Z][a-z]+\s+[a-z]+(?:\s+[a-z]+)?)", RegexOptions.None);
+            if (speciesMatch.Success)
+            {
+                chunkData["Species"] = speciesMatch.Groups[1].Value.Trim();
+            }
+
+            // Extract "Includes unweaned animals" - look for the text pattern
+            var unweanedMatch = Regex.Match(fullText, @"Includes\s+unweaned\s+animals", RegexOptions.IgnoreCase);
+            if (unweanedMatch.Success)
+            {
+                // Check if there's a Yes/No indicator or checkbox value nearby
+                // For now, if the text mentions it, we note it exists
+                // The actual value would come from checkbox detection
+                if (!chunkData.ContainsKey("IncludesUnweanedAnimals"))
+                {
+                    // Default to checking if "No" appears after the text
+                    var afterText = fullText.Substring(unweanedMatch.Index + unweanedMatch.Length);
+                    chunkData["IncludesUnweanedAnimals"] = afterText.Contains("No") ? "false" : "true";
+                }
+            }
+
+            // Extract Quantity/Number of animals
+            var quantityMatch = Regex.Match(fullText, @"(\d+)\s+Units?\s+(\d+)", RegexOptions.IgnoreCase);
+            if (quantityMatch.Success)
+            {
+                chunkData["Quantity"] = quantityMatch.Groups[1].Value;
+                chunkData["NumberOfPackages"] = quantityMatch.Groups[2].Value;
+            }
+        }
+
+        /// <summary>
+        /// Parses the I.9 Accompanying Documents section into a structured list
+        /// </summary>
+        private List<Dictionary<string, string>> ParseAccompanyingDocuments(string fullText)
+        {
+            var documents = new List<Dictionary<string, string>>();
+
+            // Pattern to match document entries:
+            // "Veterinary health VHC12345 1 December certificate 2025"
+            // "Commercial invoice INV12345 24 November 2025"
+
+            // Split by known document types
+            var documentTypes = new[] {
+                "Veterinary health certificate",
+                "Commercial invoice",
+                "Import permit",
+                "Phytosanitary certificate",
+                "Air waybill",
+                "Bill of lading",
+                "Catch certificate",
+                "Other"
+            };
+
+            // Try to find and parse each document
+            var remainingText = fullText;
+
+            foreach (var docType in documentTypes)
+            {
+                // Handle split document type names (e.g., "Veterinary health" ... "certificate")
+                var typePattern = docType.Replace(" ", @"\s+");
+
+                // Also try partial matches for split text
+                var partialPatterns = new List<string> { typePattern };
+                if (docType.Contains(" "))
+                {
+                    var words = docType.Split(' ');
+                    for (int i = 1; i < words.Length; i++)
+                    {
+                        var partial = string.Join(@"\s+", words.Take(i)) + @"\s+\w+\s+" +
+                                     string.Join(@"\s+", words.Skip(i));
+                        partialPatterns.Add(partial);
+                    }
+                }
+
+                foreach (var pattern in partialPatterns)
+                {
+                    // Pattern: DocType Reference Date
+                    var docPattern = $@"({pattern})\s+([A-Z0-9]+)\s+(\d{{1,2}}\s+[A-Za-z]+\s+\d{{4}})";
+                    var match = Regex.Match(remainingText, docPattern, RegexOptions.IgnoreCase);
+
+                    if (match.Success)
+                    {
+                        documents.Add(new Dictionary<string, string>
+                        {
+                            { "Type", NormalizeDocumentType(match.Groups[1].Value) },
+                            { "Reference", match.Groups[2].Value },
+                            { "DateOfIssue", match.Groups[3].Value }
+                        });
+                        break;
+                    }
+                }
+            }
+
+            // If no structured parsing worked, try a more generic approach
+            if (!documents.Any())
+            {
+                // Look for reference patterns followed by dates
+                var genericPattern = @"([A-Z]{2,}[\w]*\d+)\s+(\d{1,2}\s+[A-Za-z]+\s+\d{4})";
+                var matches = Regex.Matches(fullText, genericPattern);
+
+                foreach (Match match in matches)
+                {
+                    documents.Add(new Dictionary<string, string>
+                    {
+                        { "Type", "Unknown" },
+                        { "Reference", match.Groups[1].Value },
+                        { "DateOfIssue", match.Groups[2].Value }
+                    });
+                }
+            }
+
+            return documents;
+        }
+
+        private string NormalizeDocumentType(string type)
+        {
+            // Remove extra whitespace and normalize
+            type = Regex.Replace(type, @"\s+", " ").Trim();
+
+            // Fix known split patterns
+            if (type.Contains("Veterinary health") && type.Contains("certificate"))
+            {
+                return "Veterinary health certificate";
+            }
+
+            return type;
+        }
+
+        /// <summary>
+        /// Fixes multi-line Address and Country fields for I.28 Transporter section
+        /// </summary>
+        private void FixTransporterMultiLineFields(Dictionary<string, object> sectionData, List<string> contentLines)
+        {
+            var fullText = string.Join(" ", contentLines);
+
+            // Fix Address - capture everything between "Address" and "Country"
+            var addressMatch = Regex.Match(fullText, @"Address\s+(.+?)\s+Country\s+", RegexOptions.IgnoreCase);
+            if (addressMatch.Success)
+            {
+                var address = addressMatch.Groups[1].Value.Trim().TrimEnd(',');
+                if (!string.IsNullOrEmpty(address))
+                {
+                    sectionData["Address"] = address;
+                }
+            }
+
+            // Fix Country - capture everything between "Country" and "ISO Code"
+            // Handle multi-line: "United Kingdom of" + "Great Britain and Northern Ireland"
+            var countryMatch = Regex.Match(fullText, @"Country\s+(.+?)\s+ISO\s+Code\s+(\w{2,3})\s*(.*?)(?=\s+(?:Yes|No|Approval|Identification|$))",
+                RegexOptions.IgnoreCase);
+
+            if (countryMatch.Success)
+            {
+                var countryPart1 = countryMatch.Groups[1].Value.Trim();
+                var isoCode = countryMatch.Groups[2].Value.Trim();
+                var countryPart2 = countryMatch.Groups[3].Value.Trim();
+
+                // Combine country parts
+                var fullCountry = countryPart1;
+                if (!string.IsNullOrEmpty(countryPart2))
+                {
+                    fullCountry = $"{countryPart1} {countryPart2}".Trim();
+                }
+
+                // Clean up the country name
+                fullCountry = Regex.Replace(fullCountry, @"\s+", " ").Trim();
+
+                if (!string.IsNullOrEmpty(fullCountry))
+                {
+                    sectionData["Country"] = fullCountry;
+                }
+                if (!string.IsNullOrEmpty(isoCode))
+                {
+                    sectionData["ISO Code"] = isoCode;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Fixes multi-line Address and Country fields for address sections (I.1, I.6, I.7)
+        /// </summary>
+        private void FixAddressMultiLineFields(Dictionary<string, object> sectionData, List<string> contentLines, string sectionPrefix)
+        {
+            var fullText = string.Join(" ", contentLines);
+
+            // Fix Address - capture everything between "Address" and "Country"
+            var addressMatch = Regex.Match(fullText, @"Address\s+(.+?)\s+Country\s+", RegexOptions.IgnoreCase);
+            if (addressMatch.Success)
+            {
+                var address = addressMatch.Groups[1].Value.Trim().TrimEnd(',');
+                if (!string.IsNullOrEmpty(address))
+                {
+                    sectionData["Address"] = address;
+                }
+            }
+
+            // Fix Country - similar to transporter
+            var countryMatch = Regex.Match(fullText, @"Country\s+(.+?)\s+ISO\s+Code\s+(\w{2,3}(?:-\w{3})?)",
+                RegexOptions.IgnoreCase);
+
+            if (countryMatch.Success)
+            {
+                var country = countryMatch.Groups[1].Value.Trim();
+                var isoCode = countryMatch.Groups[2].Value.Trim();
+
+                if (!string.IsNullOrEmpty(country))
+                {
+                    sectionData["Country"] = country;
+                }
+                if (!string.IsNullOrEmpty(isoCode))
+                {
+                    sectionData["ISO Code"] = isoCode;
+                }
             }
         }
 
@@ -500,8 +780,6 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
             var rawPairs = ExtractKeyValuePairs(lines);
             var keyValuePairs = rawPairs.ToDictionary(k => k.Key, v => (object)v.Value);
 
-            // 2. Dynamic Keyword Extraction
-            // We use a comprehensive list of potential keys found in the document
             var knownKeywords = new[] {
                 "Country and place of issue", "Name", "Address", "ISO Code",
                 "Organisation", "Type", "Document reference", "Date of issue", "Commercial documentary references",
@@ -524,7 +802,6 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
 
             foreach (var keyword in knownKeywords)
             {
-                // Local Reference sections - should only have "id"
                 if (sectionName.Contains("Local Reference", StringComparison.OrdinalIgnoreCase))
                 {
                     if (keyword == "Identification")
@@ -532,7 +809,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                         continue;
                     }
                 }
-                // I.8 Operator responsible for the consignment - only allow specific fields
+
                 if (sectionName.Contains("I.8", StringComparison.OrdinalIgnoreCase) &&
                     sectionName.Contains("Operator responsible", StringComparison.OrdinalIgnoreCase))
                 {
@@ -542,7 +819,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
 
                     if (!allowedI8Fields.Contains(keyword))
                     {
-                        continue; // Skip generic keywords not specific to I.8
+                        continue;
                     }
                 }
 
@@ -594,15 +871,9 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
 
                 if (!keyValuePairs.ContainsKey(keyword))
                 {
-                    // Search for keyword in full text
-                    // We use IndexOf. Note: Keywords might be substrings of others, so we processed longest first?
-                    // Ideally knownKeywords should be sorted by length descending to match "Date of issue" before "Date".
-
-                    // Case insensitive search
                     int idx = fullText.IndexOf(keyword, StringComparison.OrdinalIgnoreCase);
                     if (idx != -1)
                     {
-                        // Found key. Value is everything until the next known keyword.
                         int startVal = idx + keyword.Length;
                         int endVal = fullText.Length;
 
@@ -640,8 +911,6 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                 }
             }
 
-            // 3. Flag/Boolean Extraction
-            // Look for specific toggle words that indicate state
             var booleanFlags = new[] {
                 "Ambient", "Chilled", "Frozen",
                 "Conforming", "Non-conforming",
@@ -655,10 +924,6 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
 
             foreach (var flag in booleanFlags)
             {
-                // If the flag word appears in text, we might want to capture it.
-                // In your sample output, these are explicitly set as "true"/"false" if present/absent
-                // OR listed in a "value" field.
-
                 if (sectionName.Contains("I.16", StringComparison.OrdinalIgnoreCase) ||
                     sectionName.Contains("I.18", StringComparison.OrdinalIgnoreCase) ||
                     sectionName.Contains("I.19", StringComparison.OrdinalIgnoreCase) ||
@@ -669,7 +934,6 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                     sectionName.Contains("II.12", StringComparison.OrdinalIgnoreCase) ||
                     sectionName.Contains("III.5", StringComparison.OrdinalIgnoreCase))
                 {
-                    // Skip heuristic boolean flags for I.16 and I.19, rely on specific checkbox/OCR extraction
                 }
                 else if (fullText.Contains(flag, StringComparison.OrdinalIgnoreCase))
                 {
@@ -677,7 +941,6 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                 }
             }
 
-            // Group-aware boolean logic (Semi-hardcoded but generic concept of 'Choice Groups')
             var choiceGroups = new List<string[]> {
                 new[] { "Ambient", "Chilled", "Frozen" },
                 new[] { "Conforming", "Non-conforming" },
@@ -687,7 +950,6 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
 
             foreach (var group in choiceGroups)
             {
-                // If any item in the group is present, we might want to explictly set specific true/false for all
                 bool groupActive = group.Any(g => fullText.Contains(g, StringComparison.OrdinalIgnoreCase));
                 if (groupActive)
                 {
@@ -703,7 +965,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                             sectionName.Contains("III.5", StringComparison.OrdinalIgnoreCase) ||
                             sectionName.Contains("I.35", StringComparison.OrdinalIgnoreCase))
                         {
-                            continue; // Skip I.16, I.19, and II.3 for heuristic choice groups
+                            continue;
                         }
 
                         if (fullText.Contains(item, StringComparison.OrdinalIgnoreCase))
@@ -714,16 +976,13 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                 }
             }
 
-            // Enum-like Value Extraction
-            // Some keys are defined by the presence of a specific value from a set
             var enumDefinitions = new Dictionary<string, string[]> {
                 { "Mode", new[] { "Road vehicle", "Aeroplane", "Vessel", "Railway", "Flight" } },
-                { "Type", new[] { "Veterinary health certificate", "Cold Stores", "Processing Plant", "Slaughterhouse" } } // Helps I.9, I.15
+                { "Type", new[] { "Veterinary health certificate", "Cold Stores", "Processing Plant", "Slaughterhouse" } }
             };
 
             foreach (var def in enumDefinitions)
             {
-                // I.13 Means of transport - skip enum extraction (Mode) to prevent duplicates/capitalization issues
                 if (sectionName.Contains("I.13", StringComparison.OrdinalIgnoreCase) &&
                     sectionName.Contains("Means of transport", StringComparison.OrdinalIgnoreCase))
                 {
@@ -734,66 +993,55 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                 {
                     if (fullText.Contains(val, StringComparison.OrdinalIgnoreCase))
                     {
-                        // Found a value for this key
-                        // We prefer this over extracted empty value
                         if (!keyValuePairs.ContainsKey(def.Key) || (keyValuePairs[def.Key] is string sEnum && string.IsNullOrWhiteSpace(sEnum)))
                         {
-                            keyValuePairs[def.Key] = val.ToUpper(); // Standardization to Upper as per reference for Mode? Reference has "ROAD VEHICLE"
-                            if (def.Key == "Type") keyValuePairs[def.Key] = val; // Type keeps casing
+                            keyValuePairs[def.Key] = val.ToUpper();
+                            if (def.Key == "Type") keyValuePairs[def.Key] = val;
                         }
                     }
                 }
             }
 
-            // Regex Heuristics for specific IDs/Codes
             var regexFillers = new Dictionary<string, string> {
-                { "International transport document", @"\b(DOC\w*\d+\w*)\b" }, // e.g. DOC1234. Require at least one digit to avoid matching "document"
-                { "Identification", @"\b(\d{5,})\b" }, // e.g. 123456
-                { "Approval Number", @"\b(\d+\.\d+\.\d+)\b" }, // e.g. 15.141.001
-                { "ISO Code", @"\b([A-Z]{2}(?:-[A-Z]{3})?)\b" }, // e.g. FR, GB, GB-ENG
-                { "Commodity", @"Commodity.*?(\b\d{6,10}\b)" }, // Anchored to Commodity, boundary
-                { "Net Weight", @"(\b\d[\d,.]*\s*(?:Kg|Tonnes)\b|\b\d[\d,.]*(?=\s+\d+\s*(?:Box|Case|Package|Carton|Bag|Pallet|Unit)s?\b))" }, // Find number with weight unit or number before package count
-                { "Package Count", @"(\b\d+\s*(?:Box|Case|Package|Carton|Bag|Pallet|Unit)s?\b)" }, // Find number with package unit
-                { "Establishment of Origin", @"(?-i)([A-Z][A-Z0-9\s,.-]+?\s+\([A-Z]{2}\))" }, // Match "CHARRADE MARCEL ETS (FR)" - uppercase company name with country code
-                { "Country of Origin", @"Country\s+of\s+Origin.*(\b(?-i)[A-Z][a-z][a-zA-Z\s]*\([A-Z]{2}\))" }, // Match "France (FR)". ProperCase + Code. Greedy prefix to skip "trophies".
-                { "Product Type", @"(?-i)\b([A-Z][a-z]+\s+[a-z]+)\b(?=\s+[A-Z][A-Z\s]+\s+\([A-Z]{2}\))" }, // Match "Game trophies" before establishment name
-                { "Country", @"Country\s+(\b(?-i)[A-Z][a-zA-Z\s]+?)(?=\s+ISO|\s+Code|\d|$)" }, // Specific Country regex. Case sensitive.
-                { "Item", @"(?:\d{6,10})\s+((?-i)(?!Extinct)[A-Z][a-z]+)\b" }, // "97052200 Cervidae". Looks for digits then proper case word. Exclude "Extinct".
-                { "Date of signature", @"\b(\d{1,2}\s+[A-Za-z]+\s+\d{4}\s+\d{2}:\d{2}:\d{2}\s+[\+\-]\d{4}\s+[A-Za-z]{3})\b" } // Timestamp
+                { "International transport document", @"\b(DOC\w*\d+\w*)\b" },
+                { "Identification", @"\b(\d{5,})\b" },
+                { "Approval Number", @"\b(\d+\.\d+\.\d+)\b" },
+                { "ISO Code", @"\b([A-Z]{2}(?:-[A-Z]{3})?)\b" },
+                { "Commodity", @"Commodity.*?(\b\d{6,10}\b)" },
+                { "Net Weight", @"(\b\d[\d,.]*\s*(?:Kg|Tonnes)\b|\b\d[\d,.]*(?=\s+\d+\s*(?:Box|Case|Package|Carton|Bag|Pallet|Unit)s?\b))" },
+                { "Package Count", @"(\b\d+\s*(?:Box|Case|Package|Carton|Bag|Pallet|Unit)s?\b)" },
+                { "Establishment of Origin", @"(?-i)([A-Z][A-Z0-9\s,.-]+?\s+\([A-Z]{2}\))" },
+                { "Country of Origin", @"Country\s+of\s+Origin.*(\b(?-i)[A-Z][a-z][a-zA-Z\s]*\([A-Z]{2}\))" },
+                { "Product Type", @"(?-i)\b([A-Z][a-z]+\s+[a-z]+)\b(?=\s+[A-Z][A-Z\s]+\s+\([A-Z]{2}\))" },
+                { "Country", @"Country\s+(\b(?-i)[A-Z][a-zA-Z\s]+?)(?=\s+ISO|\s+Code|\d|$)" },
+                { "Item", @"(?:\d{6,10})\s+((?-i)(?!Extinct)[A-Z][a-z]+)\b" },
+                { "Date of signature", @"\b(\d{1,2}\s+[A-Za-z]+\s+\d{4}\s+\d{2}:\d{2}:\d{2}\s+[\+\-]\d{4}\s+[A-Za-z]{3})\b" }
             };
 
             foreach (var filler in regexFillers)
             {
-                // I.13 Means of transport - skip regex extraction to prevent duplicates
                 if (sectionName.Contains("I.13", StringComparison.OrdinalIgnoreCase) &&
                     sectionName.Contains("Means of transport", StringComparison.OrdinalIgnoreCase))
                 {
                     continue;
                 }
 
-                // Skip generic extractions for specific sections that should only have limited fields
-
-                // CHED Reference sections - should only have "id"
                 if (sectionName.Contains("CHED Reference", StringComparison.OrdinalIgnoreCase))
                 {
-                    // Skip ISO Code and Identification as these are part of the CHED ID itself
                     if (filler.Key == "ISO Code" || filler.Key == "Identification")
                     {
                         continue;
                     }
                 }
 
-                // Local Reference sections - should only have "id"
                 if (sectionName.Contains("Local Reference", StringComparison.OrdinalIgnoreCase))
                 {
-                    // Skip Identification as it gets promoted to "id" later
                     if (filler.Key == "Identification")
                     {
                         continue;
                     }
                 }
 
-                // I.8 Operator responsible for the consignment - only allow specific fields
                 if (sectionName.Contains("I.8", StringComparison.OrdinalIgnoreCase) &&
                     sectionName.Contains("Operator responsible", StringComparison.OrdinalIgnoreCase))
                 {
@@ -803,11 +1051,10 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
 
                     if (!allowedI8RegexFields.Contains(filler.Key))
                     {
-                        continue; // Skip regex extraction for fields not specific to I.8
+                        continue;
                     }
                 }
 
-                // I.9 Accompanying documents - only allow specific fields
                 if (sectionName.Contains("I.9", StringComparison.OrdinalIgnoreCase) &&
                     sectionName.Contains("Accompanying documents", StringComparison.OrdinalIgnoreCase))
                 {
@@ -819,11 +1066,10 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
 
                     if (!allowedI9RegexFields.Contains(filler.Key))
                     {
-                        continue; // Skip regex extraction for fields not specific to I.9
+                        continue;
                     }
                 }
 
-                // I.10 Prior notification - only allow Date/Time
                 if (sectionName.Contains("I.10", StringComparison.OrdinalIgnoreCase) &&
                     sectionName.Contains("Prior notification", StringComparison.OrdinalIgnoreCase))
                 {
@@ -851,17 +1097,14 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
 
                 bool shouldTryRegex = !keyValuePairs.ContainsKey(filler.Key) || (keyValuePairs[filler.Key] is string sVal && string.IsNullOrWhiteSpace(sVal));
 
-                // If value exists but contains the pattern along with other text (noisy extraction), prefer the clean regex match
                 if (!shouldTryRegex && keyValuePairs[filler.Key] is string currentVal && !string.IsNullOrWhiteSpace(currentVal))
                 {
                     var checkMatch = Regex.Match(currentVal, filler.Value, RegexOptions.IgnoreCase);
 
-                    // If it matches, but the match is significantly shorter than the current value (e.g. valid ID vs ID + Name), overwrite
                     if (checkMatch.Success && checkMatch.Value.Length < currentVal.Length * 0.9)
                     {
                         shouldTryRegex = true;
                     }
-                    // If it doesn't match at all (completely wrong value), overwrite
                     else if (!checkMatch.Success)
                     {
                         shouldTryRegex = true;
@@ -878,13 +1121,10 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                 }
             }
 
-            // 4. Populate Section Data
             foreach (var kvp in keyValuePairs)
             {
-                // Section-specific filtering when adding to sectionData
                 bool shouldSkipField = false;
 
-                // I.8 Operator responsible - only allow specific fields
                 if (sectionName.Contains("I.8", StringComparison.OrdinalIgnoreCase) &&
                     sectionName.Contains("Operator responsible", StringComparison.OrdinalIgnoreCase))
                 {
@@ -895,7 +1135,6 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                     }
                 }
 
-                // I.9 Accompanying documents - only allow specific fields
                 if (sectionName.Contains("I.9", StringComparison.OrdinalIgnoreCase) &&
                     sectionName.Contains("Accompanying documents", StringComparison.OrdinalIgnoreCase))
                 {
@@ -910,7 +1149,6 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                     }
                 }
 
-                // I.10 Prior notification - only allow specific fields
                 if (sectionName.Contains("I.10", StringComparison.OrdinalIgnoreCase) &&
                     sectionName.Contains("Prior notification", StringComparison.OrdinalIgnoreCase))
                 {
@@ -937,8 +1175,8 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                     {
                         shouldSkipField = true;
                     }
-                    else if ((kvp.Key.Length > 0 && char.IsDigit(kvp.Key[0])) || 
-                             kvp.Key.StartsWith("Operator responsible") || 
+                    else if ((kvp.Key.Length > 0 && char.IsDigit(kvp.Key[0])) ||
+                             kvp.Key.StartsWith("Operator responsible") ||
                              kvp.Key.StartsWith("I, the undersigned"))
                     {
                         shouldSkipField = true;
@@ -952,15 +1190,11 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
             }
 
             // Post-extraction corrections for specific sections
-            // I.8 Operator responsible: Fix truncated Address and Country values
             if (sectionName.Contains("I.8", StringComparison.OrdinalIgnoreCase) &&
                 sectionName.Contains("Operator responsible", StringComparison.OrdinalIgnoreCase))
             {
-                // Extract complete Address (including postal code like "CV2 4FT")
                 if (sectionData.ContainsKey("Address"))
                 {
-                    // Pattern: Address text followed by "Country" keyword
-                    // Extract everything between "Address" and "Country"
                     var addressMatch = Regex.Match(fullText, @"Address\s+(.+?)\s+Country", RegexOptions.IgnoreCase);
                     if (addressMatch.Success)
                     {
@@ -968,10 +1202,8 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                     }
                 }
 
-                // Extract complete Country (including full name like "United Kingdom of Great Britain and Northern Ireland")
                 if (sectionData.ContainsKey("Country"))
                 {
-                    // Case 1: Interleaved text "Country United Kingdom of ISO Code GB Great Britain and Northern Ireland"
                     var interleavedMatch = Regex.Match(fullText, @"Country\s+(.+?)\s+ISO\s+Code\s+\w+\s+(.+)$", RegexOptions.IgnoreCase);
                     bool handled = false;
 
@@ -982,7 +1214,6 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
 
                         string combined = $"{part1} {part2}".Trim();
 
-                        // Verify length improvement
                         if (combined.Length > sectionData["Country"].ToString()?.Length)
                         {
                             sectionData["Country"] = combined;
@@ -992,7 +1223,6 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
 
                     if (!handled)
                     {
-                        // Case 2: Normal extraction (everything before ISO Code)
                         var countryMatch = Regex.Match(fullText, @"Country\s+(.+?)(?=\s+ISO\s+Code)", RegexOptions.IgnoreCase);
                         if (countryMatch.Success)
                         {
@@ -1007,18 +1237,12 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                 }
             }
 
-
-
-
-            // I.13 Means of transport: Custom Regex Extraction for columnar layout
             if (sectionName.Contains("I.13", StringComparison.OrdinalIgnoreCase) &&
                 sectionName.Contains("Means of transport", StringComparison.OrdinalIgnoreCase))
             {
-                // Remove the headers to isolate values
                 var headers = "Mode International transport document Identification";
                 var cleanText = fullText;
 
-                // Use case insensitive replace to remove headers from the text
                 var regexHeaders = new Regex(Regex.Escape(headers), RegexOptions.IgnoreCase);
                 if (regexHeaders.IsMatch(cleanText))
                 {
@@ -1026,7 +1250,6 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                 }
                 else
                 {
-                    // Maybe headers are split? Remove individual keywords
                     cleanText = cleanText.Replace("Mode", "", StringComparison.OrdinalIgnoreCase)
                                          .Replace("International transport document", "", StringComparison.OrdinalIgnoreCase)
                                          .Replace("Identification", "", StringComparison.OrdinalIgnoreCase)
@@ -1042,13 +1265,10 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                 }
                 else
                 {
-                    // Fallback: try capturing just ID at end?
                     match = Regex.Match(cleanText, @"(?<id>\w+)$");
                     if (match.Success)
                     {
                         sectionData["identification"] = match.Groups["id"].Value.Trim();
-                        // The rest is possibly Mode + Doc. Hard to split without more info.
-                        // Maybe Doc is second to last?
                         var remaining = cleanText.Substring(0, match.Index).Trim();
                         var matchDoc = Regex.Match(remaining, @"(?<doc>\w+)$");
                         if (matchDoc.Success)
@@ -1063,26 +1283,21 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                     }
                     else
                     {
-                        // Assume entire text is mode if no ID found? Unlikely.
                         sectionData["mode"] = cleanText;
                     }
                 }
             }
 
-            // Generic Name/Description Rescue: If 'Name' or 'Product Type' is present but empty, try to use residual text.
-            // This handles cases like I.15 where Name is the text remaining after extracting Approval Number and Type.
             var keysToRescue = new[] { "Name", "Product Type", "Name of Signatory" };
             foreach (var rescueKey in keysToRescue)
             {
                 if (sectionData.ContainsKey(rescueKey) && string.IsNullOrWhiteSpace(sectionData[rescueKey].ToString()))
                 {
-                    var residualText = RemoveKnownAttributes(fullText, sectionData).Trim();
+                    var residualText = RemoveKnownAttributes(fullText, sectionData, knownKeywords, booleanFlags).Trim();
 
                     if (!string.IsNullOrWhiteSpace(residualText))
                     {
-                        // formatting cleanup
                         if (residualText.EndsWith(",")) residualText = residualText.TrimEnd(',').Trim();
-                        // Heuristic: If text is overly long, it might be garbage. But names can be long.
                         if (residualText.Length < 200 && residualText.Length > 2)
                         {
                             sectionData[rescueKey] = residualText;
@@ -1091,47 +1306,6 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                 }
             }
 
-            // Helper local function to remove known attributes from text
-            string RemoveKnownAttributes(string text, Dictionary<string, object> currentSectionData)
-            {
-                var residual = text;
-
-                // Remove all extracted values
-                foreach (var val in currentSectionData.Values)
-                {
-                    if (val is string s && !string.IsNullOrWhiteSpace(s))
-                    {
-                        // Replace exactly? Or case insensitive?
-                        // Values extracted are usually substrings of fullText.
-                        residual = residual.Replace(s, " ");
-                    }
-                }
-
-                // Remove all known keywords
-                foreach (var kw in knownKeywords)
-                {
-                    // Case insensitive remove
-                    residual = Regex.Replace(residual, Regex.Escape(kw), " ", RegexOptions.IgnoreCase);
-                }
-
-                // Remove boolean flags
-                foreach (var f in booleanFlags)
-                {
-                    residual = Regex.Replace(residual, Regex.Escape(f), " ", RegexOptions.IgnoreCase);
-                }
-
-                // Cleanup residual
-                residual = Regex.Replace(residual, @"\s+", " ").Trim();
-                residual = residual.TrimStart(':', '-', ',', '.').Trim();
-
-                return residual;
-            }
-
-            // 5. Fallback: Full Text as 'value' or 'id'
-            // If we extracted very little structured data, or if there's leftover text that is important.
-            // The sample output puts the full text in 'value' often.
-
-            // Skip adding 'value' for sections that should only have specific fields
             bool shouldSkipValue = (sectionName.Contains("I.8", StringComparison.OrdinalIgnoreCase) &&
                                    sectionName.Contains("Operator responsible", StringComparison.OrdinalIgnoreCase)) ||
                                    (sectionName.Contains("I.9", StringComparison.OrdinalIgnoreCase) &&
@@ -1147,7 +1321,6 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
             }
 
             // Post-fallback cleanup for specific sections
-            // I.11 Country of Origin & I.14 Country of dispatch: Cleanup "value" to remove ISO Code
             bool isCountrySection = (sectionName.Contains("I.11", StringComparison.OrdinalIgnoreCase) && sectionName.Contains("Country of Origin", StringComparison.OrdinalIgnoreCase)) ||
                                     (sectionName.Contains("I.14", StringComparison.OrdinalIgnoreCase) && sectionName.Contains("Country of dispatch", StringComparison.OrdinalIgnoreCase));
 
@@ -1158,39 +1331,29 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
 
                 if (!string.IsNullOrEmpty(iso) && val.EndsWith(iso))
                 {
-                    // Remove ISO code from value (e.g. "France FR" -> "France")
                     val = val.Substring(0, val.Length - iso.Length).Trim();
                     sectionData["value"] = val;
                 }
             }
 
-            // 6. Generic ID extraction
-            // If the section header suggests an ID (like "Reference", "Code"), verify we extracted a value.
-            // If "value" looks like an ID, map it to "id" key if required by schema preference.
             if (sectionName.Contains("Reference") || sectionName.Contains("Code"))
             {
                 if (sectionData.ContainsKey("value") && !sectionData.ContainsKey("id"))
                 {
                     var val = sectionData["value"].ToString();
-                    // Simple heuristic for ID: alphanumeric, no spaces, length > 3
                     if (val.Length > 3 && !val.Contains(" ") && Regex.IsMatch(val, "^[A-Za-z0-9.-]+$"))
                     {
                         sectionData["id"] = val;
-                        // We keep 'value' as well usually, or remove it? Sample output shows "id": "..." and no value for I.2.
-                        // Let's remove 'value' if we promoted it to 'id'
                         sectionData.Remove("value");
                     }
                 }
             }
 
-            // 7. Boolean Section Defaults
-            // Some sections imply "true" just by existence if no other data is found (checkbox behavior at section level)
             var booleanSections = new[] { "For internal market", "Domestic use" };
             foreach (var boolSec in booleanSections)
             {
                 if (sectionName.Contains(boolSec, StringComparison.OrdinalIgnoreCase))
                 {
-                    // If we have no significant data, defaulting to true
                     if (!sectionData.Any() || (sectionData.Count == 1 && sectionData.ContainsKey("value") && string.IsNullOrWhiteSpace(sectionData["value"].ToString())))
                     {
                         sectionData["value"] = "true";
@@ -1198,8 +1361,6 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                 }
             }
 
-            // 8. Part II/III Checkbox Defaults (Schema Compliance)
-            // Ensure specific keys exist with "false" if not found, to match reference schema for Control sections
             if (sectionName.StartsWith("II.") || sectionName.StartsWith("III."))
             {
                 var checkboxLabels = new[] {
@@ -1221,10 +1382,14 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                 }
             }
 
-            // I.19 Conformity of the goods: Specific Cleanup
+            // Section-specific cleanup
+            ApplySectionSpecificCleanup(sectionData, sectionName, fullText);
+        }
+
+        private void ApplySectionSpecificCleanup(Dictionary<string, object> sectionData, string sectionName, string fullText)
+        {
             if (sectionName.Contains("I.19", StringComparison.OrdinalIgnoreCase))
             {
-                // Remove keys that shouldn't be here
                 var keysToRemove = new[] { "Yes", "No", "value" };
                 foreach (var key in keysToRemove)
                 {
@@ -1235,13 +1400,10 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                 }
             }
 
-            // I.27 Means of transport after BCP/storage: Specific Cleanup
             if (sectionName.Contains("I.27", StringComparison.OrdinalIgnoreCase))
             {
-                // Remove value
                 if (sectionData.ContainsKey("value")) sectionData.Remove("value");
 
-                // Ensure keys exist (empty if missing)
                 var requiredKeys = new[] { "Mode", "International transport document", "Identification" };
                 foreach (var key in requiredKeys)
                 {
@@ -1252,24 +1414,21 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                 }
             }
 
-            // I.28 Transporter: Specific Cleanup
             if (sectionName.Contains("I.28", StringComparison.OrdinalIgnoreCase))
             {
                 if (sectionData.ContainsKey("value")) sectionData.Remove("value");
 
-                // Map "Approval Number" to "Approval number" if present
                 if (sectionData.ContainsKey("Approval Number"))
                 {
                     sectionData["Approval number"] = sectionData["Approval Number"];
                     sectionData.Remove("Approval Number");
                 }
 
-                // Clean garbage values from headers being picked up
                 var garbageMap = new Dictionary<string, string> {
-                    { "Name", "Code" },         // "Name" often picks up "Code"
-                    { "Address", "Country" },   // "Address" often picks up "Country"
-                    { "Country", "ISO" },       // "Country" often picks up "ISO"
-                    { "ISO Code", "Approval" }  // "ISO Code" often picks up "Approval"
+                    { "Name", "Code" },
+                    { "Address", "Country" },
+                    { "Country", "ISO" },
+                    { "ISO Code", "Approval" }
                 };
 
                 foreach (var kvp in garbageMap)
@@ -1280,7 +1439,6 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                     }
                 }
 
-                // Ensure keys exist (empty if missing)
                 var requiredKeys = new[] { "Name", "Address", "Country", "ISO Code", "Approval number" };
                 foreach (var key in requiredKeys)
                 {
@@ -1291,7 +1449,6 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                 }
             }
 
-            // I.15 Establishment of Origin: Specific Cleanup
             if (sectionName.Contains("I.15", StringComparison.OrdinalIgnoreCase))
             {
                 var garbageMap = new Dictionary<string, string> {
@@ -1310,10 +1467,8 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                 }
             }
 
-            // I.31 Description of the goods: Specific Cleanup
             if (sectionName.Contains("I.31", StringComparison.OrdinalIgnoreCase))
             {
-                // Remove keys that shouldn't be here
                 var keysToRemove = new[] { "Type", "Yes", "No", "Identification", "ISO Code" };
                 foreach (var key in keysToRemove)
                 {
@@ -1324,21 +1479,16 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                 }
             }
 
-            // I.35 Declaration: Specific Cleanup and Signatory Extraction
             if (sectionName.Contains("I.35", StringComparison.OrdinalIgnoreCase) && sectionData.ContainsKey("value"))
             {
                 var val = sectionData["value"].ToString();
 
-                // 1. Extract Date and Name from value
-                // Look for timestamp: 16 December 2025 13:03:41 +0000 GMT
                 var timestampRegex = new Regex(@"\d{1,2}\s+[A-Za-z]+\s+\d{4}\s+\d{2}:\d{2}:\d{2}\s+[\+\-]\d{4}\s+[A-Za-z]{3}");
                 var match = timestampRegex.Match(val);
                 if (match.Success)
                 {
                     sectionData["Date of signature"] = match.Value;
 
-                    // Name is typically AFTER the timestamp in the declaration text
-                    // "Date ... GMT IPaff Automation"
                     var namePart = val.Substring(match.Index + match.Length).Trim();
                     if (!string.IsNullOrWhiteSpace(namePart))
                     {
@@ -1346,15 +1496,12 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                     }
                 }
 
-                // 2. Ensure "Signature" is present (empty)
                 if (!sectionData.ContainsKey("Signature"))
                 {
                     sectionData["Signature"] = "";
                 }
             }
 
-            // II.3 Documentary Check: Specific Cleanup
-            // Remove value, Yes, No, ISO Code. Ensure specific boolean keys are present (defaulting to false or empty).
             if (sectionName.Contains("II.3", StringComparison.OrdinalIgnoreCase))
             {
                 var keysToRemove = new[] { "value", "Yes", "No", "ISO Code" };
@@ -1369,17 +1516,12 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                     if (!sectionData.ContainsKey(k)) sectionData[k] = "false";
                 }
 
-                if (sectionData.ContainsKey("EU Standard"))
-                {
-                    sectionData["EU Standard"] = "";
-                }
-                else
+                if (!sectionData.ContainsKey("EU Standard"))
                 {
                     sectionData["EU Standard"] = "";
                 }
             }
 
-            // II.4 Identity Check: Specific Cleanup
             if (sectionName.Contains("II.4", StringComparison.OrdinalIgnoreCase))
             {
                 var keysToRemove = new[] { "value", "Identity Check", "ISO Code" };
@@ -1395,7 +1537,6 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                 }
             }
 
-            // II.5 Physical Check: Specific Cleanup
             if (sectionName.Contains("II.5", StringComparison.OrdinalIgnoreCase))
             {
                 var keysToRemove = new[] { "value", "ISO Code" };
@@ -1411,7 +1552,6 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                 }
             }
 
-            // II.6 Laboratory tests: Specific Cleanup
             if (sectionName.Contains("II.6", StringComparison.OrdinalIgnoreCase))
             {
                 var keysToRemove = new[] { "value", "ISO Code", "Results Pending" };
@@ -1427,7 +1567,6 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                 }
             }
 
-            // II.12 Acceptable for INTERNAL market: Specific Cleanup
             if (sectionName.Contains("II.12", StringComparison.OrdinalIgnoreCase))
             {
                 var keysToRemove = new[] { "value", "Human Consumption" };
@@ -1441,25 +1580,17 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                 }
             }
 
-            // II.20 Identification of BCP: Specific Cleanup
             if (sectionName.Contains("II.20", StringComparison.OrdinalIgnoreCase))
             {
                 if (sectionData.ContainsKey("value"))
                 {
                     var val = sectionData["value"].ToString();
-                    // Manually extract BCP if keyword extraction didn't catch it
                     if (!sectionData.ContainsKey("BCP") && val.Contains("BCP"))
                     {
-                        // Let's rely on regex or known format.
-                        // Assuming "BCP" keyword is followed by the BCP name.
                         var match = Regex.Match(val, @"BCP\s+(.*?)(?=\s+(Stamp|Unit number)|$)");
                         if (match.Success)
                         {
                             sectionData["BCP"] = match.Groups[1].Value.Trim();
-                        }
-                        else
-                        {
-                            //no action
                         }
                     }
 
@@ -1467,7 +1598,6 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                 }
             }
 
-            // II.21 Certifying Officer: Specific Cleanup
             if (sectionName.Contains("II.21", StringComparison.OrdinalIgnoreCase))
             {
                 var keysToRemove = new[] { "value", "ISO Code", "Official Inspector", "Full name Signature" };
@@ -1482,19 +1612,16 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                 }
             }
 
-            // II.22 Inspection fees: Specific Cleanup
             if (sectionName.Contains("II.22", StringComparison.OrdinalIgnoreCase))
             {
                 sectionData.Clear();
             }
 
-            // II.23 Customs Document Reference: Specific Cleanup
             if (sectionName.Contains("II.23", StringComparison.OrdinalIgnoreCase))
             {
                 sectionData.Clear();
             }
 
-            // III.4 Details on re-dispatching: Specific Cleanup
             if (sectionName.Contains("III.4", StringComparison.OrdinalIgnoreCase))
             {
                 sectionData.Clear();
@@ -1502,7 +1629,6 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                 foreach (var k in keysToDefault) sectionData[k] = "";
             }
 
-            // III.5 Follow up: Specific Cleanup
             if (sectionName.Contains("III.5", StringComparison.OrdinalIgnoreCase))
             {
                 var keysToRemove = new[] { "value", "Yes", "No", "Satisfactory", "Not Satisfactory", "ISO Code" };
@@ -1515,7 +1641,6 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                 foreach (var k in emptyKeys) if (!sectionData.ContainsKey(k)) sectionData[k] = "";
             }
 
-            // III.6 Official Inspector: Specific Cleanup
             if (sectionName.Contains("III.6", StringComparison.OrdinalIgnoreCase))
             {
                 sectionData.Clear();
@@ -1524,9 +1649,34 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
             }
         }
 
-        /// <summary>
-        /// Attempts to extract key-value pairs from text lines
-        /// </summary>
+        private string RemoveKnownAttributes(string text, Dictionary<string, object> currentSectionData, string[] knownKeywords, string[] booleanFlags)
+        {
+            var residual = text;
+
+            foreach (var val in currentSectionData.Values)
+            {
+                if (val is string s && !string.IsNullOrWhiteSpace(s))
+                {
+                    residual = residual.Replace(s, " ");
+                }
+            }
+
+            foreach (var kw in knownKeywords)
+            {
+                residual = Regex.Replace(residual, Regex.Escape(kw), " ", RegexOptions.IgnoreCase);
+            }
+
+            foreach (var f in booleanFlags)
+            {
+                residual = Regex.Replace(residual, Regex.Escape(f), " ", RegexOptions.IgnoreCase);
+            }
+
+            residual = Regex.Replace(residual, @"\s+", " ").Trim();
+            residual = residual.TrimStart(':', '-', ',', '.').Trim();
+
+            return residual;
+        }
+
         private Dictionary<string, string> ExtractKeyValuePairs(List<string> lines)
         {
             var pairs = new Dictionary<string, string>();
@@ -1540,7 +1690,6 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
 
             foreach (var line in lines)
             {
-                // check if line matching "Key: Value" pattern
                 var match = Regex.Match(line, @"^([^:]+):\s*(.*)$");
                 if (match.Success)
                 {
@@ -1554,26 +1703,14 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                     continue;
                 }
 
-                // Check for "Key Value" without colon for specific known keys
-                // Handle multiple keys in one line "Country England ISO Code GB-ENG"
                 string remainingLine = line.Trim();
-                bool foundAny = false;
 
-                // Repeatedly try to find keys at the start of the remaining string
-                // or if not at start, split the line if multiple keys exist
-
-                // Simpler approach: Locate all known keys in the line
                 var foundKeyIndices = new List<(string Key, int Index)>();
                 foreach (var key in commonKeys)
                 {
-                    // Check if key exists in line
-                    // We need word boundary check really, but containment is a start
-                    // We prioritize keys that appear earlier
                     int idx = line.IndexOf(key, StringComparison.OrdinalIgnoreCase);
                     while (idx != -1)
                     {
-                        // Verify semantic boundary? (e.g. not substring of another word)
-                        // For now accept it
                         foundKeyIndices.Add((key, idx));
                         idx = line.IndexOf(key, idx + 1, StringComparison.OrdinalIgnoreCase);
                     }
@@ -1581,7 +1718,6 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
 
                 if (foundKeyIndices.Any())
                 {
-                    // Sort by occurrence in line
                     foundKeyIndices = foundKeyIndices.OrderBy(x => x.Index).ToList();
 
                     var filteredIndices = new List<(string Key, int Index)>();
@@ -1589,17 +1725,14 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                     {
                         var current = foundKeyIndices[i];
                         bool skip = false;
-                        // Check against other entries
                         foreach (var other in foundKeyIndices)
                         {
                             if (current == other) continue;
-                            // If current is inside other (same start, shorter length)
                             if (other.Index == current.Index && other.Key.Length > current.Key.Length)
                             {
                                 skip = true;
                                 break;
                             }
-                            // If current is inside other (later start, ends before or at other end)
                             if (other.Index < current.Index && (other.Index + other.Key.Length) >= (current.Index + current.Key.Length))
                             {
                                 skip = true;
@@ -1610,7 +1743,6 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                     }
                     foundKeyIndices = filteredIndices.OrderBy(x => x.Index).ToList();
 
-                    // Now extract values between keys
                     for (int i = 0; i < foundKeyIndices.Count; i++)
                     {
                         var keyItem = foundKeyIndices[i];
@@ -1620,13 +1752,11 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
                         if (valueEnd > valueStart)
                         {
                             var val = line.Substring(valueStart, valueEnd - valueStart).Trim();
-                            // remove leading colon/hyphen if present
                             if (val.StartsWith(":") || val.StartsWith("-")) val = val.Substring(1).Trim();
 
                             if (!string.IsNullOrEmpty(val))
                             {
-                                pairs[keyItem.Key] = val; // Normalize key casing to our common key?
-                                                          // Ideally use the casing from commonKeys list, but keyItem.Key is from that list
+                                pairs[keyItem.Key] = val;
                             }
                         }
                     }
@@ -1636,29 +1766,23 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
             return pairs;
         }
 
-        /// <summary>
-        /// Checks if a field is relevant to a section based on naming patterns
-        /// </summary>
         private bool IsFieldRelevantToSection(string fieldName, string sectionName)
         {
             if (string.IsNullOrEmpty(fieldName) || string.IsNullOrEmpty(sectionName))
                 return false;
 
-            // Special case for I.16 keys: restrict them ONLY to I.16
             var i16Keys = new[] { "Ambient", "Chilled", "Frozen" };
             if (i16Keys.Contains(fieldName, StringComparer.OrdinalIgnoreCase))
             {
                 return sectionName.Contains("I.16", StringComparison.OrdinalIgnoreCase);
             }
 
-            // Special case for I.19 keys: restrict them ONLY to I.19
             var i19Keys = new[] { "Conforming", "Non-conforming" };
             if (i19Keys.Contains(fieldName, StringComparer.OrdinalIgnoreCase))
             {
                 return sectionName.Contains("I.19", StringComparison.OrdinalIgnoreCase);
             }
 
-            // Simple heuristic: check if field name contains section number
             var sectionMatch = Regex.Match(sectionName, @"^(I{1,3})\.\d+");
             if (sectionMatch.Success)
             {
@@ -1669,9 +1793,6 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
             return false;
         }
 
-        /// <summary>
-        /// Groups words into lines based on vertical position
-        /// </summary>
         private List<List<Word>> GroupWordsIntoLines(List<Word> words)
         {
             var lines = new List<List<Word>>();
@@ -1715,19 +1836,16 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
         {
             if (string.IsNullOrWhiteSpace(name)) return name;
 
-            // Split by non-alphanumeric characters to handle spaces, dots, slashes, etc.
             var parts = Regex.Split(name, @"[^a-zA-Z0-9]+");
             var sb = new StringBuilder();
 
             foreach (var part in parts)
             {
                 if (string.IsNullOrWhiteSpace(part)) continue;
-                // Convert to PascalCase (e.g. "ISO" -> "Iso", "code" -> "Code")
                 var lower = part.ToLower();
                 sb.Append(char.ToUpper(lower[0]) + lower.Substring(1));
             }
 
-            // Ensure identifier doesn't start with a digit
             if (sb.Length > 0 && char.IsDigit(sb[0]))
             {
                 sb.Insert(0, "_");

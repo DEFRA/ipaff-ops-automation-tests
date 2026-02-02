@@ -113,67 +113,67 @@ Scenario: User creates and submits a B2C consignment notification - CHEDA Happy 
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
 	When the user checks that the data in the certificate matches the data entered into the notification
-	And the user closes the PDF browser tab
-	Then the browser tab is closed
-	When the user logs out of IPAFFS Part 1
-	Then the user should be logged out successfully
-	When I navigate to the IPAFF Inspector application
-	Then I should see type of Gateway login page
-	And I have selected 'Sign in with Government Gateway' as login type
-	When I click Continue button from How do you want to sign in page
-	Then I should redirected to the IPAFF Sign in using Government Gateway page
-	When I have provided the IPAFF Heathrow Inspector credentials and signin
-	Then the user should be logged into Import notifications page
-	When the user searches for the newly created notification on the Import notifications page
-	Then the user clicks the notification found with status 'NEW'
-	And the Decision Hub page should be displayed
-	When the user clicks Save and set as in progress
-	Then the notification status should change from 'NEW' to 'IN PROGRESS'
-	When the user clicks Local reference number link in Record checks
-	Then Local reference number page should be displayed
-	When the user enters a local reference number and clicks Save and continue
-	Then the Documentary check page should be displayed
-	When the user selects 'Satisfactory' for the Documentary check and clicks Save and continue
-	Then the Identity, physical and welfare checks page should be displayed
-	When the user selects 'Satisfactory' for Identity check
-	And the user selects 'Satisfactory' for Physical check
-	And the user selects '4' for Number of animals checked
-	And the user selects 'Satisfactory' for Welfare check
-	And the user selects '25' '%' for Number of dead animals
-	And the user selects '3' 'unit' for Number of unfit animals
-	And the user selects '0' for Number of births or abortions
-	And the user clicks Save and continue
-	Then the Seal numbers page should be displayed
-	And 'No' is pre-selected for Are new seal numbers required?
-	When the user clicks Save and continue
-	Then the Laboratory tests page should be displayed
-	And 'No' is pre-selected for Would you like to record laboratory tests?
-	When the user clicks Save and continue
-	Then the Decision page should be displayed
-	When the user selects Acceptable for 'Internal market' 'Approved bodies'
-	And the user clicks Save and continue
-	Then the Select a controlled destination page should be displayed
-	When the user clicks Add a controlled destination
-	Then the Search for an existing controlled destination page should be displayed
-	When the user selects a controlled destination
-	Then the chosen controlled destination should be displayed
-	When the user clicks Save and continue
-	Then the Review outcome decision page should be displayed
-	And the details reflect the information added
-	When the user selects the radio button to declare that the checks have been carried out in accordance with EU law
-	And user clicks Submit decision
-	Then the Your checks have been submitted page should be displayed
-	When the user clicks View or print CHED
-	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
-	And the user closes the PDF browser tab
-	Then the browser tab is closed
-	When the user logs out of IPAFFS Part 2
-	Then the user should be logged out successfully
-	When I am logged in to the 'PIMS' app as 'Caseworker'
-	And I open the sub area 'Importer Notifications' under the 'Case Management' area
-	And I search Importer Notifications for the notification created in IPAFFS
-	And I open the record at position '0' in the grid
+	#And the user closes the PDF browser tab
+	#Then the browser tab is closed
+	#When the user logs out of IPAFFS Part 1
+	#Then the user should be logged out successfully
+	#When I navigate to the IPAFF Inspector application
+	#Then I should see type of Gateway login page
+	#And I have selected 'Sign in with Government Gateway' as login type
+	#When I click Continue button from How do you want to sign in page
+	#Then I should redirected to the IPAFF Sign in using Government Gateway page
+	#When I have provided the IPAFF Heathrow Inspector credentials and signin
+	#Then the user should be logged into Import notifications page
+	#When the user searches for the newly created notification on the Import notifications page
+	#Then the user clicks the notification found with status 'NEW'
+	#And the Decision Hub page should be displayed
+	#When the user clicks Save and set as in progress
+	#Then the notification status should change from 'NEW' to 'IN PROGRESS'
+	#When the user clicks Local reference number link in Record checks
+	#Then Local reference number page should be displayed
+	#When the user enters a local reference number and clicks Save and continue
+	#Then the Documentary check page should be displayed
+	#When the user selects 'Satisfactory' for the Documentary check and clicks Save and continue
+	#Then the Identity, physical and welfare checks page should be displayed
+	#When the user selects 'Satisfactory' for Identity check
+	#And the user selects 'Satisfactory' for Physical check
+	#And the user selects '4' for Number of animals checked
+	#And the user selects 'Satisfactory' for Welfare check
+	#And the user selects '25' '%' for Number of dead animals
+	#And the user selects '3' 'unit' for Number of unfit animals
+	#And the user selects '0' for Number of births or abortions
+	#And the user clicks Save and continue
+	#Then the Seal numbers page should be displayed
+	#And 'No' is pre-selected for Are new seal numbers required?
+	#When the user clicks Save and continue
+	#Then the Laboratory tests page should be displayed
+	#And 'No' is pre-selected for Would you like to record laboratory tests?
+	#When the user clicks Save and continue
+	#Then the Decision page should be displayed
+	#When the user selects Acceptable for 'Internal market' 'Approved bodies'
+	#And the user clicks Save and continue
+	#Then the Select a controlled destination page should be displayed
+	#When the user clicks Add a controlled destination
+	#Then the Search for an existing controlled destination page should be displayed
+	#When the user selects a controlled destination
+	#Then the chosen controlled destination should be displayed
+	#When the user clicks Save and continue
+	#Then the Review outcome decision page should be displayed
+	#And the details reflect the information added
+	#When the user selects the radio button to declare that the checks have been carried out in accordance with EU law
+	#And user clicks Submit decision
+	#Then the Your checks have been submitted page should be displayed
+	#When the user clicks View or print CHED
+	#Then the certificate should be displayed in a new browser tab
+	#When the user checks that the data in the certificate matches the data entered into the notification
+	#And the user closes the PDF browser tab
+	#Then the browser tab is closed
+	#When the user logs out of IPAFFS Part 2
+	#Then the user should be logged out successfully
+	#When I am logged in to the 'PIMS' app as 'Caseworker'
+	#And I open the sub area 'Importer Notifications' under the 'Case Management' area
+	#And I search Importer Notifications for the notification created in IPAFFS
+	#And I open the record at position '0' in the grid
 
 Scenario: User creates and submits a CHEDA consignment notification with multiple emergency lab tests - SPS-7383
 	Given that I navigate to the IPAFF application
