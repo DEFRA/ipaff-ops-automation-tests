@@ -13,7 +13,9 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects
         private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
-        private IWebElement btnOverrideRisk => _driver.FindElement(By.Id("submit-button"));     
+        private IWebElement btnOverrideRisk => _driver.FindElement(By.Id("submit-button"));
+        private IWebElement rdoOverrideAsInspectionRequired => _driver.FindElement(By.Id("override-decision"));
+        private IWebElement rdoOverrideAsNoInspection => _driver.FindElement(By.Id("override-decision-2"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -31,6 +33,14 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickYesOverrideRiskDecisionButton()
         {
             btnOverrideRisk.Click();
+        }
+
+        public void ClickOverrideDecisionOption(string option)
+        {
+            if (option.Equals("Override risk decision as inspection required"))
+                rdoOverrideAsInspectionRequired.Click();
+            else if (option.Equals("Override risk decision as no inspection"))
+                rdoOverrideAsNoInspection.Click();
         }
     }
 }
