@@ -12,7 +12,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IObjectContainer _objectContainer;
 
         #region Page Objects
-        private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
+        private IWebElement primaryTitle => _driver.WaitForElement(By.XPath("//span[@id='page-primary-title' and text()='Decision Hub']"));
         private IWebElement lnkSaveAndSetAsInProgress => _driver.WaitForElement(By.Id("set-in-progress"));
         private IWebElement txtUpdatedStatus => _driver.WaitForElement(By.Id("Status-Label"));
         private IWebElement lnkLocalRefNum => _driver.WaitForElement(By.XPath("//a[normalize-space()='Local reference number']"));
