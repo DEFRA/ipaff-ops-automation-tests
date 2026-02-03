@@ -169,7 +169,6 @@ Scenario: User creates and submits a B2C consignment notification - CHEDP Happy 
 	And the user checks commodity code "41015050", description "Bison bison", quantity "1000", authority "POAO" and decision "Acceptable for Internal Market" after the decision given
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
-	And print all captured values in report
 
 Scenario: User creates and submits a B2C consignment notification for Transit Reason - CHEDP 7369
 	Given that I navigate to the IPAFF application
@@ -349,7 +348,6 @@ Scenario: User creates and submits a B2C consignment notification for Transit Re
 	Then the user should be logged into Import notifications page
 	When the user searches for the newly created notification on the Import notifications page
 	Then the user clicks the notification found with status "Valid"
-	And print all captured values in report
 
 Scenario: User creates and submits a B2C consignment notification for Transhipment or onward travel Reason - CHEDP 7370
 	Given that I navigate to the IPAFF application
@@ -518,7 +516,6 @@ Scenario: User creates and submits a B2C consignment notification for Transhipme
 	Then the notification should be found with the status "Rejected"
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
-	And print all captured values in report
 
 Scenario: User creates and submits 2 B2C consignment notification with existing Billing details - CHEDP 7365
 	Given that I navigate to the IPAFF application
@@ -736,7 +733,6 @@ Scenario: User creates and submits 2 B2C consignment notification with existing 
 	And the user records the IPAFFS User details and CHED Reference
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
-	And print all captured values in report
 
 Scenario: Admin submits a notification and records decision and validate cookies page as normal user - CHEDP 7368
 	Given that I navigate to the IPAFF Inspector application
@@ -910,7 +906,6 @@ Scenario: Admin submits a notification and records decision and validate cookies
 	Then the dashboard page should be displayed
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
-	And print all captured values in report
 
 Scenario: User creates a B2C consignment notification, updates it from the review page, submits it, amends the notification, and sends it for laboratory tests - CHEDP 7371
 	Given that I navigate to the IPAFF application
@@ -1186,7 +1181,6 @@ Scenario: User creates a B2C consignment notification, updates it from the revie
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
-	And print all captured values in report
 
 Scenario: User creates and submits a notification, override the risk decision and reject the notification - CHEDP 7372
 	Given that I navigate to the IPAFF application
@@ -1418,7 +1412,6 @@ Scenario: User creates and submits a notification, override the risk decision an
 	Then Border notifications dashboard page should be displayed
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
-	And print all captured values in report
 
 Scenario: User submits a notification as no inspection required, override the risk decision and checks Inspection required box - CHEDP 8582
 	Given that I navigate to the IPAFF application
@@ -1572,7 +1565,6 @@ Scenario: User submits a notification as no inspection required, override the ri
 	Then the Your checks have been submitted page should be displayed
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
-	And print all captured values in report
 
 Scenario: User submits a notification, inspector copy it as replacement, update and submit decision - CHEDP 9112
 	Given that I navigate to the IPAFF application
@@ -1848,7 +1840,6 @@ Scenario: User submits a notification, inspector copy it as replacement, update 
 	And the CHED status should be "Valid" in BTMS search result page
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
-	And print all captured values in report
 
 Scenario: Create and Submit B2C Consignment with Two Commodities and Catch Certificates, Submits decision and CHED Verification in BTMS CHEDP_SPS_9113
 	Given that I navigate to the IPAFF application
@@ -2072,4 +2063,3 @@ Scenario: Create and Submit B2C Consignment with Two Commodities and Catch Certi
 	And the user checks commodity code "16052190", description "Penaeus (Litopenaeus) vannamei", quantity "3240", authority "POAO IUU" and decision "Acceptable for Internal Market Decision not given" after the decision given
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
-	And print all captured values in report
