@@ -174,6 +174,7 @@ Scenario: User creates and submits a B2C consignment notification - CHEDA Happy 
 	And I open the sub area 'Importer Notifications' under the 'Case Management' area
 	And I search Importer Notifications for the notification created in IPAFFS
 	And I open the record at position '0' in the grid
+	Then print all captured values in report
 
 Scenario: User creates and submits a CHEDA consignment notification with multiple emergency lab tests - SPS-7383
 	Given that I navigate to the IPAFF application
@@ -377,6 +378,7 @@ Scenario: User creates and submits a CHEDA consignment notification with multipl
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
+	And print all captured values in report
 
 Scenario: User creates and submits a CHEDA consignment notification for Temporary admission horses with laboratory tests - SPS-7384
 	Given that I navigate to the IPAFF application
@@ -573,6 +575,7 @@ Scenario: User creates and submits a CHEDA consignment notification for Temporar
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
+	And print all captured values in report
 
 Scenario: User creates and submits a CHEDA consignment notification with Transit through multiple countries - SPS-7385
 	Given that I navigate to the IPAFF application
@@ -759,6 +762,7 @@ Scenario: User creates and submits a CHEDA consignment notification with Transit
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
+	And print all captured values in report
 
 Scenario: User creates and submits a CHEDA consignment notification with inspector workflow and lab test validations - SPS-7386
 	Given that I navigate to the IPAFF application
@@ -1041,6 +1045,7 @@ Scenario: User creates and submits a CHEDA consignment notification with inspect
 	Then the dashboard page should be displayed
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
+	And print all captured values in report
 
 Scenario: User adds addresses to address book and amends a CHEDA notification to use new traders - SPS-7387
 	Given that I navigate to the IPAFF application
@@ -1245,6 +1250,7 @@ Scenario: User adds addresses to address book and amends a CHEDA notification to
 	And the user deletes the newly added operator 'Importer'
 	And the user deletes the newly added operator 'Exporter'
 	And the user deletes the newly added operator 'Transporter'
+	And print all captured values in report
 
 Scenario: User creates and amends a CHEDA notification, inspector requests amendment, and processes with multiple emergency lab tests - SPS-7388
 	Given that I navigate to the IPAFF application
@@ -1616,6 +1622,7 @@ Scenario: User creates and amends a CHEDA notification, inspector requests amend
 	Then the notification returned in the search has the status 'VALID' on the Import notifications page
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
+	And print all captured values in report
 
 Scenario: User creates and submits a CHEDA notification, copies it as new and verifies copied values - SPS-7389
 	Given that I navigate to the IPAFF application
@@ -1838,3 +1845,4 @@ Scenario: User creates and submits a CHEDA notification, copies it as new and ve
 	Then the browser tab is closed	
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
+	And print all captured values in report

@@ -165,6 +165,7 @@ Scenario: User creates and submits a B2C consignment notification - CHEDD Happy 
 	And the user validates the commodity code "100610", description "Rice in the husk (paddy or rough)", quantity "18000", authority "FNAO" and decision "Acceptable for Internal Market" for commodity "2" after the decision is given	
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
+	And print all captured values in report
 
 Scenario: User creates and submits a notification, override the risk decision, reject the notification and creates border notification - CHEDD - SPS-9107
 	Given that I navigate to the IPAFF application
@@ -393,6 +394,7 @@ Scenario: User creates and submits a notification, override the risk decision, r
 	And the user validates the commodity code "12024200", description "Shelled, whether or not broken", quantity "1000", authority "FNAO" and decision "Non Acceptable" for commodity "1" after the decision is given
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
+	And print all captured values in report
 
 Scenario: User verifies Address book page search, submits notification for 'Non-Internal market' reason,  override the risk decision, reject the notification and creates border notification - CHEDD - SPS-9106
 	Given that I navigate to the IPAFF application
@@ -631,6 +633,7 @@ Scenario: User verifies Address book page search, submits notification for 'Non-
 	And the user validates the commodity code "100610", description "Rice in the husk (paddy or rough)", quantity "1000", authority "FNAO" and decision "Non Acceptable" for commodity "1" after the decision is given
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
+	And print all captured values in report
 
 Scenario: User submits B2C consignment notification, inspector rejects and creates border notification - CHEDD - SPS-7378
 	Given that I navigate to the IPAFF application
@@ -846,6 +849,7 @@ Scenario: User submits B2C consignment notification, inspector rejects and creat
 	Then the BTMS search result screen should be displayed
 	And the user validates the commodity code "12024200", description "Shelled, whether or not broken", quantity "100", authority "FNAO" and decision "Non Acceptable" for commodity "1" after the decision is given
 	When the user logs out of BTMS
+	Then print all captured values in report
 
 Scenario: User creates and submits a notification, Copy the notification and submit, Records decision as Inspector and Validate in BTMS - CHEDD - SPS-9111
 	Given that I navigate to the IPAFF application
@@ -1095,7 +1099,7 @@ Scenario: User creates and submits a notification, Copy the notification and sub
 	And the user validates the commodity code "100610", description "Rice in the husk (paddy or rough)", quantity "18000", authority "FNAO" and decision "Acceptable for Internal Market" for commodity "2" after the decision is given	
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
-	Then the user should be logged out successfully
+	And print all captured values in report
 
 Scenario: User submits B2C consignment notification, reason for refusal and creates border notification - CHED D SPS-7381
 	Given that I navigate to the IPAFF application
@@ -1445,6 +1449,7 @@ Scenario: User submits B2C consignment notification, reason for refusal and crea
 	Then Border notifications dashboard page should be displayed
 	When the user logs out of Border notifications in IPAFFS Part 1
 	Then the user should be logged out successfully
+	And print all captured values in report
 
 Scenario: User submits consignment notification, inspector overrides the risk decision and rejects the notification - CHED D 7379
 	Given that I navigate to the IPAFF application
@@ -1600,6 +1605,7 @@ Scenario: User submits consignment notification, inspector overrides the risk de
 	And the CHED overview page should be displayed
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
+	And print all captured values in report
 
 Scenario: User creates a notification and the inspector revises the decision throughout the Record Decision workflow CHEDD - SPS-7380
 	Given that I navigate to the IPAFF application
@@ -1820,5 +1826,5 @@ Scenario: User creates a notification and the inspector revises the decision thr
 	And the user verifies the control status is 'CONTROL REQUIRED'
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
-
+	And print all captured values in report
 	
