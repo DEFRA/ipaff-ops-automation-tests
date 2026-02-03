@@ -165,5 +165,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             governmentGatewayTypePage?.OpenNewTab();
         }
+
+        [Then("print all captured values in report")]
+        public void ThenPrintAllCapturedValuesInReport()
+        {
+          //No action. Handling the logic in Hooks
+        }
     }
 }

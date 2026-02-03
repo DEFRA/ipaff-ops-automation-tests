@@ -22,6 +22,10 @@ namespace Defra.UI.Tests.Capabilities
             chromeOptions.AddArgument("--diable-inforbars");
             chromeOptions.AddArgument("--start-maximized");
             chromeOptions.AddArgument("--no-sandbox");
+            chromeOptions.AddArgument("--force-device-scale-factor=1");
+            chromeOptions.AddArgument("--high-dpi-support=1"); 
+            chromeOptions.AddArgument("--window-position=0,0"); 
+            chromeOptions.AddArgument("--window-size=5000,8000");
             chromeOptions.AcceptInsecureCertificates = true;
 
 
