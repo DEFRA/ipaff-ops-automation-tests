@@ -218,20 +218,34 @@ namespace Defra.UI.Tests.Hooks
                 stepNode = _scenario.CreateNode(new GherkinKeyword(stepType), stepInfo)
                          .Fail(_scenarioContext.TestError.Message)
                          .AddScreenCaptureFromPath(screenshotPath);
+
+                var log = CreateLogForContextValues();
+
+                stepNode.Info(log.ToString());
             }
 
             if (stepInfo.ToLower().Contains(lastStep))
             {
-                var log = new StringBuilder("<pre>");
-                foreach (var context in _scenarioContext)
-                {
-                    log.AppendLine($"{context.Key} : <b>{FormatValue(context.Value)}</b><br>");
-                }
-
-                log.Append("</pre>");
+                var log = CreateLogForContextValues();
 
                 stepNode.Info(log.ToString());
             }
+        }
+
+        private string CreateLogForContextValues()
+        {
+            var log = new StringBuilder("<pre>");
+            foreach (var context in _scenarioContext)
+            {
+                if (!context.Key.Equals("ExtentScenario"))
+                {
+                    log.AppendLine($"{context.Key} : <b>{FormatValue(context.Value)}</b><br>");
+                }
+            }
+
+            log.Append("</pre>");
+
+            return log.ToString();
         }
 
         private string FormatValue(object value)
@@ -309,8 +323,8 @@ namespace Defra.UI.Tests.Hooks
                 "return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight)"
             ));
 
-            int viewportWidth = Convert.ToInt32(js.ExecuteScript("return Math.max(document.body.scrollWidth, document.documentElement.scrollWidth)")); 
-            
+            int viewportWidth = Convert.ToInt32(js.ExecuteScript("return Math.max(document.body.scrollWidth, document.documentElement.scrollWidth)"));
+
             var screenshots = new List<Bitmap>();
             int scrollPosition = 0;
 
