@@ -174,7 +174,6 @@ Scenario: User creates and submits a B2C consignment notification - CHEDA Happy 
 	And I open the sub area 'Importer Notifications' under the 'Case Management' area
 	And I search Importer Notifications for the notification created in IPAFFS
 	And I open the record at position '0' in the grid
-	Then print all captured values in report
 
 Scenario: User creates and submits a CHEDA consignment notification with multiple emergency lab tests - SPS-7383
 	Given that I navigate to the IPAFF application
