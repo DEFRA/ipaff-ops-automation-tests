@@ -29,7 +29,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the Origin of the import page should be displayed, showing {string} as the Country of origin and Country from where consigned")]
         public void ThenTheOriginOfTheImportPageShouldBeDisplayedShowingAsTheCountryOfOriginAndCountryFromWhereConsigned(string country)
         {
-            Assert.True(originOfImportPage?.IsPageLoaded(), "About the consignment Origin of the import page not loaded");
+            Assert.Multiple(() =>
+            {
+                Assert.True(originOfImportPage?.IsPageLoaded(), "About the consignment Origin of the import page not loaded");
+                Assert.True(originOfImportPage?.IsCountryOfOriginPrePopulated(country),
+                    $"Country of origin dropdown is not pre-populated with '{country}'");
+            });
+
             _scenarioContext["ContryFromWhereConsigned"] = country;
         }
 
