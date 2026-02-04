@@ -173,8 +173,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
             ValidateFileNameWithTruncation("DocumentName", reviewOutcomeDecisionPage?.GetAdditionalDocumentFileName(), ref allDataMatches, mismatches);
 
             // Decision
-            ValidateIfExists("AcceptableFor", reviewOutcomeDecisionPage?.GetAcceptanceDecision(), ref allDataMatches, mismatches);
+            if (_scenarioContext.ContainsKey("AcceptableFor") && !_scenarioContext["AcceptableFor"].Equals(reviewOutcomeDecisionPage?.GetAcceptanceDecision()))
+            {
+                allDataMatches = false;
+                mismatches.Add($"AcceptableFor: Expected '{_scenarioContext["AcceptableFor"]}', Found '{reviewOutcomeDecisionPage?.GetAcceptanceDecision()}'");
+            }            
             ValidateIfExists("AcceptableForSubOption", GetAcceptableForSubOptionValue(), ref allDataMatches, mismatches);
+            ValidateIfExists("ReasonForRefusal", reviewOutcomeDecisionPage?.GetRefusalReason(), ref allDataMatches, mismatches);
 
             if (!allDataMatches)
             {
@@ -236,14 +241,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             // Try CHED-A first
             var certifiedFor = reviewOutcomeDecisionPage?.GetCertifiedFor();
-            if (!string.IsNullOrEmpty(certifiedFor))
-            {
-                return certifiedFor;
-            }
+            if (!string.IsNullOrWhiteSpace(certifiedFor)) return certifiedFor;
 
             // Fallback to CHED-P
             var consignmentUse = reviewOutcomeDecisionPage?.GetConsignmentUse();
-            return consignmentUse;
+            if (!string.IsNullOrWhiteSpace(consignmentUse)) return consignmentUse;
+
+            return reviewOutcomeDecisionPage?.GetDecisionSubOption();
         }
 
         private bool CompareValues(string contextKey, string expected, string? actual)

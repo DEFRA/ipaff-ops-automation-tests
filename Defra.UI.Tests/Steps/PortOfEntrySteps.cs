@@ -200,5 +200,31 @@ namespace Defra.UI.Tests.Steps.IPAFF
             else
                 Assert.Fail("Port of entry data should not be prefilled");
         }
+
+        [Then("the BCP or Port of entry should be copied from the original notification")]
+        public void ThenTheBCPOrPortOfEntryShouldBeCopiedFromTheOriginalNotification()
+        {
+            var expectedPort = _scenarioContext.ContainsKey("PortOfEntry")
+                ? _scenarioContext["PortOfEntry"]?.ToString() ?? string.Empty
+                : string.Empty;
+
+            string actualPort = portOfEntryPage?.GetPortOfEntry ?? string.Empty;
+
+            Assert.That(actualPort, Is.EqualTo(expectedPort),
+                $"Expected BCP/Port of entry to be '{expectedPort}' but was '{actualPort}'");
+        }
+
+        [Then("the Means of transport to BCP should be copied from the original notification")]
+        public void ThenTheMeansOfTransportToBCPShouldBeCopiedFromTheOriginalNotification()
+        {
+            var expectedMeansOfTransport = _scenarioContext.ContainsKey("MeansOfTransport")
+                ? _scenarioContext["MeansOfTransport"]?.ToString() ?? string.Empty
+                : string.Empty;
+
+            string actualMeansOfTransport = portOfEntryPage?.GetMeansOfTransport ?? string.Empty;
+
+            Assert.That(actualMeansOfTransport, Is.EqualTo(expectedMeansOfTransport),
+                $"Expected Means of transport to BCP to be '{expectedMeansOfTransport}' but was '{actualMeansOfTransport}'");
+        }
     }
 }

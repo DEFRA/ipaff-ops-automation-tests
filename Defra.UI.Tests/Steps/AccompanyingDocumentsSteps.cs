@@ -56,13 +56,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
             UpdateStringToScenarioContextArray(_scenarioContext, "DocumentType", type);
         }
 
-        
+
         public void UpdateStringToScenarioContextArray(ScenarioContext context, string key, string value)
         {
             if (context.TryGetValue(key, out var existing) && existing is string[] current)
             {
                 var updated = new string[current.Length];
-                Array.Copy(current,1,updated,0,current.Length - 1);
+                Array.Copy(current, 1, updated, 0, current.Length - 1);
                 updated[current.Length - 1] = value;
                 context[key] = updated;
             }
@@ -99,7 +99,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             var date = Utils.ConvertToDate(dateString);
             accompanyingDocumentsPage?.EnterDateOfIssue(date.Day.ToString(), date.Month.ToString(), date.Year.ToString());
-            var monthName = date.ToString("MMMM", CultureInfo.InvariantCulture);
+            var monthName = date.ToString("MMMM");
             var dateofIssue = date.Day.ToString() + " " + monthName + " " + date.Year.ToString();
             Utils.AppendStringToScenarioContextArray(_scenarioContext, "DateOfIssue", dateofIssue);
         }
@@ -107,11 +107,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user enters date of issue for the next notification {string}")]
         public void WhenTheUserEntersDateOfIssueForTheNextNotification(string dateString)
         {
-            var date = Utils.ConvertToDate(dateString);
-            accompanyingDocumentsPage?.EnterDateOfIssue(date.Day.ToString(), date.Month.ToString(), date.Year.ToString());
-            var monthName = date.ToString("MMMM", CultureInfo.InvariantCulture);
-            var dateofIssue = date.Day.ToString() + " " + monthName + " " + date.Year.ToString();
-            UpdateStringToScenarioContextArray(_scenarioContext, "DateOfIssue", dateofIssue);
+            var (day, month, year) = Utils.GetDayMonthYear(dateString);
+            accompanyingDocumentsPage?.EnterDateOfIssue(day, month, year);
+
+            var display = new DateTime(int.Parse(year, CultureInfo.InvariantCulture), int.Parse(month, CultureInfo.InvariantCulture), int.Parse(day, CultureInfo.InvariantCulture)).ToString("d MMMM yyyy", CultureInfo.InvariantCulture);
+            UpdateStringToScenarioContextArray(_scenarioContext, "DateOfIssue", display);
         }
 
         [When("the user selects a future date from the date picker")]
@@ -145,7 +145,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var filename = name + format;
             accompanyingDocumentsPage?.AddAccompanyingDocument(filename);
 
-            if(!filename.Contains("Exceeds size"))
+            if (!filename.Contains("Exceeds size"))
                 _scenarioContext["DocumentName"] = filename;
         }
 
@@ -253,6 +253,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserClicksOnCancelLink()
         {
             accompanyingDocumentsPage?.ClickCancelLink();
+        }
+
+        [Then("there are no accompanying document details copied from the original notification")]
+        public void ThereAreNoAccompanyingDocumentDetailsCopiedFromTheOriginalNotification()
+        {
+            bool documentsArePresent = accompanyingDocumentsPage?.AreDocumentsPresent() ?? false;
+
+            Assert.False(documentsArePresent,
+                "Accompanying documents should not be copied from the original notification, but documents were found on the page");
         }
     }
 }

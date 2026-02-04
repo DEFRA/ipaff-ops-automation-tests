@@ -27,6 +27,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private By documentDateBy => By.XPath("//div[contains(@id,'additional-document-date-value')]");
         private IWebElement documentDate => _driver.WaitForElement(documentDateBy);
         private IWebElement fileName => _driver.WaitForElement(By.XPath("//a[contains(@id,'attachment-view-')]"));
+        private By HealthCertificateRowsLocator => By.XPath("//div[@class='additional-documents__grid-row additional-document-info']");
+
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -90,6 +92,21 @@ namespace Defra.UI.Tests.Pages.Classes
                 return date.ToString("dd MM yyyy");
             }
             return string.Empty;
+        }
+
+        public bool AreHealthCertificatesPresent()
+        {
+            try
+            {
+                // Check if any document rows are present on the page
+                // Using the HealthCertificateRowsLocator locator from page objects region
+                var documents = _driver.FindElements(HealthCertificateRowsLocator);
+                return documents.Count > 0;
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
         }
     }
 }

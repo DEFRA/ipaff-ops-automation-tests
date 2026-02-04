@@ -30,10 +30,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private IReadOnlyCollection<IWebElement> txtNumberOfPackages => _driver.FindElements(By.XPath("//*[@class='govuk-table species-table-cheda']//input[@class='govuk-input number-of-packages ']"));
         private IReadOnlyCollection<IWebElement> ddlPackageType => _driver.FindElements(By.XPath("//*[@class='govuk-table species-table-cheda']//*[contains(@class,'type-of-package')]"));
         private IWebElement speciesTable => _driver.FindElement(By.XPath("//*[@class='govuk-table species-table-cheda']"));
-        private List<IWebElement> commodityTreeList => _driver.WaitForElements(By.XPath("//ul[@class='commodity-tree']/li//span[@class='commodity-description-links-container']/button")).ToList();
+        private List<IWebElement> commodityTreeList => _driver.WaitForElements(By.XPath("//ul[@class='commodity-tree']/li//span/button")).ToList();
         private List<IWebElement> parentCommodityItemList => _driver.WaitForElements(By.XPath("//div[@class='commodity-list']/ul/li")).ToList();
         private IWebElement txtNumberOfAnimals => _driver.FindElement(By.XPath("//input[contains(@class, 'number-of-animals') and contains(@id, 'num-animals-desktop')]"));
-        private IWebElement txtEarTag => _driver.FindElement(By.XPath("//input[contains(@id, 'ear_tag')]"));
         private IWebElement btnUpdateTotal => _driver.FindElement(By.Id("update-total-desktop"));
         //private IWebElement addCommodityLink => _driver.WaitForElement(By.Id("add-commodity-desktop"));
         private IWebElement addCommodityLink => _driver.WaitForElement(By.XPath("//*[@Id='add-commodity-desktop' or @Id='add-commodity']"));
@@ -218,14 +217,7 @@ namespace Defra.UI.Tests.Pages.Classes
             txtNumberOfAnimals.Click();
             txtNumberOfAnimals.Clear();
             txtNumberOfAnimals.SendKeys(quantity);
-        }
-
-        public void EnterEarTag(string earTag)
-        {
-            txtEarTag.Click();
-            txtEarTag.Clear();
-            txtEarTag.SendKeys(earTag);
-        }
+        }        
 
         public string GetSubtotalNetWeight()
         {

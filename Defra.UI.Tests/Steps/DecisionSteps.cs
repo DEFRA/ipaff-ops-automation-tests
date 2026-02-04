@@ -58,8 +58,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user changes the selection to {string} {string} in the decision page")]
         public void WhenTheUserSelectsInDecisionPage(string subOption, string decision)
         {
+            _scenarioContext["AcceptableFor"] = decision;
+            _scenarioContext["AcceptableForSubOption"] = subOption;
+            subOption = subOption == "Use for other purpose" ? "Other" : subOption;
             decisionPage?.SelectDecision(subOption, decision);
-            _scenarioContext["RefusalDecision"] = subOption;
         }
 
         [When("the user provides the reason as {string} for destruction option in decision page")]
@@ -81,6 +83,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the main radio option {string} and the sub radio option {string} are selected by default")]
         public void ThenTheMainRadioOptionAndTheSubRadioOptionAreSelectedByDefault(string mainRadio, string subRadio)
         {
+            _scenarioContext["AcceptableFor"] = mainRadio;
+            _scenarioContext["AcceptableForSubOption"] = subRadio;
             Assert.Multiple(() =>
             {
                 Assert.True(decisionPage?.IsAcceptableForRadioSelected(mainRadio), $"The main radio option {mainRadio} is not selected by default on the Decision page");
@@ -171,6 +175,19 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             Assert.That(actualDestinationCountry, Is.EqualTo(expectedDestinationCountry),
                 $"Destination country is not prepopulated correctly. Expected: '{expectedDestinationCountry}', Actual: '{actualDestinationCountry}'");
+        }
+
+        [When("the user enters {string} in reason under Destruction")]
+        public void WhenTheUserEntersInReasonUnderDestruction(String reason)
+        {
+            decisionPage?.EnterDestructionReason(reason);
+        }
+
+        [When("the user enters {string} date in By date")]
+        public void WhenTheUserEntersDate(string dateString)
+        {
+            var (day, month, year) = Utils.GetDayMonthYear(dateString);
+            decisionPage?.EnterCurrentDateInDecisionPage(day, month, year);            
         }
     }
 }

@@ -16,5 +16,7 @@
         string GetRegionCodeRadioLabelText { get; }
         bool IsRegionCodeRadioSelected(string regionCodeRadioOption);
         void SelectConsignedCountry(string consignedCountry);
+        bool IsRegionCodeDefaultedToNo { get; }
+        bool IsCountryOfOriginPrePopulated(string expectedCountry);
     }
 }

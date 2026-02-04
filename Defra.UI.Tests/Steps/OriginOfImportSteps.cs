@@ -29,7 +29,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the Origin of the import page should be displayed, showing {string} as the Country of origin and Country from where consigned")]
         public void ThenTheOriginOfTheImportPageShouldBeDisplayedShowingAsTheCountryOfOriginAndCountryFromWhereConsigned(string country)
         {
-            Assert.True(originOfImportPage?.IsPageLoaded(), "About the consignment Origin of the import page not loaded");
+            Assert.Multiple(() =>
+            {
+                Assert.True(originOfImportPage?.IsPageLoaded(), "About the consignment Origin of the import page not loaded");
+                Assert.True(originOfImportPage?.IsCountryOfOriginPrePopulated(country),
+                    $"Country of origin dropdown is not pre-populated with '{country}'");
+            });
+
             _scenarioContext["ContryFromWhereConsigned"] = country;
         }
 
@@ -119,13 +125,32 @@ namespace Defra.UI.Tests.Steps.IPAFF
             else
                 WhenTheUserChangesTheConsignedCountryTo("Australia");
 
-            if(originOfImportPage.IsConsignmentRefNumAdded)
+            if (originOfImportPage.IsConsignmentRefNumAdded)
                 _scenarioContext["ConsignmentReferenceNumber"] = originOfImportPage?.GetConsignmentRefNum;
             else
             {
                 originOfImportPage?.EnterConsignmentRefNum("12345");
                 _scenarioContext["ConsignmentReferenceNumber"] = "12345";
             }
+        }
+
+        [Then("Does your consignment require a region code? defaults to 'No'")]
+        public void ThenDoesYourConsignmentRequireARegionCodeDefaultsToNo()
+        {
+            Assert.True(originOfImportPage?.IsRegionCodeDefaultedToNo, "Does your consignment require a region code? is not defaulted to 'No'");
+        }
+
+        [Then("the Country of origin should be copied from the original notification")]
+        public void ThenTheCountryOfOriginShouldBeCopiedFromTheOriginalNotification()
+        {
+            var expectedCountry = _scenarioContext.ContainsKey("CountryOfOrigin")
+                ? _scenarioContext["CountryOfOrigin"]?.ToString() ?? string.Empty
+                : string.Empty;
+
+            string actualCountry = originOfImportPage?.GetOriginCountryText ?? string.Empty;
+
+            Assert.That(actualCountry, Is.EqualTo(expectedCountry),
+                $"Expected Country of origin to be '{expectedCountry}' but was '{actualCountry}'");
         }
     }
 }

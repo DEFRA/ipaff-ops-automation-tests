@@ -1616,3 +1616,225 @@ Scenario: User creates and amends a CHEDA notification, inspector requests amend
 	Then the notification returned in the search has the status 'VALID' on the Import notifications page
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
+
+Scenario: User creates and submits a CHEDA notification, copies it as new and verifies copied values - SPS-7389
+	Given that I navigate to the IPAFF application
+	Then I should see type of Gateway login page
+	And I have selected 'Sign in with Government Gateway' as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF credentials and signin
+	Then the user should be logged into Notification page
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Live animals' option
+	And the user clicks Save and continue
+	Then the Origin of the animal or product page should be displayed
+	When the user chooses 'Thailand' from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing 'Thailand' as the Country of origin and Country from where consigned
+	And Does your consignment require a region code? defaults to 'No'
+	When the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '0103' commodity code
+	Then the commodity details should be populated '0103' 'Live swine'
+	When the user selects species of commodity 'Sus scrofa domesticus'
+	And the user clicks Save and continue
+	Then What is the main reason for importing the animals? page should be displayed with radio buttons
+	When the user chooses 'Internal market' and the sub-option 'Transfer of ownership – Sale/gift'
+	And the user clicks Save and continue
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Commodity page should be displayed with the commodity and description entered
+	When the user populates Number of animals as '5'
+	And the user populates Number of packages as '5'
+	And the user clicks Save and continue in commodity page
+	Then the Enter animal identification details page should be displayed
+	When the user populates the Ear tag as 'ET1234'
+	And the user clicks Save and continue
+	Then the Additional animal details page should be displayed
+	When the user selects 'Approved bodies' for What are the animals certified for?
+	And the user selects 'No' for Does the consignment contain any unweaned animals?
+	And the user clicks Save and continue
+	Then the Latest Health Certificate page should be displayed
+	When the user enters Latest Health Certificate Document reference 'VHC12345'
+	And the user enters Latest Health Certificate date of issue from yesterday
+	And the user clicks on Add attachment link on the Latest Health Certificate page
+	And the user uploads the Veterinary Health Certificate 'IPAFFS Test Health Certificate' in the format '.docx'
+	Then the Veterinary Health Certificate 'IPAFFS Test Health Certificate' '.docx' is uploaded successfully
+	When the user clicks Save and continue
+	Then the Accompanying documents page should be displayed
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter should be displayed
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee 'DEF'
+	Then the chosen consignee should be displayed
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee
+	When the user clicks Same as consignee for Place of destination
+	Then the place of destination should be populated with the same details as the consignee
+	When the user clicks Save and continue
+	Then the Add the County Parish Holding number (CPH) page should be displayed
+	When the user enters the CPH number '12/345/6789/0001'
+	And the user clicks Save and continue
+	Then the Transport to the BCP or Port of entry page should be displayed
+	When the user enters BCP or Port of entry 'London Borough of Hillingdon Heathrow Airport Imported Food Office - ADADA'
+	And the user selects means of transport to BCP or Port of entry 'Airplane'
+	And the user enters transport identification 'BA123'
+	And the user selects 'No' for Are any road trailers or shipping containers being used to transport the consignment
+	And the user enters transport document reference 'Doc1234'
+	And the user enters arrival date at BCP or Port of entry as today's date
+	And the user enters estimated arrival time at BCP with future time
+	And the user enters estimated total journey time of the animals '8' hours
+	And the user clicks Save and continue
+	Then the Transport after the BCP or Port of entry page should be displayed
+	When the user selects means of transport after BCP 'Road vehicle'
+	And the user enters transport identification after BCP 'TRANS456'
+	And the user enters transport document reference after BCP 'TDOC789'
+	And the user enters departure date from BCP '2' days later than arrival date
+	And the user enters departure time from BCP '14:30'
+	And the user clicks Save and continue
+	Then the Transporter page should be displayed
+	When the user clicks Add a transporter
+	Then the Search for an existing transporter page should be displayed
+	When the user selects any one of the displayed transporters
+	Then the chosen transporter should be displayed on the Transporter page
+	When the user clicks Save and continue in Transporter page
+	Then the Should we notify any transport contacts about inspections? page should be displayed
+	When the user selects 'No' for Should we notify any transport contacts about inspections?
+	And the user clicks Save and continue
+	Then the Contact address for consignment page should be displayed without the secondary title
+	And the user selects a contact address for the consignment
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	And the data presented for review matches the data entered into the notification
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user ticks the checkbox to declare that the information is true and correct
+	And the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the IPAFFS User details and CHED Reference
+	When the user clicks Return to your dashboard
+	Then the dashboard page should be displayed
+	When user searches for the import notification
+	Then the notification should be present in the list
+	When the user clicks Show notification
+	Then the certificate should be displayed in a new browser tab
+	When the user checks that the data in the certificate matches the data entered into the notification
+	And the user closes the PDF browser tab
+	Then the browser tab is closed
+	When the user clicks the Copy as new link for the notification
+	Then the Notification Hub page of a new draft notification should be displayed
+	And the user records the new CHED Reference number
+	When the user clicks on 'Origin of the import' link
+	Then the Origin of the import page should be displayed
+	And the Country of origin should be copied from the original notification
+	When the user clicks on Save and return to hub
+	Then the Notification Hub page should be displayed
+	When the user clicks on 'Commodity' link
+	Then the Commodity page should be displayed
+	And the Commodity code and Description should be copied from the original notification
+	When the user populates Number of animals as '3'
+	And the user populates Number of packages as '2'
+	And the user clicks on Save and return to hub on the Commodity page
+	Then the Notification Hub page should be displayed
+	When the user clicks on 'Transport to the BCP or Port of entry' link
+	Then the Transport to the BCP or Port of entry page should be displayed
+	And the BCP or Port of entry should be copied from the original notification
+	And the Means of transport to BCP should be copied from the original notification
+	When the user enters transport identification 'BA999'
+	And the user enters transport document reference 'Doc9999'
+	And the user enters arrival date at BCP or Port of entry '1' days from now
+	And the user enters estimated arrival time at BCP with future time
+	And the user enters estimated total journey time of the animals '10' hours
+	And the user clicks on Save and return to hub
+	Then the Notification Hub page should be displayed
+	When the user clicks on 'Latest health certificate' link
+	Then the Latest Health Certificate page should be displayed
+	And there are no Latest Health Certificate details copied from the original notification
+	When the user enters Latest Health Certificate Document reference 'VHC67890'
+	And the user enters Latest Health Certificate date of issue from yesterday
+	And the user clicks on Add attachment link on the Latest Health Certificate page
+	And the user uploads the Veterinary Health Certificate 'IPAFFS Test Health Certificate' in the format '.docx'
+	Then the Veterinary Health Certificate 'IPAFFS Test Health Certificate' '.docx' is uploaded successfully	
+	When the user clicks on Save and return to hub
+	Then the Notification Hub page should be displayed
+	When the user clicks on 'Animal identification details' link
+	Then the Enter animal identification details page should be displayed
+	And the Ear tag should not be copied from the original notification
+	When the user populates the Ear tag as 'ET5678'
+	And the user clicks on Save and return to hub
+	Then the Notification Hub page should be displayed
+	When the user clicks on 'Consignor or Exporter, Consignee, Importer and Place of Destination' link
+	Then the Addresses page should be displayed
+	And the Consignor or exporter should be copied from the original notification
+	And the Consignee should be copied from the original notification
+	And the Importer should be copied from the original notification
+	And the Place of destination should be copied from the original notification
+	When the user clicks on Save and return to hub
+	Then the Notification Hub page should be displayed
+	When the user clicks on 'Transporter' link
+	Then the Transporter page should be displayed
+	And the Transporter should not be copied from the original notification
+	When the user clicks Add a transporter
+	Then the Search for an existing transporter page should be displayed
+	When the user selects any one of the displayed transporters
+	Then the chosen transporter should be displayed on the Transporter page
+	When the user clicks Save and return to hub in Transporter page
+	Then the Notification Hub page should be displayed
+	When the user clicks on 'Transport after the BCP or Port of entry' link
+	Then the Transport after the BCP or Port of entry page should be displayed
+	And the Means of transport after BCP should be copied from the original notification
+	And the Transport identification should not be copied from the original notification
+	And the Transport document reference should not be copied from the original notification
+	And the Departure date from BCP should not be copied from the original notification
+	And the Departure time from BCP should not be copied from the original notification
+	When the user enters transport identification after BCP 'TRANS999'
+	And the user enters transport document reference after BCP 'TDOC999'
+	And the user enters departure date from BCP '3' days later than arrival date
+	And the user enters departure time from BCP '16:00'
+	And the user clicks on Save and return to hub
+	Then the Notification Hub page should be displayed
+	When the user clicks on 'County Parish Holding (CPH) number' link
+	Then the Add the County Parish Holding number (CPH) page should be displayed
+	And the CPH number should not be copied from the original notification
+	When the user enters the CPH number 'NEW/345/6789/0001'
+	And the user clicks on Save and return to hub
+	Then the Notification Hub page should be displayed
+	And the 'Transport contacts' task should have the status 'TO DO' 
+	When the user clicks on 'Transport contacts' link
+	Then the Transport Contacts page should be displayed
+	And the Should we notify any transport contacts about inspections? should not be copied from the original notification
+	When the user selects 'No' for Should we notify any transport contacts about inspections?
+	And the user clicks on Save and return to hub
+	When the user clicks on 'Contact address for consignment' link
+	Then the Contact address for consignment page should be displayed without the secondary title
+	And the Contact address for consignment should default to the first address on the list
+	When the user clicks on Save and return to hub
+	Then the Notification Hub page should be displayed
+	When the user clicks on 'Review and submit' link
+	Then the Review your notification page should be displayed
+	And the user should not see any error messages in review page
+	And the data presented for review matches the data entered into the notification
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user ticks the checkbox to declare that the information is true and correct
+	And the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the IPAFFS User details and CHED Reference
+	When the user clicks Return to your dashboard
+	Then the dashboard page should be displayed
+	When user searches for the import notification
+	Then the notification should be present in the list
+	When the user clicks Show notification
+	Then the certificate should be displayed in a new browser tab
+	When the user checks that the data in the certificate matches the data entered into the notification
+	And the user closes the PDF browser tab
+	Then the browser tab is closed	
+	When the user logs out of IPAFFS Part 1
+	Then the user should be logged out successfully
