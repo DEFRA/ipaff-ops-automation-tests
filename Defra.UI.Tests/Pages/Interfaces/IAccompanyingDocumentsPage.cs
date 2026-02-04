@@ -21,5 +21,6 @@
         bool IsDownloadAttachmentLinkPresent();
         bool IsRemoveAttachmentLinkPresent();
         void SelectPreviousDateFromDatePicker(string previousDay);
+        bool AreDocumentsPresent();
     }
 }

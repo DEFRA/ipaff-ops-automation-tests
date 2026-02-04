@@ -64,16 +64,16 @@ namespace Defra.UI.Tests.Pages.Classes
             new SelectElement(optTransportMode).SelectByText(mode);
         }
 
-        public void EnterTransportId(string transId) 
-        { 
-            txtTransportId.Clear(); 
-            txtTransportId.SendKeys(transId); 
+        public void EnterTransportId(string transId)
+        {
+            txtTransportId.Clear();
+            txtTransportId.SendKeys(transId);
         }
-        
-        public void EnterTransportDocRef(string DocumentRef) 
+
+        public void EnterTransportDocRef(string DocumentRef)
         {
             txtTransportDocRef.Clear();
-            txtTransportDocRef.SendKeys(DocumentRef); 
+            txtTransportDocRef.SendKeys(DocumentRef);
         }
 
         public void EnterEstimatedArrivalDate(string day, string month, string year)
@@ -146,11 +146,15 @@ namespace Defra.UI.Tests.Pages.Classes
             {
                 chkOfficalSeal.Click();
             }
-        }   
-        
+        }
+
         public bool VerifyPortOfEntryIfNotAlreadyPopulated()
         {
             return verifyPortOfEntry.Count > 0;
         }
+
+        public string GetPortOfEntry => txtPortOfEntry.GetAttribute("value")?.Trim() ?? string.Empty;
+
+        public string GetMeansOfTransport => new SelectElement(optTransportMode).AllSelectedOptions.FirstOrDefault()?.Text?.Trim() ?? string.Empty;
     }
 }

@@ -15,6 +15,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
         private IWebElement secondaryTitle => _driver.WaitForElement(By.Id("page-secondary-title"), true);
         private IWebElement firstContactAddressLabel => _driver.FindElement(By.XPath("//label[contains(@for, 'branch-address')]"));
+        private IWebElement firstContactAddressRadio => _driver.FindElement(By.XPath("//input[@name='branch-address-select' and @type='radio'][1]"));
         private IWebElement rdoContactAddress => _driver.FindElement(By.XPath("//label[contains(@for, 'branch-address')]/preceding-sibling::input[contains(@id,'branch-address')]"));
         private IWebElement draftChedRefNumber => _driver.FindElement(By.Id("reference-number"));
         #endregion
@@ -60,5 +61,10 @@ namespace Defra.UI.Tests.Pages.Classes
         public bool IsContactAddressRadioButtonSelected() => rdoContactAddress.Selected;
 
         public string GetDraftCHEDRefNumber => draftChedRefNumber?.Text.Trim() ?? string.Empty;
+
+        public bool IsFirstContactAddressSelected()
+        {
+            return firstContactAddressRadio.Selected;
+        }
     }
 }

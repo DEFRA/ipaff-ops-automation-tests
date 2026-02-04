@@ -1,4 +1,5 @@
-﻿using Defra.UI.Tests.Pages.Interfaces;
+﻿using Defra.UI.Tests.Pages.Classes;
+using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using NUnit.Framework;
 using OpenQA.Selenium;
@@ -52,7 +53,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserPopulatesTheMicrochipNumberAs(string microchipNumber)
         {
             animalIdentificationDetailsPage?.EnterMicrochipNumber(microchipNumber);
-            _scenarioContext["MicrochipNumber"]=microchipNumber;
+            _scenarioContext["MicrochipNumber"] = microchipNumber;
         }
 
         [When("the user populates the Passport number as {string}")]
@@ -60,6 +61,22 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             animalIdentificationDetailsPage?.EnterPassportNumber(passportNumber);
             _scenarioContext["PassportNumber"] = passportNumber;
+        }
+
+        [When("the user populates the Ear tag as {string}")]
+        public void WhenTheUserPopulatesTheEarTagAs(string earTag)
+        {
+            animalIdentificationDetailsPage?.EnterEarTag(earTag);
+            _scenarioContext["EarTag"] = earTag;
+        }
+
+        [Then("the Ear tag should not be copied from the original notification")]
+        public void ThenTheEarTagShouldNotBeCopiedFromTheOriginalNotification()
+        {
+            string actualEarTag = animalIdentificationDetailsPage?.GetEarTag ?? string.Empty;
+
+            Assert.That(actualEarTag, Is.Empty,
+                $"Ear tag should not be copied from the original notification, but found '{actualEarTag}'");
         }
     }
 }

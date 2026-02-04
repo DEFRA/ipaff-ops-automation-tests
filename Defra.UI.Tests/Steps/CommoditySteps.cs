@@ -71,6 +71,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             commodityPage?.AddAnotherCommodity(option);
         }
 
+        [Then("the Commodity code and Description should be copied from the original notification")]
         [Then("the Commodity page should be displayed with the commodity and description entered")]
         public void ThenTheCommodityPageShouldBeDisplayedWithTheCommodityAndDescriptionEntered()
         {
@@ -267,19 +268,20 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["CommodityDescSecondCommodity"] = additionalcommDescription;
             commodityPage?.SelectCommodityInTheCommTree(additionalcommDescription);
         }
+        
+        [When("the user selects the {string} {string} under the parent commodity")]
+        public void WhenTheUserSelectsTheCommodityUnderTheParentCommodity(string additionalCommCode, string additionalcommDescription)
+        {
+            _scenarioContext["CommodityCode"]=additionalCommCode;
+            _scenarioContext["CommodityDescription"] = additionalcommDescription;
+            commodityPage?.SelectCommodityInTheCommTree(additionalcommDescription);
+        }
 
         [Then("the Commodity page should be displayed")]
         public void ThenTheCommodityPageShouldBeDisplayed()
         {
             Assert.True(commodityPage?.IsPageLoaded(), "Description of the goods Commodity page not loaded");
-        }
-
-        [When("the user populates the Ear tag as {string}")]
-        public void WhenTheUserPopulatesTheEarTagAs(string earTag)
-        {
-            commodityPage?.EnterEarTag(earTag);
-            _scenarioContext["EarTag"] = earTag;
-        }
+        }        
 
         [Then("the user verifies and enters any missing data on the Commodity page")]
         public void ThenTheUserVerifiesAndEntersAnyMissingDataOnTheCommodityPage()

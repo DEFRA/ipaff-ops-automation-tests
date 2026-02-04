@@ -4,6 +4,7 @@
     {
         void ClickCHEDReferencNum();
         bool IsPageLoaded();
+        bool VerifyControlStatus(string controlStatus);
         bool VerifyNotificationStatus(string chedRef, string status);
     }
 }

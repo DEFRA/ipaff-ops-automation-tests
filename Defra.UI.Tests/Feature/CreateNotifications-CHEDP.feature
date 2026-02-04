@@ -1360,7 +1360,8 @@ Scenario: User creates and submits a notification, override the risk decision an
 	When the user Clicks the change link under 'Decision information'
 	Then the Decision page should be displayed
 	When the user selects Acceptable for 'Not acceptable' 'Destruction'
-	And the user enters reason 'Not satisfactory' and selects By date
+	And the user enters 'Not satisfactory' in reason under Destruction
+	And the user enters 'today' date in By date
 	And the user clicks Save and continue
 	Then the Select a controlled destination page should be displayed
 	When the user clicks Add a controlled destination

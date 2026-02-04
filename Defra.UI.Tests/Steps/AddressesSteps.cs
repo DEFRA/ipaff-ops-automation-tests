@@ -33,6 +33,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             addressesPage?.ClickAddConsignor();
         }
 
+        [Then("the Consignor or exporter should be copied from the original notification")]
         [Then("the chosen consignor or exporter should be displayed")]
         public void ThenTheChosenConsignorOrExporterShouldBeDisplayed()
         {
@@ -56,6 +57,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             addressesPage?.ClickAddConsignee();
         }
 
+        [Then("the Consignee should be copied from the original notification")]
         [Then("the chosen consignee should be displayed")]
         public void ThenTheChosenConsigneeShouldBeDisplayed()
         {
@@ -86,6 +88,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(addressesPage?.VerifySelectedConsignee(consigneeName));
         }
 
+        [Then("the Importer should be copied from the original notification")]
         [Then("the importer should be populated with the same details as the consignee")]
         public void ThenTheImporterShouldBePopulatedWithTheSameDetailsAsTheConsignee()
         {
@@ -158,6 +161,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             addressesPage?.ClickChangeInAddressPage(link);
         }
 
+        [Then("the Place of destination should be copied from the original notification")]
         [Then("the place of destination should be populated with the same details as the consignee")]
         public void ThenThePlaceOfDestinationShouldBePopulatedWithTheSameDetailsAsTheConsignee()
         {
