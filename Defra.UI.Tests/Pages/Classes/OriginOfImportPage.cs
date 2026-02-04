@@ -105,5 +105,17 @@ namespace Defra.UI.Tests.Pages.Classes
         }
 
         public bool IsRegionCodeDefaultedToNo => rdoNoRegionCode.GetAttribute("checked") != null;
+
+        public bool IsCountryOfOriginPrePopulated(string expectedCountry)
+        {
+            try
+            {
+                return originCountrySelectedVal.Text.Trim().Equals(expectedCountry, StringComparison.OrdinalIgnoreCase);
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }
