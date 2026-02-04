@@ -51,6 +51,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _driver?.Navigate().GoToUrl(url);
         }
 
+        [When(@"I navigate to the IPAFF Internal Plants Inspector application")]
+        [Given(@"that I navigate to the IPAFF Internal Plants Inspector application")]
+        public void GivenThatINavigateToTheIPAFFInternalPlantsInspectorApplication()
+        {
+            var url = urlBuilder.InternalPlantsInspectorDefault().BuildInternalPlantsInspectorApp();
+            _driver?.Navigate().GoToUrl(url);
+        }
+
         [When(@"I click signin button on port checker application")]
         [Given(@"I click signin button on port checker application")]
         public void GivenIClickSigninButtonOnPortCheckerApplication()
@@ -120,7 +128,20 @@ namespace Defra.UI.Tests.Steps.IPAFF
             };
 
             _signInPage?.SignIn(userObject.UserName, userObject.Credential);
-        }        
+        }
+
+        [When(@"I have provided the IPAFF Agent credentials and signin")]
+        public void WhenIHaveProvidedTheIPAFFAgentCredentialsAndSignin()
+        {
+            var jsonData = UserObject?.GetUser("IPAFF", "Agent");
+            var userObject = new User
+            {
+                UserName = jsonData.UserName,
+                Credential = jsonData.Credential
+            };
+
+            _signInPage?.SignIn(userObject.UserName, userObject.Credential);
+        }
 
         [When("I have provided the IPAFF Heathrow Inspector credentials and signin")]
         public void WhenIHaveProvidedTheIPAFFHeathrowInspectorCredentialsAndSignin()
