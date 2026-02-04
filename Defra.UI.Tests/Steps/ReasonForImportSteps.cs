@@ -21,6 +21,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext = context;
         }
 
+        [Then("What is the main reason for importing the consignment? page should be displayed")]
+        public void ThenWhatIsTheMainReasonForImportingTheConsignmentPageShouldBeDisplayed()
+        {
+            Assert.True(reasonForImportPage?.IsPageLoaded(), "About the consignment What is the main reason for importing the consignment? page not loaded");
+        }
 
         [Then("What is the main reason for importing the consignment? page should be displayed with radio buttons")]
         public void ThenWhatIsTheMainReasonForImportingTheConsignmentPageShouldBeDisplayedWithRadioButtons()

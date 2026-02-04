@@ -5,6 +5,7 @@
         public string BTMSApplicationUrl { get; set; }
         public string ApplicationUrl { get; set; }
         public string InspectorUrl { get; set; }
+        public string InternalPlantsInspectorUrl { get; set; }
         public string Environment { get; set; }
         public string Platform { get; set; }
         public bool Headless { get; set; }

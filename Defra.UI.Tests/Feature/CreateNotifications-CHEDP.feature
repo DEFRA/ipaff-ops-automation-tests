@@ -225,6 +225,9 @@ Scenario: User creates and submits a B2C consignment notification for Transit Re
 	Then the Latest Health Certificate page should be displayed
 	When the user enters Latest Health Certificate Document reference "INV12345"
 	And the user enters Latest Health Certificate date of issue "24""10""2025"
+	And the user clicks on Add attachment link
+	And the user uploads the document 'IPAFFS Test Health Certificate' in the format '.docx'
+	Then the document 'IPAFFS Test Health Certificate' '.docx' is uploaded successfully
 	And the user clicks Save and continue
 	Then the Accompanying documents page should be displayed
 	When the user selects Document type "Commercial invoice"
