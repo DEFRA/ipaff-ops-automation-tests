@@ -1138,8 +1138,14 @@ Scenario: User adds addresses to address book and amends a CHEDA notification to
 	And the user selects a contact address for the consignment
 	When the user clicks Save and continue
 	Then the Review your notification page should be displayed
-	And the user gets the CHED reference from the Review your notification page
-	When the user clicks on the Dashboard link
+	And the data presented for review matches the data entered into the notification
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user ticks the checkbox to declare that the information is true and correct
+	And the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the IPAFFS User details and CHED Reference
+	When the user clicks Return to your dashboard
 	Then the dashboard page should be displayed
 	When the user clicks Address book link
 	Then the Address book page should be displayed
@@ -1185,8 +1191,11 @@ Scenario: User adds addresses to address book and amends a CHEDA notification to
 	Then the dashboard page should be displayed
 	When the user searches for the import notification
 	Then the notification should be present in the list
+	And the notification returned in the search has the status 'NEW'
+	And the Amend link should be available for the notification
 	When the user clicks Amend
 	Then the Notification Hub page should be displayed
+	And the notification version should be 'V2'	
 	When the user clicks on 'Consignor or Exporter, Consignee, Importer and Place of Destination' link
 	Then the Addresses page should be displayed
 	When the user clicks on Change link under 'Consignor or exporter'
@@ -1447,13 +1456,6 @@ Scenario: User creates and amends a CHEDA notification, inspector requests amend
 	When the user clicks Request amendment
 	Then the Request that the responsible person amends this CHED page should be displayed
 	When the user clicks Request amendment button
-	Then the Import notifications dashboard page should be displayed
-	When the user clicks on the back button in the browser
-	Then the Request that the responsible person amends this CHED page should be displayed
-	When the user clicks on the back button in the browser 
-	Then the Notification overview page should be displayed
-	And the notification status should be 'AMEND'
-	When the user clicks Dashboard link
 	Then the Import notifications dashboard page should be displayed	
 	When the user searches for the newly created notification on the Import notifications page
 	Then the notification should not be present in the inspector workflow
