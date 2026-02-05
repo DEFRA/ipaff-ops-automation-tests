@@ -45,8 +45,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtLabTestName => _driver.FindElement(By.XPath("//*[@class='govuk-table__body']/tr[1]/td[1]"));
         private IReadOnlyCollection<IWebElement> reviewTableFirstRow => _driver.FindElements(By.XPath("//*[@class='govuk-table__body']"));
         private IWebElement legendReasonForTesting => _driver.FindElement(By.XPath("//legend[contains(@class, 'govuk-fieldset__legend--m') and contains(text(), 'Reason for testing')]"));
-        private IWebElement headingSelectCommodity => _driver.FindElement(By.XPath("//h2[@class='govuk-heading-m' and contains(text(), 'Select the commodity sampled')]"));
-        private IWebElement headingCommodityToTest => _driver.FindElement(By.XPath("//h2[@class='govuk-heading-s govuk-!-margin-bottom-1  ' and contains(text(), 'Commodity to be tested')]"));
+        private IWebElement headingSelectCommodity => _driver.WaitForElement(By.XPath("//h2[@class='govuk-heading-m' and contains(text(), 'Select the commodity sampled')]"));
+        private IWebElement headingCommodityToTest => _driver.WaitForElement(By.XPath("//h2[@class='govuk-heading-s govuk-!-margin-bottom-1  ' and contains(text(), 'Commodity to be tested')]"));
         private IWebElement txtSampleDateDay => _driver.FindElement(By.Id("sample-date-day"));
         private IWebElement txtSampleDateMonth => _driver.FindElement(By.Id("sample-date-month"));
         private IWebElement txtSampleDateYear => _driver.FindElement(By.Id("sample-date-year"));

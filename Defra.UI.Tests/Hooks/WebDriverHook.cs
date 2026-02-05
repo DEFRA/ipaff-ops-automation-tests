@@ -10,8 +10,11 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 using Reqnroll;
 using Reqnroll.BoDi;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Net.Http.Headers;
 using System.Reflection;
+using System.Text;
 
 namespace Defra.UI.Tests.Hooks
 {
@@ -103,7 +106,19 @@ namespace Defra.UI.Tests.Hooks
             bool takeScreenShot = false;
             try
             {
-                if (_scenarioContext.TestError != null)
+                // Log context values at the end of successful scenarios only
+                // (Failed scenarios already have context values attached to the failing step)
+                if (_scenarioContext.TestError == null)
+                {
+                    var log = CreateLogForContextValues();
+                    if (!string.IsNullOrWhiteSpace(log) && log != "<pre></pre>")
+                    {
+                        // Create a summary node at the end of the scenario
+                        _scenario.CreateNode(new GherkinKeyword("*"), "LOG: Captured Scenario Context Values")
+                                .Info(log);
+                    }
+                }
+                else
                 {
                     takeScreenShot = true;
                     var error = _scenarioContext.TestError;
@@ -113,7 +128,7 @@ namespace Defra.UI.Tests.Hooks
             }
             catch (Exception ex)
             {
-                Logger.Debug("Not able to take screenshot" + ex.Message);
+                Logger.Debug("Not able to process scenario end: " + ex.Message);
             }
             finally
             {
@@ -200,22 +215,234 @@ namespace Defra.UI.Tests.Hooks
             }
 
             var stepType = _scenarioContext.StepContext.StepInfo.StepDefinitionType.ToString();
-            var screenshotPath = CaptureScreenshot();
+            ExtentTest stepNode;
 
             if (_scenarioContext.TestError == null)
             {
-                _scenario.CreateNode(new GherkinKeyword(stepType), stepInfo)
-                    .Pass("Step passed")
-                    .AddScreenCaptureFromPath(screenshotPath);
+                stepNode = _scenario.CreateNode(new GherkinKeyword(stepType), stepInfo);
             }
             else
             {
-                _scenario.CreateNode(new GherkinKeyword(stepType), stepInfo)
+                // Use full-page screenshot for failures
+                var screenshotPath = CaptureScreenshotFullPage();
+
+                stepNode = _scenario.CreateNode(new GherkinKeyword(stepType), stepInfo)
                          .Fail(_scenarioContext.TestError.Message)
                          .AddScreenCaptureFromPath(screenshotPath);
+
+                // Log context values on the failing step
+                var log = CreateLogForContextValues();
+                if (!string.IsNullOrWhiteSpace(log) && log != "<pre></pre>")
+                {
+                    stepNode.Info(log);
+                }
             }
         }
 
+        /// <summary>
+        /// Automatically captures and logs all scenario context values.
+        /// For passing tests: Creates a summary node at scenario end.
+        /// For failing tests: Attaches context to the failing step.
+        /// </summary>
+        private string CreateLogForContextValues()
+        {
+            var log = new StringBuilder("<pre>");
+            try
+            {
+                foreach (var context in _scenarioContext)
+                {
+                    if (!context.Key.Equals("ExtentScenario"))
+                    {
+                        log.AppendLine($"{context.Key} : <b>{FormatValue(context.Value)}</b><br>");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                log.AppendLine($"Error capturing context values: {ex.Message}<br>");
+            }
+
+            log.Append("</pre>");
+            return log.ToString();
+        }
+
+        private string FormatValue(object value)
+        {
+            if (value == null)
+                return "null";
+
+            if (value is Array array)
+                return string.Join(", ", array.Cast<object>());
+
+            if (value is IEnumerable<object> list)
+                return string.Join(", ", list);
+
+            if (value is System.Collections.IEnumerable enumerable && value is not string)
+                return string.Join(", ", enumerable.Cast<object>());
+
+            return value.ToString();
+        }        
+
+        private void CloseBrowsers()
+        {
+            try
+            {
+                Driver.Quit();
+                Driver.Dispose();
+                AfterScenarioHooks.TestCleanup();
+            }
+            catch { }
+        }
+
+        /// <summary>
+        /// Captures a full-page screenshot by scrolling through the entire page and stitching images together.
+        /// Falls back to viewport screenshot if full-page capture fails.
+        /// </summary>
+        private string CaptureScreenshotFullPage()
+        {
+            var screenshotsDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Reports", "Screenshots");
+
+            if (!Directory.Exists(screenshotsDir))
+            {
+                Directory.CreateDirectory(screenshotsDir);
+            }
+
+            var uniqueFileName = $"{Guid.NewGuid()}.png";
+            var filePath = Path.Combine(screenshotsDir, uniqueFileName);
+
+            try
+            {
+                // Ensure we're on a valid window
+                SwitchToValidWindow();
+
+                var js = (IJavaScriptExecutor)Driver;
+
+                // Get page dimensions
+                int totalHeight = Convert.ToInt32(js.ExecuteScript(
+                    "return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight)"));
+                int viewportHeight = Convert.ToInt32(js.ExecuteScript("return window.innerHeight"));
+                int viewportWidth = Convert.ToInt32(js.ExecuteScript("return window.innerWidth"));
+
+                // If page fits in viewport, just take a simple screenshot
+                if (totalHeight <= viewportHeight)
+                {
+                    ((ITakesScreenshot)Driver).GetScreenshot().SaveAsFile(filePath);
+                    return $"./Screenshots/{uniqueFileName}";
+                }
+
+                // Scroll to top first
+                js.ExecuteScript("window.scrollTo(0, 0)");
+                Thread.Sleep(200);
+
+                var screenshots = new List<Bitmap>();
+                int scrollPosition = 0;
+
+                while (scrollPosition < totalHeight)
+                {
+                    // Scroll to position
+                    js.ExecuteScript($"window.scrollTo(0, {scrollPosition})");
+                    Thread.Sleep(200);
+
+                    // Capture current viewport
+                    var screenshotBytes = ((ITakesScreenshot)Driver).GetScreenshot().AsByteArray;
+                    using var ms = new MemoryStream(screenshotBytes);
+                    var bmp = new Bitmap(ms);
+
+                    // Calculate how much of this screenshot to use
+                    int remainingHeight = totalHeight - scrollPosition;
+                    int usableHeight = Math.Min(bmp.Height, remainingHeight);
+
+                    // For the last screenshot, we may need to crop from the bottom
+                    if (scrollPosition + viewportHeight > totalHeight && scrollPosition > 0)
+                    {
+                        int overlap = (scrollPosition + viewportHeight) - totalHeight;
+                        var cropped = bmp.Clone(new Rectangle(0, overlap, bmp.Width, bmp.Height - overlap), bmp.PixelFormat);
+                        screenshots.Add(cropped);
+                        bmp.Dispose();
+                    }
+                    else
+                    {
+                        screenshots.Add(bmp);
+                    }
+
+                    scrollPosition += viewportHeight;
+                }
+
+                // Stitch all screenshots together vertically
+                int finalHeight = screenshots.Sum(s => s.Height);
+                int finalWidth = screenshots.Max(s => s.Width);
+
+                using var finalImage = new Bitmap(finalWidth, finalHeight);
+                using (var graphics = Graphics.FromImage(finalImage))
+                {
+                    graphics.Clear(Color.White);
+                    int yOffset = 0;
+
+                    foreach (var screenshot in screenshots)
+                    {
+                        graphics.DrawImage(screenshot, 0, yOffset);
+                        yOffset += screenshot.Height;
+                    }
+                }
+
+                finalImage.Save(filePath, ImageFormat.Png);
+
+                // Dispose individual screenshots
+                foreach (var screenshot in screenshots)
+                {
+                    screenshot.Dispose();
+                }
+
+                // Scroll back to top
+                js.ExecuteScript("window.scrollTo(0, 0)");
+
+                return $"./Screenshots/{uniqueFileName}";
+            }
+            catch (Exception ex)
+            {
+                Logger.Debug($"Full-page screenshot failed, using viewport screenshot: {ex.Message}");
+
+                // Fallback to simple viewport screenshot
+                try
+                {
+                    ((ITakesScreenshot)Driver).GetScreenshot().SaveAsFile(filePath);
+                }
+                catch
+                {
+                    // If even fallback fails, return empty path
+                    return string.Empty;
+                }
+
+                return $"./Screenshots/{uniqueFileName}";
+            }
+        }
+
+        /// <summary>
+        /// Switches to a valid browser window handle.
+        /// </summary>
+        private void SwitchToValidWindow()
+        {
+            try
+            {
+                var handles = Driver.WindowHandles;
+                if (handles != null && handles.Count > 0)
+                {
+                    var currentHandle = Driver.CurrentWindowHandle;
+                    if (!handles.Contains(currentHandle))
+                    {
+                        Driver.SwitchTo().Window(handles.Last());
+                    }
+                }
+            }
+            catch
+            {
+                // Silently handle window switch errors
+            }
+        }
+
+        /// <summary>
+        /// Retained old CaptureScreenshot just for backwards compatability in case we need to revert to original method.
+        /// </summary>
         private string CaptureScreenshot()
         {
             var screenshotsDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Reports", "Screenshots");
@@ -253,17 +480,6 @@ namespace Defra.UI.Tests.Hooks
             screenshot.SaveAsFile(filePath);
 
             return $"./Screenshots/{uniqueFileName}";
-        }
-
-        private void CloseBrowsers()
-        {
-            try
-            {
-                Driver.Quit();
-                Driver.Dispose();
-                AfterScenarioHooks.TestCleanup();
-            }
-            catch { }
         }
     }
 }
