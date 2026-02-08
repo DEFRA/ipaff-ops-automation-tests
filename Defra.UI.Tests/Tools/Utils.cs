@@ -82,7 +82,7 @@ namespace Defra.UI.Tests.Tools
             ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView()", element);
         }
 
-        public static void AppendStringToScenarioContextArray(ScenarioContext context, string key, string value)
+        public static void AppendStringToScenarioContextArray(this ScenarioContext context, string key, string value)
         {
             if (context.TryGetValue(key, out var existing) && existing is string[] current)
             {
@@ -96,7 +96,6 @@ namespace Defra.UI.Tests.Tools
                 context[key] = new[] { value };
             }
         }
-
 
         public static (string day, string month, string year) GetDayMonthYear(string dateString)
         {

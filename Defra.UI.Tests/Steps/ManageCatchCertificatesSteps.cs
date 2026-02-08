@@ -37,5 +37,12 @@ namespace Defra.UI.Tests.Steps
         {
             manageCatchCertificates?.SelectOption(option.ToLower());
         }
+
+        [When("the user clicks on Add details link")]
+        public void WhenTheUserClicksOnAddDetailsLink()
+        {
+            manageCatchCertificates?.ClickAddDetailsLink();
+        }
+
     }
 }
