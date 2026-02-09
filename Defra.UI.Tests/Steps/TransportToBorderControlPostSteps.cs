@@ -2,7 +2,6 @@
 using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
-using Defra.UI.Tests.Pages.Classes;
 
 
 namespace Defra.UI.Tests.Steps.IPAFF
@@ -41,17 +40,18 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var hour = currentDate.Hour.ToString();
             var minutes = currentDate.Minute.ToString();
 
-            //portOfEntryPage?.EnterPortOfEntry(entryBCP);
             transportToBorderControlPostPage?.SelectEntryBCP(entryBCP);
-            transportToBorderControlPostPage?.SelectInspectionPremises(premises);
             portOfEntryPage?.SelectMeansOfTransport(mode);
             portOfEntryPage?.EnterTransportId(transId);
             portOfEntryPage?.SelectAreTrailersOrContainersUsed(option);
             portOfEntryPage?.EnterTransportDocRef(DocumentRef);
             portOfEntryPage?.EnterEstimatedArrivalDate(day, month, year);
             portOfEntryPage?.EnterEstimatedArrivalTime(hour, minutes);
+            var premisesValue = transportToBorderControlPostPage?.SelectInspectionPremises(premises);
+            var premisesWithValue = premises + " - " + premisesValue;
 
-            _scenarioContext["PortOfEntry"] = entryBCP;
+            _scenarioContext["BorderControlPost"] = entryBCP;
+            _scenarioContext["InspectionPremises"] = premisesWithValue;
             _scenarioContext["MeansOfTransport"] = mode;
             _scenarioContext["TransportId"] = transId;
             _scenarioContext["AreContainers"] = option;

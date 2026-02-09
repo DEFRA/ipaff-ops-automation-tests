@@ -219,7 +219,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             List<string> values = weight.Split(',').Select(x => x.Trim()).ToList();
             commodityPage?.EnterNetWeight(values);
-            _scenarioContext["NetWeightFirstCommodity"] = weight;
         }
 
         [When("the user populates Number of packages as {string} for first commodity")]
@@ -345,6 +344,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void ThenGenusAndSpeciesAndEPPOCodeShouldBePopulatedInCommodityPage(string genus, string eppoCode)
         {
             Assert.True(commodityPage?.VerifyGenusSpeciesEPPOCode(genus, eppoCode));
+            _scenarioContext["GenusFirstCommodity"] = genus;
+            _scenarioContext["EPPOCodeFirstCommodity"] = eppoCode;
         }
 
         [When("the user selects EPPO code {string} checkbox")]
@@ -363,18 +364,22 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserSelectsVarietyofEPPOCode(string variety, string eppoCode)
         {
             commodityPage?.SelectVariety(variety, eppoCode);
+            _scenarioContext["CommodityVariety"] = variety;
         }
 
         [When("the user select {string} class of EPPO code {string}")]
         public void WhenTheUserSelectClassofEPPOCode(string classOfEPPO, string eppoCode)
         {
             commodityPage?.SelectClass(classOfEPPO, eppoCode);
+            _scenarioContext["CommodityClass"] = classOfEPPO;
         }
 
-        [Then("the selected commodities {string} {string} should be displayed in commodity page with code {string} {string} and EPPO code {string} {string}")]
-        public void ThenTheSelectedCommoditiesShouldBeDisplayedInCommodityPageWithCodeAndEPPOCode(string firstComm, string secondComm, string firstCode, string secondCode, string firstEPPO, string secondEPPO)
+        [Then("the selected commodities {string} {string} should be displayed in commodity page with code {string} {string} EPPO code {string} {string} and Genus {string} {string}")]
+        public void ThenTheSelectedCommoditiesShouldBeDisplayedInCommodityPageWithCodeAndEPPOCode(string firstComm, string secondComm, string firstCode, string secondCode, string firstEPPO, string secondEPPO, string firstGenus, string secondGenus)
         {
-            Assert.True(commodityPage?.VerifySelectedCommoditiesDisplayed(firstComm, secondComm, firstCode, secondCode, firstEPPO, secondEPPO));
+            Assert.True(commodityPage?.VerifySelectedCommoditiesDisplayed(firstComm, secondComm, firstCode, secondCode, firstEPPO, secondEPPO, firstGenus, secondGenus));
+            _scenarioContext["GenusSecondCommodity"] = secondGenus;
+            _scenarioContext["EPPOCodeSecondCommodity"] = secondEPPO;
         }
 
         [When("the user selects check boxes for the commodity codes {string} {string}")]
@@ -408,18 +413,23 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserPopulatesQuantityAsForCHEDPPCommodity(string quantity)
         {
             commodityPage?.EnterCHEDPPQuantity(quantity);
+            _scenarioContext["Quantity"] = quantity;
         }
 
         [When("the user selects Quantity type as {string} for CHED PP commodity")]
         public void WhenTheUserSelectsQuantityTypeAsForCHEDPPCommodity(string type)
         {
             commodityPage?.SelectCHEDPPQuanityType(type);
+            _scenarioContext["QuantityType"] = type;
         }
 
         [Then("the user clicks Apply Button")]
         public void ThenTheUserClicksApplyButton()
         {
             commodityPage?.ClickApplyButton();
+            Thread.Sleep(1000);
+            _scenarioContext["TotalNetWeight"] = commodityPage?.GetCHEDPPTotalNetWeight();
+            _scenarioContext["TotalPackages"] = commodityPage?.GetCHEDPPTotalPackages();
         }
     }
 }

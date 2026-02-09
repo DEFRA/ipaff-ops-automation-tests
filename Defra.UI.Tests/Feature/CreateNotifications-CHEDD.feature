@@ -1592,12 +1592,10 @@ Scenario: User submits consignment notification, inspector overrides the risk de
 	When the user populates the Date and time of checks
 	And user clicks Submit decision
 	Then the Your checks have been submitted page should be displayed
-	When the user clicks Record decision from the header
-	And the user searches for the newly created notification on the Import notifications page
-	When user searches for the import notification after decision submission
-	Then the notification should be present in the list of part 2 dashboard
-	Then the user clicks the notification found with status "REJECTED"
-	And the CHED overview page should be displayed
+	When the user clicks Record control in Dashboard page
+	Then the Consignments requiring control page should be displayed
+	When the user searches for the CHED number
+	Then the notification should be found with the status "Rejected"
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
 

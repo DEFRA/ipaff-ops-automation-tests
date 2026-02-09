@@ -1,7 +1,6 @@
 ﻿using Defra.UI.Tests.Configuration;
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
-using Faker;
 using OpenQA.Selenium;
 using Reqnroll.BoDi;
 
@@ -20,6 +19,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement verifyDeliveryAddrName => _driver.FindElement(By.XPath("//td[@headers='place-of-destination-name']"));
         private IWebElement verifyDeliveryAddress => _driver.FindElement(By.XPath("//td[@headers='place-of-destination-address']"));
         private IWebElement verifyDeliveryCountry => _driver.FindElement(By.XPath("//td[@headers='place-of-destination-country']"));
+        private IWebElement txtImporterAddr(string importerName) => _driver.FindElement(By.XPath($"//*[normalize-space()='{importerName}']/following-sibling::td[1]"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -50,6 +50,11 @@ namespace Defra.UI.Tests.Pages.Classes
             return verifyDeliveryAddrName.Text.Trim().Equals(deliveryAddressName) 
                 && verifyDeliveryAddress.Text.Trim().Equals(deliveryAddress) 
                    && verifyDeliveryCountry.Text.Trim().Equals(deliveryCountry);
+        }
+
+        public string GetImporterAddress(string importerName)
+        {
+            return txtImporterAddr(importerName).Text.Trim();
         }
     }
 }

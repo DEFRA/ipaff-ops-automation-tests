@@ -34,9 +34,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private List<IWebElement> parentCommodityItemList => _driver.WaitForElements(By.XPath("//div[@class='commodity-list']/ul/li")).ToList();
         private IWebElement txtNumberOfAnimals => _driver.FindElement(By.XPath("//input[contains(@class, 'number-of-animals') and contains(@id, 'num-animals-desktop')]"));
         private IWebElement btnUpdateTotal => _driver.FindElement(By.Id("update-total-desktop"));
-        //private IWebElement addCommodityLink => _driver.WaitForElement(By.Id("add-commodity-desktop"));
         private IWebElement addCommodityLink => _driver.WaitForElement(By.XPath("//*[@Id='add-commodity-desktop' or @Id='add-commodity']"));
-        //private IWebElement txtTotalGrossWeight => _driver.FindElement(By.Id("gross-weight-desktop"));
         private IWebElement txtTotalGrossWeight => _driver.FindElement(By.XPath("//*[@Id='gross-weight-desktop' or @Id='gross-weight']"));
         private IWebElement txtSubtotalNetWeight => _driver.FindElement(By.XPath("//*[@class='govuk-table species-table-cheda']/tfoot//td[2]"));
         private List<IWebElement> txtSubtotalsNetWeight => _driver.WaitForElements(By.XPath("//*[@class='govuk-table species-table-cheda']/tfoot//td[2]")).ToList();
@@ -67,6 +65,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtCHEDPPQuantity => _driver.FindElement(By.Id("bulk-quantity"));
         private IWebElement drpCHEDPPQuantityType => _driver.FindElement(By.Id("bulk-quantity-type"));
         private IWebElement btnApply => _driver.FindElement(By.Id("apply-bulk-commodity-details"));
+        private IWebElement txtTotalNetWeightCHEDPP => _driver.FindElement(By.XPath("//*[normalize-space()='Net weight (kg)']/following-sibling::td"));
+        private IWebElement txtTotalPackagesCHEDPP => _driver.FindElement(By.XPath("//*[normalize-space()='Number of packages']/following-sibling::td"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -249,6 +249,16 @@ namespace Defra.UI.Tests.Pages.Classes
             return txtTotalPackages.Text.Trim();
         }
 
+        public string GetCHEDPPTotalNetWeight()
+        {
+            return txtTotalNetWeightCHEDPP.Text.Trim();
+        }
+
+        public string GetCHEDPPTotalPackages()
+        {
+            return txtTotalPackagesCHEDPP.Text.Trim();
+        }
+
         public int GetAddedCommoditiesCount => addedCommoditiesList?.Count ?? 0;
         
         public bool VerifyTotalNetWeight(string totalNetWeight)
@@ -324,14 +334,16 @@ namespace Defra.UI.Tests.Pages.Classes
             new SelectElement(drpClass(eppoCode)).SelectByText(classOfEPPO);
         }
 
-        public bool VerifySelectedCommoditiesDisplayed(string firstComm, string secondComm, string firstCode, string secondCode, string firstEPPO, string secondEPPO)
+        public bool VerifySelectedCommoditiesDisplayed(string firstComm, string secondComm, string firstCode, string secondCode, string firstEPPO, string secondEPPO, string firstGenus, string secondGenus)
         {
             return txtSelectedCommodity(firstComm).Text.Trim().Equals(firstComm)
                 && txtSelectedCommodityDetails(firstComm).Text.Contains(firstCode)
                 && txtSelectedCommodityDetails(firstComm).Text.Contains(firstEPPO)
+                && txtSelectedCommodityDetails(firstComm).Text.Contains(firstGenus)
                 && txtSelectedCommodity(secondComm).Text.Trim().Equals(secondComm)
                 && txtSelectedCommodityDetails(secondComm).Text.Contains(secondCode)
-                && txtSelectedCommodityDetails(secondComm).Text.Contains(secondEPPO);
+                && txtSelectedCommodityDetails(secondComm).Text.Contains(secondEPPO)
+                && txtSelectedCommodityDetails(secondComm).Text.Contains(secondGenus);
         }
 
         public void SelectCommodities(string firstCommCode, string secondCommCode)
