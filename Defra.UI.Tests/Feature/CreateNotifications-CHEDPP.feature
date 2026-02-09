@@ -55,7 +55,7 @@ Scenario: Delegation of Authority Agent submits CHEDPP notification on behalf of
 	When the user selects 'Hayward (Yellow flesh)' variety of EPPO code 'ATICH'
 	And the user select 'Class I' class of EPPO code 'ATICH'
 	And the user clicks Save and continue
-	Then the selected commodities 'Other' 'Kiwifruit' should be displayed in commodity page with code '12092980' '08105000' and EPPO code '1AIEG' 'ATICH'
+	Then the selected commodities 'Other' 'Kiwifruit' should be displayed in commodity page with code '12092980' '08105000' EPPO code '1AIEG' 'ATICH' and Genus 'x Aliceara' 'Actinidia chinensis'
 	When the user clicks Save and continue
 	Then the Description of the goods/Commodity page should be displayed
 	When the user selects check boxes for the commodity codes '12092980' '08105000'
@@ -70,7 +70,7 @@ Scenario: Delegation of Authority Agent submits CHEDPP notification on behalf of
 	And the total gross weight should be greater than the net weight '300'
 	When the user clicks Save and continue
 	Then Transport to the Border Control Post (BCP) page should be dislayed
-	When the user populates the transport to the BCP details 'Heathrow Airport (plants) - GBLHR4PP' 'Euro BIP Ltd' 'Road vehicle' '123456' 'No' 'Doc1234'
+	When the user populates the transport to the BCP details 'Heathrow Airport - GBLHR4PP' 'Eurobip' 'Road vehicle' '123456' 'No' 'Doc1234'
 	And the user clicks Save and continue
 	Then the Goods movement services page should be displayed
 	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
@@ -100,7 +100,7 @@ Scenario: Delegation of Authority Agent submits CHEDPP notification on behalf of
 	Then the chosen consignor or exporter should be displayed
 	When the user clicks Save and continue
 	Then the Review your notification page should be displayed
-	And the data presented for review matches the data entered into the notification
+	And the data presented for review matches the data entered into the notification for CHED PP
 	When the user clicks Save and continue
 	Then the Declaration page should be displayed
 	When the user ticks the checkbox to declare that the information is true and correct
@@ -115,5 +115,5 @@ Scenario: Delegation of Authority Agent submits CHEDPP notification on behalf of
 	And the notification status should be 'NEW TRADE PARTNER'
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
-	When I navigate to the IPAFF Internal Plants Inspector application
+
 	

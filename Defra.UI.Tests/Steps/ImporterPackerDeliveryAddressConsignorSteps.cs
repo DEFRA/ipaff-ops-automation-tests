@@ -33,6 +33,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             var importerName = _scenarioContext.Get<string>("CompanyName");
             Assert.True(importerPackerDeliveryAddressConsignorPage?.VerifyImporterName(importerName));
+            _scenarioContext["ImporterAddress"] = importerPackerDeliveryAddressConsignorPage?.GetImporterAddress(importerName);
         }
 
         [When("the user clicks Add a delivery address link")]
@@ -49,12 +50,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var deliveryCountry = _scenarioContext.Get<string>("DeliveryCountry");
 
             Assert.True(importerPackerDeliveryAddressConsignorPage?.VerifySelectedDeliveryAddress(deliveryAddressName, deliveryAddress, deliveryCountry), "Delivery Address details do not match");
-        }
-
-        [Then("the chosen consignor or exporter {string} should be displayed on the Traders page")]
-        public void ThenTheChosenConsignorOrExporterShouldBeDisplayedOnTheTradersPage(string dEFRA)
-        {
-            throw new PendingStepException();
         }
     }
 }

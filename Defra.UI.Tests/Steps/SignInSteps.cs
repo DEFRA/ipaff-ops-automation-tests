@@ -51,14 +51,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _driver?.Navigate().GoToUrl(url);
         }
 
-        [When(@"I navigate to the IPAFF Internal Plants Inspector application")]
-        [Given(@"that I navigate to the IPAFF Internal Plants Inspector application")]
-        public void GivenThatINavigateToTheIPAFFInternalPlantsInspectorApplication()
-        {
-            var url = urlBuilder.InternalPlantsInspectorDefault().BuildInternalPlantsInspectorApp();
-            _driver?.Navigate().GoToUrl(url);
-        }
-
         [When(@"I click signin button on port checker application")]
         [Given(@"I click signin button on port checker application")]
         public void GivenIClickSigninButtonOnPortCheckerApplication()

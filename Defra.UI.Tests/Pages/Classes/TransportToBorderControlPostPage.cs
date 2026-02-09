@@ -37,9 +37,11 @@ namespace Defra.UI.Tests.Pages.Classes
                 && primaryTitle.Text.Contains("Transport to the Border Control Post (BCP)");
         }
 
-        public void SelectInspectionPremises(string premises)
+        public string SelectInspectionPremises(string premises)
         {
-            new SelectElement(optInspectionPremises).SelectByText(premises);
+            var select = new SelectElement(optInspectionPremises);
+            select.SelectByText(premises);
+            return select.SelectedOption.GetAttribute("value");
         }
 
         public void SelectEntryBCP(string entryBCP)

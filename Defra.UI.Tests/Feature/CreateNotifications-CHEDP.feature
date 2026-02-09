@@ -351,6 +351,8 @@ Scenario: User creates and submits a B2C consignment notification for Transit Re
 	Then the user should be logged into Import notifications page
 	When the user searches for the newly created notification on the Import notifications page
 	Then the user clicks the notification found with status "Valid"
+	When the user logs out of IPAFFS Part 2
+	Then the user should be logged out successfully
 
 Scenario: User creates and submits a B2C consignment notification for Transhipment or onward travel Reason - CHEDP 7370
 	Given that I navigate to the IPAFF application
@@ -517,6 +519,7 @@ Scenario: User creates and submits a B2C consignment notification for Transhipme
 	Then the Consignments requiring control page should be displayed
 	When the user searches for the CHED number
 	Then the notification should be found with the status "Rejected"
+	And the user verifies the control status is "CONTROL REQUIRED"
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
 
@@ -728,7 +731,6 @@ Scenario: User creates and submits 2 B2C consignment notification with existing 
 	Then the Confirm billing details page should be displayed
 	When the user clicks Save and continue
 	Then the Review your notification page should be displayed
-	#And the user verifies all the data displayed in review page for commodity code "160"
 	When the user clicks Save and continue
 	Then the Declaration page should be displayed
 	When the user clicks Submit notification
@@ -792,11 +794,17 @@ Scenario: Admin submits a notification and records decision and validate cookies
 	Then the Latest Health Certificate page should be displayed
 	When the user enters Latest Health Certificate Document reference "INV12345"
 	And the user enters Latest Health Certificate date of issue "24""10""2025"
+	And the user clicks Latest Health Certificate add attachment link
+	And the user uploads the Latest Health Certificate document 'IPAFFS Test Document' in the format '.docx'
+	Then the Latest Health Certificate document 'IPAFFS Test Document' '.docx' is uploaded successfully
 	And the user clicks Save and continue
 	Then the Accompanying documents page should be displayed
 	When the user selects Document type "Commercial invoice"
 	And the user enters Document reference "INV12345"
 	And the user enters date of issue "24/11/2025"
+	And the user clicks on Add attachment link
+	And the user uploads the document 'IPAFFS Test Document' in the format '.docx'
+	Then the document 'IPAFFS Test Document(1)' '.docx' is uploaded successfully
 	Then the user should be able to click Save and continue
 	And the Approved establishment of origin page should be displayed
 	When the user clicks Search for an approved establishment

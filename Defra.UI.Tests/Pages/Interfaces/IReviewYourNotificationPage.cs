@@ -24,12 +24,23 @@
         string GetNumberOfAnimals();
         string GetNumberOfPackages();
         string GetCommodityCodeList(int index);
+        string GetDescriptionList(int index);
+        string GetGenusListCHEDPP(int index);
+        string GetEPPOCodeListCHEDPP(int index);
         string GetNetWeightList(int index);
         string GetNumPackagesList(int index);
         string GetTypeOfPackagesList(int index);
         string GetTotalNetWeight();
         string GetTotalPackages();
         string GetTotalGrossWeight();
+        string GetNetWeightListCHEDPP(int index);
+        string GetNumPackagesListCHEDPP(int index);
+        string GetTypeOfPackagesListCHEDPP(int index);
+        string GetCommodityVariety(int index);
+        string GetCommodityClass(int index);
+        string GetQuantityListCHEDPP(int index);
+        string GetQuantityTypeListCHEDPP(int index);
+
 
         // Animal details
         string GetCertificationOption();
@@ -65,9 +76,12 @@
         string GetConsigneeCountry();
         string GetImporterCountry();
         string GetPlaceOfDestinationCountry();
+        string GetCHEDPPConsignorAddress();
+        string GetDeliveryAddress();
 
         // Transport details
         string GetPortOfEntry();
+        string GetInspectionPremises();
         string GetMeansOfTransport();
         string GetTransportId();
         string GetContainerUsage();
@@ -108,5 +122,6 @@
         bool IsViewCHEDButtonDisplayed();
         bool AreChangeLinksNotDisplayed();
         void ClickDashboardLink();
+        string GetCHEDPPImporterAddress();
     }
 }
