@@ -1095,7 +1095,6 @@ Scenario: User creates and submits a notification, Copy the notification and sub
 	And the user validates the commodity code "100610", description "Rice in the husk (paddy or rough)", quantity "18000", authority "FNAO" and decision "Acceptable for Internal Market" for commodity "2" after the decision is given	
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
-	Then the user should be logged out successfully
 
 Scenario: User submits B2C consignment notification, reason for refusal and creates border notification - CHED D SPS-7381
 	Given that I navigate to the IPAFF application
@@ -1818,5 +1817,3 @@ Scenario: User creates a notification and the inspector revises the decision thr
 	And the user verifies the control status is 'CONTROL REQUIRED'
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
-
-	

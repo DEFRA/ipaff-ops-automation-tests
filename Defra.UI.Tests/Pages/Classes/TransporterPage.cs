@@ -24,9 +24,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement selectedTransporter => _driver.WaitForElement(selectedTransporterBy);
         private IWebElement btnSaveAndReturnToHub => _driver.WaitForElement(By.Id("save-and-return-button-desktop"));
         private IWebElement btnSaveAndContinue => _driver.WaitForElement(By.Id("button-save-and-continue-desktop"));
-        private IWebElement verifyTransporterNameAddressCountry => _driver.FindElement(By.XPath("//td[@headers='transporter-company-name-address-country']"));
-        private IWebElement verifyTransporterApprovalNumber => _driver.FindElement(By.XPath("//td[@headers='transporter-number']"));
-        private IWebElement verifyTransporterType => _driver.FindElement(By.XPath("//td[@headers='transporter-type']"));
+        private IWebElement verifyTransporterNameAddressCountry => _driver.WaitForElement(By.XPath("//td[@headers='transporter-company-name-address-country']"));
+        private IWebElement verifyTransporterApprovalNumber => _driver.WaitForElement(By.XPath("//td[@headers='transporter-number']"));
+        private IWebElement verifyTransporterType => _driver.WaitForElement(By.XPath("//td[@headers='transporter-type']"));
         private IWebElement lnkChangeTransporter => _driver.WaitForElement(By.Id("edit-transporter-from-bip"));
         private By selectedTransporterBy => By.XPath("//td[contains(@headers, 'transporter-company-name-address-country')]");
         private By lnkAddTransporterBy => By.Id("add-transporter-from-bip");

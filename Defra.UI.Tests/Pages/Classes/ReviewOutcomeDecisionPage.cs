@@ -13,7 +13,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IObjectContainer _objectContainer;
 
         #region Page Objects
-        private IWebElement pageTitle => _driver.FindElement(By.XPath("//*[@class=' govuk-heading-xl heading-with-help']"));
+        private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//*[@class=' govuk-heading-xl heading-with-help']"));
         private IWebElement btnSubmitDecision => _driver.WaitForElement(By.Id("submit-decision"));
         private IWebElement inputDay => _driver.WaitForElement(By.Id("date-of-checks-day"));
         private IWebElement inputMonth => _driver.WaitForElement(By.Id("date-of-checks-month"));
