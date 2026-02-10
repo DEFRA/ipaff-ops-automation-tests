@@ -107,25 +107,5 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             lnkSaveAndReturnToManageCertificate.Click();
         }
-
-        public void EnterCatchCertificateReference(string reference)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void EnterDateOfIssue(string day, string month, string year)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void EnterFlagStateOfCatchingVessel(string FlagState)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SelectSpecies(string species)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

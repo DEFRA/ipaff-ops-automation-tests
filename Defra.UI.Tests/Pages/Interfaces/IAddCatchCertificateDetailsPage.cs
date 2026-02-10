@@ -16,9 +16,5 @@
         void ClickUpdate();
         void ClickUpdate(int index);
         void ClickSaveAndReturnToManageCertificateLink();
-        void EnterCatchCertificateReference(string reference);
-        void EnterDateOfIssue(string day, string month, string year);
-        void EnterFlagStateOfCatchingVessel(string FlagState);
-        void SelectSpecies(string species);
     }
 }
