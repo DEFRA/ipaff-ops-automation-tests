@@ -26,7 +26,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool IsPageLoaded()
         {
-            return primaryTitle.Text.Trim().Contains("Search for an MRN, CHED, GMR or DUCR");
+            return primaryTitle.Text.Trim().Contains("Search for an MRN, CHED or GMR");
         }
 
         public void SearchForChed(string chedRef)

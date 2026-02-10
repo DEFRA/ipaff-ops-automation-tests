@@ -15,15 +15,15 @@ namespace Defra.UI.Tests.Pages.Classes
         #region Page Objects
         private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
         private IWebElement secondaryTitle => _driver.WaitForElement(By.Id("page-secondary-title"), true);
-        private IWebElement txtPortOfEntry => _driver.WaitForElement(By.Id("bcp"));
-        private IWebElement optTransportMode => _driver.WaitForElement(By.XPath("//*[@class='govuk-form-group  ']/select"));
-        private IWebElement txtTransportId => _driver.WaitForElement(By.Id("identification"));
-        private IWebElement txtTransportDocRef => _driver.WaitForElement(By.Id("document"));
-        private IWebElement txtDay => _driver.WaitForElement(By.Id("arrival-date-day"));
-        private IWebElement txtMonth => _driver.WaitForElement(By.Id("arrival-date-month"));
-        private IWebElement txtYear => _driver.WaitForElement(By.Id("arrival-date-year"));
-        private IWebElement txtHour => _driver.WaitForElement(By.Id("arrival-time-hour"));
-        private IWebElement txtMinutes => _driver.WaitForElement(By.Id("arrival-time-minutes"));
+        private IWebElement txtPortOfEntry => _driver.FindElement(By.Id("bcp"));
+        private IWebElement optTransportMode => _driver.FindElement(By.XPath("//*[@class='govuk-form-group  ']/select"));
+        private IWebElement txtTransportId => _driver.FindElement(By.Id("identification"));
+        private IWebElement txtTransportDocRef => _driver.FindElement(By.Id("document"));
+        private IWebElement txtDay => _driver.FindElement(By.Id("arrival-date-day"));
+        private IWebElement txtMonth => _driver.FindElement(By.Id("arrival-date-month"));
+        private IWebElement txtYear => _driver.FindElement(By.Id("arrival-date-year"));
+        private IWebElement txtHour => _driver.FindElement(By.Id("arrival-time-hour"));
+        private IWebElement txtMinutes => _driver.FindElement(By.Id("arrival-time-minutes"));
         private IWebElement txtEstimatedJourneyTimeHour => _driver.FindElement(By.Id("estimated-journey-time-hour"));
         private IWebElement txtContainerNumber => _driver.FindElement(By.Id("container-number-1"));
         private IWebElement txtSealNumber => _driver.FindElement(By.Id("seal-number-1"));
@@ -54,8 +54,8 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void EnterPortOfEntry(string port)
         {
-            txtPortOfEntry.Clear();
             txtPortOfEntry.Click();
+            txtPortOfEntry.Clear();
             txtPortOfEntry.SendKeys(port);
         }
 

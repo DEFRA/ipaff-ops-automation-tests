@@ -120,7 +120,20 @@ namespace Defra.UI.Tests.Steps.IPAFF
             };
 
             _signInPage?.SignIn(userObject.UserName, userObject.Credential);
-        }        
+        }
+
+        [When(@"I have provided the IPAFF Agent credentials and signin")]
+        public void WhenIHaveProvidedTheIPAFFAgentCredentialsAndSignin()
+        {
+            var jsonData = UserObject?.GetUser("IPAFF", "Agent");
+            var userObject = new User
+            {
+                UserName = jsonData.UserName,
+                Credential = jsonData.Credential
+            };
+
+            _signInPage?.SignIn(userObject.UserName, userObject.Credential);
+        }
 
         [When("I have provided the IPAFF Heathrow Inspector credentials and signin")]
         public void WhenIHaveProvidedTheIPAFFHeathrowInspectorCredentialsAndSignin()
