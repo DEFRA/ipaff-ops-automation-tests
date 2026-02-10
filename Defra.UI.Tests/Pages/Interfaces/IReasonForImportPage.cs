@@ -30,6 +30,8 @@ namespace Defra.UI.Tests.Pages.Interfaces
         bool VerifyTransitHasExitBCPAndDestinationDropdowns();
         bool VerifyReentryHasNoSubOptions();
         bool VerifyTemporaryAdmissionHasExitDateAndBCPDropdown();
+        bool VerifySubOption(string mainOption, string subOptions);
+
         string GetReasonForImportRadioLabelText { get; }
     }
 }
