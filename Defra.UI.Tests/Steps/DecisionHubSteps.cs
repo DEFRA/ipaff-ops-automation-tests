@@ -96,5 +96,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             decisionHubPage?.ClickViewNotificationOfConsignment();
         }
+
+        [When("the user clicks on Attachments button on Decision Hub page")]
+        public void WhenTheUserClicksOnAttachmentsButtonOnDecisionHubPage()
+        {
+            decisionHubPage?.ClickAttachmentsButton();
+        }
+
     }
 }

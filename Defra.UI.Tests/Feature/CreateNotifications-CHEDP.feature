@@ -229,7 +229,7 @@ Scenario: User creates and submits a B2C consignment notification for Transit Re
 	And the user uploads the document 'IPAFFS Test Health Certificate' in the format '.docx'
 	Then the document 'IPAFFS Test Health Certificate' '.docx' is uploaded successfully
 	And the user clicks Save and continue
-	Then the Accompanying documents page should be displayed
+	And the Accompanying documents page should be displayed
 	When the user selects Document type "Commercial invoice"
 	And the user enters Document reference "INV12345"
 	And the user enters date of issue "24/11/2025"
@@ -798,14 +798,14 @@ Scenario: Admin submits a notification and records decision and validate cookies
 	And the user uploads the Latest Health Certificate document 'IPAFFS Test Document' in the format '.docx'
 	Then the Latest Health Certificate document 'IPAFFS Test Document' '.docx' is uploaded successfully
 	And the user clicks Save and continue
-	Then the Accompanying documents page should be displayed
+	And the Accompanying documents page should be displayed
 	When the user selects Document type "Commercial invoice"
 	And the user enters Document reference "INV12345"
 	And the user enters date of issue "24/11/2025"
 	And the user clicks on Add attachment link
 	And the user uploads the document 'IPAFFS Test Document' in the format '.docx'
 	Then the document 'IPAFFS Test Document(1)' '.docx' is uploaded successfully
-	Then the user should be able to click Save and continue
+	And the user should be able to click Save and continue
 	And the Approved establishment of origin page should be displayed
 	When the user clicks Search for an approved establishment
 	Then the list of establishments should be displayed, filtered by Country of origin "Italy" type "ABP Transport" status "Approved"
@@ -1933,7 +1933,7 @@ Scenario: Create and Submit B2C Consignment with Two Commodities and Catch Certi
 	And 'Select all' is displayed in Add catch certificate page
 	And 'Save and return to manage catch certificates' is displayed in Add catch certificate page
 	And 'Save and return to hub' is displayed in Add catch certificate page
-	When the user selects the '1' species under Select species being imported under this catch certificate
+	When the user selects the 'Penaeus spp.' species under Select species being imported under this catch certificate
 	And the user clicks Save and continue
 	Then Add catch certificate details page should be displayed
 	And 'Number of catch certificates in this attachment' is displayed in Add catch certificate page
@@ -2253,73 +2253,32 @@ Scenario: Create and submits a B2C consignment notification - SPS-6937 CHEDP
 	Then the details should be recorded
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
-	
-	#When the user navigate to the BTMS application
-	#Then I click Sign in button
-	#And I should see type of Gateway login page
-	#And I have selected "Government Gateway" as login type
-	#And I click Sign in button
-	#And I should see type of Gateway login page
-	#And I have selected "Sign in with Government Gateway" as login type
-	#When I click Continue button from How do you want to sign in page
-	#Then I should redirected to the BTMS Sign in using Government Gateway page
-	#When I have provided the BTMS credentials and signin
-	#Then the BTMS search screen should be displayed
-	#When the user searches for the CHED created earlier
-	#Then the BTMS search result screen should be displayed
-	#And the user checks commodity code "41015050", description "Bison bison", quantity "1000", authority "POAO" and decision "Decision not given"
-	#When the user logs out of BTMS
-	#Then the user should be logged out successfully
-	#When I navigate to the IPAFF Inspector application
-	#Then I should see type of Gateway login page
-	#And I have selected "Sign in with Government Gateway" as login type
-	#When I click Continue button from How do you want to sign in page
-	#Then I should redirected to the IPAFF Sign in using Government Gateway page
-	#When I have provided the IPAFF Inspector credentials and signin
-	#Then the user should be logged into Import notifications page
-	#When the user searches for the newly created notification on the Import notifications page
-	#Then the user clicks the notification found with status "NEW"
-	#And the Decision Hub page should be displayed
-	#When the user clicks Save and set as in progress
+	When I navigate to the IPAFF Inspector application
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF Gateway Inspector credentials and signin
+	Then the user should be logged into Import notifications page
+	When the user searches for the newly created notification on the Import notifications page
+	Then the user clicks the notification found with status "NEW"
+	And the Decision Hub page should be displayed
+	When the user clicks on Attachments button on Decision Hub page
+	Then the Documents page should be displayed
+	When the user clicks on Download all documents link
+	Then Your download has started message should be displayed
+	And the user verifies that Documents is downloaded into a .zip file with the title of the CHED certificates in Downloaded folder
+	When the user clicks Return to documents button
+	Then the Documents page should be displayed
+	And Catch certificate summary url should be displayed under heading Importer
+	When the user clicks on Download url
+	Then the single certificate should be downloaded under the certificate name in Downloaded folder
 	#Then the notification status should change from "NEW" to "IN PROGRESS"
 	#When the user clicks Local reference number link in Record checks
 	#Then Local reference number page should be displayed
 	#When the user enters a local reference number and clicks Save and continue
+	#Then the IUU page should be displayed
+	#When the user selects "No" and sub-option as "" for the IUU check
+	#And the user clicks Save and continue
 	#Then the Documentary check page should be displayed
-	#When the user selects "Satisfactory" for the documentary check and clicks Save and continue
-	#Then the Identity and physical checks page should be displayed
-	#When the user selects "Satisfactory" under "Full identity check" in identity check
-	#And the user selects "Satisfactory" for physical check
-	#And the user clicks Save and continue
-	#Then the Seal numbers page should be displayed
-	#And 'No' is pre-selected for Are new seal numbers required?
-	#When the user clicks Save and continue
-	#Then the Laboratory tests page should be displayed
-	#And 'No' is pre-selected for Would you like to record laboratory tests?
-	#When the user clicks Save and continue
-	#Then the Decision page should be displayed
-	#When the user selects Acceptable for 'Internal market' 'Animal feedingstuff'
-	#And the user clicks Save and continue
-	#Then the Review outcome decision page should be displayed
-	#And the details reflect the information added
-	#When the user populates the Date and time of checks
-	#And user clicks Submit decision
-	#Then the Your checks have been submitted page should be displayed
-	#When the user logs out of IPAFFS Part 2
-	#Then the user should be logged out successfully
-	#When the user navigate to the BTMS application
-	#Then I click Sign in button
-	#And I should see type of Gateway login page
-	#And I have selected "Government Gateway" as login type
-	#And I click Sign in button
-	#And I should see type of Gateway login page
-	#And I have selected "Sign in with Government Gateway" as login type
-	#When I click Continue button from How do you want to sign in page
-	#Then I should redirected to the BTMS Sign in using Government Gateway page
-	#When I have provided the BTMS credentials and signin
-	#Then the BTMS search screen should be displayed
-	#When the user searches for the CHED created earlier
-	#Then the BTMS search result screen should be displayed
-	#And the user checks commodity code "41015050", description "Bison bison", quantity "1000", authority "POAO" and decision "Acceptable for Internal Market" after the decision given
-	#When the user logs out of BTMS
-	#Then the user should be logged out successfully
+	
