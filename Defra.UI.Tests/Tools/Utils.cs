@@ -1,6 +1,7 @@
 ﻿using Bogus;
 using OpenQA.Selenium;
 using Reqnroll;
+using System.Diagnostics;
 using System.Globalization;
 
 namespace Defra.UI.Tests.Tools
@@ -123,6 +124,25 @@ namespace Defra.UI.Tests.Tools
             return (day, month, year);
         }
 
+        public static bool IsDownloaded(string fileName, string extension)
+        {
+            var downloadedFilePath = Path.Combine(Path.GetTempPath(), "automation-downloads", $"{fileName}.{extension}");
+
+            var timeout = TimeSpan.FromSeconds(30);
+
+            var stopwatch = Stopwatch.StartNew();
+
+            while (stopwatch.Elapsed < timeout)
+            {
+                if (File.Exists(downloadedFilePath))
+                {
+                    return true;
+                }
+
+                Thread.Sleep(500);
+            }
+            return false;
+        }
 
 
         #region WebDriver Extension Methods for Element Safety

@@ -25,6 +25,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtRiskAssesmentMessage => _driver.FindElement(By.XPath("//p[@class='govuk-body']"));
         private IWebElement lnkChecks => _driver.FindElement(By.XPath("//a[normalize-space()='Checks']"));
         private IWebElement lnkViewNotification => _driver.WaitForElement(By.Id("view-notification"));
+        private IWebElement btnAttachment => _driver.FindElement(By.Id("attachments-link"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -97,6 +98,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickViewNotificationOfConsignment()
         {
             lnkViewNotification.Click();
+        }
+
+        public void ClickAttachmentsButton()
+        {
+            btnAttachment.Click();
         }
     }
 }
