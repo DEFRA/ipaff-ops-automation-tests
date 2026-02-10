@@ -23,7 +23,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement btnUpdate => _driver.FindElement(By.Id("update-number-of-catch-certificates"));
         private IWebElement setUpdateDetails(int index) => _driver.FindElement(By.Id($"update-catch-certificate-details-{index}"));
         private IWebElement lnkSaveAndReturnToManageCertificate => _driver.FindElement(By.Id("save-and-return-manage-catch-certificates"));
-        private IReadOnlyCollection<IWebElement> speciesDetailsList(int index) => _driver.FindElements(By.XPath($"(//div[contains(@id,'checkbox-Metanephrops challengeri')])[{index}]//p"));
+        private IWebElement selectSpeciesByName(string name) => _driver.FindElement(By.XPath($"//div[@id='checkbox-{name}-1']//input"));
+
+        private IWebElement selectSpecies(string position) => _driver.FindElement(By.XPath($"(//*[contains(@id,'hidden-species')]/div/input)[{position}]"));
         #endregion
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
 
@@ -70,6 +72,11 @@ namespace Defra.UI.Tests.Pages.Classes
             selectSpecies(species).Click();
         }
 
+        public void SelectSpeciesByName(string species)
+        {
+            selectSpeciesByName(species).Click();
+        }
+
         public void ClickChangeLink()
         {
             lnkChange.Click();
@@ -99,11 +106,6 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickSaveAndReturnToManageCertificateLink()
         {
             lnkSaveAndReturnToManageCertificate.Click();
-        }
-
-        public string[] GetSpeciesDetailsList(int index)
-        {
-            return [.. speciesDetailsList(index).Select(e => e.Text.Trim())];
         }
     }
 }

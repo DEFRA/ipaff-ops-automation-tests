@@ -35,6 +35,27 @@ namespace Defra.UI.Tests.Steps
             Assert.True(addCatchCertificateDetails?.VerifyContent(text), text + " is not displayed");
         }
 
+        [When("the user selects the {string} species under Select species being imported under this catch certificate")]
+        public void WhenTheUserSelectAllUnderSelectSpecies(string species)
+        {
+            Thread.Sleep(2000);
+
+            var speciesList = species.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+            var commodityCodes = _scenarioContext.GetFromContext<List<string>>("CatchCertificateCommodityCode", []);
+            var speciesNames = _scenarioContext.GetFromContext<List<string>>("CatchCertificateSpeciesDescription", []);
+            var commodityCode = _scenarioContext.GetFromContext<List<string>>("CommodityCode", []);
+
+            foreach (var item in speciesList)
+            {
+                addCatchCertificateDetails?.SelectSpeciesByName(item);
+                commodityCodes.Add(string.Join(",", commodityCode));
+                speciesNames.Add(item);
+            }
+
+            _scenarioContext["CatchCertificateCommodityCode"] = commodityCodes;
+            _scenarioContext["CatchCertificateSpeciesDescription"] = speciesNames;
+
         [When("the user selects the {int} species under Select species being imported under this catch certificate")]
         public void WhenTheUserSelectAllUnderSelectSpecies(int species)
         {
@@ -75,8 +96,8 @@ namespace Defra.UI.Tests.Steps
             addCatchCertificateDetails?.ClickUpdate();
         }
 
-        [Then("the user can see {int} Catch certificate reference details sections for input")]
-        public void ThenTheUserCanSeeCatchCertificateReferenceDetailsSectionsForInput(int numberOfRefBlocks)
+        [Then("the calendar icon is displayed in Add catch certificate page")]
+        public void ThenTheCalendarIconIsDisplayedInAddCatchCertificatePage()
         {
             Assert.True(addCatchCertificateDetails?.VerifyNoOfCatchReferenceSections(numberOfRefBlocks), $"The expected number of catch certificate reference sections should be {numberOfRefBlocks}");
         }
