@@ -33,5 +33,26 @@
         bool VerifyNumberOfPackages(string numOfPackages);
         string[] GetSubtotalsOfNetWeight();
         string[] GetSubtotalsOfPackages();
+        void SelectHowToAddCommodityOption(string option);
+        bool IsHowToAddCommodityPageLoaded();
+        void ClickCommodityCodeSearchTab();
+        bool VerifyCHEDPPCommodityDetails(string code, string description);
+        void SearchEppoCode(string eppoCode);
+        void ClickAddLink(string eppoCode);
+        bool VerifyGenusSpeciesEPPOCode(string genus, string eppoCode);
+        void SelctEPPOCode(string eppoCodeCheckBox);
+        bool IsVarietyAndClassOfCommodityPageLoaded();
+        void SelectVariety(string variety, string eppoCode);
+        void SelectClass(string classOfEPPO, string eppoCode);
+        bool VerifySelectedCommoditiesDisplayed(string firstComm, string secondComm, string firstCode, string secondCode, string firstEPPO, string secondEPPO, string firstGenus, string secondGenus);
+        void SelectCommodities(string firstCommCode, string secondCommCode);
+        void EnterCHEDPPNetWeight(string weight);
+        void EnterCHEDPPNumberOfPackages(string numberOfPackages);
+        void SelectCHEDPPPackageType(string packageType);
+        void EnterCHEDPPQuantity(string quantity);
+        void SelectCHEDPPQuanityType(string type);
+        void ClickApplyButton();
+        string GetCHEDPPTotalNetWeight();
+        string GetCHEDPPTotalPackages();
     }
 }

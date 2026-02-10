@@ -28,7 +28,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private By pointOfExitBy => By.XPath("//dt[@id='point-of-exit-header']/following-sibling::dd");
         private By consignmentDepartureDateTimeBy => By.Id("estimated-departure-date-time-value");
         private By purposeBy => By.XPath("//dt[text()='Purpose in the internal market']//following-sibling::dd");
-        private By consignmentReferenceNumberBy => By.XPath("//dt[text()='Consignment reference number']//following-sibling::dd");
+        private By consignmentReferenceNumberBy => By.XPath("//dt[text()='Consignment reference number' or text()='Add a reference number for this consignment']//following-sibling::dd[1]");
         private By exitDateBy => By.Id("exit-date-value");
         private By exitBCPTemporaryAdmissionLocator => By.Id("designated-bip-horses-value");
         private By exitBCPTransitLocator => By.XPath("//dt[@id='exit-border-control-post-header']/following-sibling::dd");
@@ -46,7 +46,17 @@ namespace Defra.UI.Tests.Pages.Classes
         private List<IWebElement> typeOfPackagesList => _driver.WaitForElements(By.XPath("//table[contains(@class,'data-table-commodities')]//tr/td[3]")).ToList();
         private By totalNetWeightBy => By.XPath("//td[text()='Total net weight']//following-sibling::td[1]");
         private By totalPackagesBy => By.XPath("//td[text()='Total packages']//following-sibling::td[1]");
-        private By totalGrossWeightBy => By.XPath("//td[text()='Total gross weight ']//following-sibling::td[1]");
+        private By totalGrossWeightBy => By.XPath("//td[contains(text(),'Total gross weight ')]//following-sibling::td[1]");
+        private List<IWebElement> genusAndSpeciesList => _driver.FindElements(By.XPath("//th[text()='Genus and species']/following-sibling::td")).ToList();
+        private List<IWebElement> descriptionList => _driver.FindElements(By.XPath("//td[text()='Description']/following-sibling::td[1]")).ToList();
+        private List<IWebElement> netWeightCHEDPPList => _driver.FindElements(By.XPath("//*[contains(@class,'govuk-table chedpp-species-table')]//tr[2]/td[3]")).ToList();
+        private List<IWebElement> numPackagesCHEDPPList => _driver.FindElements(By.XPath("//*[contains(@class, 'govuk-table chedpp-species-table')]//tr[2]/td[4]")).ToList();
+        private List<IWebElement> typeOfPackagesCHEDPPList => _driver.FindElements(By.XPath("//*[contains(@class, 'govuk-table chedpp-species-table')]//tr[2]/td[5]")).ToList();
+        private List<IWebElement> varietyBy => _driver.FindElements(By.XPath("//*[contains(@class,'govuk-table chedpp-species-table')]//tr[2]/td[1]")).ToList();
+        private List<IWebElement> classBy => _driver.FindElements(By.XPath("//*[contains(@class,'govuk-table chedpp-species-table')]//tr[2]/td[2]")).ToList();
+        private By forTestAndTrial => By.XPath(".//*[normalize-space()='For test and trial']");
+        private IWebElement firstCommodityTable => _driver.FindElement(By.XPath("//*[@id='page-primary-title']/following-sibling::div[4]"));
+        private IWebElement secondCommodityTable => _driver.FindElement(By.XPath("//*[@id='page-primary-title']/following-sibling::div[5]"));
 
         //Additional details
         private By commodityIntendedForBy => By.XPath("//dt[text()='Commodity intended for']//following-sibling::dd");
@@ -76,12 +86,13 @@ namespace Defra.UI.Tests.Pages.Classes
         private By destinationDetailsBy => By.Id("final-destination");
 
         // Transport details
-        private By portOfEntryBy => By.XPath("//th[contains(text(),'Port of entry')]//following-sibling::td");
+        private By portOfEntryBy => By.XPath("//th[contains(text(),'Port of entry') or contains(text(),'Border Control Post')]//following-sibling::td");
+        private By inspectionPremisesBy => By.XPath("//th[text()='Inspection Premises']//following-sibling::td");
         private By meansOfTransportBy => By.XPath("//th[contains(text(),'Means of transport')]//following-sibling::td");
         private By transportIdBy => By.XPath("//th[text()='Transport identification']//following-sibling::td");
         private By containerUsageBy => By.Id("imported-in-containers");
         private By transportDocumentReferenceBy => By.XPath("//th[text()='Transport document reference']//following-sibling::td");
-        private By estimatedArrivalDateBy => By.XPath("//th[text()='Estimated arrival date at BCP or Port of entry']//following-sibling::td");
+        private By estimatedArrivalDateBy => By.XPath("//th[contains(text(),'Estimated arrival date at BCP')]//following-sibling::td");
         private By estimatedArrivalTimeBy => By.XPath("//th[contains(text(),'Estimated arrival time at')]//following-sibling::td");
         private By estimatedJourneyTimeBy => By.XPath("//th[text()='Estimated total journey time of the animals']//following-sibling::td");
         private By ctcUsageBy => By.XPath("//td[contains(text(),'Using the Common Transit Convention')]/following-sibling::td");
@@ -259,6 +270,65 @@ namespace Defra.UI.Tests.Pages.Classes
             }
         }
 
+        public string GetDescriptionList(int index)
+        {
+            try
+            {
+                var allcommodityDescList = GetItemsList(descriptionList);
+
+                if (allcommodityDescList == null || allcommodityDescList.Count == 0)
+                    return string.Empty;
+
+                var commCode = allcommodityDescList[index];
+                return string.IsNullOrWhiteSpace(commCode) ? string.Empty : commCode;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"GetCommodityDescList failed: {ex}");
+                return string.Empty;
+            }
+        }
+
+        public string GetGenusListCHEDPP(int index)
+        {
+            try
+            {
+                var allGenusAndSpeciesList = GetItemsList(genusAndSpeciesList);
+
+                if (allGenusAndSpeciesList == null || allGenusAndSpeciesList.Count == 0)
+                    return string.Empty;
+
+                var commGenusAndEPPOCode = allGenusAndSpeciesList[index];
+                var commGenus = commGenusAndEPPOCode.Split(',')[0].Trim();
+                return string.IsNullOrWhiteSpace(commGenus) ? string.Empty : commGenus;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"GetGenusListCHEDPP failed: {ex}");
+                return string.Empty;
+            }
+        }
+
+        public string GetEPPOCodeListCHEDPP(int index)
+        {
+            try
+            {
+                var allGenusAndSpeciesList = GetItemsList(genusAndSpeciesList);
+
+                if (allGenusAndSpeciesList == null || allGenusAndSpeciesList.Count == 0)
+                    return string.Empty;
+
+                var commGenusAndEPPOCode = allGenusAndSpeciesList[index];
+                var commEPPOCode = commGenusAndEPPOCode.Split(',')[1].Trim();
+                return string.IsNullOrWhiteSpace(commEPPOCode) ? string.Empty : commEPPOCode;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"GetEPPOCodeListCHEDPP failed: {ex}");
+                return string.Empty;
+            }
+        }
+
         public string GetNetWeightList(int index)
         {
             try
@@ -317,6 +387,64 @@ namespace Defra.UI.Tests.Pages.Classes
             }
         }
 
+        public string GetNetWeightListCHEDPP(int index)
+        {
+            try
+            {
+                var allNetWeightList = GetItemsList(netWeightCHEDPPList);
+
+                if (allNetWeightList == null || allNetWeightList.Count == 0)
+                    return string.Empty;
+
+                var netWeight = allNetWeightList[index];
+                netWeight = netWeight.Replace("kg", "").Trim();
+                return string.IsNullOrWhiteSpace(netWeight) ? string.Empty : netWeight;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"GetNetWeightList failed: {ex}");
+                return string.Empty;
+            }
+        }
+
+        public string GetNumPackagesListCHEDPP(int index)
+        {
+            try
+            {
+                var allNumPackagesList = GetItemsList(numPackagesCHEDPPList);
+
+                if (allNumPackagesList == null || allNumPackagesList.Count == 0)
+                    return string.Empty;
+
+                var numOfPackage = allNumPackagesList[index];
+                return string.IsNullOrWhiteSpace(numOfPackage) ? string.Empty : numOfPackage;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"GetNumPackagesList failed: {ex}");
+                return string.Empty;
+            }
+        }
+
+        public string GetTypeOfPackagesListCHEDPP(int index)
+        {
+            try
+            {
+                var allTypeOfPackagesList = GetItemsList(typeOfPackagesCHEDPPList);
+
+                if (allTypeOfPackagesList == null || allTypeOfPackagesList.Count == 0)
+                    return string.Empty;
+
+                var typeOfPackage = allTypeOfPackagesList[index];
+                return string.IsNullOrWhiteSpace(typeOfPackage) ? string.Empty : typeOfPackage;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"GetTypeOfPackagesList failed: {ex}");
+                return string.Empty;
+            }
+        }
+
         private List<string>? GetItemsList(List<IWebElement> inputList)
         {
             List<string> itemsList = new List<string>();
@@ -332,7 +460,7 @@ namespace Defra.UI.Tests.Pages.Classes
             try
             {
                 var text = _driver.SafelyGetText(totalNetWeightBy);
-                return text.Replace("kg/units", "").Trim();
+                return text.Replace("kg/units", "").Replace("kg", "").Trim();
             }
             catch (Exception ex)
             {
@@ -359,11 +487,106 @@ namespace Defra.UI.Tests.Pages.Classes
             try
             {
                 var text = _driver.SafelyGetText(totalGrossWeightBy);
-                return text.Replace("kg/units", "").Trim();
+                return text.Replace("kg/units", "").Replace("kg", "").Trim();
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"GetTotalGrossWeight failed: {ex.Message}");
+                return string.Empty;
+            }
+        }
+
+        public string GetCommodityVariety(int index)
+        {
+            try
+            {
+                var allVarietyList = GetItemsList(varietyBy);
+
+                if (allVarietyList == null || allVarietyList.Count == 0)
+                    return string.Empty;
+
+                var varietyOfCommodity = allVarietyList[index];
+                return string.IsNullOrWhiteSpace(varietyOfCommodity) ? string.Empty : varietyOfCommodity;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"GetCommodityVariety failed: {ex}");
+                return string.Empty;
+            }
+        }
+
+        public string GetCommodityClass(int index)
+        {
+            try
+            {
+                var allClassList = GetItemsList(classBy);
+
+                if (allClassList == null || allClassList.Count == 0)
+                    return string.Empty;
+
+                var classOfCommodity = allClassList[index];
+                return string.IsNullOrWhiteSpace(classOfCommodity) ? string.Empty : classOfCommodity;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"GetCommodityClass failed: {ex}");
+                return string.Empty;
+            }
+        }
+
+        public string GetQuantityListCHEDPP(int index)
+        {
+            try
+            {
+                var commodityTable = index == 0 ? firstCommodityTable : secondCommodityTable;
+                
+                int quantityIndex = commodityTable.FindElements(forTestAndTrial).Count > 0 ? 3 : 2;
+
+                var quantityList = commodityTable.FindElements(By.XPath(".//tbody/tr[4]/td["+ quantityIndex +"]")).ToList();
+
+                var allQuantityList = quantityList
+                                      .Select(e => e.Text?.Trim())
+                                      .Where(t => !string.IsNullOrEmpty(t))
+                                      .ToList();
+
+                if (allQuantityList.Count == 0)
+                    return string.Empty;
+
+                var commQuantity = allQuantityList.FirstOrDefault();
+                return string.IsNullOrWhiteSpace(commQuantity) ? string.Empty : commQuantity;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"GetQuantityListCHEDPP failed: {ex}");
+                return string.Empty;
+            }
+        }
+
+        public string GetQuantityTypeListCHEDPP(int index)
+        {
+            try
+            {
+
+                var commodityTable = index == 0 ? firstCommodityTable : secondCommodityTable;
+
+                int quantityTypeIndex = commodityTable.FindElements(forTestAndTrial).Count > 0 ? 4 : 3;
+
+                var quantityTypeList = commodityTable.FindElements(By.XPath(".//tbody/tr[4]/td[" + quantityTypeIndex + "]")).ToList();
+
+                var allQuantityTypeList = quantityTypeList
+                      .Select(e => e.Text?.Trim())
+                      .Where(t => !string.IsNullOrEmpty(t))
+                      .ToList();
+
+                if (allQuantityTypeList.Count == 0)
+                    return string.Empty;
+
+                var commQuantityType = allQuantityTypeList.FirstOrDefault();
+                return string.IsNullOrWhiteSpace(commQuantityType) ? string.Empty : commQuantityType;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"GetQuantityTypeListCHEDPP failed: {ex}");
                 return string.Empty;
             }
         }
@@ -507,6 +730,12 @@ namespace Defra.UI.Tests.Pages.Classes
             return ExtractAddressFromAddressText(fullText);
         }
 
+        public string GetCHEDPPConsignorAddress()
+        {
+            var fullText = _driver.SafelyGetText(consignorDetailsBy);
+            return ExtractCHEDPPAddressFromAddressText(fullText);
+        }
+
         public string GetConsigneeName()
         {
             var fullText = _driver.SafelyGetText(consigneeDetailsBy);
@@ -531,6 +760,12 @@ namespace Defra.UI.Tests.Pages.Classes
             return ExtractAddressFromAddressText(fullText);
         }
 
+        public string GetCHEDPPImporterAddress()
+        {
+            var fullText = _driver.SafelyGetText(importerDetailsBy);
+            return ExtractCHEDPPAddressFromAddressText(fullText);
+        }
+
         public string GetDestinationName()
         {
             var fullText = _driver.SafelyGetText(destinationDetailsBy);
@@ -541,6 +776,12 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             var fullText = _driver.SafelyGetText(destinationDetailsBy);
             return ExtractAddressFromAddressText(fullText);
+        }
+
+        public string GetDeliveryAddress()
+        {
+            var fullText = _driver.SafelyGetText(destinationDetailsBy);
+            return ExtractCHEDPPAddressFromAddressText(fullText);
         }
 
         public string GetConsignorCountry()
@@ -569,6 +810,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         // Transport details - Simple getters
         public string GetPortOfEntry() => _driver.SafelyGetText(portOfEntryBy);
+        public string GetInspectionPremises() => _driver.SafelyGetText(inspectionPremisesBy);
         public string GetMeansOfTransport() => _driver.SafelyGetText(meansOfTransportBy);
         public string GetTransportId() => _driver.SafelyGetText(transportIdBy);
         public string GetTransportDocumentReference() => _driver.SafelyGetText(transportDocumentReferenceBy);
@@ -735,6 +977,42 @@ namespace Defra.UI.Tests.Pages.Classes
                 {
                     var addressWithoutCountryAndPhone = string.Join(", ", parts.Take(3));
                     return addressWithoutCountryAndPhone;
+                }
+
+                return addressLine;
+            }
+            return string.Empty;
+        }
+
+        private string ExtractCHEDPPAddressFromAddressText(string fullText)
+        {
+            if (string.IsNullOrEmpty(fullText))
+                return string.Empty;
+
+            var lines = fullText.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+            if (lines.Length > 1)
+            {
+                var addressLine = lines[1].Trim();
+
+                // The review page shows: "street, city, postcode, country, phone"
+                // We only want: "street, city, postcode"
+
+                var parts = addressLine.Split(',', StringSplitOptions.TrimEntries);
+
+                // Take only the first 3 parts (street, city/region, postcode)
+                // This excludes both country and phone number
+                if (parts.Length >= 3)
+                {
+                    if (parts[0].Equals("DEPARTMENT FOR ENVIRONMENT FOOD & RURAL AFFAIRS (D E F R A)"))
+                    {
+                        var addressWithoutCountryAndPhone = string.Join(", ", parts.Take(5));
+                        return addressWithoutCountryAndPhone;
+                    }
+                    else
+                    {
+                        var addressWithoutCountryAndPhone = string.Join(", ", parts.Take(4));
+                        return addressWithoutCountryAndPhone;
+                    }
                 }
 
                 return addressLine;
