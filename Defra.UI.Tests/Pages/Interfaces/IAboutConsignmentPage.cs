@@ -9,5 +9,9 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void ClickImportingProduct(string option);
         void ClickSaveAndContinue();
         bool IsElementPresent(IWebElement element);
+        bool IsWhoAreYouCreatingThisNotificationForPageLoaded();
+        void SelectToWhomNotificationCreatedFor(string option);
+        bool IsWhichCompanyIsThisNotificationForPageLoaded();
+        void SelectCompany(string option);
     }
 }

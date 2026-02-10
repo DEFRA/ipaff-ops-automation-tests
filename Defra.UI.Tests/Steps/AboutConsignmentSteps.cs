@@ -41,5 +41,30 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             aboutConsignmentPage?.ClickSaveAndContinue();
         }
+
+        [Then("About the consignment - Who are you creating this notification for? page should be displayed")]
+        public void ThenAboutTheConsignment_WhoAreYouCreatingThisNotificationForPageShouldBeDisplayed()
+        {
+            Assert.True(aboutConsignmentPage?.IsWhoAreYouCreatingThisNotificationForPageLoaded(), "About the consignment - Who are you creating this notification for? page not loaded");
+        }
+
+        [When("the user selects {string} option in about the consignment page")]
+        public void WhenTheUserSelectsOptionInAboutTheConsignmentPage(string option)
+        {
+            aboutConsignmentPage?.SelectToWhomNotificationCreatedFor(option);
+        }
+
+        [Then("About the consignment - Which company is this notification for page should be displayed")]
+        public void ThenAboutTheConsignment_WhichCompanyIsThisNotificationForPageShouldBeDisplayed()
+        {
+            Assert.True(aboutConsignmentPage?.IsWhichCompanyIsThisNotificationForPageLoaded(), "About the consignment - Which company is this notification for page not loaded");
+        }
+
+        [When("the user selects company name as {string}")]
+        public void WhenTheUserSelectsCompanyNameAs(string option)
+        {
+            aboutConsignmentPage?.SelectCompany(option);
+            _scenarioContext["CompanyName"] = option;
+        }
     }
 }

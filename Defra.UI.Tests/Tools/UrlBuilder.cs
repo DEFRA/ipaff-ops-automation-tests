@@ -101,7 +101,7 @@ namespace Defra.UI.Tests.Tools
             }
             return path;
         }
-                
+
         public UrlBuilder Default()
         {
             BaseApplicationUrl = ConfigSetup.BaseConfiguration.TestConfiguration.ApplicationUrl;
@@ -122,7 +122,7 @@ namespace Defra.UI.Tests.Tools
 
             return this;
         }
-                
+
         private static string CleanSegment(string segment)
         {
             var unescaped = Uri.UnescapeDataString(segment);
