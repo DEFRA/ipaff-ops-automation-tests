@@ -82,6 +82,12 @@ namespace Defra.UI.Tests.Steps
             addCatchCertificateDetails?.ClickUpdate();
         }
 
+        [Then("the user can see {int} Catch certificate reference details sections for input")]
+        public void ThenTheUserCanSeeCatchCertificateReferenceDetailsSectionsForInput(int noOfRefSections)
+        {
+            Assert.True(addCatchCertificateDetails?.VerifyNoOfCatchReferenceSections(noOfRefSections), $"The expected number of catch reference section would be {noOfRefSections}");
+        }
+
         [When("the user enters {string} in catch certificate reference {int}")]
         public void WhenTheUserEntersInCatchCertificateReference(string reference, int index)
         {
