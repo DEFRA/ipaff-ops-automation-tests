@@ -18,7 +18,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects
         private IWebElement primaryTitle => _driver.WaitForElement(By.XPath("//h1[@class='govuk-heading-xl govuk-!-margin-bottom-0']"), true);
-        private IWebElement txtStatus => _driver.FindElement(By.Id("Status-Label"));
+        private IWebElement txtStatus => _driver.FindElement(By.XPath("//*[@id='Status-Label' or @id='status-0']"));
         private IWebElement chedReference => _driver.FindElement(By.Id("notification-reference-number"));
         private IWebElement customsDeclarationReference => _driver.FindElement(By.Id("reference-number-customs"));
         private IWebElement customsDocumentCode => _driver.FindElement(By.Id("reference-number-document"));
