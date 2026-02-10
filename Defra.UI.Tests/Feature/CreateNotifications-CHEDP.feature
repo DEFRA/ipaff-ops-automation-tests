@@ -2100,7 +2100,9 @@ Scenario: Create and submits a B2C consignment notification - SPS-6937 CHEDP
 	When the user searches '16054000' commodity code
 	Then the commodity details should be populated '16054000' 'Other crustaceans'
 	When the user selects the type of commodity 'Composite products'
+	And the user selects species of commodity 'Jasus edwardsii'
 	And the user selects species of commodity 'Metanephrops challengeri'
+	And the user selects species of commodity 'Palaemonoidea'
 	And the user selects "No" for Do you want to add another commodity?
 	And the user clicks Save and continue
 	Then What is the main reason for importing the consignment? page should be displayed with radio buttons
@@ -2112,11 +2114,11 @@ Scenario: Create and submits a B2C consignment notification - SPS-6937 CHEDP
 	Then the Notification Hub page should be displayed
 	When the user clicks the Commodity hyperlink
 	Then the Commodity page should be displayed with the commodity and description entered
-	When the user populates Net weight as '1000'
-	And the user populates Number of packages as '10'
-	And the user selects type of package as 'Box'
+	When the user populates Net weight as '1000,500,1500'
+	And the user populates Number of packages as '10,20,15'
+	And the user selects type of package as 'Box,Case,Drum'
 	And the user clicks the Update total button
-	Then the total gross weight should be greater than the net weight '1500'
+	Then the total gross weight should be greater than the net weight '3100'
 	When the user clicks Save and continue in commodity page
 	Then the Additional details page should be displayed
 	When the user selects 'Ambient' radio button on the Additional details page
@@ -2216,11 +2218,11 @@ Scenario: Create and submits a B2C consignment notification - SPS-6937 CHEDP
 	Then the Contact address for consignment page should be displayed
 	When the user clicks Save and continue
 	Then the Review your notification page should be displayed
-	And the user verifies the catch certificates reference details
+	And the user verifies the 3 catch certificates reference details
 	When the user clicks on 1 Change link of Catch Cerfitificate Document section
 	Then Add catch certificate details page should be displayed
 	When the user enters 'France' in Flag state of catching vessels 1
-	And the user selects the 1 species under Select species being imported under this catch certificate
+	And the user selects the "Jasus edwardsii,Metanephrops challengeri,Palaemonoidea" species under Select species being imported under this catch certificate
 	And the user Clicks on Update details 1
 	And the user clicks on Save and return to manage catch certificates link
 	Then Manage catch certificates page is displayed
@@ -2243,8 +2245,8 @@ Scenario: Create and submits a B2C consignment notification - SPS-6937 CHEDP
 	Then the Contact address for consignment page should be displayed
 	When the user clicks Save and continue
 	Then the Review your notification page should be displayed
-	And the user verifies the catch certificates reference details
-	And the user verifies the 1 updated catch certificates species details
+	And the user verifies the 3 catch certificates reference details
+	And the user verifies the updated catch certificates 3 species details
 	When the user clicks Save and continue
 	Then the Declaration page should be displayed
 	When the user clicks Submit notification

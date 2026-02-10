@@ -55,20 +55,6 @@ namespace Defra.UI.Tests.Steps
 
             _scenarioContext["CatchCertificateCommodityCode"] = commodityCodes;
             _scenarioContext["CatchCertificateSpeciesDescription"] = speciesNames;
-
-        [When("the user selects the {int} species under Select species being imported under this catch certificate")]
-        public void WhenTheUserSelectAllUnderSelectSpecies(int species)
-        {
-            Thread.Sleep(2000);
-            addCatchCertificateDetails?.SelectSpecies(species);
-
-            var speciesDetails = addCatchCertificateDetails?.GetSpeciesDetailsList(species);
-
-            if (speciesDetails != null && speciesDetails.Length > 0)
-            {
-                _scenarioContext.AppendStringToScenarioContextArray("CatchCertificateCommodityCode1", speciesDetails[0]);
-                _scenarioContext.AppendStringToScenarioContextArray("CatchCertificateSpeciesDescription1", speciesDetails[1]);
-            }
         }
 
         [Then("the calendar icon is displayed in Add catch certificate page")]
@@ -94,12 +80,6 @@ namespace Defra.UI.Tests.Steps
         public void WhenTheUserClicksOnUpdateButton()
         {
             addCatchCertificateDetails?.ClickUpdate();
-        }
-
-        [Then("the calendar icon is displayed in Add catch certificate page")]
-        public void ThenTheCalendarIconIsDisplayedInAddCatchCertificatePage()
-        {
-            Assert.True(addCatchCertificateDetails?.VerifyNoOfCatchReferenceSections(numberOfRefBlocks), $"The expected number of catch certificate reference sections should be {numberOfRefBlocks}");
         }
 
         [When("the user enters {string} in catch certificate reference {int}")]
