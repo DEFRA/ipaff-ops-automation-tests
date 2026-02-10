@@ -1,4 +1,6 @@
-﻿using Defra.UI.Tests.Pages.Interfaces;
+﻿using Reqnroll.BoDi;
+using Defra.UI.Tests.Pages.Interfaces;
+using Defra.UI.Tests.Tools;
 using DocumentFormat.OpenXml.Spreadsheet;
 using NUnit.Framework;
 using Reqnroll;
@@ -946,13 +948,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Console.WriteLine($"[REVIEW VALIDATION] ✓ Transporter from address book ({operatorType}) matches: {expectedName}, {expectedAddress}, {expectedCountry}");
         }
 
-        [Then("the user verifies the catch certificates reference details")]
-        public void ThenTheUserVerifiesTheCatchCertificatesReferenceDetails()
+        [Then("the user verifies the {int} catch certificates reference details")]
+        public void ThenTheUserVerifiesTheCatchCertificatesReferenceDetails(int noOfReferences)
         {
             var allDataMatches = true;
             var mismatches = new List<string>();
 
-            for (int row = 1; row <= 3; row++)
+            for (int row = 1; row <= noOfReferences; row++)
             {
                 ValidateIfExists($"FlagStateOfCatchingVessel{row}", reviewPage?.GetCatchCertificateFlagState(row), ref allDataMatches, mismatches);
                 ValidateIfExists($"CatchCertificateReference{row}", reviewPage?.GetCatchCertificateDocumentReference(row), ref allDataMatches, mismatches);
@@ -960,14 +962,17 @@ namespace Defra.UI.Tests.Steps.IPAFF
             }
         }
 
-        [Then("the user verifies the {int} updated catch certificates species details")]
-        public void ThenTheUserVerifiesTheUpdatedCatchCertificatesSpeciesDetails(int row)
+        [Then("the user verifies the updated catch certificates {int} species details")]
+        public void ThenTheUserVerifiesTheUpdatedCatchCertificatesSpeciesDetails(int noOfSpecies)
         {
-            var allDataMatches = true;
-            var mismatches = new List<string>();
+            var commodityCodes = _scenarioContext.GetFromContext<List<string>>("CatchCertificateCommodityCode", []);
+            var species = _scenarioContext.GetFromContext<List<string>>("CatchCertificateSpeciesDescription", []);
 
-            ValidateIfExists($"CatchCertificateCommodityCode{row}", reviewPage?.GetCatchCertificateCommodityCode(row), ref allDataMatches, mismatches);
-            ValidateIfExists($"CatchCertificateSpeciesDescription{row}", reviewPage?.GetCatchCertificateDocumentReference(row), ref allDataMatches, mismatches);
+            for (int row = 0; row < noOfSpecies; row++)
+            {
+                Assert.AreEqual(commodityCodes[row], reviewPage?.GetCatchCertificateCommodityCode(row + 1), $"The expected Commodity code would be '{commodityCodes[row]}'");
+                Assert.IsTrue(reviewPage?.GetCatchCertificateSpeciesDescription(row + 1).Contains(species[row]), $"The expected species name would be '{species[row]}'");
+            }
         }
 
         [When("the user clicks on {int} Change link of Catch Cerfitificate Document section")]
