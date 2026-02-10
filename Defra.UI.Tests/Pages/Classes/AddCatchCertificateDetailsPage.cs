@@ -18,6 +18,15 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement imgCalendar => _driver.FindElement(By.XPath("//*[@id=\"date-of-issue-1\"]/div[4]/button/span"));
         private IWebElement txtFlagStateOfCatchingVessel => _driver.FindElement(By.XPath("//input[@id='flag-state-1']"));
         private IWebElement selectAll => _driver.FindElement(By.XPath("//*[@id=\"hidden-select-all-checkbox-container-1\"]/div/label"));
+        private IWebElement selectSpecies(int position) => _driver.FindElement(By.XPath($"(//*[contains(@id,'hidden-species')]/div/input)[{position}]"));
+        private IWebElement lnkChange => _driver.FindElement(By.XPath("//span[@class='govuk-details__summary-text']"));
+        private IWebElement txtNoOfCatchCertificates => _driver.FindElement(By.Id("number-of-catch-certificates"));
+        private IWebElement lstNoOfCatchCertificatRefereceSections => _driver.FindElement(By.Id("catch-certificate-details-3"));
+        private IWebElement btnUpdate => _driver.FindElement(By.Id("update-number-of-catch-certificates"));
+        private IWebElement setUpdateDetails(int index) => _driver.FindElement(By.Id($"update-catch-certificate-details-{index}"));
+        private IWebElement lnkSaveAndReturnToManageCertificate => _driver.FindElement(By.Id("save-and-return-manage-catch-certificates"));
+        private IWebElement selectSpeciesByName(string name) => _driver.FindElement(By.XPath($"//div[@id='checkbox-{name}-1']//input"));
+
         private IWebElement selectSpecies(string position) => _driver.FindElement(By.XPath($"(//*[contains(@id,'hidden-species')]/div/input)[{position}]"));
         #endregion
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -66,5 +75,40 @@ namespace Defra.UI.Tests.Pages.Classes
             selectSpecies(species).Click();
         }
 
+        public void SelectSpeciesByName(string species)
+        {
+            selectSpeciesByName(species).Click();
+        }
+
+        public void ClickChangeLink()
+        {
+            lnkChange.Click();
+        }
+
+        public void EnterNumberOfCatchCertificates(string noOfCertificateRef)
+        {
+            txtNoOfCatchCertificates.Clear();
+            txtNoOfCatchCertificates.SendKeys(noOfCertificateRef.ToString());
+        }
+
+        public bool VerifyNoOfCatchReferenceSections(int numberOfRefBlocks)
+        {
+            return lstNoOfCatchCertificatRefereceSections.Displayed;
+        }
+
+        public void ClickUpdate()
+        {
+            btnUpdate.Click();
+        }
+
+        public void ClickUpdate(int index)
+        {
+            setUpdateDetails(index).Click();
+        }
+
+        public void ClickSaveAndReturnToManageCertificateLink()
+        {
+            lnkSaveAndReturnToManageCertificate.Click();
+        }
     }
 }
