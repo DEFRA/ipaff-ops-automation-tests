@@ -120,5 +120,23 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.AreEqual(expectedStatus, actualStatus,
                 $"Expected notification status '{expectedStatus}' but found '{actualStatus}'");
         }
+
+        [Then("the user verifies {string} link in Dashboard header")]
+        public void WhenTheUserVerifiesCreateNotificationInDashboardHeader(string link)
+        {
+            Assert.IsTrue(inspectorImportNotificationsPage?.VerifyNotificationHeader(link), "The " + link + " is not available");
+        }
+        
+        [Then("the user validates {string} text in Import notifications Page")]
+        public void WhenTheUserValidatesTextInImportNotificationPage(string label)
+        {
+            Assert.IsTrue(inspectorImportNotificationsPage?.VerifyLabel(label), "The " + label + " is not available");
+        }
+
+        [When("the user searches for the CHED {string} in Import notifications page")]
+        public void WhenTheUserSearchesForTheCHEDInImportNotificationsPage(string chedRef)
+        {
+            inspectorImportNotificationsPage?.SearchForChed(chedRef);
+        }
     }
 }
