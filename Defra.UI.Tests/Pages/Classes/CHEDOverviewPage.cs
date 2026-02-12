@@ -95,7 +95,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool IsFieldValuePresent(string fieldName)
         {
-            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView()", lblFieldValue(fieldName));
+            Utils.ScrollToElement(lblFieldValue(fieldName), _driver);
             return !string.IsNullOrEmpty(lblFieldValue(fieldName).Text);
         }
         
@@ -103,16 +103,16 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             if (sectionName.ToLower().Equals("control"))
             {
-                ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView()", lblFieldValueInControl(fieldName, sectionName));
+                Utils.ScrollToElement(lblFieldValueInControl(fieldName, sectionName), _driver);
                 return !string.IsNullOrEmpty(lblFieldValueInControl(fieldName, sectionName).Text);
             }
-            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView()", lblFieldValueInChecks(fieldName,sectionName));
+            Utils.ScrollToElement(lblFieldValueInChecks(fieldName, sectionName), _driver);
             return !string.IsNullOrEmpty(lblFieldValueInChecks(fieldName, sectionName).Text);
         }
 
         public bool IsFieldValuePresentInTable(string fieldName, string column)
         {
-            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView()", lblFieldValueForTable(fieldName, column));
+            Utils.ScrollToElement(lblFieldValueForTable(fieldName, column), _driver);
             return !string.IsNullOrEmpty(lblFieldValueForTable(fieldName, column).Text);
         }
 
