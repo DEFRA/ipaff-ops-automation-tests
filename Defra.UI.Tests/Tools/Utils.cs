@@ -71,7 +71,7 @@ namespace Defra.UI.Tests.Tools
             driver.Wait(2);
         }
 
-        public static void ScrollAndClick(this IWebElement element, IWebDriver driver)
+        public static void ScrollAndClick(this IWebDriver driver, IWebElement element)
         {
             ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView()", element);
             element.Click();
