@@ -95,7 +95,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool IsFieldValuePresent(string fieldName)
         {
-            _driver.ScrollAndClick((lblFieldValue(fieldName));
+            _driver.ScrollAndClick(lblFieldValue(fieldName));
             return !string.IsNullOrEmpty(lblFieldValue(fieldName).Text);
         }
         
@@ -103,7 +103,7 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             if (sectionName.ToLower().Equals("control"))
             {
-                _driver.ScrollAndClick((lblFieldValueInControl(fieldName, sectionName));
+                _driver.ScrollAndClick(lblFieldValueInControl(fieldName, sectionName));
                 return !string.IsNullOrEmpty(lblFieldValueInControl(fieldName, sectionName).Text);
             }
             _driver.ScrollAndClick(lblFieldValueInChecks(fieldName, sectionName));
