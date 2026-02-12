@@ -6,5 +6,16 @@
         bool IsPageLoaded();
         bool VerifyControlStatus(string controlStatus);
         bool VerifyNotificationStatus(string chedRef, string status);
+        bool VerifyLink(string link);
+        bool VerifyDropdownFieldValue(string field, string value);
+        void SelectControlStatus(string field, string value);
+        bool VerifyTheControlStatus(string value);
+        void ClickSearchButton();
+        void EnterStartDate(string day, string month, string year);
+        void EnterEndDate(string day, string month, string year);
+        bool VerifyTheResultsInTheDateRange(string startDate, string endDate);
+        bool VerifySortByDropdown(string sortBy);
+        void ClickLink(string link);
+        void ClickFirstNotification();
     }
 }

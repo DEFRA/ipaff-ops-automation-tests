@@ -219,6 +219,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             List<string> values = weight.Split(',').Select(x => x.Trim()).ToList();
             commodityPage?.EnterNetWeight(values);
+            _scenarioContext["NetWeightFirstCommodity"] = weight;
         }
 
         [When("the user populates Number of packages as {string} for first commodity")]

@@ -60,5 +60,47 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             chedOverviewPage?.ClickReplacedByLink();
         }
+        
+        [When("the user clicks Clear all in consinments requiring control page")]
+        public void WhenTheUserClicksClearAll()
+        {
+            chedOverviewPage?.ClickClearAll();
+        }
+
+        [Then("Show CHED button is displayed")]
+        public void TheShowChedButtonIsDisplayed()
+        {
+            Assert.IsTrue(chedOverviewPage?.VerifyShowChedButton() , "The Show CHED button is not present");
+        }
+
+        [Then("the user verifies {string} tab in CHED Overview page")]
+        public void ThenTheUserVerifiesTabInChedOverviewPage(string tabName)
+        {
+            Assert.IsTrue(chedOverviewPage?.VerifyTab(tabName), "The " + tabName + " is not present");
+        }
+        
+        [Then("the user verifies the value is present for {string}")]
+        public void ThenTheUserVerifiesValueIsPresent(string fieldName)
+        {
+            Assert.IsTrue(chedOverviewPage?.IsFieldValuePresent(fieldName), "The field value for " + fieldName + " is not present");
+        }
+        
+        [Then("the user verifies the value is present for {string} under {string}")]
+        public void ThenTheUserVerifiesValueIsPresent(string fieldName, string sectionName)
+        {
+            Assert.IsTrue(chedOverviewPage?.IsFieldValuePresent(fieldName,sectionName), "The field value for " + fieldName + " is not present");
+        }
+        
+        [Then("the user verifies the value is present for {string} in {string} column")]
+        public void ThenTheUserVerifiesValueIsPresentInColumn(string fieldName, string column)
+        {
+            Assert.IsTrue(chedOverviewPage?.IsFieldValuePresentInTable(fieldName, column), "The field value for " + fieldName + " is not present in "+column);
+        }
+
+        [When("the user switches to {string} tab in CHED Overview page")]
+        public void WhenTheUserSwitchesToTabInChedOverviewPage(string tabName)
+        {
+            chedOverviewPage?.SwitchTab(tabName);
+        }
     }
 }

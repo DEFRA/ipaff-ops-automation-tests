@@ -1,6 +1,7 @@
 ﻿using Defra.UI.Tests.Configuration;
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
+using Microsoft.VisualBasic.FileIO;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
@@ -33,6 +34,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement rdoIMTechnicalUse => _driver.WaitForElement(By.XPath("//*[@id='internalMarkettechnical']/following-sibling::label"));
         private IWebElement GetReasonRadioButton(string reasonText) =>
             _driver.FindElement(By.XPath($"//label[contains(@class, 'govuk-radios__label') and contains(normalize-space(), '{reasonText}')]"));
+        private IWebElement GetTranitSubOption(string subOption) =>
+            _driver.FindElement(By.XPath($"//label[contains(@class, 'govuk-radios__label')and contains(normalize-space(.), 'Transit')]/following::div[1]/*[contains(normalize-space(.), '{subOption}')]"));
         private IWebElement GetInternalMarketSubOption(string subOptionText) =>
             _driver.FindElement(By.XPath($"//div[contains(@id,'internalmarket-conditional')]//label[contains(@class, 'govuk-radios__label') and normalize-space()='{subOptionText}']"));
         private IWebElement txtDay => _driver.WaitForElement(By.Id("estimated-arrival-at-port-of-exit-date-day"));
@@ -349,5 +352,34 @@ namespace Defra.UI.Tests.Pages.Classes
         }
 
         public string GetReasonForImportRadioLabelText => selectedReasonForImportRadioLabel.Text.Trim() ?? string.Empty;
+
+        public bool VerifySubOption(string mainOption, string subOption)
+        {
+            GetReasonRadioButton(mainOption).Click();
+            var subOptions = subOption.Split(',').Select(x => x.Trim()).ToArray();
+            if (mainOption == "Internal market")
+            {
+                var expectedSubOptions = new List<string>();
+                foreach (var opt in subOptions)
+                {
+                    var element = GetInternalMarketSubOption(opt);
+                    expectedSubOptions.Add(element.Text);
+                }
+                return expectedSubOptions
+                    .All(el => subOptions.Contains(el));
+            }
+            else if(mainOption == "Transit")
+            {
+                var transitSubOptionTexts = new List<string>();
+
+                foreach (var opt in subOptions)
+                {
+                    var element = GetTranitSubOption(opt);
+                    transitSubOptionTexts.Add(element.Text.Split('\r')[0].Trim());                    
+                }
+                return transitSubOptionTexts.All(el => subOptions.Contains(el));
+            }
+            return false;
+        }
     }
 }

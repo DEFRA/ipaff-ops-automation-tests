@@ -71,7 +71,7 @@ namespace Defra.UI.Tests.Tools
             driver.Wait(2);
         }
 
-        public static void ScrollAndClick(this IWebElement element, IWebDriver driver)
+        public static void ScrollAndClick(this IWebDriver driver, IWebElement element)
         {
             ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView()", element);
             element.Click();
@@ -110,6 +110,9 @@ namespace Defra.UI.Tests.Tools
                 dateString == "yesterday" ? DateTime.Today.AddDays(-1) :
                 dateString == "tomorrow" ? DateTime.Today.AddDays(1) :
                 dateString == "future" ? DateTime.Today.AddDays(10) :
+                dateString == "past" ? DateTime.Today.AddDays(-10) :
+                dateString.StartsWith("future") ? DateTime.Today.AddDays(int.Parse(dateString.Replace("future", ""))) :
+                dateString.StartsWith("past") ? DateTime.Today.AddDays(-int.Parse(dateString.Replace("past", ""))) :
                 DateTime.ParseExact(
                     dateString,
                     new[] { "dd/MM/yyyy", "dd-MM-yyyy", "d/M/yyyy", "d-M-yyyy" },
