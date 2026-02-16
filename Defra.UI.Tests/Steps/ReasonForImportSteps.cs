@@ -197,5 +197,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
             else
                 WhenTheUserSelectsRadioOption("Internal market");
         }
+
+        [Then("the user verifies {string} radio button exists with the sub-option {string}")]
+        public void ThenTheUserVerifiesRadioButtonWithSuboption(String mainOption, String subOptions)
+        {
+            Assert.IsTrue(reasonForImportPage?.VerifySubOption(mainOption, subOptions), "The " + subOptions + " are not present under " + mainOption);
+        }
     }
 }

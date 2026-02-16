@@ -72,6 +72,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             checksSubmittedPage?.ClickCreateBorderNotiButton();
         }
+        
+        [Then("the user verfies the decision outcome as {string}")]
+        public void WhenTheUserVerifiesDecisionOutcome(String outcome)
+        {
+            Assert.IsTrue(checksSubmittedPage?.VerifyOutcome(outcome), "The Decision outcome is not " + outcome);
+        }
 
     }
 }

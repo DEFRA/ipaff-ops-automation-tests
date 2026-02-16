@@ -22,6 +22,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IReadOnlyCollection<IWebElement> lblErrorMessages => _driver.FindElements(By.XPath("//div[@id='border-notification-banner']/div/ul/li"));
         private IWebElement txtInNextSteps => _driver.FindElement(By.XPath("//*[normalize-space()='Next steps']/following-sibling::p"));
         private IWebElement btnCreateBorderNotification => _driver.FindElement(By.Id("create-border-notification"));
+        private IWebElement lblDecisionOutcome => _driver.FindElement(By.Id("decision-outcome"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -93,6 +94,8 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             return txtInNextSteps.Text.Trim().Contains(message);
         }
+
+        public bool VerifyOutcome(string outcome) => lblDecisionOutcome.Text.Trim().Equals(outcome);
 
         public void ClickCreateBorderNotiButton() => btnCreateBorderNotification.Click();
     }
