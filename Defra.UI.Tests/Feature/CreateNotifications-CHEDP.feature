@@ -2272,15 +2272,39 @@ Scenario: Create and submits a B2C consignment notification - SPS-6937 CHEDP
 	And the user verifies that Documents is downloaded into a .zip file with the title of the CHED certificates in Downloaded folder
 	When the user clicks Return to documents button
 	Then the Documents page should be displayed
-	And Catch certificate summary url should be displayed under heading Importer
-	When the user clicks on Download url
-	Then the single certificate should be downloaded under the certificate name in Downloaded folder
-	#Then the notification status should change from "NEW" to "IN PROGRESS"
-	#When the user clicks Local reference number link in Record checks
-	#Then Local reference number page should be displayed
-	#When the user enters a local reference number and clicks Save and continue
-	#Then the IUU page should be displayed
-	#When the user selects "No" and sub-option as "" for the IUU check
-	#And the user clicks Save and continue
-	#Then the Documentary check page should be displayed
-	
+	When the user clicks Save and set as in progress
+	Then the notification status should change from "NEW" to "IN PROGRESS"
+	When the user clicks Save and Return	
+	Then the Decision Hub page should be displayed
+	When the user clicks Local reference number link in Record checks
+	Then Local reference number page should be displayed
+	When the user enters a local reference number and clicks Save and continue
+	Then the IUU page should be displayed
+	When the user selects "Yes" and sub-option as "Compliant" for the IUU check
+	And the user clicks Save and continue
+	Then the Documentary check page should be displayed
+	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
+	Then the Identity and physical checks page should be displayed
+	When the user selects "Satisfactory" under "Full identity check" in identity check
+	And the user selects "Satisfactory" for physical check
+	And the user clicks Save and continue
+	Then the Seal numbers page should be displayed
+	And 'No' is pre-selected for Are new seal numbers required?
+	When the user clicks Save and continue
+	Then the Laboratory tests page should be displayed
+	And 'No' is pre-selected for Would you like to record laboratory tests?
+	When the user clicks Save and continue
+	Then the Decision page should be displayed
+	When the user selects Acceptable for 'Internal market' 'Human consumption'
+	And the user clicks Save and continue
+	Then the Review outcome decision page should be displayed
+	When the user populates the Date and time of checks
+	And user clicks Submit decision
+	Then the Your checks have been submitted page should be displayed
+	When the user clicks View or print CHED
+	Then the certificate should be displayed in a new browser tab
+	When the user checks that the data in the certificate matches the data entered into the notification
+	And the user closes the PDF browser tab
+	Then the browser tab is closed
+	When the user logs out of IPAFFS Part 2
+	Then the user should be logged out successfully
