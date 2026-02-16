@@ -1710,9 +1710,6 @@ Scenario: User creates a notification and the inspector revises the decision thr
 	Then the Decision Hub page should be displayed
 	When the user clicks Save and set as in progress
 	Then the notification status should change from "NEW" to "IN PROGRESS"
-	When the user clicks Local reference number link in Record checks
-	Then Local reference number page should be displayed
-	When the user clicks Save and Return
 	Then the Decision Hub page should be displayed
 	When the user clicks Local reference number link in Record checks
 	Then Local reference number page should be displayed
@@ -1805,6 +1802,7 @@ Scenario: User creates a notification and the inspector revises the decision thr
 	When user clicks Submit decision
 	Then the Your checks have been submitted page should be displayed
 	And a border notification banner displaying the reason for refusal 'Refused for chemical contamination reasons' under the title 'The result of this decision requires a border notification to be created' is displayed
+	And the user verfies the decision outcome as 'Not Acceptable'
 	When the user clicks View or print CHED
 	Then the certificate should be displayed in a new browser tab
 	When the user checks that the data in the certificate matches the data entered into the notification

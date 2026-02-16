@@ -1887,6 +1887,9 @@ Scenario: Create and Submit B2C Consignment with Two Commodities and Catch Certi
 	And the user selects "No" for Do you want to add another commodity?
 	And the user clicks Save and continue
 	Then What is the main reason for importing the consignment? page should be displayed with radio buttons
+	Then the user verifies 'Internal market' radio button exists with the sub-option 'Animal feedingstuff,Human consumption,Other'
+	When the user verifies 'Transhipment or onward travel' radio button exists with 'Destination country' dropdown
+	Then the user verifies 'Transit' radio button exists with the sub-option 'Exit border control post,When the consignment will leave Great Britain,Transited country,Destination country'
 	When the user chooses "Internal market" and the sub-option "Animal feedingstuff"
 	And the user clicks Save and continue
 	Then Select the highest risk category for the commodities in this consignment page should be displayed
@@ -2073,6 +2076,239 @@ Scenario: Create and Submit B2C Consignment with Two Commodities and Catch Certi
 	And the user checks commodity code "03061792", description "Penaeus spp.", quantity "13300", authority "POAO IUU" and decision "Acceptable for Internal Market Decision not given" after the decision given
 	And the user checks commodity code "16052190", description "Penaeus (Litopenaeus) vannamei", quantity "3240", authority "POAO IUU" and decision "Acceptable for Internal Market Decision not given" after the decision given
 	When the user logs out of BTMS
+	Then the user should be logged out successfully
+
+
+Scenario: Verify IPAFF Inspector application SPS-7391
+	When I navigate to the IPAFF Inspector application
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF Inspector credentials and signin
+	Then the user should be logged into Import notifications page
+	And the user verifies 'Create notification' link in Dashboard header
+	And the user verifies 'Record decision' link in Dashboard header
+	And the user verifies 'Record control' link in Dashboard header
+	When the user clicks Record control in Dashboard page
+	Then the Consignments requiring control page should be displayed
+	And the user verifies 'Show CHED' link in Consignments requiring control page
+	When the user clicks Record decision from the header
+	Then the Import notifications dashboard page should be displayed
+	When the user clicks View CHED link
+	Then the certificate should be displayed in a new browser tab
+	When the user closes the PDF browser tab
+	Then the browser tab is closed
+	And the user validates 'Search CHEDs by' text in Import notifications Page
+	And the user validates 'Keywords or CHED number' text in Import notifications Page
+	And the user validates 'Commodity' text in Import notifications Page
+	And the user validates 'CHED status' text in Import notifications Page
+	And the user validates 'CHED type' text in Import notifications Page
+	And the user validates 'Country of origin' text in Import notifications Page
+	And the user validates 'Consignee' text in Import notifications Page
+	And the user validates 'Decision' text in Import notifications Page
+	And the user validates 'Risk outcome' text in Import notifications Page
+	And the user validates 'Microchip number (CHED-A only)' text in Import notifications Page
+	And the user validates 'Risk category (CHED-P only)' text in Import notifications Page
+	And the user validates 'Filter by arrival date and time' text in Import notifications Page
+	And the user validates 'Today' text in Import notifications Page
+	And the user validates 'Tomorrow' text in Import notifications Page
+	And the user validates 'Start date' text in Import notifications Page
+	And the user validates 'End date' text in Import notifications Page
+	And the user validates 'Start time (optional)' text in Import notifications Page
+	And the user validates 'End time (optional)' text in Import notifications Page
+	When the user clicks Record control in Dashboard page
+	Then the Consignments requiring control page should be displayed
+	And the user verifies 'All' is selected in 'BCP' field
+	And the user verifies 'All' is selected in 'CHED status' field
+	And the user verifies 'All' is selected in 'CHED type' field
+	And the user verifies 'All' is selected in 'Country of origin' field
+	And the user verifies 'All' is selected in 'Control status' field
+	And the user verifies 'All' is selected in 'Decision' field
+	And the user verifies 'All' is selected in 'Seal check required' field
+	When the user selects 'Complete' from 'Control status' field
+	And the user clicks on Search in Consignments requiring control page
+	Then the user validates the Control status is 'CONTROL COMPLETE'
+	When the user selects 'All' from 'Control status' field
+	When the user enters the Start date as 'past30'
+	And the user enters the End date as 'today'
+	And the user clicks on Search in Consignments requiring control page
+	Then the user validates the result is within the date range
+	And the Date of decision is sorted by 'Date of decision (newest to oldest)'
+	When the user clicks on 'Show CHED' in Consignment requiring control page
+	Then the certificate should be displayed in a new browser tab
+	When the user closes the PDF browser tab
+	Then the browser tab is closed
+	When the user clicks Record control in Dashboard page
+	When the user selects 'Complete' from 'Control status' field
+	And the user clicks on Search in Consignments requiring control page
+	And the user searches for the CHED 'CHEDP.GB.2024.1037447' in Import notifications page
+	And the user opens the first notification in the consignments requiring control page
+	Then the CHED overview page should be displayed
+	And the user verifies 'Notification' tab in CHED Overview page
+	And the user verifies 'Checks' tab in CHED Overview page
+	And the user verifies 'Control' tab in CHED Overview page
+	And the user verifies the value is present for 'Import type'
+	And the user verifies the value is present for 'Responsible person'
+	And the user verifies the value is present for 'Telephone'
+	And the user verifies the value is present for 'Email'
+	And the user verifies the value is present for 'Organisation Name'
+	And the user verifies the value is present for 'Organisation Addresss'
+	And the user verifies the value is present for 'Organisation Telephone'
+	And the user verifies the value is present for 'Country of origin'
+	And the user verifies the value is present for 'Country from where consigned'
+	And the user verifies the value is present for 'Consignment conforms to regulatory requirements'
+	And the user verifies the value is present for 'Consignment reference number'
+	And the user verifies the value is present for 'Main reason for importing the consignment'
+	And the user verifies the value is present for 'Port of exit'
+	And the user verifies the value is present for 'When the consignment will leave Great Britain?'
+	And the user verifies the value is present for 'Transited country'
+	And the user verifies the value is present for 'Destination country'
+	And the user verifies the value is present for 'Commodity code'
+	And the user verifies the value is present for 'Subtotal'
+	And the user verifies the value is present for 'Total net weight'
+	And the user verifies the value is present for 'Total packages'
+	And the user verifies the value is present for 'Total gross weight'
+	And the user verifies the value is present for 'Temperature'
+	And the user verifies the value is present for 'Consignor or exporter'
+	And the user verifies the value is present for 'Consignee'
+	And the user verifies the value is present for 'Importer'
+	And the user verifies the value is present for 'Place of destination'
+	And the user verifies the value is present for 'Port of entry'
+	And the user verifies the value is present for 'Means of transport to port of entry'
+	And the user verifies the value is present for 'Transport identification'
+	And the user verifies the value is present for 'Using road trailers or containers?'
+	And the user verifies the value is present for 'Transport document reference'
+	And the user verifies the value is present for 'Estimated arrival date at port of entry'
+	And the user verifies the value is present for 'Estimated arrival time at port of entry'
+	And the user verifies the value is present for 'Using the Goods Vehicle Movement Service (GVMS)'
+	And the user verifies the value is present for 'Contact address'
+	And the user verifies the value is present for 'Name'
+	And the user verifies the value is present for 'Email address'
+	And the user verifies the value is present for 'Phone number'
+	And the user verifies the value is present for 'Notification submitted by'
+	And the user verifies the value is present for 'Submission date'
+	And the user verifies the value is present for 'Submission time'
+	And the user verifies the value is present for 'Species' in '1' column
+	And the user verifies the value is present for 'Net weight' in '2' column
+	And the user verifies the value is present for 'Packages' in '3' column
+	And the user verifies the value is present for 'Package type' in '4' column
+	And the user verifies the value is present for 'Document type' in '1' column
+	And the user verifies the value is present for 'Document reference' in '2' column
+	And the user verifies the value is present for 'Date of issue' in '3' column
+	And the user verifies the value is present for 'Attachments' in '4' column
+	And the user verifies the value is present for 'Name' in '1' column
+	And the user verifies the value is present for 'Country' in '2' column
+	And the user verifies the value is present for 'Type' in '3' column
+	And the user verifies the value is present for 'Approval number' in '4' column
+	When the user switches to 'Checks' tab in CHED Overview page
+	Then the user verifies the value is present for 'IUU'
+	And the user verifies the value is present for 'Documentary check'
+	And the user verifies the value is present for 'Seal check only'
+	And the user verifies the value is present for 'Physical check'
+	And the user verifies the value is present for 'Required'
+	And the user verifies the value is present for 'Decision result'
+	And the user verifies the value is present for 'Decision recorded by'
+	And the user verifies the value is present for 'Decision recorded date'
+	And the user verifies the value is present for 'Decision recorded time'
+	And the user verifies the value is present for 'Declaration date'
+	And the user verifies the value is present for 'Transited country' under 'Decision information'
+	And the user verifies the value is present for 'Exit Border Control Post'
+	And the user verifies the value is present for 'Destination country' under 'Decision information'
+	When the user switches to 'Control' tab in CHED Overview page
+	Then the user verifies the value is present for 'Has the consignment left the UK?'
+	And the user verifies the value is present for 'Means of transport'
+	And the user verifies the value is present for 'Transport identification' under 'Control'
+	And the user verifies the value is present for 'Transport document reference' under 'Control'
+	And the user verifies the value is present for 'Date of departure'
+	And the user verifies the value is present for 'Exit BCP'
+	And the user verifies the value is present for 'Destination country' under 'Control'
+	And the user verifies the value is present for 'Name' under 'Recorded by'
+	And the user verifies the value is present for 'Registered location'
+	And the user verifies the value is present for 'Date control added'
+	When the user clicks Record control in Dashboard page
+	Then the Consignments requiring control page should be displayed
+	When the user clicks Clear all in consinments requiring control page
+	When the user selects 'Required' from 'Control status' field
+	And the user clicks on Search in Consignments requiring control page
+	Then the user validates the Control status is 'CONTROL REQUIRED'
+	When the user searches for the CHED 'CHEDP.GB.2026.1064468' in Import notifications page
+	And the user opens the first notification in the consignments requiring control page
+	Then the CHED overview page should be displayed
+	And the user verifies 'Notification' tab in CHED Overview page
+	And the user verifies 'Checks' tab in CHED Overview page
+	And the user verifies the value is present for 'Import type'
+	And the user verifies the value is present for 'Responsible person'
+	And the user verifies the value is present for 'Telephone'
+	And the user verifies the value is present for 'Email'
+	And the user verifies the value is present for 'Organisation Name'
+	And the user verifies the value is present for 'Organisation Addresss'
+	And the user verifies the value is present for 'Organisation Telephone'
+	And the user verifies the value is present for 'Country of origin'
+	And the user verifies the value is present for 'Country from where consigned'
+	And the user verifies the value is present for 'Consignment conforms to regulatory requirements'
+	And the user verifies the value is present for 'Consignment reference number'
+	And the user verifies the value is present for 'Main reason for importing the consignment'
+	And the user verifies the value is present for 'Purpose in the internal market'
+	And the user verifies the value is present for 'Commodity code'
+	And the user verifies the value is present for 'Type of commodity'
+	And the user verifies the value is present for 'Subtotal'
+	And the user verifies the value is present for 'Total net weight'
+	And the user verifies the value is present for 'Total packages'
+	And the user verifies the value is present for 'Total gross weight'
+	And the user verifies the value is present for 'Temperature'
+	And the user verifies the value is present for 'Consignor or exporter'
+	And the user verifies the value is present for 'Consignee'
+	And the user verifies the value is present for 'Importer'
+	And the user verifies the value is present for 'Place of destination'
+	And the user verifies the value is present for 'Port of entry'
+	And the user verifies the value is present for 'Means of transport to port of entry'
+	And the user verifies the value is present for 'Transport identification'
+	And the user verifies the value is present for 'Using road trailers or containers?'
+	And the user verifies the value is present for 'Transport document reference'
+	And the user verifies the value is present for 'Estimated arrival date at port of entry'
+	And the user verifies the value is present for 'Estimated arrival time at port of entry'
+	And the user verifies the value is present for 'Using the Goods Vehicle Movement Service (GVMS)'
+	And the user verifies the value is present for 'Contact address'
+	And the user verifies the value is present for 'Name'
+	And the user verifies the value is present for 'Email address'
+	And the user verifies the value is present for 'Phone number'
+	And the user verifies the value is present for 'Notification submitted by'
+	And the user verifies the value is present for 'Submission date'
+	And the user verifies the value is present for 'Submission time'
+	And the user verifies the value is present for 'Document type' in '1' column
+	And the user verifies the value is present for 'Document reference' in '2' column
+	And the user verifies the value is present for 'Date of issue' in '3' column
+	And the user verifies the value is present for 'Name' in '1' column
+	And the user verifies the value is present for 'Country' in '2' column
+	And the user verifies the value is present for 'Type' in '3' column
+	And the user verifies the value is present for 'Approval number' in '4' column
+	When the user switches to 'Checks' tab in CHED Overview page
+	#Then the user verifies the value is present for 'IUU'
+	Then the user verifies the value is present for 'Documentary check'
+	And the user verifies the value is present for 'Seal check only'
+	And the user verifies the value is present for 'Physical check'
+	And the user verifies the value is present for 'Required'
+	And the user verifies the value is present for 'Reason'
+	And the user verifies the value is present for 'Analysis type'
+	And the user verifies the value is present for 'Commodity code' under 'Laboratory tests'
+	And the user verifies the value is present for 'Commodity description'
+	And the user verifies the value is present for 'Species'
+	And the user verifies the value is present for 'Laboratory test'
+	And the user verifies the value is present for 'Sample date'
+	And the user verifies the value is present for 'Sample time'
+	And the user verifies the value is present for 'Conclusion'
+	And the user verifies the value is present for 'Decision result'
+	And the user verifies the value is present for 'Decision recorded by'
+	And the user verifies the value is present for 'Decision recorded date'
+	And the user verifies the value is present for 'Decision recorded time'
+	And the user verifies the value is present for 'Declaration date'
+	And the user verifies the value is present for 'Refusal decision'
+	And the user verifies the value is present for 'Reason'
+	And the user verifies the value is present for 'Refusal by date'
+	And the user verifies the value is present for 'Reason(s) for refusal'
+	And the user verifies the value is present for 'Controlled destination'
+	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
 
 Scenario: Create and submits a B2C consignment notification - SPS-6937 CHEDP

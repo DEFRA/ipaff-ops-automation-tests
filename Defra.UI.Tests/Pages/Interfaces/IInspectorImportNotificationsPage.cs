@@ -14,5 +14,7 @@
         bool VerifyNotificationIsNotPresent();
         void ClickNotification();
         string GetNotificationStatus();
+        bool VerifyNotificationHeader(string link);
+        bool VerifyLabel(string label);
     }
 }
