@@ -31,6 +31,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserSelectsAConsigneeWithAUKCountry(string consigneeName)
         {
             _scenarioContext["ConsigneeDetails"] = searchExistingConsigneePage?.GetSelectedConsignee(consigneeName);
+            _scenarioContext["ConsigneeName"] = searchExistingConsigneePage?.GetSelectedConsigneeName(consigneeName);
+            _scenarioContext["ConsigneeAddress"] = searchExistingConsigneePage?.GetSelectedConsigneeAddress(consigneeName);
+            _scenarioContext["ConsigneeCountry"] = searchExistingConsigneePage?.GetSelectedConsigneeCountry(consigneeName);
+
             searchExistingConsigneePage?.ClickSelect(consigneeName);
         }
 
