@@ -39,6 +39,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             }
         }
 
+        [When("the user selects {string} radio button for Are new seal numbers required?")]
         [When("the user select {string} radio button on the Seal numbers page")]
         public void WhenISelectRadioButtonOnTheSealNumbersPage(string sealNum)
         {
