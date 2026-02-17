@@ -1,8 +1,10 @@
 ﻿using Reqnroll.BoDi;
+using Defra.UI.Tests.Pages.Interfaces;
+using Defra.UI.Tests.Tools;
+using DocumentFormat.OpenXml.Spreadsheet;
 using NUnit.Framework;
 using Reqnroll;
-using Defra.UI.Tests.Pages.Interfaces;
-using YamlDotNet.Core;
+using Reqnroll.BoDi;
 
 namespace Defra.UI.Tests.Steps.IPAFF
 {
@@ -521,7 +523,19 @@ namespace Defra.UI.Tests.Steps.IPAFF
             VerifyTraders();
             VerifyTransportAndConsignmentContactDetails();
         }
-       
+
+        [Then("the user should see the message {string} displayed in the certificates section")]
+        public void ThenTheUserShouldSeeTheMessageDisplayedInTheCertificatesSection(string message)
+        {
+            Assert.True(reviewPage?.VerifyCatchCertificateHeader(message), $"The expected catch certificate details header would be '{message}'");
+        }
+
+        [Then("the user should see the message {string} under Catch certificate reference")]
+        public void ThenTheUserShouldSeeTheMessageUnderCatchCertificateReference(string message)
+        {
+            Assert.True(reviewPage?.VerifyCatchCertificateForNoneAttached(message), $"The expected catch certificate details for none attached would be '{message}'");
+        }
+
         private void VerifyAboutTheConsignment()
         {
             var summary = summaryPage?.GetSummaryDetails();
@@ -534,6 +548,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var consignmentRefNum = _scenarioContext.Get<string>("ConsignmentReferenceNumber");
             var mainReasonForImport = "For " + _scenarioContext.Get<string>("MainReasonForImport");
             var riskCategory = _scenarioContext.Get<string>("RiskCategory");
+
             if (_scenarioContext.TryGetValue("Purpose", out string purpose) &&
                 !string.IsNullOrWhiteSpace(purpose))
             {
@@ -553,13 +568,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var summary = summaryPage?.GetSummaryDetails();
             var pageName = "Review your notification";
             var expectedList = new List<string>();
-            
+
             var subtotalNetWeight = _scenarioContext.Get<string[]>("SubtotalNetWeight");
             var subtotalPackages = _scenarioContext.Get<string[]>("SubtotalPackages");
             var commodityCode = _scenarioContext["CommodityCode"] as List<string>;
             var typeOfCommodity = _scenarioContext.Get<List<string>>("TypeOfCommodity");
             var species = _scenarioContext["Species"] as List<string>;
-            
+
             var totalNetWeight = _scenarioContext.Get<string>("TotalNetWeight");
             var totalPackages = _scenarioContext.Get<string>("TotalPackages");
             var totalGrossWeight = _scenarioContext.Get<string>("TotalGrossWeight");
@@ -614,10 +629,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 }
                 Assert.AreEqual(typeOfCommodity, expectedList);
             }
-            
+
             Assert.AreEqual(species, summary?.Species, $"Species is not matching in {pageName} page!");
             CollectionAssert.AreEqual(subtotalNetWeight, summary?.SubtotalNetWeight, $"Subtotal NetWeight is not matching in {pageName} page!");
-            CollectionAssert.AreEqual(subtotalPackages, summary?.SubtotalPackages, $"Subtotal Packages is not matching in {pageName} page!"); 
+            CollectionAssert.AreEqual(subtotalPackages, summary?.SubtotalPackages, $"Subtotal Packages is not matching in {pageName} page!");
             Assert.AreEqual(totalNetWeight, summary?.TotalNetWeight, $"Total NetWeight is not matching in {pageName} page!");
             Assert.AreEqual(totalPackages, summary?.TotalPackages, $"Total Packages is not matching in {pageName} page!");
             Assert.AreEqual(totalGrossWeight, summary?.TotalGrossWeight, $"Total Gross Weight is not matching in {pageName} page!");
@@ -629,9 +644,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var summary = summaryPage?.GetSummaryDetails();
             var pageName = "Review your notification";
 
-            var documentType = _scenarioContext.Get<string[]>("DocumentType");
-            var documentReference = _scenarioContext.Get<string[]>("DocumentReference");
-            var dateOfIssue = _scenarioContext.Get<string[]>("DateOfIssue");
+            var documentType = summary?.DocumentType.Length > 0 ? _scenarioContext.Get<string[]>("DocumentType") : [];
+            var documentReference = summary?.DocumentReference.Length > 0 ? _scenarioContext.Get<string[]>("DocumentReference") : [];
+            var dateOfIssue = summary?.DateOfIssue.Length > 0 ? _scenarioContext.Get<string[]>("DateOfIssue") : [];
             var approvedEstablishmentName = _scenarioContext.Get<string>("ApprovedEstablishmentName");
             var approvedEstablishmentCountry = _scenarioContext.Get<string>("ApprovedEstablishmentCountry");
             var approvedEstablishmentType = _scenarioContext.Get<string>("ApprovedEstablishmentType");
@@ -653,7 +668,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.AreEqual(approvedEstablishmentCountry, summary?.ApprovedEstablishmentCountry, $"Approved Establishment Country is not matching in {pageName} page!");
             Assert.AreEqual(approvedEstablishmentType, summary?.ApprovedEstablishmentType, $"Approved Establishment Type is not matching in {pageName} page!");
             Assert.AreEqual(approvedEstablishmentApprovalNum, summary?.ApprovedEstablishmentApprovalNum, $"Approved Establishment Approval Number is not matching in {pageName} page!");
-            
+
         }
 
         private void VerifyTraders()
@@ -703,7 +718,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.AreEqual(transportDocRef, reviewPage?.GetTransportDocumentReference(), $"Transport Document Reference is not matching in {pageName} page!");
             Assert.AreEqual(estimatedArrivalDate, reviewPage?.GetEstimatedArrivalDate(), $"Estimated Arrival Date is not matching in {pageName} page!");
             Assert.AreEqual(estimatedArrivalTime, reviewPage?.GetEstimatedArrivalTime(), $"Estimated Arrival Time is not matching in {pageName} page!");
-            Assert.AreEqual(isCTC, reviewPage?.GetCTCUsage(), $"CTC Usage is not matching in {pageName} page!");
+            Assert.AreEqual(isCTC, reviewPage?.GetCTCUsage().Replace("-", "–"), $"CTC Usage is not matching in {pageName} page!");
+
+            if (_scenarioContext.ContainsKey("MovementReferenceNumber"))
+            {
+                var movementReferenceNumber = _scenarioContext.Get<string>("MovementReferenceNumber");
+                Assert.AreEqual(movementReferenceNumber, reviewPage?.GetMovementReferenceNumber(), $"Movement Reference Number is not matching in {pageName} page!");
+            }
+
             Assert.AreEqual(isGVMS, reviewPage?.GetGVMSUsage(), $"GVMS Usage is not matching in {pageName} page!");
             Assert.AreEqual(consignmentContactAddress, reviewPage?.GetConsignmentContactAddress(), $"Consignment Contact Address is not matching in {pageName} page!");
         }
@@ -925,5 +947,39 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             Console.WriteLine($"[REVIEW VALIDATION] ✓ Transporter from address book ({operatorType}) matches: {expectedName}, {expectedAddress}, {expectedCountry}");
         }
+
+        [Then("the user verifies the {int} catch certificates reference details")]
+        public void ThenTheUserVerifiesTheCatchCertificatesReferenceDetails(int noOfReferences)
+        {
+            var allDataMatches = true;
+            var mismatches = new List<string>();
+
+            for (int row = 1; row <= noOfReferences; row++)
+            {
+                ValidateIfExists($"FlagStateOfCatchingVessel{row}", reviewPage?.GetCatchCertificateFlagState(row), ref allDataMatches, mismatches);
+                ValidateIfExists($"CatchCertificateReference{row}", reviewPage?.GetCatchCertificateDocumentReference(row), ref allDataMatches, mismatches);
+                ValidateIfExists($"CatchCertificateDateOfIssue{row}", reviewPage?.GetCatchCertificateDocumentDateOfIssue(row), ref allDataMatches, mismatches);
+            }
+        }
+
+        [Then("the user verifies the updated catch certificates {int} species details")]
+        public void ThenTheUserVerifiesTheUpdatedCatchCertificatesSpeciesDetails(int noOfSpecies)
+        {
+            var commodityCodes = _scenarioContext.GetFromContext<List<string>>("CatchCertificateCommodityCode", []);
+            var species = _scenarioContext.GetFromContext<List<string>>("CatchCertificateSpeciesDescription", []);
+
+            for (int row = 0; row < noOfSpecies; row++)
+            {
+                Assert.AreEqual(commodityCodes[row], reviewPage?.GetCatchCertificateCommodityCode(row + 1), $"The expected Commodity code would be '{commodityCodes[row]}'");
+                Assert.IsTrue(reviewPage?.GetCatchCertificateSpeciesDescription(row + 1).Contains(species[row]), $"The expected species name would be '{species[row]}'");
+            }
+        }
+
+        [When("the user clicks on {int} Change link of Catch Cerfitificate Document section")]
+        public void WhenTheUserClicksOnChangeLinkOfCatchCerfitificateDocumentSection(int index)
+        {
+            reviewPage?.ClickChangeCatchCertificateReferences(index);
+        }
+
     }
 }

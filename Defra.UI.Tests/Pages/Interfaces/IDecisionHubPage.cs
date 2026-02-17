@@ -15,5 +15,6 @@
         bool VerifyInspectionRequiredMessage(string message);
         void ClickChecksLink();
         void ClickViewNotificationOfConsignment();
+        void ClickAttachmentsButton();
     }
 }

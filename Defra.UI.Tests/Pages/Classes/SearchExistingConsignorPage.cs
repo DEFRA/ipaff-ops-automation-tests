@@ -43,7 +43,7 @@ namespace Defra.UI.Tests.Pages.Classes
             var name = GetConsignorNameElement(consignorName).Text.Trim();
             var address = GetConsignorAddressElement(consignorName).Text.Trim();
             var country = GetConsignorCountryElement(consignorName).Text.Trim();
-            var consignorDetails = name + "\n" + address + "," + country;
+            var consignorDetails = $"{name}\n{address},{country}";
             return consignorDetails;
         }
 
