@@ -47,6 +47,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private By totalNetWeightBy => By.XPath("//td[text()='Total net weight']//following-sibling::td[1]");
         private By totalPackagesBy => By.XPath("//td[text()='Total packages']//following-sibling::td[1]");
         private By totalGrossWeightBy => By.XPath("//td[contains(text(),'Total gross weight ')]//following-sibling::td[1]");
+        private By confirmationToDeclareGMSBy => By.XPath("//td[contains(text(),'Confirmation to declare GMS')]//following-sibling::td[1]");
         private List<IWebElement> genusAndSpeciesList => _driver.FindElements(By.XPath("//th[text()='Genus and species']/following-sibling::td")).ToList();
         private List<IWebElement> descriptionList => _driver.FindElements(By.XPath("//td[text()='Description']/following-sibling::td[1]")).ToList();
         private List<IWebElement> netWeightCHEDPPList => _driver.FindElements(By.XPath("//*[contains(@class,'govuk-table chedpp-species-table')]//tr[2]/td[3]")).ToList();
@@ -483,6 +484,19 @@ namespace Defra.UI.Tests.Pages.Classes
             catch (Exception ex)
             {
                 Console.WriteLine($"GetTotalGrossWeight failed: {ex.Message}");
+                return string.Empty;
+            }
+        }
+
+        public string GetConfirmationToDeclareGMS()
+        {
+            try
+            {
+                return _driver.SafelyGetText(confirmationToDeclareGMSBy);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"GetConfirmationToDeclareGMS failed: {ex.Message}");
                 return string.Empty;
             }
         }

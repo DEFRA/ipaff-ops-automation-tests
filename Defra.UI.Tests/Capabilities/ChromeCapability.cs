@@ -47,6 +47,8 @@ namespace Defra.UI.Tests.Capabilities
                 SetChromiumDevice(chromeOptions);
             }
 
+            SetDownloadPathToUserProfile(chromeOptions);
+
             return chromeOptions;
 
         }
@@ -76,6 +78,17 @@ namespace Defra.UI.Tests.Capabilities
             overrideCapDict.Remove(BrowserConfigurationValue.BrowserArguments);
 
             return args;
+        }
+
+        private static void SetDownloadPathToUserProfile(ChromeOptions chromeOptions)
+        {
+            var downloadDirectory = Path.Combine(Path.GetTempPath(), "automation-downloads");
+            Directory.CreateDirectory(downloadDirectory);
+
+            chromeOptions.AddUserProfilePreference("download.default_directory", downloadDirectory);
+            chromeOptions.AddUserProfilePreference("download.prompt_for_download", false);
+            chromeOptions.AddUserProfilePreference("download.directory_upgrade", true);
+            chromeOptions.AddUserProfilePreference("safebrowsing.enabled", true);
         }
     }    
 }

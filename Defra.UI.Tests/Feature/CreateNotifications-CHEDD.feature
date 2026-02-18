@@ -319,6 +319,12 @@ Scenario: User creates and submits a notification, override the risk decision, r
 	When the user selects 'Use for other purpose' 'Not acceptable' in decision page
 	And the user enters currendate in decision page
 	And the user clicks Save and continue
+	Then the Select a controlled destination page should be displayed
+	When the user clicks Add a controlled destination
+	Then the Search for an existing controlled destination page should be displayed
+	When the user selects a controlled destination
+	Then the chosen controlled destination should be displayed
+	When the user clicks Save and continue
 	Then the Reason for Refusal page should be displayed
 	When the user selects "Other, Create Border Notification" as reason for refusal
 	And the user selects "Chemical Contamination" as another reason for refusal
@@ -697,6 +703,7 @@ Scenario: User submits B2C consignment notification, inspector rejects and creat
 	When the user clicks Save and continue
 	Then the Transport to the port of entry page should be displayed
 	When the user populates the transport details 'LONDON GATEWAY (GBLGP)' 'No' 'Road vehicle' '123456' 'Doc1234'
+	And the user enters arrival date at BCP or Port of entry as today's date
 	When the user clicks Save and continue
 	Then the Goods movement services page should be displayed
 	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
