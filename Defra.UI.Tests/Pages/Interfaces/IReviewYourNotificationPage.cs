@@ -123,5 +123,14 @@
         bool AreChangeLinksNotDisplayed();
         void ClickDashboardLink();
         string GetCHEDPPImporterAddress();
+        bool VerifyCatchCertificateHeader(string message);
+        bool VerifyCatchCertificateForNoneAttached(string message);
+        string GetMovementReferenceNumber();
+        string GetCatchCertificateDocumentReference(int row, int column = 1);
+        string GetCatchCertificateFlagState(int row, int column = 2);
+        string GetCatchCertificateDocumentDateOfIssue(int row, int column = 3);
+        void ClickChangeCatchCertificateReferences(int index);
+        string GetCatchCertificateCommodityCode(int row, int column = 1);
+        string GetCatchCertificateSpeciesDescription(int row, int column = 2);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Bogus;
 using OpenQA.Selenium;
 using Reqnroll;
+using System.Diagnostics;
 using System.Globalization;
 
 namespace Defra.UI.Tests.Tools
@@ -81,7 +82,7 @@ namespace Defra.UI.Tests.Tools
         {
             ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView()", element);
         }       
-
+        
         public static (string day, string month, string year) GetDayMonthYear(string dateString)
         {
             if (string.IsNullOrWhiteSpace(dateString))
@@ -111,6 +112,25 @@ namespace Defra.UI.Tests.Tools
             return (day, month, year);
         }
 
+        public static bool IsDownloaded(string fileName, string extension)
+        {
+            var downloadedFilePath = Path.Combine(Path.GetTempPath(), "automation-downloads", $"{fileName}.{extension}");
+
+            var timeout = TimeSpan.FromSeconds(30);
+
+            var stopwatch = Stopwatch.StartNew();
+
+            while (stopwatch.Elapsed < timeout)
+            {
+                if (File.Exists(downloadedFilePath))
+                {
+                    return true;
+                }
+
+                Thread.Sleep(500);
+            }
+            return false;
+        }
 
 
         #region WebDriver Extension Methods for Element Safety
@@ -234,7 +254,7 @@ namespace Defra.UI.Tests.Tools
             return defaultValue;
         }
 
-        public static void AppendStringToScenarioContextArray(ScenarioContext context, string key, string value)
+        public static void AppendStringToScenarioContextArray(this ScenarioContext context, string key, string value)
         {
             if (context.TryGetValue(key, out var existing) && existing is string[] current)
             {
