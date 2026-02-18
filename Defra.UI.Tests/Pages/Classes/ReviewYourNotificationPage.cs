@@ -97,6 +97,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private By estimatedArrivalTimeBy => By.XPath("//th[contains(text(),'Estimated arrival time at')]//following-sibling::td");
         private By estimatedJourneyTimeBy => By.XPath("//th[text()='Estimated total journey time of the animals']//following-sibling::td");
         private By ctcUsageBy => By.XPath("//td[contains(text(),'Using the Common Transit Convention')]/following-sibling::td");
+        private By movementReferenceNumberBy => By.Id("goods-movement-services-mrn");
         private By gvmsUsageBy => By.Id("goods-movement-services-route");
         private By GetContainerNumberBy(int index) => By.Id($"container-number-{index}");
         private By GetSealNumberBy(int index) => By.Id($"seal-number-{index}");
@@ -122,6 +123,14 @@ namespace Defra.UI.Tests.Pages.Classes
 
         //Error Message
         private IReadOnlyCollection<IWebElement> lblErrorMessages => _driver.FindElements(By.XPath("//div[@class='govuk-error-summary']/div/ul/li"));
+        private IWebElement lblCatchCertificateHeader => _driver.FindElement(By.Id("catch-certificate-details-heading"));
+        private IWebElement lblCatchCertificateRowNoneAttached => _driver.FindElement(By.Id("catch-certificates-none-attached"));
+        private IWebElement catchCertificateFlagState(int row, int column) =>_driver.FindElement(By.XPath($"//table[@id='catch-certificate-summary-table']//tr[{row}]/td[{column}]"));
+        private IWebElement catchCertificateDocumentReference(int row, int column) => _driver.FindElement(By.XPath($"//table[@id='catch-certificate-summary-table']//tr[{row}]/td[{column}]"));
+        private IWebElement catchCertificateDocumentDateOfIssue(int row, int column) => _driver.FindElement(By.XPath($"//table[@id='catch-certificate-summary-table']//tr[{row}]/td[{column}]"));
+        private IWebElement catchCertificateCommodityCode(int row, int column) => _driver.FindElement(By.XPath($"(//table[@id='catch-certificate-details-table'])[1]//tbody/tr[{row}]/td[{column}]"));
+        private IWebElement catchCertificateSpeciesDescription(int row, int column) => _driver.FindElement(By.XPath($"(//table[@id='catch-certificate-details-table'])[1]//tbody/tr[{row}]/td[{column}]"));
+        private IReadOnlyCollection<IWebElement> lnkChangeCatchCertificateLinks=> _driver.FindElements(By.Id("add-catch-certificate-details-change-link"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -674,6 +683,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public string GetHealthCertificateFileName() => _driver.SafelyGetText(healthCertificateFileNameBy);
         public string GetAdditionalDocumentFileName() => _driver.SafelyGetText(additionalDocumentFileNameBy);
 
+        //Catched Documents
+        public string GetCatchedDocumentType() => _driver.SafelyGetText(additionalDocumentTypeBy);
+        public string GetCatchedDocumentReference() => _driver.SafelyGetText(additionalDocumentReferenceBy);
+        public string GetCatchedCertificateFileName() => _driver.SafelyGetText(healthCertificateFileNameBy);
+        public string GetCatchedDocumentFileName() => _driver.SafelyGetText(additionalDocumentFileNameBy);
         // Date methods with parsing logic
         public string GetHealthCertificateDateOfIssue()
         {
@@ -1117,9 +1131,51 @@ namespace Defra.UI.Tests.Pages.Classes
             }
         }
 
+        public string GetMovementReferenceNumber() => _driver.SafelyGetText(movementReferenceNumberBy);
+
         public void ClickDashboardLink()
         {
             _driver.FindElement(DashboardLinkBy).Click();
+        }
+
+        public bool VerifyCatchCertificateHeader(string message)
+        {
+            return lblCatchCertificateHeader.Text.Equals(message);
+        }
+
+        public bool VerifyCatchCertificateForNoneAttached(string message)
+        {
+           return lblCatchCertificateRowNoneAttached.Text.Equals(message);
+        }
+
+        public string GetCatchCertificateDocumentReference(int row, int column = 1)
+        {
+            return catchCertificateDocumentReference(row, column).Text;
+        }
+
+        public string GetCatchCertificateFlagState(int row, int column = 2)
+        {
+            return catchCertificateFlagState(row, column).Text;
+        }
+
+        public string GetCatchCertificateDocumentDateOfIssue(int row, int column = 3)
+        {
+            return catchCertificateDocumentDateOfIssue(row, column).Text;
+        }
+
+        public void ClickChangeCatchCertificateReferences(int index)
+        {
+            lnkChangeCatchCertificateLinks.ElementAt(index).Click();
+        }
+
+        public string GetCatchCertificateCommodityCode(int row, int column = 1)
+        {
+            return catchCertificateCommodityCode(row, column).Text;
+        }
+
+        public string GetCatchCertificateSpeciesDescription(int row, int column = 2)
+        {
+            return catchCertificateSpeciesDescription(row, column).Text;
         }
     }
 }
