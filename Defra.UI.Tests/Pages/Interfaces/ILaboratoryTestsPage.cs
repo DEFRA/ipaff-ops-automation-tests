@@ -40,5 +40,14 @@ namespace Defra.UI.Tests.Pages.Interfaces
         bool VerifyMultipleLabTestsWithPendingResults(int expectedMinimumCount = 2);
         bool VerifyMultipleLabTestsWithSatisfactoryResults(int expectedMinimumCount = 2);
         bool AreLabTestReasonRadioButtonsDisplayed(params string[] reasonOptions);
+        bool VerifyCommodityCodeDisplayedInLabTests(string commodityCode);
+        bool VerifyDescriptionDisplayedInLabTests(string commodityCode, string description);
+        bool VerifySpeciesDisplayedInLabTests(string commodityCode, string species);
+        bool VerifySelectHyperlinkDisplayedInLabTests(string commodityCode);
+        bool VerifyLabTestsFilteredBySubcategory(string subcategory);
+        bool VerifyAnalysisTypeDropdownHasOptions();
+        bool VerifyLaboratoryDropdownHasOptions();
+        bool VerifySampleTypeDropdownHasOptions();
+        bool VerifyStorageTemperatureDropdownHasOptions();
     }
 }

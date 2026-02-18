@@ -78,5 +78,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.That(actualEarTag, Is.Empty,
                 $"Ear tag should not be copied from the original notification, but found '{actualEarTag}'");
         }
+
+        [Then("Number of animals should be displayed as {string} in the animal identification details page")]
+        public void ThenNumberOfAnimalsShouldBeDisplayedAsInTheAnimalIdentificationDetailsPage(string expectedNumberOfAnimals)
+        {
+            string actualNumberOfAnimals = animalIdentificationDetailsPage?.GetNumberOfAnimals() ?? string.Empty;
+
+            Assert.That(actualNumberOfAnimals, Is.EqualTo(expectedNumberOfAnimals),
+                $"Expected number of animals to be '{expectedNumberOfAnimals}', but found '{actualNumberOfAnimals}'");
+        }
     }
 }
