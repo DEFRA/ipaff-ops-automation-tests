@@ -1,6 +1,4 @@
-﻿using OpenQA.Selenium;
-
-namespace Defra.UI.Tests.Pages.Interfaces
+﻿namespace Defra.UI.Tests.Pages.Interfaces
 {
     public interface IDocumentsPage
     {
@@ -9,5 +7,9 @@ namespace Defra.UI.Tests.Pages.Interfaces
         bool IsAddAnotherDocumentLinkDisplayed();
         bool VerifyNoDocumentsInInspectorSection();
         (string? documentType, string? documentReference, string? dateOfIssue) GetInspectorDocumentDetails(int index = 0);
+        void ClickDownloadAllDocumentsLink();
+        void ClickDownloadUrlLink();
+        bool IsSingleCertificagteDownloaded(string chedReference);
+        bool IsCatchCertificateSummaryUrlDisplayed();
     }
 }

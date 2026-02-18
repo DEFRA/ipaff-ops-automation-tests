@@ -55,7 +55,7 @@ namespace Defra.UI.Tests.Pages.Classes
         public void EnterPortOfEntry(string port)
         {
             txtPortOfEntry.Clear();
-            txtPortOfEntry.Click();
+            txtPortOfEntry.Click();            
             txtPortOfEntry.SendKeys(port);
         }
 

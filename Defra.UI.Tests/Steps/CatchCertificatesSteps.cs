@@ -28,7 +28,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
 
-        [When("the user selects {string} option")]
+        [Then("the user selects {string} option for add catch certificate")]
         public void WhenTheUserSelectsOption(string option)
         {
             catchCertificatesPage?.SelectAddCatchCertificate(option);

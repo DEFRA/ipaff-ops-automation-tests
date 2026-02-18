@@ -23,6 +23,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement lnkRecordDecision => _driver.FindElement(By.Id("decision-dashboard-nav"));
         private IWebElement lnkCreateNotificationAsAdmin => _driver.FindElement(By.Id("notification-dashboard-nav"));
         private IWebElement txtNoNotificationsFound => _driver.FindElement(By.Id("notifications-not-found"));
+        private IWebElement lnkHeader(string link) => _driver.FindElement(By.XPath($"//a[text()='{link}']"));
+        private IWebElement lblImportNotificationPage(string label) => _driver.FindElement(By.XPath($"//*[normalize-space(text())='{label}']"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -112,5 +114,21 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             return lnkChedStatusSearcResult.Text.Trim();
         }
+
+        public bool VerifyNotificationHeader(string link)
+        {
+            return lnkHeader(link).Text.Equals(link);
+        }
+        
+        public bool VerifyLabel(string label)
+        {
+            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView({block: 'center'});", lblImportNotificationPage(label));
+
+            int index = lblImportNotificationPage(label).Text.IndexOf("\r\n");
+
+            return  (index >= 0
+                ? lblImportNotificationPage(label).Text.Substring(0, index)
+                : lblImportNotificationPage(label).Text).Equals(label);
+        }        
     }
 }

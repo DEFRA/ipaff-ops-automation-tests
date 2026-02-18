@@ -82,7 +82,7 @@ namespace Defra.UI.Tests.Capabilities
 
         private static void SetDownloadPathToUserProfile(ChromeOptions chromeOptions)
         {
-            var downloadDirectory = Path.Combine(Path.GetTempPath(), "automation-downloads");
+            var downloadDirectory = Path.Combine(Path.GetTempPath(), "automation-downloads"); 
             Directory.CreateDirectory(downloadDirectory);
 
             chromeOptions.AddUserProfilePreference("download.default_directory", downloadDirectory);

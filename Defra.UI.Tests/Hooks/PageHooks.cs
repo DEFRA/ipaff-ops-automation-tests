@@ -117,7 +117,9 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<RequestAmendmentPage, IRequestAmendmentPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<TransportToBorderControlPostPage, ITransportToBorderControlPostPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ImporterPackerDeliveryAddressConsignorPage, IImporterPackerDeliveryAddressConsignorPage>());
-            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SearchExistingDeliveryAddressPage, ISearchExistingDeliveryAddressPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SearchExistingDeliveryAddressPage, ISearchExistingDeliveryAddressPage>());            
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ConfirmExemptSpeciesPage, IConfirmExemptSpeciesPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<YourDownloadHasStarted, IYourDownloadHasStarted>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<UploadCommodityDetailsUsingCSVFilePage, IUploadCommodityDetailsUsingCSVFilePage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CheckUploadedCommodityPage, ICheckUploadedCommodityPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ConfirmationToDeclareGMSPage, IConfirmationToDeclareGMSPage>());
