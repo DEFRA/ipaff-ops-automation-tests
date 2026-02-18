@@ -33,6 +33,7 @@
         string GetTotalNetWeight();
         string GetTotalPackages();
         string GetTotalGrossWeight();
+        string GetConfirmationToDeclareGMS();
         string GetNetWeightListCHEDPP(int index);
         string GetNumPackagesListCHEDPP(int index);
         string GetTypeOfPackagesListCHEDPP(int index);
