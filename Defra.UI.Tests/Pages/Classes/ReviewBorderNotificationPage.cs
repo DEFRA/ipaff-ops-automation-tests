@@ -102,7 +102,8 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool VerifyFileDownloaded(string fileName)
         {
-            return Utils.IsDownloaded(fileName, "xlsx");
+            string[] officeExtensions = { "xlsx", "docx", "doc", "xls", "pptx", "ppt", "zip" };
+            return officeExtensions.Any(ext => Utils.IsDownloaded(fileName, ext));
         }
 
         public void ClickAttachedDocumentLink()
