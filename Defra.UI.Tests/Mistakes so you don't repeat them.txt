@@ -1,0 +1,52 @@
+Mistakes so you don't repeat them 
+
+1. Locators should be in the #region Page Objects section, not inside the methods.
+
+For example:
+DO NOT:
+public bool VerifySpeciesDisplayedInLabTests(string species)
+{
+    try
+    {
+        var commodityCode = _driver.FindElement(By.XPath("//table[@aria-label='select the commodity sampled table']//tbody//tr[1]//td[1]")).Text.Trim();
+        var element = GetLabTestSpeciesCell(commodityCode);
+        return element.Displayed && element.Text.Trim().Contains(species, StringComparison.OrdinalIgnoreCase);
+    }
+    catch (NoSuchElementException)
+    {
+        return false;
+    }
+}
+
+2. Do not overly rely on repetitive try catch blocks in every method in the page class. 
+
+For example: 
+DO NOT:
+public bool VerifyLaboratoryDropdownHasOptions()
+        {
+            try
+            {
+                var selectElement = new SelectElement(selectLabTest);
+                var options = selectElement.Options;
+
+                // Should have at least 2 options (including the "Select laboratory" placeholder)
+                if (options.Count < 2)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+DO:
+public bool VerifyLaboratoryDropdownHasOptions()
+{
+    var selectElement = new SelectElement(selectLabTest);
+    var options = selectElement.Options;
+    return options.Count >= 2;
+}

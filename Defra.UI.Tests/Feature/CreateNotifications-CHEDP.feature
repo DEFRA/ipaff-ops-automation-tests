@@ -2544,3 +2544,147 @@ Scenario: Create and submits a B2C consignment notification - SPS-6937 CHEDP
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
+
+Scenario: User creates and submits a CHEDP consignment notification with multiple catch certificates and validates attachment management - SPS-6944
+	Given that I navigate to the IPAFF application
+	Then I should see type of Gateway login page
+	And I have selected 'Sign in with Government Gateway' as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF credentials and signin
+	Then the user should be logged into Notification page
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Products of animal origin, germinal products or animal by-products' option
+	And the user clicks Save and continue
+	Then the Origin of the plants plant product or other objects page should be displayed
+	When the user chooses 'Austria' from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing 'Austria' as the Country of origin and Country from where consigned
+	When the user chooses 'No' for Does your consignment require a region code?
+	And the user chooses 'Yes' for Does this consignment conform to regulatory regulations?
+	And the user chooses 'No' for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
+	And the user enters a reference number '12345' in the Add a reference number for this consignment (optional) field
+	And the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '03063400' commodity code
+	Then the commodity details should be populated '03063400' 'Norway lobsters (Nephrops norvegicus)'
+	When the user selects the type of commodity 'Wild stock'
+	And the user selects species of commodity 'Nephrops norvegicus'
+	And the user selects 'No' for Do you want to add another commodity?
+	And the user clicks Save and continue
+	Then the What is the main reason for importing the consignment? page should be displayed with radio buttons
+	When the user chooses 'Internal market' and the sub-option 'Human consumption'
+	And the user clicks Save and continue
+	Then Select the highest risk category for the commodities in this consignment page should be displayed
+	When the user chooses 'Medium risk' risk category
+	And the user clicks Save and continue
+	Then the Health certificate required page should be displayed
+	When the user clicks continue button
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Commodity page should be displayed with the commodity and description entered
+	When the user populates Net weight as '1000'
+	And the user populates Number of packages as '10'
+	And the user selects type of package as 'Box'
+	And the user clicks the Update total button
+	Then the total gross weight should be greater than the net weight '1010'
+	When the user clicks Save and continue in commodity page
+	Then the Additional details page should be displayed
+	When the user selects 'Frozen' radio button on the Additional details page
+	And the user clicks Save and continue
+	Then the Catch cerificates page should be displayed
+	And the user verifies 'Do you need to add catch certificates?' is displayed
+	And the user verifies the radio buttons are 'Yes' and 'No – all the wild fish in this consignment are exempt from IUU fishing controls'
+	When the user selects 'Yes' option for add catch certificate
+	And the user clicks Save and continue
+	Then Upload catch certificates page is displayed
+	And the user verifies 'Select documents to upload' is displayed with drag and drop functionality
+	When the user uploads the documents 'Catch Certificate 1' 'Catch Certificate 2' 'Catch Certificate 3' in the format '.docx'
+	And the user verifies all 3 files are displayed
+	And the user clicks Continue
+	Then Manage catch certificates page is displayed
+	And the user verifies success message displays the number of files added
+	And the user verifies the number of attachments missing details based on added files
+	And the user verifies 'Catch certificates uploaded' heading is displayed
+	And the user verifies 'Number of catch certificates in this attachment' is displayed for each attachment
+	And the user verifies each attachment is displayed as 'X of Y files' format
+	And the user verifies each attachment has a populated input box with the number of catch certificates in that attachment
+	And the user verifies each attachment has an 'Update' button
+	And the user verifies each attachment has 'Add details' and 'Remove' links
+	When the user selects the 'No' option for Do you need to upload more catch certificates?
+	And the user clicks Save and continue
+	Then Add catch certificate details page should be displayed
+	#When the user verifies 'Attachment 1 of 3' is displayed
+	#And the user verifies 'Number of catch certificates in this attachment' with 'Change' link is displayed
+	#And the user verifies 'Catch certificate reference number' field is displayed
+	#And the user verifies 'Date of issue' with Day, Month, Year fields and calendar icon is displayed
+	#And the user verifies 'Flag state of catching vessel(s)' field is displayed
+	#And the user verifies 'Select species being imported under this catch certificate' with 'Select all' option is displayed
+	#And the user verifies 'Save and continue' button is displayed
+	#And the user verifies 'Save and return to manage catch certificates' link is displayed
+	#And the user verifies 'Save and return to hub' link is displayed
+	#When the user starts typing 'Nor' in Flag state field
+	#Then the user verifies multiple country options appear including 'Norway'
+	#When the user selects 'Norway' from the dropdown
+	#And the user clicks Save and continue without entering catch certificate reference
+	#Then the user verifies error is displayed for catch certificate reference
+	#And the user verifies catch certificate reference field is highlighted
+	#When the user enters catch certificate reference 'CATCH001'
+	#And the user clears Flag state field
+	#And the user clicks Save and continue
+	#Then the user verifies error is displayed for flag state
+	#And the user verifies flag state field is highlighted
+	#When the user clears catch certificate reference field
+	#And the user clicks Save and continue
+	#Then the user verifies error is displayed for both catch certificate reference and flag state
+	#And the user verifies both fields are highlighted
+	#When the user clicks the 'add the commodity' link
+	#Then the Search commodities page should be displayed
+	#When the user clicks Cancel link
+	#Then the Commodity page should be displayed
+	#When the user navigates back to Add catch certificate details page
+	#And the user enters catch certificate reference 'CATCH001'
+	#And the user enters Date of issue '19''02''2026'
+	#And the user enters 'Norway' in Flag state of catching vessels
+	#And the user selects 'Nephrops norvegicus' from Select species being imported under this catch certificate
+	#And the user clicks Save and continue
+	#Then Add catch certificate details page should be displayed for attachment 2
+	#When the user verifies 'Attachment 2 of 3' is displayed
+	#And the user clicks 'Select all' option
+	#Then the user verifies all listed species are selected
+	#When the user enters catch certificate reference 'CATCH002'
+	#And the user enters Date of issue '30''02''2026'
+	#And the user clicks Save and continue
+	#Then the user verifies error 'Date of issue must be a real date' is displayed
+	#When the user enters Date of issue '20''02''2026'
+	#And the user enters 'France' in Flag state of catching vessels
+	#And the user clicks Save and continue
+	#Then Add catch certificate details page should be displayed for attachment 3
+	#When the user verifies 'Attachment 3 of 3' is displayed
+	#And the user enters catch certificate reference 'CATCH003'
+	#And the user enters Date of issue '21''02''2026'
+	#And the user enters 'United Kingdom of Great Britain and Northern Ireland' in Flag state of catching vessels
+	#And the user selects all species options
+	#And the user clicks Save and return to manage catch certificates link
+	#Then Manage catch certificates page is displayed
+	#When the user clicks View or amend details link for attachment 3
+	#Then Add catch certificate details page should be displayed for attachment 3
+	#When the user clicks Save and return to hub link
+	#Then the Notification Hub page should be displayed
+	#When the user completes all remaining required sections
+	#Then the Review your notification page should be displayed
+	#When the user verifies under Documents heading '3 catch certificates' is displayed
+	#And the user verifies catch certificate 1 shows reference 'CATCH001', flag state 'Norway', date '19 February 2026'
+	#And the user verifies catch certificate 2 shows reference 'CATCH002', flag state 'France', date '20 February 2026'
+	#And the user verifies catch certificate 3 shows reference 'CATCH003', flag state 'United Kingdom of Great Britain and Northern Ireland', date '21 February 2026'
+	#And the user verifies attachments are displayed with filenames
+	#And the user verifies catch certificate details and commodity mapping is displayed
+	#When the user clicks Save and continue
+	#Then the Declaration page should be displayed
+	#When the user clicks Submit notification
+	#Then the Confirmation page should be displayed with the initial risk assessment
+	#When the user records the IPAFFS User details and CHED Reference
+	#Then the details should be recorded
+	#When the user logs out of IPAFFS Part 1
+	#Then the user should be logged out successfully
