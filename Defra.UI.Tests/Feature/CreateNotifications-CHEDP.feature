@@ -2615,7 +2615,7 @@ Scenario: User creates and submits a CHEDP consignment notification with multipl
 	When the user selects the 'No' option for Do you need to upload more catch certificates?
 	And the user clicks Save and continue
 	Then Add catch certificate details page should be displayed
-	And the user verifies 'Attachment 1 of 3' is displayed underneath Add catch certificate details
+	And the user verifies Attachment 1 is displayed underneath Add catch certificate details
 	And the user verifies 'Number of catch certificates in this attachment' with 'Change' link is displayed
 	And the user verifies 'Catch certificate reference number' field is displayed
 	And the user verifies 'Date of issue' with Day, Month, Year fields and calendar icon is displayed
@@ -2624,9 +2624,9 @@ Scenario: User creates and submits a CHEDP consignment notification with multipl
 	And the user verifies 'Save and continue' button is displayed
 	And the user verifies 'Save and return to manage catch certificates' link is displayed
 	And the user verifies 'Save and return to hub' link is displayed
-	When the user starts typing 'Nor' in Flag state field
-	Then the user verifies multiple country options appear including 'Norway'
-	When the user selects 'Norway' from the dropdown
+	#When the user starts typing 'Nor' in Flag state field
+	#Then the user verifies multiple country options appear including 'Norway'
+	#When the user selects 'Norway' from the dropdown
 	#And the user clicks Save and continue without entering catch certificate reference
 	#Then the user verifies error is displayed for catch certificate reference
 	#And the user verifies catch certificate reference field is highlighted

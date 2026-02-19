@@ -124,5 +124,76 @@ namespace Defra.UI.Tests.Steps
         {
             addCatchCertificateDetails?.ClickSaveAndReturnToManageCertificateLink();
         }
+
+        [Then("the user verifies Attachment {int} is displayed underneath Add catch certificate details")]
+        public void ThenTheUserVerifiesAttachmentNumberIsDisplayedUnderneathAddCatchCertificateDetails(int attachmentNumber)
+        {
+            var totalAttachments = _scenarioContext.GetFromContext("TotalCatchCertificateFiles", 3);
+
+            var isDisplayed = addCatchCertificateDetails?.VerifyAttachmentNumberDisplayed(attachmentNumber, totalAttachments);
+            Assert.True(isDisplayed, $"'Attachment {attachmentNumber} of {totalAttachments}' is not displayed underneath Add catch certificate details");
+        }
+
+        [Then("the user verifies {string} with {string} link is displayed")]
+        public void ThenTheUserVerifiesNumberOfCatchCertificatesWithChangeLinkIsDisplayed(string labelText, string linkText)
+        {
+            var isDisplayed = addCatchCertificateDetails?.VerifyNumberOfCatchCertificatesWithChangeLinkDisplayed();
+            Assert.True(isDisplayed, $"'{labelText}' with '{linkText}' link is not displayed");
+        }
+
+        [Then("the user verifies {string} field is displayed")]
+        public void ThenTheUserVerifiesFieldIsDisplayed(string fieldName)
+        {
+            bool isDisplayed = false;
+
+            if (fieldName.Contains("Catch certificate reference"))
+            {
+                isDisplayed = addCatchCertificateDetails?.VerifyCatchCertificateReferenceFieldDisplayed() ?? false;
+            }
+            else if (fieldName.Contains("Flag state of catching vessel"))
+            {
+                isDisplayed = addCatchCertificateDetails?.VerifyFlagStateFieldDisplayed() ?? false;
+            }
+
+            Assert.True(isDisplayed, $"'{fieldName}' field is not displayed");
+        }
+
+        [Then("the user verifies {string} with Day, Month, Year fields and calendar icon is displayed")]
+        public void ThenTheUserVerifiesDateOfIssueWithFieldsAndCalendarIconIsDisplayed(string labelText)
+        {
+            var isDisplayed = addCatchCertificateDetails?.VerifyDateOfIssueFieldsWithCalendarDisplayed();
+            Assert.True(isDisplayed, $"'{labelText}' with Day, Month, Year fields and calendar icon is not displayed");
+        }
+
+        [Then("the user verifies {string} with {string} option is displayed")]
+        public void ThenTheUserVerifiesSelectSpeciesWithSelectAllOptionIsDisplayed(string headingText, string optionText)
+        {
+            var isDisplayed = addCatchCertificateDetails?.VerifySelectSpeciesWithSelectAllDisplayed();
+            Assert.True(isDisplayed, $"'{headingText}' with '{optionText}' option is not displayed");
+        }
+
+        [Then("the user verifies {string} button is displayed")]
+        public void ThenTheUserVerifiesButtonIsDisplayed(string buttonText)
+        {
+            var isDisplayed = addCatchCertificateDetails?.VerifySaveAndContinueButtonDisplayed();
+            Assert.True(isDisplayed, $"'{buttonText}' button is not displayed");
+        }
+
+        [Then("the user verifies {string} link is displayed")]
+        public void ThenTheUserVerifiesLinkIsDisplayed(string linkText)
+        {
+            bool isDisplayed = false;
+
+            if (linkText.Contains("Save and return to manage catch certificates"))
+            {
+                isDisplayed = addCatchCertificateDetails?.VerifySaveAndReturnToManageCatchCertificatesLinkDisplayed() ?? false;
+            }
+            else if (linkText.Contains("Save and return to hub"))
+            {
+                isDisplayed = addCatchCertificateDetails?.VerifySaveAndReturnToHubLinkDisplayed() ?? false;
+            }
+
+            Assert.True(isDisplayed, $"'{linkText}' link is not displayed");
+        }
     }
 }
