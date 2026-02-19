@@ -50,3 +50,12 @@ public bool VerifyLaboratoryDropdownHasOptions()
     var options = selectElement.Options;
     return options.Count >= 2;
 }
+
+3. It's much cleaner and more maintainable to keep locators simple and do text verification in the methods. Here's the cleaned-up version
+
+For example:
+DO NOT:
+private By numberOfCertificatesLabelBy => By.XPath("//div[@class='govuk-summary-list__key' and contains(text(), 'Number of catch certificates in this attachment')]");
+
+DO:
+        private By numberOfCertificatesLabelBy => By.XPath("//div[@class='govuk-summary-list__key']");
