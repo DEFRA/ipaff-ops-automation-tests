@@ -56,6 +56,9 @@ namespace Defra.UI.Tests.Steps
             _scenarioContext["CatchCertificate1"] = fileName1;
             _scenarioContext["CatchCertificate2"] = fileName2;
             _scenarioContext["CatchCertificate3"] = fileName3;
+
+            // Store the total count for later use
+            _scenarioContext["TotalCatchCertificateFiles"] = 3;
         }
 
         [When("the user verifies all {int} files are displayed")]
@@ -78,6 +81,9 @@ namespace Defra.UI.Tests.Steps
 
             Assert.True(filesDisplayed,
                 $"Expected {expectedFileCount} files to be displayed with names: {string.Join(", ", expectedFileNames)}, but verification failed");
+
+            // Store the count for use in ManageCatchCertificatesSteps
+            _scenarioContext["TotalCatchCertificateFiles"] = expectedFileCount;
         }
 
         [When("the user clicks Continue")]
