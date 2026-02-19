@@ -81,23 +81,8 @@ namespace Defra.UI.Tests.Tools
         public static void ScrollToElement(this IWebElement element, IWebDriver driver)
         {
             ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView()", element);
-        }
-
-        public static void AppendStringToScenarioContextArray(this ScenarioContext context, string key, string value)
-        {
-            if (context.TryGetValue(key, out var existing) && existing is string[] current)
-            {
-                var updated = new string[current.Length + 1];
-                Array.Copy(current, updated, current.Length);
-                updated[current.Length] = value;
-                context[key] = updated;
-            }
-            else
-            {
-                context[key] = new[] { value };
-            }
-        }
-
+        }       
+        
         public static (string day, string month, string year) GetDayMonthYear(string dateString)
         {
             if (string.IsNullOrWhiteSpace(dateString))
@@ -267,6 +252,21 @@ namespace Defra.UI.Tests.Tools
             }
 
             return defaultValue;
+        }
+
+        public static void AppendStringToScenarioContextArray(this ScenarioContext context, string key, string value)
+        {
+            if (context.TryGetValue(key, out var existing) && existing is string[] current)
+            {
+                var updated = new string[current.Length + 1];
+                Array.Copy(current, updated, current.Length);
+                updated[current.Length] = value;
+                context[key] = updated;
+            }
+            else
+            {
+                context[key] = new[] { value };
+            }
         }
 
         #endregion
