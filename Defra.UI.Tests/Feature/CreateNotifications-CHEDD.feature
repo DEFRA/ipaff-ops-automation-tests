@@ -319,6 +319,12 @@ Scenario: User creates and submits a notification, override the risk decision, r
 	When the user selects 'Use for other purpose' 'Not acceptable' in decision page
 	And the user enters currendate in decision page
 	And the user clicks Save and continue
+	Then the Select a controlled destination page should be displayed
+	When the user clicks Add a controlled destination
+	Then the Search for an existing controlled destination page should be displayed
+	When the user selects a controlled destination
+	Then the chosen controlled destination should be displayed
+	When the user clicks Save and continue
 	Then the Reason for Refusal page should be displayed
 	When the user selects "Other, Create Border Notification" as reason for refusal
 	And the user selects "Chemical Contamination" as another reason for refusal

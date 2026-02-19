@@ -3,6 +3,7 @@ using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
 using System.Globalization;
+using FluentAssertions;
 
 namespace Defra.UI.Tests.Steps.IPAFF
 {
@@ -67,6 +68,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             ValidateIfExists("BorderControlPostReference", reviewOutcomeDecisionPage?.GetBorderControlPostReference(), ref allDataMatches, mismatches);
 
             // Checks
+            ValidateIfExists("IUUSubOption", reviewOutcomeDecisionPage?.GetIUUSubOptionCheckDecision(), ref allDataMatches, mismatches);
             ValidateIfExists("DocumentaryCheckDecision", reviewOutcomeDecisionPage?.GetDocumentaryCheckDecision(), ref allDataMatches, mismatches);
             ValidateIfExists("IdentityCheckType", reviewOutcomeDecisionPage?.GetIdentityCheckType(), ref allDataMatches, mismatches);
             ValidateIfExists("IdentityCheckDecision", reviewOutcomeDecisionPage?.GetIdentityCheckDecision(), ref allDataMatches, mismatches);
@@ -528,6 +530,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 Console.WriteLine($"[ERROR] Error getting ISO code for '{countryName}': {ex.Message}");
                 return countryName;
             }
+        }
+
+        [Then("the catch certificate details are not present")]
+        public void ThenTheCatchCertificateDetailsAreNotPresent()
+        {
+            reviewOutcomeDecisionPage?.VerifyCatchCertificate().Should().BeFalse("The catch certification details should not be present");
         }
     }
 }

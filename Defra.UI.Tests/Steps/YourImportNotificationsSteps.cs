@@ -210,5 +210,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             importNotificationsPage?.ClickCopyAsNewLink();
         }
+        
+        [When("the user deletes all the stored values")]
+        public void WhenTheUserDeletesAllTheStoredValues()
+        {
+            _scenarioContext.Clear();
+        }
     }
 }

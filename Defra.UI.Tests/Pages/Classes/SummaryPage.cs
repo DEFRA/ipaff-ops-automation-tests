@@ -121,7 +121,7 @@ namespace Defra.UI.Tests.Pages.Classes
             summary.CommodityTypes = txtCommodityTypeMultiple.Select(e => e.Text).ToArray();
             summary.DocumentType = txtDocumentType.Select(e => e.Text).ToArray();
             summary.DocumentReference = txtDocumentReference.Select(e => e.Text).ToArray();
-            summary.DateOfIssue = txtDateOfIssue.Select(e => e.Text).ToArray();
+            summary.DateOfIssue = txtDateOfIssue.Select(e => DateTime.Parse(e.Text).ToString("dd MM yyyy")).ToArray();
             summary.ApprovedEstablishmentName = txtApprovedEstablishmentName.Text.Trim();
             summary.ApprovedEstablishmentCountry = txtApprovedEstablishmentCountry.Text.Trim();
             summary.ApprovedEstablishmentType = txtApprovedEstablishmentType.Text.Trim();
