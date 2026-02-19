@@ -604,11 +604,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     Assert.AreEqual(packageType[i], summary?.PackageType[i], $"Package Type is not matching in {pageName} page!");
                 }
 
-                foreach (var item in commodityCode.Where(c => c.StartsWith("160")))
+                foreach (var item in commodityCode.Where(c => c.StartsWith("160") || c == "03063400"))
                 {
                     expectedList.AddRange(summary?.TypeOfCommodity1);
                 }
-                if (commodityCode.Any(c => !c.StartsWith("160")))
+                if (commodityCode.Any(c => !c.StartsWith("160") || c != "03063400"))
                 {
                     expectedList.AddRange(summary?.TypeOfCommodity);
                 }
@@ -631,7 +631,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             var documentType = _scenarioContext.Get<string[]>("DocumentType");
             var documentReference = _scenarioContext.Get<string[]>("DocumentReference");
-            var dateOfIssue = _scenarioContext.Get<string[]>("DateOfIssue");
+            var dateOfIssue = _scenarioContext.Get<string[]>("DocumentDateOfIssue");
             var approvedEstablishmentName = _scenarioContext.Get<string>("ApprovedEstablishmentName");
             var approvedEstablishmentCountry = _scenarioContext.Get<string>("ApprovedEstablishmentCountry");
             var approvedEstablishmentType = _scenarioContext.Get<string>("ApprovedEstablishmentType");
@@ -708,6 +708,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.AreEqual(consignmentContactAddress, reviewPage?.GetConsignmentContactAddress(), $"Consignment Contact Address is not matching in {pageName} page!");
         }
 
+        [Then(@"the user should see an error message '(.*)'")]
         [Then(@"the user should see an error message '(.*)' in review page")]
         public void ThenIShouldSeeAnErrorMessageInReviewPage(string errorMessage)
         {

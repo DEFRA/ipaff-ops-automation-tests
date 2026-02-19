@@ -99,9 +99,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             var date = Utils.ConvertToDate(dateString);
             accompanyingDocumentsPage?.EnterDateOfIssue(date.Day.ToString(), date.Month.ToString(), date.Year.ToString());
-            var monthName = date.ToString("MMMM");
-            var dateofIssue = date.Day.ToString() + " " + monthName + " " + date.Year.ToString();
-            Utils.AppendStringToScenarioContextArray(_scenarioContext, "DateOfIssue", dateofIssue);
+            //var monthName = date.ToString("MMMM");
+            //var dateofIssue = date.Day.ToString() + " " + monthName + " " + date.Year.ToString();
+            Utils.AppendStringToScenarioContextArray(_scenarioContext, "DocumentDateOfIssue",DateTime.ParseExact(dateString, "dd/MM/yyyy", null).ToString("dd MM yyyy"));
         }
 
         [When("the user enters date of issue for the next notification {string}")]

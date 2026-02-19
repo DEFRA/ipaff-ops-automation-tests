@@ -37,6 +37,7 @@ namespace Defra.UI.Tests.Pages.Classes
         // Border Control Post
         private IWebElement borderControlPostReference =>
             _driver.FindElement(By.XPath("//th[text()='Border Control Post reference number']//following-sibling::td"));
+        private By iuuCheckSubOption => By.XPath("//*[normalize-space(text())='IUU checks']/following-sibling::td[1]");
 
         // Decision
         private IWebElement acceptanceDecision => _driver.FindElement(By.Id("acceptance-decision"));
@@ -679,6 +680,16 @@ namespace Defra.UI.Tests.Pages.Classes
         public string? GetExitBCP()
         {
             return SafelyGetElementTextByLocator(exitBCPBy);
+        }
+
+        public string? GetIUUSubOptionCheckDecision()
+        {
+            return SafelyGetElementTextByLocator(iuuCheckSubOption);
+        }
+
+        public bool VerifyCatchCertificate()
+        {
+            return _driver.PageSource.Contains("Catch certificate");
         }
     }
 }

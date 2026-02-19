@@ -68,5 +68,7 @@
         string? GetControlledDestinationName();
         string? GetControlledDestinationAddress();
         bool VerifyReason(string reason);
+        string? GetIUUSubOptionCheckDecision();
+        bool VerifyCatchCertificate();
     }
 }
