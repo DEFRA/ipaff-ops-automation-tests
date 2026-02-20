@@ -214,9 +214,16 @@ namespace Defra.UI.Tests.Steps
         }
 
         [When("the user enters catch certificate reference {string}")]
+        [When("the user enters Catch certificate reference {string}")]
         public void WhenTheUserEntersCatchCertificateReference(string reference)
         {
             addCatchCertificateDetails?.EnterCatchCertificateReference(reference, 1);
+        }
+
+        [When("the user enters Date of issue {string}{string}{string}")]
+        public void WhenTheUserEntersDateOfIssue(string day, string month, string year)
+        {
+            addCatchCertificateDetails?.EnterDateOfIssue(day, month, year, 1);
         }
 
         [Then("the user verifies catch certificate reference field is highlighted")]
@@ -253,6 +260,64 @@ namespace Defra.UI.Tests.Steps
         public void WhenTheUserClicksTheAddTheCommodityLink()
         {
             addCatchCertificateDetails?.ClickAddTheCommodityLink();
+        }
+
+        [When("the user clicks Select all option")]
+        public void WhenTheUserClicksSelectAllOption()
+        {
+            addCatchCertificateDetails?.ClickSelectAllCheckbox();
+        }
+
+        [Then("all listed species are selected and displayed")]
+        public void ThenAllListedSpeciesAreSelectedAndDisplayed()
+        {
+            var allSelected = addCatchCertificateDetails?.VerifyAllSpeciesAreSelected();
+            Assert.True(allSelected, "Not all species checkboxes are selected");
+        }
+
+        [Then("the user verifies date of issue field is highlighted")]
+        public void ThenTheUserVerifiesDateOfIssueFieldIsHighlighted()
+        {
+            var isHighlighted = addCatchCertificateDetails?.IsFieldHighlighted("date of issue");
+            Assert.True(isHighlighted, "Date of issue field is not highlighted with error styling");
+        }
+
+        [When("the user enters Catch certificate reference {string} for attachment {int}")]
+        public void WhenTheUserEntersCatchCertificateReferenceForAttachment(string reference, int attachmentNumber)
+        {
+            addCatchCertificateDetails?.EnterCatchCertificateReference(reference, 1);
+            _scenarioContext[$"CatchCertificateReference_Attachment{attachmentNumber}"] = reference;
+        }
+
+        [When("the user enters Date of issue {string}{string}{string} for attachment {int}")]
+        public void WhenTheUserEntersDateOfIssueForAttachment(string day, string month, string year, int attachmentNumber)
+        {
+            addCatchCertificateDetails?.EnterDateOfIssue(day, month, year, 1);
+
+            var date = new DateTime(int.Parse(year), int.Parse(month), int.Parse(day));
+            var dateFormatted = date.ToString("d MMMM yyyy", CultureInfo.InvariantCulture);
+
+            _scenarioContext[$"CatchCertificateDateOfIssue_Attachment{attachmentNumber}"] = dateFormatted;
+        }
+
+        [When("the user enters Flag state of catching vessels {string} for attachment {int}")]
+        public void WhenTheUserEntersFlagStateForAttachment(string flagState, int attachmentNumber)
+        {
+            addCatchCertificateDetails?.EnterFlagStateOfCatchingVessel(flagState, 1);
+            _scenarioContext[$"CatchCertificateFlagState_Attachment{attachmentNumber}"] = flagState;
+        }
+
+        [When("the user selects the species {string} for attachment {int}")]
+        public void WhenTheUserSelectsSpeciesForAttachment(string species, int attachmentNumber)
+        {
+            var speciesList = species.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+            foreach (var item in speciesList)
+            {
+                addCatchCertificateDetails?.SelectSpeciesByName(item);
+            }
+
+            _scenarioContext[$"CatchCertificateSpecies_Attachment{attachmentNumber}"] = species;
         }
     }
 }
