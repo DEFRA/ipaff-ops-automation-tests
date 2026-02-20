@@ -386,5 +386,11 @@ namespace Defra.UI.Tests.Pages.Classes
 
             return true;
         }
+
+        public void ClickSaveAndReturnToHubLink()
+        {
+            var link = _driver.FindElement(saveAndReturnToHubLinkBy);
+            link.Click();
+        }
     }
 }

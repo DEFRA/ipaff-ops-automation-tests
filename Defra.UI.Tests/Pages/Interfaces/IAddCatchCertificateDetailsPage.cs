@@ -33,5 +33,6 @@
         void ClickAddTheCommodityLink();
         void ClickSelectAllCheckbox();
         bool VerifyAllSpeciesAreSelected();
+        void ClickSaveAndReturnToHubLink();
     }
 }

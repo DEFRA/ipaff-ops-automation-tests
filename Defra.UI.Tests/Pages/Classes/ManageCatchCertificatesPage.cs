@@ -152,5 +152,20 @@ namespace Defra.UI.Tests.Pages.Classes
 
             return addDetailsValid && removeLinksValid;
         }
+
+        public void ClickViewOrAmendDetailsLinkForAttachment(int attachmentNumber)
+        {
+            var attachmentBlocks = _driver.FindElements(attachmentBlocksBy);
+
+            if (attachmentNumber < 1 || attachmentNumber > attachmentBlocks.Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(attachmentNumber),
+                    $"Attachment number {attachmentNumber} is out of range. Available attachments: {attachmentBlocks.Count}");
+            }
+
+            var targetBlock = attachmentBlocks[attachmentNumber - 1];
+            var viewAmendLink = targetBlock.FindElement(By.XPath(".//a[contains(text(), 'View or amend details')]"));
+            viewAmendLink.Click();
+        }
     }
 }

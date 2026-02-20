@@ -319,5 +319,12 @@ namespace Defra.UI.Tests.Steps
 
             _scenarioContext[$"CatchCertificateSpecies_Attachment{attachmentNumber}"] = species;
         }
+
+        [When("the user clicks Save and return to hub link")]
+        public void WhenTheUserClicksSaveAndReturnToHubLink()
+        {
+            addCatchCertificateDetails?.ClickSaveAndReturnToHubLink();
+            Thread.Sleep(20000);
+        }
     }
 }

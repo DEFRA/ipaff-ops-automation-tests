@@ -114,5 +114,11 @@ namespace Defra.UI.Tests.Steps
             var isValid = manageCatchCertificates?.VerifyEachAttachmentHasAddDetailsAndRemoveLinks(expectedAttachmentCount);
             Assert.True(isValid, $"Not all {expectedAttachmentCount} attachments have '{link1}' and '{link2}' links");
         }
+
+        [When("the user clicks View or amend details link for attachment {int}")]
+        public void WhenTheUserClicksViewOrAmendDetailsLinkForAttachment(int attachmentNumber)
+        {
+            manageCatchCertificates?.ClickViewOrAmendDetailsLinkForAttachment(attachmentNumber);
+        }
     }
 }
