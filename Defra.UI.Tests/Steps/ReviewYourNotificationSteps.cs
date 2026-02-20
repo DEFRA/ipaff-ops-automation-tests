@@ -631,7 +631,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             var documentType = _scenarioContext.Get<string[]>("DocumentType");
             var documentReference = _scenarioContext.Get<string[]>("DocumentReference");
-            var dateOfIssue = _scenarioContext.Get<string[]>("DocumentDateOfIssue");
+            var dateOfIssue = _scenarioContext.Get<string[]>("DateOfIssue");
             var approvedEstablishmentName = _scenarioContext.Get<string>("ApprovedEstablishmentName");
             var approvedEstablishmentCountry = _scenarioContext.Get<string>("ApprovedEstablishmentCountry");
             var approvedEstablishmentType = _scenarioContext.Get<string>("ApprovedEstablishmentType");

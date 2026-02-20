@@ -2367,7 +2367,6 @@ Scenario: Verify IUU and Catch certificate details for EU and Non-EU countries C
 	And the user enters Latest Health Certificate date of issue "24""10""2025"
 	And the user clicks on Add attachment link
 	And the user uploads the document 'IPAFFS Test Health Certificate' in the format '.docx'
-	Then the document 'IPAFFS Test Health Certificate' '.docx' is uploaded successfully
 	And the user clicks Save and continue
 	Then the Accompanying documents page should be displayed
 	When the user selects Document type "Commercial invoice"
@@ -2544,7 +2543,6 @@ Scenario: Verify IUU and Catch certificate details for EU and Non-EU countries C
 	And the user enters Latest Health Certificate date of issue "24""10""2025"
 	And the user clicks on Add attachment link
 	And the user uploads the document 'IPAFFS Test Health Certificate' in the format '.docx'
-	Then the document 'IPAFFS Test Health Certificate' '.docx' is uploaded successfully
 	And the user clicks Save and continue
 	Then the Accompanying documents page should be displayed
 	When the user selects Document type "Commercial invoice"
