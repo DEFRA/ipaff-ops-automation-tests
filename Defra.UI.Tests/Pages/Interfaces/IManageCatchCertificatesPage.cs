@@ -14,5 +14,6 @@
         bool VerifyEachAttachmentHasPopulatedInputBox(int expectedAttachmentCount);
         bool VerifyEachAttachmentHasUpdateButton(int expectedAttachmentCount);
         bool VerifyEachAttachmentHasAddDetailsAndRemoveLinks(int expectedAttachmentCount);
+        void ClickViewOrAmendDetailsLinkForAttachment(int attachmentNumber);
     }
 }

@@ -2678,10 +2678,65 @@ Scenario: User creates and submits a CHEDP consignment notification with multipl
 	And the user clicks on Save and return to manage catch certificates link
 	Then Manage catch certificates page is displayed
 	When the user clicks View or amend details link for attachment 3
-	Then Add catch certificate details page should be displayed for attachment 3
+	Then Add catch certificate details page should be displayed
+	And the user verifies Attachment 3 is displayed underneath Add catch certificate details
 	When the user clicks Save and return to hub link
 	Then the Notification Hub page should be displayed
-	When the user completes all remaining required sections
+	When the user clicks on 'Latest health certificate' link
+	Then the Latest Health Certificate page should be displayed
+	When the user enters Latest Health Certificate Document reference 'INV12345'
+	And the user enters Latest Health Certificate date of issue '24''10''2025'
+	And the user clicks on Add attachment link
+	And the user uploads the document 'IPAFFS Test Health Certificate' in the format '.docx'
+	Then the document 'IPAFFS Test Health Certificate' '.docx' is uploaded successfully
+	When the user clicks Save and continue
+	Then the Accompanying documents page should be displayed
+	When the user clicks Save and continue
+	Then the Approved establishment of origin page should be displayed
+	When the user clicks Search for an approved establishment
+	Then the list of establishments should be displayed, filtered by Country of origin 'Austria' type 'ABP Transport' status 'Approved'
+	When the user clicks Select for one of the establishments in the list
+	Then the Approved establishment of origin page should be displayed with the selected establishment
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter 'ABC' should be displayed on the Addresses page
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee 'DEF'
+	Then the chosen consignee 'DEF' should be displayed on the Addresses page
+	When the user clicks Add an importer
+	Then the Search for an existing importer page should be displayed
+	When the user selects an importer 'DEF' with a UK country
+	Then the chosen importer should be displayed on the Addresses page
+	When the user clicks Add a place of destination
+	Then the Search for an existing place of destination page should be displayed
+	When the user selects a place of destination 'DEF' with a UK country
+	Then the chosen place of destination 'DEF' should be displayed on the Addresses page
+	When the user clicks Save and continue
+	Then the Transport to the port of entry page should be displayed
+	When the user enters BCP or Port of entry 'BRISTOL (GBBRS)'
+	And the user selects means of transport to BCP or Port of entry 'Road Vehicle'
+	And the user enters transport identification 'EJ64 YGB'
+	And the user selects 'No' for Are any road trailers or shipping containers being used to transport the consignment
+	And the user enters transport document reference 'Doc1234'
+	And the user enters arrival date at BCP or Port of entry as today's date
+	And the user enters estimated arrival time at BCP with future time
+	And the user clicks Save and continue
+	Then the Goods movement services page should be displayed
+	When the user selects 'No' for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user clicks Save and continue
+	Then the Contact details page should be displayed, pre-populated with the user's details
+	When the user clicks Save and continue
+	Then the Nominated contacts page should be displayed
+	When the user clicks Save and continue
+	Then the Contact address for consignment page should be displayed
+	And the user selects a contact address for the consignment
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
 	#Then the Review your notification page should be displayed
 	#When the user verifies under Documents heading '3 catch certificates' is displayed
 	#And the user verifies catch certificate 1 shows reference 'CATCH001', flag state 'Norway', date '19 February 2026'
