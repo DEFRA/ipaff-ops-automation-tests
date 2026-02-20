@@ -1,6 +1,7 @@
 ﻿using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
 using System.Text.RegularExpressions;
 
@@ -43,6 +44,16 @@ namespace Defra.UI.Tests.Pages.Classes
         private By saveAndContinueButtonBy => By.Id("button-save-and-continue");
         private By saveAndReturnToManageCatchCertificatesLinkBy => By.Id("save-and-return-manage-catch-certificates");
         private By saveAndReturnToHubLinkBy => By.Id("save-and-return");
+        private IWebElement lnkAddTheCommodity => _driver.FindElement(By.LinkText("add the commodity"));
+
+        // Error validation
+        private IReadOnlyCollection<IWebElement> lblErrorMessages => _driver.FindElements(By.XPath("//div[@class='govuk-error-summary']//ul[@class='govuk-list govuk-error-summary__list']/li"));
+        private By errorSummaryBy => By.XPath("//div[@class='govuk-error-summary']");
+        private By catchCertificateReferenceErrorBy => By.XPath("//span[@class='govuk-error-message' and contains(text(), 'catch certificate reference')]");
+        private By flagStateErrorBy => By.XPath("//span[@class='govuk-error-message' and contains(text(), 'flag state')]");
+
+        // Dropdown options
+        private By dropdownOptionsBy => By.XPath("//ul[@id='flag-state-1__listbox']//li[@role='option']");
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -129,6 +140,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickSaveAndReturnToManageCertificateLink()
         {
             lnkSaveAndReturnToManageCertificate.Click();
+        }
+
+        public void ClickAddTheCommodityLink()
+        {
+            lnkAddTheCommodity.Click();
         }
 
         public bool VerifyAttachmentNumberDisplayed(int attachmentNumber, int totalAttachments)
@@ -237,6 +253,105 @@ namespace Defra.UI.Tests.Pages.Classes
 
             return link.Displayed &&
                    linkText.Equals("Save and return to hub", StringComparison.OrdinalIgnoreCase);
+        }
+
+        public void StartTypingInFlagState(string partialText, int index = 1)
+        {
+            var flagStateField = setFlagStateOfCatchingVessel(index);
+            flagStateField.Clear();
+            flagStateField.SendKeys(partialText);
+        }
+
+        public bool VerifyDropdownOptionsInclude(string optionText)
+        {
+            var options = _driver.FindElements(dropdownOptionsBy);
+            return options.Any(option =>
+                NormalizeWhitespace(option.Text).Contains(optionText, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public void SelectFromDropdown(string optionText)
+        {
+            var options = _driver.WaitForElements(dropdownOptionsBy);
+            var matchingOption = options.FirstOrDefault(option =>
+                NormalizeWhitespace(option.Text).Equals(optionText, StringComparison.OrdinalIgnoreCase));
+
+            if (matchingOption != null)
+            {
+                matchingOption.Click();
+            }
+        }
+
+        public bool IsFieldHighlighted(string fieldName, int index = 1)
+        {
+            try
+            {
+                if (fieldName.Contains("catch certificate reference", StringComparison.OrdinalIgnoreCase))
+                {
+                    var errorElements = _driver.FindElements(catchCertificateReferenceErrorBy);
+                    return errorElements.Count > 0 && errorElements.First().Displayed;
+                }
+                else if (fieldName.Contains("flag state", StringComparison.OrdinalIgnoreCase))
+                {
+                    var errorElements = _driver.FindElements(flagStateErrorBy);
+                    return errorElements.Count > 0 && errorElements.First().Displayed;
+                }
+
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public (bool allErrorsPresent, string errorMessages) VerifySpecificErrorsDisplayed(params string[] expectedErrors)
+        {
+            try
+            {
+                // Wait explicitly for error banner to appear (up to 10 seconds)
+                var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+                wait.Until(driver => driver.FindElements(errorSummaryBy).Count > 0);
+            }
+            catch (WebDriverTimeoutException)
+            {
+                return (false, "No error banner displayed (timed out waiting for error summary)");
+            }
+
+            var errorSummaryElements = _driver.FindElements(errorSummaryBy);
+            if (errorSummaryElements.Count == 0)
+            {
+                return (false, "No error banner displayed");
+            }
+
+            // Collect all error messages
+            var errorMessagesList = new List<string>();
+            foreach (var element in lblErrorMessages)
+            {
+                errorMessagesList.Add(NormalizeWhitespace(element.Text));
+            }
+
+            var allErrorMessages = string.Join("; ", errorMessagesList);
+
+            // Check if ALL expected errors are present
+            var missingErrors = new List<string>();
+            foreach (var expectedError in expectedErrors)
+            {
+                var found = errorMessagesList.Any(msg =>
+                    msg.Contains(expectedError, StringComparison.OrdinalIgnoreCase));
+
+                if (!found)
+                {
+                    missingErrors.Add(expectedError);
+                }
+            }
+
+            if (missingErrors.Any())
+            {
+                var missing = string.Join("; ", missingErrors);
+                return (false, $"Missing errors: [{missing}]. All errors displayed: {allErrorMessages}");
+            }
+
+            return (true, allErrorMessages);
         }
     }
 }

@@ -58,4 +58,75 @@ DO NOT:
 private By numberOfCertificatesLabelBy => By.XPath("//div[@class='govuk-summary-list__key' and contains(text(), 'Number of catch certificates in this attachment')]");
 
 DO:
-        private By numberOfCertificatesLabelBy => By.XPath("//div[@class='govuk-summary-list__key']");
+private By numberOfCertificatesLabelBy => By.XPath("//div[@class='govuk-summary-list__key']");
+
+4. For error validation, use ONE dynamic method that accepts multiple expected errors, not separate methods for each error scenario.
+
+WHY: Avoids code duplication, makes step definitions reusable, and provides better debugging output.
+
+DO NOT create separate methods like:
+- IsError(string errorMessage) - Simple check, no context
+- VerifyErrorMsgDisplayed(string errorMessage) - Single error with context
+- VerifyTwoErrorsDisplayed() - Hard-coded for 2 errors
+- VerifyThreeErrorsDisplayed() - Hard-coded for 3 errors
+
+DO create ONE dynamic method:
+// PAGE CLASS
+public (bool allErrorsPresent, string errorMessages) VerifySpecificErrorsDisplayed(params string[] expectedErrors)
+{
+    var errorSummaryElements = _driver.FindElements(errorSummaryBy);
+    if (errorSummaryElements.Count == 0)
+    {
+        return (false, "No error banner displayed");
+    }
+
+    var errorMessagesList = new List<string>();
+    foreach (var element in lblErrorMessages)
+    {
+        errorMessagesList.Add(NormalizeWhitespace(element.Text));
+    }
+
+    var allErrorMessages = string.Join("; ", errorMessagesList);
+
+    var missingErrors = new List<string>();
+    foreach (var expectedError in expectedErrors)
+    {
+        var found = errorMessagesList.Any(msg =>
+            msg.Contains(expectedError, StringComparison.OrdinalIgnoreCase));
+        
+        if (!found)
+        {
+            missingErrors.Add(expectedError);
+        }
+    }
+
+    if (missingErrors.Any())
+    {
+        var missing = string.Join("; ", missingErrors);
+        return (false, $"Missing errors: [{missing}]. All errors displayed: {allErrorMessages}");
+    }
+
+    return (true, allErrorMessages);
+}
+
+// STEP DEFINITION
+[Then("the user should see error messages {string} in <PageName> page")]
+public void ThenTheUserShouldSeeErrorMessagesInPage(string errorMessagesCsv)
+{
+    var expectedErrors = errorMessagesCsv
+        .Split(',')
+        .Select(e => e.Trim())
+        .Where(e => !string.IsNullOrEmpty(e))
+        .ToArray();
+
+    var (allErrorsPresent, errorMessages) = page?.VerifySpecificErrorsDisplayed(expectedErrors)
+        ?? (false, string.Empty);
+
+    Assert.True(allErrorsPresent, 
+        $"Not all expected errors were found. Details: {errorMessages}");
+}
+
+// FEATURE FILE USAGE
+Then the user should see error messages 'Error message 1' in Add catch certificate details page                                    # 1 error
+Then the user should see error messages 'Error 1, Error 2' in Add catch certificate details page                                    # 2 errors
+Then the user should see error messages 'Error 1, Error 2, Error 3' in Add catch certificate details page                          # 3+ errors

@@ -2624,50 +2624,59 @@ Scenario: User creates and submits a CHEDP consignment notification with multipl
 	And the user verifies 'Save and continue' button is displayed
 	And the user verifies 'Save and return to manage catch certificates' link is displayed
 	And the user verifies 'Save and return to hub' link is displayed
-	#When the user starts typing 'Nor' in Flag state field
-	#Then the user verifies multiple country options appear including 'Norway'
-	#When the user selects 'Norway' from the dropdown
-	#And the user clicks Save and continue without entering catch certificate reference
-	#Then the user verifies error is displayed for catch certificate reference
-	#And the user verifies catch certificate reference field is highlighted
-	#When the user enters catch certificate reference 'CATCH001'
-	#And the user clears Flag state field
-	#And the user clicks Save and continue
-	#Then the user verifies error is displayed for flag state
-	#And the user verifies flag state field is highlighted
-	#When the user clears catch certificate reference field
-	#And the user clicks Save and continue
-	#Then the user verifies error is displayed for both catch certificate reference and flag state
-	#And the user verifies both fields are highlighted
-	#When the user clicks the 'add the commodity' link
-	#Then the Search commodities page should be displayed
-	#When the user clicks Cancel link
-	#Then the Commodity page should be displayed
-	#When the user navigates back to Add catch certificate details page
-	#And the user enters catch certificate reference 'CATCH001'
-	#And the user enters Date of issue '19''02''2026'
-	#And the user enters 'Norway' in Flag state of catching vessels
-	#And the user selects 'Nephrops norvegicus' from Select species being imported under this catch certificate
-	#And the user clicks Save and continue
-	#Then Add catch certificate details page should be displayed for attachment 2
-	#When the user verifies 'Attachment 2 of 3' is displayed
-	#And the user clicks 'Select all' option
-	#Then the user verifies all listed species are selected
-	#When the user enters catch certificate reference 'CATCH002'
-	#And the user enters Date of issue '30''02''2026'
-	#And the user clicks Save and continue
-	#Then the user verifies error 'Date of issue must be a real date' is displayed
-	#When the user enters Date of issue '20''02''2026'
-	#And the user enters 'France' in Flag state of catching vessels
-	#And the user clicks Save and continue
-	#Then Add catch certificate details page should be displayed for attachment 3
-	#When the user verifies 'Attachment 3 of 3' is displayed
-	#And the user enters catch certificate reference 'CATCH003'
-	#And the user enters Date of issue '21''02''2026'
-	#And the user enters 'United Kingdom of Great Britain and Northern Ireland' in Flag state of catching vessels
-	#And the user selects all species options
-	#And the user clicks Save and return to manage catch certificates link
-	#Then Manage catch certificates page is displayed
+	When the user starts typing 'Nor' in Flag state field
+	Then the user verifies multiple country options appear including 'Norway'
+	When the user selects 'Norway' from the dropdown
+	And the user clicks Save and continue
+	Then the user should see error messages 'Enter the catch certificate reference' in Add catch certificate details page
+	And the user verifies catch certificate reference field is highlighted
+	When the user enters catch certificate reference 'CATCH001'
+	And the user clicks Save and continue
+	Then the user should see error messages 'Enter the flag state of the catching vessel' in Add catch certificate details page
+	And the user verifies flag state field is highlighted
+	When the user clicks Save and continue
+	Then the user should see error messages 'Enter the catch certificate reference, Enter the flag state of the catching vessel' in Add catch certificate details page
+	And the user verifies catch certificate reference field is highlighted
+	And the user verifies flag state field is highlighted
+	When the user clicks the add the commodity link
+	Then the Description of the goods/Commodity page should be displayed
+	When the user clicks Cancel link
+	Then the Commodity page should be displayed
+	When the user clicks Save and continue in commodity page
+	Then the Additional details page should be displayed
+	When the user clicks Save and continue
+	Then Manage catch certificates page is displayed
+	When the user selects the 'No' option for Do you need to upload more catch certificates?
+	And the user clicks Save and continue
+	Then Add catch certificate details page should be displayed
+	When the user enters 'CATCH001' in catch certificate reference 1
+	And the user enters Data of issue 1 as '23''01''2026' in Add catch certificate page
+	And the user enters 'Norway' in Flag state of catching vessels 1
+	And the user selects the 'Nephrops norvegicus' species under Select species being imported under this catch certificate
+	And the user clicks Save and continue
+	Then Add catch certificate details page should be displayed
+	And the user verifies Attachment 2 is displayed underneath Add catch certificate details
+	When the user clicks 'Select all' option
+	Then all listed species are selected and displayed
+	When the user enters 'CATCH002' in catch certificate reference 2
+	And the user enters 'Norway' in Flag state of catching vessels 2
+	And the user enters Data of issue 2 as '30''02''2026' in Add catch certificate page
+	And the user clicks Save and continue
+	Then the user should see error messages 'Date of issue must be a real date' in Add catch certificate details page
+	And the user verifies date of issue field is highlighted
+	When the user enters 'CATCH002' in catch certificate reference 2
+	And the user enters 'Norway' in Flag state of catching vessels 2
+	And the user enters Data of issue 2 as '03''02''2026' in Add catch certificate page
+	And the user selects the 'Nephrops norvegicus' species under Select species being imported under this catch certificate
+	And the user clicks Save and continue
+	Then Add catch certificate details page should be displayed
+	And the user verifies Attachment 3 is displayed underneath Add catch certificate details
+	When the user enters 'CATCH003' in catch certificate reference 3
+	And the user enters 'Norway' in Flag state of catching vessels 3
+	And the user enters Data of issue 3 as '10''02''2026' in Add catch certificate page
+	And the user clicks 'Select all' option
+	And the user clicks Save and return to manage catch certificates
+	Then Manage catch certificates page is displayed
 	#When the user clicks View or amend details link for attachment 3
 	#Then Add catch certificate details page should be displayed for attachment 3
 	#When the user clicks Save and return to hub link

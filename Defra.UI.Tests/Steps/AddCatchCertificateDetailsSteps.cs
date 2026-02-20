@@ -10,12 +10,10 @@ namespace Defra.UI.Tests.Steps
     [Binding]
     public class AddCatchCertificateDetailsSteps
     {
-
         private readonly IObjectContainer _objectContainer;
         private readonly ScenarioContext _scenarioContext;
 
         private IAddCatchCertificateDetailsPage? addCatchCertificateDetails => _objectContainer.IsRegistered<IAddCatchCertificateDetailsPage>() ? _objectContainer.Resolve<IAddCatchCertificateDetailsPage>() : null;
-
 
         public AddCatchCertificateDetailsSteps(ScenarioContext context, IObjectContainer container)
         {
@@ -194,6 +192,67 @@ namespace Defra.UI.Tests.Steps
             }
 
             Assert.True(isDisplayed, $"'{linkText}' link is not displayed");
+        }
+
+        [When("the user starts typing {string} in Flag state field")]
+        public void WhenTheUserStartsTypingInFlagStateField(string partialText)
+        {
+            addCatchCertificateDetails?.StartTypingInFlagState(partialText);
+        }
+
+        [Then("the user verifies multiple country options appear including {string}")]
+        public void ThenTheUserVerifiesMultipleCountryOptionsAppearIncluding(string countryName)
+        {
+            var optionExists = addCatchCertificateDetails?.VerifyDropdownOptionsInclude(countryName);
+            Assert.True(optionExists, $"Country option '{countryName}' was not found in the dropdown");
+        }
+
+        [When("the user selects {string} from the dropdown")]
+        public void WhenTheUserSelectsFromTheDropdown(string optionText)
+        {
+            addCatchCertificateDetails?.SelectFromDropdown(optionText);
+        }
+
+        [When("the user enters catch certificate reference {string}")]
+        public void WhenTheUserEntersCatchCertificateReference(string reference)
+        {
+            addCatchCertificateDetails?.EnterCatchCertificateReference(reference, 1);
+        }
+
+        [Then("the user verifies catch certificate reference field is highlighted")]
+        public void ThenTheUserVerifiesCatchCertificateReferenceFieldIsHighlighted()
+        {
+            var isHighlighted = addCatchCertificateDetails?.IsFieldHighlighted("catch certificate reference");
+            Assert.True(isHighlighted, "Catch certificate reference field is not highlighted with error styling");
+        }
+
+        [Then("the user verifies flag state field is highlighted")]
+        public void ThenTheUserVerifiesFlagStateFieldIsHighlighted()
+        {
+            var isHighlighted = addCatchCertificateDetails?.IsFieldHighlighted("flag state");
+            Assert.True(isHighlighted, "Flag state field is not highlighted with error styling");
+        }
+
+        [Then("the user should see error messages {string} in Add catch certificate details page")]
+        public void ThenTheUserShouldSeeErrorMessagesInAddCatchCertificateDetailsPage(string errorMessagesCsv)
+        {
+            var expectedErrors = errorMessagesCsv
+                .Split(',')
+                .Select(e => e.Trim())
+                .Where(e => !string.IsNullOrEmpty(e))
+                .ToArray();
+
+            var (allErrorsPresent, errorMessages) = addCatchCertificateDetails?.VerifySpecificErrorsDisplayed(expectedErrors)
+                ?? (false, string.Empty);
+
+            Assert.True(allErrorsPresent,
+                $"Not all expected errors were found. Details: {errorMessages}");
+        }
+
+        [When("the user clicks the add the commodity link")]
+        public void WhenTheUserClicksTheAddTheCommodityLink()
+        {
+            addCatchCertificateDetails?.ClickAddTheCommodityLink();
         }
     }
 }
