@@ -54,5 +54,6 @@
         void ClickApplyButton();
         string GetCHEDPPTotalNetWeight();
         string GetCHEDPPTotalPackages();
+        void ClickCancelLink();
     }
 }

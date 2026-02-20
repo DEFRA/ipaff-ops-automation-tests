@@ -25,5 +25,11 @@
         bool VerifySaveAndContinueButtonDisplayed();
         bool VerifySaveAndReturnToManageCatchCertificatesLinkDisplayed();
         bool VerifySaveAndReturnToHubLinkDisplayed();
+        void StartTypingInFlagState(string partialText, int index = 1);
+        bool VerifyDropdownOptionsInclude(string optionText);
+        void SelectFromDropdown(string optionText);
+        bool IsFieldHighlighted(string fieldName, int index = 1);
+        (bool allErrorsPresent, string errorMessages) VerifySpecificErrorsDisplayed(params string[] expectedErrors);
+        void ClickAddTheCommodityLink();
     }
 }

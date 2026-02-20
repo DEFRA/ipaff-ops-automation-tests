@@ -432,5 +432,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["TotalNetWeight"] = commodityPage?.GetCHEDPPTotalNetWeight();
             _scenarioContext["TotalPackages"] = commodityPage?.GetCHEDPPTotalPackages();
         }
+
+        [When("the user clicks Cancel link")]
+        public void WhenTheUserClicksCancelLink()
+        {
+            commodityPage?.ClickCancelLink();
+        }
     }
 }

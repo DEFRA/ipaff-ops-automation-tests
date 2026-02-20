@@ -67,6 +67,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement btnApply => _driver.FindElement(By.Id("apply-bulk-commodity-details"));
         private IWebElement txtTotalNetWeightCHEDPP => _driver.FindElement(By.XPath("//*[normalize-space()='Net weight (kg)']/following-sibling::td"));
         private IWebElement txtTotalPackagesCHEDPP => _driver.FindElement(By.XPath("//*[normalize-space()='Number of packages']/following-sibling::td"));
+        private IWebElement lnkCancel => _driver.FindElement(By.LinkText("Cancel"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -191,6 +192,11 @@ namespace Defra.UI.Tests.Pages.Classes
         }
 
         public void ClickAddCommodityLink() => addCommodityLink.Click();
+
+        public void ClickCancelLink()
+        {
+            lnkCancel.Click();
+        }
 
         public bool SelectCommodityInTheCommTree(string commodity)
         {
