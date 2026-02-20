@@ -981,5 +981,99 @@ namespace Defra.UI.Tests.Steps.IPAFF
             reviewPage?.ClickChangeCatchCertificateReferences(index);
         }
 
+        [When("the user verifies the number of certificates displayed under the Documents heading")]
+        [Then("the user verifies the number of certificates displayed under the Documents heading")]
+        public void WhenTheUserVerifiesTheNumberOfCertificatesDisplayedUnderTheDocumentsHeading()
+        {
+            var expectedCount = _scenarioContext.GetFromContext("TotalCatchCertificateFiles", 3);
+
+            var isValid = reviewPage?.VerifyCatchCertificateHeadingDisplaysCount(expectedCount);
+
+            Assert.True(isValid,
+                $"Catch certificate heading does not display the expected count of {expectedCount} certificates");
+        }
+
+        [When("the user verifies the catch certificate table")]
+        [Then("the user verifies the catch certificate table")]
+        public void WhenTheUserVerifiesTheCatchCertificateTable()
+        {
+            var totalAttachments = _scenarioContext.GetFromContext("TotalCatchCertificateFiles", 3);
+
+            var expectedData = new Dictionary<int, (string reference, string flagState, string dateOfIssue, string fileName)>();
+
+            for (int i = 1; i <= totalAttachments; i++)
+            {
+                var reference = _scenarioContext.GetFromContext<string>($"CatchCertificateReference_Attachment{i}", string.Empty);
+                var flagState = _scenarioContext.GetFromContext<string>($"CatchCertificateFlagState_Attachment{i}", string.Empty);
+                var dateOfIssue = _scenarioContext.GetFromContext<string>($"CatchCertificateDateOfIssue_Attachment{i}", string.Empty);
+                var fileName = _scenarioContext.GetFromContext<string>($"CatchCertificate{i}", string.Empty);
+
+                if (!string.IsNullOrEmpty(reference))
+                {
+                    expectedData[i] = (reference, flagState, dateOfIssue, fileName);
+                }
+            }
+
+            var (isValid, mismatches) = reviewPage?.VerifyCatchCertificateSummaryTable(totalAttachments, expectedData)
+                ?? (false, new List<string> { "Review page not available" });
+
+            if (!isValid)
+            {
+                Console.WriteLine("[CATCH CERTIFICATE TABLE VALIDATION] Mismatches found:");
+                foreach (var mismatch in mismatches)
+                {
+                    Console.WriteLine($"  - {mismatch}");
+                }
+            }
+
+            Assert.True(isValid,
+                $"Catch certificate summary table validation failed. Mismatches: {string.Join("; ", mismatches)}");
+        }
+
+        [When("the user verifies the catch certificate details")]
+        [Then("the user verifies the catch certificate details")]
+        public void WhenTheUserVerifiesTheCatchCertificateDetails()
+        {
+            var totalAttachments = _scenarioContext.GetFromContext("TotalCatchCertificateFiles", 3);
+
+            var expectedData = new Dictionary<int, (string reference, string commodityCode, string species)>();
+
+            // Get the commodity code from context - stored as List<string>
+            var commodityCode = string.Empty;
+            if (_scenarioContext.ContainsKey("CommodityCode") && _scenarioContext["CommodityCode"] is List<string> codes)
+            {
+                commodityCode = codes.FirstOrDefault() ?? string.Empty;
+            }
+
+            // Get the species from context - stored as List<string>
+            var speciesList = _scenarioContext.GetFromContext<List<string>>("Species", []);
+            var defaultSpecies = speciesList.FirstOrDefault() ?? string.Empty;
+
+            for (int i = 1; i <= totalAttachments; i++)
+            {
+                var reference = _scenarioContext.GetFromContext<string>($"CatchCertificateReference_Attachment{i}", string.Empty);
+                var species = _scenarioContext.GetFromContext<string>($"CatchCertificateSpecies_Attachment{i}", defaultSpecies);
+
+                if (!string.IsNullOrEmpty(reference))
+                {
+                    expectedData[i] = (reference, commodityCode, species);
+                }
+            }
+
+            var (isValid, mismatches) = reviewPage?.VerifyCatchCertificateDetails(totalAttachments, expectedData)
+                ?? (false, new List<string> { "Review page not available" });
+
+            if (!isValid)
+            {
+                Console.WriteLine("[CATCH CERTIFICATE DETAILS VALIDATION] Mismatches found:");
+                foreach (var mismatch in mismatches)
+                {
+                    Console.WriteLine($"  - {mismatch}");
+                }
+            }
+
+            Assert.True(isValid,
+                $"Catch certificate details validation failed. Mismatches: {string.Join("; ", mismatches)}");
+        }
     }
 }
