@@ -31,5 +31,7 @@
         bool IsFieldHighlighted(string fieldName, int index = 1);
         (bool allErrorsPresent, string errorMessages) VerifySpecificErrorsDisplayed(params string[] expectedErrors);
         void ClickAddTheCommodityLink();
+        void ClickSelectAllCheckbox();
+        bool VerifyAllSpeciesAreSelected();
     }
 }

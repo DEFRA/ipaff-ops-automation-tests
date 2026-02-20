@@ -45,12 +45,15 @@ namespace Defra.UI.Tests.Pages.Classes
         private By saveAndReturnToManageCatchCertificatesLinkBy => By.Id("save-and-return-manage-catch-certificates");
         private By saveAndReturnToHubLinkBy => By.Id("save-and-return");
         private IWebElement lnkAddTheCommodity => _driver.FindElement(By.LinkText("add the commodity"));
+        private IWebElement chkSelectAll => _driver.FindElement(By.Id("select-all-checkbox-1"));
+        private IReadOnlyCollection<IWebElement> speciesCheckboxes => _driver.FindElements(By.XPath("//div[@id='commodities-species-table-1']//input[@type='checkbox' and contains(@id, 'species-')]"));
 
         // Error validation
         private IReadOnlyCollection<IWebElement> lblErrorMessages => _driver.FindElements(By.XPath("//div[@class='govuk-error-summary']//ul[@class='govuk-list govuk-error-summary__list']/li"));
         private By errorSummaryBy => By.XPath("//div[@class='govuk-error-summary']");
         private By catchCertificateReferenceErrorBy => By.XPath("//span[@class='govuk-error-message' and contains(text(), 'catch certificate reference')]");
         private By flagStateErrorBy => By.XPath("//span[@class='govuk-error-message' and contains(text(), 'flag state')]");
+        private By dateOfIssueErrorBy => By.Id("date-of-issue-error");
 
         // Dropdown options
         private By dropdownOptionsBy => By.XPath("//ul[@id='flag-state-1__listbox']//li[@role='option']");
@@ -295,6 +298,11 @@ namespace Defra.UI.Tests.Pages.Classes
                     var errorElements = _driver.FindElements(flagStateErrorBy);
                     return errorElements.Count > 0 && errorElements.First().Displayed;
                 }
+                else if (fieldName.Contains("date of issue", StringComparison.OrdinalIgnoreCase))
+                {
+                    var errorElements = _driver.FindElements(dateOfIssueErrorBy);
+                    return errorElements.Count > 0 && errorElements.First().Displayed;
+                }
 
                 return false;
             }
@@ -352,6 +360,31 @@ namespace Defra.UI.Tests.Pages.Classes
             }
 
             return (true, allErrorMessages);
+        }
+
+        public void ClickSelectAllCheckbox()
+        {
+            chkSelectAll.Click();
+        }
+
+        public bool VerifyAllSpeciesAreSelected()
+        {
+            // Check if Select All checkbox is checked
+            if (!chkSelectAll.Selected)
+            {
+                return false;
+            }
+
+            // Check if all species checkboxes are checked
+            foreach (var checkbox in speciesCheckboxes)
+            {
+                if (!checkbox.Selected)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }
