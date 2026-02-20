@@ -49,11 +49,12 @@ namespace Defra.UI.Tests.Pages.Classes
         private IReadOnlyCollection<IWebElement> speciesCheckboxes => _driver.FindElements(By.XPath("//div[@id='commodities-species-table-1']//input[@type='checkbox' and contains(@id, 'species-')]"));
 
         // Error validation
-        private IReadOnlyCollection<IWebElement> lblErrorMessages => _driver.FindElements(By.XPath("//div[@class='govuk-error-summary']//ul[@class='govuk-list govuk-error-summary__list']/li"));
+        private IReadOnlyCollection<IWebElement> lblErrorMessages => _driver.FindElements(errorMessageListItemsBy);
         private By errorSummaryBy => By.XPath("//div[@class='govuk-error-summary']");
         private By catchCertificateReferenceErrorBy => By.XPath("//span[@class='govuk-error-message' and contains(text(), 'catch certificate reference')]");
         private By flagStateErrorBy => By.XPath("//span[@class='govuk-error-message' and contains(text(), 'flag state')]");
         private By dateOfIssueErrorBy => By.Id("date-of-issue-error");
+        private By errorMessageListItemsBy => By.XPath("//div[@class='govuk-error-summary']//ul[@class='govuk-list govuk-error-summary__list']/li");
 
         // Dropdown options
         private By dropdownOptionsBy => By.XPath("//ul[@id='flag-state-1__listbox']//li[@role='option']");
@@ -316,13 +317,24 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             try
             {
-                // Wait explicitly for error banner to appear (up to 10 seconds)
                 var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+
+                // Wait for error summary banner to appear
                 wait.Until(driver => driver.FindElements(errorSummaryBy).Count > 0);
+
+                // Wait for error messages list to be populated
+                wait.Until(driver => driver.FindElements(errorMessageListItemsBy).Count > 0);
+
+                // Wait for error messages to have actual text content (not empty)
+                wait.Until(driver =>
+                {
+                    var messages = driver.FindElements(errorMessageListItemsBy);
+                    return messages.Any(msg => !string.IsNullOrWhiteSpace(msg.Text));
+                });
             }
             catch (WebDriverTimeoutException)
             {
-                return (false, "No error banner displayed (timed out waiting for error summary)");
+                return (false, "No error messages displayed (timed out waiting for error list to populate)");
             }
 
             var errorSummaryElements = _driver.FindElements(errorSummaryBy);
@@ -335,7 +347,17 @@ namespace Defra.UI.Tests.Pages.Classes
             var errorMessagesList = new List<string>();
             foreach (var element in lblErrorMessages)
             {
-                errorMessagesList.Add(NormalizeWhitespace(element.Text));
+                var errorText = NormalizeWhitespace(element.Text);
+                if (!string.IsNullOrWhiteSpace(errorText))
+                {
+                    errorMessagesList.Add(errorText);
+                }
+            }
+
+            // If no errors found after wait, return failure with details
+            if (errorMessagesList.Count == 0)
+            {
+                return (false, "Error banner displayed but no error messages found in the list");
             }
 
             var allErrorMessages = string.Join("; ", errorMessagesList);

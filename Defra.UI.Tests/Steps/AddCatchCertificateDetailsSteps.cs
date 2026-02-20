@@ -324,7 +324,6 @@ namespace Defra.UI.Tests.Steps
         public void WhenTheUserClicksSaveAndReturnToHubLink()
         {
             addCatchCertificateDetails?.ClickSaveAndReturnToHubLink();
-            Thread.Sleep(20000);
         }
     }
 }

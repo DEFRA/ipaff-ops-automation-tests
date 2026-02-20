@@ -2718,7 +2718,7 @@ Scenario: User creates and submits a CHEDP consignment notification with multipl
 	When the user clicks Save and continue
 	Then the Transport to the port of entry page should be displayed
 	When the user enters BCP or Port of entry 'BRISTOL (GBBRS)'
-	And the user selects means of transport to BCP or Port of entry 'Road Vehicle'
+	And the user selects means of transport to BCP or Port of entry 'Road vehicle'
 	And the user enters transport identification 'EJ64 YGB'
 	And the user selects 'No' for Are any road trailers or shipping containers being used to transport the consignment
 	And the user enters transport document reference 'Doc1234'
@@ -2737,18 +2737,12 @@ Scenario: User creates and submits a CHEDP consignment notification with multipl
 	And the user selects a contact address for the consignment
 	When the user clicks Save and continue
 	Then the Review your notification page should be displayed
-	#Then the Review your notification page should be displayed
-	#When the user verifies under Documents heading '3 catch certificates' is displayed
-	#And the user verifies catch certificate 1 shows reference 'CATCH001', flag state 'Norway', date '19 February 2026'
-	#And the user verifies catch certificate 2 shows reference 'CATCH002', flag state 'France', date '20 February 2026'
-	#And the user verifies catch certificate 3 shows reference 'CATCH003', flag state 'United Kingdom of Great Britain and Northern Ireland', date '21 February 2026'
-	#And the user verifies attachments are displayed with filenames
-	#And the user verifies catch certificate details and commodity mapping is displayed
-	#When the user clicks Save and continue
-	#Then the Declaration page should be displayed
-	#When the user clicks Submit notification
-	#Then the Confirmation page should be displayed with the initial risk assessment
-	#When the user records the IPAFFS User details and CHED Reference
-	#Then the details should be recorded
-	#When the user logs out of IPAFFS Part 1
-	#Then the user should be logged out successfully
+	When the user verifies the number of certificates displayed under the Documents heading
+	And the user verifies the catch certificate table
+	And the user verifies the catch certificate details
+	And the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the IPAFFS User details and CHED Reference
+	And the details should be recorded
