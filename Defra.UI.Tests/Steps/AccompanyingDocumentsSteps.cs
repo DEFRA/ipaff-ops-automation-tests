@@ -218,7 +218,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             accompanyingDocumentsPage?.EnterDateOfIssue(day, month, year);
             var dateofIssue = day + " " + month + " " + year;
             _scenarioContext["DocumentDateOfIssue"] = dateofIssue;
-            //Utils.AppendStringToScenarioContextArray(_scenarioContext, "DateOfIssue", DateTime.ParseExact(dateString, "dd/MM/yyyy", null).ToString("dd MM yyyy"));
         }
 
         [When("the user enters date of issue from last week")]
