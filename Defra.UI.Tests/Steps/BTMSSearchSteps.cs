@@ -23,7 +23,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the BTMS search screen should be displayed")]
         public void ThenTheBTMSSearchScreenShouldBeDisplayed()
         {
-            Assert.True(btmsSearchPage?.IsPageLoaded(), "Search for an MRN, CHED, GMR or DUCR page not loaded");
+            Assert.True(btmsSearchPage?.IsPageLoaded(), "Search for an MRN, CHED or GMR not loaded");
         }
 
         [When("the user searches for the CHED created earlier")]
