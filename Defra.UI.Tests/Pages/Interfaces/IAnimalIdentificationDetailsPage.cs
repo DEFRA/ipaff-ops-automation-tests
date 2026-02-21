@@ -10,5 +10,8 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void EnterHorseName(string horseName);
         void EnterMicrochipNumber(string microchipNumber);
         void EnterPassportNumber(string passportNumber);
+        void EnterEarTag(string earTag);
+        string GetEarTag { get; }
+        string GetNumberOfAnimals();
     }
 }

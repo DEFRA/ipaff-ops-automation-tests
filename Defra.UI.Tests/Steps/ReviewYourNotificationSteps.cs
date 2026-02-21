@@ -1,8 +1,10 @@
 ﻿using Reqnroll.BoDi;
+using Defra.UI.Tests.Pages.Interfaces;
+using Defra.UI.Tests.Tools;
+using DocumentFormat.OpenXml.Spreadsheet;
 using NUnit.Framework;
 using Reqnroll;
-using Defra.UI.Tests.Pages.Interfaces;
-using YamlDotNet.Core;
+using Reqnroll.BoDi;
 
 namespace Defra.UI.Tests.Steps.IPAFF
 {
@@ -200,6 +202,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             // Contacts
             ValidateIfExists("ConsignmentContactAddress", reviewPage?.GetConsignmentContactAddress(), ref allDataMatches, mismatches);
 
+
             if (!allDataMatches)
             {
                 Console.WriteLine("[REVIEW VALIDATION] Data mismatches found:");
@@ -210,6 +213,102 @@ namespace Defra.UI.Tests.Steps.IPAFF
             }
             Assert.True(allDataMatches, $"Review page data validation failed. Mismatches: {string.Join(", ", mismatches)}");
         }
+
+
+        [Then("the data presented for review matches the data entered into the notification for CHED PP")]
+        public void ThenTheDataPresentedForReviewMatchesTheDataEnteredIntoTheNotificationForCHEDPP()
+        {
+            var allDataMatches = true;
+            var mismatches = new List<string>();
+
+            // About the consignment
+            ValidateIfExists("ImportType", reviewPage?.GetImportType(), ref allDataMatches, mismatches);
+            ValidateIfExists("CountryOfOrigin", reviewPage?.GetCountryOfOrigin(), ref allDataMatches, mismatches);
+            ValidateIfExists("MainReasonForImport", reviewPage?.GetMainReasonForImport(), ref allDataMatches, mismatches);
+            ValidateIfExists("Purpose", reviewPage?.GetPurpose(), ref allDataMatches, mismatches);
+            ValidateIfExists("ConsignmentReferenceNumber", reviewPage?.GetConsignmentReferenceNumber(), ref allDataMatches, mismatches);
+
+            // Commodity details  
+            if (_scenarioContext.ContainsKey("CommodityCodeFirstCommodity"))
+            {
+                ValidateIfExists("CommodityCodeFirstCommodity", reviewPage?.GetCommodityCodeList(0), ref allDataMatches, mismatches);
+                ValidateIfExists("CommodityDescFirstCommodity", reviewPage?.GetDescriptionList(0), ref allDataMatches, mismatches);
+                ValidateIfExists("GenusFirstCommodity", reviewPage?.GetGenusListCHEDPP(0), ref allDataMatches, mismatches);
+                ValidateIfExists("EPPOCodeFirstCommodity", reviewPage?.GetEPPOCodeListCHEDPP(0), ref allDataMatches, mismatches);
+                ValidateIfExists("NetWeight", reviewPage?.GetNetWeightListCHEDPP(0), ref allDataMatches, mismatches);
+                ValidateIfExists("NumberOfPackages", reviewPage?.GetNumPackagesListCHEDPP(0), ref allDataMatches, mismatches);
+                ValidateIfExists("PackageType", reviewPage?.GetTypeOfPackagesListCHEDPP(0), ref allDataMatches, mismatches);
+                ValidateIfExists("Quantity", reviewPage?.GetQuantityListCHEDPP(0), ref allDataMatches, mismatches);
+                ValidateIfExists("QuantityType", reviewPage?.GetQuantityTypeListCHEDPP(0), ref allDataMatches, mismatches);
+
+                ValidateIfExists("CommodityCodeSecondCommodity", reviewPage?.GetCommodityCodeList(1), ref allDataMatches, mismatches);
+                ValidateIfExists("CommodityDescSecondCommodity", reviewPage?.GetDescriptionList(1), ref allDataMatches, mismatches);
+                ValidateIfExists("GenusSecondCommodity", reviewPage?.GetGenusListCHEDPP(1), ref allDataMatches, mismatches);
+                ValidateIfExists("EPPOCodeSecondCommodity", reviewPage?.GetEPPOCodeListCHEDPP(1), ref allDataMatches, mismatches);
+                ValidateIfExists("NetWeight", reviewPage?.GetNetWeightListCHEDPP(1), ref allDataMatches, mismatches);
+                ValidateIfExists("NumberOfPackages", reviewPage?.GetNumPackagesListCHEDPP(1), ref allDataMatches, mismatches);
+                ValidateIfExists("PackageType", reviewPage?.GetTypeOfPackagesListCHEDPP(1), ref allDataMatches, mismatches);
+                ValidateIfExists("CommodityVariety", reviewPage?.GetCommodityVariety(1), ref allDataMatches, mismatches);
+                ValidateIfExists("CommodityClass", reviewPage?.GetCommodityClass(1), ref allDataMatches, mismatches);
+                ValidateIfExists("Quantity", reviewPage?.GetQuantityListCHEDPP(1), ref allDataMatches, mismatches);
+                ValidateIfExists("QuantityType", reviewPage?.GetQuantityTypeListCHEDPP(1), ref allDataMatches, mismatches);
+            }
+            else
+            {
+                ValidateIfExists("CommodityCode", reviewPage?.GetCommodityCodeList(0), ref allDataMatches, mismatches);
+                ValidateIfExists("CommodityDescription", reviewPage?.GetDescriptionList(0), ref allDataMatches, mismatches);
+                ValidateIfExists("GenusFirstCommodity", reviewPage?.GetGenusListCHEDPP(0), ref allDataMatches, mismatches);
+                ValidateIfExists("EPPOCodeFirstCommodity", reviewPage?.GetEPPOCodeListCHEDPP(0), ref allDataMatches, mismatches);
+                ValidateIfExists("NetWeight", reviewPage?.GetNetWeightListCHEDPP(0), ref allDataMatches, mismatches);
+                ValidateIfExists("NumberOfPackages", reviewPage?.GetNumPackagesListCHEDPP(0), ref allDataMatches, mismatches);
+                ValidateIfExists("PackageType", reviewPage?.GetTypeOfPackagesListCHEDPP(0), ref allDataMatches, mismatches);
+                ValidateIfExists("Quantity", reviewPage?.GetQuantityListCHEDPP(0), ref allDataMatches, mismatches);
+                ValidateIfExists("QuantityType", reviewPage?.GetQuantityTypeListCHEDPP(0), ref allDataMatches, mismatches);
+            }
+
+            ValidateIfExists("TotalNetWeight", reviewPage?.GetTotalNetWeight(), ref allDataMatches, mismatches);
+            ValidateIfExists("TotalPackages", reviewPage?.GetTotalPackages(), ref allDataMatches, mismatches);
+            ValidateIfExists("TotalGrossWeight", reviewPage?.GetTotalGrossWeight(), ref allDataMatches, mismatches);
+
+            // Documents
+            ValidateIfExists("DocumentType", reviewPage?.GetAdditionalDocumentType(), ref allDataMatches, mismatches);
+            ValidateIfExists("DocumentReference", reviewPage?.GetAdditionalDocumentReference(), ref allDataMatches, mismatches);
+            ValidateIfExists("DocumentDateOfIssue", reviewPage?.GetAdditionalDocumentDateOfIssue(), ref allDataMatches, mismatches);
+            ValidateFileNameWithTruncation("DocumentName", reviewPage?.GetAdditionalDocumentFileName(), ref allDataMatches, mismatches);
+
+            // Addresses
+            ValidateIfExists("ConsignorName", reviewPage?.GetConsignorName(), ref allDataMatches, mismatches);
+            ValidateIfExists("ConsignorAddress", reviewPage?.GetCHEDPPConsignorAddress(), ref allDataMatches, mismatches);
+            ValidateIfExists("CompanyName", reviewPage?.GetImporterName(), ref allDataMatches, mismatches);
+            ValidateIfExists("ImporterAddress", reviewPage?.GetCHEDPPImporterAddress(), ref allDataMatches, mismatches);
+            ValidateIfExists("DeliveryAddressName", reviewPage?.GetDestinationName(), ref allDataMatches, mismatches);
+            ValidateIfExists("DeliveryAddress", reviewPage?.GetDeliveryAddress(), ref allDataMatches, mismatches);
+
+            // Transport details
+            ValidateIfExists("BorderControlPost", reviewPage?.GetPortOfEntry(), ref allDataMatches, mismatches);
+            ValidateIfExists("InspectionPremises", reviewPage?.GetInspectionPremises(), ref allDataMatches, mismatches);
+            ValidateIfExists("MeansOfTransport", reviewPage?.GetMeansOfTransport(), ref allDataMatches, mismatches);
+            ValidateIfExists("TransportId", reviewPage?.GetTransportId(), ref allDataMatches, mismatches);
+            ValidateIfExists("AreContainers", reviewPage?.GetContainerUsage(), ref allDataMatches, mismatches);
+            ValidateIfExists("EnterTransportDocRef", reviewPage?.GetTransportDocumentReference(), ref allDataMatches, mismatches);
+            ValidateIfExists("EstimatedArrivalDate", reviewPage?.GetEstimatedArrivalDate(), ref allDataMatches, mismatches);
+            ValidateIfExists("EstimatedArrivalTime", reviewPage?.GetEstimatedArrivalTime(), ref allDataMatches, mismatches);
+            ValidateIfExists("IsCTC", reviewPage?.GetCTCUsage(), ref allDataMatches, mismatches);
+            ValidateIfExists("IsGVMS", reviewPage?.GetGVMSUsage(), ref allDataMatches, mismatches);
+
+
+            if (!allDataMatches)
+            {
+                Console.WriteLine("[REVIEW VALIDATION] Data mismatches found:");
+                foreach (var mismatch in mismatches)
+                {
+                    Console.WriteLine($"[REVIEW VALIDATION] {mismatch}");
+                }
+            }
+
+            Assert.True(allDataMatches, $"Review page data validation failed. Mismatches: {string.Join(", ", mismatches)}");
+        }
+
 
         /// <summary>
         /// Custom validation for Certification Option with special handling for abbreviated values
@@ -424,7 +523,19 @@ namespace Defra.UI.Tests.Steps.IPAFF
             VerifyTraders();
             VerifyTransportAndConsignmentContactDetails();
         }
-       
+
+        [Then("the user should see the message {string} displayed in the certificates section")]
+        public void ThenTheUserShouldSeeTheMessageDisplayedInTheCertificatesSection(string message)
+        {
+            Assert.True(reviewPage?.VerifyCatchCertificateHeader(message), $"The expected catch certificate details header would be '{message}'");
+        }
+
+        [Then("the user should see the message {string} under Catch certificate reference")]
+        public void ThenTheUserShouldSeeTheMessageUnderCatchCertificateReference(string message)
+        {
+            Assert.True(reviewPage?.VerifyCatchCertificateForNoneAttached(message), $"The expected catch certificate details for none attached would be '{message}'");
+        }
+
         private void VerifyAboutTheConsignment()
         {
             var summary = summaryPage?.GetSummaryDetails();
@@ -437,6 +548,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var consignmentRefNum = _scenarioContext.Get<string>("ConsignmentReferenceNumber");
             var mainReasonForImport = "For " + _scenarioContext.Get<string>("MainReasonForImport");
             var riskCategory = _scenarioContext.Get<string>("RiskCategory");
+
             if (_scenarioContext.TryGetValue("Purpose", out string purpose) &&
                 !string.IsNullOrWhiteSpace(purpose))
             {
@@ -456,13 +568,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var summary = summaryPage?.GetSummaryDetails();
             var pageName = "Review your notification";
             var expectedList = new List<string>();
-            
+
             var subtotalNetWeight = _scenarioContext.Get<string[]>("SubtotalNetWeight");
             var subtotalPackages = _scenarioContext.Get<string[]>("SubtotalPackages");
             var commodityCode = _scenarioContext["CommodityCode"] as List<string>;
             var typeOfCommodity = _scenarioContext.Get<List<string>>("TypeOfCommodity");
             var species = _scenarioContext["Species"] as List<string>;
-            
+
             var totalNetWeight = _scenarioContext.Get<string>("TotalNetWeight");
             var totalPackages = _scenarioContext.Get<string>("TotalPackages");
             var totalGrossWeight = _scenarioContext.Get<string>("TotalGrossWeight");
@@ -517,10 +629,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 }
                 Assert.AreEqual(typeOfCommodity, expectedList);
             }
-            
+
             Assert.AreEqual(species, summary?.Species, $"Species is not matching in {pageName} page!");
             CollectionAssert.AreEqual(subtotalNetWeight, summary?.SubtotalNetWeight, $"Subtotal NetWeight is not matching in {pageName} page!");
-            CollectionAssert.AreEqual(subtotalPackages, summary?.SubtotalPackages, $"Subtotal Packages is not matching in {pageName} page!"); 
+            CollectionAssert.AreEqual(subtotalPackages, summary?.SubtotalPackages, $"Subtotal Packages is not matching in {pageName} page!");
             Assert.AreEqual(totalNetWeight, summary?.TotalNetWeight, $"Total NetWeight is not matching in {pageName} page!");
             Assert.AreEqual(totalPackages, summary?.TotalPackages, $"Total Packages is not matching in {pageName} page!");
             Assert.AreEqual(totalGrossWeight, summary?.TotalGrossWeight, $"Total Gross Weight is not matching in {pageName} page!");
@@ -532,9 +644,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var summary = summaryPage?.GetSummaryDetails();
             var pageName = "Review your notification";
 
-            var documentType = _scenarioContext.Get<string[]>("DocumentType");
-            var documentReference = _scenarioContext.Get<string[]>("DocumentReference");
-            var dateOfIssue = _scenarioContext.Get<string[]>("DateOfIssue");
+            var documentType = summary?.DocumentType.Length > 0 ? _scenarioContext.Get<string[]>("DocumentType") : [];
+            var documentReference = summary?.DocumentReference.Length > 0 ? _scenarioContext.Get<string[]>("DocumentReference") : [];
+            var dateOfIssue = summary?.DateOfIssue.Length > 0 ? _scenarioContext.Get<string[]>("DateOfIssue") : [];
             var approvedEstablishmentName = _scenarioContext.Get<string>("ApprovedEstablishmentName");
             var approvedEstablishmentCountry = _scenarioContext.Get<string>("ApprovedEstablishmentCountry");
             var approvedEstablishmentType = _scenarioContext.Get<string>("ApprovedEstablishmentType");
@@ -556,7 +668,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.AreEqual(approvedEstablishmentCountry, summary?.ApprovedEstablishmentCountry, $"Approved Establishment Country is not matching in {pageName} page!");
             Assert.AreEqual(approvedEstablishmentType, summary?.ApprovedEstablishmentType, $"Approved Establishment Type is not matching in {pageName} page!");
             Assert.AreEqual(approvedEstablishmentApprovalNum, summary?.ApprovedEstablishmentApprovalNum, $"Approved Establishment Approval Number is not matching in {pageName} page!");
-            
+
         }
 
         private void VerifyTraders()
@@ -606,7 +718,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.AreEqual(transportDocRef, reviewPage?.GetTransportDocumentReference(), $"Transport Document Reference is not matching in {pageName} page!");
             Assert.AreEqual(estimatedArrivalDate, reviewPage?.GetEstimatedArrivalDate(), $"Estimated Arrival Date is not matching in {pageName} page!");
             Assert.AreEqual(estimatedArrivalTime, reviewPage?.GetEstimatedArrivalTime(), $"Estimated Arrival Time is not matching in {pageName} page!");
-            Assert.AreEqual(isCTC, reviewPage?.GetCTCUsage(), $"CTC Usage is not matching in {pageName} page!");
+            Assert.AreEqual(isCTC, reviewPage?.GetCTCUsage().Replace("-", "–"), $"CTC Usage is not matching in {pageName} page!");
+
+            if (_scenarioContext.ContainsKey("MovementReferenceNumber"))
+            {
+                var movementReferenceNumber = _scenarioContext.Get<string>("MovementReferenceNumber");
+                Assert.AreEqual(movementReferenceNumber, reviewPage?.GetMovementReferenceNumber(), $"Movement Reference Number is not matching in {pageName} page!");
+            }
+
             Assert.AreEqual(isGVMS, reviewPage?.GetGVMSUsage(), $"GVMS Usage is not matching in {pageName} page!");
             Assert.AreEqual(consignmentContactAddress, reviewPage?.GetConsignmentContactAddress(), $"Consignment Contact Address is not matching in {pageName} page!");
         }
@@ -828,5 +947,39 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             Console.WriteLine($"[REVIEW VALIDATION] ✓ Transporter from address book ({operatorType}) matches: {expectedName}, {expectedAddress}, {expectedCountry}");
         }
+
+        [Then("the user verifies the {int} catch certificates reference details")]
+        public void ThenTheUserVerifiesTheCatchCertificatesReferenceDetails(int noOfReferences)
+        {
+            var allDataMatches = true;
+            var mismatches = new List<string>();
+
+            for (int row = 1; row <= noOfReferences; row++)
+            {
+                ValidateIfExists($"FlagStateOfCatchingVessel{row}", reviewPage?.GetCatchCertificateFlagState(row), ref allDataMatches, mismatches);
+                ValidateIfExists($"CatchCertificateReference{row}", reviewPage?.GetCatchCertificateDocumentReference(row), ref allDataMatches, mismatches);
+                ValidateIfExists($"CatchCertificateDateOfIssue{row}", reviewPage?.GetCatchCertificateDocumentDateOfIssue(row), ref allDataMatches, mismatches);
+            }
+        }
+
+        [Then("the user verifies the updated catch certificates {int} species details")]
+        public void ThenTheUserVerifiesTheUpdatedCatchCertificatesSpeciesDetails(int noOfSpecies)
+        {
+            var commodityCodes = _scenarioContext.GetFromContext<List<string>>("CatchCertificateCommodityCode", []);
+            var species = _scenarioContext.GetFromContext<List<string>>("CatchCertificateSpeciesDescription", []);
+
+            for (int row = 0; row < noOfSpecies; row++)
+            {
+                Assert.AreEqual(commodityCodes[row], reviewPage?.GetCatchCertificateCommodityCode(row + 1), $"The expected Commodity code would be '{commodityCodes[row]}'");
+                Assert.IsTrue(reviewPage?.GetCatchCertificateSpeciesDescription(row + 1).Contains(species[row]), $"The expected species name would be '{species[row]}'");
+            }
+        }
+
+        [When("the user clicks on {int} Change link of Catch Cerfitificate Document section")]
+        public void WhenTheUserClicksOnChangeLinkOfCatchCerfitificateDocumentSection(int index)
+        {
+            reviewPage?.ClickChangeCatchCertificateReferences(index);
+        }
+
     }
 }

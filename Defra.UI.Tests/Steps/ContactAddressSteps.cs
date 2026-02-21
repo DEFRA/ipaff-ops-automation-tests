@@ -63,5 +63,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 ThenTheUserSelectsAContactAddressForTheConsignment();
             }
         }
+
+        [Then("the Contact address for consignment should default to the first address on the list")]
+        public void ThenTheContactAddressForConsignmentShouldDefaultToTheFirstAddressOnTheList()
+        {
+            Assert.True(contactAddressPage?.IsFirstContactAddressSelected(),
+                "The first contact address radio button is not selected by default.");
+        }
     }
 }

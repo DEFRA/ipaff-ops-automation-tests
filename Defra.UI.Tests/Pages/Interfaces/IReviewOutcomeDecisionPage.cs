@@ -39,8 +39,7 @@
         string? GetLaboratoryTestSampleUseByDate(int index = 0);
         string? GetLaboratoryTestReleasedDate(int index = 0);
         string? GetLaboratoryTestConclusion(int index = 0);
-
-
+        bool AreLaboratoryTestDetailsDisplayed();
 
         // Documents
         string? GetHealthCertificateReference();
@@ -59,6 +58,8 @@
         string? GetExitBCP();
         string? GetTransitExitBCP();
         string? GetTransitDestinationCountry();
+        string? GetRefusalReason();
+        string? GetDecisionSubOption();
 
         // Controlled Destination
         string? GetControlledDestinationName();

@@ -12,7 +12,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IObjectContainer _objectContainer;
 
         #region Page Objects
-        private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
+        private IWebElement primaryTitle => _driver.WaitForElement(By.XPath("//span[@id='page-primary-title' and text()='Decision Hub']"));
         private IWebElement lnkSaveAndSetAsInProgress => _driver.WaitForElement(By.Id("set-in-progress"));
         private IWebElement txtUpdatedStatus => _driver.WaitForElement(By.Id("Status-Label"));
         private IWebElement lnkLocalRefNum => _driver.WaitForElement(By.XPath("//a[normalize-space()='Local reference number']"));
@@ -25,6 +25,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtRiskAssesmentMessage => _driver.FindElement(By.XPath("//p[@class='govuk-body']"));
         private IWebElement lnkChecks => _driver.FindElement(By.XPath("//a[normalize-space()='Checks']"));
         private IWebElement lnkViewNotification => _driver.WaitForElement(By.Id("view-notification"));
+        private IWebElement btnAttachment => _driver.FindElement(By.Id("attachments-link"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -97,6 +98,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickViewNotificationOfConsignment()
         {
             lnkViewNotification.Click();
+        }
+
+        public void ClickAttachmentsButton()
+        {
+            btnAttachment.Click();
         }
     }
 }

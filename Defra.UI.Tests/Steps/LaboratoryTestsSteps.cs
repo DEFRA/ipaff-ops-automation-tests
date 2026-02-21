@@ -1,5 +1,6 @@
 ﻿using AventStack.ExtentReports.Gherkin.Model;
 using Defra.UI.Tests.Pages.Interfaces;
+using Defra.UI.Tests.Tools;
 using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;
@@ -42,6 +43,28 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user select {string} radio button on the Laboratory tests page")]
         public void WhenISelectRadioButtonOnTheLaboratoryTestsPage(string labTestsOption)
         {
+            // Remove laboratory test data when user selects "No" to record lab tests
+            // These keys would have been set in a previous selection and are no longer valid
+            if (labTestsOption.Equals("No", StringComparison.OrdinalIgnoreCase))
+            {
+                _scenarioContext.RemoveContextKeys(
+                    "LaboratoryTestsReason",
+                    "AnalysisType",
+                    "CommoditySampled",
+                    "LaboratoryTestName",
+                    "SampleDate",
+                    "SampleTime",
+                    "SampleUseByDate",
+                    "ReleasedDate",
+                    "Conclusion",
+                    "SelectedCommoditySampledCode",
+                    "SelectedCommoditySampledDescription",
+                    "SelectedCommoditySampledSpecies",
+                    "LabTestSelectedDate",
+                    "LabTestSelectedTime"
+                );
+            }
+
             _scenarioContext["AreLaboratoryTestsRequired"] = labTestsOption;
             laboratoryTestsPage?.SelectLabTestsRadio(labTestsOption);
         }
@@ -237,6 +260,87 @@ namespace Defra.UI.Tests.Steps.IPAFF
             {
                 Assert.Fail($"Verification for result '{expectedResult}' is not implemented");
             }
+        }
+
+        [Then("the Laboratory tests screen is displayed with the correct Commodity code")]
+        public void ThenTheLaboratoryTestsScreenIsDisplayedWithTheCorrectCommodityCode()
+        {
+            var commodityCodes = _scenarioContext.GetFromContext("CommodityCode", new List<string>());
+            var commodityCode = commodityCodes.FirstOrDefault() ?? string.Empty;
+
+            Assert.True(laboratoryTestsPage?.VerifyCommodityCodeDisplayedInLabTests(commodityCode),
+                $"Commodity code '{commodityCode}' is not correctly displayed on the Laboratory tests screen");
+        }
+
+        [Then("the Laboratory tests screen is displayed with the correct Description")]
+        public void ThenTheLaboratoryTestsScreenIsDisplayedWithTheCorrectDescription()
+        {
+            var commodityCodes = _scenarioContext.GetFromContext("CommodityCode", new List<string>());
+            var commodityCode = commodityCodes.FirstOrDefault() ?? string.Empty;
+
+            var commodityDescriptions = _scenarioContext.GetFromContext("CommodityDescription", new List<string>());
+            var description = commodityDescriptions.FirstOrDefault() ?? string.Empty;
+
+            Assert.True(laboratoryTestsPage?.VerifyDescriptionDisplayedInLabTests(commodityCode, description),
+                $"Description '{description}' is not correctly displayed on the Laboratory tests screen");
+        }
+
+        [Then("the Laboratory tests screen is displayed with the correct Species")]
+        public void ThenTheLaboratoryTestsScreenIsDisplayedWithTheCorrectSpecies()
+        {
+            var commodityCodes = _scenarioContext.GetFromContext("CommodityCode", new List<string>());
+            var commodityCode = commodityCodes.FirstOrDefault() ?? string.Empty;
+
+            var speciesList = _scenarioContext.GetFromContext("Species", new List<string>());
+            var species = speciesList.FirstOrDefault() ?? string.Empty;
+
+            Assert.True(laboratoryTestsPage?.VerifySpeciesDisplayedInLabTests(commodityCode, species),
+                $"Species '{species}' is not correctly displayed on the Laboratory tests screen");
+        }
+
+        [Then("the Laboratory tests screen is displayed with the Select hyperlink for the commodity sampled")]
+        public void ThenTheLaboratoryTestsScreenIsDisplayedWithTheSelectHyperlinkForTheCommoditySampled()
+        {
+            var commodityCodes = _scenarioContext.GetFromContext("CommodityCode", new List<string>());
+            var commodityCode = commodityCodes.FirstOrDefault() ?? string.Empty;
+
+            Assert.True(laboratoryTestsPage?.VerifySelectHyperlinkDisplayedInLabTests(commodityCode),
+                $"Select hyperlink for commodity code '{commodityCode}' is not correctly displayed on the Laboratory tests screen");
+        }
+
+        [Then("the Laboratory tests list should be filtered by the Laboratory test subcategory {string}")]
+        public void ThenTheLaboratoryTestsListShouldBeFilteredByTheLaboratoryTestSubcategory(string subcategory)
+        {
+            Assert.True(laboratoryTestsPage?.VerifyLabTestsFilteredBySubcategory(subcategory),
+                $"Laboratory tests list is not correctly filtered by subcategory '{subcategory}'");
+        }
+
+        [When("the user verifies the Analysis type dropdown displays options")]
+        public void WhenTheUserVerifiesTheAnalysisTypeDropdownDisplaysOptions()
+        {
+            Assert.True(laboratoryTestsPage?.VerifyAnalysisTypeDropdownHasOptions(),
+                "Analysis type dropdown does not display options");
+        }
+
+        [When("the user verifies the Laboratory dropdown displays options")]
+        public void WhenTheUserVerifiesTheLaboratoryDropdownDisplaysOptions()
+        {
+            Assert.True(laboratoryTestsPage?.VerifyLaboratoryDropdownHasOptions(),
+                "Laboratory dropdown does not display options");
+        }
+
+        [When("the user verifies the Sample type dropdown displays options")]
+        public void WhenTheUserVerifiesTheSampleTypeDropdownDisplaysOptions()
+        {
+            Assert.True(laboratoryTestsPage?.VerifySampleTypeDropdownHasOptions(),
+                "Sample type dropdown does not display options");
+        }
+
+        [When("the user verifies the Storage temperature dropdown displays options")]
+        public void WhenTheUserVerifiesTheStorageTemperatureDropdownDisplaysOptions()
+        {
+            Assert.True(laboratoryTestsPage?.VerifyStorageTemperatureDropdownHasOptions(),
+                "Storage temperature dropdown does not display options");
         }
     }
 }

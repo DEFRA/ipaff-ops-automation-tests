@@ -28,7 +28,8 @@ namespace Defra.UI.Tests.Pages.Classes
         public bool IsPageLoaded()
         {
             return secondaryTitle.Text.Contains("About the consignment")
-                && primaryTitle.Text.Contains("Origin of the animal or product");
+                && (primaryTitle.Text.Contains("Origin of the animal or product")
+                || primaryTitle.Text.Contains("Origin of the plants, plant product or other objects"));
         }
 
         public void SelectCountryOfOrigin(string country)

@@ -173,8 +173,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
             ValidateFileNameWithTruncation("DocumentName", reviewOutcomeDecisionPage?.GetAdditionalDocumentFileName(), ref allDataMatches, mismatches);
 
             // Decision
-            ValidateIfExists("AcceptableFor", reviewOutcomeDecisionPage?.GetAcceptanceDecision(), ref allDataMatches, mismatches);
+            if (_scenarioContext.ContainsKey("AcceptableFor") && !_scenarioContext["AcceptableFor"].Equals(reviewOutcomeDecisionPage?.GetAcceptanceDecision()))
+            {
+                allDataMatches = false;
+                mismatches.Add($"AcceptableFor: Expected '{_scenarioContext["AcceptableFor"]}', Found '{reviewOutcomeDecisionPage?.GetAcceptanceDecision()}'");
+            }            
             ValidateIfExists("AcceptableForSubOption", GetAcceptableForSubOptionValue(), ref allDataMatches, mismatches);
+            ValidateIfExists("ReasonForRefusal", reviewOutcomeDecisionPage?.GetRefusalReason(), ref allDataMatches, mismatches);
 
             if (!allDataMatches)
             {
@@ -186,6 +191,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
             }
 
             Assert.True(allDataMatches, $"Review outcome decision page data validation failed. Mismatches: {string.Join(", ", mismatches)}");
+        }
+
+        [Then("the Laboratory test details are not displayed in the review page")]
+        public void ThenTheLaboratoryTestDetailsAreNotDisplayedInTheReviewPage()
+        {
+            var areLabTestDetailsDisplayed = reviewOutcomeDecisionPage?.AreLaboratoryTestDetailsDisplayed() ?? false;
+
+            Assert.False(areLabTestDetailsDisplayed,
+                "Laboratory test details are displayed in the review page but should not be present");
         }
 
         private void ValidateIfExists(string contextKey, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
@@ -236,14 +250,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             // Try CHED-A first
             var certifiedFor = reviewOutcomeDecisionPage?.GetCertifiedFor();
-            if (!string.IsNullOrEmpty(certifiedFor))
-            {
-                return certifiedFor;
-            }
+            if (!string.IsNullOrWhiteSpace(certifiedFor)) return certifiedFor;
 
             // Fallback to CHED-P
             var consignmentUse = reviewOutcomeDecisionPage?.GetConsignmentUse();
-            return consignmentUse;
+            if (!string.IsNullOrWhiteSpace(consignmentUse)) return consignmentUse;
+
+            return reviewOutcomeDecisionPage?.GetDecisionSubOption();
         }
 
         private bool CompareValues(string contextKey, string expected, string? actual)

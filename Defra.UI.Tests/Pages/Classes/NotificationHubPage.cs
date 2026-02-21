@@ -15,11 +15,13 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
         private IWebElement lblRefNumber => _driver.FindElement(By.Id("reference-number"));
         private IWebElement lnkCountriesConsignmentTravel => _driver.WaitForElement(By.XPath("//a[contains(text(), 'Countries the consignment will travel through')]"));
-        private IWebElement lnkCommodity => _driver.WaitForElement(By.Id("commodity-details-link"), true);
+        private IWebElement lnkCommodity => _driver.FindElement(By.XPath("//*[contains(@Id, 'commodity-details-link')]"));
         private IWebElement lnkContactAddressForConsignment => _driver.FindElement(By.Id("organisation-branch-address"));
         private IWebElement lnkNotificationHub(string link) => _driver.WaitForElement(By.XPath($"//a[normalize-space(text())='{link}']"), true);
         private IWebElement spanVersionNumber => _driver.WaitForElement(By.Id("cved-version-number"), true);
-
+        private IWebElement TaskStatusElement(string taskName)
+            => _driver.FindElement(By.XPath(
+                $"//li[contains(@class,'govuk-task-list__item')]//a[normalize-space(text())='{taskName}']/ancestor::li//div[contains(@class,'govuk-task-list__status')]//strong"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -59,6 +61,11 @@ namespace Defra.UI.Tests.Pages.Classes
             string versionText = spanVersionNumber.Text.Trim();
             // Remove the leading "- " if present (note: dash followed by space)
             return versionText.TrimStart('-', ' ');
+        }
+
+        public string GetTaskStatus(string taskName)
+        {
+            return TaskStatusElement(taskName).Text.Trim();
         }
     }
 }

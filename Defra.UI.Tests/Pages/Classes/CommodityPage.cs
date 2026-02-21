@@ -30,13 +30,12 @@ namespace Defra.UI.Tests.Pages.Classes
         private IReadOnlyCollection<IWebElement> txtNumberOfPackages => _driver.FindElements(By.XPath("//*[@class='govuk-table species-table-cheda']//input[@class='govuk-input number-of-packages ']"));
         private IReadOnlyCollection<IWebElement> ddlPackageType => _driver.FindElements(By.XPath("//*[@class='govuk-table species-table-cheda']//*[contains(@class,'type-of-package')]"));
         private IWebElement speciesTable => _driver.FindElement(By.XPath("//*[@class='govuk-table species-table-cheda']"));
-        private List<IWebElement> commodityTreeList => _driver.WaitForElements(By.XPath("//ul[@class='commodity-tree']/li//span[@class='commodity-description-links-container']/button")).ToList();
+        private List<IWebElement> commodityTreeList => _driver.WaitForElements(By.XPath("//ul[@class='commodity-tree']/li//span/button")).ToList();
         private List<IWebElement> parentCommodityItemList => _driver.WaitForElements(By.XPath("//div[@class='commodity-list']/ul/li")).ToList();
         private IWebElement txtNumberOfAnimals => _driver.FindElement(By.XPath("//input[contains(@class, 'number-of-animals') and contains(@id, 'num-animals-desktop')]"));
-        private IWebElement txtEarTag => _driver.FindElement(By.XPath("//input[contains(@id, 'ear_tag')]"));
         private IWebElement btnUpdateTotal => _driver.FindElement(By.Id("update-total-desktop"));
-        private IWebElement addCommodityLink => _driver.WaitForElement(By.Id("add-commodity-desktop"));
-        private IWebElement txtTotalGrossWeight => _driver.FindElement(By.Id("gross-weight-desktop"));
+        private IWebElement addCommodityLink => _driver.WaitForElement(By.XPath("//*[@Id='add-commodity-desktop' or @Id='add-commodity']"));
+        private IWebElement txtTotalGrossWeight => _driver.FindElement(By.XPath("//*[@Id='gross-weight-desktop' or @Id='gross-weight']"));
         private IWebElement txtSubtotalNetWeight => _driver.FindElement(By.XPath("//*[@class='govuk-table species-table-cheda']/tfoot//td[2]"));
         private List<IWebElement> txtSubtotalsNetWeight => _driver.WaitForElements(By.XPath("//*[@class='govuk-table species-table-cheda']/tfoot//td[2]")).ToList();
         private IWebElement txtSubtotalPackages => _driver.FindElement(By.XPath("//*[@class='govuk-table species-table-cheda']/tfoot//td[3]"));
@@ -46,6 +45,28 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement btnSaveAndContinue => _driver.WaitForElement(By.Id("button-save-and-continue-desktop"));
         private IWebElement btnSaveAndReturnToHub => _driver.WaitForElement(By.Id("save-and-return-button-desktop"));
         private List<IWebElement> addedCommoditiesList => _driver.FindElements(By.XPath("//table[@id='commodity-table-desktop']/tbody/tr")).ToList();
+        private IWebElement rdoManual => _driver.FindElement(By.XPath("//*[@id='input-method']/following-sibling::label"));
+        private IWebElement rdoUpload => _driver.FindElement(By.XPath("//*[@id='input-method-2']/following-sibling::label"));
+        private IWebElement btnCommCodeSearch => _driver.FindElement(By.Id("commodity-code-search-tab-link"));
+        private IWebElement txtDisplayedCHEDPPCommodityCode => _driver.FindElement(By.Id("commodity-code-value"));
+        private IWebElement txtDisplayedCHEDPPCommodityDesc => _driver.FindElement(By.XPath("//*[@id='commodity-code-value']/following-sibling::td"));
+        private IWebElement txtEPPOCode => _driver.FindElement(By.Id("eppo-code"));
+        private IWebElement btnEPPOCodeSearch => _driver.FindElement(By.Id("search"));
+        private IWebElement lnkAddEPPOCode(string eppoCode) => _driver.FindElement(By.XPath($"//*[normalize-space()='{eppoCode}']/following-sibling::td/button"));
+        private IWebElement txtDisplayedSpeciesTable => _driver.FindElement(By.Id("selected-species-table"));
+        private IWebElement drpVariety(string eppoCode) => _driver.FindElement(By.Id($"add-variety-{eppoCode}"));
+        private IWebElement drpClass(string eppoCode) => _driver.FindElement(By.Id($"add-class-{eppoCode}"));
+        private IWebElement txtSelectedCommodity(string commodity) => _driver.FindElement(By.XPath($"//h2[normalize-space()='{commodity}']"));
+        private IWebElement txtSelectedCommodityDetails(string commodity) => _driver.FindElement(By.XPath($"//h2[normalize-space()='{commodity}']/following-sibling::div[1]"));
+        private IWebElement chkBoxCommodity(string commodity) => _driver.FindElement(By.XPath($"//td[normalize-space()='{commodity}']/../td[1]//input"));
+        private IWebElement txtCHEDPPNetWeight => _driver.FindElement(By.Id("bulk-net-weight"));
+        private IWebElement txtCHEDPPNumOfPackages => _driver.FindElement(By.Id("bulk-num-packages"));
+        private IWebElement drpCHEDPPTypeOfPackages => _driver.FindElement(By.Id("bulk-package-type"));
+        private IWebElement txtCHEDPPQuantity => _driver.FindElement(By.Id("bulk-quantity"));
+        private IWebElement drpCHEDPPQuantityType => _driver.FindElement(By.Id("bulk-quantity-type"));
+        private IWebElement btnApply => _driver.FindElement(By.Id("apply-bulk-commodity-details"));
+        private IWebElement txtTotalNetWeightCHEDPP => _driver.FindElement(By.XPath("//*[normalize-space()='Net weight (kg)']/following-sibling::td"));
+        private IWebElement txtTotalPackagesCHEDPP => _driver.FindElement(By.XPath("//*[normalize-space()='Number of packages']/following-sibling::td"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -196,14 +217,7 @@ namespace Defra.UI.Tests.Pages.Classes
             txtNumberOfAnimals.Click();
             txtNumberOfAnimals.Clear();
             txtNumberOfAnimals.SendKeys(quantity);
-        }
-
-        public void EnterEarTag(string earTag)
-        {
-            txtEarTag.Click();
-            txtEarTag.Clear();
-            txtEarTag.SendKeys(earTag);
-        }
+        }        
 
         public string GetSubtotalNetWeight()
         {
@@ -235,6 +249,16 @@ namespace Defra.UI.Tests.Pages.Classes
             return txtTotalPackages.Text.Trim();
         }
 
+        public string GetCHEDPPTotalNetWeight()
+        {
+            return txtTotalNetWeightCHEDPP.Text.Trim();
+        }
+
+        public string GetCHEDPPTotalPackages()
+        {
+            return txtTotalPackagesCHEDPP.Text.Trim();
+        }
+
         public int GetAddedCommoditiesCount => addedCommoditiesList?.Count ?? 0;
         
         public bool VerifyTotalNetWeight(string totalNetWeight)
@@ -245,6 +269,120 @@ namespace Defra.UI.Tests.Pages.Classes
         public bool VerifyNumberOfPackages(string numOfPackages)
         {
             return txtTotalPackages.Text.Trim().Contains(numOfPackages);
+        }
+
+        public void SelectHowToAddCommodityOption(string option)
+        {
+            if (option.Equals(rdoManual.Text.Trim()))
+                rdoManual.Click();
+            else if (option.Equals(rdoUpload.Text.Trim()))
+                rdoUpload.Click();
+        }
+
+        public bool IsHowToAddCommodityPageLoaded()
+        {
+            return secondaryTitle.Text.Contains("Description of the goods")
+                && primaryTitle.Text.Contains("How do you want to add your commodity details?");
+        }
+
+        public void ClickCommodityCodeSearchTab()
+        {
+            btnCommCodeSearch.Click();
+        }
+
+        public bool VerifyCHEDPPCommodityDetails(string code, string description)
+        {
+            return txtDisplayedCHEDPPCommodityCode.Text.Contains(code)
+                && txtDisplayedCHEDPPCommodityDesc.Text.Contains(description);
+        }
+
+        public void SearchEppoCode(string eppoCode)
+        {
+            txtEPPOCode.SendKeys(eppoCode);
+            btnEPPOCodeSearch.Click();
+        }
+
+        public void ClickAddLink(string eppoCode)
+        {
+            lnkAddEPPOCode(eppoCode).Click();
+        }
+
+        public bool VerifyGenusSpeciesEPPOCode(string genus, string eppoCode)
+        {
+            return txtDisplayedSpeciesTable.Text.Contains(genus)
+                && txtDisplayedSpeciesTable.Text.Contains(eppoCode);
+        }
+
+        public void SelctEPPOCode(string eppoCodeCheckBox)
+        {
+            txtCommoditySpecies(eppoCodeCheckBox).Click();
+        }
+
+        public bool IsVarietyAndClassOfCommodityPageLoaded()
+        {
+            return secondaryTitle.Text.Contains("Description of the goods")
+                && primaryTitle.Text.Contains("Variety and class of commodity");
+        }
+
+        public void SelectVariety(string variety, string eppoCode)
+        {
+            new SelectElement(drpVariety(eppoCode)).SelectByText(variety); 
+        }
+
+        public void SelectClass(string classOfEPPO, string eppoCode)
+        {
+            new SelectElement(drpClass(eppoCode)).SelectByText(classOfEPPO);
+        }
+
+        public bool VerifySelectedCommoditiesDisplayed(string firstComm, string secondComm, string firstCode, string secondCode, string firstEPPO, string secondEPPO, string firstGenus, string secondGenus)
+        {
+            return txtSelectedCommodity(firstComm).Text.Trim().Equals(firstComm)
+                && txtSelectedCommodityDetails(firstComm).Text.Contains(firstCode)
+                && txtSelectedCommodityDetails(firstComm).Text.Contains(firstEPPO)
+                && txtSelectedCommodityDetails(firstComm).Text.Contains(firstGenus)
+                && txtSelectedCommodity(secondComm).Text.Trim().Equals(secondComm)
+                && txtSelectedCommodityDetails(secondComm).Text.Contains(secondCode)
+                && txtSelectedCommodityDetails(secondComm).Text.Contains(secondEPPO)
+                && txtSelectedCommodityDetails(secondComm).Text.Contains(secondGenus);
+        }
+
+        public void SelectCommodities(string firstCommCode, string secondCommCode)
+        {
+            chkBoxCommodity(firstCommCode).Click();
+            chkBoxCommodity(secondCommCode).Click();
+        }
+
+        public void EnterCHEDPPNetWeight(string weight)
+        {
+            txtCHEDPPNetWeight.Click();
+            txtCHEDPPNetWeight.SendKeys(weight);
+        }
+
+        public void EnterCHEDPPNumberOfPackages(string numberOfPackages)
+        {
+            txtCHEDPPNumOfPackages.Click();
+            txtCHEDPPNumOfPackages.SendKeys(numberOfPackages);
+        }
+
+        public void SelectCHEDPPPackageType(string packageType)
+        {
+            new SelectElement(drpCHEDPPTypeOfPackages).SelectByText(packageType);
+        }
+
+        public void EnterCHEDPPQuantity(string quantity)
+        {
+            txtCHEDPPQuantity.Click();
+            txtCHEDPPQuantity.SendKeys(quantity);
+        }
+
+        public void SelectCHEDPPQuanityType(string type)
+        {
+            new SelectElement(drpCHEDPPQuantityType).SelectByText(type);
+        }
+
+        public void ClickApplyButton()
+        {
+            btnApply.Click();
         }
     }
 }

@@ -81,5 +81,15 @@ namespace Defra.UI.Tests.Pages.Classes
             txtDepartureTimeMinutes.Clear();
             txtDepartureTimeMinutes.SendKeys(minutes);
         }
+
+        public string GetMeansOfTransportAfterBCP => new SelectElement(ddlMeansOfTransportAfter).AllSelectedOptions.FirstOrDefault()?.Text?.Trim() ?? string.Empty;
+
+        public string GetTransportIdentificationAfterBCP => txtIdentification.GetAttribute("value")?.Trim() ?? string.Empty;
+
+        public string GetTransportDocumentReferenceAfterBCP => txtDocument.GetAttribute("value")?.Trim() ?? string.Empty;
+
+        public string GetDepartureDateFromBCP => $"{txtDepartureDateDay.GetAttribute("value")} {txtDepartureDateMonth.GetAttribute("value")} {txtDepartureDateYear.GetAttribute("value")}".Trim();
+
+        public string GetDepartureTimeFromBCP => $"{txtDepartureTimeHour.GetAttribute("value")}:{txtDepartureTimeMinutes.GetAttribute("value")}".Trim();
     }
 }

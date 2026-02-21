@@ -30,15 +30,15 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement selectedImporterName => _driver.WaitForElement(By.XPath("//*[@id='traders-table-importer']//td[1]"));
         private IWebElement selectedImporterAddress => _driver.WaitForElement(By.XPath("//*[@id='traders-table-importer']//td[2]"));
         private IWebElement selectedImporterCountry => _driver.WaitForElement(By.XPath("//*[@id='traders-table-importer']//td[3]"));
-        private IWebElement verifyConsignorName => _driver.FindElement(By.XPath("//td[@headers='consignor-name']"));
-        private IWebElement verifyConsignorAddress => _driver.FindElement(By.XPath("//td[@headers='consignor-address']"));
-        private IWebElement verifyConsignorCountry => _driver.FindElement(By.XPath("//td[@headers='consignor-country']"));
-        private IWebElement verifyConsigneeName => _driver.FindElement(By.XPath("//td[@headers='consignee-name']"));
-        private IWebElement verifyConsigneeAddress => _driver.FindElement(By.XPath("//td[@headers='consignee-address']"));
-        private IWebElement verifyConsigneeCountry => _driver.FindElement(By.XPath("//td[@headers='consignee-country']"));
-        private IWebElement verifyDestinationName => _driver.FindElement(By.XPath("//td[@headers='place-of-destination-name']"));
-        private IWebElement verifyDestinationAddress => _driver.FindElement(By.XPath("//td[@headers='place-of-destination-address']"));
-        private IWebElement verifyDestinationCountry => _driver.FindElement(By.XPath("//td[@headers='place-of-destination-country']"));
+        private IWebElement verifyConsignorName => _driver.WaitForElement(By.XPath("//td[@headers='consignor-name']"));
+        private IWebElement verifyConsignorAddress => _driver.WaitForElement(By.XPath("//td[@headers='consignor-address']"));
+        private IWebElement verifyConsignorCountry => _driver.WaitForElement(By.XPath("//td[@headers='consignor-country']"));
+        private IWebElement verifyConsigneeName => _driver.WaitForElement(By.XPath("//td[@headers='consignee-name']"));
+        private IWebElement verifyConsigneeAddress => _driver.WaitForElement(By.XPath("//td[@headers='consignee-address']"));
+        private IWebElement verifyConsigneeCountry => _driver.WaitForElement(By.XPath("//td[@headers='consignee-country']"));
+        private IWebElement verifyDestinationName => _driver.WaitForElement(By.XPath("//td[@headers='place-of-destination-name']"));
+        private IWebElement verifyDestinationAddress => _driver.WaitForElement(By.XPath("//td[@headers='place-of-destination-address']"));
+        private IWebElement verifyDestinationCountry => _driver.WaitForElement(By.XPath("//td[@headers='place-of-destination-country']"));
         private IWebElement lnkChange(string section) => _driver.FindElement(By.XPath($"(//h2[normalize-space(text())='{section}']/following::a)[1]"));
         #endregion
 

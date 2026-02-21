@@ -1,7 +1,7 @@
-﻿using Reqnroll.BoDi;
+﻿using Defra.UI.Tests.Pages.Interfaces;
 using NUnit.Framework;
 using Reqnroll;
-using Defra.UI.Tests.Pages.Interfaces;
+using Reqnroll.BoDi;
 
 namespace Defra.UI.Tests.Steps.IPAFF
 {
@@ -95,6 +95,24 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 Console.WriteLine($"Date conversion failed: {ex.Message}. Returning original: {dateString}");
                 return dateString;
             }
+        }
+
+        [When("the user clicks on Download all documents link")]
+        public void WhenTheUserClicksOnDownloadAllDocumentsLink()
+        {
+            documentsPage?.ClickDownloadAllDocumentsLink();
+        }
+
+        [When("the user clicks on Download url")]
+        public void WhenTheUserClicksOnDownloadUrl()
+        {
+            documentsPage?.ClickDownloadUrlLink();
+        }
+
+        [Then("Catch certificate summary url should be displayed under heading Importer")]
+        public void ThenCatchCertificateSummaryUrlIsDisplayedUnderHeadingImporter()
+        {
+            Assert.True(documentsPage?.IsCatchCertificateSummaryUrlDisplayed(), "Catch certificate summary url didn't displayed");
         }
     }
 }

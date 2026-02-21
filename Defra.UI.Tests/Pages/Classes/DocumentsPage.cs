@@ -19,6 +19,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement GetInspectorDocumentType(int index) => _driver.FindElement(By.Id($"additional-document-type-value-{index}"));
         private IWebElement GetInspectorDocumentReference(int index) => _driver.FindElement(By.Id($"additional-document-reference-value-{index}"));
         private IWebElement GetInspectorDocumentDateOfIssue(int index) => _driver.FindElement(By.Id($"additional-document-date-value-{index}"));
+        private IWebElement lnkDownloadAllDocuments=> _driver.FindElement(By.Id("download-all"));
+        private IWebElement lnkDownloadUrl => _driver.FindElement(By.Id("download-url"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -64,6 +66,26 @@ namespace Defra.UI.Tests.Pages.Classes
             var dateOfIssue = GetInspectorDocumentDateOfIssue(index).SafelyGetText();
 
             return (documentType, documentReference, dateOfIssue);
+        }
+
+        public void ClickDownloadAllDocumentsLink()
+        {
+            lnkDownloadAllDocuments.Click();
+        }
+
+        public bool IsCatchCertificateSummaryUrlDisplayed()
+        {
+            return lnkDownloadUrl.Text.Equals("");
+        }
+
+        public void ClickDownloadUrlLink()
+        {
+            lnkDownloadUrl.Click();
+        }
+
+        public bool IsSingleCertificagteDownloaded(string chedReference)
+        {
+            return Utils.IsDownloaded(chedReference, "zip");
         }
     }
 }

@@ -22,6 +22,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ReqnrollObsoleteCodeBehindFiles Remove="Feature\CreateNotifications-CHEDP - Copy.feature.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <SpecFlowObsoleteCodeBehindFiles Remove="Feature\UAT\SUS\CompleteRegistration.feature.cs" />
     <SpecFlowObsoleteCodeBehindFiles Remove="Feature\Update Microchip Information - Copy.feature.cs" />
   </ItemGroup>
@@ -128,9 +132,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Feature\CreateNotifications-CHEDPP.feature.cs">
+      <DependentUpon>CreateNotifications-CHEDPP.feature</DependentUpon>
+    </Compile>
     <Compile Update="Feature\UAT\SUS\DataPreparation.feature.cs">
       <DependentUpon>DataPreparation.feature</DependentUpon>
     </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ReqnrollFeatureFiles Update="Feature\CreateNotifications-CHEDPP.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </ReqnrollFeatureFiles>
   </ItemGroup>
 
   <ItemGroup>

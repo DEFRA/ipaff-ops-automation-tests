@@ -7,5 +7,6 @@ namespace Defra.UI.Tests.Pages.Interfaces
     {
         bool IsPageLoaded();
         void EnterCPHNumber(string cphNumber);
+        string GetCPHNumber { get; }
     }
 }
