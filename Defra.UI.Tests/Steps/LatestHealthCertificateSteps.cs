@@ -1,5 +1,6 @@
 ﻿using Defra.UI.Tests.Pages.Classes;
 using Defra.UI.Tests.Pages.Interfaces;
+using Defra.UI.Tests.Tools;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using Reqnroll;
@@ -67,7 +68,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             var filename = name + format;
             latestHealthCertificatePage?.AddHealthCertificate(filename);
-            _scenarioContext.Add("HealthCertificateFileName", filename);
+            _scenarioContext["HealthCertificateFileName"] = filename;
         }
 
         [Then("the Veterinary Health Certificate {string} {string} is uploaded successfully")]
@@ -123,5 +124,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var dateOfIssue = latestHealthCertificatePage?.GetDocumentIssueDate();
             _scenarioContext["LatestHealthCertificateDocumentDateOfIssue"] = dateOfIssue;
         }
+
+        [Then("there are no Latest Health Certificate details copied from the original notification")]
+        public void ThenThereAreNoLatestHealthCertificateDetailsCopiedFromTheOriginalNotification()
+        {
+            bool documentsArePresent = latestHealthCertificatePage?.AreHealthCertificatesPresent() ?? false;
+
+            Assert.False(documentsArePresent,
+                "Latest Health Certificate should not be copied from the original notification, but documents were found on the page");
+        }
+
     }
 }

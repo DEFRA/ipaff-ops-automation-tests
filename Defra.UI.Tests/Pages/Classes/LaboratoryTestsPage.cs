@@ -44,9 +44,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement lnkLabTestSelect => _driver.FindElement(By.Id("choose-laboratory-test-0"));
         private IWebElement txtLabTestName => _driver.FindElement(By.XPath("//*[@class='govuk-table__body']/tr[1]/td[1]"));
         private IReadOnlyCollection<IWebElement> reviewTableFirstRow => _driver.FindElements(By.XPath("//*[@class='govuk-table__body']"));
-        private IWebElement legendReasonForTesting => _driver.FindElement(By.XPath("//legend[contains(@class, 'govuk-fieldset__legend--m') and contains(text(), 'Reason for testing')]"));
-        private IWebElement headingSelectCommodity => _driver.FindElement(By.XPath("//h2[@class='govuk-heading-m' and contains(text(), 'Select the commodity sampled')]"));
-        private IWebElement headingCommodityToTest => _driver.FindElement(By.XPath("//h2[@class='govuk-heading-s govuk-!-margin-bottom-1  ' and contains(text(), 'Commodity to be tested')]"));
+        private IWebElement legendReasonForTesting => _driver.WaitForElement(By.XPath("//legend[contains(@class, 'govuk-fieldset__legend--m') and contains(text(), 'Reason for testing')]"));
+        private IWebElement headingSelectCommodity => _driver.WaitForElement(By.XPath("//h2[@class='govuk-heading-m' and contains(text(), 'Select the commodity sampled')]"));
+        private IWebElement headingCommodityToTest => _driver.WaitForElement(By.XPath("//h2[@class='govuk-heading-s govuk-!-margin-bottom-1  ' and contains(text(), 'Commodity to be tested')]"));
         private IWebElement txtSampleDateDay => _driver.FindElement(By.Id("sample-date-day"));
         private IWebElement txtSampleDateMonth => _driver.FindElement(By.Id("sample-date-month"));
         private IWebElement txtSampleDateYear => _driver.FindElement(By.Id("sample-date-year"));
@@ -55,6 +55,11 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement lnkAddAnotherTest => _driver.FindElement(By.Id("AddAnotherTest"));
         private IWebElement GetLabTestResultElement(int index) => _driver.FindElement(By.XPath($"//tr[@id='lab-tests-row-{index}']//td[6]"));
         private IReadOnlyCollection<IWebElement> labTestRows => _driver.FindElements(By.XPath("//table[@id='LabTestsTable']//tbody//tr[contains(@id, 'lab-tests-row-')]"));
+        private IWebElement GetLabTestCommodityCodeCell(string commodityCode) => _driver.FindElement(By.XPath($"//table[@aria-label='select the commodity sampled table']//tbody//td[text()='{commodityCode}']"));
+        private IWebElement GetLabTestDescriptionCell(string commodityCode) => _driver.FindElement(By.XPath($"//table[@aria-label='select the commodity sampled table']//tbody//tr[td[text()='{commodityCode}']]//td[2]"));
+        private IWebElement GetLabTestSpeciesCell(string commodityCode) => _driver.FindElement(By.XPath($"//table[@aria-label='select the commodity sampled table']//tbody//tr[td[text()='{commodityCode}']]//td[3]"));
+        private IWebElement GetLabTestSelectHyperlink(string commodityCode) => _driver.FindElement(By.XPath($"//table[@aria-label='select the commodity sampled table']//tbody//tr[td[text()='{commodityCode}']]//a[contains(@id, 'choose-commodity-')]"));
+        private IReadOnlyCollection<IWebElement> labTestCategoryRows => _driver.FindElements(By.XPath("//table[@aria-label='choose lab test table']//tbody//tr"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -315,6 +320,178 @@ namespace Defra.UI.Tests.Pages.Classes
                 return true;
             }
             catch (NoSuchElementException)
+            {
+                return false;
+            }
+        }
+
+        public bool VerifyCommodityCodeDisplayedInLabTests(string commodityCode)
+        {
+            try
+            {
+                var element = GetLabTestCommodityCodeCell(commodityCode);
+                return element.Displayed && element.Text.Trim().Equals(commodityCode, StringComparison.OrdinalIgnoreCase);
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
+        }
+
+        public bool VerifyDescriptionDisplayedInLabTests(string commodityCode, string description)
+        {
+            try
+            {
+                var element = GetLabTestDescriptionCell(commodityCode);
+                return element.Displayed && element.Text.Trim().Contains(description, StringComparison.OrdinalIgnoreCase);
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
+        }
+
+        public bool VerifySpeciesDisplayedInLabTests(string commodityCode, string species)
+        {
+            try
+            {
+                var element = GetLabTestSpeciesCell(commodityCode);
+                return element.Displayed && element.Text.Trim().Contains(species, StringComparison.OrdinalIgnoreCase);
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
+        }
+
+        public bool VerifySelectHyperlinkDisplayedInLabTests(string commodityCode)
+        {
+            try
+            {
+                var element = GetLabTestSelectHyperlink(commodityCode);
+                return element.Displayed && element.Text.Trim().Equals("Select", StringComparison.OrdinalIgnoreCase);
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
+        }
+
+        public bool VerifyLabTestsFilteredBySubcategory(string subcategory)
+        {
+            try
+            {
+                if (labTestCategoryRows == null || labTestCategoryRows.Count == 0)
+                {
+                    return false;
+                }
+
+                foreach (var row in labTestCategoryRows)
+                {
+                    try
+                    {
+                        // Get the second cell (Laboratory test category column)
+                        var categoryCell = row.FindElement(By.XPath(".//td[2]"));
+                        var categoryText = categoryCell.Text.Trim();
+
+                        if (!categoryText.Equals(subcategory, StringComparison.OrdinalIgnoreCase))
+                        {
+                            return false;
+                        }
+                    }
+                    catch (NoSuchElementException)
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public bool VerifyAnalysisTypeDropdownHasOptions()
+        {
+            try
+            {
+                var selectElement = new SelectElement(selectAnalysisType);
+                var options = selectElement.Options;
+
+                // Should have at least 2 options to allow selection
+                if (options.Count < 2)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public bool VerifyLaboratoryDropdownHasOptions()
+        {
+            try
+            {
+                var selectElement = new SelectElement(selectLabTest);
+                var options = selectElement.Options;
+
+                // Should have at least 2 options (including the "Select laboratory" placeholder)
+                if (options.Count < 2)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public bool VerifySampleTypeDropdownHasOptions()
+        {
+            try
+            {
+                var selectElement = new SelectElement(selectSamplesType);
+                var options = selectElement.Options;
+
+                // Should have at least 2 options (including the "Select sample type" placeholder)
+                if (options.Count < 2)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public bool VerifyStorageTemperatureDropdownHasOptions()
+        {
+            try
+            {
+                var selectElement = new SelectElement(selectStorageTemperature);
+                var options = selectElement.Options;
+
+                // Should have at least 2 options (including the "Select storage temperature" placeholder)
+                if (options.Count < 2)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception)
             {
                 return false;
             }

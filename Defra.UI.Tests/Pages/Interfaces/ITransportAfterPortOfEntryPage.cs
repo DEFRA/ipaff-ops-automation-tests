@@ -12,5 +12,10 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void EnterTransportDocumentReferenceAfterBCP(string documentRef);
         void EnterDepartureDateFromBCP(DateTime departureDate);
         void EnterDepartureTimeFromBCP(string time);
+        string GetMeansOfTransportAfterBCP { get; }
+        string GetTransportIdentificationAfterBCP { get; }
+        string GetTransportDocumentReferenceAfterBCP { get; }
+        string GetDepartureDateFromBCP { get; }
+        string GetDepartureTimeFromBCP { get; }
     }
 }

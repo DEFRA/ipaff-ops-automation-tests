@@ -1,6 +1,7 @@
 ﻿using Bogus;
 using OpenQA.Selenium;
 using Reqnroll;
+using System.Diagnostics;
 using System.Globalization;
 
 namespace Defra.UI.Tests.Tools
@@ -71,7 +72,7 @@ namespace Defra.UI.Tests.Tools
             driver.Wait(2);
         }
 
-        public static void ScrollAndClick(this IWebElement element, IWebDriver driver)
+        public static void ScrollAndClick(this IWebDriver driver, IWebElement element)
         {
             ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView()", element);
             element.Click();
@@ -80,22 +81,57 @@ namespace Defra.UI.Tests.Tools
         public static void ScrollToElement(this IWebElement element, IWebDriver driver)
         {
             ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView()", element);
+        }       
+        
+        public static (string day, string month, string year) GetDayMonthYear(string dateString)
+        {
+            if (string.IsNullOrWhiteSpace(dateString))
+                throw new ArgumentException("Date string cannot be empty.", nameof(dateString));
+
+            dateString = dateString.Trim().ToLowerInvariant();
+
+            DateTime date =
+                dateString == "today" ? DateTime.Today :
+                dateString == "yesterday" ? DateTime.Today.AddDays(-1) :
+                dateString == "tomorrow" ? DateTime.Today.AddDays(1) :
+                dateString == "future" ? DateTime.Today.AddDays(10) :
+                dateString == "past" ? DateTime.Today.AddDays(-10) :
+                dateString.StartsWith("future") ? DateTime.Today.AddDays(int.Parse(dateString.Replace("future", ""))) :
+                dateString.StartsWith("past") ? DateTime.Today.AddDays(-int.Parse(dateString.Replace("past", ""))) :
+                DateTime.ParseExact(
+                    dateString,
+                    new[] { "dd/MM/yyyy", "dd-MM-yyyy", "d/M/yyyy", "d-M-yyyy" },
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.None
+                );
+
+            string day = date.ToString("dd");
+            string month = date.ToString("MM");
+            string year = date.Year.ToString();
+
+            return (day, month, year);
         }
 
-        public static void AppendStringToScenarioContextArray(ScenarioContext context, string key, string value)
+        public static bool IsDownloaded(string fileName, string extension)
         {
-            if (context.TryGetValue(key, out var existing) && existing is string[] current)
+            var downloadedFilePath = Path.Combine(Path.GetTempPath(), "automation-downloads", $"{fileName}.{extension}");
+
+            var timeout = TimeSpan.FromSeconds(30);
+
+            var stopwatch = Stopwatch.StartNew();
+
+            while (stopwatch.Elapsed < timeout)
             {
-                var updated = new string[current.Length + 1];
-                Array.Copy(current, updated, current.Length);
-                updated[current.Length] = value;
-                context[key] = updated;
+                if (File.Exists(downloadedFilePath))
+                {
+                    return true;
+                }
+
+                Thread.Sleep(500);
             }
-            else
-            {
-                context[key] = new[] { value };
-            }
+            return false;
         }
+
 
         #region WebDriver Extension Methods for Element Safety
 
@@ -205,6 +241,31 @@ namespace Defra.UI.Tests.Tools
                 {
                     scenarioContext.Remove(key);
                 }
+            }
+        }
+
+        public static T GetFromContext<T>(this ScenarioContext context, string key, T defaultValue = default!)
+        {
+            if (context.ContainsKey(key))
+            {
+                return context.Get<T>(key);
+            }
+
+            return defaultValue;
+        }
+
+        public static void AppendStringToScenarioContextArray(this ScenarioContext context, string key, string value)
+        {
+            if (context.TryGetValue(key, out var existing) && existing is string[] current)
+            {
+                var updated = new string[current.Length + 1];
+                Array.Copy(current, updated, current.Length);
+                updated[current.Length] = value;
+                context[key] = updated;
+            }
+            else
+            {
+                context[key] = new[] { value };
             }
         }
 

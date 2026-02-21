@@ -50,5 +50,17 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             //No Implementation
         }
+
+        [Then("the user verified the banner message {string}")]
+        public void ThenTheUserVerifiedTheBannerMessage(string message)
+        {
+            Assert.True(confirmationPage?.VerifyBannerMessage(message), $"Banner doesn't contain a message '{message}'");
+        }
+
+        [When("the user clicks Return to your dashboard link")]
+        public void WhenTheUserClicksReturnToYourDashboardLink()
+        {
+            confirmationPage?.ClickReturnToDashboardLink();
+        }
     }
 }

@@ -9,5 +9,6 @@
         void SelectContactAddressRadio();
         bool IsContactAddressRadioButtonSelected();
         string GetDraftCHEDRefNumber { get; }
+        bool IsFirstContactAddressSelected();
     }
 }

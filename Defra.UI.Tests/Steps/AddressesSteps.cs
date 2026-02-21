@@ -3,6 +3,7 @@ using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
 using AventStack.ExtentReports.Gherkin.Model;
+using Defra.UI.Tests.Tools;
 
 namespace Defra.UI.Tests.Steps.IPAFF
 {
@@ -32,6 +33,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             addressesPage?.ClickAddConsignor();
         }
 
+        [Then("the Consignor or exporter should be copied from the original notification")]
         [Then("the chosen consignor or exporter should be displayed")]
         public void ThenTheChosenConsignorOrExporterShouldBeDisplayed()
         {
@@ -55,6 +57,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             addressesPage?.ClickAddConsignee();
         }
 
+        [Then("the Consignee should be copied from the original notification")]
         [Then("the chosen consignee should be displayed")]
         public void ThenTheChosenConsigneeShouldBeDisplayed()
         {
@@ -82,9 +85,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the importer should be populated with the same details as the consignee {string} on the Addresses page")]
         public void ThenTheImporterShouldBePopulatedWithTheSameDetailsAsTheConsigneeOnTheAddressesPage(string consigneeName)
         {
+            _scenarioContext["ConsigneeName"] = consigneeName;
             Assert.True(addressesPage?.VerifySelectedConsignee(consigneeName));
         }
 
+        [Then("the Importer should be copied from the original notification")]
         [Then("the importer should be populated with the same details as the consignee")]
         public void ThenTheImporterShouldBePopulatedWithTheSameDetailsAsTheConsignee()
         {
@@ -93,9 +98,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var consigneeCountry = _scenarioContext.Get<string>("ConsigneeCountry");
 
             // Since importer uses same data as consignee, store it in context
-            _scenarioContext.Add("ImporterName", consigneeName);
-            _scenarioContext.Add("ImporterAddress", consigneeAddress);
-            _scenarioContext.Add("ImporterCountry", consigneeCountry);
+            _scenarioContext["ImporterName"] = consigneeName;
+            _scenarioContext["ImporterAddress"] = consigneeAddress;
+            _scenarioContext["ImporterCountry"] = consigneeCountry;
 
             // Verify importer shows same details as consignee
             Assert.True(addressesPage?.VerifySelectedImporter(consigneeName, consigneeAddress, consigneeCountry),
@@ -148,7 +153,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserClicksSameAsConsigneeForPlaceOfDestination()
         {
             addressesPage?.ClickPlaceOfDestinationSameAsConsignee();
-            _scenarioContext["PlaceOfDestinationDetails"] = addressesPage?.GetSelectedPlaceOfDestination();
+            _scenarioContext["PlaceOfDestinationDetails"]=addressesPage?.GetSelectedPlaceOfDestination();
         }
 
         [When(@"the user clicks on Change link under '(.*)'")]
@@ -157,6 +162,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             addressesPage?.ClickChangeInAddressPage(link);
         }
 
+        [Then("the Place of destination should be copied from the original notification")]
         [Then("the place of destination should be populated with the same details as the consignee")]
         public void ThenThePlaceOfDestinationShouldBePopulatedWithTheSameDetailsAsTheConsignee()
         {

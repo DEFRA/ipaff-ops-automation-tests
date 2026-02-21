@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
+using Defra.UI.Tests.Tools;
 
 namespace Defra.UI.Tests.Steps.IPAFF
 {
@@ -20,6 +21,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext = context;
         }
 
+        [Then("What is the main reason for importing the consignment? page should be displayed")]
+        public void ThenWhatIsTheMainReasonForImportingTheConsignmentPageShouldBeDisplayed()
+        {
+            Assert.True(reasonForImportPage?.IsPageLoaded(), "About the consignment What is the main reason for importing the consignment? page not loaded");
+        }
 
         [Then("What is the main reason for importing the consignment? page should be displayed with radio buttons")]
         public void ThenWhatIsTheMainReasonForImportingTheConsignmentPageShouldBeDisplayedWithRadioButtons()
@@ -39,7 +45,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserSelectsRadioOption(string reasonForImport)
         {
             reasonForImportPage?.SelectReasonForImport(reasonForImport);
-            _scenarioContext.Add("MainReasonForImport", reasonForImport);
+            _scenarioContext["MainReasonForImport"]= reasonForImport;
         }
 
         [When("the user changes the main reason for importing to {string} and the sub-option {string}")]
@@ -66,24 +72,24 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserChoosesBCPTransitedCountryAndDestinationCountry(string exitBCP, string transitedCountry, string destinationCountry)
         {
             reasonForImportPage?.SelectExitBorderControlPost(exitBCP);
-            _scenarioContext.Add("ExitBorderControlPost", exitBCP);
+            _scenarioContext["ExitBorderControlPost"] = exitBCP;
 
             var futureDate = DateTime.Now.AddDays(7);
             reasonForImportPage?.EnterConsignmentLeavingDate(futureDate.Day.ToString(), futureDate.Month.ToString(), futureDate.Year.ToString());
             var leavingFromGBDate = futureDate.ToString("dd MMMM yyyy");
-            _scenarioContext.Add("ConsignmentLeavingFromGBDate", leavingFromGBDate);
+            _scenarioContext["ConsignmentLeavingFromGBDate"] = leavingFromGBDate;
 
             var hours = futureDate.Hour.ToString();
             var minutes = futureDate.Minute.ToString();
             var formattedTime = futureDate.ToString("HH:mm");
             reasonForImportPage?.EnterConsignmentLeavingTime(hours, minutes);
-            _scenarioContext.Add("ConsignmentLeavingFromGBTime", formattedTime);
+            _scenarioContext["ConsignmentLeavingFromGBTime"] = formattedTime;
 
             reasonForImportPage?.SelectTransitedCountry(transitedCountry);
-            _scenarioContext.Add("TransitedCountry", transitedCountry);
+            _scenarioContext["TransitedCountry"] = transitedCountry;
 
             reasonForImportPage?.SelectDestinationCountry(destinationCountry);
-            _scenarioContext.Add("DestinationCountry", destinationCountry);
+            _scenarioContext["DestinationCountry"] = destinationCountry;
         }
 
         [Then("What is the main reason for importing the animals? page should be displayed with radio buttons")]
@@ -97,7 +103,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserChoosesDestinationCountry(string transhipmentCountry)
         {
             reasonForImportPage?.SelectTranshipmentDestination(transhipmentCountry);
-            _scenarioContext.Add("TranshipmentDestinationCountry", transhipmentCountry);
+            _scenarioContext["TranshipmentDestinationCountry"] = transhipmentCountry;
         }
 
         [When("the user enters the date and time the consignment will leave Great Britain")]
@@ -106,15 +112,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var leavingFromGBDate = reasonForImportPage?.EnterConsignmentDepartureDate();
             var leavingFromGBTime = reasonForImportPage?.EnterConsignmentDepartureTime();
 
-            _scenarioContext.Add("ConsignmentLeavingFromGBDate", leavingFromGBDate);
-            _scenarioContext.Add("ConsignmentLeavingFromGBTime", leavingFromGBTime);
+            _scenarioContext["ConsignmentLeavingFromGBDate"] = leavingFromGBDate;
+            _scenarioContext["ConsignmentLeavingFromGBTime"] = leavingFromGBTime;
         }
 
         [When("the user enters {string} as the Point of exit")]
         public void WhenTheUserEntersAsThePointOfExit(string placeOfExit)
         {
             reasonForImportPage?.AddPlaceOfExit(placeOfExit);
-            _scenarioContext.Add("PlaceOfExit", placeOfExit);
+            _scenarioContext["PlaceOfExit"] = placeOfExit;
         }
 
         [When("the user enters exit date {string} days from today")]
@@ -125,14 +131,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             var exitDate = DateTime.Now.AddDays(days);
             var formattedExitDate = exitDate.ToString("dd MMMM yyyy");
-            _scenarioContext.Add("ExitDate", formattedExitDate);
+            _scenarioContext["ExitDate"] = formattedExitDate;
         }
 
         [When("the user selects exit BCP {string}")]
         public void WhenTheUserSelectsExitBCP(string exitBCP)
         {
             reasonForImportPage?.SelectExitBCPBasedOnContext(exitBCP);
-            _scenarioContext.Add("ExitBCP", exitBCP);
+            _scenarioContext["ExitBCP"] = exitBCP;
         }
 
         [When("the user verifies {string} radio button exists with {int} sub-options for {string}")]
@@ -179,7 +185,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserSelectsDestinationCountry(string destinationCountry)
         {
             reasonForImportPage?.SelectDestinationCountryBasedOnContext(destinationCountry);
-            _scenarioContext.Add("DestinationCountry", destinationCountry);
+            _scenarioContext["DestinationCountry"] = destinationCountry;
         }
 
         [Then("the user verifies and enters any missing data on the Main reason for importing the consignment page")]
@@ -190,6 +196,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 _scenarioContext["IsRegionOfOriginCodeRequired"] = reasonForImportRadio;
             else
                 WhenTheUserSelectsRadioOption("Internal market");
+        }
+
+        [Then("the user verifies {string} radio button exists with the sub-option {string}")]
+        public void ThenTheUserVerifiesRadioButtonWithSuboption(String mainOption, String subOptions)
+        {
+            Assert.IsTrue(reasonForImportPage?.VerifySubOption(mainOption, subOptions), "The " + subOptions + " are not present under " + mainOption);
         }
     }
 }

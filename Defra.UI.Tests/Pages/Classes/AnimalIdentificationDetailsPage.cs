@@ -24,6 +24,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtHorseName => _driver.FindElement(By.XPath("//input[contains(@id, 'horse_name')]"));
         private IWebElement txtMicrochipNumber => _driver.FindElement(By.XPath("//input[contains(@id, 'microchip')]"));
         private IWebElement txtPassportNumber => _driver.FindElement(By.XPath("//input[contains(@id, 'passport')]"));
+        private IWebElement txtEarTag => _driver.FindElement(By.XPath("//input[contains(@id, 'ear_tag')]"));
+        private IWebElement lblNumberOfAnimals => _driver.FindElement(By.XPath("//table[@id='commodities-overview']//th[text()='Number of animals']/parent::tr/parent::thead/following-sibling::tbody//td[4]"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -67,6 +69,19 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             txtPassportNumber.Clear();
             txtPassportNumber.SendKeys(passportNumber);
+        }
+
+        public void EnterEarTag(string earTag)
+        {
+            txtEarTag.Clear();
+            txtEarTag.SendKeys(earTag);
+        }
+
+        public string GetEarTag => txtEarTag.GetAttribute("value")?.Trim() ?? string.Empty;
+
+        public string GetNumberOfAnimals()
+        {
+            return lblNumberOfAnimals.Text.Trim();
         }
     }
 }

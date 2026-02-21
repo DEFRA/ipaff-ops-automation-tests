@@ -1,8 +1,10 @@
-﻿using Reqnroll.BoDi;
+﻿using Defra.UI.Tests.Pages.Classes;
+using Defra.UI.Tests.Pages.Interfaces;
+using Defra.UI.Tests.Tools;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using Reqnroll;
-using Defra.UI.Tests.Pages.Interfaces;
+using Reqnroll.BoDi;
 
 namespace Defra.UI.Tests.Steps.IPAFF
 {
@@ -32,7 +34,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserEntersTheCPHNumber(string cphNumber)
         {
             countyParishHoldingPage?.EnterCPHNumber(cphNumber);
-            _scenarioContext.Add("CPHnumber", cphNumber);
+            _scenarioContext["CPHnumber"] = cphNumber;
+        }
+
+        [Then("the CPH number should not be copied from the original notification")]
+        public void ThenTheCPHNumberShouldNotBeCopiedFromTheOriginalNotification()
+        {
+            string actualCPHNumber = countyParishHoldingPage?.GetCPHNumber ?? string.Empty;
+
+            Assert.That(actualCPHNumber, Is.Empty,
+                $"CPH Number should not be copied from the original notification, but found '{actualCPHNumber}'");           
         }
     }
 }

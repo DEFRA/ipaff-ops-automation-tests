@@ -11,5 +11,6 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void ClickCountriesTheConsignmentWillTravelThroughLink();
         void ClickLink(string link);
         string GetNotificationVersion();
+        string GetTaskStatus(string taskName);
     }
 }

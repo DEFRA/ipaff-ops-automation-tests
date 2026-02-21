@@ -13,7 +13,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IObjectContainer _objectContainer;
 
         #region Page Objects
-        private IWebElement pageTitle => _driver.FindElement(By.XPath("//*[@class=' govuk-heading-xl heading-with-help']"));
+        private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//*[@class=' govuk-heading-xl heading-with-help']"));
         private IWebElement btnSubmitDecision => _driver.WaitForElement(By.Id("submit-decision"));
         private IWebElement inputDay => _driver.WaitForElement(By.Id("date-of-checks-day"));
         private IWebElement inputMonth => _driver.WaitForElement(By.Id("date-of-checks-month"));
@@ -33,6 +33,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private By GetLaboratoryTestSampleUseByDateBy(int index) => By.XPath($"//tr[@id='laboratory-test-sample-use-by-date-{index}']//td[contains(@class, 'check-status')]");
         private By GetLaboratoryTestReleasedDateBy(int index) => By.XPath($"//tr[@id='laboratory-test-released-date-{index}']//td[contains(@class, 'check-status')]");
         private By GetLaboratoryTestConclusionBy(int index) => By.XPath($"//tr[@id='laboratory-test-conclusion-{index}']//td[contains(@class, 'check-status')]");
+        private By laboratoryTestDetailsRowsBy => By.XPath("//tr[starts-with(@id, 'laboratory-test-')]");
 
         // Border Control Post
         private IWebElement borderControlPostReference =>
@@ -44,6 +45,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private By exitBCPBy => By.XPath("//tr[@id='decision/temporaryexitbip']//td[contains(@class, 'check-status')]");
         private By transitExitBCPBy => By.XPath("//tr[@id='decision/transitexitbip']//td[contains(@class, 'check-status')]");
         private By transitDestinationCountryBy => By.XPath("//tr[@id='decision/transitdestinationcountry']//td[contains(@class, 'check-status')]");
+        private By lblRefusalReason => By.XPath("//*[@id='decision/reasonsforrefusal']/td[1]");
 
         // Seal Numbers
         private IWebElement sealNumbersStatus => _driver.FindElement(By.Id("notifications-not-found"));
@@ -56,6 +58,7 @@ namespace Defra.UI.Tests.Pages.Classes
         // Decision Locators (CHED-specific)
         private By certifiedForBy => By.XPath("//td[@id='certified_for']//following-sibling::td");
         private By consignmentUseBy => By.XPath("//tr[@id='decision/consignmentacceptable']//td[contains(@class, 'check-status')]");
+        private By decisionSubOption => By.XPath("//*[@id='decision-row-2']/td[2]");
 
         // Additional Documents Locators
         private By accompanyingDocumentsTableRowsBy => By.XPath("//table[@id='accompanying-documents-table']//tbody//tr");
@@ -475,6 +478,11 @@ namespace Defra.UI.Tests.Pages.Classes
             return SafelyGetElementTextByLocator(transitDestinationCountryBy);
         }
 
+        public string? GetRefusalReason()
+        {
+            return SafelyGetElementTextByLocator(lblRefusalReason);
+        }
+       
         // CHED-A specific
         public string? GetCertifiedFor()
         {
@@ -485,6 +493,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public string? GetConsignmentUse()
         {
             return SafelyGetElementTextByLocator(consignmentUseBy);
+        }
+        
+        public string? GetDecisionSubOption()
+        {
+            return SafelyGetElementTextByLocator(decisionSubOption);
         }
 
         // Controlled Destination
@@ -642,6 +655,40 @@ namespace Defra.UI.Tests.Pages.Classes
             return SafelyGetElementTextByLocator(GetLaboratoryTestConclusionBy(index));
         }
 
+        public bool AreLaboratoryTestDetailsDisplayed()
+        {
+            try
+            {
+                // Check if any laboratory test detail rows exist (analysis type, commodity sampled, test name, etc.)
+                var labTestDetailRows = SafelyFindElements(laboratoryTestDetailsRowsBy);
+
+                if (labTestDetailRows.Count > 0)
+                {
+                    return true;
+                }
+
+                // Also check if the laboratory tests reason row exists (not just "Are laboratory tests required?")
+                try
+                {
+                    var reasonElement = _driver.FindElement(laboratoryTestsReasonBy);
+                    if (reasonElement.Displayed)
+                    {
+                        return true;
+                    }
+                }
+                catch (NoSuchElementException)
+                {
+                    // Reason row doesn't exist - expected when no lab tests
+                }
+
+                return false;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         // Decision - Temporary Admission Horses
         public string? GetDeadline()
         {
@@ -651,10 +698,10 @@ namespace Defra.UI.Tests.Pages.Classes
                 if (string.IsNullOrEmpty(text))
                     return text;
 
-                // Convert "14 January 2026" to "d MMMM yyyy" format
+                // Convert "14 January 2026" to "dd MMMM yyyy" format
                 if (DateTime.TryParse(text, out DateTime date))
                 {
-                    return date.ToString("d MMMM yyyy");
+                    return date.ToString("dd MMMM yyyy");
                 }
                 return text;
             }

@@ -17,13 +17,13 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
         private IWebElement secondaryTitle => _driver.WaitForElement(By.Id("page-secondary-title"), true);
         private IWebElement lnkSearchForApproved => _driver.FindElement(By.Name("add-establishment"));
-        private IWebElement countryDropdown => _driver.FindElement(By.Id("establishment-country-code"));
+        private IWebElement countryDropdown => _driver.WaitForElement(By.Id("establishment-country-code"));
         private IWebElement typeDropdown => _driver.FindElement(By.Id("establishment-type"));
         private IWebElement statusDropdown => _driver.FindElement(By.Id("establishment-status"));
         private IReadOnlyCollection<IWebElement> lnkSelectEstablishment => _driver.FindElements(By.Id("select-establishment-1"));
         private IWebElement establishmentSearchResultFirstName => _driver.FindElement(By.XPath("//*[@id='establishments-search-results-row-1']/td[1]"));
         private IReadOnlyCollection<IWebElement> establishmentSearchResultTable => _driver.FindElements(By.XPath("//*[@id='establishments-table']/tbody"));
-        private IWebElement selectedEstablishment => _driver.FindElement(By.XPath("//*[@id='establishments-row-1']/td[1]"));
+        private IWebElement selectedEstablishment => _driver.WaitForElement(By.XPath("//*[@id='establishments-row-1']/td[1]"));
         private IWebElement txtapprovedEstablishmentCountry => _driver.FindElement(By.XPath("//*[@id='establishments-row-1']/td[2]"));
         private IWebElement txtapprovedEstablishmentType => _driver.FindElement(By.XPath("//*[@id='establishments-row-1']/td[3]"));
         private IWebElement txtapprovedEstablishmentApprovalNum => _driver.FindElement(By.XPath("//*[@id='establishments-row-1']/td[4]"));

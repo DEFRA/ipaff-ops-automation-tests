@@ -9,13 +9,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
     public class NotificationHubSteps
     {
         private readonly IObjectContainer _objectContainer;
+        private readonly ScenarioContext _scenarioContext;
 
         private INotificationHubPage? notificationHubPage => _objectContainer.IsRegistered<INotificationHubPage>() ? _objectContainer.Resolve<INotificationHubPage>() : null;
 
 
-        public NotificationHubSteps(IObjectContainer container)
+        public NotificationHubSteps(IObjectContainer container, ScenarioContext context)
         {
             _objectContainer = container;
+            _scenarioContext = context;
         }
 
 
@@ -62,6 +64,23 @@ namespace Defra.UI.Tests.Steps.IPAFF
             string actualVersion = notificationHubPage?.GetNotificationVersion() ?? string.Empty;
             Assert.That(actualVersion, Is.EqualTo(expectedVersion),
                 $"Expected notification version to be '{expectedVersion}' but was '{actualVersion}'");
+        }
+
+        [When("the user records the new CHED Reference number")]
+        [Then("the user records the new CHED Reference number")]
+        public void WhenTheUserRecordsTheNewCHEDReferenceNumber()
+        {
+            string refNumber = notificationHubPage?.GetRefNumber ?? string.Empty;
+            Assert.False(string.IsNullOrEmpty(refNumber), "Unable to retrieve the CHED Reference number from the Notification Hub page");
+            _scenarioContext["NewCHEDReferenceNumber"] = refNumber;
+        }
+
+        [Then(@"the '(.*)' task should have the status '(.*)'")]
+        public void ThenTheTaskShouldHaveTheStatus(string taskName, string expectedStatus)
+        {
+            var actualStatus = notificationHubPage?.GetTaskStatus(taskName) ?? string.Empty;
+            Assert.That(actualStatus, Is.EqualTo(expectedStatus).IgnoreCase,
+                $"Expected task '{taskName}' to have status '{expectedStatus}', but found '{actualStatus}'");
         }
     }
 }

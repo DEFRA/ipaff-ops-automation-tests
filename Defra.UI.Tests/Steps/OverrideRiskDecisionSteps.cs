@@ -32,5 +32,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             overrideRiskDecisionPage?.ClickYesOverrideRiskDecisionButton();
         }
+
+        [Then("the user selects {string} option for override decision")]
+        public void ThenTheUserSelectsOption(string option)
+        {
+            overrideRiskDecisionPage?.ClickOverrideDecisionOption(option);
+        }
     }
 }

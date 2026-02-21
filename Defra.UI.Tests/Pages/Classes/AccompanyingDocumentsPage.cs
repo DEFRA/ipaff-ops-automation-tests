@@ -26,6 +26,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement datePickerIcon => _driver.WaitForElement(By.ClassName("date-picker__reveal__icon"));
         private IWebElement nextMonthButton => _driver.WaitForElement(By.ClassName("date-picker__button__next-month"));
         private IWebElement firstDateOfTheMonth => _driver.WaitForElement(By.XPath("//td/button[text()='1']"));
+        private IWebElement selectDate(string previousDay) => _driver.FindElement(By.XPath($"//td/button[text()='{previousDay}' and not(contains(@class, 'inactive'))]"));
         private By documentDateBy => By.XPath("//div[contains(@id,'additional-document-date-value')]");
         private IWebElement documentDate => _driver.WaitForElement(documentDateBy);
         private IWebElement addAttachmentLink => _driver.WaitForElement(By.XPath("//button[contains(@Name,'add-attachment')]"));
@@ -33,7 +34,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement lnkCancel => _driver.WaitForElement(By.XPath("//a[contains(text(),'Cancel')]"));
         private IWebElement lnkAddADocument => _driver.WaitForElement(By.Id("button-display-additional-document-row"));
         private List<IWebElement> documentRows => _driver.WaitForElements(By.XPath("//div[@class='additional-documents__grid-row additional-document-info']")).ToList();
-        private List<IWebElement> fileNames => _driver.FindElements(By.XPath("//a[contains(@id,'attachment-view-')] | //a[contains(@id,'attachment-name-0')]")).ToList();
+        private List<IWebElement> fileNames => _driver.FindElements(fileNamesBy).ToList();
         private List<IWebElement> datePickerDateList => _driver.WaitForElements(By.XPath("//table[@class='date-picker__date-table']//tr/td")).ToList();
         private IWebElement errorSummaryTitle => _driver.WaitForElement(By.Id("error-summary-title"));
         private IWebElement errorSummaryMsg => _driver.WaitForElement(By.XPath("//ul[contains(@class,'govuk-error-summary__list')]/li/a"));
@@ -41,6 +42,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private By downloadAttachmentLinkLocator => By.XPath("//a[contains(@aria-label,'Download') and contains(@href,'/attachment/')]");
         private By downloadAttachmentLinkChedPLocator => By.XPath("//a[(contains(@aria-label,'View') and contains(@href,'/attachment/') and contains(@id,'attachment-view-')) or (@id='download-attachment-0')]");
         private IWebElement removeAttachmentButton => _driver.FindElement(By.XPath("//button[contains(@id,'remove-attachment-')] | //a[@id='remove-attachment-0']"));
+        private By additionalDocumentRowsLocator => By.XPath("//div[@class='additional-documents__grid-row additional-document-info']");
+        private By fileNamesBy => By.XPath("//a[contains(@id,'attachment-view-')] | //a[contains(@id,'attachment-name-0')]");
+        private By attachmentLocatorBy => By.XPath("//input[@id='fileUpload']");
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -113,7 +117,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void AddAccompanyingDocument(string fileName)
         {
-            var attachmentsLocator = _driver.FindElement(By.XPath("//input[@id='fileUpload']"));
+            var attachmentsLocator = _driver.WaitForElement(attachmentLocatorBy);
 
             if (attachmentsLocator != null)
             {
@@ -133,10 +137,30 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void ClickCancelLink() => lnkCancel.Click();
 
-        public string GetFileName => fileNames
-            .Select(e => e.Text.Trim())
-            .Where(text => !string.IsNullOrWhiteSpace(text))
-            .LastOrDefault() ?? string.Empty;
+        public string GetFileName
+        {
+            get
+            {
+                try
+                {
+                    // Wait for at least one attachment link to appear after upload
+                    var fileNameLocator = fileNamesBy;
+                    _driver.WaitForElement(fileNameLocator);
+
+                    // Now get all file name elements
+                    var fileNameElements = _driver.FindElements(fileNameLocator);
+
+                    return fileNameElements
+                        .Select(e => e.Text.Trim())
+                        .Where(text => !string.IsNullOrWhiteSpace(text))
+                        .LastOrDefault() ?? string.Empty;
+                }
+                catch
+                {
+                    return string.Empty;
+                }
+            }
+        }
 
 
         public int GetFileLength => GetFileName.Length;
@@ -191,6 +215,27 @@ namespace Defra.UI.Tests.Pages.Classes
             try
             {
                 return removeAttachmentButton.Displayed && removeAttachmentButton.Text.Contains("Remove attachment");
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
+        }
+
+        public void SelectPreviousDateFromDatePicker(string previousDay)
+        {
+            _driver.WaitForElementCondition(ExpectedConditions.ElementToBeClickable(datePickerIcon)).Click();
+            selectDate(previousDay).Click();
+        }
+
+        public bool AreDocumentsPresent()
+        {
+            try
+            {
+                // Check if any document rows are present on the page
+                // Using the existing documentRows locator from page objects region
+                var documents = _driver.FindElements(additionalDocumentRowsLocator);
+                return documents.Count > 0;
             }
             catch (NoSuchElementException)
             {
