@@ -131,6 +131,7 @@ namespace Defra.UI.Tests.Pages.Classes
                         case "Destruction": rdoDestruction.Click(); break;
                         case "Re-dispatching": rdoReDispatching.Click(); break;
                         case "Transformation": rdoTransformation.Click(); break;
+                        case "Use for other purpose": rdoOther.Click(); break;
                         case "Other": rdoOther.Click(); break;
                     }
                     break;

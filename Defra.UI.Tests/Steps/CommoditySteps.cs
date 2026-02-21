@@ -164,27 +164,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             commodityPage?.VerifyNumberOfPackages(numOfPackages);
         }
 
-        [When("the user populates Net weight as {string} for the second commodity {string}")]
-        public void WhenTheUserPopulatesNetWeightAsForTheAdditionalCommodity(string netWeight, string commodityCode)
-        {
-            commodityPage?.AddNetWeightForCommodityCode(netWeight, commodityCode);
-            _scenarioContext["NetWeightSecondCommodity"] = netWeight;
-        }
-
-        [When("the user populates Number of packages as {string} for the second commodity {string}")]
-        public void WhenTheUserPopulatesNumberOfPackagesAsForTheAdditionalCommodity(string numOfPackages, string commodityCode)
-        {
-            commodityPage?.AddNumOfPackagesForCommodityCode(numOfPackages, commodityCode);
-            _scenarioContext["NumOfPackagesSecondCommodity"] = numOfPackages;
-        }
-
-        [When("the user selects type of package as {string} for the second commodity {string}")]
-        public void WhenTheUserSelectsTypeOfPackageAsForTheAdditionalCommodity(string typeOfPackage, string commodityCode)
-        {
-            commodityPage?.SelectPackageTypeForCommodityCode(typeOfPackage, commodityCode);
-            _scenarioContext["TypeOfPackageSecondCommodity"] = typeOfPackage;
-        }
-
         [When("the user clicks the Update total button after adding all the commodities")]
         public void WhenTheUserClicksTheUpdateTotalButtonAfterAddingAllTheCommodities()
         {
@@ -194,8 +173,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["TotalPackages"] = commodityPage.GetTotalPackages();
             _scenarioContext["SubtotalNetWeight"] = commodityPage?.GetSubtotalsOfNetWeight();
             _scenarioContext["SubtotalPackages"] = commodityPage?.GetSubtotalsOfPackages();            
-            _scenarioContext["TotalNetWeight"] = commodityPage.GetTotalNetWeight();
-            _scenarioContext["TotalPackages"] = commodityPage.GetTotalPackages();
+            //_scenarioContext["TotalNetWeight"] = commodityPage.GetTotalNetWeight();
+            //_scenarioContext["TotalPackages"] = commodityPage.GetTotalPackages();
         }
 
         [When("the total gross weight should be greater than the net weight {string}")]
@@ -264,6 +243,27 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["TypeOfPackageFirstCommodity"] = typeOfPackage;
         }
 
+        [When("the user populates Net weight as {string} for the second commodity {string}")]
+        public void WhenTheUserPopulatesNetWeightAsForTheAdditionalCommodity(string netWeight, string commodityCode)
+        {
+            commodityPage?.AddNetWeightForCommodityCode(netWeight, commodityCode);
+            _scenarioContext["NetWeightSecondCommodity"] = netWeight;
+        }
+
+        [When("the user populates Number of packages as {string} for the second commodity {string}")]
+        public void WhenTheUserPopulatesNumberOfPackagesAsForTheAdditionalCommodity(string numOfPackages, string commodityCode)
+        {
+            commodityPage?.AddNumOfPackagesForCommodityCode(numOfPackages, commodityCode);
+            _scenarioContext["NumOfPackagesSecondCommodity"] = numOfPackages;
+        }
+
+        [When("the user selects type of package as {string} for the second commodity {string}")]
+        public void WhenTheUserSelectsTypeOfPackageAsForTheAdditionalCommodity(string typeOfPackage, string commodityCode)
+        {
+            commodityPage?.SelectPackageTypeForCommodityCode(typeOfPackage, commodityCode);
+            _scenarioContext["TypeOfPackageSecondCommodity"] = typeOfPackage;
+        }
+
         [When("the user clicks the Add commodity link")]
         public void WhenTheUserClicksTheAddCommodityLink()
         {
@@ -289,11 +289,19 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
         [When("the user selects the second commodity {string} {string} under the parent commodity")]
-        public void WhenTheUserSelectsTheFirstAdditionalCommodityUnderTheParentCommodity(string additionalCommCode, string additionalcommDescription)
+        public void WhenTheUserSelectsTheFirstAdditionalCommodityUnderTheParentCommodity(string additionalCommCode, string additionalCommDescription)
         {
             _scenarioContext.Add("CommodityCodeSecondCommodity", additionalCommCode);
-            _scenarioContext.Add("CommodityDescSecondCommodity", additionalcommDescription);
-            commodityPage?.SelectCommodityInTheCommTree(additionalcommDescription);
+            _scenarioContext.Add("CommodityDescSecondCommodity", additionalCommDescription);
+            commodityPage?.SelectCommodityInTheCommTree(additionalCommDescription);
+        }
+
+        [When("the user selects the commodity {string} {string} under the parent commodity")]
+        public void WhenTheUserSelectsTheCommodityUnderTheParentCommodity(string commCode, string commDescription)
+        {
+            _scenarioContext["CommodityCode"] = commCode;
+            _scenarioContext["CommodityDescription"] = commDescription;
+            commodityPage?.SelectCommodityInTheCommTree(commDescription);
         }
 
         [Then("the Commodity page should be displayed")]

@@ -1616,3 +1616,161 @@ Scenario: User creates and amends a CHEDA notification, inspector requests amend
 	Then the notification returned in the search has the status 'VALID' on the Import notifications page
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
+
+Scenario: SPS-7392
+	Given that I navigate to the IPAFF application
+	Then I should see type of Gateway login page
+	And I have selected 'Sign in with Government Gateway' as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF credentials and signin
+	Then the user should be logged into Notification page
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Live animals' option
+	And the user clicks Save and continue
+	Then the Origin of the animal or product page should be displayed
+	When the user chooses 'Tanzania' from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing 'Tanzania' as the Country of origin and Country from where consigned
+	When the user chooses 'No' for Does your consignment require a region code?
+	And the user enters a reference number 'This is a test' in the Add a reference number for this consignment (optional) field
+	And the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user clicks the 'LIVE ANIMALS' in the parent commodity tree
+	And the sub commodity list expands
+	And the user clicks '0104' 'Live sheep and goats' under the parent commodity
+	And the sub commodity list expands
+	And the user selects the commodity '010420' 'Goats' under the parent commodity
+	#Then the commodity details should be populated '010420' 'Goats'
+	When the user selects species of commodity 'Capra hircus'
+	And the user clicks Save and continue
+	Then What is the main reason for importing the animals? page should be displayed with radio buttons
+	When the user chooses 'Internal market' and the sub-option 'Research'
+	And the user clicks Save and continue	
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Commodity page should be displayed with the commodity and description entered
+	When the user populates Number of animals as '5'
+	And the user populates Number of packages as '5'
+	And the user clicks Save and continue in commodity page
+	Then the Enter animal identification details page should be displayed
+	When the user populates the Ear tag as 'ET1234'
+	And the user clicks Save and continue
+	Then the Additional animal details page should be displayed
+	When the user selects 'Approved bodies' for What are the animals certified for?
+	#Check below - step says <Leave No selected>
+	And the user selects 'No' for Does the consignment contain any unweaned animals?
+	And the user clicks Save and continue
+	Then the Latest Health Certificate page should be displayed
+	When the user enters Latest Health Certificate Document reference 'VHC12345'
+	And the user enters Latest Health Certificate date of issue '01''12''2025'
+	And the user clicks on Add attachment link on the Latest Health Certificate page
+	And the user uploads the Veterinary Health Certificate 'IPAFFS Test Health Certificate' in the format '.docx'
+	Then the Veterinary Health Certificate 'IPAFFS Test Health Certificate' '.docx' is uploaded successfully
+	When the user clicks Save and continue
+	Then the Accompanying documents page should be displayed
+	When the user selects Document type 'Commercial invoice'
+	And the user enters Document reference 'INV12345'
+	And the user enters date of issue '24''11''2025'
+	And the user clicks on Add attachment link
+	And the user uploads the document 'IPAFFS Test Document' in the format '.docx'
+	Then the document 'IPAFFS Test Document' '.docx' is uploaded successfully
+	When the user clicks Save and continue	
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter should be displayed
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee 'DEF'
+	Then the chosen consignee should be displayed
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee
+	When the user clicks Add a place of destination
+	Then the Search for an existing place of destination page should be displayed
+	When the user selects a place of destination 'DEF'
+	Then the chosen place of destination should be displayed
+	When the user clicks Save and continue
+	Then the Add the County Parish Holding number (CPH) page should be displayed
+	When the user enters the CPH number '12/345/6789/0001'
+	And the user clicks Save and continue
+	Then the Transport to the BCP or Port of entry page should be displayed
+	When the user enters BCP or Port of entry 'London Borough of Hillingdon Heathrow Airport Imported Food Office - ADADA'
+	And the user selects means of transport to BCP or Port of entry 'Road vehicle'
+	And the user enters transport identification 'QR184'
+	And the user selects 'No' for Are any road trailers or shipping containers being used to transport the consignment
+	And the user enters transport document reference 'Doc1234'
+	And the user enters arrival date at BCP or Port of entry as today's date
+	And the user enters estimated arrival time at BCP with future time
+	And the user enters estimated total journey time of the animals '8' hours
+	And the user clicks Save and continue
+	Then the Transport after the BCP or Port of entry page should be displayed
+	When the user selects means of transport after BCP 'Road vehicle'
+	And the user enters transport identification after BCP 'TRANS123'
+	And the user enters transport document reference after BCP 'TDOC456'
+	#Change below to today's date
+	And the user enters departure date from BCP '2' days later than arrival date
+	And the user enters departure time from BCP '14:00'
+	And the user clicks Save and continue
+
+	#Then the Goods movement services page should be displayed
+	#When the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	#And the user clicks Save and continue
+	Then the Transporter page should be displayed
+	When the user clicks Add a transporter
+	When the user clicks Save and continue in Transporter page
+	Then the Should we notify any transport contacts about inspections? page should be displayed
+	When the user selects 'No' for Should we notify any transport contacts about inspections?
+	And the user clicks Save and continue
+	Then the Contact address for consignment page should be displayed without the secondary title
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	And the data presented for review matches the data entered into the notification
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user ticks the checkbox to declare that the information is true and correct
+	And the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the IPAFFS User details and CHED Reference
+	When the user clicks Return to your dashboard
+	Then the dashboard page should be displayed
+	When user searches for the import notification
+	Then the notification should be present in the list
+	And the notification returned in the search has the status 'NEW'
+	When the user clicks Show notification
+	Then the certificate should be displayed in a new browser tab
+	When the user checks that the data in the certificate matches the data entered into the notification
+	And the user closes the PDF browser tab
+	Then the browser tab is closed
+	When the user logs out of IPAFFS Part 1
+	Then the user should be logged out successfully
+
+	When I navigate to the IPAFF Inspector application
+	Then I should see type of Gateway login page
+	And I have selected 'Sign in with Government Gateway' as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF Heathrow Inspector credentials and signin
+	Then the user should be logged into Import notifications page
+	When the user searches for the newly created notification on the Import notifications page
+	Then the user clicks the notification found with status 'NEW'
+	And the Decision Hub page should be displayed
+	When the user clicks Save and set as in progress
+	Then the notification status should change from 'NEW' to 'IN PROGRESS'
+	When the user clicks Local reference number link in Record checks
+	Then Local reference number page should be displayed
+	When the user enters a local reference number and clicks Save and continue
+	Then the Documentary check page should be displayed
+	When the user selects 'Satisfactory' for the Documentary check and clicks Save and continue
+	Then the Identity, physical and welfare checks page should be displayed
+	When the user selects 'Satisfactory' for Identity check
+	And the user selects 'Satisfactory' for Physical check
+	And the user selects '5' for Number of animals checked
+	And the user selects 'Satisfactory' for Welfare check
+	And the user selects '0' '%' for Number of dead animals
+	And the user selects '0' 'unit' for Number of unfit animals
+	And the user selects '0' for Number of births or abortions
+	And the user clicks Save and continue
+	Then the Seal numbers page should be displayed

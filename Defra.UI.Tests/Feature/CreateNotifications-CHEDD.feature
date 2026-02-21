@@ -15,7 +15,7 @@ Scenario: User creates and submits a B2C consignment notification - CHEDD Happy 
 	Then the About the consignment/What are you importing? page should be displayed with radio buttons
 	When the user chooses 'High risk food and feed of non-animal origin' option
 	And the user clicks Save and continue
-	Then the Origin of the plants plant product or other objects page should be displayed
+	Then the Origin of the animal or product page should be displayed
 	When the user chooses "Australia" from the dropdown for Country of origin
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "Australia" as the Country of origin and Country from where consigned
@@ -38,6 +38,7 @@ Scenario: User creates and submits a B2C consignment notification - CHEDD Happy 
 	When the user populates Net weight as '19000' for first commodity
 	And the user populates Number of packages as '1' for first commodity
 	And the user selects type of package as 'Case' for the commodity '12024200' for first commodity
+	#Click update total
 	And the user clicks the Add commodity link
 	And the user clicks the 'CEREALS' in the parent commodity tree
 	And the sub commodity list expands
@@ -64,6 +65,7 @@ Scenario: User creates and submits a B2C consignment notification - CHEDD Happy 
 	And the user clicks on Add attachment link
 	And the user uploads the document 'IPAFFS Test Document' in the format '.docx'
 	Then the document 'IPAFFS Test Document' '.docx' is uploaded successfully
+	#Add step to download doc
 	And the user clicks Save and continue
 	Then the Addresses page should be displayed
 	When the user clicks Add a consignor or exporter
@@ -102,6 +104,7 @@ Scenario: User creates and submits a B2C consignment notification - CHEDD Happy 
 	Then the Confirmation page should be displayed with the initial risk assessment
 	When the user records the IPAFFS User details and CHED Reference
 	Then the details should be recorded
+	#STeps to validate on show notification is not needed
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
 	When I navigate to the IPAFF Inspector application
@@ -319,6 +322,12 @@ Scenario: User creates and submits a notification, override the risk decision, r
 	When the user selects 'Use for other purpose' 'Not acceptable' in decision page
 	And the user enters currendate in decision page
 	And the user clicks Save and continue
+	Then the Select a controlled destination page should be displayed
+	When the user clicks Add a controlled destination
+	Then the Search for an existing controlled destination page should be displayed
+	When the user selects a controlled destination
+	Then the chosen controlled destination should be displayed
+	When the user clicks Save and continue
 	Then the Reason for Refusal page should be displayed
 	When the user selects "Other, Create Border Notification" as reason for refusal
 	And the user selects "Chemical Contamination" as another reason for refusal
@@ -422,7 +431,7 @@ Scenario: User verifies Address book page search, submits notification for 'Non-
 	Then the About the consignment/What are you importing? page should be displayed with radio buttons
 	When the user chooses 'High risk food and feed of non-animal origin' option
 	And the user clicks Save and continue
-	Then the Origin of the plants plant product or other objects page should be displayed
+	Then the Origin of the animal or product page should be displayed
 	When the user chooses "Australia" from the dropdown for Country of origin
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing 'Australia' as the Country of origin and Country from where consigned
