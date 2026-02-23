@@ -54,12 +54,13 @@ namespace Defra.UI.Tests.Steps
         }
 
         [Then("validates the document {string} should have column headers {string} {string} {string} {string} {string} {string} {string} {string} {string} {string} {string} {string}")]
-        public void ThenValidatesTheDocumentShouldHaveColumnHeaders(string fileName, string header1, string header2, string header3, string header4, string header5, string header6, string header7, string header8, string header9, string header10, string header11, string header12)
+        public void ThenValidatesTheDocumentShouldHaveColumnHeaders(string fileName, string commCode, string genusAndSpecies, string eppo, string variety, string commClass, string intendedOption, string numOfPackage, string packageType, string quantity, string quantityType, string netWeight, string controlledAtmosContainer)
         {
             List<string> expectedHeaders = new List<string>
             {
-                header1,header2,header3,header4,header5,header6
-                ,header7,header8,header9,header10,header11,header12
+                commCode, genusAndSpecies, eppo, variety, commClass,
+                intendedOption, numOfPackage, packageType, quantity, 
+                quantityType, netWeight, controlledAtmosContainer
             };
 
             var filePath = Path.Combine(Path.GetTempPath(), "automation-downloads", $"{fileName}");
