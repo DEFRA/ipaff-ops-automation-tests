@@ -1,10 +1,8 @@
-﻿using Defra.Trade.Plants.SpecFlowBindings.Helpers;
-using Defra.UI.Tests.Pages.Interfaces;
+﻿using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
 using Reqnroll;
 using Reqnroll.BoDi;
 using System.Diagnostics;
@@ -24,9 +22,6 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement lnkCommDetailsCSVTemplate(string linkName) => _driver.FindElement(By.XPath($"//a[normalize-space()='{linkName}']"));
         private IWebElement btnChooseFile => _driver.FindElement(By.Id("fileUpload"));
         private IWebElement btnUpload => _driver.FindElement(By.Id("button-upload"));
-        /*private IWebElement txtUploadSuccessBannerContent => _driver.FindElement(By.XPath("//*[@class='govuk-notification-banner__content']/p"));
-        private IWebElement txtInfoMessageHeading => _driver.FindElement(By.XPath("//h2[@class='govuk-heading-s']"));
-        private IWebElement txtInfoMessageContent => _driver.FindElement(By.XPath("//p[@class='govuk-body']"));*/
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
