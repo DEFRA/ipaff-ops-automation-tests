@@ -9,13 +9,15 @@ namespace Defra.UI.Tests.Steps.IPAFFS
     public class IUUSteps
     {
         private readonly IObjectContainer _objectContainer;
+        private readonly ScenarioContext _scenarioContext;
 
         private IIUUPage? iuuPage => _objectContainer.IsRegistered<IIUUPage>() ? _objectContainer.Resolve<IIUUPage>() : null;
 
 
-        public IUUSteps(IObjectContainer container)
+        public IUUSteps(IObjectContainer container, ScenarioContext scenarioContext)
         {
             _objectContainer = container;
+            _scenarioContext = scenarioContext;
         }
 
 
@@ -29,6 +31,8 @@ namespace Defra.UI.Tests.Steps.IPAFFS
         public void WhenTheUserSelectsAndSub_OptionAsForTheIUUCheck(string option, string subOption)
         {
             iuuPage?.SelectRecordIUUCheckOption(option, subOption);
-        }
+            _scenarioContext["IUU"] = option;
+            _scenarioContext["IUUSubOption"] = string.Equals(option, "No") ? "Not Inspected" : subOption;
+        }        
     }
 }
