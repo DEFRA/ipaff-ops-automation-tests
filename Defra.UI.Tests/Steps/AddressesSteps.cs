@@ -85,6 +85,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the importer should be populated with the same details as the consignee {string} on the Addresses page")]
         public void ThenTheImporterShouldBePopulatedWithTheSameDetailsAsTheConsigneeOnTheAddressesPage(string consigneeName)
         {
+            _scenarioContext["ConsigneeName"] = consigneeName;
             Assert.True(addressesPage?.VerifySelectedConsignee(consigneeName));
         }
 

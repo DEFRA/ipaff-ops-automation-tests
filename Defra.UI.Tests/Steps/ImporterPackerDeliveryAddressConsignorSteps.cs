@@ -31,7 +31,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user verifies Importer details {string} is pre-filled")]
         public void WhenTheUserVerifiesImporterDetailsIsPre_Filled(string importer)
         {
-            var importerName = _scenarioContext.Get<string>("CompanyName");
+            string importerName;
+            if (_scenarioContext.ContainsKey("CompanyName"))
+                importerName = _scenarioContext.Get<string>("CompanyName");
+            else
+            {
+                importerName = importer;
+                _scenarioContext["CompanyName"] = importerName;
+            }
+
             Assert.True(importerPackerDeliveryAddressConsignorPage?.VerifyImporterName(importerName));
             _scenarioContext["ImporterAddress"] = importerPackerDeliveryAddressConsignorPage?.GetImporterAddress(importerName);
         }

@@ -195,6 +195,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(allDataMatches, $"Review outcome decision page data validation failed. Mismatches: {string.Join(", ", mismatches)}");
         }
 
+        [Then("the Laboratory test details are not displayed in the review page")]
+        public void ThenTheLaboratoryTestDetailsAreNotDisplayedInTheReviewPage()
+        {
+            var areLabTestDetailsDisplayed = reviewOutcomeDecisionPage?.AreLaboratoryTestDetailsDisplayed() ?? false;
+
+            Assert.False(areLabTestDetailsDisplayed,
+                "Laboratory test details are displayed in the review page but should not be present");
+        }
+
         private void ValidateIfExists(string contextKey, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
         {
             if (_scenarioContext.ContainsKey(contextKey))

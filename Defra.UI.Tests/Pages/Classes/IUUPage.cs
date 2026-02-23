@@ -40,6 +40,7 @@ namespace Defra.UI.Tests.Pages.Classes
             if(option.Equals("Yes"))
             {
                 rdoYes.Click();
+                Thread.Sleep(1000);
                 if(subOption.Equals("Compliant"))
                     rdoComplaint.Click();
                 else if (subOption.Equals("Not compliant"))

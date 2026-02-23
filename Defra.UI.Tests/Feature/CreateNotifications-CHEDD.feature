@@ -703,6 +703,7 @@ Scenario: User submits B2C consignment notification, inspector rejects and creat
 	When the user clicks Save and continue
 	Then the Transport to the port of entry page should be displayed
 	When the user populates the transport details 'LONDON GATEWAY (GBLGP)' 'No' 'Road vehicle' '123456' 'Doc1234'
+	And the user enters arrival date at BCP or Port of entry as today's date
 	When the user clicks Save and continue
 	Then the Goods movement services page should be displayed
 	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
@@ -1559,7 +1560,7 @@ Scenario: User submits consignment notification, inspector overrides the risk de
 	Then the user clicks the notification found with status "NEW"
 	Then the Decision Hub page should be displayed
 	When the user clicks override the risk decision
-	Then the user selects 'Override risk decision as no inspection' option
+	Then the user selects 'Override risk decision as no inspection' option for override decision
 	When the user clicks Yes, override risk decision button
 	Then the Decision Hub page should be displayed
 	And the notification status should change from "NEW" to "IN PROGRESS"
