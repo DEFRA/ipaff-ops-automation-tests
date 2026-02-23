@@ -1060,6 +1060,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool IsError(string errorMessage)
         {
+            Thread.Sleep(1000);
             foreach (var element in lblErrorMessages)
             {
                 if (element.Text.Contains(errorMessage))

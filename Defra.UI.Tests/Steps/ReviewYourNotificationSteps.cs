@@ -624,11 +624,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     Assert.AreEqual(packageType[i], summary?.PackageType[i], $"Package Type is not matching in {pageName} page!");
                 }
 
-                foreach (var item in commodityCode.Where(c => c.StartsWith("160")))
+                foreach (var item in commodityCode.Where(c => c.StartsWith("160") || c.Equals("03063400")))
                 {
                     expectedList.AddRange(summary?.TypeOfCommodity1);
                 }
-                if (commodityCode.Any(c => !c.StartsWith("160")))
+                if (commodityCode.Any(c => !c.StartsWith("160") || !c.Equals("03063400")))
                 {
                     expectedList.AddRange(summary?.TypeOfCommodity);
                 }
@@ -735,6 +735,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.AreEqual(consignmentContactAddress, reviewPage?.GetConsignmentContactAddress(), $"Consignment Contact Address is not matching in {pageName} page!");
         }
 
+        [Then(@"the user should see an error message '(.*)'")]
         [Then(@"the user should see an error message '(.*)' in review page")]
         public void ThenIShouldSeeAnErrorMessageInReviewPage(string errorMessage)
         {
