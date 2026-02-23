@@ -1321,7 +1321,8 @@ Scenario: User creates and submits a notification, override the risk decision an
 	And 'No' is pre-selected for Would you like to record laboratory tests?
 	When the user select 'Yes' radio button on the Laboratory tests page
 	And the user clicks Save and continue
-	And the user select 'Suspicion' reason radio button on the Laboratory tests page
+	Then the Laboratory tests Reason for testing page should be displayed
+	When the user select 'Suspicion' reason radio button on the Laboratory tests page
 	And the user clicks Save and continue
 	Then the Laboratory tests page should be displayed
 	When the user clicks the Select link for the '41015050' commodity code
