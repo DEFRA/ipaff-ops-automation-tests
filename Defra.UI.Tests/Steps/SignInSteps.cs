@@ -51,6 +51,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _driver?.Navigate().GoToUrl(url);
         }
 
+        [When(@"the user navigate to the IPAFFS Internal Plants Inspector application")]
+        [Given(@"that the user navigate to the IPAFFS Internal Plants Inspector application")]
+        public void GivenThatTheUserNavigateToTheIPAFFSInternalPlantsInspectorApplication()
+        {
+            var url = urlBuilder.InternalPlantsInspectorDefault().BuildInternalPlantsInspectorApp();
+            _driver?.Navigate().GoToUrl(url);
+        }
+
         [When(@"I click signin button on port checker application")]
         [Given(@"I click signin button on port checker application")]
         public void GivenIClickSigninButtonOnPortCheckerApplication()
@@ -173,6 +181,17 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             _signInPage?.SignIn(userObject.UserName, userObject.Credential);
         }
+
+        [When("I have provided the IPAFFS Internal Plants Inspector credentials and signin")]
+        public void WhenIHaveProvidedTheIPAFFSInternalPlantsInspectorCredentialsAndSignin()
+        {
+            var userName = "Vinotha.Thiyagarajan@defra.gov.uk";
+            var credential = "Towardsjoy@27";
+
+            Thread.Sleep(1000);
+            _signInPage?.IPAFFSInternalInspectorSignIn(userName, credential);
+        }
+
 
         [When(@"I have provided the password for prototype research page")]
         public void WhenIHaveProvidedThePasswordForPrototypeResearchPage()

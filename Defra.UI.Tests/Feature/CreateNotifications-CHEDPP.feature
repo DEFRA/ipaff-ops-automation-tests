@@ -113,10 +113,17 @@ Scenario: Delegation of Authority Agent submits CHEDPP notification on behalf of
 	When user searches for the import notification
 	Then the notification should be present in the list
 	And the notification status should be 'NEW TRADE PARTNER'
-	When the user logs out of IPAFFS Part 1
-	Then the user should be logged out successfully
+	When the users opens a new tab
+	When the user navigate to the IPAFFS Internal Plants Inspector application
+	And I have provided the IPAFFS Internal Plants Inspector credentials and signin
+	Then the user should be logged into Notification page
+	When user searches for the import notification
+	Then the notification should be found with the status "NEW"
+	When the user waits for "2.5" minutes
+	And the user searches for the import notification
+	Then the notification should be found with the status "IN PROGRESS"
 
-Scenario: Delegation of Authority Agent submits CHEDPP notification on behalf of trader by uploading commodity details in CSV file - SPS - 5092
+Scenario: Delegation of Authority Agent submits CHEDPP notification by uploading commodity details in CSV file - SPS - 5092
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
@@ -230,3 +237,12 @@ Scenario: Delegation of Authority Agent submits CHEDPP notification on behalf of
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
 	
+Scenario: Test
+	When the user navigate to the IPAFFS Internal Plants Inspector application
+	And I have provided the IPAFFS Internal Plants Inspector credentials and signin
+	Then the user should be logged into Notification page
+	When user searches for the import notification
+	Then the notification should be found with the status "NEW"
+	When the user waits for "2.5" minutes
+	And the user searches for the import notification
+	Then the notification should be found with the status "IN PROGRESS"

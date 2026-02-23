@@ -36,6 +36,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(consignmentsRequiringControlPage?.VerifyNotificationStatus(chedRef, status));
         }
 
+        [When("the user waits for {string} minutes")]
+        public void WhenTheUserWaitsForMinutes(string time)
+        {
+            Thread.Sleep(TimeSpan.FromMinutes(2.5));
+        }
+
+
         [When("the user clicks CHEDP reference number")]
         public void WhenTheUserClicksCHEDPReferenceNumber()
         {

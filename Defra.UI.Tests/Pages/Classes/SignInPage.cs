@@ -36,6 +36,10 @@ namespace Defra.UI.Tests.Pages.Classes
         private IReadOnlyCollection<IWebElement> rdoLoginTypes => _driver.WaitForElements(By.ClassName("govuk-radios__label"));
         private IWebElement btnContinue => _driver.WaitForElement(By.Id("continueReplacement"));
         private IWebElement txtLoging => _driver.WaitForElement(By.XPath("//input[@id='password']"), true);
+        private IWebElement txtIPAFFSIntInspectorUserId => _driver.FindElement(By.Name("loginfmt"));
+        private IWebElement txtIPAFFSIntInspectorPassword => _driver.FindElement(By.Name("passwd"));
+        private IReadOnlyCollection<IWebElement> txtUser(string user) => _driver.FindElements(By.XPath($"//div[text()='{user}']"));
+        private IWebElement txtUserEmailId(string user) => _driver.FindElement(By.XPath($"//div[text()='{user}']"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -59,6 +63,20 @@ namespace Defra.UI.Tests.Pages.Classes
             Password.SendKeys(password);
             _driver.WaitForElementCondition(ExpectedConditions.ElementToBeClickable(btnSignIn)).Click();
            // _driver.WaitForElement(signInConfirmBy);
+        }
+
+        public void IPAFFSInternalInspectorSignIn(string userName, string password)
+        {
+            
+            if(txtUser(userName).Count() > 0)
+                txtUserEmailId(userName).Click();
+            else
+                txtIPAFFSIntInspectorUserId.SendKeys(userName);
+
+
+            _driver.WaitForElementCondition(ExpectedConditions.ElementToBeClickable(BtnNext)).Click();
+            txtIPAFFSIntInspectorPassword.SendKeys(password);
+            _driver.WaitForElementCondition(ExpectedConditions.ElementToBeClickable(BtnSignin)).Click();
         }
 
         public void EnterPassword()
