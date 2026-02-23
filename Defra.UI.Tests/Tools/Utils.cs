@@ -1,5 +1,4 @@
-﻿using Bogus;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
 using Reqnroll;
 using System.Diagnostics;
 using System.Globalization;

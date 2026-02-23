@@ -125,6 +125,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             reviewBorderNotificationPage?.OpenDownloadsInNewTab();
         }
 
+        [When("verifies the document {string} downloaded successfully")]
         [Then("verifies the document {string} downloaded successfully")]
         public void ThenVerifiesTheDocumentDownloadedSuccessfully(string fileName)
         {

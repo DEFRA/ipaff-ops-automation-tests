@@ -229,7 +229,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
             ValidateIfExists("ConsignmentReferenceNumber", reviewPage?.GetConsignmentReferenceNumber(), ref allDataMatches, mismatches);
 
             // Commodity details  
-            if (_scenarioContext.ContainsKey("CommodityCodeFirstCommodity"))
+            if (_scenarioContext.ContainsKey("CommodityCodeFirstCommodity")
+                && !_scenarioContext.ContainsKey("AllCommodityDetails"))
             {
                 ValidateIfExists("CommodityCodeFirstCommodity", reviewPage?.GetCommodityCodeList(0), ref allDataMatches, mismatches);
                 ValidateIfExists("CommodityDescFirstCommodity", reviewPage?.GetDescriptionList(0), ref allDataMatches, mismatches);
@@ -252,8 +253,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 ValidateIfExists("CommodityClass", reviewPage?.GetCommodityClass(1), ref allDataMatches, mismatches);
                 ValidateIfExists("Quantity", reviewPage?.GetQuantityListCHEDPP(1), ref allDataMatches, mismatches);
                 ValidateIfExists("QuantityType", reviewPage?.GetQuantityTypeListCHEDPP(1), ref allDataMatches, mismatches);
+                ValidateIfExists("TotalNetWeight", reviewPage?.GetTotalNetWeight(), ref allDataMatches, mismatches);
+                ValidateIfExists("TotalPackages", reviewPage?.GetTotalPackages(), ref allDataMatches, mismatches);
             }
-            else
+            else if (!_scenarioContext.ContainsKey("CommodityCodeFirstCommodity")
+                && !_scenarioContext.ContainsKey("AllCommodityDetails"))
             {
                 ValidateIfExists("CommodityCode", reviewPage?.GetCommodityCodeList(0), ref allDataMatches, mismatches);
                 ValidateIfExists("CommodityDescription", reviewPage?.GetDescriptionList(0), ref allDataMatches, mismatches);
@@ -264,11 +268,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 ValidateIfExists("PackageType", reviewPage?.GetTypeOfPackagesListCHEDPP(0), ref allDataMatches, mismatches);
                 ValidateIfExists("Quantity", reviewPage?.GetQuantityListCHEDPP(0), ref allDataMatches, mismatches);
                 ValidateIfExists("QuantityType", reviewPage?.GetQuantityTypeListCHEDPP(0), ref allDataMatches, mismatches);
+                ValidateIfExists("TotalNetWeight", reviewPage?.GetTotalNetWeight(), ref allDataMatches, mismatches);
+                ValidateIfExists("TotalPackages", reviewPage?.GetTotalPackages(), ref allDataMatches, mismatches);
             }
-
-            ValidateIfExists("TotalNetWeight", reviewPage?.GetTotalNetWeight(), ref allDataMatches, mismatches);
-            ValidateIfExists("TotalPackages", reviewPage?.GetTotalPackages(), ref allDataMatches, mismatches);
             ValidateIfExists("TotalGrossWeight", reviewPage?.GetTotalGrossWeight(), ref allDataMatches, mismatches);
+            //ConfirmationToDeclareGMS exist for some GMS commodity codes only. 
+            ValidateIfExists("ConfirmationToDeclareGMS", reviewPage?.GetConfirmationToDeclareGMS(), ref allDataMatches, mismatches);
 
             // Documents
             ValidateIfExists("DocumentType", reviewPage?.GetAdditionalDocumentType(), ref allDataMatches, mismatches);
@@ -293,7 +298,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             ValidateIfExists("EnterTransportDocRef", reviewPage?.GetTransportDocumentReference(), ref allDataMatches, mismatches);
             ValidateIfExists("EstimatedArrivalDate", reviewPage?.GetEstimatedArrivalDate(), ref allDataMatches, mismatches);
             ValidateIfExists("EstimatedArrivalTime", reviewPage?.GetEstimatedArrivalTime(), ref allDataMatches, mismatches);
-            ValidateIfExists("IsCTC", reviewPage?.GetCTCUsage(), ref allDataMatches, mismatches);
+            ValidateIfExists("IsCTC", reviewPage?.GetCTCUsage().Replace("-", "–"), ref allDataMatches, mismatches);
             ValidateIfExists("IsGVMS", reviewPage?.GetGVMSUsage(), ref allDataMatches, mismatches);
 
 
