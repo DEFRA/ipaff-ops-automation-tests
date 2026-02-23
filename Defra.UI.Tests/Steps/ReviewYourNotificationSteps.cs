@@ -624,11 +624,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     Assert.AreEqual(packageType[i], summary?.PackageType[i], $"Package Type is not matching in {pageName} page!");
                 }
 
-                foreach (var item in commodityCode.Where(c => c.StartsWith("160") || c == "03063400"))
+                foreach (var item in commodityCode.Where(c => c.StartsWith("160") || c.Equals("03063400")))
                 {
                     expectedList.AddRange(summary?.TypeOfCommodity1);
                 }
-                if (commodityCode.Any(c => !c.StartsWith("160") || c != "03063400"))
+                if (commodityCode.Any(c => !c.StartsWith("160") || !c.Equals("03063400")))
                 {
                     expectedList.AddRange(summary?.TypeOfCommodity);
                 }
