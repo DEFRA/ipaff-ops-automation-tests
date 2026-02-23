@@ -12,5 +12,6 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void EnterPassportNumber(string passportNumber);
         void EnterEarTag(string earTag);
         string GetEarTag { get; }
+        string GetNumberOfAnimals();
     }
 }

@@ -12,6 +12,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
         private IWebElement rdoMoreCertificateOption(string option) => _driver.FindElement(By.XPath($"//input[@type='radio' and @value='{option}']"));
         private IReadOnlyCollection<IWebElement> RemoveCertificates => _driver.WaitForElements(By.XPath("//a[normalize-space()='Remove']"));
+        private IWebElement lnkAddDetails => _driver.FindElement(By.LinkText("Add details"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -31,6 +32,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public void SelectOption(string option)
         {
             rdoMoreCertificateOption(option).Click();
+        }
+
+        public void ClickAddDetailsLink()
+        {
+            lnkAddDetails.Click();
         }
     }
 }

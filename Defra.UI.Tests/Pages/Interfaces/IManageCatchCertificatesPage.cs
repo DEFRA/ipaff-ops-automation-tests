@@ -5,5 +5,6 @@
         bool IsPageLoaded(string pageTitle);
         void SelectOption(string option);
         bool VerifyNumberOfCertificates(string numberOfCertificates);
+        void ClickAddDetailsLink();
     }
 }

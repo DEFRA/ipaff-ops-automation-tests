@@ -43,6 +43,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["IsCTC"] = option;
         }
 
+        [When("the user can provide Movement Reference Number as {string}")]
+        public void WhenTheUserCanProvideMovementReferenceNumberAs(string movementReferenceNumber)
+        {
+            goodsMovementServicesPage?.EnterMovementReferenceNumber(movementReferenceNumber);
+            _scenarioContext["MovementReferenceNumber"] = movementReferenceNumber;
+        }
+
         [When("the user selects {string} for Will the transport use the Goods Vehicle Movement Service \\(GVMS)?")]
         public void WhenTheUserSelectsForWillTheTransportUseTheGoodsVehicleMovementServiceGVMS(string option)
         {
