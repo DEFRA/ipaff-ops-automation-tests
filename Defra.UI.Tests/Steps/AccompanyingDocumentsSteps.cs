@@ -99,8 +99,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             var date = Utils.ConvertToDate(dateString);
             accompanyingDocumentsPage?.EnterDateOfIssue(date.Day.ToString(), date.Month.ToString(), date.Year.ToString());
-            //var monthName = date.ToString("MMMM");
-            //var dateofIssue = date.Day.ToString() + " " + monthName + " " + date.Year.ToString();
             Utils.AppendStringToScenarioContextArray(_scenarioContext, "DateOfIssue",DateTime.ParseExact(dateString, "dd/MM/yyyy", null).ToString("dd MM yyyy"));
         }
 

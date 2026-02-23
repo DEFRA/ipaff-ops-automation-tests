@@ -2594,7 +2594,7 @@ Scenario: Verify IUU and Catch certificate details for EU and Non-EU countries C
 	When the user selects 'Ambient' radio button on the Additional details page
 	And the user clicks Save and continue
 	Then the Catch cerificates page should be displayed
-	When the user selects "No" option
+	And the user selects "No" option for add catch certificate
 	And the user clicks Save and continue 
 	Then the Latest Health Certificate page should be displayed
 	When the user enters Latest Health Certificate Document reference "INV12345"
