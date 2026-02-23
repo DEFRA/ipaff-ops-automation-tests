@@ -102,12 +102,8 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool VerifyFileDownloaded(string fileName)
         {
-            string downloadedFile = (string)((IJavaScriptExecutor)_driver)
-                .ExecuteScript("return document.querySelector('downloads-manager')" +
-                ".shadowRoot.querySelector('downloads-item')" +
-                ".shadowRoot.querySelector('#file-link').textContent;");
-
-            return downloadedFile.Contains(fileName);
+            string[] officeExtensions = { "xlsx", "docx", "doc", "xls", "pptx", "ppt", "zip" };
+            return officeExtensions.Any(ext => Utils.IsDownloaded(fileName, ext));
         }
 
         public void ClickAttachedDocumentLink()

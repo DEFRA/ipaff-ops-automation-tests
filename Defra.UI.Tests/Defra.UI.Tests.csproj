@@ -48,6 +48,7 @@
     <PackageReference Include="Bogus" Version="35.6.5" />
     <PackageReference Include="Cognizant.WCAG.Compliance.Checker" Version="1.2.313" />
     <PackageReference Include="Defra.Ui.Automation.Framework" Version="2.0.7" />
+    <PackageReference Include="DocumentFormat.OpenXml" Version="3.4.1" />
     <PackageReference Include="Dynamitey" Version="3.0.3" />
     <PackageReference Include="ExtentReports" Version="5.0.4" />
     <PackageReference Include="MailinatorApiClient" Version="1.0.3" />

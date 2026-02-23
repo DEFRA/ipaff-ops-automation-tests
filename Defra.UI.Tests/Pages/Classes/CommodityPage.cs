@@ -91,6 +91,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool VerifyCommodityDetails(string code, string description)
         {
+            Thread.Sleep(1000);
             return txtDisplayedCommodityCodeAndDesc.Text.Contains(code)
                 && txtDisplayedCommodityCodeAndDesc.Text.Contains(description);
         }
