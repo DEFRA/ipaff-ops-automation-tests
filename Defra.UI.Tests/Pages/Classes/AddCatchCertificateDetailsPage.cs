@@ -18,7 +18,6 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement dateOfIssue(string date, int index) => _driver.FindElement(By.Id($"date-of-issue-{date}-{index}"));
         private IWebElement imgCalendar => _driver.FindElement(By.XPath("//div[@id='date-of-issue-1']//button[contains(@class, 'date-picker')]//span"));
         private IWebElement setFlagStateOfCatchingVessel(int index) => _driver.FindElement(By.Id($"flag-state-{index}"));
-        private IWebElement selectAll => _driver.FindElement(By.Id("select-all-checkbox-1"));
         private IWebElement selectSpecies(int position) => _driver.FindElement(By.XPath($"(//*[contains(@id,'hidden-species')]//input[@type='checkbox'])[{position}]"));
         private IWebElement lnkChange => _driver.FindElement(By.XPath("//span[contains(@class, 'govuk-details__summary-text')]"));
         private IWebElement txtNoOfCatchCertificates => _driver.FindElement(By.Id("number-of-catch-certificates"));
@@ -26,38 +25,36 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement btnUpdate => _driver.FindElement(By.Id("update-number-of-catch-certificates"));
         private IWebElement setUpdateDetails(int index) => _driver.FindElement(By.Id($"update-catch-certificate-details-{index}"));
         private IWebElement lnkSaveAndReturnToManageCertificate => _driver.FindElement(By.Id("save-and-return-manage-catch-certificates"));
+        private IWebElement lnkSaveAndReturnToHub => _driver.FindElement(By.Id("save-and-return"));
         private IWebElement selectSpeciesByName(string name) => _driver.FindElement(By.XPath($"//div[@id='checkbox-{name}-1']//input"));
-        private By attachmentCaptionBy => By.XPath("//span[contains(@class, 'govuk-caption-l')]");
-        private By numberOfCertificatesLabelBy => By.XPath("//div[@class='govuk-summary-list__key']");
-        private By changeLinkBy => By.XPath("//span[contains(@class, 'govuk-details__summary-text')]");
-        private By catchCertificateReferenceFieldBy => By.Id("catch-certificate-reference-1");
-        private By catchCertificateReferenceLabelBy => By.XPath("//label[@for='catch-certificate-reference-1']");
-        private By dateOfIssueLabelBy => By.XPath("//div[contains(@class, 'govuk-label--s')]");
-        private By dateOfIssueDayBy => By.Id("date-of-issue-day-1");
-        private By dateOfIssueMonthBy => By.Id("date-of-issue-month-1");
-        private By dateOfIssueYearBy => By.Id("date-of-issue-year-1");
-        private By calendarIconBy => By.XPath("//div[@id='date-of-issue-1']//button[contains(@class, 'date-picker')]");
-        private By flagStateLabelBy => By.XPath("//label[@for='flag-state-1']");
-        private By flagStateFieldBy => By.Id("flag-state-1");
-        private By selectSpeciesHeadingBy => By.XPath("//h2[contains(@class, 'govuk-heading-m')]");
-        private By selectAllCheckboxBy => By.XPath("//label[@for='select-all-checkbox-1']");
-        private By saveAndContinueButtonBy => By.Id("button-save-and-continue");
-        private By saveAndReturnToManageCatchCertificatesLinkBy => By.Id("save-and-return-manage-catch-certificates");
-        private By saveAndReturnToHubLinkBy => By.Id("save-and-return");
+        private IWebElement attachmentCaption => _driver.FindElement(By.XPath("//span[contains(@class, 'govuk-caption-l')]"));
+        private IWebElement numberOfCertificatesLabel => _driver.FindElement(By.XPath("//div[@class='govuk-summary-list__key']"));
+        private IWebElement changeLink => _driver.FindElement(By.XPath("//span[contains(@class, 'govuk-details__summary-text')]"));
+        private IWebElement catchCertificateReferenceField => _driver.FindElement(By.Id("catch-certificate-reference-1"));
+        private IWebElement catchCertificateReferenceLabel => _driver.FindElement(By.XPath("//label[@for='catch-certificate-reference-1']"));
+        private IWebElement dateOfIssueLabel => _driver.FindElement(By.XPath("//div[contains(@class, 'govuk-label--s')]"));
+        private IWebElement dateOfIssueDayField => _driver.FindElement(By.Id("date-of-issue-day-1"));
+        private IWebElement dateOfIssueMonthField => _driver.FindElement(By.Id("date-of-issue-month-1"));
+        private IWebElement dateOfIssueYearField => _driver.FindElement(By.Id("date-of-issue-year-1"));
+        private IWebElement calendarIcon => _driver.FindElement(By.XPath("//div[@id='date-of-issue-1']//button[contains(@class, 'date-picker')]"));
+        private IWebElement flagStateLabel => _driver.FindElement(By.XPath("//label[@for='flag-state-1']"));
+        private IWebElement flagStateField => _driver.FindElement(By.Id("flag-state-1"));
+        private IWebElement selectSpeciesHeading => _driver.FindElement(By.XPath("//h2[contains(@class, 'govuk-heading-m')]"));
+        private IWebElement selectAllCheckbox => _driver.FindElement(By.XPath("//label[@for='select-all-checkbox-1']"));
+        private IWebElement saveAndContinueButton => _driver.FindElement(By.Id("button-save-and-continue"));
+        private IWebElement saveAndReturnToManageCatchCertificatesLink => _driver.FindElement(By.Id("save-and-return-manage-catch-certificates"));
         private IWebElement lnkAddTheCommodity => _driver.FindElement(By.LinkText("add the commodity"));
         private IWebElement chkSelectAll => _driver.FindElement(By.Id("select-all-checkbox-1"));
         private IReadOnlyCollection<IWebElement> speciesCheckboxes => _driver.FindElements(By.XPath("//div[@id='commodities-species-table-1']//input[@type='checkbox' and contains(@id, 'species-')]"));
+        private IReadOnlyCollection<IWebElement> catchCertificateReferenceErrors => _driver.FindElements(By.XPath("//span[@class='govuk-error-message' and contains(text(), 'catch certificate reference')]"));
+        private IReadOnlyCollection<IWebElement> flagStateErrors => _driver.FindElements(By.XPath("//span[@class='govuk-error-message' and contains(text(), 'flag state')]"));
+        private IReadOnlyCollection<IWebElement> dateOfIssueErrors => _driver.FindElements(By.Id("date-of-issue-error"));
+        private IReadOnlyCollection<IWebElement> dropdownOptions => _driver.FindElements(By.XPath("//ul[@id='flag-state-1__listbox']//li[@role='option']"));
 
         // Error validation
         private IReadOnlyCollection<IWebElement> lblErrorMessages => _driver.FindElements(errorMessageListItemsBy);
         private By errorSummaryBy => By.XPath("//div[@class='govuk-error-summary']");
-        private By catchCertificateReferenceErrorBy => By.XPath("//span[@class='govuk-error-message' and contains(text(), 'catch certificate reference')]");
-        private By flagStateErrorBy => By.XPath("//span[@class='govuk-error-message' and contains(text(), 'flag state')]");
-        private By dateOfIssueErrorBy => By.Id("date-of-issue-error");
         private By errorMessageListItemsBy => By.XPath("//div[@class='govuk-error-summary']//ul[@class='govuk-list govuk-error-summary__list']/li");
-
-        // Dropdown options
-        private By dropdownOptionsBy => By.XPath("//ul[@id='flag-state-1__listbox']//li[@role='option']");
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -105,20 +102,11 @@ namespace Defra.UI.Tests.Pages.Classes
             setFlagStateOfCatchingVessel(index).SendKeys($"{FlagState}{Keys.ArrowDown}{Keys.Enter}");
         }
 
-        public void SelectSpecies(int species)
-        {
-            selectSpecies(species).Click();
-        }
+        public void SelectSpecies(int species) => selectSpecies(species).Click();
 
-        public void SelectSpeciesByName(string species)
-        {
-            selectSpeciesByName(species).Click();
-        }
+        public void SelectSpeciesByName(string species) => selectSpeciesByName(species).Click();
 
-        public void ClickChangeLink()
-        {
-            lnkChange.Click();
-        }
+        public void ClickChangeLink() => lnkChange.Click();
 
         public void EnterNumberOfCatchCertificates(string noOfCertificateRef)
         {
@@ -131,132 +119,76 @@ namespace Defra.UI.Tests.Pages.Classes
             return lstNoOfCatchCertificatRefereceSections.Displayed;
         }
 
-        public void ClickUpdate()
-        {
-            btnUpdate.Click();
-        }
+        public void ClickUpdate() => btnUpdate.Click();
 
-        public void ClickUpdate(int index)
-        {
-            setUpdateDetails(index).Click();
-        }
+        public void ClickUpdate(int index) => setUpdateDetails(index).Click();
 
-        public void ClickSaveAndReturnToManageCertificateLink()
-        {
-            lnkSaveAndReturnToManageCertificate.Click();
-        }
+        public void ClickSaveAndReturnToManageCertificateLink() => lnkSaveAndReturnToManageCertificate.Click();
 
-        public void ClickAddTheCommodityLink()
-        {
-            lnkAddTheCommodity.Click();
-        }
+        public void ClickAddTheCommodityLink() => lnkAddTheCommodity.Click();
 
         public bool VerifyAttachmentNumberDisplayed(int attachmentNumber, int totalAttachments)
         {
-            var caption = _driver.FindElement(attachmentCaptionBy);
-            var expectedText = $"Attachment {attachmentNumber} of {totalAttachments}";
-            var actualText = NormalizeWhitespace(caption.Text);
-
-            return caption.Displayed && actualText.Equals(expectedText, StringComparison.OrdinalIgnoreCase);
+            return attachmentCaption.Displayed &&
+                   NormalizeWhitespace(attachmentCaption.Text).Equals($"Attachment {attachmentNumber} of {totalAttachments}", StringComparison.OrdinalIgnoreCase);
         }
 
         public bool VerifyNumberOfCatchCertificatesWithChangeLinkDisplayed()
         {
-            var label = _driver.FindElement(numberOfCertificatesLabelBy);
-            var changeLink = _driver.FindElement(changeLinkBy);
-
-            var labelText = NormalizeWhitespace(label.Text);
-            var linkText = NormalizeWhitespace(changeLink.Text);
-
-            return label.Displayed &&
-                   labelText.Equals("Number of catch certificates in this attachment", StringComparison.OrdinalIgnoreCase) &&
+            return numberOfCertificatesLabel.Displayed &&
+                   NormalizeWhitespace(numberOfCertificatesLabel.Text).Equals("Number of catch certificates in this attachment", StringComparison.OrdinalIgnoreCase) &&
                    changeLink.Displayed &&
-                   linkText.Equals("Change", StringComparison.OrdinalIgnoreCase);
+                   NormalizeWhitespace(changeLink.Text).Equals("Change", StringComparison.OrdinalIgnoreCase);
         }
 
         public bool VerifyCatchCertificateReferenceFieldDisplayed()
         {
-            var label = _driver.FindElement(catchCertificateReferenceLabelBy);
-            var field = _driver.FindElement(catchCertificateReferenceFieldBy);
-
-            var labelText = NormalizeWhitespace(label.Text);
-
-            return label.Displayed &&
-                   labelText.Contains("Catch certificate reference", StringComparison.OrdinalIgnoreCase) &&
-                   field.Displayed;
+            return catchCertificateReferenceLabel.Displayed &&
+                   NormalizeWhitespace(catchCertificateReferenceLabel.Text).Contains("Catch certificate reference", StringComparison.OrdinalIgnoreCase) &&
+                   catchCertificateReferenceField.Displayed;
         }
 
         public bool VerifyDateOfIssueFieldsWithCalendarDisplayed()
         {
-            var label = _driver.FindElement(dateOfIssueLabelBy);
-            var dayField = _driver.FindElement(dateOfIssueDayBy);
-            var monthField = _driver.FindElement(dateOfIssueMonthBy);
-            var yearField = _driver.FindElement(dateOfIssueYearBy);
-            var calendarIcon = _driver.FindElement(calendarIconBy);
-
-            var labelText = NormalizeWhitespace(label.Text);
-
-            return label.Displayed &&
-                   labelText.Equals("Date of issue", StringComparison.OrdinalIgnoreCase) &&
-                   dayField.Displayed &&
-                   monthField.Displayed &&
-                   yearField.Displayed &&
+            return dateOfIssueLabel.Displayed &&
+                   NormalizeWhitespace(dateOfIssueLabel.Text).Equals("Date of issue", StringComparison.OrdinalIgnoreCase) &&
+                   dateOfIssueDayField.Displayed &&
+                   dateOfIssueMonthField.Displayed &&
+                   dateOfIssueYearField.Displayed &&
                    calendarIcon.Displayed;
         }
 
         public bool VerifyFlagStateFieldDisplayed()
         {
-            var label = _driver.FindElement(flagStateLabelBy);
-            var field = _driver.FindElement(flagStateFieldBy);
-
-            var labelText = NormalizeWhitespace(label.Text);
-
-            return label.Displayed &&
-                   labelText.Contains("Flag state of catching vessel", StringComparison.OrdinalIgnoreCase) &&
-                   field.Displayed;
+            return flagStateLabel.Displayed &&
+                   NormalizeWhitespace(flagStateLabel.Text).Contains("Flag state of catching vessel", StringComparison.OrdinalIgnoreCase) &&
+                   flagStateField.Displayed;
         }
 
         public bool VerifySelectSpeciesWithSelectAllDisplayed()
         {
-            var heading = _driver.FindElement(selectSpeciesHeadingBy);
-            var selectAllCheckbox = _driver.FindElement(selectAllCheckboxBy);
-
-            var headingText = NormalizeWhitespace(heading.Text);
-            var checkboxText = NormalizeWhitespace(selectAllCheckbox.Text);
-
-            var expectedHeading = "Select species being imported under this catch certificate";
-
-            return heading.Displayed &&
-                   headingText.Equals(expectedHeading, StringComparison.OrdinalIgnoreCase) &&
+            return selectSpeciesHeading.Displayed &&
+                   NormalizeWhitespace(selectSpeciesHeading.Text).Equals("Select species being imported under this catch certificate", StringComparison.OrdinalIgnoreCase) &&
                    selectAllCheckbox.Displayed &&
-                   checkboxText.Equals("Select all", StringComparison.OrdinalIgnoreCase);
+                   NormalizeWhitespace(selectAllCheckbox.Text).Equals("Select all", StringComparison.OrdinalIgnoreCase);
         }
 
         public bool VerifySaveAndContinueButtonDisplayed()
         {
-            var button = _driver.FindElement(saveAndContinueButtonBy);
-            var buttonText = NormalizeWhitespace(button.Text);
-
-            return button.Displayed &&
-                   buttonText.Equals("Save and continue", StringComparison.OrdinalIgnoreCase);
+            return saveAndContinueButton.Displayed &&
+                   NormalizeWhitespace(saveAndContinueButton.Text).Equals("Save and continue", StringComparison.OrdinalIgnoreCase);
         }
 
         public bool VerifySaveAndReturnToManageCatchCertificatesLinkDisplayed()
         {
-            var link = _driver.FindElement(saveAndReturnToManageCatchCertificatesLinkBy);
-            var linkText = NormalizeWhitespace(link.Text);
-
-            return link.Displayed &&
-                   linkText.Equals("Save and return to manage catch certificates", StringComparison.OrdinalIgnoreCase);
+            return saveAndReturnToManageCatchCertificatesLink.Displayed &&
+                   NormalizeWhitespace(saveAndReturnToManageCatchCertificatesLink.Text).Equals("Save and return to manage catch certificates", StringComparison.OrdinalIgnoreCase);
         }
 
         public bool VerifySaveAndReturnToHubLinkDisplayed()
         {
-            var link = _driver.FindElement(saveAndReturnToHubLinkBy);
-            var linkText = NormalizeWhitespace(link.Text);
-
-            return link.Displayed &&
-                   linkText.Equals("Save and return to hub", StringComparison.OrdinalIgnoreCase);
+            return lnkSaveAndReturnToHub.Displayed &&
+                   NormalizeWhitespace(lnkSaveAndReturnToHub.Text).Equals("Save and return to hub", StringComparison.OrdinalIgnoreCase);
         }
 
         public void StartTypingInFlagState(string partialText, int index = 1)
@@ -268,49 +200,30 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool VerifyDropdownOptionsInclude(string optionText)
         {
-            var options = _driver.FindElements(dropdownOptionsBy);
-            return options.Any(option =>
+            return dropdownOptions.Any(option =>
                 NormalizeWhitespace(option.Text).Contains(optionText, StringComparison.OrdinalIgnoreCase));
         }
 
         public void SelectFromDropdown(string optionText)
         {
-            var options = _driver.WaitForElements(dropdownOptionsBy);
-            var matchingOption = options.FirstOrDefault(option =>
+            var matchingOption = dropdownOptions.FirstOrDefault(option =>
                 NormalizeWhitespace(option.Text).Equals(optionText, StringComparison.OrdinalIgnoreCase));
 
-            if (matchingOption != null)
-            {
-                matchingOption.Click();
-            }
+            matchingOption?.Click();
         }
 
         public bool IsFieldHighlighted(string fieldName, int index = 1)
         {
-            try
-            {
-                if (fieldName.Contains("catch certificate reference", StringComparison.OrdinalIgnoreCase))
-                {
-                    var errorElements = _driver.FindElements(catchCertificateReferenceErrorBy);
-                    return errorElements.Count > 0 && errorElements.First().Displayed;
-                }
-                else if (fieldName.Contains("flag state", StringComparison.OrdinalIgnoreCase))
-                {
-                    var errorElements = _driver.FindElements(flagStateErrorBy);
-                    return errorElements.Count > 0 && errorElements.First().Displayed;
-                }
-                else if (fieldName.Contains("date of issue", StringComparison.OrdinalIgnoreCase))
-                {
-                    var errorElements = _driver.FindElements(dateOfIssueErrorBy);
-                    return errorElements.Count > 0 && errorElements.First().Displayed;
-                }
+            if (fieldName.Contains("catch certificate reference", StringComparison.OrdinalIgnoreCase))
+                return catchCertificateReferenceErrors.Count > 0 && catchCertificateReferenceErrors.First().Displayed;
 
-                return false;
-            }
-            catch
-            {
-                return false;
-            }
+            if (fieldName.Contains("flag state", StringComparison.OrdinalIgnoreCase))
+                return flagStateErrors.Count > 0 && flagStateErrors.First().Displayed;
+
+            if (fieldName.Contains("date of issue", StringComparison.OrdinalIgnoreCase))
+                return dateOfIssueErrors.Count > 0 && dateOfIssueErrors.First().Displayed;
+
+            return false;
         }
 
         public (bool allErrorsPresent, string errorMessages) VerifySpecificErrorsDisplayed(params string[] expectedErrors)
@@ -319,13 +232,8 @@ namespace Defra.UI.Tests.Pages.Classes
             {
                 var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
 
-                // Wait for error summary banner to appear
                 wait.Until(driver => driver.FindElements(errorSummaryBy).Count > 0);
-
-                // Wait for error messages list to be populated
                 wait.Until(driver => driver.FindElements(errorMessageListItemsBy).Count > 0);
-
-                // Wait for error messages to have actual text content (not empty)
                 wait.Until(driver =>
                 {
                     var messages = driver.FindElements(errorMessageListItemsBy);
@@ -339,80 +247,47 @@ namespace Defra.UI.Tests.Pages.Classes
 
             var errorSummaryElements = _driver.FindElements(errorSummaryBy);
             if (errorSummaryElements.Count == 0)
-            {
                 return (false, "No error banner displayed");
-            }
 
-            // Collect all error messages
             var errorMessagesList = new List<string>();
             foreach (var element in lblErrorMessages)
             {
                 var errorText = NormalizeWhitespace(element.Text);
                 if (!string.IsNullOrWhiteSpace(errorText))
-                {
                     errorMessagesList.Add(errorText);
-                }
             }
 
-            // If no errors found after wait, return failure with details
             if (errorMessagesList.Count == 0)
-            {
                 return (false, "Error banner displayed but no error messages found in the list");
-            }
 
             var allErrorMessages = string.Join("; ", errorMessagesList);
 
-            // Check if ALL expected errors are present
-            var missingErrors = new List<string>();
-            foreach (var expectedError in expectedErrors)
-            {
-                var found = errorMessagesList.Any(msg =>
-                    msg.Contains(expectedError, StringComparison.OrdinalIgnoreCase));
-
-                if (!found)
-                {
-                    missingErrors.Add(expectedError);
-                }
-            }
+            var missingErrors = expectedErrors
+                .Where(e => !errorMessagesList.Any(msg => msg.Contains(e, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
 
             if (missingErrors.Any())
-            {
-                var missing = string.Join("; ", missingErrors);
-                return (false, $"Missing errors: [{missing}]. All errors displayed: {allErrorMessages}");
-            }
+                return (false, $"Missing errors: [{string.Join("; ", missingErrors)}]. All errors displayed: {allErrorMessages}");
 
             return (true, allErrorMessages);
         }
 
-        public void ClickSelectAllCheckbox()
-        {
-            chkSelectAll.Click();
-        }
+        public void ClickSelectAllCheckbox() => chkSelectAll.Click();
 
         public bool VerifyAllSpeciesAreSelected()
         {
-            // Check if Select All checkbox is checked
             if (!chkSelectAll.Selected)
-            {
                 return false;
-            }
 
-            // Check if all species checkboxes are checked
             foreach (var checkbox in speciesCheckboxes)
             {
                 if (!checkbox.Selected)
-                {
                     return false;
-                }
             }
 
             return true;
         }
 
-        public void ClickSaveAndReturnToHubLink()
-        {
-            var link = _driver.FindElement(saveAndReturnToHubLinkBy);
-            link.Click();
-        }
+        public void ClickSaveAndReturnToHubLink() => lnkSaveAndReturnToHub.Click();
     }
 }
