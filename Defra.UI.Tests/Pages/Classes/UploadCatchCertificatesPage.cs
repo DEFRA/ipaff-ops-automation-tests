@@ -14,13 +14,14 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects
         private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
-        private By selectDocumentsHeadingBy => By.XPath("//h2[contains(@class, 'govuk-heading-l') and contains(text(), 'Select documents to upload')]");
-        private By dropzoneDivBy => By.CssSelector("div[data-module='dropzone']");
-        private By dragDropTextBy => By.XPath("//p[contains(@class, 'govuk-body') and contains(text(), 'Drag and drop files here or')]");
-        private By chooseFilesLabelBy => By.XPath("//label[contains(@class, 'govuk-button') and contains(text(), 'Choose files')]");
+        private IWebElement selectDocumentsHeading => _driver.FindElement(By.XPath("//h2[contains(@class, 'govuk-heading-l') and contains(text(), 'Select documents to upload')]"));
+        private IWebElement dropzoneDiv => _driver.FindElement(By.CssSelector("div[data-module='dropzone']"));
+        private IWebElement dragDropText => _driver.FindElement(By.XPath("//p[contains(@class, 'govuk-body') and contains(text(), 'Drag and drop files here or')]"));
+        private IWebElement chooseFilesLabel => _driver.FindElement(By.XPath("//label[contains(@class, 'govuk-button') and contains(text(), 'Choose files')]"));
+        private IWebElement uploadInput => _driver.FindElement(By.CssSelector("input[type='file']"));
+        private IWebElement continueButton => _driver.FindElement(By.Id("next-button"));
         private By uploadInputBy => By.CssSelector("input[type='file']");
         private By uploadedFilesListBy => By.CssSelector("div.uploaded-files-list-item");
-        private By continueButtonBy => By.Id("next-button");
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -37,24 +38,16 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool VerifySelectDocumentsHeading()
         {
-            var heading = _driver.FindElement(selectDocumentsHeadingBy);
-            return heading.Text.Trim().Equals("Select documents to upload", StringComparison.OrdinalIgnoreCase);
+            return selectDocumentsHeading.Text.Trim().Equals("Select documents to upload", StringComparison.OrdinalIgnoreCase);
         }
 
         public bool VerifyDragAndDropFunctionality()
         {
-            var dropzone = _driver.FindElement(dropzoneDivBy);
-            var dragText = _driver.FindElement(dragDropTextBy);
-            var chooseLabel = _driver.FindElement(chooseFilesLabelBy);
-            var uploadInput = _driver.FindElement(uploadInputBy);
-
-            var dropzoneExists = dropzone.Displayed;
-            var dragDropTextExists = dragText.Text.Trim().Equals("Drag and drop files here or", StringComparison.OrdinalIgnoreCase);
-            var chooseFilesButtonExists = chooseLabel.Text.Trim().Equals("Choose files", StringComparison.OrdinalIgnoreCase);
-            var fileInputExists = uploadInput.GetAttribute("type").Equals("file", StringComparison.OrdinalIgnoreCase);
-            var multipleUploadEnabled = uploadInput.GetAttribute("multiple") != null;
-
-            return dropzoneExists && dragDropTextExists && chooseFilesButtonExists && fileInputExists && multipleUploadEnabled;
+            return dropzoneDiv.Displayed &&
+                   dragDropText.Text.Trim().Equals("Drag and drop files here or", StringComparison.OrdinalIgnoreCase) &&
+                   chooseFilesLabel.Text.Trim().Equals("Choose files", StringComparison.OrdinalIgnoreCase) &&
+                   uploadInput.GetAttribute("type").Equals("file", StringComparison.OrdinalIgnoreCase) &&
+                   uploadInput.GetAttribute("multiple") != null;
         }
 
         public void UploadMultipleCatchCertificates(params string[] fileNames)
@@ -81,40 +74,14 @@ namespace Defra.UI.Tests.Pages.Classes
             var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
             var uploadedFiles = wait.Until(d => d.FindElements(uploadedFilesListBy));
 
-            // Check file count matches
-            if (uploadedFiles.Count != expectedFileCount)
-            {
-                return false;
-            }
-
-            // Check all files are displayed
-            if (!uploadedFiles.All(file => file.Displayed))
-            {
-                return false;
-            }
-
-            // If expected file names are provided, verify they match
-            if (expectedFileNames != null && expectedFileNames.Length > 0)
-            {
-                var displayedFileNames = uploadedFiles.Select(file => file.Text.Trim()).ToList();
-
-                // Check each expected file name is present in the displayed files
-                foreach (var expectedFileName in expectedFileNames)
-                {
-                    if (!displayedFileNames.Any(displayed => displayed.Equals(expectedFileName, StringComparison.OrdinalIgnoreCase)))
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            return true;
+            return uploadedFiles.Count == expectedFileCount &&
+                   uploadedFiles.All(file => file.Displayed) &&
+                   (expectedFileNames == null || expectedFileNames.Length == 0 ||
+                    expectedFileNames.All(expectedFileName =>
+                        uploadedFiles.Any(file =>
+                            file.Text.Trim().Equals(expectedFileName, StringComparison.OrdinalIgnoreCase))));
         }
 
-        public void ClickContinue()
-        {
-            var continueButton = _driver.FindElement(continueButtonBy);
-            continueButton.Click();
-        }
+        public void ClickContinue() => continueButton.Click();
     }
 }
