@@ -134,7 +134,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             }
         }
 
-        [Then("Does your consignment require a region code? defaults to 'No'")]
+        [Then("the Does your consignment require a region code? defaults to 'No'")]
         public void ThenDoesYourConsignmentRequireARegionCodeDefaultsToNo()
         {
             Assert.True(originOfImportPage?.IsRegionCodeDefaultedToNo, "Does your consignment require a region code? is not defaulted to 'No'");
