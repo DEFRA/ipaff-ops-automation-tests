@@ -119,9 +119,24 @@ Scenario: Delegation of Authority Agent submits CHEDPP notification on behalf of
 	Then the user should be logged into Notification page
 	When user searches for the import notification
 	Then the notification should be found with the status "NEW"
-	When the user waits for "2.5" minutes
+	When the user waits and searches for the notification should be found with the status "IN PROGRESS"
+	When the user switches to the part 1 tab
 	And the user searches for the import notification
 	Then the notification should be found with the status "IN PROGRESS"
+	When the user waits and searches for the notification should be found with the status "VALID"
+	When the user switches to the part 2 tab
+	When the user clicks Record decision from the header
+	And the user searches for the import notification
+	Then the user clicks the notification found with status "VALID"
+	And the CHED overview page should be displayed
+	When the user switches to 'Checks' tab in CHED Overview page
+	Then verifies Risk decision PHSI is set to 'NO INSPECTION'
+	And verifies Document check is set to 'AUTO CLEARED'
+	And verifies Risk decision HMI is set to 'NO INSPECTION'
+	And verifies 'Decision recorded by' field is set to 'Auto Cleared'
+	When the user logs out of IPAFFS Part 2
+	Then the user should be logged out successfully
+
 
 Scenario: Delegation of Authority Agent submits CHEDPP notification by uploading commodity details in CSV file - SPS - 5092
 	Given that I navigate to the IPAFF application

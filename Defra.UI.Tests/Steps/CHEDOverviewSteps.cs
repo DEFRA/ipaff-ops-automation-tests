@@ -102,5 +102,29 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             chedOverviewPage?.SwitchTab(tabName);
         }
+
+        [Then("verifies Risk decision PHSI is set to {string}")]
+        public void ThenVerifiesRiskDecisionPHSIIsSetTo(string decision)
+        {
+            Assert.True(chedOverviewPage?.VerifyRiskDecisionPHSI(decision));
+        }
+
+        [Then("verifies Document check is set to {string}")]
+        public void ThenVerifiesDocumentCheckIsSetTo(string status)
+        {
+            Assert.True(chedOverviewPage?.VerifyDocumentCheck(status));
+        }
+
+        [Then("verifies Risk decision HMI is set to {string}")]
+        public void ThenVerifiesRiskDecisionHMIIsSetTo(string decision)
+        {
+            Assert.True(chedOverviewPage?.VerifyRiskDecisionHMI(decision));
+        }
+
+        [Then("verifies {string} field is set to {string}")]
+        public void ThenVerifiesFieldIsSetTo(string fieldName, string status)
+        {
+            Assert.True(chedOverviewPage?.VerifyDecisionRecordedBy(fieldName, status));
+        }
     }
 }

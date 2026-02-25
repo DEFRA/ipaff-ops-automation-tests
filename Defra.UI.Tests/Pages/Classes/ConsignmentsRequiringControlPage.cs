@@ -16,7 +16,7 @@ namespace Defra.UI.Tests.Pages.Classes
         #region Page Objects
         private IWebElement primaryTitle => _driver.WaitForElement(By.XPath("//*[@class='govuk-heading-xl govuk-!-margin-bottom-6 govuk-!-font-size-48 ']"), true);
         private IWebElement lnkChedRefNumSearcResult => _driver.FindElement(By.XPath("//*[normalize-space()='Reference Number' or normalize-space()='Reference number']//following-sibling::dd"));
-        private IWebElement lnkChedStatusSearcResult => _driver.FindElement(By.XPath("//*[normalize-space()='CHED status']//following-sibling::dd/strong"));
+        private IWebElement lnkChedStatusSearcResult => _driver.FindElement(By.XPath("//*[normalize-space()='CHED status']//following-sibling::dd/strong[1]"));
         private IWebElement lnkChedRefNum => _driver.FindElement(By.XPath("//*[normalize-space()='Reference Number']/following-sibling::dd"));
         private IWebElement lblControlStatus => _driver.FindElement(By.XPath("//*[contains(@id,'control-status')]"));
         private IWebElement lnkFirstNotification => _driver.FindElement(By.XPath("(//*[contains(@id,'view-details')])[1]"));
@@ -138,6 +138,51 @@ namespace Defra.UI.Tests.Pages.Classes
                     return false; 
             }
             return true;
+        }
+
+        public void SwitchToPart1Tab()
+        {
+            _driver.SwitchTo().Window(_driver.WindowHandles.FirstOrDefault());
+        }
+
+        public void SwitchToPart2Tab()
+        {
+            _driver.SwitchTo().Window(_driver.WindowHandles.LastOrDefault());
+        }
+
+        public bool WaitForStatusWithSearch(string expectedStatus)
+        {
+            int timeoutSeconds = 300;
+            int pollIntervalSeconds = 5;
+
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(timeoutSeconds)) 
+            { 
+                PollingInterval = TimeSpan.FromSeconds(pollIntervalSeconds) 
+            }; 
+
+            wait.IgnoreExceptionTypes(
+                typeof(NoSuchElementException), 
+                typeof(StaleElementReferenceException)); 
+            
+            return wait.Until(d => 
+            {
+
+                // Click Search each cycle
+                btnSearch.Click();
+
+                //d.FindElement(By.CssSelector("#search-notifications")).Click();
+
+                // Read status
+                var status = lnkChedStatusSearcResult.Text.Trim();
+
+                //d.FindElement(By.XPath("//*[normalize-space()='CHED status']//following-sibling::dd/strong[1]")).Text.Trim(); 
+
+                // Check match
+                if (string.Equals(status, expectedStatus, StringComparison.OrdinalIgnoreCase)) 
+                    return true; 
+                else
+                    return false;  // keep waiting
+            });
         }
     }
 }
