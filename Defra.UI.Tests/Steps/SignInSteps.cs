@@ -33,7 +33,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void GivenThatINavigateToThePortCheckerApplication()
         {
             var url = urlBuilder.Default().BuildApp();
-            _driver?.Navigate().GoToUrl(url);
+            _driver?.Navigate().GoToUrl(url);           
         }
 
         [When(@"the user navigate to the BTMS application")]
