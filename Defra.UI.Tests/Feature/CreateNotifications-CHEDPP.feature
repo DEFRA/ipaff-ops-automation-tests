@@ -115,5 +115,23 @@ Scenario: Delegation of Authority Agent submits CHEDPP notification on behalf of
 	And the notification status should be 'NEW TRADE PARTNER'
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
-
+	
+Scenario:  Create a new import notification through clone a health or phytosanitary certificate process - SPS-9272 - CHED PP
+	Given that I navigate to the IPAFF application
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF Agent credentials and signin
+	Then the user should be logged into Notification page
+	When the user Clicks on Clone a certificate button
+	Then the Clone a health or phytosanitary certificate page should be displayed
+	And the user verifies all the content in Clone a health or phytosanitary certificate page
+	And the user selected the importing option as ''
+	When the user clicks continue button
+	Then the Certificate details page should be displayed
+	And the user searches for the notification for cloning which is not more  than 90 days from creation
+	And the user provided notification details in the search input fields
+	When the user Clicks on Search button
+	
 	
