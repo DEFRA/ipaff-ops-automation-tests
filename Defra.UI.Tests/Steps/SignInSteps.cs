@@ -1,4 +1,5 @@
 ﻿using AventStack.ExtentReports.Gherkin.Model;
+using Defra.UI.Tests.Configuration;
 using Defra.UI.Tests.Data.Users;
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
@@ -55,7 +56,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Given(@"that the user navigate to the IPAFFS Internal Plants Inspector application")]
         public void GivenThatTheUserNavigateToTheIPAFFSInternalPlantsInspectorApplication()
         {
-            var url = urlBuilder.InternalPlantsInspectorDefault().BuildInternalPlantsInspectorApp();
+            var url = ConfigSetup.BaseConfiguration.SearchProtectedNotifications.Url;
             _driver?.Navigate().GoToUrl(url);
         }
 
@@ -185,8 +186,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("I have provided the IPAFFS Internal Plants Inspector credentials and signin")]
         public void WhenIHaveProvidedTheIPAFFSInternalPlantsInspectorCredentialsAndSignin()
         {
-            var userName = "Vinotha.Thiyagarajan@defra.gov.uk";
-            var credential = "Towardsjoy@27";
+            var userName = ConfigSetup.BaseConfiguration.SearchProtectedNotifications.User;
+            var credential = ConfigSetup.BaseConfiguration.SearchProtectedNotifications.Credential;
 
             Thread.Sleep(1000);
             _signInPage?.IPAFFSInternalInspectorSignIn(userName, credential);
