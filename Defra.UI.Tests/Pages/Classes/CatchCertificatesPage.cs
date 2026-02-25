@@ -14,8 +14,9 @@ namespace Defra.UI.Tests.Pages.Classes
         #region Page Objects
         private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
         private IWebElement secondaryTitle => _driver.WaitForElement(By.Id("page-secondary-title"), true);
+        private IWebElement questionHeading => _driver.WaitForElement(By.XPath("//h1[contains(@class, 'govuk-heading-l')]"), true);
         private IWebElement rdoAddCertificateYes => _driver.FindElement(By.XPath("//*[@id='catch-certificate-needed']/following-sibling::label"));
-        private IWebElement rdoAddCertificateNo => _driver.FindElement(By.XPath("//*[@id='catch-certificate-needed-2']/following-sibling::label"));   
+        private IWebElement rdoAddCertificateNo => _driver.FindElement(By.XPath("//*[@id='catch-certificate-needed-2']/following-sibling::label"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -37,6 +38,20 @@ namespace Defra.UI.Tests.Pages.Classes
                 rdoAddCertificateYes.Click();
             else if (rdoAddCertificateNo.Text.Trim().Contains(option))
                 rdoAddCertificateNo.Click();
+        }
+
+        public bool VerifyQuestionDisplayed(string questionText)
+        {
+            return questionHeading.Text.Trim().Equals(questionText, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public bool VerifyRadioButtonsDisplayed(string yesText, string noText)
+        {
+            var yesLabelText = rdoAddCertificateYes.Text.Trim();
+            var noLabelText = rdoAddCertificateNo.Text.Trim();
+
+            return yesLabelText.Equals(yesText, StringComparison.OrdinalIgnoreCase) &&
+                   noLabelText.Equals(noText, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

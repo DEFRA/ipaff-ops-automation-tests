@@ -133,5 +133,8 @@
         void ClickChangeCatchCertificateReferences(int index);
         string GetCatchCertificateCommodityCode(int row, int column = 1);
         string GetCatchCertificateSpeciesDescription(int row, int column = 2);
+        bool VerifyCatchCertificateHeadingDisplaysCount(int expectedCount);
+        (bool isValid, List<string> mismatches) VerifyCatchCertificateSummaryTable(int totalAttachments, Dictionary<int, (string reference, string flagState, string dateOfIssue, string fileName)> expectedData);
+        (bool isValid, List<string> mismatches) VerifyCatchCertificateDetails(int totalAttachments, Dictionary<int, (string reference, string commodityCode, string species)> expectedData);
     }
 }
