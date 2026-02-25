@@ -36,10 +36,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(consignmentsRequiringControlPage?.VerifyNotificationStatus(chedRef, status));
         }
 
-        [When("the user waits for {string} minutes")]
-        public void WhenTheUserWaitsForMinutes(string time)
+
+        [When("the user waits and searches for the notification should be found with the status {string}")]
+        public void WhenTheUserWaitsAndSearchesForTheNotificationShouldBeFoundWithTheStatus(string expectedStatus)
         {
-            Thread.Sleep(TimeSpan.FromMinutes(2.5));
+            Assert.True(consignmentsRequiringControlPage?.WaitForStatusWithSearch(expectedStatus));
         }
 
 
@@ -123,6 +124,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserClicksInConsignmentRequiringControlPage()
         {
             consignmentsRequiringControlPage?.ClickFirstNotification();
+        }
+
+        [When("the user switches to the part {int} tab")]
+        public void WhenTheUserSwitchesToThePartTab(int tabNumber)
+        {
+            if (tabNumber == 1)
+                consignmentsRequiringControlPage?.SwitchToPart1Tab();
+            else
+                consignmentsRequiringControlPage?.SwitchToPart2Tab();
         }
     }
 }
