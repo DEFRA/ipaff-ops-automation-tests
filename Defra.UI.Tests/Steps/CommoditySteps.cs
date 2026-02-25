@@ -1,4 +1,5 @@
-﻿using Defra.UI.Tests.Pages.Interfaces;
+﻿using AventStack.ExtentReports.Gherkin.Model;
+using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using NUnit.Framework;
 using Reqnroll;
@@ -170,6 +171,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["TotalPackages"] = commodityPage.GetTotalPackages();
         }
 
+        [Then("user enters the total gross weight greater than the net weight {string}")]
         [When("the total gross weight should be greater than the net weight {string}")]
         [Then("the total gross weight should be greater than the net weight {string}")]
         public void ThenTheTotalGrossWeightShouldBeGreaterThanTheNetWeight(string weight)
@@ -431,6 +433,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Thread.Sleep(1000);
             _scenarioContext["TotalNetWeight"] = commodityPage?.GetCHEDPPTotalNetWeight();
             _scenarioContext["TotalPackages"] = commodityPage?.GetCHEDPPTotalPackages();
+        }
+
+        [When("the user clicks Cancel link")]
+        public void WhenTheUserClicksCancelLink()
+        {
+            commodityPage?.ClickCancelLink();
         }
     }
 }
