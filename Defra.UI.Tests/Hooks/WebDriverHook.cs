@@ -196,13 +196,6 @@ namespace Defra.UI.Tests.Hooks
             }
         }
 
-        [BeforeStep]
-        public static void BeforeStep()
-        {
-            Thread.Sleep(1000);
-        }
-
-
         [AfterStep]
         public void AfterStep()
         {
