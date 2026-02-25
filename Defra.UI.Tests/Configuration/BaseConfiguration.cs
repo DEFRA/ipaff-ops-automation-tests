@@ -7,5 +7,7 @@ namespace Defra.UI.Tests.Configuration
         public UiFrameworkConfiguration UiFrameworkConfiguration { get; set; }
         public BrowserStackConfiguration BrowserStackConfiguration { get; set; }
         public AzureConnectionConfig AzureConnectionConfig { get; set; }
+        public SearchProtectedNotifications SearchProtectedNotifications { get; set; }
+        public SearchCloneNotifications SearchCloneNotifications { get; set; }
     }
 }
