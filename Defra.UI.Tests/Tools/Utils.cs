@@ -1,5 +1,4 @@
-﻿using Bogus;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
 using Reqnroll;
 using System.Diagnostics;
 using System.Globalization;
@@ -145,6 +144,18 @@ namespace Defra.UI.Tests.Tools
                 Thread.Sleep(500);
             }
             return false;
+        }
+
+        public static bool Equals(this string expected, string actual)
+        {
+            return expected.Equals(actual, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public static bool TextEquals(this string actual, string expected) => string.Equals(actual, expected, StringComparison.Ordinal);
+
+        public static bool CollectionsEqualIgnoreOrder(IEnumerable<string> actual, IEnumerable<string> expected)
+        {
+            return actual.OrderBy(x => x).SequenceEqual(expected.OrderBy(x => x));
         }
 
 

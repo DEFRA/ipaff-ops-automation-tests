@@ -37,7 +37,7 @@ Scenario: Delegation of Authority Agent submits CHEDPP notification on behalf of
 	When the user searchs for EPPO code '1AIEG' and clicks add link
 	Then Genus(and Species) 'x Aliceara' and EPPO code '1AIEG' should be populated in commodity page
 	And the user clicks Save and continue
-	Then What is the main reason for importing the consignment? page should be displayed
+	And What is the main reason for importing the consignment? page should be displayed
 	When The user selects 'Internal market' radio option
 	And the user clicks Save and continue
 	Then the Notification Hub page should be displayed
@@ -66,7 +66,7 @@ Scenario: Delegation of Authority Agent submits CHEDPP notification on behalf of
 	And the user selects Quantity type as 'Kilograms' for CHED PP commodity
 	Then the user clicks Apply Button
 	And the user clicks Save and continue
-	Then the Additional details page should be displayed
+	And the Additional details page should be displayed
 	And the total gross weight should be greater than the net weight '300'
 	When the user clicks Save and continue
 	Then Transport to the Border Control Post (BCP) page should be dislayed
@@ -88,7 +88,7 @@ Scenario: Delegation of Authority Agent submits CHEDPP notification on behalf of
 	And the user uploads the document 'IPAFFS Test Document' in the format '.docx'
 	Then the document 'IPAFFS Test Document' '.docx' is uploaded successfully
 	And the user clicks Save and continue
-	Then Importer, Packer, Delivery address and Consignor page should be displayed
+	And Importer, Packer, Delivery address and Consignor page should be displayed
 	When the user verifies Importer details 'Trader 5' is pre-filled
 	And the user clicks Add a delivery address link
 	Then Search for an existing delivery address page should be displayed
@@ -116,7 +116,7 @@ Scenario: Delegation of Authority Agent submits CHEDPP notification on behalf of
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
 	
-Scenario:  Create a new import notification through clone a health or phytosanitary certificate process - SPS-9272 - CHED PP
+Scenario: Create a new import notification through clone a health or phytosanitary certificate process - SPS-9272 - CHED PP
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
@@ -127,11 +127,33 @@ Scenario:  Create a new import notification through clone a health or phytosanit
 	When the user Clicks on Clone a certificate button
 	Then the Clone a health or phytosanitary certificate page should be displayed
 	And the user verifies all the content in Clone a health or phytosanitary certificate page
-	And the user selected the importing option as ''
-	When the user clicks continue button
+	And the user selected the importing option as 'Plants, plant products and other objects'
+	When the user clicks on continue button
 	Then the Certificate details page should be displayed
-	And the user searches for the notification for cloning which is not more  than 90 days from creation
+	And the user searches for the notification for cloning which is not more than 90 days from creation
 	And the user provided notification details in the search input fields
 	When the user Clicks on Search button
-	
+	Then the Phytosanitary certificate details page should be displayed
+	And the user verified all the details on Phytosanitary certificate details page
+	When the user Clicks on Clone button
+	Then the Who are you creating this notification for page should be displayed
+	And the user selects the option of creating notification for as "Agent1"
+	When the user Clicks on Save and review button
+	Then the DRAFT CHEDPP notification code page should be displayed
+	And the user records the Draft notification number
+	And the user verifies the following information is displayed within a red outlined box
+	| MissingOrIncorrect                                                         |
+	| Add the estimated arrival date at BCP                                      |
+	| Add the estimated arrival time at BCP                                      |
+	| Enter missing commodity details                                            |
+	| Add the total gross weight                                                 |
+	| Check your details on the 'Contact details' page and save them to continue |
+	| Select if using the Goods Vehicle Movement Service (GVMS)                  |
+	| Add document details                                                       |
+	| Add a delivery address                                                     |
+	| Add the entry Border Control Post                                          |
+	| Select if using the Common Transit Convention (CTC)                        |
+	When the user clicks on each red error message to enter the information which is missing
+
+
 	
