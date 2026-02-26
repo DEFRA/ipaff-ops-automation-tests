@@ -132,5 +132,11 @@
         void ClickChangeCatchCertificateReferences(int index);
         string GetCatchCertificateCommodityCode(int row, int column = 1);
         string GetCatchCertificateSpeciesDescription(int row, int column = 2);
+        void ClickChangeLinkForTransportToTheBCP();
+        void ClickChangeLinkForContactDetails();
+        void ClickChangeLinkForGoodsMovementServices();
+        void ClickChangeLinkForAddDeliveryAddress();
+        string GetImporterNameByChangeLink();
+        void ClickViewCHEDButton();
     }
 }

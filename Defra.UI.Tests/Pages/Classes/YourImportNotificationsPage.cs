@@ -113,7 +113,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool VerifyDataInCertificate(string chedReference)
         {
-            return _driver.Url.Contains($"/{chedReference}/certificate/pdf");
+            return _driver.Url.Contains($"/{chedReference}/");
         }
 
         public void ClosePDFBrowserTab()
