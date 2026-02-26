@@ -2,6 +2,7 @@
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using FluentAssertions;
+using Microsoft.CodeAnalysis;
 using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;
@@ -19,6 +20,10 @@ namespace Defra.UI.Tests.Steps
         private IPhytosanitaryCertificateDetailsPage? phytosanitaryCertificateDetailsPage => _objectContainer.IsRegistered<IPhytosanitaryCertificateDetailsPage>() ? _objectContainer.Resolve<IPhytosanitaryCertificateDetailsPage>() : null;
         private ICreatingThisNotificationForPage? creatingThisNotificationForPage => _objectContainer.IsRegistered<ICreatingThisNotificationForPage>() ? _objectContainer.Resolve<ICreatingThisNotificationForPage>() : null;
         private IDraftNotificationPage? draftNotificationPage => _objectContainer.IsRegistered<IDraftNotificationPage>() ? _objectContainer.Resolve<IDraftNotificationPage>() : null;
+        private IAddIntendedUseOfBulbs? addIntendedUseOfBulbs => _objectContainer.IsRegistered<IAddIntendedUseOfBulbs>() ? _objectContainer.Resolve<IAddIntendedUseOfBulbs>() : null;
+        private ICheckOrUpdateCommodityDetails? checkOrUpdateCommodityDetails => _objectContainer.IsRegistered<ICheckOrUpdateCommodityDetails>() ? _objectContainer.Resolve<ICheckOrUpdateCommodityDetails>() : null;
+        private IReviewYourNotificationPage? reviewYourNotificationPage => _objectContainer.IsRegistered<IReviewYourNotificationPage>() ? _objectContainer.Resolve<IReviewYourNotificationPage>() : null;
+        
 
         public CerfitificateDetailsSteps(ScenarioContext context, IObjectContainer container)
         {
@@ -136,11 +141,71 @@ namespace Defra.UI.Tests.Steps
             Assert.True(draftNotificationPage?.VerifyAllMissingOrErrorLinksExists(expectedList), "Missing or incorrect links didn't match or exists");
         }
 
-        [When("the user clicks on each red error message to enter the information which is missing")]
-        public void WhenTheUserClicksOnEachRedErrorMessageToEnterTheInformationWhichIsMissing()
+        [When("the user clicks on Check or update commodity details link")]
+        public void WhenTheUserClicksOnCheckOrUpdateCommodityDetailsLink()
         {
-            draftNotificationPage?.ClickEachLinkAndEnterMissingInformation();
+            draftNotificationPage?.ClickCheckOrUpdateCommodityDetailsLink();
         }
 
+        [Then("the Add intended use of bulbs page should be displayed")]
+        public void ThenTheAddIntendedUseOfBulbsPageShouldBeDisplayed()
+        {
+            Assert.True(addIntendedUseOfBulbs?.IsPageLoaded(), "Add intended use of bulbs page is didn't load");
+        }
+
+        [Then("the user selects the Commodity from the list appeared")]
+        public void ThenTheUserSelectsTheCommodityFromTheListAppeared()
+        {
+            addIntendedUseOfBulbs?.SelctCommodityCode();
+        }
+
+        [Then("the user selects {string} for Are the commodity lines you selected intended for final users or commercial flower production?")]
+        public void ThenTheUserSelectsForAreTheCommodityLinesYouSelectedIntendedForFinalUsersOrCommercialFlowerProduction(string option)
+        {
+            addIntendedUseOfBulbs?.SelectOptionForIntentedFinalUsers(option);
+        }
+
+        [When("the user clicks on Apply button")]
+        public void WhenTheUserClicksOnApplyButton()
+        {
+            addIntendedUseOfBulbs?.ClickApplyButton();
+        }
+
+        [Then("the user can see the success message {string}")]
+        public void ThenTheUserCanSeeTheSuccessMessage(string message)
+        {
+            Assert.True(addIntendedUseOfBulbs?.VerifyMessageOnThePage(message), "Add intended use of bulbs page is didn't load");
+        }
+
+        [When("the user clicks on Save and continue button")]
+        public void WhenTheUserClicksOnSaveAndContinueButton()
+        {
+            addIntendedUseOfBulbs?.ClickSaveAndContinueButton();
+        }
+
+        [Then("the Check or update commodity details page should be displayed")]
+        public void ThenTheCheckOrUpdateCommodityDetailsPageShouldBeDisplayed()
+        {
+            Assert.True(checkOrUpdateCommodityDetails?.IsPageLoaded(), "Check or update commodity details page is didn't load");
+        }
+
+        [When("the user Clicks on Save and review button from Additional details page")]
+        public void WhenTheUserClicksOnSaveAndReviewButtonFromAdditionalDetailsPage()
+        {
+            checkOrUpdateCommodityDetails?.ClickSaveAndReviewButton();
+        }
+
+        [Then("the user verifies Total gross volume is displayed but it is marked as optional with the value of {string}")]
+        public void ThenTheUserVerifiesTotalGrossVolumeIsDisplayedButItIsMarkedAsOptionalWithTheValueOf(string text)
+        {
+            Assert.True(checkOrUpdateCommodityDetails?.VerifyTotalGrossVolumeIsOptional(text), "Check or update commodity details page is didn't load");
+
+        }
+
+        [Then("the user enter Total Gross Weight as {string}")]
+        public void ThenTheUserEnterTotalGrossWeightAs(string grossWeight)
+        {
+            checkOrUpdateCommodityDetails?.EnterGrossWeight(grossWeight);
+        }
     }
 }

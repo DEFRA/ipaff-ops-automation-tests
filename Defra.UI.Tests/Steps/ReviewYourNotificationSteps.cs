@@ -1,9 +1,10 @@
-﻿using Reqnroll.BoDi;
+﻿using Defra.UI.Tests.Pages.Classes;
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using DocumentFormat.OpenXml.Spreadsheet;
 using NUnit.Framework;
 using Reqnroll;
+using Reqnroll.BoDi;
 using Reqnroll.BoDi;
 
 namespace Defra.UI.Tests.Steps.IPAFF
@@ -979,6 +980,37 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserClicksOnChangeLinkOfCatchCerfitificateDocumentSection(int index)
         {
             reviewPage?.ClickChangeCatchCertificateReferences(index);
+        }
+
+        [When("the user Clicks on Change link for Transport to the Border Control Post")]
+        public void WhenTheUserClicksOnChangeLinkForTransportToTheBorderControlPost()
+        {
+            reviewPage?.ClickChangeLinkForTransportToTheBCP();
+        }
+
+        [When("the user Clicks on Change link for Goods movement services")]
+        public void WhenTheUserClicksOnChangeLinkForGoodsMovementServices()
+        {
+            reviewPage?.ClickChangeLinkForGoodsMovementServices();
+        }
+
+        [When("the user Clicks on Change link for Contact details")]
+        public void WhenTheUserClicksOnChangeLinkForContactDetails()
+        {
+            reviewPage?.ClickChangeLinkForContactDetails();
+        }
+
+        [When("the user Clicks on Change link for Add a delivery address")]
+        public void WhenTheUserClicksOnChangeLinkForAddADeliveryAddress()
+        {
+            _scenarioContext["CompanyName"] = reviewPage?.GetImporterNameByChangeLink();
+            reviewPage?.ClickChangeLinkForAddDeliveryAddress();            
+        }
+
+        [When("the user clicks View CHED grey button")]
+        public void WhenTheUserClicksViewCHEDGreyButton()
+        {
+            reviewPage?.ClickViewCHEDButton();
         }
 
     }

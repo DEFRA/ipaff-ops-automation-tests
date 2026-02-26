@@ -1,5 +1,4 @@
-﻿using Defra.UI.Tests.Configuration;
-using Defra.UI.Tests.Pages.Interfaces;
+﻿using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
 using Reqnroll.BoDi;
@@ -8,7 +7,6 @@ namespace Defra.UI.Tests.Pages.Classes
 {
     public class ReviewYourNotificationPage : IReviewYourNotificationPage
     {
-        private string Platform => ConfigSetup.BaseConfiguration.TestConfiguration.Platform;
         private IObjectContainer _objectContainer;
 
         #region Page Objects
@@ -27,7 +25,6 @@ namespace Defra.UI.Tests.Pages.Classes
         private By mainReasonForImportBy => By.Id("purpose-of-consignment-value");
         private By pointOfExitBy => By.XPath("//dt[@id='point-of-exit-header']/following-sibling::dd");
         private By consignmentDepartureDateTimeBy => By.Id("estimated-departure-date-time-value");
-        private By purposeBy => By.XPath("//dt[text()='Purpose in the internal market']//following-sibling::dd");
         private By consignmentReferenceNumberBy => By.XPath("//dt[text()='Consignment reference number' or text()='Add a reference number for this consignment']//following-sibling::dd[1]");
         private By exitDateBy => By.Id("exit-date-value");
         private By exitBCPTemporaryAdmissionLocator => By.Id("designated-bip-horses-value");
@@ -118,7 +115,6 @@ namespace Defra.UI.Tests.Pages.Classes
         private By routeCountriesBy => By.XPath("//td[text()='Route']//following-sibling::td");
         private By notifyTransportContactsBy => By.Id("transporter-contact-yesnoindicator");
         private By consignmentContactAddressBy => By.Id("organisation-branch-address-address");
-        private IReadOnlyCollection<IWebElement> divAboutTheConsignmentDetails => _driver.WaitForElements(By.XPath("//div[@id='document-pet-card']//dl/div"));
 
         //Error Message
         private IReadOnlyCollection<IWebElement> lblErrorMessages => _driver.FindElements(By.XPath("//div[@class='govuk-error-summary']/div/ul/li"));
@@ -130,6 +126,12 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement catchCertificateCommodityCode(int row, int column) => _driver.FindElement(By.XPath($"(//table[@id='catch-certificate-details-table'])[1]//tbody/tr[{row}]/td[{column}]"));
         private IWebElement catchCertificateSpeciesDescription(int row, int column) => _driver.FindElement(By.XPath($"(//table[@id='catch-certificate-details-table'])[1]//tbody/tr[{row}]/td[{column}]"));
         private IReadOnlyCollection<IWebElement> lnkChangeCatchCertificateLinks=> _driver.FindElements(By.Id("add-catch-certificate-details-change-link"));
+        private IWebElement lnkChangeLinkForTransportBCP => _driver.FindElement(By.Id("transport-to-bip-change-link"));
+        private IWebElement lnkChangeLinkForContactDetailsChange => _driver.FindElement(By.Id("responsible-person-contact-details-change-link"));
+        private IWebElement lnkGoodsMovementServicesChange => _driver.FindElement(By.Id("goods-movement-services-change-link"));
+        private IWebElement lnkTraderDeliveryAddressChange => _driver.FindElement(By.Id("traders-change-link"));
+        private IWebElement pImporterName => _driver.FindElement(By.XPath("(//dd[@id='importer']/p)[1]"));
+        private IWebElement btnViewChed => _driver.FindElement(By.Id("show-notification"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -1162,6 +1164,36 @@ namespace Defra.UI.Tests.Pages.Classes
         public string GetCatchCertificateSpeciesDescription(int row, int column = 2)
         {
             return catchCertificateSpeciesDescription(row, column).Text;
+        }
+
+        public void ClickChangeLinkForTransportToTheBCP()
+        {
+            lnkChangeLinkForTransportBCP.Click();
+        }
+
+        public void ClickChangeLinkForContactDetails()
+        {
+            lnkChangeLinkForContactDetailsChange.Click();
+        }
+
+        public void ClickChangeLinkForGoodsMovementServices()
+        {
+            lnkGoodsMovementServicesChange.Click();
+        }
+
+        public void ClickChangeLinkForAddDeliveryAddress()
+        {
+            lnkTraderDeliveryAddressChange.Click();
+        }
+
+        public string GetImporterNameByChangeLink()
+        {
+            return pImporterName.Text.Trim();
+        }
+
+        public void ClickViewCHEDButton()
+        {
+            btnViewChed.Click();
         }
     }
 }

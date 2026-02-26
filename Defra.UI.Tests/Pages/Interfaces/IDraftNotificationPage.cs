@@ -6,7 +6,7 @@
         void ClickSaveAndContinue();
         bool AreTitleHelpTextDisplayed();
         bool VerifyAllMissingOrErrorLinksExists(IList<string> missingOrErrorLinks);
-        void ClickEachLinkAndEnterMissingInformation();
         string GetDraftNotificationNumber();
+        void ClickCheckOrUpdateCommodityDetailsLink();
     }
 }

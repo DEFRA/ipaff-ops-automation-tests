@@ -2,10 +2,8 @@
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
-using OpenQA.Selenium.BiDi.Script;
 using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Defra.UI.Tests.Pages.Classes
 {

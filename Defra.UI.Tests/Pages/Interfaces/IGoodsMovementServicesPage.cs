@@ -6,5 +6,6 @@
         void CTCToMoveGoods(string option);
         void GVMSToMoveGoods(string option);
         void EnterMovementReferenceNumber(string movementReferenceNumber);
+        void ClickSaveAndReviewButton();
     }
 }
