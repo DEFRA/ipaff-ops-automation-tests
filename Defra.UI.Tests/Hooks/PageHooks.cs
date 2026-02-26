@@ -120,6 +120,11 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SearchExistingDeliveryAddressPage, ISearchExistingDeliveryAddressPage>());            
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ConfirmExemptSpeciesPage, IConfirmExemptSpeciesPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<YourDownloadHasStarted, IYourDownloadHasStarted>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CloneAHealthOrPhytosanitaryCertificate, ICloneAHealthOrPhytosanitaryCertificate>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CertificateDetailsPage, ICertificateDetailsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<PhytosanitaryCertificateDetailsPage, IPhytosanitaryCertificateDetailsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CreatingThisNotificationForPage, ICreatingThisNotificationForPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<DraftNotificationPage, IDraftNotificationPage>());
 
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CookiesPage, ICookiesPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ContactPage, IContactPage>());
