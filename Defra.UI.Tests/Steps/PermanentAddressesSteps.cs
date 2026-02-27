@@ -42,16 +42,19 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             if (details != null)
             {
-                StorePermanentAddress(species, animalIndex, details);
+                // Store in unified model
+                var multiSpecies = _scenarioContext.GetOrCreateMultiSpeciesData();
+                multiSpecies.GetOrCreateSpecies(species).GetOrCreateAnimal(animalIndex).PermanentAddress = details;
+
+                // Keep legacy keys for backward compatibility
+                StorePermanentAddressLegacy(species, animalIndex, details);
             }
         }
 
         /// <summary>
-        /// Stores the permanent address details in scenario context under a structured key pattern:
-        /// PermanentAddress_{species}_{animalIndex}_{field}
-        /// e.g. PermanentAddress_Canis familiaris_1_AddressLine1
+        /// Stores permanent address in legacy ScenarioContext keys for backward compatibility.
         /// </summary>
-        private void StorePermanentAddress(string species, int animalIndex, OperatorDetails details)
+        private void StorePermanentAddressLegacy(string species, int animalIndex, OperatorDetails details)
         {
             var prefix = $"PermanentAddress_{species}_{animalIndex}";
             _scenarioContext[$"{prefix}_AddressName"] = details.OperatorName;
