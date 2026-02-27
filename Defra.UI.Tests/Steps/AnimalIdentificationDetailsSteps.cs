@@ -91,12 +91,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user populates the identification details for all species")]
         public void WhenTheUserPopulatesTheIdentificationDetailsForAllSpecies()
         {
-            var speciesAnimals = _scenarioContext.GetFromContext<Dictionary<string, int>>("SpeciesAnimals", []);
+            var multiSpecies = _scenarioContext.GetOrCreateMultiSpeciesData();
             var speciesList = _scenarioContext.GetFromContext<List<string>>("Species", []);
 
             foreach (var species in speciesList)
             {
-                var numberOfAnimals = speciesAnimals.GetValueOrDefault(species, 1);
+                var speciesData = multiSpecies.GetOrCreateSpecies(species);
+                var numberOfAnimals = int.TryParse(speciesData.NumberOfAnimals, out var n) ? n : 1;
 
                 for (int animalIndex = 1; animalIndex <= numberOfAnimals; animalIndex++)
                 {
@@ -105,9 +106,19 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         animalIdentificationDetailsPage?.ClickAddAnotherForSpecies(species);
                     }
 
-                    animalIdentificationDetailsPage?.EnterIdentificationForSpecies(species, animalIndex, "microchip", $"MC-{species[..3].ToUpper()}-{animalIndex}");
-                    animalIdentificationDetailsPage?.EnterIdentificationForSpecies(species, animalIndex, "passport", $"PP-{species[..3].ToUpper()}-{animalIndex}");
-                    animalIdentificationDetailsPage?.EnterIdentificationForSpecies(species, animalIndex, "tattoo", $"TT-{species[..3].ToUpper()}-{animalIndex}");
+                    var microchip = $"MC-{species[..3].ToUpper()}-{animalIndex:D3}";
+                    var passport = $"PP-{species[..3].ToUpper()}-{animalIndex:D3}";
+                    var tattoo = $"TT-{species[..3].ToUpper()}-{animalIndex:D3}";
+
+                    animalIdentificationDetailsPage?.EnterIdentificationForSpecies(species, animalIndex, "microchip", microchip);
+                    animalIdentificationDetailsPage?.EnterIdentificationForSpecies(species, animalIndex, "passport", passport);
+                    animalIdentificationDetailsPage?.EnterIdentificationForSpecies(species, animalIndex, "tattoo", tattoo);
+
+                    // Store in unified model
+                    var animal = speciesData.GetOrCreateAnimal(animalIndex);
+                    animal.Identification.Microchip = microchip;
+                    animal.Identification.Passport = passport;
+                    animal.Identification.Tattoo = tattoo;
                 }
             }
 
@@ -143,6 +154,18 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
         private void StoreSpeciesIdentification(string species, int animalIndex, string fieldType, string value)
         {
+            // Store in unified model
+            var multiSpecies = _scenarioContext.GetOrCreateMultiSpeciesData();
+            var animal = multiSpecies.GetOrCreateSpecies(species).GetOrCreateAnimal(animalIndex);
+
+            switch (fieldType)
+            {
+                case "Microchip": animal.Identification.Microchip = value; break;
+                case "Passport": animal.Identification.Passport = value; break;
+                case "Tattoo": animal.Identification.Tattoo = value; break;
+            }
+
+            // Keep legacy key for backward compatibility
             var key = $"Identification_{species}_{animalIndex}_{fieldType}";
             _scenarioContext[key] = value;
         }

@@ -2057,6 +2057,7 @@ Scenario: User creates and submits a CHEDA consignment notification with EU coun
 	When the user chooses 'Germany' from the dropdown for Country of origin
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing 'Germany' as the Country of origin and Country from where consigned
+	#And the user verifies that 'DRAFT' and 'CHEDA' are displayed at the top of the screen
 	When the user chooses 'No' for Does your consignment require a region code?
 	And the user clicks Save and continue
 	Then the Description of the goods/Commodity page should be displayed
@@ -2151,37 +2152,36 @@ Scenario: User creates and submits a CHEDA consignment notification with EU coun
 	And the user enters the permanent address details for the commodity 'Felis catus' 1
 	And the user enters the permanent address details for the commodity 'Felis catus' 2
 	And the user clicks Save and continue
-	#Then the Transport to the BCP or Port of entry page should be displayed
-	#When the user enters BCP or Port of entry 'HEATHROW (GBLHR)'
-	#And the user selects means of transport to BCP or Port of entry 'Road vehicle'
-	#And the user enters transport identification 'EX59 ABC'
-	#And the user selects 'No' for Are any road trailers or shipping containers being used to transport the consignment
-	#And the user enters transport document reference 'Doc1234'
-	#And the user enters arrival date at BCP or Port of entry as today's date
-	#And the user enters estimated arrival time at BCP with future time
-	#And the user enters estimated total journey time of the animals '8' hours
-	#And the user clicks Save and continue
-	#Then the Goods movement services page should be displayed
-	#When the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
-	#And the user selects 'No' for Are you using the Common Transit Convention (CTC)?
-	#And the user clicks Save and continue
-	#Then the Transporter page should be displayed
-	#When the user clicks Add a transporter
-	#Then the Search for an existing transporter page should be displayed
-	#When the user selects any one of the displayed transporters
-	#Then the chosen transporter should be displayed on the Transporter page
-	#When the user clicks Save and continue in Transporter page
-	#Then the Which countries will the consignment travel through? page should be displayed
-	#When the user selects 'Poland' for Will the consignment travel through any other countries before reaching the UK?
-	#And the user clicks Save and continue
-	#Then the Transport Contacts page should be displayed
-	#When the user selects 'No' for Should we notify any transport contacts about inspections?
-	#And the user clicks Save and continue
-	#Then the Contact address for consignment page should be displayed without the secondary title
-	#And the Contact address for consignment is prepopulated
-	#When the user clicks Save and continue
-	#Then the Review your notification page should be displayed
-	#And the data presented for review matches the data entered into the notification
+	Then the Transport to the BCP or Port of entry page should be displayed
+	When the user enters BCP or Port of entry 'HEATHROW (GBLHR)'
+	And the user selects means of transport to BCP or Port of entry 'Road vehicle'
+	And the user enters transport identification 'EX59 ABC'
+	And the user selects 'No' for Are any road trailers or shipping containers being used to transport the consignment
+	And the user enters transport document reference 'Doc1234'
+	And the user enters arrival date at BCP or Port of entry as today's date
+	And the user enters estimated total journey time of the animals '8' hours
+	And the user clicks Save and continue
+	Then the Goods movement services page should be displayed
+	When the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user selects 'No' for Are you using the Common Transit Convention (CTC)?
+	And the user clicks Save and continue
+	Then the Transporter page should be displayed
+	When the user clicks Add a transporter
+	Then the Search for an existing transporter page should be displayed
+	When the user selects any one of the displayed transporters
+	Then the chosen transporter should be displayed on the Transporter page
+	When the user clicks Save and continue in Transporter page
+	Then the Which countries will the consignment travel through? page should be displayed
+	When the user selects 'Poland' for Will the consignment travel through any other countries before reaching the UK?
+	And the user clicks Save and continue
+	Then the Transport Contacts page should be displayed
+	When the user selects 'No' for Should we notify any transport contacts about inspections?
+	And the user clicks Save and continue
+	Then the Contact address for consignment page should be displayed without the secondary title
+	And the Contact address for consignment is prepopulated
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	And the data presented for review matches the data entered into the notification
 	#When the user clicks Save and continue
 	#Then the Declaration page should be displayed
 	#When the user ticks the checkbox to declare that the information is true and correct
