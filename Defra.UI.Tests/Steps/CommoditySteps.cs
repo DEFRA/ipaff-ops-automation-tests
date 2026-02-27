@@ -51,7 +51,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserSelectsTheTypeOfCommodity(string type)
         {
             var commoditytypes = _scenarioContext.GetFromContext<List<string>>("TypeOfCommodity", []);
-            
+
             commoditytypes.Add(type);
             _scenarioContext["TypeOfCommodity"] = commoditytypes;
             commodityPage?.SelectTypeOfCommodity(type);
@@ -59,7 +59,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
         [When("the user selects species of commodity {string}")]
         public void WhenTheUserSelectsSpeciesOfCommodity(string species)
-        {            
+        {
             var speciesList = _scenarioContext.GetFromContext<List<string>>("Species", []);
             speciesList.Add(species);
             _scenarioContext["Species"] = speciesList;
@@ -121,7 +121,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             commodityPage?.ClickUpdateTotal();
             Thread.Sleep(1000);
 
-            _scenarioContext["SubtotalNetWeight"]=commodityPage?.GetSubtotalsOfNetWeight();
+            _scenarioContext["SubtotalNetWeight"] = commodityPage?.GetSubtotalsOfNetWeight();
             _scenarioContext["SubtotalPackages"] = commodityPage?.GetSubtotalsOfPackages();
             _scenarioContext["TotalNetWeight"] = commodityPage?.GetTotalNetWeight();
             _scenarioContext["TotalPackages"] = commodityPage?.GetTotalPackages();
@@ -165,9 +165,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             commodityPage?.ClickUpdateTotal();
             Thread.Sleep(2000);
-            _scenarioContext["SubtotalNetWeight"]=commodityPage?.GetSubtotalsOfNetWeight();
-            _scenarioContext["SubtotalPackages"] = commodityPage?.GetSubtotalsOfPackages();            
-            _scenarioContext["TotalNetWeight"]=commodityPage.GetTotalNetWeight();
+            _scenarioContext["SubtotalNetWeight"] = commodityPage?.GetSubtotalsOfNetWeight();
+            _scenarioContext["SubtotalPackages"] = commodityPage?.GetSubtotalsOfPackages();
+            _scenarioContext["TotalNetWeight"] = commodityPage.GetTotalNetWeight();
             _scenarioContext["TotalPackages"] = commodityPage.GetTotalPackages();
         }
 
@@ -207,7 +207,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["CommodityCodeFirstCommodity"] = code;
             _scenarioContext["CommodityDescFirstCommodity"] = description;
         }
-        
+
         [Then("the commodity details should be populated {string} {string} for second commodity")]
         public void ThenTheCommodityDetailsShouldBePopulatedForSecondCommodity(string code, string description)
         {
@@ -266,15 +266,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user selects the second commodity {string} {string} under the parent commodity")]
         public void WhenTheUserSelectsTheFirstAdditionalCommodityUnderTheParentCommodity(string additionalCommCode, string additionalcommDescription)
         {
-            _scenarioContext["CommodityCodeSecondCommodity"]=additionalCommCode;
+            _scenarioContext["CommodityCodeSecondCommodity"] = additionalCommCode;
             _scenarioContext["CommodityDescSecondCommodity"] = additionalcommDescription;
             commodityPage?.SelectCommodityInTheCommTree(additionalcommDescription);
         }
-        
+
         [When("the user selects the {string} {string} under the parent commodity")]
         public void WhenTheUserSelectsTheCommodityUnderTheParentCommodity(string additionalCommCode, string additionalcommDescription)
         {
-            _scenarioContext["CommodityCode"]=additionalCommCode;
+            _scenarioContext["CommodityCode"] = additionalCommCode;
             _scenarioContext["CommodityDescription"] = additionalcommDescription;
             commodityPage?.SelectCommodityInTheCommTree(additionalcommDescription);
         }
@@ -283,7 +283,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void ThenTheCommodityPageShouldBeDisplayed()
         {
             Assert.True(commodityPage?.IsPageLoaded(), "Description of the goods Commodity page not loaded");
-        }        
+        }
 
         [Then("the user verifies and enters any missing data on the Commodity page")]
         public void ThenTheUserVerifiesAndEntersAnyMissingDataOnTheCommodityPage()
@@ -439,6 +439,26 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserClicksCancelLink()
         {
             commodityPage?.ClickCancelLink();
+        }
+
+        [When("the user populates Number of animals as {string} for the commodity {string}")]
+        public void WhenTheUserPopulatesNumberOfAnimalsAsForTheCommodity(string numberOfAnimals, string species)
+        {
+            commodityPage?.EnterNumberOfAnimalsForSpecies(numberOfAnimals, species);
+
+            var speciesAnimals = _scenarioContext.GetFromContext<Dictionary<string, int>>("SpeciesAnimals", []);
+            speciesAnimals[species] = int.Parse(numberOfAnimals);
+            _scenarioContext["SpeciesAnimals"] = speciesAnimals;
+        }
+
+        [When("the user populates Number of packages as {string} for the commodity {string}")]
+        public void WhenTheUserPopulatesNumberOfPackagesAsForTheCommodity(string numberOfPackages, string species)
+        {
+            commodityPage?.EnterNumberOfPackagesForSpecies(numberOfPackages, species);
+
+            var speciesPackages = _scenarioContext.GetFromContext<Dictionary<string, string>>("SpeciesPackages", []);
+            speciesPackages[species] = numberOfPackages;
+            _scenarioContext["SpeciesPackages"] = speciesPackages;
         }
     }
 }

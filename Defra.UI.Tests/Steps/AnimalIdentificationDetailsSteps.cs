@@ -87,5 +87,64 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.That(actualNumberOfAnimals, Is.EqualTo(expectedNumberOfAnimals),
                 $"Expected number of animals to be '{expectedNumberOfAnimals}', but found '{actualNumberOfAnimals}'");
         }
+
+        [When("the user populates the identification details for all species")]
+        public void WhenTheUserPopulatesTheIdentificationDetailsForAllSpecies()
+        {
+            var speciesAnimals = _scenarioContext.GetFromContext<Dictionary<string, int>>("SpeciesAnimals", []);
+            var speciesList = _scenarioContext.GetFromContext<List<string>>("Species", []);
+
+            foreach (var species in speciesList)
+            {
+                var numberOfAnimals = speciesAnimals.GetValueOrDefault(species, 1);
+
+                for (int animalIndex = 1; animalIndex <= numberOfAnimals; animalIndex++)
+                {
+                    if (animalIndex > 1)
+                    {
+                        animalIdentificationDetailsPage?.ClickAddAnotherForSpecies(species);
+                    }
+
+                    animalIdentificationDetailsPage?.EnterIdentificationForSpecies(species, animalIndex, "microchip", $"MC-{species[..3].ToUpper()}-{animalIndex}");
+                    animalIdentificationDetailsPage?.EnterIdentificationForSpecies(species, animalIndex, "passport", $"PP-{species[..3].ToUpper()}-{animalIndex}");
+                    animalIdentificationDetailsPage?.EnterIdentificationForSpecies(species, animalIndex, "tattoo", $"TT-{species[..3].ToUpper()}-{animalIndex}");
+                }
+            }
+
+            _scenarioContext["IdentificationDetailsPopulated"] = true;
+        }
+
+        [When("the user populates the Microchip number as {string} for the species {string} animal {int}")]
+        public void WhenTheUserPopulatesTheMicrochipNumberAsForTheSpeciesAnimal(string microchipNumber, string species, int animalIndex)
+        {
+            animalIdentificationDetailsPage?.EnterIdentificationForSpecies(species, animalIndex, "microchip", microchipNumber);
+            StoreSpeciesIdentification(species, animalIndex, "Microchip", microchipNumber);
+        }
+
+        [When("the user populates the Passport number as {string} for the species {string} animal {int}")]
+        public void WhenTheUserPopulatesThePassportNumberAsForTheSpeciesAnimal(string passportNumber, string species, int animalIndex)
+        {
+            animalIdentificationDetailsPage?.EnterIdentificationForSpecies(species, animalIndex, "passport", passportNumber);
+            StoreSpeciesIdentification(species, animalIndex, "Passport", passportNumber);
+        }
+
+        [When("the user populates the Tattoo as {string} for the species {string} animal {int}")]
+        public void WhenTheUserPopulatesTheTattooAsForTheSpeciesAnimal(string tattoo, string species, int animalIndex)
+        {
+            animalIdentificationDetailsPage?.EnterIdentificationForSpecies(species, animalIndex, "tattoo", tattoo);
+            StoreSpeciesIdentification(species, animalIndex, "Tattoo", tattoo);
+        }
+
+        [When("the user clicks Add another for the species {string}")]
+        public void WhenTheUserClicksAddAnotherForTheSpecies(string species)
+        {
+            animalIdentificationDetailsPage?.ClickAddAnotherForSpecies(species);
+        }
+
+        private void StoreSpeciesIdentification(string species, int animalIndex, string fieldType, string value)
+        {
+            var key = $"Identification_{species}_{animalIndex}_{fieldType}";
+            _scenarioContext[key] = value;
+        }
     }
 }
