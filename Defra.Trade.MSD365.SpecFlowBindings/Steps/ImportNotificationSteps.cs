@@ -60,6 +60,23 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
         Driver.WaitForTransaction();
     }
 
+    [Then("I verify the Importer Notification Details reflect the information from the EU Import Notification")]
+    public void ThenIVerifyTheImporterNotificationDetailsReflectTheInformationFromTheEUImportNotification()
+    {
+        var expectedChedReference = scenarioContext.Get<string>("CHEDReference");
+
+        Driver.WaitForTransaction();
+
+        var referenceNumberInput = Driver.WaitUntilAvailable(
+            By.XPath("//input[@data-id='header_defraimp_name.fieldControl-text-box-text']"),
+            "Reference Number field could not be found on the Importer Notification Details page.");
+
+        var actualReferenceNumber = referenceNumberInput.GetAttribute("value")?.Trim() ?? string.Empty;
+
+        actualReferenceNumber.Should().Be(expectedChedReference,
+            $"Expected Reference Number to be '{expectedChedReference}' but found '{actualReferenceNumber}'");
+    }
+
     [When(@"an importer amend '(.*)' to inspection address '(.*)' of '(.*)'")]
     public void WhenAnImporterAmendToInspectionAddressOf(string applicationAlias, string address, string bcpName)
     {
