@@ -442,11 +442,18 @@ Scenario: User creates and submits a CHEDA consignment notification for Temporar
 	Then the place of destination should be populated with the same details as the consignee
 	When the user clicks Save and continue
 	Then the Transport to the BCP or Port of entry page should be displayed
-	When the user populates the transport details 'London Borough of Hillingdon Heathrow Airport Imported Food Office - ADADA' 'Yes' 'Airplane' 'BA1234' 'Doc1234'
+	When the user enters BCP or Port of entry 'London Borough of Hillingdon Heathrow Airport Imported Food Office - ADADA'
+	And the user selects means of transport to BCP or Port of entry 'Airplane'
+	And the user enters transport identification 'BA1234'
+	And the user selects 'Yes' for Are any road trailers or shipping containers being used to transport the consignment
 	And the user enters Container Number 'CONT123456'
 	And the user enters Seal Number 'SEAL789012'
 	And the user ticks the checkbox to confirm an official seal is affixed
-	And the user clicks Save and continue
+	And the user enters transport document reference 'Doc1234'
+	And the user enters arrival date at BCP or Port of entry as today's date
+	And the user enters estimated arrival time at BCP with future time
+	And the user enters estimated total journey time of the animals '8' hours
+	And the user clicks Save and continue	
 	Then the Transport after the BCP or Port of entry page should be displayed
 	When the user selects means of transport after BCP 'Road vehicle'
 	And the user enters transport identification after BCP 'TRANS456'
@@ -648,11 +655,18 @@ Scenario: User creates and submits a CHEDA consignment notification with Transit
 	Then the Add the County Parish Holding number (CPH) page should be displayed
 	When the user clicks Save and continue
 	Then the Transport to the BCP or Port of entry page should be displayed
-	When the user populates the transport details 'London Borough of Hillingdon Heathrow Airport Imported Food Office - ADADA' 'Yes' 'Road vehicle' '123456' 'Doc1234'
+	When the user enters BCP or Port of entry 'London Borough of Hillingdon Heathrow Airport Imported Food Office - ADADA'
+	And the user selects means of transport to BCP or Port of entry 'Road vehicle'
+	And the user enters transport identification '123456'
+	And the user selects 'Yes' for Are any road trailers or shipping containers being used to transport the consignment
 	And the user enters Container Number 'CONT123456'
 	And the user enters Seal Number 'SEAL789012'
 	And the user ticks the checkbox to confirm an official seal is affixed
-	And the user clicks Save and continue	
+	And the user enters transport document reference 'Doc1234'
+	And the user enters arrival date at BCP or Port of entry as today's date
+	And the user enters estimated arrival time at BCP with future time
+	And the user enters estimated total journey time of the animals '8' hours
+	And the user clicks Save and continue
 	Then the Goods movement services page should be displayed
 	When the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
 	And the user clicks Save and continue
