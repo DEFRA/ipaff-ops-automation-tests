@@ -59,6 +59,16 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement firstCommodityTable => _driver.FindElement(By.XPath("//*[@id='page-primary-title']/following-sibling::div[4]"));
         private IWebElement secondCommodityTable => _driver.FindElement(By.XPath("//*[@id='page-primary-title']/following-sibling::div[5]"));
 
+        // Multi-species commodity rows
+        private IReadOnlyCollection<IWebElement> speciesConsignmentRows => _driver.FindElements(By.XPath("//table[contains(@id,'review-table-consignment')]//tbody//tr | //table[contains(@id,'review-table-consignment')]//tr[td[@class='govuk-table__cell']]"));
+
+        // Animal identification details — per-species sub-tables inside the main identification table
+        private IReadOnlyCollection<IWebElement> identificationSpeciesHeaders => _driver.FindElements(By.XPath("//table[@id='animal-identification-details-table']//th[contains(text(),'identification details')]"));
+        private IReadOnlyCollection<IWebElement> identificationSubTables => _driver.FindElements(By.XPath("//table[@id='animal-identification-details-table']//div[contains(@id,'identifiers-')]//table"));
+
+        // Permanent address rows
+        private IReadOnlyCollection<IWebElement> permanentAddressRows => _driver.FindElements(By.XPath("//td[@id='animal-name']/parent::tr"));
+
         //Additional details
         private By commodityIntendedForBy => By.XPath("//dt[text()='Commodity intended for']//following-sibling::dd");
         private By temperatureBy => By.XPath("//dt[text()='Temperature']//following-sibling::dd");
@@ -128,12 +138,12 @@ namespace Defra.UI.Tests.Pages.Classes
         private IReadOnlyCollection<IWebElement> lblErrorMessages => _driver.FindElements(By.XPath("//div[@class='govuk-error-summary']/div/ul/li"));
         private IWebElement lblCatchCertificateHeader => _driver.FindElement(By.Id("catch-certificate-details-heading"));
         private IWebElement lblCatchCertificateRowNoneAttached => _driver.FindElement(By.Id("catch-certificates-none-attached"));
-        private IWebElement catchCertificateFlagState(int row, int column) =>_driver.FindElement(By.XPath($"//table[@id='catch-certificate-summary-table']//tr[{row}]/td[{column}]"));
+        private IWebElement catchCertificateFlagState(int row, int column) => _driver.FindElement(By.XPath($"//table[@id='catch-certificate-summary-table']//tr[{row}]/td[{column}]"));
         private IWebElement catchCertificateDocumentReference(int row, int column) => _driver.FindElement(By.XPath($"//table[@id='catch-certificate-summary-table']//tr[{row}]/td[{column}]"));
         private IWebElement catchCertificateDocumentDateOfIssue(int row, int column) => _driver.FindElement(By.XPath($"//table[@id='catch-certificate-summary-table']//tr[{row}]/td[{column}]"));
         private IWebElement catchCertificateCommodityCode(int row, int column) => _driver.FindElement(By.XPath($"(//table[@id='catch-certificate-details-table'])[1]//tbody/tr[{row}]/td[{column}]"));
         private IWebElement catchCertificateSpeciesDescription(int row, int column) => _driver.FindElement(By.XPath($"(//table[@id='catch-certificate-details-table'])[1]//tbody/tr[{row}]/td[{column}]"));
-        private IReadOnlyCollection<IWebElement> lnkChangeCatchCertificateLinks=> _driver.FindElements(By.Id("add-catch-certificate-details-change-link"));
+        private IReadOnlyCollection<IWebElement> lnkChangeCatchCertificateLinks => _driver.FindElements(By.Id("add-catch-certificate-details-change-link"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -254,6 +264,92 @@ namespace Defra.UI.Tests.Pages.Classes
         public string GetSpecies() => _driver.SafelyGetText(speciesBy);
         public string GetNumberOfAnimals() => _driver.SafelyGetText(numberOfAnimalsBy);
         public string GetNumberOfPackages() => _driver.SafelyGetText(numberOfPackagesBy);
+
+        /// <summary>
+        /// Returns all species rows from the review-table-consignment tables.
+        /// Each tuple contains (species name, number of animals, number of packages).
+        /// HTML structure: each species row has 3 td cells in tbody rows of tables
+        /// with id containing 'review-table-consignment'.
+        /// </summary>
+        public List<(string species, string numberOfAnimals, string numberOfPackages)> GetAllSpeciesDetails()
+        {
+            var results = new List<(string species, string numberOfAnimals, string numberOfPackages)>();
+
+            foreach (var row in speciesConsignmentRows)
+            {
+                var cells = row.FindElements(By.TagName("td"));
+                if (cells.Count >= 3)
+                {
+                    var speciesName = cells[0].SafelyGetText();
+                    var animals = cells[1].SafelyGetText();
+                    var packages = cells[2].SafelyGetText();
+
+                    if (!string.IsNullOrWhiteSpace(speciesName) && !speciesName.Equals("Subtotal", StringComparison.OrdinalIgnoreCase))
+                        results.Add((speciesName, animals, packages));
+                }
+            }
+
+            return results;
+        }
+
+        /// <summary>
+        /// Returns identification details for a specific species from the review page.
+        /// The HTML has a header row with text like "Canis familiaris identification details"
+        /// followed by a sub-table with columns: Animal, Microchip, Passport, Tattoo.
+        /// </summary>
+        public List<(string animal, string microchip, string passport, string tattoo)> GetIdentificationDetailsForSpecies(string species)
+        {
+            var results = new List<(string animal, string microchip, string passport, string tattoo)>();
+
+            var headers = identificationSpeciesHeaders.ToList();
+            var tables = identificationSubTables.ToList();
+
+            for (int i = 0; i < headers.Count && i < tables.Count; i++)
+            {
+                if (!headers[i].Text.Contains(species, StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                var bodyRows = tables[i].FindElements(By.XPath(".//tbody/tr"));
+                foreach (var row in bodyRows)
+                {
+                    var cells = row.FindElements(By.TagName("td"));
+                    if (cells.Count >= 4)
+                    {
+                        results.Add((
+                            cells[0].SafelyGetText(),
+                            cells[1].SafelyGetText(),
+                            cells[2].SafelyGetText(),
+                            cells[3].SafelyGetText()
+                        ));
+                    }
+                }
+
+                break;
+            }
+
+            return results;
+        }
+
+        /// <summary>
+        /// Returns all permanent address rows from the review page.
+        /// Each row has td[@id='animal-name'] and td[@id='animal-permanent-address'].
+        /// Returns tuples of (animalName, full address text).
+        /// </summary>
+        public List<(string animalName, string addressText)> GetAllPermanentAddresses()
+        {
+            var results = new List<(string animalName, string addressText)>();
+
+            foreach (var row in permanentAddressRows)
+            {
+                var name = row.FindElement(By.XPath(".//td[@id='animal-name']")).SafelyGetText();
+                var address = row.FindElement(By.XPath(".//td[@id='animal-permanent-address']")).SafelyGetText();
+
+                if (!string.IsNullOrWhiteSpace(name))
+                    results.Add((name, address));
+            }
+
+            return results;
+        }
 
         public string GetCommodityCodeList(int index)
         {
@@ -556,10 +652,10 @@ namespace Defra.UI.Tests.Pages.Classes
             try
             {
                 var commodityTable = index == 0 ? firstCommodityTable : secondCommodityTable;
-                
+
                 int quantityIndex = commodityTable.FindElements(forTestAndTrial).Count > 0 ? 3 : 2;
 
-                var quantityList = commodityTable.FindElements(By.XPath(".//tbody/tr[4]/td["+ quantityIndex +"]")).ToList();
+                var quantityList = commodityTable.FindElements(By.XPath(".//tbody/tr[4]/td[" + quantityIndex + "]")).ToList();
 
                 var allQuantityList = quantityList
                                       .Select(e => e.Text?.Trim())
@@ -691,7 +787,7 @@ namespace Defra.UI.Tests.Pages.Classes
         public string GetCatchedDocumentReference() => _driver.SafelyGetText(additionalDocumentReferenceBy);
         public string GetCatchedCertificateFileName() => _driver.SafelyGetText(healthCertificateFileNameBy);
         public string GetCatchedDocumentFileName() => _driver.SafelyGetText(additionalDocumentFileNameBy);
-        
+
         // Date methods with parsing logic
         public string GetHealthCertificateDateOfIssue()
         {
@@ -1309,7 +1405,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool VerifyCatchCertificateForNoneAttached(string message)
         {
-           return lblCatchCertificateRowNoneAttached.Text.Equals(message);
+            return lblCatchCertificateRowNoneAttached.Text.Equals(message);
         }
 
         public string GetCatchCertificateDocumentReference(int row, int column = 1)
