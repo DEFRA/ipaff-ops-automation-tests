@@ -45,24 +45,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 // Store in unified model
                 var multiSpecies = _scenarioContext.GetOrCreateMultiSpeciesData();
                 multiSpecies.GetOrCreateSpecies(species).GetOrCreateAnimal(animalIndex).PermanentAddress = details;
-
-                // Keep legacy keys for backward compatibility
-                StorePermanentAddressLegacy(species, animalIndex, details);
             }
-        }
-
-        /// <summary>
-        /// Stores permanent address in legacy ScenarioContext keys for backward compatibility.
-        /// </summary>
-        private void StorePermanentAddressLegacy(string species, int animalIndex, OperatorDetails details)
-        {
-            var prefix = $"PermanentAddress_{species}_{animalIndex}";
-            _scenarioContext[$"{prefix}_AddressName"] = details.OperatorName;
-            _scenarioContext[$"{prefix}_AddressLine1"] = details.AddressLine1;
-            _scenarioContext[$"{prefix}_CityOrTown"] = details.CityOrTown;
-            _scenarioContext[$"{prefix}_Postcode"] = details.Postcode;
-            _scenarioContext[$"{prefix}_Telephone"] = details.TelephoneNumber;
-            _scenarioContext[$"{prefix}_Email"] = details.Email;
         }
     }
 }
