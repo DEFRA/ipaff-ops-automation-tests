@@ -18,5 +18,6 @@
         void SelectConsignedCountry(string consignedCountry);
         bool IsRegionCodeDefaultedToNo { get; }
         bool IsCountryOfOriginPrePopulated(string expectedCountry);
+        bool IsHeaderBannerDisplayed(string expectedStatus, string expectedChedType);
     }
 }

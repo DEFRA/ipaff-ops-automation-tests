@@ -29,6 +29,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement consignedCountrySelectedVal => _driver.FindElement(By.XPath("//select[@id='consigned-country']/option[@selected]"));
         private IWebElement ddlConsignedCountry => _driver.FindElement(By.Id("consigned-country"));
         private IWebElement selectedRadioLabel => _driver.FindElement(By.XPath("//input[contains(@class,'govuk-radios__input') and @checked]/following-sibling::label"));
+        private IWebElement headerReferenceNumber => _driver.FindElement(By.Id("reference-number"));
+        private IWebElement headerChedType => _driver.FindElement(By.XPath("//span[@id='reference-number']/following-sibling::span"));
 
         #endregion
 
@@ -116,6 +118,20 @@ namespace Defra.UI.Tests.Pages.Classes
             {
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Verifies that both the notification status (e.g. 'DRAFT') and CHED type (e.g. 'CHEDA')
+        /// are displayed in the header banner at the top of the page.
+        /// HTML: &lt;span id="reference-number"&gt;DRAFT.GB...&lt;/span&gt; &lt;span&gt; - CHEDA&lt;/span&gt;
+        /// </summary>
+        public bool IsHeaderBannerDisplayed(string expectedStatus, string expectedChedType)
+        {
+            var referenceText = headerReferenceNumber.Text.Trim();
+            var chedTypeText = headerChedType.Text.Trim();
+
+            return referenceText.Contains(expectedStatus, StringComparison.OrdinalIgnoreCase)
+                && chedTypeText.Contains(expectedChedType, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

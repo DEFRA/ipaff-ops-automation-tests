@@ -152,5 +152,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.That(actualCountry, Is.EqualTo(expectedCountry),
                 $"Expected Country of origin to be '{expectedCountry}' but was '{actualCountry}'");
         }
+
+        [Then("the user verifies that {string} and {string} are displayed at the top of the screen")]
+        public void ThenTheUserVerifiesThatAndAreDisplayedAtTheTopOfTheScreen(string expectedStatus, string expectedChedType)
+        {
+            Assert.True(
+                originOfImportPage?.IsHeaderBannerDisplayed(expectedStatus, expectedChedType),
+                $"Expected '{expectedStatus}' and '{expectedChedType}' to be displayed at the top of the screen");
+        }
     }
 }
