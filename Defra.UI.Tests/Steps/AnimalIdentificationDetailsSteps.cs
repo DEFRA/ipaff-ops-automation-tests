@@ -164,10 +164,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 case "Passport": animal.Identification.Passport = value; break;
                 case "Tattoo": animal.Identification.Tattoo = value; break;
             }
-
-            // Keep legacy key for backward compatibility
-            var key = $"Identification_{species}_{animalIndex}_{fieldType}";
-            _scenarioContext[key] = value;
         }
     }
 }

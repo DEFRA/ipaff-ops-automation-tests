@@ -229,7 +229,6 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             var speciesId = GetSpeciesRowId(species);
             var input = _driver.FindElement(speciesNumAnimalsInputBy(speciesId));
-            input.Click();
             input.Clear();
             input.SendKeys(numberOfAnimals);
         }
@@ -238,7 +237,6 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             var speciesId = GetSpeciesRowId(species);
             var input = _driver.FindElement(speciesNumPackagesInputBy(speciesId));
-            input.Click();
             input.Clear();
             input.SendKeys(numberOfPackages);
         }

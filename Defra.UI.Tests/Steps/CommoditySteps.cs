@@ -449,11 +449,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             // Store in unified MultiSpeciesData model
             var multiSpecies = _scenarioContext.GetOrCreateMultiSpeciesData();
             multiSpecies.GetOrCreateSpecies(species).NumberOfAnimals = numberOfAnimals;
-
-            // Keep legacy keys for backward compatibility with existing scenarios
-            var speciesAnimals = _scenarioContext.GetFromContext<Dictionary<string, string>>("SpeciesAnimals", []);
-            speciesAnimals[species] = numberOfAnimals;
-            _scenarioContext["SpeciesAnimals"] = speciesAnimals;
         }
 
         [When("the user populates Number of packages as {string} for the commodity {string}")]
@@ -464,11 +459,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             // Store in unified MultiSpeciesData model
             var multiSpecies = _scenarioContext.GetOrCreateMultiSpeciesData();
             multiSpecies.GetOrCreateSpecies(species).NumberOfPackages = numberOfPackages;
-
-            // Keep legacy keys for backward compatibility
-            var speciesPackages = _scenarioContext.GetFromContext<Dictionary<string, string>>("SpeciesPackages", []);
-            speciesPackages[species] = numberOfPackages;
-            _scenarioContext["SpeciesPackages"] = speciesPackages;
         }
     }
 }
