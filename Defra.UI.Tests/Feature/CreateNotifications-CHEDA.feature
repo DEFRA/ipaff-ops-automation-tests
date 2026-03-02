@@ -2057,7 +2057,7 @@ Scenario: User creates and submits a CHEDA consignment notification with EU coun
 	When the user chooses 'Germany' from the dropdown for Country of origin
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing 'Germany' as the Country of origin and Country from where consigned
-	#And the user verifies that 'DRAFT' and 'CHEDA' are displayed at the top of the screen
+	And the user verifies that 'DRAFT' and 'CHEDA' are displayed at the top of the screen
 	When the user chooses 'No' for Does your consignment require a region code?
 	And the user clicks Save and continue
 	Then the Description of the goods/Commodity page should be displayed
@@ -2182,20 +2182,16 @@ Scenario: User creates and submits a CHEDA consignment notification with EU coun
 	When the user clicks Save and continue
 	Then the Review your notification page should be displayed
 	And the data presented for review matches the data entered into the notification
-	#When the user clicks Save and continue
-	#Then the Declaration page should be displayed
-	#When the user ticks the checkbox to declare that the information is true and correct
-	#And the user clicks Submit notification
-	#Then the Confirmation page should be displayed with the initial risk assessment
-	#And the user records the IPAFFS User details and CHED Reference
-	#When the user clicks Return to your dashboard
-	#Then the dashboard page should be displayed
-	#When user searches for the import notification
-	#Then the notification should be present in the list
-	#When the user logs out of IPAFFS Part 1
-	#Then the user should be logged out successfully
-	#When I am logged in to the 'PIMS' app as 'Caseworker'
-	#And I open the sub area 'Importer Notifications' under the 'Case Management' area
-	#And I search Importer Notifications for the notification created in IPAFFS
-	#And I open the record at position '0' in the grid
-	#And I verify the Importer Notification Details reflect the information from the EU Import Notification
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user ticks the checkbox to declare that the information is true and correct
+	And the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the IPAFFS User details and CHED Reference
+	When I am logged in to the 'PIMS' app as 'Caseworker'
+	And I open the sub area 'Importer Notifications' under the 'Case Management' area
+	And I search Importer Notifications for the notification created in IPAFFS
+	And I open the record at position '0' in the grid
+	Then I verify the Importer Notification Details reflect the information from the EU Import Notification
+	When I select the Permanent Addresses tab
+	Then I verify the permanent address displayed for each animal matches the address entered in IPAFFS
