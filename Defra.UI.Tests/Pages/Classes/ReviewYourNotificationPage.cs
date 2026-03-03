@@ -140,7 +140,6 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement catchCertificateCommodityCode(int row, int column) => _driver.FindElement(By.XPath($"(//table[@id='catch-certificate-details-table'])[1]//tbody/tr[{row}]/td[{column}]"));
         private IWebElement catchCertificateSpeciesDescription(int row, int column) => _driver.FindElement(By.XPath($"(//table[@id='catch-certificate-details-table'])[1]//tbody/tr[{row}]/td[{column}]"));
         private IReadOnlyCollection<IWebElement> lnkChangeCatchCertificateLinks => _driver.FindElements(By.Id("add-catch-certificate-details-change-link"));
-        private IReadOnlyCollection<IWebElement> lnkChangeCatchCertificateLinks => _driver.FindElements(By.Id("add-catch-certificate-details-change-link"));
         private IWebElement lnkChangeLinkForTransportBCP => _driver.FindElement(By.Id("transport-to-bip-change-link"));
         private IWebElement lnkChangeLinkForContactDetailsChange => _driver.FindElement(By.Id("responsible-person-contact-details-change-link"));
         private IWebElement lnkGoodsMovementServicesChange => _driver.FindElement(By.Id("goods-movement-services-change-link"));
