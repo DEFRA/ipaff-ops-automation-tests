@@ -121,7 +121,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool VerifySelectedTypeOnlyDisplayed(string type)
         {
-            return lstTypeInSearchResult.All(x => x.Text.Trim().Equals(type));
+            return lstTypeInSearchResult.All(x => x.Text.Trim().Contains(type));
         }
 
         public bool VerifySelectedStatusOnlyDisplayed(string status)

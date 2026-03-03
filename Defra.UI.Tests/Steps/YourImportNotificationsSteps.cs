@@ -209,6 +209,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             importNotificationsPage?.ClickCopyAsNewLink();
         }
+        
+        [When("the user deletes all the stored values")]
+        public void WhenTheUserDeletesAllTheStoredValues()
+        {
+            _scenarioContext.Clear();
+        }
 
         [When("the user Clicks on Clone a certificate button")]
         public void WhenTheUserClicksOnCloneACertificateButton()

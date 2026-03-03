@@ -3,6 +3,7 @@ using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
 using System.Globalization;
+using FluentAssertions;
 
 namespace Defra.UI.Tests.Steps.IPAFF
 {
@@ -67,6 +68,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             ValidateIfExists("BorderControlPostReference", reviewOutcomeDecisionPage?.GetBorderControlPostReference(), ref allDataMatches, mismatches);
 
             // Checks
+            ValidateIfExists("IUUSubOption", reviewOutcomeDecisionPage?.GetIUUSubOptionCheckDecision(), ref allDataMatches, mismatches);
             ValidateIfExists("DocumentaryCheckDecision", reviewOutcomeDecisionPage?.GetDocumentaryCheckDecision(), ref allDataMatches, mismatches);
             ValidateIfExists("IdentityCheckType", reviewOutcomeDecisionPage?.GetIdentityCheckType(), ref allDataMatches, mismatches);
             ValidateIfExists("IdentityCheckDecision", reviewOutcomeDecisionPage?.GetIdentityCheckDecision(), ref allDataMatches, mismatches);
@@ -191,6 +193,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
             }
 
             Assert.True(allDataMatches, $"Review outcome decision page data validation failed. Mismatches: {string.Join(", ", mismatches)}");
+        }
+
+        [Then("the Laboratory test details are not displayed in the review page")]
+        public void ThenTheLaboratoryTestDetailsAreNotDisplayedInTheReviewPage()
+        {
+            var areLabTestDetailsDisplayed = reviewOutcomeDecisionPage?.AreLaboratoryTestDetailsDisplayed() ?? false;
+
+            Assert.False(areLabTestDetailsDisplayed,
+                "Laboratory test details are displayed in the review page but should not be present");
         }
 
         private void ValidateIfExists(string contextKey, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
@@ -528,6 +539,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 Console.WriteLine($"[ERROR] Error getting ISO code for '{countryName}': {ex.Message}");
                 return countryName;
             }
+        }
+
+        [Then("the catch certificate details are not present")]
+        public void ThenTheCatchCertificateDetailsAreNotPresent()
+        {
+            reviewOutcomeDecisionPage?.VerifyCatchCertificate().Should().BeFalse("The catch certification details should not be present");
         }
     }
 }

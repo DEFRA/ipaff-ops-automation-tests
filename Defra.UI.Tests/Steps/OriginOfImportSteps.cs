@@ -134,7 +134,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             }
         }
 
-        [Then("Does your consignment require a region code? defaults to 'No'")]
+        [Then("the Does your consignment require a region code? defaults to 'No'")]
         public void ThenDoesYourConsignmentRequireARegionCodeDefaultsToNo()
         {
             Assert.True(originOfImportPage?.IsRegionCodeDefaultedToNo, "Does your consignment require a region code? is not defaulted to 'No'");
@@ -151,6 +151,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             Assert.That(actualCountry, Is.EqualTo(expectedCountry),
                 $"Expected Country of origin to be '{expectedCountry}' but was '{actualCountry}'");
+        }
+
+        [Then("the user verifies that {string} and {string} are displayed at the top of the screen")]
+        public void ThenTheUserVerifiesThatAndAreDisplayedAtTheTopOfTheScreen(string expectedStatus, string expectedChedType)
+        {
+            Assert.True(
+                originOfImportPage?.IsHeaderBannerDisplayed(expectedStatus, expectedChedType),
+                $"Expected '{expectedStatus}' and '{expectedChedType}' to be displayed at the top of the screen");
         }
     }
 }

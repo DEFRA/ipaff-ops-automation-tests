@@ -128,14 +128,12 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void EnterContainerNumber(string containerNumber)
         {
-            txtContainerNumber.Click();
             txtContainerNumber.Clear();
             txtContainerNumber.SendKeys(containerNumber);
         }
 
         public void EnterSealNumber(string sealNumber)
         {
-            txtSealNumber.Click();
             txtSealNumber.Clear();
             txtSealNumber.SendKeys(sealNumber);
         }

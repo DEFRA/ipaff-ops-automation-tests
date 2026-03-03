@@ -36,11 +36,18 @@
             "Role": "BTMS"
         },
         {
-            "username": "12 02 26 61 05 25",
-            "Environment": "PRE",
-            "HomePage": true,
-            "Credential": "DARKSTAR27",
-            "Role": "Agent"
+          "username": "12 02 26 61 05 25",
+          "Environment": "PRE",
+          "HomePage": true,
+          "Credential": "DARKSTAR27",
+          "Role": "Agent"
+        },
+        {
+          "username": "95 57 61 14 95 99",
+          "Environment": "PRE",
+          "HomePage": true,
+          "Credential": "DARKSTAR27",
+          "Role": "Trader"
         }
     ]
 }

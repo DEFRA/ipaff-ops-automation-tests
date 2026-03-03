@@ -33,10 +33,12 @@ namespace Defra.UI.Tests.Pages.Classes
         private By GetLaboratoryTestSampleUseByDateBy(int index) => By.XPath($"//tr[@id='laboratory-test-sample-use-by-date-{index}']//td[contains(@class, 'check-status')]");
         private By GetLaboratoryTestReleasedDateBy(int index) => By.XPath($"//tr[@id='laboratory-test-released-date-{index}']//td[contains(@class, 'check-status')]");
         private By GetLaboratoryTestConclusionBy(int index) => By.XPath($"//tr[@id='laboratory-test-conclusion-{index}']//td[contains(@class, 'check-status')]");
+        private By laboratoryTestDetailsRowsBy => By.XPath("//tr[starts-with(@id, 'laboratory-test-')]");
 
         // Border Control Post
         private IWebElement borderControlPostReference =>
             _driver.FindElement(By.XPath("//th[text()='Border Control Post reference number']//following-sibling::td"));
+        private By iuuCheckSubOption => By.XPath("//*[normalize-space(text())='IUU checks']/following-sibling::td[1]");
 
         // Decision
         private IWebElement acceptanceDecision => _driver.FindElement(By.Id("acceptance-decision"));
@@ -654,6 +656,40 @@ namespace Defra.UI.Tests.Pages.Classes
             return SafelyGetElementTextByLocator(GetLaboratoryTestConclusionBy(index));
         }
 
+        public bool AreLaboratoryTestDetailsDisplayed()
+        {
+            try
+            {
+                // Check if any laboratory test detail rows exist (analysis type, commodity sampled, test name, etc.)
+                var labTestDetailRows = SafelyFindElements(laboratoryTestDetailsRowsBy);
+
+                if (labTestDetailRows.Count > 0)
+                {
+                    return true;
+                }
+
+                // Also check if the laboratory tests reason row exists (not just "Are laboratory tests required?")
+                try
+                {
+                    var reasonElement = _driver.FindElement(laboratoryTestsReasonBy);
+                    if (reasonElement.Displayed)
+                    {
+                        return true;
+                    }
+                }
+                catch (NoSuchElementException)
+                {
+                    // Reason row doesn't exist - expected when no lab tests
+                }
+
+                return false;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         // Decision - Temporary Admission Horses
         public string? GetDeadline()
         {
@@ -679,6 +715,16 @@ namespace Defra.UI.Tests.Pages.Classes
         public string? GetExitBCP()
         {
             return SafelyGetElementTextByLocator(exitBCPBy);
+        }
+
+        public string? GetIUUSubOptionCheckDecision()
+        {
+            return SafelyGetElementTextByLocator(iuuCheckSubOption);
+        }
+
+        public bool VerifyCatchCertificate()
+        {
+            return _driver.PageSource.Contains("Catch certificate");
         }
     }
 }
