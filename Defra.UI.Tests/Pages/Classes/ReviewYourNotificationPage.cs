@@ -44,6 +44,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private By totalNetWeightBy => By.XPath("//td[text()='Total net weight']//following-sibling::td[1]");
         private By totalPackagesBy => By.XPath("//td[text()='Total packages']//following-sibling::td[1]");
         private By totalGrossWeightBy => By.XPath("//td[contains(text(),'Total gross weight ')]//following-sibling::td[1]");
+        private By confirmationToDeclareGMSBy => By.XPath("//td[contains(text(),'Confirmation to declare GMS')]//following-sibling::td[1]");
         private List<IWebElement> genusAndSpeciesList => _driver.FindElements(By.XPath("//th[text()='Genus and species']/following-sibling::td")).ToList();
         private List<IWebElement> descriptionList => _driver.FindElements(By.XPath("//td[text()='Description']/following-sibling::td[1]")).ToList();
         private List<IWebElement> netWeightCHEDPPList => _driver.FindElements(By.XPath("//*[contains(@class,'govuk-table chedpp-species-table')]//tr[2]/td[3]")).ToList();
@@ -54,6 +55,16 @@ namespace Defra.UI.Tests.Pages.Classes
         private By forTestAndTrial => By.XPath(".//*[normalize-space()='For test and trial']");
         private IWebElement firstCommodityTable => _driver.FindElement(By.XPath("//*[@id='page-primary-title']/following-sibling::div[4]"));
         private IWebElement secondCommodityTable => _driver.FindElement(By.XPath("//*[@id='page-primary-title']/following-sibling::div[5]"));
+
+        // Multi-species commodity rows
+        private IReadOnlyCollection<IWebElement> speciesConsignmentRows => _driver.FindElements(By.XPath("//table[contains(@id,'review-table-consignment')]//tbody//tr | //table[contains(@id,'review-table-consignment')]//tr[td[@class='govuk-table__cell']]"));
+
+        // Animal identification details — per-species sub-tables inside the main identification table
+        private IReadOnlyCollection<IWebElement> identificationSpeciesHeaders => _driver.FindElements(By.XPath("//table[@id='animal-identification-details-table']//th[contains(text(),'identification details')]"));
+        private IReadOnlyCollection<IWebElement> identificationSubTables => _driver.FindElements(By.XPath("//table[@id='animal-identification-details-table']//div[contains(@id,'identifiers-')]//table"));
+
+        // Permanent address rows
+        private IReadOnlyCollection<IWebElement> permanentAddressRows => _driver.FindElements(By.XPath("//td[@id='animal-name']/parent::tr"));
 
         //Additional details
         private By commodityIntendedForBy => By.XPath("//dt[text()='Commodity intended for']//following-sibling::dd");
@@ -75,6 +86,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private By additionalDocumentReferenceBy => By.Id("veterinary-document-reference-1");
         private By additionalDocumentDateOfIssueBy => By.Id("veterinary-document-issue-date-1");
         private By additionalDocumentFileNameBy => By.XPath("//table[@id='additional-documents-table']//a[contains(@id,'attachment-view')]");
+        private By catchCertificateHeadingBy => By.Id("catch-certificate-details-heading");
+        private By catchCertificateSummaryTableBy => By.Id("catch-certificate-summary-table");
+        private By catchCertificateSummaryRowsBy => By.XPath("//table[@id='catch-certificate-summary-table']//tbody//tr");
 
         // Addresses
         private By consignorDetailsBy => By.Id("consignor");
@@ -125,6 +139,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement catchCertificateDocumentDateOfIssue(int row, int column) => _driver.FindElement(By.XPath($"//table[@id='catch-certificate-summary-table']//tr[{row}]/td[{column}]"));
         private IWebElement catchCertificateCommodityCode(int row, int column) => _driver.FindElement(By.XPath($"(//table[@id='catch-certificate-details-table'])[1]//tbody/tr[{row}]/td[{column}]"));
         private IWebElement catchCertificateSpeciesDescription(int row, int column) => _driver.FindElement(By.XPath($"(//table[@id='catch-certificate-details-table'])[1]//tbody/tr[{row}]/td[{column}]"));
+        private IReadOnlyCollection<IWebElement> lnkChangeCatchCertificateLinks => _driver.FindElements(By.Id("add-catch-certificate-details-change-link"));
         private IReadOnlyCollection<IWebElement> lnkChangeCatchCertificateLinks => _driver.FindElements(By.Id("add-catch-certificate-details-change-link"));
         private IWebElement lnkChangeLinkForTransportBCP => _driver.FindElement(By.Id("transport-to-bip-change-link"));
         private IWebElement lnkChangeLinkForContactDetailsChange => _driver.FindElement(By.Id("responsible-person-contact-details-change-link"));
@@ -262,6 +277,92 @@ namespace Defra.UI.Tests.Pages.Classes
         public string GetSpecies() => _driver.SafelyGetText(speciesBy);
         public string GetNumberOfAnimals() => _driver.SafelyGetText(numberOfAnimalsBy);
         public string GetNumberOfPackages() => _driver.SafelyGetText(numberOfPackagesBy);
+
+        /// <summary>
+        /// Returns all species rows from the review-table-consignment tables.
+        /// Each tuple contains (species name, number of animals, number of packages).
+        /// HTML structure: each species row has 3 td cells in tbody rows of tables
+        /// with id containing 'review-table-consignment'.
+        /// </summary>
+        public List<(string species, string numberOfAnimals, string numberOfPackages)> GetAllSpeciesDetails()
+        {
+            var results = new List<(string species, string numberOfAnimals, string numberOfPackages)>();
+
+            foreach (var row in speciesConsignmentRows)
+            {
+                var cells = row.FindElements(By.TagName("td"));
+                if (cells.Count >= 3)
+                {
+                    var speciesName = cells[0].SafelyGetText();
+                    var animals = cells[1].SafelyGetText();
+                    var packages = cells[2].SafelyGetText();
+
+                    if (!string.IsNullOrWhiteSpace(speciesName) && !speciesName.Equals("Subtotal", StringComparison.OrdinalIgnoreCase))
+                        results.Add((speciesName, animals, packages));
+                }
+            }
+
+            return results;
+        }
+
+        /// <summary>
+        /// Returns identification details for a specific species from the review page.
+        /// The HTML has a header row with text like "Canis familiaris identification details"
+        /// followed by a sub-table with columns: Animal, Microchip, Passport, Tattoo.
+        /// </summary>
+        public List<(string animal, string microchip, string passport, string tattoo)> GetIdentificationDetailsForSpecies(string species)
+        {
+            var results = new List<(string animal, string microchip, string passport, string tattoo)>();
+
+            var headers = identificationSpeciesHeaders.ToList();
+            var tables = identificationSubTables.ToList();
+
+            for (int i = 0; i < headers.Count && i < tables.Count; i++)
+            {
+                if (!headers[i].Text.Contains(species, StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                var bodyRows = tables[i].FindElements(By.XPath(".//tbody/tr"));
+                foreach (var row in bodyRows)
+                {
+                    var cells = row.FindElements(By.TagName("td"));
+                    if (cells.Count >= 4)
+                    {
+                        results.Add((
+                            cells[0].SafelyGetText(),
+                            cells[1].SafelyGetText(),
+                            cells[2].SafelyGetText(),
+                            cells[3].SafelyGetText()
+                        ));
+                    }
+                }
+
+                break;
+            }
+
+            return results;
+        }
+
+        /// <summary>
+        /// Returns all permanent address rows from the review page.
+        /// Each row has td[@id='animal-name'] and td[@id='animal-permanent-address'].
+        /// Returns tuples of (animalName, full address text).
+        /// </summary>
+        public List<(string animalName, string addressText)> GetAllPermanentAddresses()
+        {
+            var results = new List<(string animalName, string addressText)>();
+
+            foreach (var row in permanentAddressRows)
+            {
+                var name = row.FindElement(By.XPath(".//td[@id='animal-name']")).SafelyGetText();
+                var address = row.FindElement(By.XPath(".//td[@id='animal-permanent-address']")).SafelyGetText();
+
+                if (!string.IsNullOrWhiteSpace(name))
+                    results.Add((name, address));
+            }
+
+            return results;
+        }
 
         public string GetCommodityCodeList(int index)
         {
@@ -508,6 +609,19 @@ namespace Defra.UI.Tests.Pages.Classes
             }
         }
 
+        public string GetConfirmationToDeclareGMS()
+        {
+            try
+            {
+                return _driver.SafelyGetText(confirmationToDeclareGMSBy);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"GetConfirmationToDeclareGMS failed: {ex.Message}");
+                return string.Empty;
+            }
+        }
+
         public string GetCommodityVariety(int index)
         {
             try
@@ -686,6 +800,7 @@ namespace Defra.UI.Tests.Pages.Classes
         public string GetCatchedDocumentReference() => _driver.SafelyGetText(additionalDocumentReferenceBy);
         public string GetCatchedCertificateFileName() => _driver.SafelyGetText(healthCertificateFileNameBy);
         public string GetCatchedDocumentFileName() => _driver.SafelyGetText(additionalDocumentFileNameBy);
+
         // Date methods with parsing logic
         public string GetHealthCertificateDateOfIssue()
         {
@@ -727,6 +842,165 @@ namespace Defra.UI.Tests.Pages.Classes
             {
                 return string.Empty;
             }
+        }
+
+        public bool VerifyCatchCertificateHeadingDisplaysCount(int expectedCount)
+        {
+            var heading = _driver.FindElement(catchCertificateHeadingBy);
+            var expectedText = $"{expectedCount} catch certificate{(expectedCount != 1 ? "s" : "")}";
+            return heading.Displayed && heading.Text.Trim().Equals(expectedText, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public (bool isValid, List<string> mismatches) VerifyCatchCertificateSummaryTable(
+            int totalAttachments,
+            Dictionary<int, (string reference, string flagState, string dateOfIssue, string fileName)> expectedData)
+        {
+            var mismatches = new List<string>();
+
+            var table = _driver.FindElement(catchCertificateSummaryTableBy);
+            if (!table.Displayed)
+            {
+                mismatches.Add("Catch certificate summary table is not displayed");
+                return (false, mismatches);
+            }
+
+            var rows = _driver.FindElements(catchCertificateSummaryRowsBy);
+            if (rows.Count != totalAttachments)
+            {
+                mismatches.Add($"Expected {totalAttachments} rows, found {rows.Count}");
+                return (false, mismatches);
+            }
+
+            for (int i = 0; i < totalAttachments; i++)
+            {
+                var rowIndex = i + 1;
+                var row = rows[i];
+                var cells = row.FindElements(By.TagName("td"));
+
+                if (cells.Count < 4)
+                {
+                    mismatches.Add($"Row {rowIndex}: Expected 4 cells, found {cells.Count}");
+                    continue;
+                }
+
+                if (expectedData.TryGetValue(rowIndex, out var expected))
+                {
+                    var actualReference = cells[0].Text.Trim();
+                    var actualFlagState = cells[1].Text.Trim();
+                    var actualDateOfIssue = cells[2].Text.Trim();
+                    var actualFileName = cells[3].Text.Trim();
+
+                    if (!actualReference.Equals(expected.reference, StringComparison.OrdinalIgnoreCase))
+                    {
+                        mismatches.Add($"Row {rowIndex} Reference: Expected '{expected.reference}', Found '{actualReference}'");
+                    }
+
+                    if (!actualFlagState.Equals(expected.flagState, StringComparison.OrdinalIgnoreCase))
+                    {
+                        mismatches.Add($"Row {rowIndex} Flag State: Expected '{expected.flagState}', Found '{actualFlagState}'");
+                    }
+
+                    if (!actualDateOfIssue.Equals(expected.dateOfIssue, StringComparison.OrdinalIgnoreCase))
+                    {
+                        mismatches.Add($"Row {rowIndex} Date of Issue: Expected '{expected.dateOfIssue}', Found '{actualDateOfIssue}'");
+                    }
+
+                    if (!actualFileName.Contains(expected.fileName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        mismatches.Add($"Row {rowIndex} File Name: Expected to contain '{expected.fileName}', Found '{actualFileName}'");
+                    }
+                }
+            }
+
+            return (mismatches.Count == 0, mismatches);
+        }
+
+        public (bool isValid, List<string> mismatches) VerifyCatchCertificateDetails(
+            int totalAttachments,
+            Dictionary<int, (string reference, string commodityCode, string species)> expectedData)
+        {
+            var mismatches = new List<string>();
+
+            for (int i = 1; i <= totalAttachments; i++)
+            {
+                // Verify "Catch certificate X of Y" caption
+                var captionXPath = $"(//span[contains(@class, 'govuk-caption-m') and contains(text(), 'Catch certificate')])[{i}]";
+                var captionElements = _driver.FindElements(By.XPath(captionXPath));
+
+                if (captionElements.Count == 0)
+                {
+                    mismatches.Add($"Caption for Catch certificate {i} of {totalAttachments} not found");
+                    continue;
+                }
+
+                var expectedCaption = $"Catch certificate {i} of {totalAttachments}";
+                var actualCaption = captionElements[0].Text.Trim();
+
+                if (!actualCaption.Equals(expectedCaption, StringComparison.OrdinalIgnoreCase))
+                {
+                    mismatches.Add($"Caption {i}: Expected '{expectedCaption}', Found '{actualCaption}'");
+                }
+
+                if (expectedData.TryGetValue(i, out var expected))
+                {
+                    // Verify Reference heading
+                    var referenceXPath = $"(//span[contains(@class, 'govuk-caption-m') and contains(text(), 'Catch certificate {i} of')])/following-sibling::div//h3[contains(@class, 'govuk-heading-s')]";
+                    var referenceElements = _driver.FindElements(By.XPath(referenceXPath));
+
+                    if (referenceElements.Count > 0)
+                    {
+                        var actualReference = referenceElements[0].Text.Trim();
+                        var expectedReference = $"Reference: {expected.reference}";
+
+                        if (!actualReference.Equals(expectedReference, StringComparison.OrdinalIgnoreCase))
+                        {
+                            mismatches.Add($"Certificate {i} Reference: Expected '{expectedReference}', Found '{actualReference}'");
+                        }
+                    }
+                    else
+                    {
+                        mismatches.Add($"Certificate {i}: Reference heading not found");
+                    }
+
+                    // Verify Commodity Code - using the table within that section
+                    var commodityCodeXPath = $"(//table[@id='catch-certificate-details-table'])[{i}]//td[@id='species-commodity-code']";
+                    var commodityCodeElements = _driver.FindElements(By.XPath(commodityCodeXPath));
+
+                    if (commodityCodeElements.Count > 0)
+                    {
+                        var actualCommodityCode = commodityCodeElements[0].Text.Trim();
+
+                        if (!actualCommodityCode.Equals(expected.commodityCode, StringComparison.OrdinalIgnoreCase))
+                        {
+                            mismatches.Add($"Certificate {i} Commodity Code: Expected '{expected.commodityCode}', Found '{actualCommodityCode}'");
+                        }
+                    }
+                    else
+                    {
+                        mismatches.Add($"Certificate {i}: Commodity code not found");
+                    }
+
+                    // Verify Species - using the table within that section
+                    var speciesXPath = $"(//table[@id='catch-certificate-details-table'])[{i}]//td[@id='species-and-description-information']";
+                    var speciesElements = _driver.FindElements(By.XPath(speciesXPath));
+
+                    if (speciesElements.Count > 0)
+                    {
+                        var actualSpecies = speciesElements[0].Text.Trim();
+
+                        if (!actualSpecies.Contains(expected.species, StringComparison.OrdinalIgnoreCase))
+                        {
+                            mismatches.Add($"Certificate {i} Species: Expected to contain '{expected.species}', Found '{actualSpecies}'");
+                        }
+                    }
+                    else
+                    {
+                        mismatches.Add($"Certificate {i}: Species not found");
+                    }
+                }
+            }
+
+            return (mismatches.Count == 0, mismatches);
         }
 
         // Addresses - Using helper methods with extraction logic
@@ -1058,6 +1332,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool IsError(string errorMessage)
         {
+            Thread.Sleep(1000);
             foreach (var element in lblErrorMessages)
             {
                 if (element.Text.Contains(errorMessage))
