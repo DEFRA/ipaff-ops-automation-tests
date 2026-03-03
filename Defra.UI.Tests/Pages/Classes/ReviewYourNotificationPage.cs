@@ -120,18 +120,27 @@ namespace Defra.UI.Tests.Pages.Classes
         private IReadOnlyCollection<IWebElement> lblErrorMessages => _driver.FindElements(By.XPath("//div[@class='govuk-error-summary']/div/ul/li"));
         private IWebElement lblCatchCertificateHeader => _driver.FindElement(By.Id("catch-certificate-details-heading"));
         private IWebElement lblCatchCertificateRowNoneAttached => _driver.FindElement(By.Id("catch-certificates-none-attached"));
-        private IWebElement catchCertificateFlagState(int row, int column) =>_driver.FindElement(By.XPath($"//table[@id='catch-certificate-summary-table']//tr[{row}]/td[{column}]"));
+        private IWebElement catchCertificateFlagState(int row, int column) => _driver.FindElement(By.XPath($"//table[@id='catch-certificate-summary-table']//tr[{row}]/td[{column}]"));
         private IWebElement catchCertificateDocumentReference(int row, int column) => _driver.FindElement(By.XPath($"//table[@id='catch-certificate-summary-table']//tr[{row}]/td[{column}]"));
         private IWebElement catchCertificateDocumentDateOfIssue(int row, int column) => _driver.FindElement(By.XPath($"//table[@id='catch-certificate-summary-table']//tr[{row}]/td[{column}]"));
         private IWebElement catchCertificateCommodityCode(int row, int column) => _driver.FindElement(By.XPath($"(//table[@id='catch-certificate-details-table'])[1]//tbody/tr[{row}]/td[{column}]"));
         private IWebElement catchCertificateSpeciesDescription(int row, int column) => _driver.FindElement(By.XPath($"(//table[@id='catch-certificate-details-table'])[1]//tbody/tr[{row}]/td[{column}]"));
-        private IReadOnlyCollection<IWebElement> lnkChangeCatchCertificateLinks=> _driver.FindElements(By.Id("add-catch-certificate-details-change-link"));
+        private IReadOnlyCollection<IWebElement> lnkChangeCatchCertificateLinks => _driver.FindElements(By.Id("add-catch-certificate-details-change-link"));
         private IWebElement lnkChangeLinkForTransportBCP => _driver.FindElement(By.Id("transport-to-bip-change-link"));
         private IWebElement lnkChangeLinkForContactDetailsChange => _driver.FindElement(By.Id("responsible-person-contact-details-change-link"));
         private IWebElement lnkGoodsMovementServicesChange => _driver.FindElement(By.Id("goods-movement-services-change-link"));
         private IWebElement lnkTraderDeliveryAddressChange => _driver.FindElement(By.Id("traders-change-link"));
         private IWebElement pImporterName => _driver.FindElement(By.XPath("(//dd[@id='importer']/p)[1]"));
         private IWebElement btnViewChed => _driver.FindElement(By.Id("show-notification"));
+        private IWebElement ddContactName => _driver.FindElement(By.Id("responsible-contact-name"));
+        private IWebElement ddContactEmail => _driver.FindElement(By.Id("responsible-contact-email"));
+        private IWebElement ddContactTelephone => _driver.FindElement(By.Id("responsible-contact-telephone"));
+        private IWebElement tdIntendedForUsers => _driver.FindElement(By.XPath("//th[normalize-space()='Intended for final users or commercial flower production'] /parent::tr/following-sibling::tr[1]/td[2]"));
+        private IWebElement tdControlledAtmosphereContainer => _driver.FindElement(By.XPath("//th[normalize-space()='Controlled atmosphere container']/parent::tr/following-sibling::tr[1]/td[6]"));
+        private IWebElement tdQuantity => _driver.FindElement(By.XPath("//th[normalize-space()='Quantity']/parent::tr/following-sibling::tr[1]/td[3]"));
+        private IWebElement tdQuantityType => _driver.FindElement(By.XPath("//th[normalize-space()='Quantity type']/parent::tr/following-sibling::tr[1]/td[4]"));
+        private IWebElement tdGrossVolume => _driver.FindElement(By.XPath("//td[normalize-space()='Total gross volume']/following-sibling::td"));
+        private IWebElement tdGrossVolumeUnit => _driver.FindElement(By.XPath("//td[normalize-space()='Total gross volume unit']/following-sibling::td"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -152,6 +161,7 @@ namespace Defra.UI.Tests.Pages.Classes
         public string GetCountryFromWhereConsigned() => _driver.SafelyGetText(countryFromWhereConsignedBy);
         public string GetConsignmentReferenceNumber() => _driver.SafelyGetText(consignmentReferenceNumberBy);
         public string GetDestinationCountry() => _driver.SafelyGetText(destinationCountryBy);
+
 
         // Complex methods with logic - Keep try-catch
         public string GetPartOfImportType()
@@ -208,7 +218,7 @@ namespace Defra.UI.Tests.Pages.Classes
                 else
                 {
                     // Try to find any purpose-related value after the main reason
-                    var purposeElements = _driver.FindElements(By.XPath("//dt[contains(text(),'Purpose')]//following-sibling::dd"));
+                    var purposeElements = _driver.FindElements(By.XPath("//dt[contains(text(),'Purpose') or contains(text(),'purpose') ]/following-sibling::dd"));
                     return purposeElements.FirstOrDefault()?.SafelyGetText() ?? string.Empty;
                 }
             }
@@ -541,10 +551,10 @@ namespace Defra.UI.Tests.Pages.Classes
             try
             {
                 var commodityTable = index == 0 ? firstCommodityTable : secondCommodityTable;
-                
+
                 int quantityIndex = commodityTable.FindElements(forTestAndTrial).Count > 0 ? 3 : 2;
 
-                var quantityList = commodityTable.FindElements(By.XPath(".//tbody/tr[4]/td["+ quantityIndex +"]")).ToList();
+                var quantityList = commodityTable.FindElements(By.XPath(".//tbody/tr[4]/td[" + quantityIndex + "]")).ToList();
 
                 var allQuantityList = quantityList
                                       .Select(e => e.Text?.Trim())
@@ -1133,7 +1143,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool VerifyCatchCertificateForNoneAttached(string message)
         {
-           return lblCatchCertificateRowNoneAttached.Text.Equals(message);
+            return lblCatchCertificateRowNoneAttached.Text.Equals(message);
         }
 
         public string GetCatchCertificateDocumentReference(int row, int column = 1)
@@ -1195,5 +1205,21 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             btnViewChed.Click();
         }
+
+        public string GetContactName()=>ddContactName.Text;
+
+        public string GetContactEmail() => ddContactEmail.Text;
+
+        public string GetContactTelephone() => ddContactTelephone.Text;
+
+        public string GetIntendedForFinalUsers() => tdIntendedForUsers.Text.Trim();
+
+        public string GetControlledAtmosphereContainer() => tdControlledAtmosphereContainer.Text.Trim();
+        public string GetQuantity() => tdQuantity.Text.Trim();
+
+        public string GetQuantityType()=> tdQuantityType.Text.Trim();
+        public string GetGrossVolume() => tdGrossVolume.Text.Trim();
+
+        public string GetGrossVolumeUnit() => tdGrossVolumeUnit.Text.Trim();
     }
 }

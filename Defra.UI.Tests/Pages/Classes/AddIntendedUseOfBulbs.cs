@@ -19,7 +19,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement rdoNo => _driver.FindElement(By.XPath("//label[@for='propagating-commodity-line']"));
         private IWebElement btnApply => _driver.FindElement(By.Id("apply-intended-for-use"));
         private IWebElement btnSaveAndContinue => _driver.FindElement(By.Id("button-save-and-continue"));
-        private IWebElement pSuccessMessage => _driver.FindElement(By.Id("number-of-bulk-values-applied"));
+        private IWebElement pSuccessMessage => _driver.WaitForElement(By.Id("number-of-bulk-values-applied"),true);
+        private IReadOnlyCollection<IWebElement> commodityDetailsList => _driver.FindElements(By.TagName("td"));
         #endregion
 
         public AddIntendedUseOfBulbs(IObjectContainer container)
@@ -35,6 +36,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public void SelctCommodityCode()
         {
             chkCommodityCode.Click();
+        }
+
+        public string[] GetCommodityDetails()
+        {
+            return [commodityDetailsList.ElementAt(1).Text, commodityDetailsList.ElementAt(2).Text, commodityDetailsList.ElementAt(3).Text];
         }
 
         public void SelectOptionForIntentedFinalUsers(string option)

@@ -1,6 +1,7 @@
 ﻿using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
 
 namespace Defra.UI.Tests.Pages.Classes
@@ -15,6 +16,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement lblGrossVolumeOptional => _driver.FindElement(By.XPath("//label[@for='gross-volume']"));
         private IWebElement txtGrossWeight => _driver.FindElement(By.Id("gross-weight"));
         private IWebElement btnSaveAndReview => _driver.FindElement(By.Id("save-and-review-button"));
+        private IWebElement drpControlledAdmosphereContainer => _driver.FindElement(By.XPath("//select[@aria-label='Has container']"));
+        private IWebElement txtGrossVolume=> _driver.FindElement(By.Id("gross-volume"));
+        private IWebElement drpGrossVolumeUnit => _driver.FindElement(By.Id("gross-volume-unit"));
 
         #endregion
 
@@ -42,5 +46,14 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             btnSaveAndReview.Click();
         }
+
+        public string GetControlledAtmosphereContainer()
+        {
+            return new SelectElement(drpControlledAdmosphereContainer)?.SelectedOption.Text;
+        }
+
+        public string GetGrossVolume()=> txtGrossVolume.Text.Trim();
+
+        public string GetGrossVolumeUnit()=> new SelectElement(drpGrossVolumeUnit).SelectedOption.Text.Trim();
     }
 }

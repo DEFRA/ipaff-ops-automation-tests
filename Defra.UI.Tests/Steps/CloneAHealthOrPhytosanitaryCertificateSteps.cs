@@ -1,5 +1,4 @@
-﻿using Defra.UI.Tests.Pages.Classes;
-using Defra.UI.Tests.Pages.Interfaces;
+﻿using Defra.UI.Tests.Pages.Interfaces;
 using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;
@@ -24,6 +23,7 @@ namespace Defra.UI.Tests.Steps
         [Then("the Clone a health or phytosanitary certificate page should be displayed")]
         public void ThenTheCloneAHealthOrPhytosanitaryCertificatePageShouldBeDisplayed()
         {
+            _scenarioContext["DocumentType"] = "Phytosanitary certificate";
             Assert.True(cloneAHealthOrPhytosanitaryCertificate?.IsPageLoaded(), "Clone a health or phytosanitary certificate page not loaded");
         }
 
@@ -37,6 +37,7 @@ namespace Defra.UI.Tests.Steps
         public void ThenTheUserSelectedTheImportingOptionAs(string importOption)
         {
             cloneAHealthOrPhytosanitaryCertificate?.SelectImportingOption(importOption);
+            _scenarioContext["ImportType"] = importOption;
         }
 
         [When("the user clicks on continue button")]

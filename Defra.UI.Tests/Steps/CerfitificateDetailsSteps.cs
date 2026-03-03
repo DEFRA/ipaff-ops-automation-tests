@@ -2,7 +2,6 @@
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using FluentAssertions;
-using Microsoft.CodeAnalysis;
 using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;
@@ -51,7 +50,9 @@ namespace Defra.UI.Tests.Steps
             var notificateionDetails = _scenarioContext.GetFromContext<NotificateionDetails>("CloningNotificationDetails");
 
             certificateDetailsPage?.SelectCountryOfOrigin(notificateionDetails.CountryOfOriginOfCertificate);
+            _scenarioContext["CountryOfOrigin"] = notificateionDetails.CountryOfOriginOfCertificate;
             certificateDetailsPage?.EnterCertificateReferenceNumber(notificateionDetails.CertificateReferenceNumber);
+            _scenarioContext["CertificateReferenceNumber"] = notificateionDetails.CertificateReferenceNumber;
 
             DateTime certificateDateOfIssue; 
             
@@ -59,6 +60,7 @@ namespace Defra.UI.Tests.Steps
 
             certificateDetailsPage?.EnterCertificateDateOfIssueYear(certificateDateOfIssue.Day, certificateDateOfIssue.Month, certificateDateOfIssue.Year);
             certificateDetailsPage?.EnterConsignerConsigneeImporterName(notificateionDetails.ConsignorConsigneeOrImporterName);
+            _scenarioContext["ConsignorConsigneeOrImporterName"] = notificateionDetails.ConsignorConsigneeOrImporterName;
         }
 
         [When("the user Clicks on Search button")]
@@ -85,11 +87,22 @@ namespace Defra.UI.Tests.Steps
             cloneCertificateDetails.Should().ContainKey("Commodity code").WhoseValue.Should().Be(notificateionDetails.CommodityCode);
             cloneCertificateDetails.Should().ContainKey("Description").WhoseValue.Should().Be(notificateionDetails.Description);
             cloneCertificateDetails.Should().ContainKey("Genus and species").WhoseValue.Should().Be(notificateionDetails.GenusAndSpecies);
-            cloneCertificateDetails.Should().ContainKey("Net weight").WhoseValue.Should().Be(notificateionDetails.NetWeight);
+            cloneCertificateDetails.Should().ContainKey("Net weight").WhoseValue.Should().Be(notificateionDetails.NetWeightWithUnits);
             cloneCertificateDetails.Should().ContainKey("Packages").WhoseValue.Should().Be(notificateionDetails.Packages);
             cloneCertificateDetails.Should().ContainKey("Type of package").WhoseValue.Should().Be(notificateionDetails.TypeOfPackage);
             cloneCertificateDetails.Should().ContainKey("Quantity").WhoseValue.Should().Be(notificateionDetails.Quantity);
             cloneCertificateDetails.Should().ContainKey("Quantity type").WhoseValue.Should().Be(notificateionDetails.QuantityType);
+
+            _scenarioContext["DocumentReference"] = notificateionDetails.CertificateReferenceNumber;
+            _scenarioContext["CountryOfOrigin"] = notificateionDetails.CountryOfOriginOfCertificate;
+            _scenarioContext["CommodityCode"] = notificateionDetails.CommodityCode;
+            _scenarioContext["CommodityDescription"] = notificateionDetails.Description;
+            _scenarioContext["GenusFirstCommodity"] = notificateionDetails.GenusAndSpecies;
+            _scenarioContext["TotalNetWeight"] = notificateionDetails.NetWeight;
+            _scenarioContext["TotalPackages"] = notificateionDetails.Packages;
+            _scenarioContext["FixedQuantity"] = notificateionDetails.Quantity;
+            _scenarioContext["FixedQuantityType"] = notificateionDetails.QuantityType;
+            _scenarioContext["PackageType"] = notificateionDetails.TypeOfPackage;
 
             Assert.IsTrue(phytosanitaryCertificateDetailsPage?.VerifyContentAndTitlesOnPage(),"H2 titles didn't match");
             Assert.IsTrue(phytosanitaryCertificateDetailsPage?.IsCloneAndCancelButtonExists(), "Clone or Cancel button doesn't exists");
@@ -111,6 +124,7 @@ namespace Defra.UI.Tests.Steps
         public void ThenTheUserSelectsTheOptionOfCreatingNotificationForAs(string option)
         {
             creatingThisNotificationForPage?.SelectNotificationForOption(option);
+            _scenarioContext["CreatingNotificationFor"] = option; 
         }
 
         [When("the user Clicks on Save and review button")]
@@ -157,12 +171,17 @@ namespace Defra.UI.Tests.Steps
         public void ThenTheUserSelectsTheCommodityFromTheListAppeared()
         {
             addIntendedUseOfBulbs?.SelctCommodityCode();
+            var commodityDetails = addIntendedUseOfBulbs?.GetCommodityDetails();
+            _scenarioContext["CommodityCode"] = commodityDetails[0];
+            _scenarioContext["GenusFirstCommodity"] = commodityDetails[1];
+            _scenarioContext["EPPOCodeFirstCommodity"] = commodityDetails[2];
         }
 
         [Then("the user selects {string} for Are the commodity lines you selected intended for final users or commercial flower production?")]
         public void ThenTheUserSelectsForAreTheCommodityLinesYouSelectedIntendedForFinalUsersOrCommercialFlowerProduction(string option)
         {
             addIntendedUseOfBulbs?.SelectOptionForIntentedFinalUsers(option);
+            _scenarioContext["IntendedForFinalUsers"] = option;
         }
 
         [When("the user clicks on Apply button")]
@@ -187,6 +206,7 @@ namespace Defra.UI.Tests.Steps
         public void ThenTheCheckOrUpdateCommodityDetailsPageShouldBeDisplayed()
         {
             Assert.True(checkOrUpdateCommodityDetails?.IsPageLoaded(), "Check or update commodity details page is didn't load");
+            _scenarioContext["ControlledAtmosphereContainer"] = checkOrUpdateCommodityDetails?.GetControlledAtmosphereContainer();
         }
 
         [When("the user Clicks on Save and review button from Additional details page")]
@@ -206,6 +226,12 @@ namespace Defra.UI.Tests.Steps
         public void ThenTheUserEnterTotalGrossWeightAs(string grossWeight)
         {
             checkOrUpdateCommodityDetails?.EnterGrossWeight(grossWeight);
+            _scenarioContext["TotalGrossWeight"] = grossWeight;
+            _scenarioContext["GrossVolume"] = checkOrUpdateCommodityDetails?.GetGrossVolume();
+
+            var grossVolumeUnit = checkOrUpdateCommodityDetails?.GetGrossVolumeUnit().ToLower();
+
+            _scenarioContext["GrossVolumetUnit"] = grossVolumeUnit.Equals("litres") ? "L": grossVolumeUnit;
         }
     }
 }
