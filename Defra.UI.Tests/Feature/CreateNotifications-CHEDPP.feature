@@ -207,11 +207,11 @@ Scenario: Create a new import notification through clone a health or phytosanita
 	And the notification returned in the search has the status 'NEW'
 	When the user clicks View details for the notification
 	Then the Review your notification page should be displayed
-	#add logic to verify all the data on review screen what we entered
+	And the data presented for review matches the data entered into the notification for CHED PP
 	When the user clicks View CHED grey button
 	Then the certificate should be displayed in a new browser tab
 	When the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
-	When the user clicks Return to your dashboard
+	When the user clicks on the Dashboard link
 	Then the dashboard page should be displayed

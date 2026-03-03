@@ -11,6 +11,7 @@
         public string Description { get; set; }
         public string GenusAndSpecies { get; set; }
         public string NetWeight { get; set; }
+        public string NetWeightWithUnits { get; set; }
         public string Packages { get; set; }
         public string TypeOfPackage { get; set; }
         public string Quantity { get; set; }

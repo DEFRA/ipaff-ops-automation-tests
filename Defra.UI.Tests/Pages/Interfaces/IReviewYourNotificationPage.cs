@@ -138,5 +138,14 @@
         void ClickChangeLinkForAddDeliveryAddress();
         string GetImporterNameByChangeLink();
         void ClickViewCHEDButton();
+        string GetContactName();
+        string GetContactEmail();
+        string GetContactTelephone();
+        string GetIntendedForFinalUsers();
+        string GetControlledAtmosphereContainer();
+        string GetQuantity();
+        string GetQuantityType();
+        string GetGrossVolume();
+        string GetGrossVolumeUnit();
     }
 }

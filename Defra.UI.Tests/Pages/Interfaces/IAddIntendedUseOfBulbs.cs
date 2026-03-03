@@ -8,5 +8,6 @@
         void SelctCommodityCode();
         void SelectOptionForIntentedFinalUsers(string option);
         bool VerifyMessageOnThePage(string message);
+        string[] GetCommodityDetails();
     }
 }
