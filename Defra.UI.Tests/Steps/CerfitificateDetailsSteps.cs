@@ -39,28 +39,28 @@ namespace Defra.UI.Tests.Steps
         [Then("the user searches for the notification for cloning which is not more than {int} days from creation")]
         public void ThenTheUserSearchesForTheNotificationForCloningWhichIsNotMoreThanDaysFromCreation(int notificateionCreatedDaysFrom)
         {
-            var notificateionDetails = certificateDetailsPage?.GetNotificationDetailsForCloning();
+            var notificationDetails = certificateDetailsPage?.GetNotificationDetailsForCloning();
 
-            _scenarioContext["CloningNotificationDetails"] = notificateionDetails;
+            _scenarioContext["CloningNotificationDetails"] = notificationDetails;
         }
 
         [Then("the user provided notification details in the search input fields")]
         public void ThenTheUserProvidedNotificationDetailsInTheSearchInputFields()
         {
-            var notificateionDetails = _scenarioContext.GetFromContext<NotificationDetails>("CloningNotificationDetails");
+            var notificationDetails = _scenarioContext.GetFromContext<NotificationDetails>("CloningNotificationDetails");
 
-            certificateDetailsPage?.SelectCountryOfOrigin(notificateionDetails.CountryOfOriginOfCertificate);
-            _scenarioContext["CountryOfOrigin"] = notificateionDetails.CountryOfOriginOfCertificate;
-            certificateDetailsPage?.EnterCertificateReferenceNumber(notificateionDetails.CertificateReferenceNumber);
-            _scenarioContext["CertificateReferenceNumber"] = notificateionDetails.CertificateReferenceNumber;
+            certificateDetailsPage?.SelectCountryOfOrigin(notificationDetails.CountryOfOriginOfCertificate);
+            _scenarioContext["CountryOfOrigin"] = notificationDetails.CountryOfOriginOfCertificate;
+            certificateDetailsPage?.EnterCertificateReferenceNumber(notificationDetails.CertificateReferenceNumber);
+            _scenarioContext["CertificateReferenceNumber"] = notificationDetails.CertificateReferenceNumber;
 
             DateTime certificateDateOfIssue; 
             
-            bool isValidDate = DateTime.TryParseExact(notificateionDetails.CertificateDateOfIssue, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out certificateDateOfIssue);
+            bool isValidDate = DateTime.TryParseExact(notificationDetails.CertificateDateOfIssue, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out certificateDateOfIssue);
 
             certificateDetailsPage?.EnterCertificateDateOfIssueYear(certificateDateOfIssue.Day, certificateDateOfIssue.Month, certificateDateOfIssue.Year);
-            certificateDetailsPage?.EnterConsignerConsigneeImporterName(notificateionDetails.ConsignorConsigneeOrImporterName);
-            _scenarioContext["ConsignorConsigneeOrImporterName"] = notificateionDetails.ConsignorConsigneeOrImporterName;
+            certificateDetailsPage?.EnterConsignerConsigneeImporterName(notificationDetails.ConsignorConsigneeOrImporterName);
+            _scenarioContext["ConsignorConsigneeOrImporterName"] = notificationDetails.ConsignorConsigneeOrImporterName;
         }
 
         [When("the user Clicks on Search button")]
@@ -78,31 +78,31 @@ namespace Defra.UI.Tests.Steps
         [Then("the user verified all the details on Phytosanitary certificate details page")]
         public void ThenTheUserVerifiedAllTheDetailsOnPhytosanitaryCertificateDetailsPage()
         {
-            var notificateionDetails = _scenarioContext.GetFromContext<NotificationDetails>("CloningNotificationDetails");
+            var notificationDetails = _scenarioContext.GetFromContext<NotificationDetails>("CloningNotificationDetails");
             var cloneCertificateDetails = phytosanitaryCertificateDetailsPage?.GetKeyAndValuesOfSummaryAndGoods();
 
-            cloneCertificateDetails.Should().ContainKey("Health certificate number").WhoseValue.Should().Be(notificateionDetails.CertificateReferenceNumber);
-            cloneCertificateDetails.Should().ContainKey("Country of origin").WhoseValue.Should().Be(notificateionDetails.CountryOfOriginOfCertificate);
-            cloneCertificateDetails.Should().ContainKey("Purpose of the consignment").WhoseValue.Should().Be(notificateionDetails.PurposeOfTheConsignment);
-            cloneCertificateDetails.Should().ContainKey("Commodity code").WhoseValue.Should().Be(notificateionDetails.CommodityCode);
-            cloneCertificateDetails.Should().ContainKey("Description").WhoseValue.Should().Be(notificateionDetails.Description);
-            cloneCertificateDetails.Should().ContainKey("Genus and species").WhoseValue.Should().Be(notificateionDetails.GenusAndSpecies);
-            cloneCertificateDetails.Should().ContainKey("Net weight").WhoseValue.Should().Be(notificateionDetails.NetWeightWithUnits);
-            cloneCertificateDetails.Should().ContainKey("Packages").WhoseValue.Should().Be(notificateionDetails.Packages);
-            cloneCertificateDetails.Should().ContainKey("Type of package").WhoseValue.Should().Be(notificateionDetails.TypeOfPackage);
-            cloneCertificateDetails.Should().ContainKey("Quantity").WhoseValue.Should().Be(notificateionDetails.Quantity);
-            cloneCertificateDetails.Should().ContainKey("Quantity type").WhoseValue.Should().Be(notificateionDetails.QuantityType);
+            cloneCertificateDetails.Should().ContainKey("Health certificate number").WhoseValue.Should().Be(notificationDetails.CertificateReferenceNumber);
+            cloneCertificateDetails.Should().ContainKey("Country of origin").WhoseValue.Should().Be(notificationDetails.CountryOfOriginOfCertificate);
+            cloneCertificateDetails.Should().ContainKey("Purpose of the consignment").WhoseValue.Should().Be(notificationDetails.PurposeOfTheConsignment);
+            cloneCertificateDetails.Should().ContainKey("Commodity code").WhoseValue.Should().Be(notificationDetails.CommodityCode);
+            cloneCertificateDetails.Should().ContainKey("Description").WhoseValue.Should().Be(notificationDetails.Description);
+            cloneCertificateDetails.Should().ContainKey("Genus and species").WhoseValue.Should().Be(notificationDetails.GenusAndSpecies);
+            cloneCertificateDetails.Should().ContainKey("Net weight").WhoseValue.Should().Be(notificationDetails.NetWeightWithUnits);
+            cloneCertificateDetails.Should().ContainKey("Packages").WhoseValue.Should().Be(notificationDetails.Packages);
+            cloneCertificateDetails.Should().ContainKey("Type of package").WhoseValue.Should().Be(notificationDetails.TypeOfPackage);
+            cloneCertificateDetails.Should().ContainKey("Quantity").WhoseValue.Should().Be(notificationDetails.Quantity);
+            cloneCertificateDetails.Should().ContainKey("Quantity type").WhoseValue.Should().Be(notificationDetails.QuantityType);
 
-            _scenarioContext["DocumentReference"] = notificateionDetails.CertificateReferenceNumber;
-            _scenarioContext["CountryOfOrigin"] = notificateionDetails.CountryOfOriginOfCertificate;
-            _scenarioContext["CommodityCode"] = notificateionDetails.CommodityCode;
-            _scenarioContext["CommodityDescription"] = notificateionDetails.Description;
-            _scenarioContext["GenusFirstCommodity"] = notificateionDetails.GenusAndSpecies;
-            _scenarioContext["TotalNetWeight"] = notificateionDetails.NetWeight;
-            _scenarioContext["TotalPackages"] = notificateionDetails.Packages;
-            _scenarioContext["FixedQuantity"] = notificateionDetails.Quantity;
-            _scenarioContext["FixedQuantityType"] = notificateionDetails.QuantityType;
-            _scenarioContext["PackageType"] = notificateionDetails.TypeOfPackage;
+            _scenarioContext["DocumentReference"] = notificationDetails.CertificateReferenceNumber;
+            _scenarioContext["CountryOfOrigin"] = notificationDetails.CountryOfOriginOfCertificate;
+            _scenarioContext["CommodityCode"] = notificationDetails.CommodityCode;
+            _scenarioContext["CommodityDescription"] = notificationDetails.Description;
+            _scenarioContext["GenusFirstCommodity"] = notificationDetails.GenusAndSpecies;
+            _scenarioContext["TotalNetWeight"] = notificationDetails.NetWeight;
+            _scenarioContext["TotalPackages"] = notificationDetails.Packages;
+            _scenarioContext["FixedQuantity"] = notificationDetails.Quantity;
+            _scenarioContext["FixedQuantityType"] = notificationDetails.QuantityType;
+            _scenarioContext["PackageType"] = notificationDetails.TypeOfPackage;
 
             Assert.IsTrue(phytosanitaryCertificateDetailsPage?.VerifyContentAndTitlesOnPage(),"H2 titles didn't match");
             Assert.IsTrue(phytosanitaryCertificateDetailsPage?.IsCloneAndCancelButtonExists(), "Clone or Cancel button doesn't exists");
@@ -136,7 +136,7 @@ namespace Defra.UI.Tests.Steps
         [Then("the DRAFT CHEDPP notification code page should be displayed")]
         public void ThenTheDRAFTCHEDPPNotificationCodePageShouldBeDisplayed()
         {
-            var notificateionDetails = _scenarioContext.GetFromContext<NotificationDetails>("CloningNotificationDetails");
+            var notificationDetails = _scenarioContext.GetFromContext<NotificationDetails>("CloningNotificationDetails");
             Assert.True(draftNotificationPage?.IsPageLoaded(), "Draft notification page is not loaded");
         }
 
