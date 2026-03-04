@@ -1,6 +1,6 @@
 ﻿namespace Defra.UI.Tests.Pages.Interfaces
 {
-    public interface IAddIntendedUseOfBulbs
+    public interface IAddIntendedUseOfBulbsPage
     {
         void ClickApplyButton();
         void ClickSaveAndContinueButton();

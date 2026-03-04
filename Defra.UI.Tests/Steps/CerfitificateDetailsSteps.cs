@@ -19,8 +19,8 @@ namespace Defra.UI.Tests.Steps
         private IPhytosanitaryCertificateDetailsPage? phytosanitaryCertificateDetailsPage => _objectContainer.IsRegistered<IPhytosanitaryCertificateDetailsPage>() ? _objectContainer.Resolve<IPhytosanitaryCertificateDetailsPage>() : null;
         private ICreatingThisNotificationForPage? creatingThisNotificationForPage => _objectContainer.IsRegistered<ICreatingThisNotificationForPage>() ? _objectContainer.Resolve<ICreatingThisNotificationForPage>() : null;
         private IDraftNotificationPage? draftNotificationPage => _objectContainer.IsRegistered<IDraftNotificationPage>() ? _objectContainer.Resolve<IDraftNotificationPage>() : null;
-        private IAddIntendedUseOfBulbs? addIntendedUseOfBulbs => _objectContainer.IsRegistered<IAddIntendedUseOfBulbs>() ? _objectContainer.Resolve<IAddIntendedUseOfBulbs>() : null;
-        private ICheckOrUpdateCommodityDetails? checkOrUpdateCommodityDetails => _objectContainer.IsRegistered<ICheckOrUpdateCommodityDetails>() ? _objectContainer.Resolve<ICheckOrUpdateCommodityDetails>() : null;
+        private IAddIntendedUseOfBulbsPage? addIntendedUseOfBulbs => _objectContainer.IsRegistered<IAddIntendedUseOfBulbsPage>() ? _objectContainer.Resolve<IAddIntendedUseOfBulbsPage>() : null;
+        private ICheckOrUpdateCommodityDetailsPage? checkOrUpdateCommodityDetails => _objectContainer.IsRegistered<ICheckOrUpdateCommodityDetailsPage>() ? _objectContainer.Resolve<ICheckOrUpdateCommodityDetailsPage>() : null;
         private IReviewYourNotificationPage? reviewYourNotificationPage => _objectContainer.IsRegistered<IReviewYourNotificationPage>() ? _objectContainer.Resolve<IReviewYourNotificationPage>() : null;
         
 

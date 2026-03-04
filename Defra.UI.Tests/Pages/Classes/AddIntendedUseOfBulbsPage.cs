@@ -1,12 +1,11 @@
 ﻿using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
-using Reqnroll;
 using Reqnroll.BoDi;
 
 namespace Defra.UI.Tests.Pages.Classes
 {
-    public class AddIntendedUseOfBulbs : IAddIntendedUseOfBulbs
+    public class AddIntendedUseOfBulbsPage : IAddIntendedUseOfBulbsPage
     {
         private IObjectContainer _objectContainer;
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -23,7 +22,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IReadOnlyCollection<IWebElement> commodityDetailsList => _driver.FindElements(By.TagName("td"));
         #endregion
 
-        public AddIntendedUseOfBulbs(IObjectContainer container)
+        public AddIntendedUseOfBulbsPage(IObjectContainer container)
         {
             _objectContainer = container;
         }

@@ -6,7 +6,7 @@ using Reqnroll.BoDi;
 
 namespace Defra.UI.Tests.Pages.Classes
 {
-    public class CheckOrUpdateCommodityDetails: ICheckOrUpdateCommodityDetails
+    public class CheckOrUpdateCommodityDetailsPage: ICheckOrUpdateCommodityDetailsPage
     {
         private IObjectContainer _objectContainer;
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -22,7 +22,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #endregion
 
-        public CheckOrUpdateCommodityDetails(IObjectContainer container)
+        public CheckOrUpdateCommodityDetailsPage(IObjectContainer container)
         {
             _objectContainer = container;
         }

@@ -1,6 +1,6 @@
 ﻿namespace Defra.UI.Tests.Pages.Interfaces
 {
-    public interface ICheckOrUpdateCommodityDetails
+    public interface ICheckOrUpdateCommodityDetailsPage
     {
         bool IsPageLoaded();
         bool VerifyTotalGrossVolumeIsOptional(string text);
