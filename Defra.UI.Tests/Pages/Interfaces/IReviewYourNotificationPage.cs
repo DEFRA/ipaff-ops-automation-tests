@@ -144,5 +144,20 @@
         bool VerifyCatchCertificateHeadingDisplaysCount(int expectedCount);
         (bool isValid, List<string> mismatches) VerifyCatchCertificateSummaryTable(int totalAttachments, Dictionary<int, (string reference, string flagState, string dateOfIssue, string fileName)> expectedData);
         (bool isValid, List<string> mismatches) VerifyCatchCertificateDetails(int totalAttachments, Dictionary<int, (string reference, string commodityCode, string species)> expectedData);
+        void ClickChangeLinkForTransportToTheBCP();
+        void ClickChangeLinkForContactDetails();
+        void ClickChangeLinkForGoodsMovementServices();
+        void ClickChangeLinkForAddDeliveryAddress();
+        string GetImporterNameByChangeLink();
+        void ClickViewCHEDButton();
+        string GetContactName();
+        string GetContactEmail();
+        string GetContactTelephone();
+        string GetIntendedForFinalUsers();
+        string GetControlledAtmosphereContainer();
+        string GetQuantity();
+        string GetQuantityType();
+        string GetGrossVolume();
+        string GetGrossVolumeUnit();
     }
 }

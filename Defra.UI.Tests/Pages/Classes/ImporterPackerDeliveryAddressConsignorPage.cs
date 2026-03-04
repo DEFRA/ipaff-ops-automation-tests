@@ -1,5 +1,4 @@
-﻿using Defra.UI.Tests.Configuration;
-using Defra.UI.Tests.Pages.Interfaces;
+﻿using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
 using Reqnroll.BoDi;
@@ -8,7 +7,6 @@ namespace Defra.UI.Tests.Pages.Classes
 {
     public class ImporterPackerDeliveryAddressConsignorPage : IImporterPackerDeliveryAddressConsignorPage
     {
-        private string Platform => ConfigSetup.BaseConfiguration.TestConfiguration.Platform;
         private IObjectContainer _objectContainer;
 
         #region Page Objects
@@ -20,6 +18,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement verifyDeliveryAddress => _driver.FindElement(By.XPath("//td[@headers='place-of-destination-address']"));
         private IWebElement verifyDeliveryCountry => _driver.FindElement(By.XPath("//td[@headers='place-of-destination-country']"));
         private IWebElement txtImporterAddr(string importerName) => _driver.FindElement(By.XPath($"//*[normalize-space()='{importerName}']/following-sibling::td[1]"));
+        private IWebElement btnSaveAndReview => _driver.FindElement(By.Id("save-and-review-button"));
+
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -55,6 +55,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public string GetImporterAddress(string importerName)
         {
             return txtImporterAddr(importerName).Text.Trim();
+        }
+
+        public void ClickSaveAndReviewButton()
+        {
+            btnSaveAndReview.Click();
         }
     }
 }

@@ -1,7 +1,9 @@
-﻿using Reqnroll.BoDi;
-using NUnit.Framework;
-using Reqnroll;
+﻿using Defra.UI.Framework.Driver;
 using Defra.UI.Tests.Pages.Interfaces;
+using NUnit.Framework;
+using OpenQA.Selenium;
+using Reqnroll;
+using Reqnroll.BoDi;
 
 
 namespace Defra.UI.Tests.Steps.IPAFF
@@ -11,9 +13,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
     {
         private readonly IObjectContainer _objectContainer;
         private readonly ScenarioContext _scenarioContext;
+        private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
 
         private ITransportToBorderControlPostPage? transportToBorderControlPostPage => _objectContainer.IsRegistered<ITransportToBorderControlPostPage>() ? _objectContainer.Resolve<ITransportToBorderControlPostPage>() : null;
         private IPortOfEntryPage? portOfEntryPage => _objectContainer.IsRegistered<IPortOfEntryPage>() ? _objectContainer.Resolve<IPortOfEntryPage>() : null;
+        private IWebElement btnSaveAndReview => _driver.FindElement(By.Id("save-and-review-button"));
 
         public TransportToBorderControlPostSteps(ScenarioContext context, IObjectContainer container)
         {
@@ -28,7 +32,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
         [When("the user populates the transport to the BCP details {string} {string} {string} {string} {string} {string}")]
-        public void WhenTheUserPopulatesTheTransportToTheBCPDetails(string entryBCP, string premises, string mode, string transId, string option, string DocumentRef)
+        public void WhenTheUserPopulatesTheTransportToTheBCPDetails(string entryBCP, string premises, string mode, string transId, string option, string documentRef)
         {
             var currentDate = DateTime.Now.AddHours(4).AddMinutes(5);
             var day = currentDate.Day.ToString();
@@ -44,7 +48,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             portOfEntryPage?.SelectMeansOfTransport(mode);
             portOfEntryPage?.EnterTransportId(transId);
             portOfEntryPage?.SelectAreTrailersOrContainersUsed(option);
-            portOfEntryPage?.EnterTransportDocRef(DocumentRef);
+            portOfEntryPage?.EnterTransportDocRef(documentRef);
             portOfEntryPage?.EnterEstimatedArrivalDate(day, month, year);
             portOfEntryPage?.EnterEstimatedArrivalTime(hour, minutes);
             var premisesValue = transportToBorderControlPostPage?.SelectInspectionPremises(premises);
@@ -55,9 +59,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["MeansOfTransport"] = mode;
             _scenarioContext["TransportId"] = transId;
             _scenarioContext["AreContainers"] = option;
-            _scenarioContext["EnterTransportDocRef"] = DocumentRef;
+            _scenarioContext["EnterTransportDocRef"] = documentRef;
             _scenarioContext["EstimatedArrivalDate"] = formattedDate;
             _scenarioContext["EstimatedArrivalTime"] = formattedTime;
         }
+
+        [When("the user Clicks on Save and review button from Border Control Post page")]
+        public void WhenTheUserClicksOnSaveAndReviewButtonFromBorderControlPostPage()
+        {
+            btnSaveAndReview.Click();
+        }
+
     }
 }

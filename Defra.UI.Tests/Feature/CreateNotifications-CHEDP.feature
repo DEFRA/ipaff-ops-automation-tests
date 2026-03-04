@@ -1937,7 +1937,7 @@ Scenario: Create and Submit B2C Consignment with Two Commodities and Catch Certi
 	And 'Select all' is displayed in Add catch certificate page
 	And 'Save and return to manage catch certificates' is displayed in Add catch certificate page
 	And 'Save and return to hub' is displayed in Add catch certificate page
-	When the user selects the 'Penaeus spp.' species under Select species being imported under this catch certificate
+	When the user selects the 'Penaeus spp.,Penaeus (Litopenaeus) vannamei' species under Select species being imported under this catch certificate
 	And the user clicks Save and continue
 	Then Add catch certificate details page should be displayed
 	And 'Number of catch certificates in this attachment' is displayed in Add catch certificate page
@@ -1950,7 +1950,7 @@ Scenario: Create and Submit B2C Consignment with Two Commodities and Catch Certi
 	And 'Select all' is displayed in Add catch certificate page
 	And 'Save and return to manage catch certificates' is displayed in Add catch certificate page
 	And 'Save and return to hub' is displayed in Add catch certificate page
-	When the user selects the '2' species under Select species being imported under this catch certificate
+	When the user selects the 'Penaeus spp.,Penaeus (Litopenaeus) vannamei' species under Select species being imported under this catch certificate
 	And the user clicks Save and continue
 	Then Manage catch certificates page is displayed
 	When the user selects the 'No' option for Do you need to upload more catch certificates?
