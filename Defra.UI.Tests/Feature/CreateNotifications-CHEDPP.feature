@@ -120,12 +120,12 @@ Scenario: Delegation of Authority Agent submits CHEDPP notification on behalf of
 	When user searches for the import notification
 	Then the notification should be found with the status "NEW"
 	When the user waits and searches for the notification should be found with the status "IN PROGRESS"
-	When the user switches to the part 1 tab
+	And the user switches to the part 1 tab
 	And the user searches for the import notification
 	Then the notification should be found with the status "IN PROGRESS"
 	When the user waits and searches for the notification should be found with the status "VALID"
-	When the user switches to the part 2 tab
-	When the user clicks Record decision from the header
+	And the user switches to the part 2 tab
+	And the user clicks Record decision from the header
 	And the user searches for the CHED number
 	Then the user clicks the notification found with status "VALID"
 	And the CHED overview page should be displayed
