@@ -42,6 +42,14 @@
         string GetQuantityListCHEDPP(int index);
         string GetQuantityTypeListCHEDPP(int index);
 
+        // Multi-species commodity details
+        List<(string species, string numberOfAnimals, string numberOfPackages)> GetAllSpeciesDetails();
+
+        // Animal identification details (per-species, per-animal)
+        List<(string animal, string microchip, string passport, string tattoo)> GetIdentificationDetailsForSpecies(string species);
+
+        // Permanent addresses (per-species, per-animal)
+        List<(string animalName, string addressText)> GetAllPermanentAddresses();
 
         // Animal details
         string GetCertificationOption();
