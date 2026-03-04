@@ -63,5 +63,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
             WhenTheUserSelectsForAreYouUsingTheCommonTransitConventionCTC("No");
             WhenTheUserSelectsForWillTheTransportUseTheGoodsVehicleMovementServiceGVMS("No");
         }
+
+        [When("the user Clicks on Save and review button from Goods movement services page")]
+        public void WhenTheUserClicksOnSaveAndReviewButtonFromGoodsMovementServicesPage()
+        {
+            goodsMovementServicesPage?.ClickSaveAndReviewButton();
+        }
+
     }
 }

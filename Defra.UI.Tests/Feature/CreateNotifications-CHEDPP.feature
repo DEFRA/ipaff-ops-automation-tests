@@ -255,3 +255,103 @@ Scenario: Delegation of Authority Agent submits CHEDPP notification by uploading
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
 	
+	
+Scenario: Create a new import notification through clone a health or phytosanitary certificate process - SPS-9272 - CHED PP
+	Given that I navigate to the IPAFF application
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF Agent credentials and signin
+	Then the user should be logged into Notification page
+	When the user Clicks on Clone a certificate button
+	Then the Clone a health or phytosanitary certificate page should be displayed
+	And the user verifies all the content in Clone a health or phytosanitary certificate page
+	And the user selected the importing option as 'Plants, plant products and other objects'
+	When the user clicks on continue button
+	Then the Certificate details page should be displayed
+	And the user searches for the notification for cloning which is not more than 90 days from creation
+	And the user provided notification details in the search input fields
+	When the user Clicks on Search button
+	Then the Phytosanitary certificate details page should be displayed
+	And the user verified all the details on Phytosanitary certificate details page
+	When the user Clicks on Clone button
+	Then the Who are you creating this notification for page should be displayed
+	And the user selects the option of creating notification for as "Agent1"
+	When the user Clicks on Save and review button
+	Then the DRAFT CHEDPP notification code page should be displayed
+	And the user records the Draft notification number
+	And the user verifies the following information is displayed within a red outlined box
+		| MissingOrIncorrect                                                         |
+		| Add the estimated arrival date at BCP                                      |
+		| Add the estimated arrival time at BCP                                      |
+		| Enter missing commodity details                                            |
+		| Add the total gross weight                                                 |
+		| Check your details on the 'Contact details' page and save them to continue |
+		| Select if using the Goods Vehicle Movement Service (GVMS)                  |
+		| Add document details                                                       |
+		| Add a delivery address                                                     |
+		| Add the entry Border Control Post                                          |
+		| Select if using the Common Transit Convention (CTC)                        |
+	When the user clicks on Check or update commodity details link
+	Then the Add intended use of bulbs page should be displayed
+	And the user selects the Commodity from the list appeared
+	And the user selects "Yes" for Are the commodity lines you selected intended for final users or commercial flower production?
+	When the user clicks on Apply button
+	Then the user can see the success message "1 commodity line has been updated"
+	When the user clicks on Save and continue button
+	Then the Check or update commodity details page should be displayed
+	When the user clicks on Save and continue button
+	Then the Additional details page should be displayed
+	And the user verifies Total gross volume is displayed but it is marked as optional with the value of "Total gross volume (optional)"
+	And the user enter Total Gross Weight as "1100"
+	When the user Clicks on Save and review button from Additional details page
+	Then the Review your notification page should be displayed
+	When the user Clicks on Change link for Transport to the Border Control Post
+	Then Transport to the Border Control Post (BCP) page should be dislayed
+	When the user populates the transport to the BCP details 'Heathrow Airport - GBLHR4PP' 'Euro BIP Ltd' 'Road vehicle' 'YY10 KTP' 'No' 'Doc23456'
+	And the user Clicks on Save and review button from Border Control Post page
+	Then the Review your notification page should be displayed
+	When the user Clicks on Change link for Contact details
+	Then the Contact details page should be displayed, pre-populated with the user's details
+	When the user Clicks on Save and review button from Contact details page
+	Then the Review your notification page should be displayed
+	When the user Clicks on Change link for Goods movement services
+	Then the Goods movement services page should be displayed
+	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user Clicks on Save and review button from Goods movement services page
+	Then the Review your notification page should be displayed
+	When the user Clicks on Change link for Add a delivery address
+	Then Importer, Packer, Delivery address and Consignor page should be displayed
+	When the user verifies Importer details 'Agent 1' is pre-filled
+	And the user clicks Add a delivery address link
+	Then Search for an existing delivery address page should be displayed
+	When the user selects one of the displayed delivery address "DEFRA"
+	Then the chosen delivery address "DEFRA" should be displayed on the Traders page
+	When the user Clicks on Save and review button from Importer, Packer, Delivery address and Consignor page
+	Then the Review your notification page should be displayed
+	And the user verifies the following information is displayed within a red outlined box
+		| MissingOrIncorrect |
+	When the user clicks on Save and continue button
+	Then the Declaration page should be displayed
+	When the user ticks the checkbox to declare that the information is true and correct
+	And the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	When the user records the IPAFFS User details and CHED Reference
+	Then the details should be recorded
+	When the user clicks Return to your dashboard
+	Then the dashboard page should be displayed
+	When user searches for the import notification
+	Then the notification should be present in the list
+	And the notification returned in the search has the status 'NEW'
+	When the user clicks View details for the notification
+	Then the Review your notification page should be displayed
+	And the data presented for review matches the data entered into the notification for CHED PP
+	When the user clicks View CHED grey button
+	Then the certificate should be displayed in a new browser tab
+	When the user checks that the data in the certificate matches the data entered into the notification
+	And the user closes the PDF browser tab
+	Then the browser tab is closed
+	When the user clicks on the Dashboard link
+	Then the dashboard page should be displayed

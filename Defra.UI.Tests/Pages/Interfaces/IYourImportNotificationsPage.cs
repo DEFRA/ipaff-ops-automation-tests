@@ -27,5 +27,6 @@
         void ClickViewDetailsLink();
         void ClickCopyAsNewLink();
         bool VerifyNotificationStatus(string status);
+        void ClickCloneButton();
     }
 }
