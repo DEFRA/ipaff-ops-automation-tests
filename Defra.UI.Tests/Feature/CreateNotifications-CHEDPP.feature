@@ -70,7 +70,7 @@ Scenario: Delegation of Authority Agent submits CHEDPP notification on behalf of
 	And the total gross weight should be greater than the net weight '300'
 	When the user clicks Save and continue
 	Then Transport to the Border Control Post (BCP) page should be dislayed
-	When the user populates the transport to the BCP details 'Heathrow Airport (plants) - GBLHR4PP' 'Euro BIP Ltd' 'Road vehicle' '123456' 'No' 'Doc1234'
+	When the user populates the transport to the BCP details 'Heathrow Airport - GBLHR4PP' 'Eurobip' 'Road vehicle' '123456' 'No' 'Doc1234'
 	And the user clicks Save and continue
 	Then the Goods movement services page should be displayed
 	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
@@ -113,10 +113,35 @@ Scenario: Delegation of Authority Agent submits CHEDPP notification on behalf of
 	When user searches for the import notification
 	Then the notification should be present in the list
 	And the notification status should be 'NEW TRADE PARTNER'
-	When the user logs out of IPAFFS Part 1
+	When the users opens a new tab
+	And the user navigate to the IPAFFS Internal Plants Inspector application
+	And I have provided the IPAFFS Internal Plants Inspector credentials and signin
+	Then the user should be logged into Notification page
+	When user searches for the import notification
+	Then the notification should be found with the status "NEW"
+	When the user waits and searches for the notification should be found with the status "IN PROGRESS"
+	And the user switches to the part 1 tab
+	And the user searches for the import notification
+	Then the notification should be found with the status "IN PROGRESS"
+	When the user waits and searches for the notification should be found with the status "VALID"
+	And the user switches to the part 2 tab
+	And the user clicks Record decision from the header
+	And the user searches for the CHED number
+	Then the user clicks the notification found with status "VALID"
+	And the CHED overview page should be displayed
+	When the user switches to 'Checks' tab in CHED Overview page
+	Then verifies Risk decision PHSI is set to 'NO INSPECTION'
+	And verifies Document check is set to 'AUTO CLEARED'
+	And verifies Risk decision HMI is set to 'NO INSPECTION'
+	And verifies 'Decision recorded by' field is set to 'Auto Cleared'
+	When the user logs out of IPAFFS Part 2
+	And the user closes the newly opened tab
+	Then the browser tab is closed
+	When the user switches to the part 1 tab
+	And the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
 
-Scenario: Delegation of Authority Agent submits CHEDPP notification on behalf of trader by uploading commodity details in CSV file - SPS - 5092
+Scenario: Delegation of Authority Agent submits CHEDPP notification by uploading commodity details in CSV file - SPS - 5092
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
