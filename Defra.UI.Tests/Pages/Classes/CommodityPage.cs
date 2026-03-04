@@ -68,6 +68,12 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtTotalNetWeightCHEDPP => _driver.FindElement(By.XPath("//*[normalize-space()='Net weight (kg)']/following-sibling::td"));
         private IWebElement txtTotalPackagesCHEDPP => _driver.FindElement(By.XPath("//*[normalize-space()='Number of packages']/following-sibling::td"));
         private IWebElement lnkCancel => _driver.FindElement(By.LinkText("Cancel"));
+        private IReadOnlyCollection<IWebElement> speciesRows => _driver.FindElements(By.XPath("//table[contains(@class, 'species-table-cheda')]//tbody/tr[contains(@id, '-desktop')]"));
+        private By speciesNumAnimalsInputBy(string speciesId) => By.XPath($"//input[contains(@id, '{speciesId}.num-animals-desktop')]");
+        private By speciesNumPackagesInputBy(string speciesId) => By.XPath($"//input[contains(@id, '{speciesId}.num-packages-desktop')]");
+        private IWebElement speciesNetWeightInput(string commodityCode) => _driver.FindElement(By.XPath($"//input[starts-with(@id, '{commodityCode}') and contains(@id, '.net-weight-desktop')]"));
+        private IWebElement speciesNumPackagesInput(string commodityCode) => _driver.FindElement(By.XPath($"//input[starts-with(@id, '{commodityCode}') and contains(@id, '.num-packages-desktop')]"));
+        private By speciesPackageTypeSelectBy(string commodityCode) => By.XPath($"//select[starts-with(@id, '{commodityCode}-') and contains(@id, '.package-type-desktop')]");
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -146,35 +152,28 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void AddNetWeightForCommodityCode(string netWeight, string commodityCode)
         {
-            var netWeightSelector = "//input[starts-with(@id, '"+ commodityCode + "') and contains(@id, '.net-weight-desktop')]";
-            var netWeightElement = _driver.FindElement(By.XPath(netWeightSelector));
-            netWeightElement.SendKeys(netWeight);
+            speciesNetWeightInput(commodityCode).SendKeys(netWeight);
         }
 
         public void AddNumOfPackagesForCommodityCode(string numOfPackages, string commodityCode)
         {
-            var numOfPackageSelector = "//input[starts-with(@id, '" + commodityCode + "') and contains(@id, '.num-packages-desktop')]";
-            var numOfPackagesElement = _driver.FindElement(By.XPath(numOfPackageSelector));
-            numOfPackagesElement.SendKeys(numOfPackages);
+            speciesNumPackagesInput(commodityCode).SendKeys(numOfPackages);
         }
 
         public void SelectPackageTypeForCommodityCode(string typeOfPackage, string commodityCode)
         {
-            var typeOfPackageSelector = "//select[starts-with(@id, '"+ commodityCode + "-') and contains(@id, '.package-type-desktop')]";
-            var typeOfPackageSelectorFull = speciesTable.FindElement(By.XPath(typeOfPackageSelector));
-            
-            new SelectElement(typeOfPackageSelectorFull).SelectByText(typeOfPackage);
+            new SelectElement(speciesTable.FindElement(speciesPackageTypeSelectBy(commodityCode))).SelectByText(typeOfPackage);
         }
 
         public void ClickUpdateTotal()
-        { 
-            btnUpdateTotal.Click(); 
+        {
+            btnUpdateTotal.Click();
         }
-      
+
         public void EnterTotalGrossWeight(string weight)
-        { 
-            txtTotalGrossWeight.Clear(); 
-            txtTotalGrossWeight.SendKeys(weight); 
+        {
+            txtTotalGrossWeight.Clear();
+            txtTotalGrossWeight.SendKeys(weight);
         }
 
         public void ClickSaveAndContinue()
@@ -201,14 +200,14 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool SelectCommodityInTheCommTree(string commodity)
         {
-            foreach(var comm in commodityTreeList)
+            foreach (var comm in commodityTreeList)
             {
                 var commText = comm.Text;
                 if (commText.Contains(commodity))
                 {
                     ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", comm);
                     return true;
-                }  
+                }
             }
             return false;
         }
@@ -224,7 +223,35 @@ namespace Defra.UI.Tests.Pages.Classes
             txtNumberOfAnimals.Click();
             txtNumberOfAnimals.Clear();
             txtNumberOfAnimals.SendKeys(quantity);
-        }        
+        }
+
+        public void EnterNumberOfAnimalsForSpecies(string numberOfAnimals, string species)
+        {
+            var speciesId = GetSpeciesRowId(species);
+            var input = _driver.FindElement(speciesNumAnimalsInputBy(speciesId));
+            input.Clear();
+            input.SendKeys(numberOfAnimals);
+        }
+
+        public void EnterNumberOfPackagesForSpecies(string numberOfPackages, string species)
+        {
+            var speciesId = GetSpeciesRowId(species);
+            var input = _driver.FindElement(speciesNumPackagesInputBy(speciesId));
+            input.Clear();
+            input.SendKeys(numberOfPackages);
+        }
+
+        /// <summary>
+        /// Finds the species row ID (e.g. "01061900-568113") by matching the species name in the desktop table.
+        /// </summary>
+        private string GetSpeciesRowId(string species)
+        {
+            var row = speciesRows.FirstOrDefault(r => r.Text.Contains(species))
+                ?? throw new NoSuchElementException($"Species row not found for '{species}'");
+
+            var id = row.GetAttribute("id");
+            return id.Replace("species-", "").Replace("-desktop", "");
+        }
 
         public string GetSubtotalNetWeight()
         {
@@ -240,7 +267,7 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             return txtSubtotalPackages.Text.Trim();
         }
-        
+
         public string[] GetSubtotalsOfPackages()
         {
             return txtSubtotalsPackages.Select(element => element.Text).ToArray();
@@ -267,7 +294,7 @@ namespace Defra.UI.Tests.Pages.Classes
         }
 
         public int GetAddedCommoditiesCount => addedCommoditiesList?.Count ?? 0;
-        
+
         public bool VerifyTotalNetWeight(string totalNetWeight)
         {
             return txtTotalNetWeight.Text.Trim().Contains(totalNetWeight);
@@ -334,7 +361,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void SelectVariety(string variety, string eppoCode)
         {
-            new SelectElement(drpVariety(eppoCode)).SelectByText(variety); 
+            new SelectElement(drpVariety(eppoCode)).SelectByText(variety);
         }
 
         public void SelectClass(string classOfEPPO, string eppoCode)

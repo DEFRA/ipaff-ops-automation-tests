@@ -46,9 +46,29 @@ namespace Defra.UI.Tests.Steps.IPAFF
             ValidateIfExists("ExitBCP", reviewPage?.GetExitBCP(), ref allDataMatches, mismatches);
             ValidateIfExists("DestinationCountry", reviewPage?.GetDestinationCountry(), ref allDataMatches, mismatches);
 
-            // Commodity details  
+            // Commodity details
             ValidateIfExists("CommodityCode", reviewPage?.GetCommodityCode(), ref allDataMatches, mismatches);
-            ValidateIfExists("Species", reviewPage?.GetSpecies(), ref allDataMatches, mismatches);
+
+            // Species — use unified MultiSpeciesData when available, else fall back to single-species
+            var multiSpecies = _scenarioContext.GetFromContext<MultiSpeciesData>(nameof(MultiSpeciesData));
+            if (multiSpecies?.HasData == true)
+            {
+                var multiSpeciesMismatches = multiSpecies.ValidateAgainstReviewPage(
+                    reviewPage?.GetAllSpeciesDetails() ?? [],
+                    species => reviewPage?.GetIdentificationDetailsForSpecies(species) ?? [],
+                    reviewPage?.GetAllPermanentAddresses() ?? []);
+
+                if (multiSpeciesMismatches.Count > 0)
+                {
+                    allDataMatches = false;
+                    mismatches.AddRange(multiSpeciesMismatches);
+                }
+            }
+            else
+            {
+                ValidateIfExists("Species", reviewPage?.GetSpecies(), ref allDataMatches, mismatches);
+            }
+
             ValidateIfExists("NumberOfAnimals", reviewPage?.GetNumberOfAnimals(), ref allDataMatches, mismatches);
             ValidateIfExists("NumberOfPackages", reviewPage?.GetNumberOfPackages(), ref allDataMatches, mismatches);
 
@@ -91,6 +111,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             ValidateIfExists("EstimatedArrivalDate", reviewPage?.GetEstimatedArrivalDate(), ref allDataMatches, mismatches);
             ValidateIfExists("EstimatedArrivalTime", reviewPage?.GetEstimatedArrivalTime(), ref allDataMatches, mismatches);
             ValidateIfExists("EstimatedJourneyTime", reviewPage?.GetEstimatedJourneyTime(), ref allDataMatches, mismatches);
+            ValidateIfExists("IsCTC", reviewPage?.GetCTCUsage(), ref allDataMatches, mismatches);
             ValidateIfExists("IsGVMS", reviewPage?.GetGVMSUsage(), ref allDataMatches, mismatches);
             ValidateIfExists("MeansOfTransportAfterBCP", reviewPage?.GetMeansOfTransportAfterBCP(), ref allDataMatches, mismatches);
             ValidateIfExists("TransportIdentificationAfterBCP", reviewPage?.GetTransportIdentificationAfterBCP(), ref allDataMatches, mismatches);
