@@ -70,7 +70,7 @@ Scenario: Delegation of Authority Agent submits CHEDPP notification on behalf of
 	And the total gross weight should be greater than the net weight '300'
 	When the user clicks Save and continue
 	Then Transport to the Border Control Post (BCP) page should be dislayed
-	When the user populates the transport to the BCP details 'Heathrow Airport (plants) - GBLHR4PP' 'Euro BIP Ltd' 'Road vehicle' '123456' 'No' 'Doc1234'
+	When the user populates the transport to the BCP details 'Heathrow Airport - GBLHR4PP' 'Eurobip' 'Road vehicle' '123456' 'No' 'Doc1234'
 	And the user clicks Save and continue
 	Then the Goods movement services page should be displayed
 	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
@@ -114,7 +114,7 @@ Scenario: Delegation of Authority Agent submits CHEDPP notification on behalf of
 	Then the notification should be present in the list
 	And the notification status should be 'NEW TRADE PARTNER'
 	When the users opens a new tab
-	When the user navigate to the IPAFFS Internal Plants Inspector application
+	And the user navigate to the IPAFFS Internal Plants Inspector application
 	And I have provided the IPAFFS Internal Plants Inspector credentials and signin
 	Then the user should be logged into Notification page
 	When user searches for the import notification
