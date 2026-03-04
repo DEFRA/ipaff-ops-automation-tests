@@ -12,7 +12,7 @@ namespace Defra.UI.Tests.Steps
         private readonly IObjectContainer _objectContainer;
         private readonly ScenarioContext _scenarioContext;
 
-        private ICloneAHealthOrPhytosanitaryCertificate? cloneAHealthOrPhytosanitaryCertificate => _objectContainer.IsRegistered<ICloneAHealthOrPhytosanitaryCertificate>() ? _objectContainer.Resolve<ICloneAHealthOrPhytosanitaryCertificate>() : null;
+        private ICloneAHealthOrPhytosanitaryCertificatePage? cloneAHealthOrPhytosanitaryCertificate => _objectContainer.IsRegistered<ICloneAHealthOrPhytosanitaryCertificatePage>() ? _objectContainer.Resolve<ICloneAHealthOrPhytosanitaryCertificatePage>() : null;
 
         public CloneAHealthOrPhytosanitaryCertificateSteps(ScenarioContext context, IObjectContainer container)
         {

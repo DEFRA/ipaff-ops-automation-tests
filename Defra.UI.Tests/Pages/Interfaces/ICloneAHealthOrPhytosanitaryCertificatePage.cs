@@ -1,6 +1,6 @@
 ﻿namespace Defra.UI.Tests.Pages.Interfaces
 {
-    public interface ICloneAHealthOrPhytosanitaryCertificate
+    public interface ICloneAHealthOrPhytosanitaryCertificatePage
     {
         bool IsPageLoaded();
         bool VerifyClonePageDisplayText();

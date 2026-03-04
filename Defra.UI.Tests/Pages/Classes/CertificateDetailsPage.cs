@@ -67,9 +67,9 @@ namespace Defra.UI.Tests.Pages.Classes
             txtConsignorConsigneeImporterName.SendKeys(name);
         }
 
-        public NotificateionDetails GetNotificationDetailsForCloning()
+        public NotificationDetails GetNotificationDetailsForCloning()
         {
-            return new NotificateionDetails
+            return new NotificationDetails
             {
                 CertificateReferenceNumber = "PHYTO.FR.2026.0000004",
                 CertificateDateOfIssue = "12/01/2026",

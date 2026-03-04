@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 
 namespace Defra.UI.Tests.Pages.Classes
 {
-    public class CloneAHealthOrPhytosanitaryCertificate : ICloneAHealthOrPhytosanitaryCertificate
+    public class CloneAHealthOrPhytosanitaryCertificatePage : ICloneAHealthOrPhytosanitaryCertificatePage
     {
         private IObjectContainer _objectContainer;
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -24,7 +24,7 @@ namespace Defra.UI.Tests.Pages.Classes
         
         #endregion
 
-        public CloneAHealthOrPhytosanitaryCertificate(IObjectContainer container)
+        public CloneAHealthOrPhytosanitaryCertificatePage(IObjectContainer container)
         {
             _objectContainer = container;
         }

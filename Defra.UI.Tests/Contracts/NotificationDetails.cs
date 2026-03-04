@@ -1,6 +1,6 @@
 ﻿namespace Defra.UI.Tests.Contracts
 {
-    public class NotificateionDetails
+    public class NotificationDetails
     {
         public string CountryOfOriginOfCertificate { get; set; }
         public string CertificateReferenceNumber { get; set; }

@@ -284,7 +284,7 @@ Scenario: Create a new import notification through clone a health or phytosanita
 	Then the Review your notification page should be displayed
 	When the user Clicks on Change link for Transport to the Border Control Post
 	Then Transport to the Border Control Post (BCP) page should be dislayed
-	When the user populates the transport to the BCP details 'Heathrow Airport (plants) - GBLHR4PP' 'Euro BIP Ltd' 'Road vehicle' 'YY10 KTP' 'No' 'Doc23456'
+	When the user populates the transport to the BCP details 'Heathrow Airport - GBLHR4PP' 'Euro BIP Ltd' 'Road vehicle' 'YY10 KTP' 'No' 'Doc23456'
 	And the user Clicks on Save and review button from Border Control Post page
 	Then the Review your notification page should be displayed
 	When the user Clicks on Change link for Contact details

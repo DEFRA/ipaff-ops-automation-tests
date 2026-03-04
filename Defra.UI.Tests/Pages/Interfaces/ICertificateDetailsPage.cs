@@ -10,7 +10,7 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void EnterCertificateReferenceNumber(string referencNumber);
         void EnterCertificateDateOfIssueYear(int day, int month, int year);
         void EnterConsignerConsigneeImporterName(string name);
-        NotificateionDetails GetNotificationDetailsForCloning();
+        NotificationDetails GetNotificationDetailsForCloning();
         void ClickSearchButton();
     }
 }

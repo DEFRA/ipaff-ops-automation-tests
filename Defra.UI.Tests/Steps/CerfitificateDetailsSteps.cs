@@ -47,7 +47,7 @@ namespace Defra.UI.Tests.Steps
         [Then("the user provided notification details in the search input fields")]
         public void ThenTheUserProvidedNotificationDetailsInTheSearchInputFields()
         {
-            var notificateionDetails = _scenarioContext.GetFromContext<NotificateionDetails>("CloningNotificationDetails");
+            var notificateionDetails = _scenarioContext.GetFromContext<NotificationDetails>("CloningNotificationDetails");
 
             certificateDetailsPage?.SelectCountryOfOrigin(notificateionDetails.CountryOfOriginOfCertificate);
             _scenarioContext["CountryOfOrigin"] = notificateionDetails.CountryOfOriginOfCertificate;
@@ -78,7 +78,7 @@ namespace Defra.UI.Tests.Steps
         [Then("the user verified all the details on Phytosanitary certificate details page")]
         public void ThenTheUserVerifiedAllTheDetailsOnPhytosanitaryCertificateDetailsPage()
         {
-            var notificateionDetails = _scenarioContext.GetFromContext<NotificateionDetails>("CloningNotificationDetails");
+            var notificateionDetails = _scenarioContext.GetFromContext<NotificationDetails>("CloningNotificationDetails");
             var cloneCertificateDetails = phytosanitaryCertificateDetailsPage?.GetKeyAndValuesOfSummaryAndGoods();
 
             cloneCertificateDetails.Should().ContainKey("Health certificate number").WhoseValue.Should().Be(notificateionDetails.CertificateReferenceNumber);
@@ -136,7 +136,7 @@ namespace Defra.UI.Tests.Steps
         [Then("the DRAFT CHEDPP notification code page should be displayed")]
         public void ThenTheDRAFTCHEDPPNotificationCodePageShouldBeDisplayed()
         {
-            var notificateionDetails = _scenarioContext.GetFromContext<NotificateionDetails>("CloningNotificationDetails");
+            var notificateionDetails = _scenarioContext.GetFromContext<NotificationDetails>("CloningNotificationDetails");
             Assert.True(draftNotificationPage?.IsPageLoaded(), "Draft notification page is not loaded");
         }
 
