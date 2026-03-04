@@ -67,7 +67,8 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void IPAFFSInternalInspectorSignIn(string userName, string password)
         {
-            
+            _driver.Wait(1);
+
             if(txtUser(userName).Count() > 0)
                 txtUserEmailId(userName).Click();
             else

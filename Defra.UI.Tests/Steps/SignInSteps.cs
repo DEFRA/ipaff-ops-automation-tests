@@ -189,7 +189,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var userName = ConfigSetup.BaseConfiguration.SearchProtectedNotifications.User;
             var credential = ConfigSetup.BaseConfiguration.SearchProtectedNotifications.Credential;
 
-            Thread.Sleep(1000);
             _signInPage?.IPAFFSInternalInspectorSignIn(userName, credential);
         }
 
