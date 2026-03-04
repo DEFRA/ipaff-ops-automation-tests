@@ -4,5 +4,6 @@
     {
         bool IsPageLoaded();
         bool ValidateIfContactDetailsArePopulated();
+        string[] GetContactDetails();
     }
 }

@@ -237,6 +237,8 @@ namespace Defra.UI.Tests.Hooks
                     stepNode.Info(log);
                 }
             }
+
+            Thread.Sleep(1000);
         }
 
         /// <summary>

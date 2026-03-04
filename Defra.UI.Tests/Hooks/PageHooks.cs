@@ -124,6 +124,13 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CheckUploadedCommodityPage, ICheckUploadedCommodityPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ConfirmationToDeclareGMSPage, IConfirmationToDeclareGMSPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<PermanentAddressesPage, IPermanentAddressesPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CloneAHealthOrPhytosanitaryCertificatePage, ICloneAHealthOrPhytosanitaryCertificatePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CertificateDetailsPage, ICertificateDetailsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<PhytosanitaryCertificateDetailsPage, IPhytosanitaryCertificateDetailsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CreatingThisNotificationForPage, ICreatingThisNotificationForPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<DraftNotificationPage, IDraftNotificationPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<AddIntendedUseOfBulbsPage, IAddIntendedUseOfBulbsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CheckOrUpdateCommodityDetailsPage, ICheckOrUpdateCommodityDetailsPage>()); 
 
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CookiesPage, ICookiesPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ContactPage, IContactPage>());
