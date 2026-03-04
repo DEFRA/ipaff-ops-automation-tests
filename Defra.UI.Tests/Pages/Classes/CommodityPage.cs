@@ -316,7 +316,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool VerifyGenusSpeciesEPPOCode(string genus, string eppoCode)
         {
-            Thread.Sleep(1000);
+            _driver.Wait(1);
             return txtDisplayedSpeciesTable.Text.Contains(genus)
                 && txtDisplayedSpeciesTable.Text.Contains(eppoCode);
         }
@@ -344,7 +344,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool VerifySelectedCommoditiesDisplayed(string firstComm, string secondComm, string firstCode, string secondCode, string firstEPPO, string secondEPPO, string firstGenus, string secondGenus)
         {
-            Thread.Sleep(1000);
+            _driver.Wait(1);
             return txtSelectedCommodity(firstComm).Text.Trim().Equals(firstComm)
                 && txtSelectedCommodityDetails(firstComm).Text.Contains(firstCode)
                 && txtSelectedCommodityDetails(firstComm).Text.Contains(firstEPPO)
