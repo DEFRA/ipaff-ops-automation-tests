@@ -1,4 +1,5 @@
 ﻿using AventStack.ExtentReports.Gherkin.Model;
+using Defra.UI.Tests.Configuration;
 using Defra.UI.Tests.Data.Users;
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
@@ -33,7 +34,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void GivenThatINavigateToThePortCheckerApplication()
         {
             var url = urlBuilder.Default().BuildApp();
-            _driver?.Navigate().GoToUrl(url);
+            _driver?.Navigate().GoToUrl(url);           
         }
 
         [When(@"the user navigate to the BTMS application")]
@@ -48,6 +49,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void GivenThatINavigateToTheIPAFFInspectorApplication()
         {
             var url = urlBuilder.InspectorDefault().BuildInspectorApp();
+            _driver?.Navigate().GoToUrl(url);
+        }
+
+        [When(@"the user navigate to the IPAFFS Internal Plants Inspector application")]
+        [Given(@"that the user navigate to the IPAFFS Internal Plants Inspector application")]
+        public void GivenThatTheUserNavigateToTheIPAFFSInternalPlantsInspectorApplication()
+        {
+            var url = ConfigSetup.BaseConfiguration.SearchProtectedNotifications.Url;
             _driver?.Navigate().GoToUrl(url);
         }
 
@@ -173,6 +182,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             _signInPage?.SignIn(userObject.UserName, userObject.Credential);
         }
+
+        [When("I have provided the IPAFFS Internal Plants Inspector credentials and signin")]
+        public void WhenIHaveProvidedTheIPAFFSInternalPlantsInspectorCredentialsAndSignin()
+        {
+            var userName = ConfigSetup.BaseConfiguration.SearchProtectedNotifications.User;
+            var credential = ConfigSetup.BaseConfiguration.SearchProtectedNotifications.Credential;
+
+            _signInPage?.IPAFFSInternalInspectorSignIn(userName, credential);
+        }
+
 
         [When(@"I have provided the password for prototype research page")]
         public void WhenIHaveProvidedThePasswordForPrototypeResearchPage()

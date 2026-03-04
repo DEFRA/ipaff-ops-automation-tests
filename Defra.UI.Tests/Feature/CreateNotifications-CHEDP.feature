@@ -2079,7 +2079,6 @@ Scenario: Create and Submit B2C Consignment with Two Commodities and Catch Certi
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
 
-
 Scenario: Verify IPAFF Inspector application SPS-7391
 	When I navigate to the IPAFF Inspector application
 	Then I should see type of Gateway login page

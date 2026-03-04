@@ -24,6 +24,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement lblFieldValueInControl(string fieldName,string sectionName) => _driver.FindElement(By.XPath($"(//h2[normalize-space(text())='{sectionName}']/following::*[normalize-space(text())='{fieldName}']/following-sibling::td)[1]"));
         private IWebElement lblFieldValueForTable(string fieldName,string column) => _driver.FindElement(By.XPath($"//th[normalize-space()='{fieldName}']/following::td[{column}]"));
         private IWebElement lnkTab(string tabName) => _driver.FindElement(By.XPath($"//a[@id='tab_{tabName}']"));
+        private IWebElement txtRiskDecisionPHSIValue => _driver.FindElement(By.XPath("//*[normalize-space()='Risk decision PHSI']/following-sibling::dd/strong"));
+        private IWebElement txtRiskDecisionHMIValue => _driver.FindElement(By.XPath("//*[normalize-space()='Risk decision HMI']/following-sibling::dd/strong"));
+        private IWebElement txtDocumentCheckValue => _driver.FindElement(By.XPath("//*[normalize-space()='Document check']/following-sibling::dd/strong"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -116,6 +119,24 @@ namespace Defra.UI.Tests.Pages.Classes
             return !string.IsNullOrEmpty(lblFieldValueForTable(fieldName, column).Text);
         }
 
-            
+        public bool VerifyDecisionRecordedBy(string fieldName, string status)
+        {
+            return lblFieldValue(fieldName).Text.Trim().Equals(status);
+        }
+
+        public bool VerifyDocumentCheck(string status)
+        {
+            return txtDocumentCheckValue.Text.Trim().Equals(status);
+        }
+
+        public bool VerifyRiskDecisionHMI(string decision)
+        {
+            return txtRiskDecisionHMIValue.Text.Trim().Equals(decision);
+        }
+
+        public bool VerifyRiskDecisionPHSI(string decision)
+        {
+            return txtRiskDecisionPHSIValue.Text.Trim().Equals(decision);
+        }
     }
 }
