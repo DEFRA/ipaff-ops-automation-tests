@@ -149,10 +149,10 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement ddContactName => _driver.FindElement(By.Id("responsible-contact-name"));
         private IWebElement ddContactEmail => _driver.FindElement(By.Id("responsible-contact-email"));
         private IWebElement ddContactTelephone => _driver.FindElement(By.Id("responsible-contact-telephone"));
-        private IWebElement tdIntendedForUsers => _driver.FindElement(By.XPath("//th[normalize-space()='Intended for final users or commercial flower production'] /parent::tr/following-sibling::tr[1]/td[2]"));
-        private IWebElement tdControlledAtmosphereContainer => _driver.FindElement(By.XPath("//th[normalize-space()='Controlled atmosphere container']/parent::tr/following-sibling::tr[1]/td[6]"));
-        private IWebElement tdQuantity => _driver.FindElement(By.XPath("//th[normalize-space()='Quantity']/parent::tr/following-sibling::tr[1]/td[3]"));
-        private IWebElement tdQuantityType => _driver.FindElement(By.XPath("//th[normalize-space()='Quantity type']/parent::tr/following-sibling::tr[1]/td[4]"));
+        private By tdIntendedForUsers => By.XPath("//th[normalize-space()='Intended for final users or commercial flower production'] /parent::tr/following-sibling::tr[1]/td[2]");
+        private By tdControlledAtmosphereContainer => By.XPath("//th[normalize-space()='Controlled atmosphere container']/parent::tr/following-sibling::tr[1]/td[6]");
+        private By tdQuantity => By.XPath("//th[normalize-space()='Quantity']/parent::tr/following-sibling::tr[1]/td[3]");
+        private By tdQuantityType => By.XPath("//th[normalize-space()='Quantity type']/parent::tr/following-sibling::tr[1]/td[4]");
         private IWebElement tdGrossVolume => _driver.FindElement(By.XPath("//td[normalize-space()='Total gross volume']/following-sibling::td"));
         private IWebElement tdGrossVolumeUnit => _driver.FindElement(By.XPath("//td[normalize-space()='Total gross volume unit']/following-sibling::td"));
         #endregion
@@ -1486,14 +1486,38 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public string GetContactTelephone() => ddContactTelephone.Text;
 
-        public string GetIntendedForFinalUsers() => tdIntendedForUsers.Text.Trim();
+        public string GetIntendedForFinalUsers()
+        {
+            var text = _driver.SafelyGetText(tdIntendedForUsers);
+            if (string.IsNullOrEmpty(text))
+                return string.Empty;
+            return text;
+        }
 
-        public string GetControlledAtmosphereContainer() => tdControlledAtmosphereContainer.Text.Trim();
-        public string GetQuantity() => tdQuantity.Text.Trim();
+        public string GetControlledAtmosphereContainer()
+        {
+            var text = _driver.SafelyGetText(tdControlledAtmosphereContainer);
+            if (string.IsNullOrEmpty(text))
+                return string.Empty;
+            return text;
+        }
 
-        public string GetQuantityType()=> tdQuantityType.Text.Trim();
+        public string GetQuantity()
+        {
+            var text = _driver.SafelyGetText(tdQuantity);
+            if (string.IsNullOrEmpty(text))
+                return string.Empty;
+            return text;
+        }
+
+        public string GetQuantityType()
+        {
+            var text = _driver.SafelyGetText(tdQuantityType);
+            if (string.IsNullOrEmpty(text))
+                return string.Empty;
+            return text;
+        }
         public string GetGrossVolume() => tdGrossVolume.Text.Trim();
-
         public string GetGrossVolumeUnit() => tdGrossVolumeUnit.Text.Trim();
     }
 }
