@@ -1,8 +1,8 @@
-﻿@Regression
-Feature: Create Notification CHEDA
+﻿Feature: Create Notification CHEDA
 
 Create a notification for CHEDA type
 
+@Regression
 Scenario: User creates and submits a B2C consignment notification - CHEDA Happy Path
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -2055,6 +2055,7 @@ Scenario: User creates and submits a CHEDA notification with laboratory tests ch
 	When the user clicks Return to your dashboard link
 	Then the Import notifications dashboard page should be displayed
 
+@Regression
 Scenario: User creates and submits a CHEDA consignment notification with EU country, multiple species and permanent addresses for animals - SPS-7363
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
