@@ -1625,6 +1625,7 @@ Scenario: User creates and amends a CHEDA notification, inspector requests amend
 	When the user searches for the newly created notification on the Import notifications page
 	Then the notification returned in the search has the status 'VALID' on the Import notifications page
 
+@Regression
 Scenario: User creates and submits a CHEDA notification, copies it as new and verifies copied values - SPS-7389
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
