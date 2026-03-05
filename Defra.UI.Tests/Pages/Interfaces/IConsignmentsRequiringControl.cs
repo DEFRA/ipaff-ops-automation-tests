@@ -17,5 +17,8 @@
         bool VerifySortByDropdown(string sortBy);
         void ClickLink(string link);
         void ClickFirstNotification();
+        void SwitchToPart1Tab();
+        void SwitchToPart2Tab();
+        bool WaitForStatusWithSearch(string expectedStatus);
     }
 }

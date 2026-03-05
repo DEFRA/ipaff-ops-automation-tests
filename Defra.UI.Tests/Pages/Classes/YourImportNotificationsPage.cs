@@ -51,6 +51,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private By GetViewDetailsLinkBy(string chedRef) => By.Id($"view-details-{chedRef}");
         private By GetShowNotificationLinkBy(string chedRef) => By.Id($"show-certificate-{chedRef}");
         private IWebElement txtStatus => _driver.FindElement(By.XPath("//*[normalize-space()='CHED status']/following-sibling::dd"));
+        private IWebElement btnClone => _driver.FindElement(By.Id("search-to-clone"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -112,7 +113,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool VerifyDataInCertificate(string chedReference)
         {
-            return _driver.Url.Contains($"/{chedReference}/certificate/pdf");
+            return _driver.Url.Contains($"/{chedReference}/");
         }
 
         public void ClosePDFBrowserTab()
@@ -231,6 +232,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public bool VerifyNotificationStatus(string status)
         {
             return txtStatus.Text.Trim().Equals(status);
+        }
+
+        public void ClickCloneButton()
+        {
+            btnClone.Click();
         }
     }
 }

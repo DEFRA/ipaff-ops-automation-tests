@@ -42,6 +42,14 @@
         string GetQuantityListCHEDPP(int index);
         string GetQuantityTypeListCHEDPP(int index);
 
+        // Multi-species commodity details
+        List<(string species, string numberOfAnimals, string numberOfPackages)> GetAllSpeciesDetails();
+
+        // Animal identification details (per-species, per-animal)
+        List<(string animal, string microchip, string passport, string tattoo)> GetIdentificationDetailsForSpecies(string species);
+
+        // Permanent addresses (per-species, per-animal)
+        List<(string animalName, string addressText)> GetAllPermanentAddresses();
 
         // Animal details
         string GetCertificationOption();
@@ -133,5 +141,23 @@
         void ClickChangeCatchCertificateReferences(int index);
         string GetCatchCertificateCommodityCode(int row, int column = 1);
         string GetCatchCertificateSpeciesDescription(int row, int column = 2);
+        bool VerifyCatchCertificateHeadingDisplaysCount(int expectedCount);
+        (bool isValid, List<string> mismatches) VerifyCatchCertificateSummaryTable(int totalAttachments, Dictionary<int, (string reference, string flagState, string dateOfIssue, string fileName)> expectedData);
+        (bool isValid, List<string> mismatches) VerifyCatchCertificateDetails(int totalAttachments, Dictionary<int, (string reference, string commodityCode, string species)> expectedData);
+        void ClickChangeLinkForTransportToTheBCP();
+        void ClickChangeLinkForContactDetails();
+        void ClickChangeLinkForGoodsMovementServices();
+        void ClickChangeLinkForAddDeliveryAddress();
+        string GetImporterNameByChangeLink();
+        void ClickViewCHEDButton();
+        string GetContactName();
+        string GetContactEmail();
+        string GetContactTelephone();
+        string GetIntendedForFinalUsers();
+        string GetControlledAtmosphereContainer();
+        string GetQuantity();
+        string GetQuantityType();
+        string GetGrossVolume();
+        string GetGrossVolumeUnit();
     }
 }

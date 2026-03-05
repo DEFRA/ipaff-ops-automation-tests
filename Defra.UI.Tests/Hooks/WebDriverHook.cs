@@ -199,44 +199,36 @@ namespace Defra.UI.Tests.Hooks
         [AfterStep]
         public void AfterStep()
         {
-            var stepInfo = _scenarioContext.StepContext.StepInfo.Text;
-
-            // Skip if this is a PIMS step (let PIMS hook handle it)
-            bool isPimsStep = stepInfo.Contains("PIMS", StringComparison.OrdinalIgnoreCase) ||
-                             stepInfo.Contains("logged in to the", StringComparison.OrdinalIgnoreCase) ||
-                             stepInfo.Contains("sub area", StringComparison.OrdinalIgnoreCase) ||
-                             stepInfo.Contains("Importer Notifications", StringComparison.OrdinalIgnoreCase) ||
-                             stepInfo.Contains("open the record", StringComparison.OrdinalIgnoreCase) ||
-                             stepInfo.Contains("in the grid", StringComparison.OrdinalIgnoreCase);
-
-            if (isPimsStep)
+            // AfterStepHooks (Order = 100) runs first and sets this flag for any PIMS step.
+            // Once active, all subsequent steps in the scenario are exclusively handled by AfterStepHooks.
+            if (_scenarioContext.ContainsKey("IsPimsActive") && _scenarioContext.Get<bool>("IsPimsActive"))
             {
                 return;
             }
 
+            var stepInfo = _scenarioContext.StepContext.StepInfo.Text;
             var stepType = _scenarioContext.StepContext.StepInfo.StepDefinitionType.ToString();
-            ExtentTest stepNode;
 
             if (_scenarioContext.TestError == null)
             {
-                stepNode = _scenario.CreateNode(new GherkinKeyword(stepType), stepInfo);
+                _scenario.CreateNode(new GherkinKeyword(stepType), stepInfo);
             }
             else
             {
-                // Use full-page screenshot for failures
                 var screenshotPath = CaptureScreenshotFullPage();
 
-                stepNode = _scenario.CreateNode(new GherkinKeyword(stepType), stepInfo)
-                         .Fail(_scenarioContext.TestError.Message)
-                         .AddScreenCaptureFromPath(screenshotPath);
+                var stepNode = _scenario.CreateNode(new GherkinKeyword(stepType), stepInfo)
+                             .Fail(_scenarioContext.TestError.Message)
+                             .AddScreenCaptureFromPath(screenshotPath);
 
-                // Log context values on the failing step
                 var log = CreateLogForContextValues();
                 if (!string.IsNullOrWhiteSpace(log) && log != "<pre></pre>")
                 {
                     stepNode.Info(log);
                 }
             }
+
+            Thread.Sleep(1000);
         }
 
         /// <summary>

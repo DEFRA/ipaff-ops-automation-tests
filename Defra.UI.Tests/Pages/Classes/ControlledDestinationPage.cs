@@ -14,9 +14,9 @@ namespace Defra.UI.Tests.Pages.Classes
         #region Page Objects
         private IWebElement primaryTitle => _driver.WaitForElement(By.ClassName("govuk-heading-xl"), true);
         private IWebElement lnkAddControlledDestination => _driver.FindElement(By.Id("add-controlled-destination"));
-        private IWebElement verifyControlledDestinationName => _driver.FindElement(By.XPath("//td[@headers='controlled-destination-name']"));
-        private IWebElement verifyControlledDestinationAddress => _driver.FindElement(By.XPath("//td[@headers='controlled-destination-address']"));
-        private IWebElement verifyControlledDestinationType => _driver.FindElement(By.XPath("//td[@headers='controlled-destination-type']"));
+        private IWebElement verifyControlledDestinationName => _driver.WaitForElement(By.XPath("//td[@headers='controlled-destination-name']"));
+        private IWebElement verifyControlledDestinationAddress => _driver.WaitForElement(By.XPath("//td[@headers='controlled-destination-address']"));
+        private IWebElement verifyControlledDestinationType => _driver.WaitForElement(By.XPath("//td[@headers='controlled-destination-type']"));
         private IWebElement btnSaveAndContinue => _driver.FindElement(By.Id("button-save-and-continue"));
         #endregion
 
@@ -39,20 +39,13 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool VerifySelectedControlledDestination(string name, string address, string type)
         {
-            try
-            {
-                var displayedName = verifyControlledDestinationName.Text.Trim();
-                var displayedAddress = verifyControlledDestinationAddress.Text.Trim();
-                var displayedType = verifyControlledDestinationType.Text.Trim();
+            var displayedName = verifyControlledDestinationName.Text.Trim();
+            var displayedAddress = verifyControlledDestinationAddress.Text.Trim();
+            var displayedType = verifyControlledDestinationType.Text.Trim();
 
-                return displayedName.Equals(name) &&
-                       displayedAddress.Equals(address) &&
-                       displayedType.Equals(type);
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
+            return displayedName.Equals(name) &&
+                   displayedAddress.Equals(address) &&
+                   displayedType.Equals(type);
         }
 
         public void ClickSaveAndContinue()

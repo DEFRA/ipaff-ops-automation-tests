@@ -80,8 +80,8 @@ namespace Defra.UI.Tests.Tools
         public static void ScrollToElement(this IWebElement element, IWebDriver driver)
         {
             ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView()", element);
-        }       
-        
+        }
+
         public static (string day, string month, string year) GetDayMonthYear(string dateString)
         {
             if (string.IsNullOrWhiteSpace(dateString))
@@ -129,6 +129,18 @@ namespace Defra.UI.Tests.Tools
                 Thread.Sleep(500);
             }
             return false;
+        }
+
+        public static bool Equals(this string expected, string actual)
+        {
+            return expected.Equals(actual, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public static bool TextEquals(this string actual, string expected) => string.Equals(actual, expected, StringComparison.Ordinal);
+
+        public static bool CollectionsEqualIgnoreOrder(IEnumerable<string> actual, IEnumerable<string> expected)
+        {
+            return actual.OrderBy(x => x).SequenceEqual(expected.OrderBy(x => x));
         }
 
 
@@ -266,6 +278,22 @@ namespace Defra.UI.Tests.Tools
             {
                 context[key] = new[] { value };
             }
+        }
+
+        /// <summary>
+        /// Gets or creates the MultiSpeciesData from ScenarioContext.
+        /// Provides a single structured store for all multi-species related data.
+        /// </summary>
+        public static MultiSpeciesData GetOrCreateMultiSpeciesData(this ScenarioContext context)
+        {
+            if (context.ContainsKey(nameof(MultiSpeciesData)))
+            {
+                return context.Get<MultiSpeciesData>(nameof(MultiSpeciesData));
+            }
+
+            var data = new MultiSpeciesData();
+            context[nameof(MultiSpeciesData)] = data;
+            return data;
         }
 
         #endregion
@@ -699,6 +727,209 @@ namespace Defra.UI.Tests.Tools
         /// Gets the full address as a comma-separated string
         /// </summary>
         public string Address => $"{AddressLine1}, {CityOrTown}, {Postcode}";
+    }
+
+    #endregion
+
+    #region Multi-Species Data Models
+
+    /// <summary>
+    /// Holds identification details for a single animal (microchip, passport, tattoo).
+    /// </summary>
+    public class AnimalIdentification
+    {
+        public string Microchip { get; set; } = string.Empty;
+        public string Passport { get; set; } = string.Empty;
+        public string Tattoo { get; set; } = string.Empty;
+    }
+
+    /// <summary>
+    /// Holds all data for a single animal within a species: identification + permanent address.
+    /// </summary>
+    public class AnimalData
+    {
+        public AnimalIdentification Identification { get; set; } = new();
+        public OperatorDetails? PermanentAddress { get; set; }
+    }
+
+    /// <summary>
+    /// Holds all data for a single species: counts + per-animal data.
+    /// </summary>
+    public class SpeciesData
+    {
+        public string Name { get; set; } = string.Empty;
+        public string NumberOfAnimals { get; set; } = string.Empty;
+        public string NumberOfPackages { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Per-animal data keyed by 1-based animal index.
+        /// </summary>
+        public Dictionary<int, AnimalData> Animals { get; set; } = [];
+
+        /// <summary>
+        /// Gets or creates the AnimalData for the given 1-based index.
+        /// </summary>
+        public AnimalData GetOrCreateAnimal(int animalIndex)
+        {
+            if (!Animals.TryGetValue(animalIndex, out var animal))
+            {
+                animal = new AnimalData();
+                Animals[animalIndex] = animal;
+            }
+            return animal;
+        }
+    }
+
+    /// <summary>
+    /// Central store for all multi-species data in a scenario.
+    /// Stored once in ScenarioContext under key "MultiSpeciesData".
+    /// Replaces the fragmented SpeciesAnimals, SpeciesPackages, Identification_*, PermanentAddress_* keys.
+    /// </summary>
+    public class MultiSpeciesData
+    {
+        /// <summary>
+        /// All species keyed by species name (e.g. "Canis familiaris").
+        /// Maintains insertion order for iteration.
+        /// </summary>
+        public Dictionary<string, SpeciesData> Species { get; set; } = [];
+
+        /// <summary>
+        /// Gets or creates the SpeciesData for the given species name.
+        /// </summary>
+        public SpeciesData GetOrCreateSpecies(string speciesName)
+        {
+            if (!Species.TryGetValue(speciesName, out var species))
+            {
+                species = new SpeciesData { Name = speciesName };
+                Species[speciesName] = species;
+            }
+            return species;
+        }
+
+        /// <summary>
+        /// Whether any species data has been recorded.
+        /// </summary>
+        public bool HasData => Species.Count > 0;
+
+        /// <summary>
+        /// Validates all species data against actual review page data and returns mismatches.
+        /// This single method replaces ValidateSpeciesDetails, ValidateIdentificationDetails,
+        /// and ValidatePermanentAddresses from ReviewYourNotificationSteps.
+        /// </summary>
+        public List<string> ValidateAgainstReviewPage(
+            List<(string species, string numberOfAnimals, string numberOfPackages)> actualSpeciesDetails,
+            Func<string, List<(string animal, string microchip, string passport, string tattoo)>> getIdentificationForSpecies,
+            List<(string animalName, string addressText)> actualPermanentAddresses)
+        {
+            var mismatches = new List<string>();
+
+            foreach (var (speciesName, expected) in Species)
+            {
+                // --- Validate species counts ---
+                var match = actualSpeciesDetails.FirstOrDefault(d =>
+                    d.species.Equals(speciesName, StringComparison.OrdinalIgnoreCase));
+
+                if (string.IsNullOrEmpty(match.species))
+                {
+                    mismatches.Add($"Species '{speciesName}': Not found on review page. Found: [{string.Join(", ", actualSpeciesDetails.Select(d => d.species))}]");
+                    continue;
+                }
+
+                if (match.numberOfAnimals != expected.NumberOfAnimals)
+                    mismatches.Add($"Species '{speciesName}' NumberOfAnimals: Expected '{expected.NumberOfAnimals}', Found '{match.numberOfAnimals}'");
+                else
+                    Console.WriteLine($"[REVIEW VALIDATION] ✓ Species '{speciesName}' NumberOfAnimals: '{expected.NumberOfAnimals}' matches");
+
+                if (!string.IsNullOrEmpty(expected.NumberOfPackages))
+                {
+                    if (match.numberOfPackages != expected.NumberOfPackages)
+                        mismatches.Add($"Species '{speciesName}' NumberOfPackages: Expected '{expected.NumberOfPackages}', Found '{match.numberOfPackages}'");
+                    else
+                        Console.WriteLine($"[REVIEW VALIDATION] ✓ Species '{speciesName}' NumberOfPackages: '{expected.NumberOfPackages}' matches");
+                }
+
+                // --- Validate identification details ---
+                if (expected.Animals.Count > 0 && expected.Animals.Values.Any(a =>
+                        !string.IsNullOrEmpty(a.Identification.Microchip) ||
+                        !string.IsNullOrEmpty(a.Identification.Passport) ||
+                        !string.IsNullOrEmpty(a.Identification.Tattoo)))
+                {
+                    var actualRows = getIdentificationForSpecies(speciesName);
+
+                    if (actualRows.Count == 0)
+                    {
+                        mismatches.Add($"Identification '{speciesName}': No identification rows found on review page");
+                        continue;
+                    }
+
+                    foreach (var (animalIndex, animalData) in expected.Animals)
+                    {
+                        var rowIndex = animalIndex - 1;
+                        if (rowIndex >= actualRows.Count)
+                        {
+                            mismatches.Add($"Identification '{speciesName}' Animal {animalIndex}: Row not found (only {actualRows.Count} rows)");
+                            continue;
+                        }
+
+                        var actualRow = actualRows[rowIndex];
+                        var id = animalData.Identification;
+
+                        ValidateField($"Identification_{speciesName}_{animalIndex}_Microchip", id.Microchip, actualRow.microchip, mismatches);
+                        ValidateField($"Identification_{speciesName}_{animalIndex}_Passport", id.Passport, actualRow.passport, mismatches);
+                        ValidateField($"Identification_{speciesName}_{animalIndex}_Tattoo", id.Tattoo, actualRow.tattoo, mismatches);
+                    }
+                }
+
+                // --- Validate permanent addresses ---
+                foreach (var (animalIndex, animalData) in expected.Animals)
+                {
+                    if (animalData.PermanentAddress == null)
+                        continue;
+
+                    var expectedLabel = $"{speciesName} {animalIndex}";
+                    var addrMatch = actualPermanentAddresses.FirstOrDefault(a =>
+                        a.animalName.Equals(expectedLabel, StringComparison.OrdinalIgnoreCase));
+
+                    if (string.IsNullOrEmpty(addrMatch.animalName))
+                    {
+                        mismatches.Add($"PermanentAddress '{expectedLabel}': Row not found on review page");
+                        continue;
+                    }
+
+                    var addr = animalData.PermanentAddress;
+                    var actualText = addrMatch.addressText;
+
+                    ValidateContains($"PermanentAddress_{speciesName}_{animalIndex}_AddressName", addr.OperatorName, actualText, mismatches);
+                    ValidateContains($"PermanentAddress_{speciesName}_{animalIndex}_AddressLine1", addr.AddressLine1, actualText, mismatches);
+                    ValidateContains($"PermanentAddress_{speciesName}_{animalIndex}_CityOrTown", addr.CityOrTown, actualText, mismatches);
+                    ValidateContains($"PermanentAddress_{speciesName}_{animalIndex}_Postcode", addr.Postcode, actualText, mismatches);
+                    ValidateContains($"PermanentAddress_{speciesName}_{animalIndex}_Telephone", addr.TelephoneNumber, actualText, mismatches);
+                    ValidateContains($"PermanentAddress_{speciesName}_{animalIndex}_Email", addr.Email, actualText, mismatches);
+                }
+            }
+
+            return mismatches;
+        }
+
+        private static void ValidateField(string label, string expected, string actual, List<string> mismatches)
+        {
+            if (string.IsNullOrEmpty(expected)) return;
+
+            if (expected.Equals(actual, StringComparison.OrdinalIgnoreCase))
+                Console.WriteLine($"[REVIEW VALIDATION] ✓ {label}: '{expected}' matches");
+            else
+                mismatches.Add($"{label}: Expected '{expected}', Found '{actual}'");
+        }
+
+        private static void ValidateContains(string label, string expected, string actualText, List<string> mismatches)
+        {
+            if (string.IsNullOrEmpty(expected)) return;
+
+            if (actualText.Contains(expected, StringComparison.OrdinalIgnoreCase))
+                Console.WriteLine($"[REVIEW VALIDATION] ✓ {label}: '{expected}' matches");
+            else
+                mismatches.Add($"{label}: Expected '{expected}' in '{actualText}'");
+        }
     }
 
     #endregion
