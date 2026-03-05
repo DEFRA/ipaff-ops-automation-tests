@@ -5,6 +5,7 @@ namespace Defra.UI.Tests.Pages.Interfaces
     public interface IImporterPackerDeliveryAddressConsignorPage
     {
         void AddADeliveryAddress();
+        void ClickSaveAndReviewButton();
         string GetImporterAddress(string importerName);
         bool IsPageLoaded();
         bool VerifyImporterName(string importerName);

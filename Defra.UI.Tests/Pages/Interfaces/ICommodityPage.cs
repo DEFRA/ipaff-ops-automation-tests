@@ -1,7 +1,7 @@
 ﻿namespace Defra.UI.Tests.Pages.Interfaces
 {
     public interface ICommodityPage
-    { 
+    {
         bool IsPageLoaded();
         void EnterCommodityCode(string code);
         bool VerifyCommodityDetails(string code, string description);
@@ -24,6 +24,8 @@
         bool SelectCommodityInTheCommTree(string commodity);
         bool IsSubCommodityListDisplayed();
         void EnterNumberOfAnimals(string numberOfAnimals);
+        void EnterNumberOfAnimalsForSpecies(string numberOfAnimals, string species);
+        void EnterNumberOfPackagesForSpecies(string numberOfPackages, string species);
         string GetSubtotalNetWeight();
         string GetSubtotalPackages();
         string GetTotalNetWeight();
@@ -54,5 +56,6 @@
         void ClickApplyButton();
         string GetCHEDPPTotalNetWeight();
         string GetCHEDPPTotalPackages();
+        void ClickCancelLink();
     }
 }

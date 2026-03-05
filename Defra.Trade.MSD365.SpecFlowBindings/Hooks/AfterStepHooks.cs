@@ -4,6 +4,7 @@ using Capgemini.PowerApps.SpecFlowBindings;
 using OpenQA.Selenium;
 using Reqnroll;
 using System.Reflection;
+using System.Text;
 
 namespace Defra.Trade.MSD365.SpecFlowBindings.Hooks
 {
@@ -21,60 +22,110 @@ namespace Defra.Trade.MSD365.SpecFlowBindings.Hooks
         [BeforeScenario(Order = 200)]
         public void BeforeScenario()
         {
-            // Reset flag at start of each scenario
+            // Reset flags at start of each scenario
             _isPimsActive = false;
+            _scenarioContext["IsPimsActive"] = false;
         }
 
         [AfterStep(Order = 100)]
         public void AfterStep()
         {
-            var stepText = _scenarioContext.StepContext.StepInfo.Text;
-
-            bool isPimsStep = stepText.Contains("PIMS", StringComparison.OrdinalIgnoreCase) ||
-                             stepText.Contains("logged in to the", StringComparison.OrdinalIgnoreCase) ||
-                             stepText.Contains("sub area", StringComparison.OrdinalIgnoreCase) ||
-                             stepText.Contains("Importer Notifications", StringComparison.OrdinalIgnoreCase) ||
-                             stepText.Contains("open the record", StringComparison.OrdinalIgnoreCase) ||
-                             stepText.Contains("in the grid", StringComparison.OrdinalIgnoreCase);
-
-            if (isPimsStep)
+            // Client.BrowserInitiated checks if the browser has been launched WITHOUT creating it.
+            // Accessing Driver directly would lazily instantiate a new browser.
+            if (!_isPimsActive && Client.BrowserInitiated)
             {
                 _isPimsActive = true;
+                _scenarioContext["IsPimsActive"] = true;
             }
 
-            if (_isPimsActive && Driver != null)
+            if (!_isPimsActive)
+            {
+                return;
+            }
+
+            // Only log to the Extent report for PIMS steps that have failed
+            if (_scenarioContext.TestError != null)
             {
                 try
                 {
                     var windowHandles = Driver.WindowHandles;
-                    if (windowHandles != null && windowHandles.Count > 0)
+                    if (windowHandles != null && windowHandles.Count > 0 && _scenarioContext.ContainsKey("ExtentScenario"))
                     {
                         var stepType = _scenarioContext.StepContext.StepInfo.StepDefinitionType.ToString();
                         var stepInfo = _scenarioContext.StepContext.StepInfo.Text;
+                        var screenshotPath = CaptureScreenshotForPIMS();
+                        var scenario = _scenarioContext.Get<ExtentTest>("ExtentScenario");
 
-                        if (_scenarioContext.ContainsKey("ExtentScenario"))
+                        var stepNode = scenario.CreateNode(new GherkinKeyword(stepType), stepInfo)
+                                               .Fail(_scenarioContext.TestError.Message)
+                                               .AddScreenCaptureFromPath(screenshotPath);
+
+                        var log = CreateLogForContextValues();
+                        if (!string.IsNullOrWhiteSpace(log) && log != "<pre></pre>")
                         {
-                            var screenshotPath = CaptureScreenshotForPIMS();
-                            var scenario = _scenarioContext.Get<ExtentTest>("ExtentScenario");
-
-                            if (_scenarioContext.TestError == null)
-                            {
-                                scenario.CreateNode(new GherkinKeyword(stepType), stepInfo)
-                                    .Pass("Step passed")
-                                    .AddScreenCaptureFromPath(screenshotPath);
-                            }
-                            else
-                            {
-                                scenario.CreateNode(new GherkinKeyword(stepType), stepInfo)
-                                         .Fail(_scenarioContext.TestError.Message)
-                                         .AddScreenCaptureFromPath(screenshotPath);
-                            }
+                            stepNode.Info(log);
                         }
                     }
                 }
-                // Silently handle screenshot errors
                 catch { }
             }
+            else
+            {
+                // Log passing PIMS steps without a screenshot
+                try
+                {
+                    var windowHandles = Driver.WindowHandles;
+                    if (windowHandles != null && windowHandles.Count > 0 && _scenarioContext.ContainsKey("ExtentScenario"))
+                    {
+                        var stepType = _scenarioContext.StepContext.StepInfo.StepDefinitionType.ToString();
+                        var stepInfo = _scenarioContext.StepContext.StepInfo.Text;
+                        var scenario = _scenarioContext.Get<ExtentTest>("ExtentScenario");
+
+                        scenario.CreateNode(new GherkinKeyword(stepType), stepInfo)
+                                .Pass("Step passed");
+                    }
+                }
+                catch { }
+            }
+        }
+
+        private string CreateLogForContextValues()
+        {
+            var log = new StringBuilder("<pre>");
+            try
+            {
+                foreach (var context in _scenarioContext)
+                {
+                    if (!context.Key.Equals("ExtentScenario") && !context.Key.Equals("IsPimsActive"))
+                    {
+                        log.AppendLine($"{context.Key} : <b>{FormatValue(context.Value)}</b><br>");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                log.AppendLine($"Error capturing context values: {ex.Message}<br>");
+            }
+
+            log.Append("</pre>");
+            return log.ToString();
+        }
+
+        private static string FormatValue(object value)
+        {
+            if (value == null)
+                return "null";
+
+            if (value is Array array)
+                return string.Join(", ", array.Cast<object>());
+
+            if (value is IEnumerable<object> list)
+                return string.Join(", ", list);
+
+            if (value is System.Collections.IEnumerable enumerable && value is not string)
+                return string.Join(", ", enumerable.Cast<object>());
+
+            return value.ToString();
         }
 
         private string CaptureScreenshotForPIMS()
@@ -95,7 +146,7 @@ namespace Defra.Trade.MSD365.SpecFlowBindings.Hooks
                     if (handles.Contains(currentHandle))
                     {
                         Driver.SwitchTo().Window(currentHandle);
-                      }
+                    }
                     else
                     {
                         Driver.SwitchTo().Window(handles.Last());
@@ -106,9 +157,12 @@ namespace Defra.Trade.MSD365.SpecFlowBindings.Hooks
             catch { }
 
             var screenshot = ((ITakesScreenshot)Driver).GetScreenshot();
-            var filePath = Path.Combine(screenshotsDir, $"{Guid.NewGuid()}.png");
+            var uniqueFileName = $"{Guid.NewGuid()}.png";
+            var filePath = Path.Combine(screenshotsDir, uniqueFileName);
             screenshot.SaveAsFile(filePath);
-            return filePath;
+
+            // Return relative path so the Extent HTML report is portable when zipped
+            return $"./Screenshots/{uniqueFileName}";
         }
     }
 }
