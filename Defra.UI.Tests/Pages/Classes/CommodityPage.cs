@@ -338,6 +338,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void ClickAddLink(string eppoCode)
         {
+            _driver.Wait(1);
             lnkAddEPPOCode(eppoCode).Click();
         }
 
