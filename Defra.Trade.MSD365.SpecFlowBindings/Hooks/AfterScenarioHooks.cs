@@ -35,7 +35,7 @@ public class AfterScenarioHooks : PowerAppsStepDefiner
     /// Logs scenario context values to the Extent report at the end of a passing PIMS scenario.
     /// Failed PIMS scenarios already have context attached to the failing step in AfterStepHooks.
     /// </summary>
-    [AfterScenario(Order = 50)]
+    [AfterScenario(Order = 100)]
     public void LogContextForPassedPimsScenario()
     {
         if (!Client.BrowserInitiated)
