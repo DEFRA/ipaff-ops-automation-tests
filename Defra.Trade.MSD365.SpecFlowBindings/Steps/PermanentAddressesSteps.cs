@@ -78,36 +78,48 @@ public class PermanentAddressesSteps : PowerAppsStepDefiner
     {
         Driver.WaitForTransaction();
 
-        // The tab may be in the visible tab strip or collapsed into the 'More' overflow menu.
-        // Try the direct tab first, then fall back to the overflow menu item.
-        var tabLocator = By.XPath($"//div[@data-id='{PermanentAddressesTabDataId}']");
+        // When directly visible, the tab renders as <li data-id="tablist-permanentaddresses_tab">
+        var directTabLocator = By.XPath($"//li[@data-id='{PermanentAddressesTabDataId}']");
 
-        if (!Driver.TryFindElement(tabLocator, out var tabElement))
+        // When in the overflow menu, the tab renders as <div data-id="tablist-permanentaddresses_tab">
+        var overflowTabLocator = By.XPath($"//div[@data-id='{PermanentAddressesTabDataId}']");
+
+        if (Driver.TryFindElement(directTabLocator, out var tabElement))
         {
-            // Tab is in the overflow ('More') menu — open it and look there.
-            var moreButton = Driver.WaitUntilAvailable(
-                By.XPath(AppElements.Xpath[AppReference.Entity.MoreTabs]),
-                TimeSpan.FromSeconds(10),
-                "Could not find the 'More tabs' button to locate the Permanent Addresses tab.");
+            // Tab is directly visible in the tab strip — click it immediately
+            tabElement.Click();
+        }
+        else
+        {
+            // Tab is not visible — try the 'More' overflow menu
+            if (!Driver.TryFindElement(
+                    By.XPath(AppElements.Xpath[AppReference.Entity.MoreTabs]),
+                    out var moreButton))
+            {
+                throw new InvalidOperationException(
+                    $"The 'Permanent Addresses' tab (data-id='{PermanentAddressesTabDataId}') " +
+                    "could not be found in the tab strip, and the 'More tabs' overflow button was also not present.");
+            }
 
             moreButton.Click();
             Driver.WaitForTransaction();
 
             tabElement = Driver.WaitUntilAvailable(
-                tabLocator,
+                overflowTabLocator,
                 TimeSpan.FromSeconds(10),
                 $"The 'Permanent Addresses' tab (data-id='{PermanentAddressesTabDataId}') " +
                 "could not be found in the tab strip or the overflow menu.");
+
+            tabElement.Click();
         }
 
-        tabElement.Click();
         Driver.WaitForTransaction();
 
         // Wait for the subgrid container to confirm the tab has loaded.
         Driver.WaitUntilAvailable(
             SubGridContainerBy,
             TimeSpan.FromSeconds(30),
-            $"The Permanent Addresses subgrid did not appear after selecting the tab.");
+            "The Permanent Addresses subgrid did not appear after selecting the tab.");
     }
 
     /// <summary>
