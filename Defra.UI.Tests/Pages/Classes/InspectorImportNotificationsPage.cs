@@ -18,6 +18,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement btnSearch => _driver.WaitForElement(By.Id("search-notifications"));
         private IWebElement lnkChedRefNumSearcResult => _driver.WaitForElement(By.XPath("//*[normalize-space()='Reference Number']//following-sibling::dd"));
         private IWebElement lnkChedStatusSearcResult => _driver.WaitForElement(By.XPath("//*[normalize-space()='CHED status']//following-sibling::dd"));
+        private IWebElement lnkRiskOutcomeSearchResult => _driver.WaitForElement(By.XPath("//*[normalize-space()='Risk outcome']//following-sibling::dd"));
         private IWebElement lnkViewCHED => _driver.FindElement(By.XPath("//a[normalize-space()='View CHED']"));
         private IWebElement lnkRecordControl => _driver.FindElement(By.Id("control-dashboard-nav"));
         private IWebElement lnkRecordDecision => _driver.FindElement(By.Id("decision-dashboard-nav"));
@@ -129,6 +130,12 @@ namespace Defra.UI.Tests.Pages.Classes
             return  (index >= 0
                 ? lblImportNotificationPage(label).Text.Substring(0, index)
                 : lblImportNotificationPage(label).Text).Equals(label);
-        }        
+        }
+
+        public bool VerifyRiskOutcome(string chedRef, string riskOutcome)
+        {
+            return lnkChedRefNumSearcResult.Text.Trim().Contains(chedRef)
+                && lnkRiskOutcomeSearchResult.Text.Trim().Equals(riskOutcome);
+        }
     }
 }
