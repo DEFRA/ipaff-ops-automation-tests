@@ -3,7 +3,6 @@ using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
 
-
 namespace Defra.UI.Tests.Steps.IPAFF
 {
     [Binding]
@@ -101,6 +100,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserSwitchesToTabInChedOverviewPage(string tabName)
         {
             chedOverviewPage?.SwitchTab(tabName);
+        }
+
+        [When("the user clicks on Record control button")]
+        public void WhenTheUserClicksOnRecordControlButton()
+        {
+            chedOverviewPage?.ClickRecordControlButton();
         }
     }
 }

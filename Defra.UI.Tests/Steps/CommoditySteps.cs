@@ -265,29 +265,32 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user selects the second commodity {string} {string} under the parent commodity")]
         public void WhenTheUserSelectsTheFirstAdditionalCommodityUnderTheParentCommodity(string additionalCommCode, string additionalCommDescription)
         {
-            _scenarioContext.Add("CommodityCodeSecondCommodity", additionalCommCode);
-            _scenarioContext.Add("CommodityDescSecondCommodity", additionalCommDescription);
+            _scenarioContext["CommodityCodeSecondCommodity"] = additionalCommCode;
+            _scenarioContext["CommodityDescSecondCommodity"] = additionalCommDescription;
             commodityPage?.SelectCommodityInTheCommTree(additionalCommDescription);
         }
 
-        [When("the user selects the commodity {string} {string} under the parent commodity")]
+        /*[When("the user selects the commodity {string} {string} under the parent commodity")]
         public void WhenTheUserSelectsTheCommodityUnderTheParentCommodity(string commCode, string commDescription)
         {
             _scenarioContext["CommodityCode"] = commCode;
             _scenarioContext["CommodityDescription"] = commDescription;
             commodityPage?.SelectCommodityInTheCommTree(commDescription);
-            _scenarioContext["CommodityCodeSecondCommodity"]=commCode;
-            _scenarioContext["CommodityDescSecondCommodity"] = commDescription;
-            commodityPage?.SelectCommodityInTheCommTree(commDescription);
-        }
+            //_scenarioContext["CommodityCodeSecondCommodity"]=commCode;
+            //_scenarioContext["CommodityDescSecondCommodity"] = commDescription;
+            //commodityPage?.SelectCommodityInTheCommTree(commDescription);
+        }*/
         
         //Check if the below method is needed
         [When("the user selects the {string} {string} under the parent commodity")]
-        public void WhenTheUserSelectsTheAdditionalCommodityUnderTheParentCommodity(string additionalCommCode, string additionalcommDescription)
+        public void WhenTheUserSelectsTheAdditionalCommodityUnderTheParentCommodity(string commCode, string commDescription)
         {
-            _scenarioContext["CommodityCode"]=additionalCommCode;
-            _scenarioContext["CommodityDescription"] = additionalcommDescription;
-            commodityPage?.SelectCommodityInTheCommTree(additionalcommDescription);
+            //_scenarioContext["CommodityCode"] = commCode;
+            //_scenarioContext["CommodityDescription"] = commDescription;
+            var commodityCodes = _scenarioContext.GetFromContext<List<string>>("CommodityCode", []);
+            commodityCodes.Add(commCode);
+            _scenarioContext["CommodityCode"] = commodityCodes;
+            commodityPage?.SelectCommodityInTheCommTree(commDescription);
         }
 
         [Then("the Commodity page should be displayed")]

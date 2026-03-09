@@ -37,6 +37,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
         [When("the user clicks CHEDP reference number")]
+        [When("the user clicks on the CHED reference number link")]
         public void WhenTheUserClicksCHEDPReferenceNumber()
         {
             consignmentsRequiringControlPage?.ClickCHEDReferencNum();

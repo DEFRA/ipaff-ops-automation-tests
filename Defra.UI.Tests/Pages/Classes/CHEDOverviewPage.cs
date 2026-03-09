@@ -12,7 +12,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IObjectContainer _objectContainer;
 
         #region Page Objects
-        private IWebElement primaryTitle => _driver.WaitForElement(By.XPath("//h1[@class='govuk-heading-xl ']"), true);
+        private IWebElement primaryTitle => _driver.WaitForElement(By.XPath("//div[@id='notification-overview-page']//h1[contains(@class,'govuk-heading-xl')]"), true);
         private IWebElement btnRaiseBorderNotification => _driver.FindElement(By.Id("raise-border-notification"));
         private IWebElement btnCopyAsReplacement => _driver.FindElement(By.Id("replace-certificate"));
         private IWebElement lnkReplacedBy => _driver.FindElement(By.Id("replaced-by"));
@@ -24,6 +24,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement lblFieldValueInControl(string fieldName,string sectionName) => _driver.FindElement(By.XPath($"(//h2[normalize-space(text())='{sectionName}']/following::*[normalize-space(text())='{fieldName}']/following-sibling::td)[1]"));
         private IWebElement lblFieldValueForTable(string fieldName,string column) => _driver.FindElement(By.XPath($"//th[normalize-space()='{fieldName}']/following::td[{column}]"));
         private IWebElement lnkTab(string tabName) => _driver.FindElement(By.XPath($"//a[@id='tab_{tabName}']"));
+        private IWebElement btnRecordControl => _driver.FindElement(By.Id("record-control"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -116,6 +117,6 @@ namespace Defra.UI.Tests.Pages.Classes
             return !string.IsNullOrEmpty(lblFieldValueForTable(fieldName, column).Text);
         }
 
-            
+        public void ClickRecordControlButton() => btnRecordControl.Click();
     }
 }

@@ -13,7 +13,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IObjectContainer _objectContainer;
 
         #region Page Objects
-        private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
+        private IWebElement primaryTitle => _driver.WaitForElement(By.XPath("//div[@id='lab-tests-required-page']//span[@id='page-primary-title']"), true);
         private IWebElement secondaryTitle => _driver.WaitForElement(By.XPath("//h2[@class='govuk-heading-s govuk-!-margin-bottom-1  ']"), true);
         private IWebElement secondaryTitleReview => _driver.WaitForElement(By.XPath("//h2[@class='govuk-heading-m']"), true);
         private IWebElement labTestsRadio(string labTestsOption) => _driver.FindElement(By.XPath($"//input[@class='govuk-radios__input']/following-sibling::label[contains(text(),'{labTestsOption}')]"));
@@ -24,7 +24,9 @@ namespace Defra.UI.Tests.Pages.Classes
             var inputId = label.GetAttribute("for");
             return _driver.FindElement(By.Id(inputId));
         }
-        private IWebElement selectForCommodityCode(string commodityCode) => _driver.FindElement(By.XPath($"(//td[text()='{commodityCode}']/following::a[text()='Select'])[1]"));
+        private IWebElement rdoReasonForTesting(string labTestsReasonOption) => _driver.FindElement(By.XPath($"//label[contains(text(),'{labTestsReasonOption}')]/preceding-sibling::input"));
+        //private IWebElement selectForCommodityCode(string commodityCode) => _driver.FindElement(By.XPath($"(//td[text()='{commodityCode}']/following::a[text()='Select'])[1]"));
+        private IWebElement selectForCommodityCode(string commodityCode) => _driver.FindElement(By.XPath($"(//td[text()='010420']/following::td/a[text()='Select'])[1]"));
         private IWebElement lnkTestName(string testName) => _driver.FindElement(By.XPath($"//td/button[normalize-space(text())='{testName}']"));
         private IWebElement lnkSelectLabTest(string testName) => _driver.FindElement(By.XPath($"//td[text()='{testName}']/following::a[1]"));
         private IWebElement rdoLabTestsYes => _driver.FindElement(By.Id("radio-lab-tests-required-yes"));
@@ -88,6 +90,11 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             var radioInput = GetLabTestsReasonRadioButton(labTestsReason);
             radioInput.Click();
+        }
+
+        public bool IsReasonForTestingRadioSelected(string labTestsReasonOption)
+        {
+            return rdoReasonForTesting(labTestsReasonOption).GetAttribute("checked") != null;
         }
 
         public void ClickSelectForCommodityCode(string commodityCode)
@@ -196,6 +203,20 @@ namespace Defra.UI.Tests.Pages.Classes
                     && rowText.Contains(commodityDescription)
                     && rowText.Contains(labTestName)
                     && rowText.Contains("Pending")
+                    && rowText.Trim().Contains("Remove");
+            }
+            return false;
+        }
+
+        public bool VerifyLabTestsReviewPage(string commodityCode, string commodityDescription, string commoditySpecies, string labTestName, string conclusion)
+        {
+            foreach (var row in reviewTableFirstRow)
+            {
+                string rowText = row.Text;
+                return rowText.Contains(commodityCode)
+                    && rowText.Contains(commodityDescription)
+                    && rowText.Contains(labTestName)
+                    && rowText.Contains(conclusion)
                     && rowText.Trim().Contains("Remove");
             }
             return false;

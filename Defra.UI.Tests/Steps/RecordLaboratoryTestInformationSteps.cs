@@ -1,6 +1,7 @@
 ﻿using Defra.UI.Tests.Pages.Classes;
 using Defra.UI.Tests.Pages.Interfaces;
 using NUnit.Framework;
+using NUnit.Framework.Internal;
 using Reqnroll;
 using Reqnroll.BoDi;
 
@@ -55,6 +56,32 @@ namespace Defra.UI.Tests.Steps
                 System.Globalization.DateTimeStyles.None);
 
             _scenarioContext["ReleasedDate"] = date.ToString("d MMMM yyyy");
+        }
+
+        [When("the user selects a future date from the date picker for the Sample use by date")]
+        public void WhenTheUserSelectsAFutureDateFromTheDatePickerForTheSampleUseByDate()
+        {
+            Assert.True(recordLaboratoryTestInformation?.IsUseByDatePickerIconDisplayed(), "Sample use by date picker icon is not displayed on the Record laboratory test information page");
+            recordLaboratoryTestInformation?.SelectSampleUseByDateFromDatePicker();
+        }
+
+        [When("the user selects a future date from the date picker for the Released date")]
+        public void WhenTheUserSelectsAFutureDateFromTheDatePickerForTheReleasedDate()
+        {
+            Assert.True(recordLaboratoryTestInformation?.IsReleasedDatePickerIconDisplayed(), "Released date picker icon is not displayed on the Record laboratory test information page");
+            recordLaboratoryTestInformation?.SelectReleasedDateFromDatePicker();
+        }
+
+        [When("the user enters {string} in Laoratory test method textbox")]
+        public void WhenTheUserEntersInLaoratoryTestMethodTextbox(string testMethod)
+        {
+            recordLaboratoryTestInformation?.EnterLabTestMethod(testMethod);
+        }
+
+        [When("the user enters {string} in Results textbox")]
+        public void WhenTheUserEntersInResultsTextbox(string results)
+        {
+            recordLaboratoryTestInformation?.EnterResults(results);
         }
     }
 }

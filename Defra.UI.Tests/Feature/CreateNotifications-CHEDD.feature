@@ -38,7 +38,8 @@ Scenario: User creates and submits a B2C consignment notification - CHEDD Happy 
 	When the user populates Net weight as '19000' for first commodity
 	And the user populates Number of packages as '1' for first commodity
 	And the user selects type of package as 'Case' for the commodity '12024200' for first commodity
-	#Click update total
+	#Click update total <Dan>
+	And the user clicks the Update total button
 	And the user clicks the Add commodity link
 	And the user clicks the 'CEREALS' in the parent commodity tree
 	And the sub commodity list expands
@@ -48,6 +49,7 @@ Scenario: User creates and submits a B2C consignment notification - CHEDD Happy 
 	Then the Commodity page should be displayed
 	When the user selects "No" for Do you want to add another commodity?
 	And the user clicks Save and continue
+	Then the Commodity page should be displayed
 	When the user populates Net weight as '18000' for the second commodity '100610'
 	And the user populates Number of packages as '1' for the second commodity '100610'
 	And the user selects type of package as 'Box' for the second commodity '100610'
@@ -65,7 +67,12 @@ Scenario: User creates and submits a B2C consignment notification - CHEDD Happy 
 	And the user clicks on Add attachment link
 	And the user uploads the document 'IPAFFS Test Document' in the format '.docx'
 	Then the document 'IPAFFS Test Document' '.docx' is uploaded successfully
-	#Add step to download doc
+	#Add step to download doc <Dan>
+	When the user download the document attached in accompanying documents
+	Then the user switch to next tab and open the browser downloads
+	And verifies the document 'IPAFFS Test Document' downloaded successfully
+	When the user closes the newly opened tab
+	Then the browser tab is closed
 	And the user clicks Save and continue
 	Then the Addresses page should be displayed
 	When the user clicks Add a consignor or exporter
@@ -413,6 +420,7 @@ Scenario: User verifies Address book page search, submits notification for 'Non-
 	Then the user is taken to the Your import notifications page
 	When the user clicks the Address book link on the Your import notifications page
 	Then the Address book page should be displayed
+	#And the Type dropdown field displays all the List of types
 	When the user searches by selecting 'Importer' in the Type dropdown
 	Then the type of every address listed is 'Importer'
 	When the user searches by selecting 'Transporter' in the Type dropdown
@@ -557,10 +565,10 @@ Scenario: User verifies Address book page search, submits notification for 'Non-
 	And the user selects 'Satisfactory' sub radio button under the Physical check main radio
 	And the user clicks on Save and continue button on the Checks page
 	Then the Seal numbers page should be displayed
-	When the user select 'No' radio button on the Seal numbers page
+	And 'No' is pre-selected for Are new seal numbers required?
 	And the user clicks Save and continue
 	Then the Laboratory tests page should be displayed
-	When the user select 'No' radio button on the Laboratory tests page
+	And 'No' is pre-selected for Would you like to record laboratory tests?
 	And the user clicks Save and continue
 	Then the Decision page should be displayed
 	And 'Non-internal market' radio is pre-selected under Acceptable for

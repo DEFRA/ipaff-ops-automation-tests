@@ -15,5 +15,6 @@
         bool VerifyReplacedByLink(string type, string chedReference, string replacementChedReference);
         bool VerifyShowChedButton();
         bool VerifyTab(string tabName);
+        void ClickRecordControlButton();
     }
 }

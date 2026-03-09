@@ -74,10 +74,10 @@ namespace Defra.UI.Tests.Pages.Classes
             var hour = timeParts[0];
             var minutes = timeParts[1];
 
-            txtDepartureTimeHour.Click();
+            //txtDepartureTimeHour.Click();
             txtDepartureTimeHour.Clear();
             txtDepartureTimeHour.SendKeys(hour);
-            txtDepartureTimeMinutes.Click();
+            //txtDepartureTimeMinutes.Click();
             txtDepartureTimeMinutes.Clear();
             txtDepartureTimeMinutes.SendKeys(minutes);
         }

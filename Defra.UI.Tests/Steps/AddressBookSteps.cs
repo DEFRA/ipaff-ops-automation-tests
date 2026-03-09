@@ -29,6 +29,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(addressBookPage?.IsPageLoaded(), "Address Book page not loaded");
         }
 
+        /*[Then("the Type dropdown field displays all the List of types")]
+        public void ThenTheTypeDropdownFieldDisplaysAllTheListOfTypes()
+        {
+            throw new PendingStepException();
+        }*/
+
         [When("the user searches by selecting {string} in the Type dropdown")]
         public void WhenTheUserSearchesBySelectingInTheTypeDropdown(string type)
         {

@@ -63,7 +63,6 @@
     <PackageReference Include="NUnit" Version="3.14.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
 	<PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
-
   </ItemGroup>
 
   <ItemGroup>
