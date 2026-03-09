@@ -256,7 +256,7 @@ Scenario: Delegation of Authority Agent submits CHEDPP notification by uploading
 	Then the user should be logged out successfully
 	
 	
-Scenario: Create a new import notification through clone a health or phytosanitary certificate process - SPS-9272 - CHED PP
+Scenario: Create a new import notification through clone a health or phytosanitary certificate process - SPS-9272
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
@@ -270,7 +270,7 @@ Scenario: Create a new import notification through clone a health or phytosanita
 	And the user selected the importing option as 'Plants, plant products and other objects'
 	When the user clicks on continue button
 	Then the Certificate details page should be displayed
-	And the user searches for the notification for cloning which is not more than 90 days from creation
+	And the user searches for the notification for cloning CHEDPP which is not more than 90 days from creation
 	And the user provided notification details in the search input fields
 	When the user Clicks on Search button
 	Then the Phytosanitary certificate details page should be displayed
