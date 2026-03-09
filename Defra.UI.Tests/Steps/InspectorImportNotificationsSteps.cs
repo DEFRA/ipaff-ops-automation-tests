@@ -37,6 +37,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             inspectorImportNotificationsPage?.SearchForChed(chedRef);
         }
 
+        [When("the user clicks the notification found with status {string}")]
         [Then("the user clicks the notification found with status {string}")]
         [Then("the user searches for the CHED D notification that was recently submitted")]
         public void ThenTheNotificationShouldBeFoundWithStatus(string status)
@@ -137,6 +138,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserSearchesForTheCHEDInImportNotificationsPage(string chedRef)
         {
             inspectorImportNotificationsPage?.SearchForChed(chedRef);
+        }
+
+        [Then("the notification should be found with risk outcome {string}")]
+        public void ThenTheNotificationShouldBeFoundWithRiskOutcome(string riskOutcome)
+        {
+            var chedRef = _scenarioContext.Get<string>("CHEDReference");
+            Assert.True(inspectorImportNotificationsPage?.VerifyRiskOutcome(chedRef, riskOutcome));
         }
     }
 }
