@@ -166,12 +166,10 @@ namespace Defra.UI.Tests.Pages.Classes
             
             return wait.Until(d => 
             {
+                d.FindElement(By.CssSelector("#search-notifications")).Click();
 
-                // Click Search each cycle
-                btnSearch.Click();
-
-                // Read status
-                var status = lnkChedStatusSearcResult.Text.Trim();
+                // Always re-find the status element
+                var status = d.FindElement(By.XPath("//*[normalize-space()='CHED status']//following-sibling::dd/strong[1]")).Text.Trim();
 
                 // Check match
                 if (string.Equals(status, expectedStatus, StringComparison.OrdinalIgnoreCase)) 
