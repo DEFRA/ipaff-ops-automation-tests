@@ -3,7 +3,6 @@ using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
-using Defra.UI.Tests.Pages.Classes;
 
 namespace Defra.UI.Tests.Steps.IPAFF
 {
@@ -73,11 +72,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserEntersDepartureDateFromBCPOrPortOfEntryAsTodaysDate()
         {
             var departureDate = DateTime.Now;
-            //var departureDate = DateTime.ParseExact(departureDate, "dd MMM yyyy", System.Globalization.CultureInfo.InvariantCulture);
-
-            /*var day = departureDate.Day.ToString();
-            var month = departureDate.Month.ToString();
-            var year = departureDate.Year.ToString();*/
 
             transportAfterPortOfEntryPage?.EnterDepartureDateFromBCP(departureDate);
 

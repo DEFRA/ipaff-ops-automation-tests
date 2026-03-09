@@ -38,7 +38,6 @@ Scenario: User creates and submits a B2C consignment notification - CHEDD Happy 
 	When the user populates Net weight as '19000' for first commodity
 	And the user populates Number of packages as '1' for first commodity
 	And the user selects type of package as 'Case' for the commodity '12024200' for first commodity
-	#Click update total <Dan>
 	And the user clicks the Update total button
 	And the user clicks the Add commodity link
 	And the user clicks the 'CEREALS' in the parent commodity tree
@@ -67,7 +66,6 @@ Scenario: User creates and submits a B2C consignment notification - CHEDD Happy 
 	And the user clicks on Add attachment link
 	And the user uploads the document 'IPAFFS Test Document' in the format '.docx'
 	Then the document 'IPAFFS Test Document' '.docx' is uploaded successfully
-	#Add step to download doc <Dan>
 	When the user download the document attached in accompanying documents
 	Then the user switch to next tab and open the browser downloads
 	And verifies the document 'IPAFFS Test Document' downloaded successfully
@@ -111,7 +109,6 @@ Scenario: User creates and submits a B2C consignment notification - CHEDD Happy 
 	Then the Confirmation page should be displayed with the initial risk assessment
 	When the user records the IPAFFS User details and CHED Reference
 	Then the details should be recorded
-	#STeps to validate on show notification is not needed
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
 	When I navigate to the IPAFF Inspector application
@@ -420,7 +417,6 @@ Scenario: User verifies Address book page search, submits notification for 'Non-
 	Then the user is taken to the Your import notifications page
 	When the user clicks the Address book link on the Your import notifications page
 	Then the Address book page should be displayed
-	#And the Type dropdown field displays all the List of types
 	When the user searches by selecting 'Importer' in the Type dropdown
 	Then the type of every address listed is 'Importer'
 	When the user searches by selecting 'Transporter' in the Type dropdown

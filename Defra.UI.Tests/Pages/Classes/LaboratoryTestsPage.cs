@@ -25,8 +25,7 @@ namespace Defra.UI.Tests.Pages.Classes
             return _driver.FindElement(By.Id(inputId));
         }
         private IWebElement rdoReasonForTesting(string labTestsReasonOption) => _driver.FindElement(By.XPath($"//label[contains(text(),'{labTestsReasonOption}')]/preceding-sibling::input"));
-        //private IWebElement selectForCommodityCode(string commodityCode) => _driver.FindElement(By.XPath($"(//td[text()='{commodityCode}']/following::a[text()='Select'])[1]"));
-        private IWebElement selectForCommodityCode(string commodityCode) => _driver.FindElement(By.XPath($"(//td[text()='010420']/following::td/a[text()='Select'])[1]"));
+        private IWebElement selectForCommodityCode(string commodityCode) => _driver.FindElement(By.XPath($"(//td[text()='{commodityCode}']/following::a[text()='Select'])[1]"));
         private IWebElement lnkTestName(string testName) => _driver.FindElement(By.XPath($"//td/button[normalize-space(text())='{testName}']"));
         private IWebElement lnkSelectLabTest(string testName) => _driver.FindElement(By.XPath($"//td[text()='{testName}']/following::a[1]"));
         private IWebElement rdoLabTestsYes => _driver.FindElement(By.Id("radio-lab-tests-required-yes"));

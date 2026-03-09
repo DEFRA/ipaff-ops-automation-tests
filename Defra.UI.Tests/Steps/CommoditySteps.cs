@@ -145,9 +145,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Thread.Sleep(2000);
             _scenarioContext["SubtotalNetWeight"]=commodityPage?.GetSubtotalsOfNetWeight();
             _scenarioContext["SubtotalPackages"] = commodityPage?.GetSubtotalsOfPackages();   
-            //previously removed
-            _scenarioContext["TotalNetWeight"]=commodityPage.GetTotalNetWeight();
-            _scenarioContext["TotalPackages"] = commodityPage.GetTotalPackages();
+            _scenarioContext["TotalNetWeight"]=commodityPage?.GetTotalNetWeight();
+            _scenarioContext["TotalPackages"] = commodityPage?.GetTotalPackages();
         }
 
         [When("the total gross weight should be greater than the net weight {string}")]
@@ -269,24 +268,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["CommodityDescSecondCommodity"] = additionalCommDescription;
             commodityPage?.SelectCommodityInTheCommTree(additionalCommDescription);
         }
-
-        /*[When("the user selects the commodity {string} {string} under the parent commodity")]
-        public void WhenTheUserSelectsTheCommodityUnderTheParentCommodity(string commCode, string commDescription)
-        {
-            _scenarioContext["CommodityCode"] = commCode;
-            _scenarioContext["CommodityDescription"] = commDescription;
-            commodityPage?.SelectCommodityInTheCommTree(commDescription);
-            //_scenarioContext["CommodityCodeSecondCommodity"]=commCode;
-            //_scenarioContext["CommodityDescSecondCommodity"] = commDescription;
-            //commodityPage?.SelectCommodityInTheCommTree(commDescription);
-        }*/
         
-        //Check if the below method is needed
         [When("the user selects the {string} {string} under the parent commodity")]
         public void WhenTheUserSelectsTheAdditionalCommodityUnderTheParentCommodity(string commCode, string commDescription)
         {
-            //_scenarioContext["CommodityCode"] = commCode;
-            //_scenarioContext["CommodityDescription"] = commDescription;
             var commodityCodes = _scenarioContext.GetFromContext<List<string>>("CommodityCode", []);
             commodityCodes.Add(commCode);
             _scenarioContext["CommodityCode"] = commodityCodes;

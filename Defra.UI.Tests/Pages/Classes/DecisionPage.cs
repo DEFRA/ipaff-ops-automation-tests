@@ -157,11 +157,8 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void EnterDateInDecisionPage(string day, string month, string year)
         {
-            //txtNotAcceptableDay.Click();
             txtNotAcceptableDay.SendKeys(day);
-            //txtNotAcceptableMonth.Click();
             txtNotAcceptableMonth.SendKeys(month);
-            //txtNotAcceptableYear.Click();
             txtNotAcceptableYear.SendKeys(year);
         }
 

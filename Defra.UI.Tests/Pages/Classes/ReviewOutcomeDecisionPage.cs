@@ -465,7 +465,7 @@ namespace Defra.UI.Tests.Pages.Classes
         // Decision
         public string? GetAcceptanceDecision()
         {
-            return SafelyGetElementText(acceptanceDecision).Trim();
+            return SafelyGetElementText(acceptanceDecision);
         }
 
         public string? GetTransitExitBCP()
