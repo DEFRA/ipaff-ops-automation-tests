@@ -354,3 +354,81 @@ Scenario: Create a new import notification through clone a health or phytosanita
 	Then the browser tab is closed
 	When the user clicks on the Dashboard link
 	Then the dashboard page should be displayed
+
+Scenario: Agent submits CHEDPP notification for Trader after being delegated authority - SPS-7364
+	Given that I navigate to the IPAFF application
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF Trader 1 credentials and signin
+	Then the user should be logged into Notification page
+	When the user clicks Manage trade partners
+	Then the Are you a plants importer or agency? page should be displayed
+	When the user selects 'Yes' and clicks Continue
+	Then the Manage your authorisations page should be displayed
+	When the user clicks the change organisation settings link
+	Then the Change organisation settings page should be displayed
+	When the user ticks 'I want to authorise an agent to act for my business' checkbox
+	And the user unticks 'I am an agent who wants authority to act on behalf of other businesses' checkbox
+	And the user ticks 'I confirm that I have read and accepted the above statement/s.' checkbox
+	And the user clicks Save on the Change organisation settings page
+	Then the Change organisation settings page should be displayed with 'Settings saved'
+	When the user clicks Continue on the Change organisation settings page
+	Then the Manage your authorisations page should be displayed
+	When the user clicks Add an agent
+	Then the Add an agent page should be displayed
+	When the user enters Agent 1 agent code and clicks Save and continue
+	Then the Add an agent page should be displayed
+	When the user clicks Yes for Is this the agent, ticks the delegation checkbox and clicks Save and continue
+	Then the Set permissions page should be displayed
+	When the user toggles all permissions to Yes and clicks Finish
+	Then the Manage your authorisations page should be displayed
+	And the Agent 1 name should be listed under Agents acting on your behalf
+	When the user clicks Add an agent
+	Then the Add an agent page should be displayed
+	When the user enters Agent 2 agent code and clicks Save and continue
+	Then the Add an agent page should be displayed
+	When the user clicks Yes for Is this the agent, ticks the delegation checkbox and clicks Save and continue
+	Then the Set permissions page should be displayed
+	When the user toggles all permissions to Yes and clicks Finish
+	Then the Manage your authorisations page should be displayed
+	And the Agent 2 name should be listed under Agents acting on your behalf
+	When the user clicks the Back link
+	Then the dashboard page should be displayed
+	When the user logs out of IPAFFS Part 1
+	Then the user should be logged out successfully
+	Given that I navigate to the IPAFF application
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF Agent 2 credentials and signin
+	Then the user should be logged into Notification page
+	When the user clicks Manage trade partners
+	Then the Are you a plants importer or agency? page should be displayed
+	When the user selects 'Yes' and clicks Continue
+	Then the Manage your authorisations page should be displayed
+	And Trader 1 and Trader 2 should be listed as companies
+	When the user clicks the Back link
+	Then the dashboard page should be displayed
+	When the user logs out of IPAFFS Part 1
+	Then the user should be logged out successfully
+	Given that I navigate to the IPAFF application
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF Agent 2 credentials and signin
+	Then the user should be logged into Notification page
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Plants, plant products and other objects' option
+	And the user clicks Save and continue
+	Then About the consignment - Who are you creating this notification for? page should be displayed
+	When the user selects the Trader 1 radio button option
+	And the user clicks Save and continue
+	Then the Origin of the plants plant product or other objects page should be displayed
+	When user searches for the import notification
+	Then the notification should be present in the list
+	And the notification status should be 'TRADE PARTNER'
