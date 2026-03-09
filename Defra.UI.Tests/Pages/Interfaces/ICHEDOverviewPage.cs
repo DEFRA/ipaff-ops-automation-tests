@@ -12,7 +12,11 @@
         bool IsPageLoaded();
         void SwitchTab(string tabName);
         bool VerifyCHEDReference(string type, string chedReference, string replacementChedReference);
+        bool VerifyDecisionRecordedBy(string fieldName, string status);
+        bool VerifyDocumentCheck(string status);
         bool VerifyReplacedByLink(string type, string chedReference, string replacementChedReference);
+        bool VerifyRiskDecisionHMI(string decision);
+        bool VerifyRiskDecisionPHSI(string decision);
         bool VerifyShowChedButton();
         bool VerifyTab(string tabName);
         void ClickRecordControlButton();

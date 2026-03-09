@@ -20,6 +20,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement rdoGVMSYes => _driver.FindElement(By.XPath("//*[@id='gvms-question']/following-sibling::label"));
         private IWebElement rdoGVMSNo => _driver.FindElement(By.XPath("//*[@id='gvms-question-2']/following-sibling::label"));
         private IWebElement txtMovementRefereceNumber => _driver.FindElement(By.Id("ncts-mrn"));
+        private IWebElement btnSaveAndReview => _driver.FindElement(By.Id("save-and-review-button"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -56,6 +57,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public void EnterMovementReferenceNumber(string movementReferenceNumber)
         {
             txtMovementRefereceNumber.SendKeys(movementReferenceNumber);
+        }
+
+        public void ClickSaveAndReviewButton()
+        {
+            btnSaveAndReview.Click();
         }
     }
 }

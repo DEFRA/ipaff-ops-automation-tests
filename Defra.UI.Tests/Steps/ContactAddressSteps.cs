@@ -70,5 +70,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(contactAddressPage?.IsFirstContactAddressSelected(),
                 "The first contact address radio button is not selected by default.");
         }
+
+        [Then("the Contact address for consignment is prepopulated")]
+        public void ThenTheContactAddressForConsignmentIsPrepopulated()
+        {
+            Assert.True(contactAddressPage?.IsFirstContactAddressSelected(),
+                            "The first contact address radio button is not selected by default.");
+
+            var selectedAddress = contactAddressPage?.GetSelectedContactAddress();
+            _scenarioContext["ConsignmentContactAddress"] = selectedAddress;
+        }
+
     }
 }

@@ -36,5 +36,10 @@ namespace Defra.UI.Tests.Pages.Classes
                 !string.IsNullOrEmpty(txtEmailAddress.GetAttribute("value")) &&
                 !string.IsNullOrEmpty(txtMobileNumber.GetAttribute("value"));
         }
+
+        public string[] GetContactDetails()
+        {
+            return [txtName.GetAttribute("value"), txtEmailAddress.GetAttribute("value"), txtMobileNumber.GetAttribute("value")];
+        }
     }
 }

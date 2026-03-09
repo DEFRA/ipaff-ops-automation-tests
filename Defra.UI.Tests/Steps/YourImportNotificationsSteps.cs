@@ -1,8 +1,7 @@
-﻿using Reqnroll.BoDi;
+﻿using Defra.UI.Tests.Pages.Interfaces;
 using NUnit.Framework;
 using Reqnroll;
-using Defra.UI.Tests.Pages.Interfaces;
-using Defra.UI.Tests.Tools;
+using Reqnroll.BoDi;
 
 namespace Defra.UI.Tests.Steps.IPAFF
 {
@@ -210,5 +209,18 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             importNotificationsPage?.ClickCopyAsNewLink();
         }
+        
+        [When("the user deletes all the stored values")]
+        public void WhenTheUserDeletesAllTheStoredValues()
+        {
+            _scenarioContext.Clear();
+        }
+
+        [When("the user Clicks on Clone a certificate button")]
+        public void WhenTheUserClicksOnCloneACertificateButton()
+        {
+            importNotificationsPage?.ClickCloneButton();
+        }
+
     }
 }

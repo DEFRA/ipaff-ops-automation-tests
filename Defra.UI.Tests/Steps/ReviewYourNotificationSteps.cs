@@ -1,7 +1,5 @@
-﻿using Reqnroll.BoDi;
-using Defra.UI.Tests.Pages.Interfaces;
+﻿using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
-using DocumentFormat.OpenXml.Spreadsheet;
 using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;
@@ -46,9 +44,29 @@ namespace Defra.UI.Tests.Steps.IPAFF
             ValidateIfExists("ExitBCP", reviewPage?.GetExitBCP(), ref allDataMatches, mismatches);
             ValidateIfExists("DestinationCountry", reviewPage?.GetDestinationCountry(), ref allDataMatches, mismatches);
 
-            // Commodity details  
+            // Commodity details
             ValidateIfExists("CommodityCode", reviewPage?.GetCommodityCode(), ref allDataMatches, mismatches);
-            ValidateIfExists("Species", reviewPage?.GetSpecies(), ref allDataMatches, mismatches);
+
+            // Species — use unified MultiSpeciesData when available, else fall back to single-species
+            var multiSpecies = _scenarioContext.GetFromContext<MultiSpeciesData>(nameof(MultiSpeciesData));
+            if (multiSpecies?.HasData == true)
+            {
+                var multiSpeciesMismatches = multiSpecies.ValidateAgainstReviewPage(
+                    reviewPage?.GetAllSpeciesDetails() ?? [],
+                    species => reviewPage?.GetIdentificationDetailsForSpecies(species) ?? [],
+                    reviewPage?.GetAllPermanentAddresses() ?? []);
+
+                if (multiSpeciesMismatches.Count > 0)
+                {
+                    allDataMatches = false;
+                    mismatches.AddRange(multiSpeciesMismatches);
+                }
+            }
+            else
+            {
+                ValidateIfExists("Species", reviewPage?.GetSpecies(), ref allDataMatches, mismatches);
+            }
+
             ValidateIfExists("NumberOfAnimals", reviewPage?.GetNumberOfAnimals(), ref allDataMatches, mismatches);
             ValidateIfExists("NumberOfPackages", reviewPage?.GetNumberOfPackages(), ref allDataMatches, mismatches);
 
@@ -91,6 +109,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             ValidateIfExists("EstimatedArrivalDate", reviewPage?.GetEstimatedArrivalDate(), ref allDataMatches, mismatches);
             ValidateIfExists("EstimatedArrivalTime", reviewPage?.GetEstimatedArrivalTime(), ref allDataMatches, mismatches);
             ValidateIfExists("EstimatedJourneyTime", reviewPage?.GetEstimatedJourneyTime(), ref allDataMatches, mismatches);
+            ValidateIfExists("IsCTC", reviewPage?.GetCTCUsage(), ref allDataMatches, mismatches);
             ValidateIfExists("IsGVMS", reviewPage?.GetGVMSUsage(), ref allDataMatches, mismatches);
             ValidateIfExists("MeansOfTransportAfterBCP", reviewPage?.GetMeansOfTransportAfterBCP(), ref allDataMatches, mismatches);
             ValidateIfExists("TransportIdentificationAfterBCP", reviewPage?.GetTransportIdentificationAfterBCP(), ref allDataMatches, mismatches);
@@ -229,17 +248,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
             ValidateIfExists("ConsignmentReferenceNumber", reviewPage?.GetConsignmentReferenceNumber(), ref allDataMatches, mismatches);
 
             // Commodity details  
-            if (_scenarioContext.ContainsKey("CommodityCodeFirstCommodity"))
+            if (_scenarioContext.ContainsKey("CommodityCodeFirstCommodity")
+                && !_scenarioContext.ContainsKey("AllCommodityDetails"))
             {
                 ValidateIfExists("CommodityCodeFirstCommodity", reviewPage?.GetCommodityCodeList(0), ref allDataMatches, mismatches);
                 ValidateIfExists("CommodityDescFirstCommodity", reviewPage?.GetDescriptionList(0), ref allDataMatches, mismatches);
-                ValidateIfExists("GenusFirstCommodity", reviewPage?.GetGenusListCHEDPP(0), ref allDataMatches, mismatches);
-                ValidateIfExists("EPPOCodeFirstCommodity", reviewPage?.GetEPPOCodeListCHEDPP(0), ref allDataMatches, mismatches);
-                ValidateIfExists("NetWeight", reviewPage?.GetNetWeightListCHEDPP(0), ref allDataMatches, mismatches);
-                ValidateIfExists("NumberOfPackages", reviewPage?.GetNumPackagesListCHEDPP(0), ref allDataMatches, mismatches);
-                ValidateIfExists("PackageType", reviewPage?.GetTypeOfPackagesListCHEDPP(0), ref allDataMatches, mismatches);
-                ValidateIfExists("Quantity", reviewPage?.GetQuantityListCHEDPP(0), ref allDataMatches, mismatches);
-                ValidateIfExists("QuantityType", reviewPage?.GetQuantityTypeListCHEDPP(0), ref allDataMatches, mismatches);
 
                 ValidateIfExists("CommodityCodeSecondCommodity", reviewPage?.GetCommodityCodeList(1), ref allDataMatches, mismatches);
                 ValidateIfExists("CommodityDescSecondCommodity", reviewPage?.GetDescriptionList(1), ref allDataMatches, mismatches);
@@ -252,8 +265,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 ValidateIfExists("CommodityClass", reviewPage?.GetCommodityClass(1), ref allDataMatches, mismatches);
                 ValidateIfExists("Quantity", reviewPage?.GetQuantityListCHEDPP(1), ref allDataMatches, mismatches);
                 ValidateIfExists("QuantityType", reviewPage?.GetQuantityTypeListCHEDPP(1), ref allDataMatches, mismatches);
+                ValidateIfExists("TotalNetWeight", reviewPage?.GetTotalNetWeight(), ref allDataMatches, mismatches);
+                ValidateIfExists("TotalPackages", reviewPage?.GetTotalPackages(), ref allDataMatches, mismatches);
             }
-            else
+            else if (!_scenarioContext.ContainsKey("CommodityCodeFirstCommodity")
+                && !_scenarioContext.ContainsKey("AllCommodityDetails"))
             {
                 ValidateIfExists("CommodityCode", reviewPage?.GetCommodityCodeList(0), ref allDataMatches, mismatches);
                 ValidateIfExists("CommodityDescription", reviewPage?.GetDescriptionList(0), ref allDataMatches, mismatches);
@@ -264,11 +280,18 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 ValidateIfExists("PackageType", reviewPage?.GetTypeOfPackagesListCHEDPP(0), ref allDataMatches, mismatches);
                 ValidateIfExists("Quantity", reviewPage?.GetQuantityListCHEDPP(0), ref allDataMatches, mismatches);
                 ValidateIfExists("QuantityType", reviewPage?.GetQuantityTypeListCHEDPP(0), ref allDataMatches, mismatches);
+                ValidateIfExists("TotalNetWeight", reviewPage?.GetTotalNetWeight(), ref allDataMatches, mismatches);
+                ValidateIfExists("TotalPackages", reviewPage?.GetTotalPackages(), ref allDataMatches, mismatches);
             }
-
+            ValidateIfExists("FixedQuantity", reviewPage?.GetQuantity(), ref allDataMatches, mismatches);
+            ValidateIfExists("FixedQuantityType", reviewPage?.GetQuantityType(), ref allDataMatches, mismatches);
+            ValidateIfExists("NumberOfPackages", reviewPage?.GetNumPackagesListCHEDPP(0), ref allDataMatches, mismatches);
+            ValidateIfExists("PackageType", reviewPage?.GetTypeOfPackagesListCHEDPP(0), ref allDataMatches, mismatches);
             ValidateIfExists("TotalNetWeight", reviewPage?.GetTotalNetWeight(), ref allDataMatches, mismatches);
             ValidateIfExists("TotalPackages", reviewPage?.GetTotalPackages(), ref allDataMatches, mismatches);
             ValidateIfExists("TotalGrossWeight", reviewPage?.GetTotalGrossWeight(), ref allDataMatches, mismatches);
+            //ConfirmationToDeclareGMS exist for some GMS commodity codes only. 
+            ValidateIfExists("ConfirmationToDeclareGMS", reviewPage?.GetConfirmationToDeclareGMS(), ref allDataMatches, mismatches);
 
             // Documents
             ValidateIfExists("DocumentType", reviewPage?.GetAdditionalDocumentType(), ref allDataMatches, mismatches);
@@ -293,9 +316,20 @@ namespace Defra.UI.Tests.Steps.IPAFF
             ValidateIfExists("EnterTransportDocRef", reviewPage?.GetTransportDocumentReference(), ref allDataMatches, mismatches);
             ValidateIfExists("EstimatedArrivalDate", reviewPage?.GetEstimatedArrivalDate(), ref allDataMatches, mismatches);
             ValidateIfExists("EstimatedArrivalTime", reviewPage?.GetEstimatedArrivalTime(), ref allDataMatches, mismatches);
-            ValidateIfExists("IsCTC", reviewPage?.GetCTCUsage(), ref allDataMatches, mismatches);
+            ValidateIfExists("IsCTC", reviewPage?.GetCTCUsage().Replace("-", "–"), ref allDataMatches, mismatches);
             ValidateIfExists("IsGVMS", reviewPage?.GetGVMSUsage(), ref allDataMatches, mismatches);
 
+            //Contact Details
+            ValidateIfExists("ContactName", reviewPage?.GetContactName(), ref allDataMatches, mismatches);
+            ValidateIfExists("ContactEmail", reviewPage?.GetContactEmail(), ref allDataMatches, mismatches);
+            ValidateIfExists("ContactTelephone", reviewPage?.GetContactTelephone(), ref allDataMatches, mismatches);
+
+            ValidateIfExists("GrossVolume", reviewPage?.GetGrossVolume(), ref allDataMatches, mismatches);
+            ValidateIfExists("GrossVolumetUnit", reviewPage?.GetGrossVolumeUnit(), ref allDataMatches, mismatches);
+
+            //Add intended use of bulbs#
+            ValidateIfExists("IntendedForFinalUsers", reviewPage?.GetIntendedForFinalUsers(), ref allDataMatches, mismatches);
+            ValidateIfExists("ControlledAtmosphereContainer", reviewPage?.GetControlledAtmosphereContainer(), ref allDataMatches, mismatches);
 
             if (!allDataMatches)
             {
@@ -619,11 +653,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     Assert.AreEqual(packageType[i], summary?.PackageType[i], $"Package Type is not matching in {pageName} page!");
                 }
 
-                foreach (var item in commodityCode.Where(c => c.StartsWith("160")))
+                foreach (var item in commodityCode.Where(c => c.StartsWith("160") || c.Equals("03063400")))
                 {
                     expectedList.AddRange(summary?.TypeOfCommodity1);
                 }
-                if (commodityCode.Any(c => !c.StartsWith("160")))
+                if (commodityCode.Any(c => !c.StartsWith("160") || !c.Equals("03063400")))
                 {
                     expectedList.AddRange(summary?.TypeOfCommodity);
                 }
@@ -730,6 +764,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.AreEqual(consignmentContactAddress, reviewPage?.GetConsignmentContactAddress(), $"Consignment Contact Address is not matching in {pageName} page!");
         }
 
+        [Then(@"the user should see an error message '(.*)'")]
         [Then(@"the user should see an error message '(.*)' in review page")]
         public void ThenIShouldSeeAnErrorMessageInReviewPage(string errorMessage)
         {
@@ -979,6 +1014,131 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserClicksOnChangeLinkOfCatchCerfitificateDocumentSection(int index)
         {
             reviewPage?.ClickChangeCatchCertificateReferences(index);
+        }
+
+        [When("the user verifies the number of certificates displayed under the Documents heading")]
+        [Then("the user verifies the number of certificates displayed under the Documents heading")]
+        public void WhenTheUserVerifiesTheNumberOfCertificatesDisplayedUnderTheDocumentsHeading()
+        {
+            var expectedCount = _scenarioContext.GetFromContext("TotalCatchCertificateFiles", 3);
+
+            var isValid = reviewPage?.VerifyCatchCertificateHeadingDisplaysCount(expectedCount);
+
+            Assert.True(isValid,
+                $"Catch certificate heading does not display the expected count of {expectedCount} certificates");
+        }
+
+        [When("the user verifies the catch certificate table")]
+        [Then("the user verifies the catch certificate table")]
+        public void WhenTheUserVerifiesTheCatchCertificateTable()
+        {
+            var totalAttachments = _scenarioContext.GetFromContext("TotalCatchCertificateFiles", 3);
+
+            var expectedData = new Dictionary<int, (string reference, string flagState, string dateOfIssue, string fileName)>();
+
+            for (int i = 1; i <= totalAttachments; i++)
+            {
+                var reference = _scenarioContext.GetFromContext<string>($"CatchCertificateReference_Attachment{i}", string.Empty);
+                var flagState = _scenarioContext.GetFromContext<string>($"CatchCertificateFlagState_Attachment{i}", string.Empty);
+                var dateOfIssue = _scenarioContext.GetFromContext<string>($"CatchCertificateDateOfIssue_Attachment{i}", string.Empty);
+                var fileName = _scenarioContext.GetFromContext<string>($"CatchCertificate{i}", string.Empty);
+
+                if (!string.IsNullOrEmpty(reference))
+                {
+                    expectedData[i] = (reference, flagState, dateOfIssue, fileName);
+                }
+            }
+
+            var (isValid, mismatches) = reviewPage?.VerifyCatchCertificateSummaryTable(totalAttachments, expectedData)
+                ?? (false, new List<string> { "Review page not available" });
+
+            if (!isValid)
+            {
+                Console.WriteLine("[CATCH CERTIFICATE TABLE VALIDATION] Mismatches found:");
+                foreach (var mismatch in mismatches)
+                {
+                    Console.WriteLine($"  - {mismatch}");
+                }
+            }
+
+            Assert.True(isValid,
+                $"Catch certificate summary table validation failed. Mismatches: {string.Join("; ", mismatches)}");
+        }
+
+        [When("the user verifies the catch certificate details")]
+        [Then("the user verifies the catch certificate details")]
+        public void WhenTheUserVerifiesTheCatchCertificateDetails()
+        {
+            var totalAttachments = _scenarioContext.GetFromContext("TotalCatchCertificateFiles", 3);
+
+            var expectedData = new Dictionary<int, (string reference, string commodityCode, string species)>();
+
+            // Get the commodity code from context - stored as List<string>
+            var commodityCode = string.Empty;
+            if (_scenarioContext.ContainsKey("CommodityCode") && _scenarioContext["CommodityCode"] is List<string> codes)
+            {
+                commodityCode = codes.FirstOrDefault() ?? string.Empty;
+            }
+
+            // Get the species from context - stored as List<string>
+            var speciesList = _scenarioContext.GetFromContext<List<string>>("Species", []);
+            var defaultSpecies = speciesList.FirstOrDefault() ?? string.Empty;
+
+            for (int i = 1; i <= totalAttachments; i++)
+            {
+                var reference = _scenarioContext.GetFromContext<string>($"CatchCertificateReference_Attachment{i}", string.Empty);
+                var species = _scenarioContext.GetFromContext<string>($"CatchCertificateSpecies_Attachment{i}", defaultSpecies);
+
+                if (!string.IsNullOrEmpty(reference))
+                {
+                    expectedData[i] = (reference, commodityCode, species);
+                }
+            }
+
+            var (isValid, mismatches) = reviewPage?.VerifyCatchCertificateDetails(totalAttachments, expectedData)
+                ?? (false, new List<string> { "Review page not available" });
+
+            if (!isValid)
+            {
+                Console.WriteLine("[CATCH CERTIFICATE DETAILS VALIDATION] Mismatches found:");
+                foreach (var mismatch in mismatches)
+                {
+                    Console.WriteLine($"  - {mismatch}");
+                }
+            }
+
+            Assert.True(isValid,
+                $"Catch certificate details validation failed. Mismatches: {string.Join("; ", mismatches)}");
+        }
+        [When("the user Clicks on Change link for Transport to the Border Control Post")]
+        public void WhenTheUserClicksOnChangeLinkForTransportToTheBorderControlPost()
+        {
+            reviewPage?.ClickChangeLinkForTransportToTheBCP();
+        }
+
+        [When("the user Clicks on Change link for Goods movement services")]
+        public void WhenTheUserClicksOnChangeLinkForGoodsMovementServices()
+        {
+            reviewPage?.ClickChangeLinkForGoodsMovementServices();
+        }
+
+        [When("the user Clicks on Change link for Contact details")]
+        public void WhenTheUserClicksOnChangeLinkForContactDetails()
+        {
+            reviewPage?.ClickChangeLinkForContactDetails();
+        }
+
+        [When("the user Clicks on Change link for Add a delivery address")]
+        public void WhenTheUserClicksOnChangeLinkForAddADeliveryAddress()
+        {
+            _scenarioContext["CompanyName"] = reviewPage?.GetImporterNameByChangeLink();
+            reviewPage?.ClickChangeLinkForAddDeliveryAddress();
+        }
+
+        [When("the user clicks View CHED grey button")]
+        public void WhenTheUserClicksViewCHEDGreyButton()
+        {
+            reviewPage?.ClickViewCHEDButton();
         }
 
     }

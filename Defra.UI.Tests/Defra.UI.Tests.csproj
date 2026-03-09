@@ -48,6 +48,7 @@
     <PackageReference Include="Bogus" Version="35.6.5" />
     <PackageReference Include="Cognizant.WCAG.Compliance.Checker" Version="1.2.313" />
     <PackageReference Include="Defra.Ui.Automation.Framework" Version="2.0.7" />
+    <PackageReference Include="DocumentFormat.OpenXml" Version="3.4.1" />
     <PackageReference Include="Dynamitey" Version="3.0.3" />
     <PackageReference Include="ExtentReports" Version="5.0.4" />
     <PackageReference Include="MailinatorApiClient" Version="1.0.3" />
@@ -77,10 +78,19 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Data\Documents\Catch Certificate 2.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\Documents\Catch Certificate 3.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Data\Documents\IPAFFS Inspector Document.docx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Data\Documents\IPAFFS Test Document - Exceeds size.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\Documents\Catch Certificate 1.docx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Data\Documents\IPAFFS Test Document 1.docx">
