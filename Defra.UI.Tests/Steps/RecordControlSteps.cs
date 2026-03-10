@@ -1,4 +1,5 @@
 ﻿using Defra.UI.Tests.Pages.Interfaces;
+using Defra.UI.Tests.Tools;
 using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;
@@ -71,6 +72,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserClicksTheSubmitControlButton()
         {
             recordControlPage?.ClickSubmitControlButton();
+        }
+
+        [When("the user enters {string} date in Record control page")]
+        public void WhenTheUserEntersDate(string dateString)
+        {
+            var (day, month, year) = Utils.GetDayMonthYear(dateString);
+            recordControlPage?.EnterDate(day, month, year);
         }
     }
 }
