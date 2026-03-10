@@ -22,6 +22,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement hdrCompanies => _driver.FindElement(By.XPath("//h3[normalize-space(text())='Companies']"));
         private IWebElement lblNoPermissions => _driver.FindElement(By.XPath("//p[contains(text(),'You have not been assigned any permissions by importers/exporters')]"));
         private IReadOnlyCollection<IWebElement> organisationTabs => _driver.FindElements(By.CssSelector("li.organisation-selection"));
+        private IWebElement hdrAgentsActingOnYourBehalf => _driver.FindElement(By.XPath("//h2[normalize-space(text())='Agents acting on your behalf']"));
+        private IWebElement lblNoAgentsAuthorised => _driver.FindElement(By.XPath("//p[contains(@class,'govuk-body') and contains(text(),'You have not yet authorised any agents to act on behalf of your business')]"));
+        private IWebElement btnAddAnAgent => _driver.FindElement(By.XPath("//a[contains(@class,'govuk-button') and normalize-space(text())='Add an agent']"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -84,6 +87,28 @@ namespace Defra.UI.Tests.Pages.Classes
             var tabs = organisationTabs.Select(t => t.Text.Trim()).ToList();
             return tabs.Any(t => t.Contains(trader1BusinessName))
                 && tabs.Any(t => t.Contains(trader2BusinessName));
+        }
+
+        public bool IsAgentsActingOnYourBehalfHeaderDisplayed()
+        {
+            return hdrAgentsActingOnYourBehalf.Displayed;
+        }
+
+        public bool IsNoAgentsAuthorisedMessageDisplayed()
+        {
+            return lblNoAgentsAuthorised.Displayed
+                && lblNoAgentsAuthorised.Text.Trim().Contains("You have not yet authorised any agents to act on behalf of your business.");
+        }
+
+        public bool IsAddAnAgentButtonDisplayed()
+        {
+            return btnAddAnAgent.Displayed
+                && btnAddAnAgent.Text.Trim().Contains("Add an agent");
+        }
+
+        public void ClickAddAnAgent()
+        {
+            btnAddAnAgent.Click();
         }
     }
 }
