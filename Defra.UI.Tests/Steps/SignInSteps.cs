@@ -183,23 +183,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _signInPage?.SignIn(userObject.UserName, userObject.Credential);
         }
 
-        [When("I have provided the IPAFF Trader 1 credentials and signin")]
-        public void WhenIHaveProvidedTheIPAFFTrader1CredentialsAndSignin()
+        [When(@"I have provided the IPAFF {string} credentials and signin")]
+        public void WhenIHaveProvidedTheIPAFFCredentialsAndSignin(string role)
         {
-            var jsonData = UserObject?.GetUser("IPAFF", "Trader 1");
-            var userObject = new User
-            {
-                UserName = jsonData.UserName,
-                Credential = jsonData.Credential
-            };
-
-            _signInPage?.SignIn(userObject.UserName, userObject.Credential);
-        }
-
-        [When("I have provided the IPAFF Agent 2 credentials and signin")]
-        public void WhenIHaveProvidedTheIPAFFAgent2CredentialsAndSignin()
-        {
-            var jsonData = UserObject?.GetUser("IPAFF", "Agent 2");
+            var jsonData = UserObject?.GetUser("IPAFF", role);
             var userObject = new User
             {
                 UserName = jsonData.UserName,

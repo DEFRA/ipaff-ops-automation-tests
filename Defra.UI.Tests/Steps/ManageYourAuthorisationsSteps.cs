@@ -92,7 +92,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 $"Expected both '{trader1BusinessName}' and '{trader2BusinessName}' to be listed as companies on the Manage your authorisations page");
         }
 
-        // 3. Agents acting on your behalf header
         [Then("the Agents acting on your behalf header should be displayed")]
         public void ThenTheAgentsActingOnYourBehalfHeaderShouldBeDisplayed()
         {
@@ -118,6 +117,28 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserClicksAddAnAgent()
         {
             manageYourAuthorisationsPage?.ClickAddAnAgent();
+        }
+
+        [Then("the {string} name should be listed under Agents acting on your behalf")]
+        public void ThenTheAgentNameShouldBeListedUnderAgentsActingOnYourBehalf(string role)
+        {
+            var businessName = userObject?.GetUser("IPAFF", role)?.BusinessName;
+            Assert.That(businessName, Is.Not.Null.And.Not.Empty, $"BusinessName not found in Users.json for {role}");
+            Assert.True(manageYourAuthorisationsPage?.IsAgentListedWithConfirmedDelegation(businessName!),
+                $"Agent '{businessName}' is not listed under 'Agents acting on your behalf' with status 'Agent confirmed delegation'");
+        }
+
+        [Then("the Companies section should be displayed with permissions message")]
+        public void ThenTheCompaniesSectionShouldBeDisplayedWithPermissionsMessage()
+        {
+            Assert.True(manageYourAuthorisationsPage?.IsCompaniesWithPermissionsDisplayed(),
+                "The Companies section with permissions message and company list is not displayed");
+        }
+
+        [When("the user clicks on the Back link above the Manage your authorisations header")]
+        public void WhenTheUserClicksOnTheBackLinkAboveTheManageYourAuthorisationsHeader()
+        {
+            manageYourAuthorisationsPage?.ClickBackLink();
         }
     }
 }
