@@ -396,10 +396,13 @@ Scenario: Agent submits CHEDPP notification for Trader after being delegated aut
 	And the no agents authorised message should be displayed
 	And the Add an agent button should be displayed
 	When the user clicks Add an agent
-	#Then the Add an agent page should be displayed
-	#When the user enters Agent 1 agent code and clicks Save and continue
-	#Then the Add an agent page should be displayed
-	#When the user clicks Yes for Is this the agent, ticks the delegation checkbox and clicks Save and continue
+	Then the Add an agent page should be displayed
+	When the user enters 'Agent 1' agent code 
+	And the user clicks Save and continue
+	Then the Add an agent page should be displayed
+	When the user clicks Yes for Is this the agent?
+	And the user ticks the Confirm delegation checkbox
+	And the user clicks Save and continue
 	#Then the Set permissions page should be displayed
 	#When the user toggles all permissions to Yes and clicks Finish
 	#Then the Manage your authorisations page should be displayed
