@@ -12,7 +12,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IObjectContainer _objectContainer;
 
         #region Page Objects
-        private IWebElement primaryTitle => _driver.WaitForElement(By.XPath("//div[@id='notification-overview-page']//h1[contains(@class,'govuk-heading-xl')]"), true);
+        private IWebElement primaryTitle => _driver.WaitForElement(By.XPath("//h1[contains(@class,'govuk-heading-xl')]"), true);
         private IWebElement btnRaiseBorderNotification => _driver.FindElement(By.Id("raise-border-notification"));
         private IWebElement btnCopyAsReplacement => _driver.FindElement(By.Id("replace-certificate"));
         private IWebElement lnkReplacedBy => _driver.FindElement(By.Id("replaced-by"));

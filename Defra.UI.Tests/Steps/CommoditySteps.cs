@@ -144,17 +144,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             commodityPage?.ClickUpdateTotal();
             Thread.Sleep(2000);
-<<<<<<< HEAD
             _scenarioContext["SubtotalNetWeight"]=commodityPage?.GetSubtotalsOfNetWeight();
             _scenarioContext["SubtotalPackages"] = commodityPage?.GetSubtotalsOfPackages();   
             _scenarioContext["TotalNetWeight"]=commodityPage?.GetTotalNetWeight();
             _scenarioContext["TotalPackages"] = commodityPage?.GetTotalPackages();
-=======
-            _scenarioContext["SubtotalNetWeight"] = commodityPage?.GetSubtotalsOfNetWeight();
-            _scenarioContext["SubtotalPackages"] = commodityPage?.GetSubtotalsOfPackages();
-            _scenarioContext["TotalNetWeight"] = commodityPage.GetTotalNetWeight();
-            _scenarioContext["TotalPackages"] = commodityPage.GetTotalPackages();
->>>>>>> d76b44d0a52a5058c613e9d318e1126d7ef02716
         }
 
         [Then("user enters the total gross weight greater than the net weight {string}")]
@@ -274,13 +267,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserSelectsTheFirstAdditionalCommodityUnderTheParentCommodity(string additionalCommCode, string additionalCommDescription)
         {
             _scenarioContext["CommodityCodeSecondCommodity"] = additionalCommCode;
-<<<<<<< HEAD
             _scenarioContext["CommodityDescSecondCommodity"] = additionalCommDescription;
             commodityPage?.SelectCommodityInTheCommTree(additionalCommDescription);
-=======
-            _scenarioContext["CommodityDescSecondCommodity"] = additionalcommDescription;
-            commodityPage?.SelectCommodityInTheCommTree(additionalcommDescription);
->>>>>>> d76b44d0a52a5058c613e9d318e1126d7ef02716
         }
 
         [When("the user selects the {string} {string} under the parent commodity")]
@@ -290,11 +278,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             commodityCodes.Add(commCode);
             _scenarioContext["CommodityCode"] = commodityCodes;
             commodityPage?.SelectCommodityInTheCommTree(commDescription);
-
-            //Mine: Remove later
-           /* _scenarioContext["CommodityCode"] = additionalCommCode;
-            _scenarioContext["CommodityDescription"] = additionalcommDescription;
-            commodityPage?.SelectCommodityInTheCommTree(additionalcommDescription);*/
         }
 
         [Then("the Commodity page should be displayed")]
