@@ -12,12 +12,13 @@ namespace Defra.UI.Tests.Pages.Classes
         private IObjectContainer _objectContainer;
 
         #region Page Objects
-        private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//*[@class='govuk-panel__title']"), true);
+        private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[contains(@class,'govuk')]"), true);
         private IWebElement chedReference => _driver.WaitForElement(By.Id("reference-number"));
         private IWebElement chedReferenceVersion => _driver.WaitForElement(By.Id("version-number"));
         private IWebElement outcomeValue => _driver.WaitForElement(By.Id("control-outcome"));
         private IWebElement btnViewOrPrintCHED => _driver.WaitForElement(By.Id("view-certificate"));
-        private IWebElement lnkReturnToDashboard => _driver.FindElement(By.Id("manage-notifications"));
+        private IWebElement lnkReturnToDashboard => _driver.WaitForElement(By.Id("manage-notifications"));
+
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -26,6 +27,8 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             _objectContainer = container;
         }
+
+        #region Methods
 
         public bool IsPageLoaded()
         {
@@ -43,8 +46,21 @@ namespace Defra.UI.Tests.Pages.Classes
             return outcomeValue.Text.Trim();
         }
 
+        public bool IsViewOrPrintCHEDButtonDisplayed()
+        {
+            try
+            {
+                return btnViewOrPrintCHED.Displayed;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public void ClickViewOrPrintCHED() => btnViewOrPrintCHED.Click();
 
         public void ClickReturnToYourDashboard() => lnkReturnToDashboard.Click();
+        #endregion
     }
 }

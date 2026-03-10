@@ -5,6 +5,7 @@
         bool IsPageLoaded();
         string GetCHEDReferenceWithVersion();
         string GetOutcome();
+        bool IsViewOrPrintCHEDButtonDisplayed();
         void ClickViewOrPrintCHED();
         void ClickReturnToYourDashboard();
     }

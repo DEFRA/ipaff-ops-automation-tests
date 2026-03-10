@@ -141,5 +141,10 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             return txtRiskDecisionPHSIValue.Text.Trim().Equals(decision);
         }
+
+        public void ClickRecordControl()
+        {
+            btnRecordControl.Click();
+        }
     }
 }
