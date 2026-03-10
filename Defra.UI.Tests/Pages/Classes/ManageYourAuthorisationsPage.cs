@@ -21,10 +21,14 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement autoAcceptToggleYes => _driver.FindElement(By.XPath("//span[contains(@class,'permission-tag-on') and not(contains(@style,'display:none'))]"));
         private IWebElement hdrCompanies => _driver.FindElement(By.XPath("//h3[normalize-space(text())='Companies']"));
         private IWebElement lblNoPermissions => _driver.FindElement(By.XPath("//p[contains(text(),'You have not been assigned any permissions by importers/exporters')]"));
-        private IReadOnlyCollection<IWebElement> organisationTabs => _driver.FindElements(By.CssSelector("li.organisation-selection"));
+        private IWebElement lblWithPermissions => _driver.FindElement(By.XPath("//p[contains(@class,'govuk-body') and contains(text(),'Listed below are the companies that you have association with')]"));
+        private IReadOnlyCollection<IWebElement> companyPaneHeadings => _driver.FindElements(By.CssSelector("div.govuk-collapse-pane--heading-launch"));
         private IWebElement hdrAgentsActingOnYourBehalf => _driver.FindElement(By.XPath("//h2[normalize-space(text())='Agents acting on your behalf']"));
         private IWebElement lblNoAgentsAuthorised => _driver.FindElement(By.XPath("//p[contains(@class,'govuk-body') and contains(text(),'You have not yet authorised any agents to act on behalf of your business')]"));
         private IWebElement btnAddAnAgent => _driver.FindElement(By.XPath("//a[contains(@class,'govuk-button') and normalize-space(text())='Add an agent']"));
+        private IWebElement btnBackLink => _driver.FindElement(By.CssSelector("a.govuk-back-link"));
+        private IWebElement GetAgentRowByBusinessName(string businessName) => _driver.FindElement(By.XPath($"//table[caption[normalize-space(text())='Agents acting on your behalf']]//tbody//th[normalize-space(text())='{businessName}']/parent::tr"));
+        private IWebElement GetDelegationStatusInRow(IWebElement row) => row.FindElement(By.CssSelector("td.govuk-table__cell"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -82,11 +86,18 @@ namespace Defra.UI.Tests.Pages.Classes
                 && lblNoPermissions.Displayed;
         }
 
+        public bool IsCompaniesWithPermissionsDisplayed()
+        {
+            return hdrCompanies.Displayed
+                && lblWithPermissions.Displayed
+                && companyPaneHeadings.Any();
+        }
+
         public bool AreCompaniesListed(string trader1BusinessName, string trader2BusinessName)
         {
-            var tabs = organisationTabs.Select(t => t.Text.Trim()).ToList();
-            return tabs.Any(t => t.Contains(trader1BusinessName))
-                && tabs.Any(t => t.Contains(trader2BusinessName));
+            var companyNames = companyPaneHeadings.Select(h => h.Text.Trim()).ToList();
+            return companyNames.Any(t => t.Contains(trader1BusinessName))
+                && companyNames.Any(t => t.Contains(trader2BusinessName));
         }
 
         public bool IsAgentsActingOnYourBehalfHeaderDisplayed()
@@ -109,6 +120,19 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickAddAnAgent()
         {
             btnAddAnAgent.Click();
+        }
+
+        public bool IsAgentListedWithConfirmedDelegation(string businessName)
+        {
+            var row = GetAgentRowByBusinessName(businessName);
+            var delegationStatus = GetDelegationStatusInRow(row);
+            return row.Displayed
+                && delegationStatus.Text.Trim().Equals("Agent confirmed delegation", StringComparison.OrdinalIgnoreCase);
+        }
+
+        public void ClickBackLink()
+        {
+            btnBackLink.Click();
         }
     }
 }
