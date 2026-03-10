@@ -15,13 +15,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
         private ILaboratoryTestsPage? laboratoryTestsPage => _objectContainer.IsRegistered<ILaboratoryTestsPage>() ? _objectContainer.Resolve<ILaboratoryTestsPage>() : null;
 
-
         public LaboratoryTestsSteps(ScenarioContext context, IObjectContainer container)
         {
             _objectContainer = container;
             _scenarioContext = context;
         }
-
 
         [Then("the Laboratory tests page should be displayed")]
         public void ThenTheLaboratoryTestsPageShouldBeDisplayed()
@@ -77,6 +75,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
             laboratoryTestsPage?.SelectLabTestsReason(labTestsReason);
         }
 
+        [When("{string} is pre-selected for Reason for testing")]
+        [Then("{string} is pre-selected for Reason for testing")]
+        public void WhenIsPre_SelectedForReasonForTesting(string labTestsReasonOption)
+        {
+             Assert.True(laboratoryTestsPage?.IsReasonForTestingRadioSelected(labTestsReasonOption), $"Unweaned animals radio is not pre-selected with {labTestsReasonOption} option");
+            _scenarioContext["LaboratoryTestsReason"] = labTestsReasonOption;
+        }
+
         [Then("the user verifies {string} {string} and {string} radio buttons are displayed")]
         public void ThenTheUserVerifiesRadioButtonsAreDisplayed(string reason1, string reason2, string reason3)
         {
@@ -97,6 +103,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user clicks on the Test {string}")]
         public void WhentheUserClicksOnTest(string testName)
         {
+            laboratoryTestsPage?.SelectTest(testName);
+        }
+
+        [When("the user clicks on the name of the test")]
+        public void WhenTheUserClicksOnTheNameOfTheTest()
+        {
+            var testName = _scenarioContext.Get<string>("LaboratoryTestName");
             laboratoryTestsPage?.SelectTest(testName);
         }
 
@@ -215,6 +228,21 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(laboratoryTestsPage?.VerifyLabTestsReviewPage(commodityCode, commodityDescription, commoditySpecies, labTestName));
             Assert.True(laboratoryTestsPage?.IsAddAnotherTestLinkDisplayed(), "Add another test link is not displayed");
             Assert.That(result, Is.EqualTo("Pending"), $"Lab test result mismatch. Expected: Pending, Actual: {result}");
+        }
+
+        [Then("the user verifies the data and the conclusion as {string} on the Laboratory Tests Review page")]
+        public void ThenTheUserVerifiesTheDataAndTheConclusionAsOnTheLaboratoryTestsReviewPage(string conclusion)
+        {
+            var commodityCode = _scenarioContext.Get<string>("SelectedCommoditySampledCode");
+            var commodityDescription = _scenarioContext.Get<string>("SelectedCommoditySampledDescription");
+            var commoditySpecies = _scenarioContext.Get<string>("SelectedCommoditySampledSpecies");
+            var labTestName = _scenarioContext.Get<string>("LaboratoryTestName");
+            var analysisType = _scenarioContext.Get<string>("AnalysisType");
+            var result = laboratoryTestsPage?.GetLabTestResult(0);
+
+            Assert.True(laboratoryTestsPage?.VerifyLabTestsReviewPage(commodityCode, commodityDescription, commoditySpecies, labTestName, conclusion));
+            Assert.True(laboratoryTestsPage?.IsAddAnotherTestLinkDisplayed(), "Add another test link is not displayed");
+            Assert.That(result, Is.EqualTo(conclusion), $"Lab test result mismatch. Expected: {conclusion}, Actual: {result}");
         }
 
         [Then("the Laboratory tests Reason for testing page should be displayed")]

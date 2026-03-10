@@ -7,6 +7,6 @@
         string GetOutcome();
         bool IsViewOrPrintCHEDButtonDisplayed();
         void ClickViewOrPrintCHED();
-        void ClickReturnToYourDashboardLink();
+        void ClickReturnToYourDashboard();
     }
 }

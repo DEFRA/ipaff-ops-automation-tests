@@ -1,4 +1,5 @@
-﻿using Defra.UI.Tests.Pages.Interfaces;
+﻿using Defra.UI.Tests.Pages.Classes;
+using Defra.UI.Tests.Pages.Interfaces;
 using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;
@@ -20,7 +21,7 @@ namespace Defra.UI.Tests.Steps
         }
 
         [Then("Your control has been recorded page should be displayed")]
-        public void ThenTheYourChecksHaveBeenSubmittedPageShouldBeDisplayed()
+        public void ThenYourControlHasBeenRecordedPageShouldBeDisplayed()
         {
             Assert.True(controlRecordedPage?.IsPageLoaded(), "Your control has been recorded Page is not loaded");
             _scenarioContext["CHEDReferenceWithVersion"] = controlRecordedPage?.GetCHEDReferenceWithVersion();
@@ -28,14 +29,15 @@ namespace Defra.UI.Tests.Steps
             Assert.True(controlRecordedPage?.IsViewOrPrintCHEDButtonDisplayed(), "View or print CHED button is not displayed");
         }
 
-        [Then("the outcome is recorded as {string}")]
-        public void ThenTheOutcomeIsRecordedAs(string outcome)
+        [Then("the CHED reference number and Outcome are displayed")]
+        public void ThenTheCHEDReferenceNumberAndOutcomeAreDisplayed()
         {
-            Assert.True(controlRecordedPage?.GetOutcome().Equals(outcome), "The outcome is not recorded as "+outcome);
+            Assert.False(string.IsNullOrEmpty(controlRecordedPage?.GetCHEDReferenceWithVersion()), "CHED reference with version should not be null or empty");
+            Assert.True(controlRecordedPage?.GetOutcome().Contains("Consignment has left the UK"), "Record control outcome doesn't match");
         }
 
-        [When("the user clicks View or print CHED button in Record control recorded page")]
-        public void WhenTheUserClicksViewOrPrintChedButtonInRecordControlRecordedPage()
+        [When("the user clicks View or print CHED button on Control recorded page")]
+        public void WhenTheUserClicksViewOrPrintCHEDButtonOnControlRecordedPage()
         {
             controlRecordedPage?.ClickViewOrPrintCHED();
         }

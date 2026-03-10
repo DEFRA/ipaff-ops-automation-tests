@@ -12,7 +12,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IObjectContainer _objectContainer;
 
         #region Page Objects
-        private IWebElement primaryTitle => _driver.WaitForElement(By.XPath("//h1[@class='govuk-heading-xl ']"), true);
+        private IWebElement primaryTitle => _driver.WaitForElement(By.XPath("//h1[contains(@class,'govuk-heading-xl')]"), true);
         private IWebElement btnRaiseBorderNotification => _driver.FindElement(By.Id("raise-border-notification"));
         private IWebElement btnCopyAsReplacement => _driver.FindElement(By.Id("replace-certificate"));
         private IWebElement lnkReplacedBy => _driver.FindElement(By.Id("replaced-by"));
@@ -25,6 +25,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement lblFieldValueInControl(string fieldName,string sectionName) => _driver.FindElement(By.XPath($"(//h2[normalize-space(text())='{sectionName}']/following::*[normalize-space(text())='{fieldName}']/following-sibling::td)[1]"));
         private IWebElement lblFieldValueForTable(string fieldName,string column) => _driver.FindElement(By.XPath($"//th[normalize-space()='{fieldName}']/following::td[{column}]"));
         private IWebElement lnkTab(string tabName) => _driver.FindElement(By.XPath($"//a[@id='tab_{tabName}']"));
+        private IWebElement btnRecordControl => _driver.FindElement(By.Id("record-control"));
         private IWebElement txtRiskDecisionPHSIValue => _driver.FindElement(By.XPath("//*[normalize-space()='Risk decision PHSI']/following-sibling::dd/strong"));
         private IWebElement txtRiskDecisionHMIValue => _driver.FindElement(By.XPath("//*[normalize-space()='Risk decision HMI']/following-sibling::dd/strong"));
         private IWebElement txtDocumentCheckValue => _driver.FindElement(By.XPath("//*[normalize-space()='Document check']/following-sibling::dd/strong"));
@@ -120,6 +121,8 @@ namespace Defra.UI.Tests.Pages.Classes
             return !string.IsNullOrEmpty(lblFieldValueForTable(fieldName, column).Text);
         }
 
+        public void ClickRecordControlButton() => btnRecordControl.Click();
+        
         public bool VerifyDecisionRecordedBy(string fieldName, string status)
         {
             return lblFieldValue(fieldName).Text.Trim().Equals(status);

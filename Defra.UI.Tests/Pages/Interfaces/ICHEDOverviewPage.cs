@@ -20,5 +20,6 @@
         bool VerifyRiskDecisionPHSI(string decision);
         bool VerifyShowChedButton();
         bool VerifyTab(string tabName);
+        void ClickRecordControlButton();
     }
 }

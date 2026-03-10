@@ -3,11 +3,7 @@ using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
 using Reqnroll.BoDi;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using SeleniumExtras.WaitHelpers;
 
 namespace Defra.UI.Tests.Pages.Classes
 {
@@ -25,6 +21,13 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtReleasedDay => _driver.WaitForElement(By.Name("released-date-day"));
         private IWebElement txtReleasedMonth => _driver.WaitForElement(By.Name("released-date-month"));
         private IWebElement txtReleasedYear => _driver.WaitForElement(By.Name("released-date-year"));
+        private IWebElement useByDateDatePickerIcon => _driver.WaitForElement(By.XPath("//div[@id='sample-use-by-date']//button[@class='date-picker__reveal__icon']"));
+        private IWebElement releasedDateDatePickerIcon => _driver.WaitForElement(By.XPath("//div[@id='released-date']//button[@class='date-picker__reveal__icon']"));
+        private IWebElement nextMonthButton(string date) => _driver.WaitForElement(By.XPath($"//div[@id='{date}']//button[@class='date-picker__button__next-month']"));
+        private IWebElement firstDateOfTheMonth => _driver.WaitForElement(By.XPath("//div[@id='sample-use-by-date']//td/button[text()='1']"));
+        private IWebElement secondDateOfTheMonth => _driver.WaitForElement(By.XPath("//div[@id='released-date']//td/button[text()='2']"));
+        private IWebElement txtLabTestMethod => _driver.WaitForElement(By.Id("lab-test-method"));
+        private IWebElement txtResults => _driver.WaitForElement(By.Name("lab-test-results"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -58,5 +61,26 @@ namespace Defra.UI.Tests.Pages.Classes
             txtReleasedYear.SendKeys(year);
         }
 
+        public bool IsUseByDatePickerIconDisplayed() => useByDateDatePickerIcon.Displayed;
+
+        public bool IsReleasedDatePickerIconDisplayed() => releasedDateDatePickerIcon.Displayed;
+
+        public void SelectSampleUseByDateFromDatePicker()
+        {
+            _driver.WaitForElementCondition(ExpectedConditions.ElementToBeClickable(useByDateDatePickerIcon)).Click();
+            _driver.WaitForElementCondition(ExpectedConditions.ElementToBeClickable(nextMonthButton("sample-use-by-date"))).Click();
+            firstDateOfTheMonth.Click();
+        }
+
+        public void SelectReleasedDateFromDatePicker()
+        {
+            _driver.WaitForElementCondition(ExpectedConditions.ElementToBeClickable(releasedDateDatePickerIcon)).Click();
+            _driver.WaitForElementCondition(ExpectedConditions.ElementToBeClickable(nextMonthButton("released-date"))).Click();
+            secondDateOfTheMonth.Click();
+        }
+
+        public void EnterLabTestMethod(string testMethod) => txtLabTestMethod.SendKeys(testMethod);
+
+        public void EnterResults(string results) => txtResults.SendKeys(results);
     }
 }

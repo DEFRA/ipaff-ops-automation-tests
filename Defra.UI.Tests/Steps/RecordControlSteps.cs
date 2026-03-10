@@ -1,6 +1,4 @@
-﻿using Defra.UI.Tests.Pages.Classes;
-using Defra.UI.Tests.Pages.Interfaces;
-using Defra.UI.Tests.Tools;
+﻿using Defra.UI.Tests.Pages.Interfaces;
 using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;
@@ -25,7 +23,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void ThenRecordControlPageShouldBeDisplayed()
         {
             Assert.True(recordControlPage?.IsPageLoaded(), "Record control page is not displayed");
-
         }
 
         [When("the user selects {string} for Did the consignment leave the UK?")]
