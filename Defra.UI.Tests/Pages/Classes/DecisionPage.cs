@@ -4,6 +4,7 @@ using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
+using SeleniumExtras.WaitHelpers;
 
 namespace Defra.UI.Tests.Pages.Classes
 {
@@ -29,7 +30,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement rdoNotAcceptable => _driver.FindElement(By.Id("acceptability-refused"));
         private IWebElement rdoDestruction => _driver.FindElement(By.Id("notAcceptAction-destruction"));
         private IWebElement rdoDestructionReason => _driver.FindElement(By.Id("notAcceptableDestructionReason"));
-        private IWebElement rdoReDispatching => _driver.FindElement(By.XPath("//input[@id='notAcceptAction-reexport']|//input[@id='notAcceptAction-redispatch']"));
+        private IWebElement rdoReDispatching => _driver.FindElement(By.XPath("//input[@id='notAcceptAction-reexport']|//input[@id='notAcceptAction-redispatch']|//input[@id='a_noacacreexport']"));
         private IWebElement rdoTransformation => _driver.FindElement(By.Id("notAcceptAction-transformation"));
         private IWebElement rdoOther => _driver.FindElement(By.Id("notAcceptAction-other"));
         private IWebElement txtNotAcceptableDay => _driver.FindElement(By.Id("not-acceptable-day"));
@@ -49,7 +50,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtExitDateYear => _driver.FindElement(By.Id("temp-deadline-year"));
         private IWebElement ddlExitBCP => _driver.FindElement(By.Id("temporaryExitBipUk"));
         private IWebElement txtDestructionReason => _driver.FindElement(By.Id("notAcceptableDestructionReason"));
-        
+        private IWebElement datePickerIcon => _driver.WaitForElement(By.XPath("//div[@id='not-acceptable-date']//button[@class='date-picker__reveal__icon']"));
+        private IWebElement nextMonthButton => _driver.WaitForElement(By.XPath("//div[@id='not-acceptable-date']//button[@class='date-picker__button__next-month']"));
+        private IWebElement firstDateOfTheMonth => _driver.WaitForElement(By.XPath("//div[@id='not-acceptable-date']//td/button[text()='1']"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -145,20 +148,25 @@ namespace Defra.UI.Tests.Pages.Classes
                         case "Destruction": rdoDestruction.Click(); break;
                         case "Re-dispatching": rdoReDispatching.Click(); break;
                         case "Transformation": rdoTransformation.Click(); break;
+                        case "Use for other purpose": rdoOther.Click(); break;
                         case "Other": rdoOther.Click(); break;
                     }
                     break;
             }
         }
 
-        public void EnterCurrentDateInDecisionPage(string day, string month, string year)
+        public void EnterDateInDecisionPage(string day, string month, string year)
         {
-            txtNotAcceptableDay.Click();
             txtNotAcceptableDay.SendKeys(day);
-            txtNotAcceptableMonth.Click();
             txtNotAcceptableMonth.SendKeys(month);
-            txtNotAcceptableYear.Click();
             txtNotAcceptableYear.SendKeys(year);
+        }
+
+        public void SelectFutureDateFromDatePicker()
+        {
+            _driver.WaitForElementCondition(ExpectedConditions.ElementToBeClickable(datePickerIcon)).Click();
+            _driver.WaitForElementCondition(ExpectedConditions.ElementToBeClickable(nextMonthButton)).Click();
+            firstDateOfTheMonth.Click();
         }
 
         public void EnterReason(string reason)

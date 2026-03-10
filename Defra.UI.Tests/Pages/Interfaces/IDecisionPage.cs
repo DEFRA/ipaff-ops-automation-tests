@@ -2,7 +2,6 @@
 {
     public interface IDecisionPage
     {
-        void EnterCurrentDateInDecisionPage(string day,string month,string year);
         bool IsPageLoaded();
         bool IsAcceptableForRadioSelected(string acceptableForRadioOption);
         bool IsInternalMarketSubRadioSelected(string internalMarketSubOption);
@@ -18,5 +17,7 @@
         string GetDestinationCountry();
         string GetTransitExitBCP();
         void EnterDestructionReason(string reason);
+        void SelectFutureDateFromDatePicker();
+        void EnterDateInDecisionPage(string day, string month, string year);
     }
 }
