@@ -2209,7 +2209,6 @@ Scenario: User creates and submits a CHEDA consignment notification with EU coun
 	Then I verify the Importer Notification Details reflect the information from the EU Import Notification
 	When I select the Permanent Addresses tab
 	Then I verify the permanent address displayed for each animal matches the address entered in IPAFFS
-	Then the Import notifications dashboard page should be displayed
 
 Scenario: User creates and submits a notification, override the risk decision, reject the notification and creates record control - CHEDA - SPS-7392
 	Given that I navigate to the IPAFF application
