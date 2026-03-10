@@ -135,6 +135,7 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ManageYourAuthorisationsPage, IManageYourAuthorisationsPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ChangeOrganisationSettingsPage, IChangeOrganisationSettingsPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<AddAnAgentPage, IAddAnAgentPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SetPermissionsPage, ISetPermissionsPage>());
 
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CookiesPage, ICookiesPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ContactPage, IContactPage>());
