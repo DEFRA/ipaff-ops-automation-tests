@@ -12,7 +12,6 @@ namespace Defra.UI.Tests.Hooks
     [Binding]
     public class PageHooks
     {
-
         private readonly IObjectContainer _objectContainer;
         private readonly ScenarioContext _scenarioContext;
 
@@ -120,6 +119,8 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SearchExistingDeliveryAddressPage, ISearchExistingDeliveryAddressPage>());            
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ConfirmExemptSpeciesPage, IConfirmExemptSpeciesPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<YourDownloadHasStarted, IYourDownloadHasStarted>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<RecordControlPage, IRecordControlPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ControlRecordedPage, IControlRecordedPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<UploadCommodityDetailsUsingCSVFilePage, IUploadCommodityDetailsUsingCSVFilePage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CheckUploadedCommodityPage, ICheckUploadedCommodityPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ConfirmationToDeclareGMSPage, IConfirmationToDeclareGMSPage>());

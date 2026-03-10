@@ -12,7 +12,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IObjectContainer _objectContainer;
 
         #region Page Objects
-        private IWebElement primaryTitle => _driver.WaitForElement(By.XPath("//h1[@class='govuk-label-wrapper']"), true);
+        private IWebElement primaryTitle => _driver.WaitForElement(By.XPath("//label[contains(@class,'govuk-label')]"), true);
         private IWebElement txtCHEDRefInput => _driver.WaitForElement(By.Id("search-term"));
         private IWebElement btnSearch => _driver.WaitForElement(By.XPath("//button[@class='btms-submit-search']"));     
         #endregion
@@ -26,7 +26,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool IsPageLoaded()
         {
-            return primaryTitle.Text.Trim().Contains("Search for an MRN, CHED or GMR");
+            return primaryTitle.Text.Trim().Contains("Enter an MRN, CHED, GMR, VRN or TRN");
         }
 
         public void SearchForChed(string chedRef)

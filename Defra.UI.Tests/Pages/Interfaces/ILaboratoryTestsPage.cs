@@ -1,6 +1,4 @@
-﻿using OpenQA.Selenium;
-
-namespace Defra.UI.Tests.Pages.Interfaces
+﻿namespace Defra.UI.Tests.Pages.Interfaces
 {
     public interface ILaboratoryTestsPage
     {
@@ -8,6 +6,7 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void SelectLabTestsRadio(string labTestsOption);
         bool IsLabTestsNoPreselected();
         void SelectLabTestsReason(string labTestReason);
+        bool IsReasonForTestingRadioSelected(string reasonForTestingOption);
         void ClickSelectForCommodityCode(string commodityCode);
         void SelectTest(string testName);
         void SelectLaboratoryTestCategory(string category);
@@ -28,6 +27,7 @@ namespace Defra.UI.Tests.Pages.Interfaces
         string GetLaboratoryTestName();
         bool IsReviewPageLoaded();
         bool VerifyLabTestsReviewPage(string commodityCode, string commodityDescription, string commoditySpecies, string labTestName);
+        bool VerifyLabTestsReviewPage(string commodityCode, string commodityDescription, string commoditySpecies, string labTestName, string conclusion);
         bool IsReasonForTestingPageLoaded();
         bool IsSelectCommoditySampledPageLoaded();
         bool IsCommodityToBeTestedPageLoaded();
