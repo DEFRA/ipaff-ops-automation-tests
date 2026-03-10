@@ -126,5 +126,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             Assert.True(chedOverviewPage?.VerifyDecisionRecordedBy(fieldName, status));
         }
+
+        [When("the user clicks Record control button")]
+        public void WhenTheUserClicksRecordControlButton()
+        {
+            chedOverviewPage?.ClickRecordControl();
+        }
     }
 }

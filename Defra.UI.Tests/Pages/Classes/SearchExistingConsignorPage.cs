@@ -23,6 +23,7 @@ namespace Defra.UI.Tests.Pages.Classes
             _driver.WaitForElement(By.XPath($"//td[contains(@class,'economic-operator-name') and normalize-space()='{consignorName}']/following-sibling::td[contains(@class,'economic-operator-address')]"));
         private IWebElement GetConsignorCountryElement(string consignorName) =>
             _driver.WaitForElement(By.XPath($"//td[contains(@class,'economic-operator-name') and normalize-space()='{consignorName}']/following-sibling::td[2]"));
+        private IWebElement lnkCreateConginor => _driver.WaitForElement(By.Id("add-economic-operator"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -55,6 +56,12 @@ namespace Defra.UI.Tests.Pages.Classes
         public string GetSelectedConsignorName(string consignorName) => GetConsignorNameElement(consignorName).Text.Trim();
         public string GetSelectedConsignorAddress(string consignorName) => GetConsignorAddressElement(consignorName).Text.Trim();
         public string GetSelectedConsignorCountry(string consignorName) => GetConsignorCountryElement(consignorName).Text.Trim();
+
+        public void ClickCreateANewConsignorLink()
+        {
+            lnkCreateConginor.Click();
+        }
+
 
     }
 }

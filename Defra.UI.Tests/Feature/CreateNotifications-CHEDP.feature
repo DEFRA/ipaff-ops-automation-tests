@@ -517,7 +517,7 @@ Scenario: User creates and submits a B2C consignment notification for Transhipme
 	Then the browser tab is closed
 	When the user clicks Record control in Dashboard page
 	Then the Consignments requiring control page should be displayed
-	When the user searches for the CHED number
+	When the user searches for the CHED number	
 	Then the notification should be found with the status "Rejected"
 	And the user verifies the control status is "CONTROL REQUIRED"
 	When the user logs out of IPAFFS Part 2
@@ -3078,3 +3078,222 @@ Scenario: User creates and submits a CHEDP consignment notification with multipl
 	Then the Confirmation page should be displayed with the initial risk assessment
 	And the user records the IPAFFS User details and CHED Reference
 	And the details should be recorded
+
+Scenario: SPS-7373
+	Given that I navigate to the IPAFF application
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF credentials and signin
+	Then the user should be logged into Notification page
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Products of animal origin, germinal products or animal by-products' option
+	And the user clicks Save and continue
+	Then the Origin of the plants plant product or other objects page should be displayed
+	When the user chooses "Sweden" from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing "Sweden" as the Country of origin and Country from where consigned
+	When the user chooses "No" for Does your consignment require a region code?
+	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
+	When the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
+	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
+	When the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user clicks the 'WOOL, FINE OR COARSE ANIMAL HAIR; HORSEHAIR YARN AND WOVEN FABRIC' in the parent commodity tree
+	And the sub commodity list expands
+	And the user clicks '5101' 'Wool, not carded or combed' under the parent commodity
+	Then the Commodity page should be displayed
+	When the user selects "No" for Do you want to add another commodity?
+	And the user clicks Save and continue
+	Then What is the main reason for importing the consignment? page should be displayed with radio buttons
+	When the user chooses "Re-entry" and the sub-option ""
+	And the user clicks Save and continue
+	Then Select the highest risk category for the commodities in this consignment page should be displayed
+	When the user chooses "Medium risk" risk category
+	And the user clicks Save and continue
+	Then the Health certificate required page should be displayed
+	When the user clicks continue button
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Description of the goods/Commodity page should be displayed
+	When the user populates Net weight as '100'
+	And the user populates Number of packages as '10'
+	And the user selects type of package as 'Box'
+	When the user clicks the Update total button
+	Then the total gross weight should be greater than the net weight '150'
+	When the user clicks Save and continue in commodity page
+	Then the Additional details page should be displayed
+	When the user selects 'Ambient' radio button on the Additional details page
+	And the user clicks Save and continue
+	Then the Latest Health Certificate page should be displayed
+	When the user enters Latest Health Certificate Document reference "INV12345"
+	And the user enters Latest Health Certificate date of issue "24""10""2025"
+	And the user clicks on Add attachment link
+	And the user uploads the document 'IPAFFS Test Health Certificate' in the format '.docx'
+	And the user clicks Save and continue
+	Then the Accompanying documents page should be displayed
+	When the user selects Document type "Commercial invoice"
+	And the user enters Document reference "INV12345"
+	And the user enters date of issue '24/11/2025'
+	And the user clicks on Add attachment link
+	And the user uploads the document 'IPAFFS Test Document' in the format '.docx'
+	Then the document 'IPAFFS Test Document' '.docx' is uploaded successfully
+	And the user clicks Save and continue
+	And the Approved establishment of origin page should be displayed
+	When the user clicks Search for an approved establishment
+	Then the list of establishments should be displayed, filtered by Country of origin "Sweden" type "ABP Transport" status "Approved"
+	When the user clicks Select for one of the establishments in the list
+	Then the Approved establishment of origin page should be displayed with the selected establishment
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user clicks on Create a new consignor or exporter link
+	Then Add consignee page should be displayed
+	When the user enters Consignee name as 'Brook'
+	And the user enters Consignee address as 'Covent garden'
+	And the user enters Consignee City as 'Abingdon'
+	And the user enters the Consignee Postcode as 'OX1 1AD'
+	And the user enters the Consignee Telephone number as '07348764455'
+	And the user enters the Consignee Country as 'England'
+	And the user enters the Consignee Email as 'Brook@CG.com'
+	And the user clicks Save and continue
+	Then The consignee has been created page is displayed
+	When the user clicks Add to notification button
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee "DEF" with a UK country
+	Then the chosen consignee "DEF" should be displayed on the Addresses page
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee "DEF" on the Addresses page
+	When the user clicks Add a place of destination
+	Then the Search for an existing place of destination page should be displayed
+	When the user selects a place of destination "DEF" with a UK country
+	Then the chosen place of destination "DEF" should be displayed on the Addresses page
+	When the user clicks Save and continue
+	Then the Transport to the port of entry page should be displayed
+	When the user populates the transport details "BRISTOL (GBBRS)" "No" "Road vehicle" "123456" "Doc1234"
+	When the user clicks Save and continue
+	Then the Goods movement services page should be displayed
+	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	When the user clicks Save and continue
+	Then the Contact details page should be displayed, pre-populated with the user's details
+	When the user clicks Save and continue
+	Then the Nominated contacts page should be displayed
+	When the user clicks Save and continue
+	Then the Contact address for consignment page should be displayed
+	And the user selects a contact address for the consignment
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	When the user records the IPAFFS User details and CHED Reference
+	Then the details should be recorded
+	When the user clicks Return to your dashboard
+	Then the dashboard page should be displayed
+	When user searches for the import notification
+	Then the notification should be present in the list
+	When the user clicks Show notification
+	Then the certificate should be displayed in a new browser tab
+	When the user checks that the data in the certificate matches the data entered into the notification
+	And the user closes the PDF browser tab
+	Then the browser tab is closed
+	When the user logs out of IPAFFS Part 1
+	Then the user should be logged out successfully
+	When I navigate to the IPAFF Inspector application
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF Inspector credentials and signin
+	Then the user should be logged into Import notifications page
+	When the user searches for the newly created notification on the Import notifications page
+	Then the user clicks the notification found with status "NEW"
+	And the Decision Hub page should be displayed
+	When the user clicks Save and set as in progress
+	Then the notification status should change from "NEW" to "IN PROGRESS"
+	When the user clicks Local reference number link in Record checks
+	Then Local reference number page should be displayed
+	When the user enters a local reference number and clicks Save and continue
+	Then the Documentary check page should be displayed
+	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
+	Then the Identity and physical checks page should be displayed
+	When the user selects "Satisfactory" under "Full identity check" in identity check
+	And the user selects "Satisfactory" for physical check
+	And the user clicks Save and Return
+	Then the Decision Hub page should be displayed
+	When the user clicks Seal numbers link
+	Then the Seal numbers page should be displayed
+	When the user clicks Save and Return
+	Then the Decision Hub page should be displayed
+	When the user clicks Laboratory tests link
+	Then the Laboratory tests page should be displayed
+	 When the user select "Yes" radio button on the Laboratory tests page
+	And the user clicks Save and continue
+	And the user select 'Random' reason radio button on the Laboratory tests page
+	And the user clicks Save and continue
+	Then the Laboratory tests page should be displayed
+	When the user clicks the Select link for the '5101' commodity code
+	Then the Laboratory tests page should be displayed
+	When the user clicks select link of one of the Laboratory test
+	Then the Laboratory tests Commodity sampled page should be displayed
+	When the user populates the commodity sample details 'Initial analysis' 'Campden BRI' '12345' '3' 'Blood' 'Chilled'
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	And the user verifies the data in Laboratory tests review page
+	When the user clicks Save and continue
+	Then the Decision page should be displayed
+	When the user changes the selection to "Re-dispatching" "Not acceptable" in the decision page
+	And the user enters currendate in decision page
+	And the user clicks Save and continue
+	Then the Reason for Refusal page should be displayed
+	When the user selects "Other, Create Border Notification" as reason for refusal
+	And the user clicks Save and continue
+	Then the Review outcome decision page should be displayed
+	When the user populates the Date and time of checks
+	And user clicks Submit decision
+	Then the Your checks have been submitted page should be displayed
+	And a border notification banner displaying the reason for refusal 'Refused for other border notification' under the title 'The result of this decision requires a border notification to be created' is displayed
+	When the user clicks View or print CHED
+	Then the certificate should be displayed in a new browser tab
+	When the user checks that the data in the certificate matches the data entered into the notification
+	And the user closes the PDF browser tab
+	Then the browser tab is closed
+	When the user clicks Record control in Dashboard page
+	Then the Consignments requiring control page should be displayed
+	When the user searches for the CHED number
+	Then the notification should be found with the status "REJECTED"
+	And the user verifies the control status is "CONTROL REQUIRED"
+	And the user clicks the notification found with status "REJECTED"
+	And the CHED overview page should be displayed
+	When the user clicks Record control button
+	Then Record control page should be displayed
+	When the user selects 'yes' for Did the consignment leave the UK?
+	And the user selects 'Airplane' as Means of transport
+	And the user enters 'Test123' as Identification
+	And the user enters 'TestDoc' in Documentaion
+	And the user enters 'today' date in Record control page
+	And the user selects 'Bristol - GBBRS1' as Exit BCP
+	And the user selects 'Brazil' as Destination country
+	And the user clicks the Submit control button
+	Then Your control has been recorded page should be displayed
+	And the outcome is recorded as 'Consignment has left the UK'
+	When the user clicks View or print CHED button in Record control recorded page
+	Then the certificate should be displayed in a new browser tab
+	When the user checks that the data in the certificate matches the data entered into the notification
+	And the user closes the PDF browser tab
+	Then the browser tab is closed
+	When the user clicks Return to Your Dashboard link in Record control recorded page
+	Then the Consignments requiring control page should be displayed
+	When the user searches for the CHED number
+	Then the notification should be found with the status "REJECTED"
+	And the user verifies the control status is "CONTROL COMPLETE"
+	When the user logs out of IPAFFS Part 2
+	Then the user should be logged out successfully
+	
