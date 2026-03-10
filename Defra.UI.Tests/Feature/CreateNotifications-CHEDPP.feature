@@ -403,9 +403,9 @@ Scenario: Agent submits CHEDPP notification for Trader after being delegated aut
 	When the user clicks Yes for Is this the agent?
 	And the user ticks the Confirm delegation checkbox
 	And the user clicks Save and continue
-	#Then the Set permissions page should be displayed
-	#When the user toggles all permissions to Yes and clicks Finish
-	#Then the Manage your authorisations page should be displayed
+	Then the Set permissions page should be displayed
+	When the user toggles all permissions to Yes and clicks Finish
+	Then the Manage your authorisations page should be displayed
 	#And the Agent 1 name should be listed under Agents acting on your behalf
 	#When the user clicks Add an agent
 	#Then the Add an agent page should be displayed
