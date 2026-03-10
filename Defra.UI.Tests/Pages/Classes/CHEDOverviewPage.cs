@@ -18,7 +18,6 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement lnkReplacedBy => _driver.FindElement(By.Id("replaced-by"));
         private IWebElement lnkReplacedCertificate => _driver.FindElement(By.Id("replaced-certificate"));
         private IWebElement btnShowCHED => _driver.FindElement(By.XPath("//*[@id='show-certificate']/span"));
-        private IWebElement btnRecordControl => _driver.FindElement(By.XPath("//*[@id='record-control']"));
         private IWebElement lnkClearAll => _driver.FindElement(By.XPath("//a[text()='Clear all']"));
         private IWebElement lblFieldValue(string fieldName) => _driver.FindElement(By.XPath($"(//*[normalize-space(text())='{fieldName}']/following-sibling::td)[1]"));
         private IWebElement lblFieldValueInChecks(string fieldName,string sectionName) => _driver.FindElement(By.XPath($"(//*[normalize-space(text())='{sectionName}']/following::*[normalize-space(text())='{fieldName}']/following-sibling::td)[1]"));

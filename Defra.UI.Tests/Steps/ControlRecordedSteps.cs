@@ -29,11 +29,17 @@ namespace Defra.UI.Tests.Steps
             Assert.True(controlRecordedPage?.IsViewOrPrintCHEDButtonDisplayed(), "View or print CHED button is not displayed");
         }
 
-        [Then("the CHED reference number and Outcome are displayed")]
+        [Then("the CHED reference number is displayed")]
         public void ThenTheCHEDReferenceNumberAndOutcomeAreDisplayed()
         {
             Assert.False(string.IsNullOrEmpty(controlRecordedPage?.GetCHEDReferenceWithVersion()), "CHED reference with version should not be null or empty");
-            Assert.True(controlRecordedPage?.GetOutcome().Contains("Consignment has left the UK"), "Record control outcome doesn't match");
+            //Assert.True(controlRecordedPage?.GetOutcome().Contains("Consignment has left the UK"), "Record control outcome doesn't match");
+        }
+
+        [Then("the outcome is recorded as {string}")]
+        public void ThenTheOutcomeIsRecordedAs(string outcome)
+        {
+            Assert.True(controlRecordedPage?.GetOutcome().Equals(outcome), "The outcome is not recorded as " + outcome);
         }
 
         [When("the user clicks View or print CHED button on Control recorded page")]
@@ -45,7 +51,7 @@ namespace Defra.UI.Tests.Steps
         [When("the user clicks Return to Your Dashboard link in Record control recorded page")]
         public void WhenTheUserClicksReturnToYourDashboardLinkInRecordControlRecordedPage()
         {
-            controlRecordedPage?.ClickReturnToYourDashboardLink();
+            controlRecordedPage?.ClickReturnToYourDashboard();
         }
     }
 }

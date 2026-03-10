@@ -2442,7 +2442,8 @@ Scenario: User creates and submits a notification, override the risk decision, r
 	And the user selects 'Brazil' as Destination country
 	And the user clicks the Submit control button
 	Then Your control has been recorded page should be displayed
-	And the CHED reference number and Outcome are displayed
+	And the CHED reference number is displayed
+	And the outcome is recorded as 'Consignment has left the UK'
 	When the user clicks View or print CHED button on Control recorded page
 	Then the certificate should be displayed in a new browser tab
 	When the user checks that the data in the certificate matches the data entered into the notification
