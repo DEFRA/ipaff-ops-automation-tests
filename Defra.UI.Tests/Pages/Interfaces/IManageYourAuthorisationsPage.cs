@@ -1,0 +1,15 @@
+﻿namespace Defra.UI.Tests.Pages.Interfaces
+{
+    public interface IManageYourAuthorisationsPage
+    {
+        bool IsPageLoaded();
+        bool IsBusinessNameDisplayedAsHeader(string businessName);
+        bool IsChangeSettingsLinkDisplayed();
+        void ClickChangeSettingsLink();
+        bool IsBusinessesYouAreAuthorisedToRepresentHeaderDisplayed();
+        bool IsAgentCodeDisplayed(string agentCode);
+        bool IsAutomaticallyAcceptDelegationToggledYes();
+        bool IsCompaniesWithNoPermissionsDisplayed();
+        bool AreCompaniesListed(string trader1BusinessName, string trader2BusinessName);
+    }
+}
