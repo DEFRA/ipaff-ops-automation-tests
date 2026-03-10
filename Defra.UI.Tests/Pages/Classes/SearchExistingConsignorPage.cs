@@ -61,7 +61,5 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             lnkCreateConginor.Click();
         }
-
-
     }
 }

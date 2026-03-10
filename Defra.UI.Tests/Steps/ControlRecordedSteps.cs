@@ -33,7 +33,6 @@ namespace Defra.UI.Tests.Steps
         public void ThenTheCHEDReferenceNumberAndOutcomeAreDisplayed()
         {
             Assert.False(string.IsNullOrEmpty(controlRecordedPage?.GetCHEDReferenceWithVersion()), "CHED reference with version should not be null or empty");
-            //Assert.True(controlRecordedPage?.GetOutcome().Contains("Consignment has left the UK"), "Record control outcome doesn't match");
         }
 
         [Then("the outcome is recorded as {string}")]
