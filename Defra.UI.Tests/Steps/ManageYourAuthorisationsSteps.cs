@@ -91,5 +91,33 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(manageYourAuthorisationsPage?.AreCompaniesListed(trader1BusinessName!, trader2BusinessName!),
                 $"Expected both '{trader1BusinessName}' and '{trader2BusinessName}' to be listed as companies on the Manage your authorisations page");
         }
+
+        // 3. Agents acting on your behalf header
+        [Then("the Agents acting on your behalf header should be displayed")]
+        public void ThenTheAgentsActingOnYourBehalfHeaderShouldBeDisplayed()
+        {
+            Assert.True(manageYourAuthorisationsPage?.IsAgentsActingOnYourBehalfHeaderDisplayed(),
+                "The 'Agents acting on your behalf' header is not displayed");
+        }
+
+        [Then("the no agents authorised message should be displayed")]
+        public void ThenTheNoAgentsAuthorisedMessageShouldBeDisplayed()
+        {
+            Assert.True(manageYourAuthorisationsPage?.IsNoAgentsAuthorisedMessageDisplayed(),
+                "'You have not yet authorised any agents to act on behalf of your business.' message is not displayed");
+        }
+
+        [Then("the Add an agent button should be displayed")]
+        public void ThenTheAddAnAgentButtonShouldBeDisplayed()
+        {
+            Assert.True(manageYourAuthorisationsPage?.IsAddAnAgentButtonDisplayed(),
+                "'Add an agent' button is not displayed");
+        }
+
+        [When("the user clicks Add an agent")]
+        public void WhenTheUserClicksAddAnAgent()
+        {
+            manageYourAuthorisationsPage?.ClickAddAnAgent();
+        }
     }
 }

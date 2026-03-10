@@ -11,5 +11,9 @@
         bool IsAutomaticallyAcceptDelegationToggledYes();
         bool IsCompaniesWithNoPermissionsDisplayed();
         bool AreCompaniesListed(string trader1BusinessName, string trader2BusinessName);
+        bool IsAgentsActingOnYourBehalfHeaderDisplayed();
+        bool IsNoAgentsAuthorisedMessageDisplayed();
+        bool IsAddAnAgentButtonDisplayed();
+        void ClickAddAnAgent();
     }
 }

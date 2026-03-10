@@ -390,7 +390,12 @@ Scenario: Agent submits CHEDPP notification for Trader after being delegated aut
 	Then the Change organisation settings page should be displayed with 'Settings saved'
 	When the user clicks Continue on the Change organisation settings page
 	Then the Manage your authorisations page should be displayed
-	#When the user clicks Add an agent
+	And the business name should be displayed as the page header for 'Trader 1'
+	And the change settings link should be displayed
+	And the Agents acting on your behalf header should be displayed
+	And the no agents authorised message should be displayed
+	And the Add an agent button should be displayed
+	When the user clicks Add an agent
 	#Then the Add an agent page should be displayed
 	#When the user enters Agent 1 agent code and clicks Save and continue
 	#Then the Add an agent page should be displayed
