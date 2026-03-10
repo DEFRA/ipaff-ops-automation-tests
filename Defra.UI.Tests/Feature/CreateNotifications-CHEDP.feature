@@ -3079,7 +3079,7 @@ Scenario: User creates and submits a CHEDP consignment notification with multipl
 	And the user records the IPAFFS User details and CHED Reference
 	And the details should be recorded
 
-Scenario: SPS-7373
+Scenario: User creates and submits a notification with main reason as Re-entry, override the risk decision, reject the notification and creates record control CHEDP SPS-7373
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
