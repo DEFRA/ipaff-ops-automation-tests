@@ -34,7 +34,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public string GetCHEDReferenceWithVersion()
         {
-            var finalChedReference = chedReference.Text.Trim() + chedReferenceVersion.Text.Trim();
+            var finalChedReference = $"{chedReference.Text.Trim()}{chedReferenceVersion.Text.Trim()}";
             return finalChedReference;
         }
 
