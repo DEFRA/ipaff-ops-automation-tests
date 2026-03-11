@@ -553,7 +553,7 @@ Scenario: Agent submits CHEDPP notification for Trader after being delegated aut
 	Then the dashboard page should be displayed
 	When user searches for the import notification
 	Then the notification should be present in the list
-	#And the notification status should be 'TRADE PARTNER'
+	And the notification status should include 'TRADE PARTNER'
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
 	Given that I navigate to the IPAFF application

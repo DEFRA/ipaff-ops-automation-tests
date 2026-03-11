@@ -94,5 +94,10 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             btnRequestAmendment.Click();
         }
+
+        public bool StatusContains(string status)
+        {
+            return txtStatus.Text.Trim().Contains(status, StringComparison.OrdinalIgnoreCase);
+        }
     }
 }
