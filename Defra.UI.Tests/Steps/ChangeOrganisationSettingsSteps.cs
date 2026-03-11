@@ -117,5 +117,17 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             changeOrganisationSettingsPage?.ClickContinue();
         }
+
+        [When("the user unticks 'I want to authorise an agent to act for my business' checkbox")]
+        public void WhenTheUserUnticksAuthoriseAgentCheckbox()
+        {
+            changeOrganisationSettingsPage?.UntickAuthoriseAgentCheckbox();
+        }
+
+        [When("the user ticks 'I am an agent who wants authority to act on behalf of other businesses' checkbox")]
+        public void WhenTheUserTicksActAsAgentCheckbox()
+        {
+            changeOrganisationSettingsPage?.TickActAsAgentCheckbox();
+        }
     }
 }

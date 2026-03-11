@@ -124,5 +124,17 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             btnContinue.Click();
         }
+
+        public void UntickAuthoriseAgentCheckbox()
+        {
+            if (chkAuthoriseAgent.Selected)
+                chkAuthoriseAgent.Click();
+        }
+
+        public void TickActAsAgentCheckbox()
+        {
+            if (!chkActAsAgent.Selected)
+                chkActAsAgent.Click();
+        }
     }
 }
