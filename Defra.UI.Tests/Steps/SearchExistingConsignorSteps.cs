@@ -61,5 +61,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             searchExistingConsignorPage?.ClickSelect(consignorName);
         }
+
+        [When("the user clicks on Create a new consignor or exporter link")]
+        public void WhenTheUserClicksOnCreateANewConsignorOrExporter()
+        {
+            searchExistingConsignorPage?.ClickCreateANewConsignorLink();
+        }
     }
 }
