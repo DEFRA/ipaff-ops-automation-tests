@@ -15,5 +15,6 @@ namespace Defra.UI.Tests.Pages.Interfaces
         bool VerifyTotalGrossWeight(string grossWeight);
         bool VerifyTotalNetWeight(string netWeight);
         void ClickRequestAmendment();
+        bool StatusContains(string status);
     }
 }
