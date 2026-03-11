@@ -85,11 +85,12 @@ namespace Defra.UI.Tests.Pages.Classes
                 Packages="10",
                 TypeOfPackage= "Box",
                 Quantity= "1000.0",
-                QuantityType= "Kilograms"
+                QuantityType= "Kilograms",
+                DocumentType = "Phytosanitary certificate"
             };
         }
 
-        public NotificationDetails GetNotificationDetailsForCloningCHEDA()
+        public NotificationDetails GetNotificationDetailsForCloningCHEDP()
         {
             return new NotificationDetails
             {
@@ -107,7 +108,8 @@ namespace Defra.UI.Tests.Pages.Classes
                 TypeOfPackage = "Carton",
                 Temperature = "Frozen",
                 Container = "MNBU4285672",
-                SealNumber= "NZMPI01354359"
+                SealNumber= "NZMPI01354359",
+                DocumentType= "Veterinary health certificate"
             };
         }
 

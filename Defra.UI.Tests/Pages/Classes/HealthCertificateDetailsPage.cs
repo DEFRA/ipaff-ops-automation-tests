@@ -26,6 +26,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IReadOnlyCollection<IWebElement> dtConsignmentAndGoodsFields => _driver.FindElements(By.CssSelector(".review-summary-list__row"));
         private IReadOnlyCollection<IWebElement> goodsDetailsTitleList => _driver.FindElements(By.CssSelector("thead tr th"));
         private IReadOnlyCollection<IWebElement> goodsDetailsValueList => _driver.FindElements(By.CssSelector("tbody tr td"));
+        private IWebElement lblTemperature => _driver.FindElement(By.XPath("(//td[normalize-space()='Temperature']/parent::tr/following-sibling::tr/td)[1]"));
+        private IReadOnlyCollection<IWebElement> lstContainerSealNum => _driver.FindElements(By.XPath("//table[@id='seals-table']/tbody//td"));
         #endregion
 
         public HealthCertificateDetailsPage(IObjectContainer container)
@@ -65,6 +67,9 @@ namespace Defra.UI.Tests.Pages.Classes
                 );
             }
 
+            AddIfMissing("Temperature", lblTemperature.Text);
+            summaryAndGoodsCache["Container"] = lstContainerSealNum.ElementAt(0).Text;
+            summaryAndGoodsCache["Seal number"] = lstContainerSealNum.ElementAt(1).Text;
 
             return summaryAndGoodsCache;
         }

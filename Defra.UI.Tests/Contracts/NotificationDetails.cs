@@ -19,6 +19,6 @@
         public string Temperature {get;set;}
         public string Container { get; set; }
         public string SealNumber { get; set; }
-
+        public string DocumentType { get; internal set; }
     }
 }

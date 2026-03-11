@@ -60,6 +60,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(importerPackerDeliveryAddressConsignorPage?.VerifySelectedDeliveryAddress(deliveryAddressName, deliveryAddress, deliveryCountry), "Delivery Address details do not match");
         }
 
+        [When("the user Clicks on Save and review button from Addresses page")]
         [When("the user Clicks on Save and review button from Importer, Packer, Delivery address and Consignor page")]
         public void WhenTheUserClicksOnSaveAndReviewButtonFromImporterPackerDeliveryAddressAndConsignorPage()
         {

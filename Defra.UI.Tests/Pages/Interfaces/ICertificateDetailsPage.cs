@@ -12,6 +12,6 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void EnterConsignerConsigneeImporterName(string name);
         NotificationDetails GetNotificationDetailsForCloningCHEDPP();
         void ClickSearchButton();
-        NotificationDetails GetNotificationDetailsForCloningCHEDA();
+        NotificationDetails GetNotificationDetailsForCloningCHEDP();
     }
 }
