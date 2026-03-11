@@ -17,5 +17,7 @@
         void TickConfirmationCheckbox();
         void ClickSave();
         void ClickContinue();
+        void UntickAuthoriseAgentCheckbox();
+        void TickActAsAgentCheckbox();
     }
 }

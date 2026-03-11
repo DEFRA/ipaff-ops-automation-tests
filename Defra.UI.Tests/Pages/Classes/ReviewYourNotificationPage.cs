@@ -1278,26 +1278,18 @@ namespace Defra.UI.Tests.Pages.Classes
             if (lines.Length > 1)
             {
                 var addressLine = lines[1].Trim();
-
-                // The review page shows: "street, city, postcode, country, phone"
-                // We only want: "street, city, postcode"
-
                 var parts = addressLine.Split(',', StringSplitOptions.TrimEntries);
 
-                // Take only the first 3 parts (street, city/region, postcode)
-                // This excludes both country and phone number
                 if (parts.Length >= 3)
                 {
+                    // DEFRA address has an extra address line so needs 5 parts (street1, street2, city, postcode)
+                    // before the country suffix, all other addresses need 3 parts (street, city, postcode)
                     if (parts[0].Equals("DEPARTMENT FOR ENVIRONMENT FOOD & RURAL AFFAIRS (D E F R A)"))
                     {
-                        var addressWithoutCountryAndPhone = string.Join(", ", parts.Take(5));
-                        return addressWithoutCountryAndPhone;
+                        return string.Join(", ", parts.Take(5));
                     }
-                    else
-                    {
-                        var addressWithoutCountryAndPhone = string.Join(", ", parts.Take(4));
-                        return addressWithoutCountryAndPhone;
-                    }
+
+                    return string.Join(", ", parts.Take(3));
                 }
 
                 return addressLine;
