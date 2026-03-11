@@ -8,5 +8,6 @@
         string GetSelectedConsignorName(string consignorName);
         string GetSelectedConsignorAddress(string consignorName);
         string GetSelectedConsignorCountry(string consignorName);
+        void ClickCreateANewConsignorLink();
     }
 }

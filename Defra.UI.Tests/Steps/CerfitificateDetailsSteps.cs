@@ -51,10 +51,29 @@ namespace Defra.UI.Tests.Steps
             _scenarioContext["CloningHealthCertificateDetails"] = notificationDetails;
         }
 
-        [Then("the user provided notification details in the search input fields")]
-        public void ThenTheUserProvidedNotificationDetailsInTheSearchInputFields()
+        [Then("the user provided CHED P notification details in the search input fields")]
+        public void ThenTheUserProvidedCHEDPNotificationDetailsInTheSearchInputFields()
         {
             var notificationDetails = _scenarioContext.GetFromContext<NotificationDetails>("CloningHealthCertificateDetails");
+
+            certificateDetailsPage?.SelectCountryOfOrigin(notificationDetails.CountryOfOriginOfCertificate);
+            _scenarioContext["CountryOfOrigin"] = notificationDetails.CountryOfOriginOfCertificate;
+            certificateDetailsPage?.EnterCertificateReferenceNumber(notificationDetails.CertificateReferenceNumber);
+            _scenarioContext["CertificateReferenceNumber"] = notificationDetails.CertificateReferenceNumber;
+
+            DateTime certificateDateOfIssue;
+
+            bool isValidDate = DateTime.TryParseExact(notificationDetails.CertificateDateOfIssue, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out certificateDateOfIssue);
+
+            certificateDetailsPage?.EnterCertificateDateOfIssueYear(certificateDateOfIssue.Day, certificateDateOfIssue.Month, certificateDateOfIssue.Year);
+            certificateDetailsPage?.EnterConsignerConsigneeImporterName(notificationDetails.ConsignorConsigneeOrImporterName);
+            _scenarioContext["ConsignorConsigneeOrImporterName"] = notificationDetails.ConsignorConsigneeOrImporterName;
+        }
+
+        [Then("the user provided CHED PP notification details in the search input fields")]
+        public void ThenTheUserProvidedCHEDPPNotificationDetailsInTheSearchInputFields()
+        {
+            var notificationDetails = _scenarioContext.GetFromContext<NotificationDetails>("CloningNotificationDetails");
 
             certificateDetailsPage?.SelectCountryOfOrigin(notificationDetails.CountryOfOriginOfCertificate);
             _scenarioContext["CountryOfOrigin"] = notificationDetails.CountryOfOriginOfCertificate;
@@ -86,7 +105,7 @@ namespace Defra.UI.Tests.Steps
         public void ThenTheUserVerifiedAllTheDetailsOnPhytosanitaryCertificateDetailsPage()
         {
             var notificationDetails = _scenarioContext.GetFromContext<NotificationDetails>("CloningNotificationDetails");
-            var cloneCertificateDetails = healthCertificateDetailsPage?.GetKeyAndValuesOfSummaryAndGoods();
+            var cloneCertificateDetails = phytosanitaryCertificateDetailsPage?.GetKeyAndValuesOfSummaryAndGoods();
 
             cloneCertificateDetails.Should().ContainKey("Health certificate number").WhoseValue.Should().Be(notificationDetails.CertificateReferenceNumber);
             cloneCertificateDetails.Should().ContainKey("Country of origin").WhoseValue.Should().Be(notificationDetails.CountryOfOriginOfCertificate);

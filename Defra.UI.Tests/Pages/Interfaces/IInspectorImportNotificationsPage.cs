@@ -16,5 +16,6 @@
         string GetNotificationStatus();
         bool VerifyNotificationHeader(string link);
         bool VerifyLabel(string label);
+        bool VerifyRiskOutcome(string chedRef, string riskOutcome);
     }
 }

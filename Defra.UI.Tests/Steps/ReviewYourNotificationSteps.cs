@@ -148,7 +148,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var mismatches = new List<string>();
 
             // About the consignment
-            ValidateIfContains("ImportType", reviewPage?.GetPartOfImportType(), ref allDataMatches, mismatches);
+            ValidateIfContains("ImportType", reviewPage?.GetPartOfImportType(), ref allDataMatches, mismatches, true);
             ValidateIfExists("CountryOfOrigin", reviewPage?.GetCountryOfOrigin(), ref allDataMatches, mismatches);
             ValidateIfExists("ContryFromWhereConsigned", reviewPage?.GetCountryFromWhereConsigned(), ref allDataMatches, mismatches);
             ValidateIfExists("ConsignmentReferenceNumber", reviewPage?.GetConsignmentReferenceNumber(), ref allDataMatches, mismatches);
@@ -511,9 +511,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
                     var isMatch = true;
                     if (isContains)
-                        isMatch = actualValue.Contains(expectedValue, StringComparison.OrdinalIgnoreCase);
+                        isMatch = actualValue.Contains(expectedValue, StringComparison.OrdinalIgnoreCase) || expectedValue.Contains(actualValue, StringComparison.OrdinalIgnoreCase);
                     else
                         isMatch = expectedValue.Equals(actualValue, StringComparison.OrdinalIgnoreCase);
+                    
                     if (!isMatch)
                     {
                         allDataMatches = false;

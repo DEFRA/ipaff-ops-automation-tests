@@ -1,6 +1,5 @@
 ﻿using Reqnroll.BoDi;
 using NUnit.Framework;
-using OpenQA.Selenium;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
@@ -69,11 +68,36 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["DepartureDateFromBCP"] = formattedDepartureDate;
         }
 
+        [When("the user enters departure date from BCP or Port of entry as today's date")]
+        public void WhenTheUserEntersDepartureDateFromBCPOrPortOfEntryAsTodaysDate()
+        {
+            var departureDate = DateTime.Now;
+
+            transportAfterPortOfEntryPage?.EnterDepartureDateFromBCP(departureDate);
+
+            var formattedDate = departureDate.ToString("dd MMM yyyy");
+            _scenarioContext["DepartureDateFromBCP"] = formattedDate;
+        }
+
         [When("the user enters departure time from BCP {string}")]
         public void WhenTheUserEntersDepartureTimeFromBCP(string time)
         {
             transportAfterPortOfEntryPage?.EnterDepartureTimeFromBCP(time);
             _scenarioContext["DepartureTimeFromBCP"] = time;
+        }
+
+        [When("the user enters departure time from BCP or Port of entry with future time")]
+        public void WhenTheUserEntersDepartureTimeFromBCPOrPortOfEntryWithFutureTime()
+        {
+            // Use current time + 2 hours as a future time
+            var futureTime = DateTime.Now.AddHours(2);
+            var hour = futureTime.Hour.ToString();
+            var minutes = futureTime.Minute.ToString();
+            var formattedTime = futureTime.ToString("HH:mm");
+
+            transportAfterPortOfEntryPage?.EnterDepartureTimeFromBCP(formattedTime);
+
+            _scenarioContext["DepartureTimeFromBCP"] = formattedTime;
         }
 
         [Then("the Means of transport after BCP should be copied from the original notification")]

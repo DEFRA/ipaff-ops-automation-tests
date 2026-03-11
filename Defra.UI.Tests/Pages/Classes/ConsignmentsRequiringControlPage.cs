@@ -32,6 +32,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtEndYear => _driver.FindElement(By.Id("end-date-year"));
         private IWebElement drpdownSortBy => _driver.FindElement(By.Id("orderBy"));
         private IWebElement drpdownValue(string field) => _driver.FindElement(By.XPath($"//*[normalize-space(text())='{field}']/following-sibling::select"));
+        private By lblResultCountBy => By.Id("notification-count");
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -48,6 +49,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool VerifyNotificationStatus(string chedRef, string status)
         {
+            _driver.WaitForElementExists(lblResultCountBy);
             return lnkChedRefNumSearcResult.Text.Trim().Contains(chedRef)
                 && lnkChedStatusSearcResult.Text.ToUpper().Trim().Equals(status.ToUpper());
         }
@@ -166,12 +168,10 @@ namespace Defra.UI.Tests.Pages.Classes
             
             return wait.Until(d => 
             {
+                d.FindElement(By.CssSelector("#search-notifications")).Click();
 
-                // Click Search each cycle
-                btnSearch.Click();
-
-                // Read status
-                var status = lnkChedStatusSearcResult.Text.Trim();
+                // Always re-find the status element
+                var status = d.FindElement(By.XPath("//*[normalize-space()='CHED status']//following-sibling::dd/strong[1]")).Text.Trim();
 
                 // Check match
                 if (string.Equals(status, expectedStatus, StringComparison.OrdinalIgnoreCase)) 
