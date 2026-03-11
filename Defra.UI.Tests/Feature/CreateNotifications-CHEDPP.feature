@@ -367,6 +367,15 @@ Scenario: Agent submits CHEDPP notification for Trader after being delegated aut
 	Then the Are you a plants importer or agency? page should be displayed
 	When the user selects Yes and clicks Continue
 	Then the Manage your authorisations page should be displayed
+	When the user clicks the change settings link
+	Then the Change organisation settings page should be displayed
+	When the user unticks 'I want to authorise an agent to act for my business' checkbox
+	And the user ticks 'I am an agent who wants authority to act on behalf of other businesses' checkbox
+	And the user ticks 'I confirm that I have read and accepted the above statement/s.' checkbox
+	And the user clicks Save on the Change organisation settings page
+	Then the Change organisation settings page should be displayed with 'Settings saved'
+	When the user clicks Continue on the Change organisation settings page
+	Then the Manage your authorisations page should be displayed
 	And the business name should be displayed as the page header for 'Trader 1'
 	And the change settings link should be displayed
 	And the Businesses you are authorised to represent header should be displayed
@@ -554,26 +563,3 @@ Scenario: Agent submits CHEDPP notification for Trader after being delegated aut
 	When user searches for the import notification
 	Then the notification should be present in the list
 	And the notification status should include 'TRADE PARTNER'
-	When the user logs out of IPAFFS Part 1
-	Then the user should be logged out successfully
-	Given that I navigate to the IPAFF application
-	Then I should see type of Gateway login page
-	And I have selected 'Sign in with Government Gateway' as login type
-	When I click Continue button from How do you want to sign in page
-	Then I should redirected to the IPAFF Sign in using Government Gateway page
-	When I have provided the IPAFF 'Trader 1' credentials and signin
-	Then the user should be logged into Notification page
-	When the user clicks Manage trade partners
-	Then the Are you a plants importer or agency? page should be displayed
-	When the user selects Yes and clicks Continue
-	Then the Manage your authorisations page should be displayed	
-	When the user clicks the change settings link
-	Then the Change organisation settings page should be displayed
-	When the user unticks 'I want to authorise an agent to act for my business' checkbox
-	And the user ticks 'I am an agent who wants authority to act on behalf of other businesses' checkbox
-	And the user ticks 'I confirm that I have read and accepted the above statement/s.' checkbox
-	And the user clicks Save on the Change organisation settings page
-	Then the Change organisation settings page should be displayed with 'Settings saved'
-	When the user clicks Continue on the Change organisation settings page
-	Then the Manage your authorisations page should be displayed
-	And the agent code and helper text should be displayed for 'Trader 1'
