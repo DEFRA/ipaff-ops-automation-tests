@@ -270,7 +270,7 @@ Scenario: Create a new import notification through clone a health or phytosanita
 	When the user clicks on continue button
 	Then the Certificate details page should be displayed
 	And the user searches for the notification for cloning CHEDPP which is not more than 90 days from creation
-	And the user provided notification details in the search input fields
+	And the user provided CHED PP notification details in the search input fields
 	When the user Clicks on Search button
 	Then the Phytosanitary certificate details page should be displayed
 	And the user verified all the details on Phytosanitary certificate details page
@@ -308,7 +308,7 @@ Scenario: Create a new import notification through clone a health or phytosanita
 	Then the Review your notification page should be displayed
 	When the user Clicks on Change link for Transport to the Border Control Post
 	Then Transport to the Border Control Post (BCP) page should be dislayed
-	When the user populates the transport to the BCP details 'Heathrow Airport - GBLHR4PP' 'Euro BIP Ltd' 'Road vehicle' 'YY10 KTP' 'No' 'Doc23456'
+	When the user populates the transport to the BCP details 'Heathrow Airport - GBLHR4PP' 'Eurobip' 'Road vehicle' 'YY10 KTP' 'No' 'Doc23456'
 	And the user Clicks on Save and review button from Border Control Post page
 	Then the Review your notification page should be displayed
 	When the user Clicks on Change link for Contact details

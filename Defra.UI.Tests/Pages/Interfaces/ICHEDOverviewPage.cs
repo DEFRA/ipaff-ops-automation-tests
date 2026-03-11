@@ -5,6 +5,7 @@
         void ClickClearAll();
         void ClickCopyAsReplacement();
         void ClickRaiseBorderNotification();
+        void ClickRecordControl();
         void ClickReplacedByLink();
         bool IsFieldValuePresent(string fieldName);
         bool IsFieldValuePresent(string fieldName, string sectionName);
@@ -19,5 +20,6 @@
         bool VerifyRiskDecisionPHSI(string decision);
         bool VerifyShowChedButton();
         bool VerifyTab(string tabName);
+        void ClickRecordControlButton();
     }
 }
