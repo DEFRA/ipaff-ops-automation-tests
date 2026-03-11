@@ -1269,6 +1269,9 @@ namespace Defra.UI.Tests.Pages.Classes
             return string.Empty;
         }
 
+        private static readonly System.Text.RegularExpressions.Regex PostcodeRegex =
+    new(@"^[A-Z]{1,2}\d{1,2}[A-Z]?\s?\d[A-Z]{2}$", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
         private string ExtractCHEDPPAddressFromAddressText(string fullText)
         {
             if (string.IsNullOrEmpty(fullText))
@@ -1287,6 +1290,13 @@ namespace Defra.UI.Tests.Pages.Classes
                     if (parts[0].Equals("DEPARTMENT FOR ENVIRONMENT FOOD & RURAL AFFAIRS (D E F R A)"))
                     {
                         return string.Join(", ", parts.Take(5));
+                    }
+
+                    // If the 4th part is a UK postcode (e.g. "CW1 6GJ"), include it —
+                    // this handles addresses with an extra street part: street1, street2, city, postcode
+                    if (parts.Length >= 4 && PostcodeRegex.IsMatch(parts[3]))
+                    {
+                        return string.Join(", ", parts.Take(4));
                     }
 
                     return string.Join(", ", parts.Take(3));
