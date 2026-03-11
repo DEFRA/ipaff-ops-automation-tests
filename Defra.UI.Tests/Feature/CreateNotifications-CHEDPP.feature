@@ -203,7 +203,7 @@ Scenario: Delegation of Authority Agent submits CHEDPP notification by uploading
 	When the user selects 'Yes' confirmation option
 	And the user clicks Save and continue
 	Then Transport to the Border Control Post (BCP) page should be dislayed
-	When the user populates the transport to the BCP details 'London Gateway (plants) - GBLGP1PP' 'London Gateway' 'Road vehicle' '123456' 'No' 'Doc1234'
+	When the user populates the transport to the BCP details 'London Gateway - GBLGP1PP' 'London Gateway' 'Road vehicle' '123456' 'No' 'Doc1234'
 	When the user clicks Save and continue
 	Then the Goods movement services page should be displayed
 	When the user selects "Yes – add MRN now" for Are you using the Common Transit Convention (CTC)?
@@ -255,7 +255,6 @@ Scenario: Delegation of Authority Agent submits CHEDPP notification by uploading
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
 	
-	
 Scenario: Create a new import notification through clone a health or phytosanitary certificate process - SPS-9272
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -279,7 +278,7 @@ Scenario: Create a new import notification through clone a health or phytosanita
 	Then the Who are you creating this notification for page should be displayed
 	And the user selects the option of creating notification for as "Agent1"
 	When the user Clicks on Save and review button
-	Then the DRAFT CHEDPP notification code page should be displayed
+	Then the DRAFT 'CHEDPP' notification code page should be displayed
 	And the user records the Draft notification number
 	And the user verifies the following information is displayed within a red outlined box
 		| MissingOrIncorrect                                                         |

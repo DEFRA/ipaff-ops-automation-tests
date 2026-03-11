@@ -2,7 +2,7 @@
 {
     public interface IDraftNotificationPage
     {
-        bool IsPageLoaded();
+        bool IsPageLoaded(string chedType);
         void ClickSaveAndContinue();
         bool AreTitleHelpTextDisplayed();
         bool VerifyAllMissingOrErrorLinksExists(IList<string> missingOrErrorLinks);
