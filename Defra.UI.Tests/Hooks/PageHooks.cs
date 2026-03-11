@@ -12,7 +12,6 @@ namespace Defra.UI.Tests.Hooks
     [Binding]
     public class PageHooks
     {
-
         private readonly IObjectContainer _objectContainer;
         private readonly ScenarioContext _scenarioContext;
 
@@ -136,6 +135,10 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ChangeOrganisationSettingsPage, IChangeOrganisationSettingsPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<AddAnAgentPage, IAddAnAgentPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SetPermissionsPage, ISetPermissionsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ControlRecordedPage, IControlRecordedPage>()); 
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<RecordControlPage, IRecordControlPage>()); 
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<AddConsigneePage, IAddConsigneePage>()); 
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<TheConsigneeHasBeenCreatedPage, ITheConsigneeHasBeenCreatedPage>()); 
 
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CookiesPage, ICookiesPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ContactPage, IContactPage>());

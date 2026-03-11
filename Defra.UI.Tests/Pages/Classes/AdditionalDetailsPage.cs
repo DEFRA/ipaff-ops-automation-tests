@@ -22,6 +22,7 @@ namespace Defra.UI.Tests.Pages.Classes
             _driver.FindElement(By.XPath($"//label[@class='govuk-label govuk-radios__label' and normalize-space()='{certificationText}']"));
         private IWebElement rdoUnweanedAnimalsYes => _driver.FindElement(By.XPath("//*[@id='includingNonablactedyes']/following-sibling::label"));
         private IWebElement rdoUnweanedAnimalsNo => _driver.FindElement(By.XPath("//*[@id='includingNonAblactedno']/following-sibling::label"));
+        private IWebElement rdoUnweanedAnimals(string unweanedAnimalsOption) => _driver.FindElement(By.XPath($"//label[contains(text(),'{unweanedAnimalsOption}')]/preceding-sibling::input"));
         private IWebElement btnSaveAndReview => _driver.FindElement(By.XPath("//button[text()='Save and review']"));
         private IWebElement commIntendedForSelectedRadioLabel => _driver.FindElement(By.XPath("//input[contains(@name,'commodity-intended-for') and @checked]/following-sibling::label"));
         private IWebElement temperatureSelectedRadioLabel => _driver.FindElement(By.XPath("//input[contains(@name,'temperature') and @checked]/following-sibling::label"));
@@ -95,6 +96,11 @@ namespace Defra.UI.Tests.Pages.Classes
                 rdoUnweanedAnimalsYes.Click();
             else if (option.Equals("No") || rdoUnweanedAnimalsNo.Text.Trim().Contains(option))
                 rdoUnweanedAnimalsNo.Click();
+        }
+
+        public bool IsUnweanedAnimalsRadioSelected(string unweanedAnimalsOption)
+        {
+            return rdoUnweanedAnimals(unweanedAnimalsOption).GetAttribute("checked") != null;
         }
 
         public void ClickSaveAndReview()

@@ -1,6 +1,5 @@
 ﻿using Defra.UI.Tests.Pages.Interfaces;
 using NUnit.Framework;
-using OpenQA.Selenium;
 using Reqnroll;
 using Reqnroll.BoDi;
 

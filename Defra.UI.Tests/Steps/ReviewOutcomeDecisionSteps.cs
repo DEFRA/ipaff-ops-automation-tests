@@ -332,6 +332,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 return actual.Equals("Acceptable for temporary admission", StringComparison.OrdinalIgnoreCase);
             }
 
+            if (expected.Equals("Not acceptable", StringComparison.OrdinalIgnoreCase))
+            {
+                return expected.Equals(actual, StringComparison.OrdinalIgnoreCase);
+            }
+
             // Handle other variations (Internal market, Transit, etc.)
             return actual.Equals($"Acceptable for {expected.ToLower()}", StringComparison.OrdinalIgnoreCase);
         }

@@ -1,4 +1,5 @@
-﻿using Defra.UI.Tests.Pages.Interfaces;
+﻿using Defra.UI.Tests.Pages.Classes;
+using Defra.UI.Tests.Pages.Interfaces;
 using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;
@@ -60,6 +61,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserSelectsForDoesTheConsignmentContainAnyUnweanedAnimals(string unweanedAnimalsOption)
         {
             additionalDetailsPage?.SelectUnweanedAnimalsOption(unweanedAnimalsOption);
+            _scenarioContext["UnweanedAnimalsOption"] = unweanedAnimalsOption;
+        }
+
+        [When("the user keeps the {string} option selected for Does the consignment contain any unweaned animals?")]
+        public void WhenTheUserKeepsTheOptionSelectedForDoesTheConsignmentContainAnyUnweanedAnimals(string unweanedAnimalsOption)
+        {
+            Assert.True(additionalDetailsPage?.IsUnweanedAnimalsRadioSelected(unweanedAnimalsOption), $"Unweaned animals radio is not pre-selected with {unweanedAnimalsOption} option");
             _scenarioContext["UnweanedAnimalsOption"] = unweanedAnimalsOption;
         }
 

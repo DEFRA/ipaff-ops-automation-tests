@@ -1,7 +1,5 @@
 ﻿using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
-using FluentAssertions.Execution;
-using Microsoft.VisualBasic.FileIO;
 using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;
@@ -16,13 +14,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
         private IDecisionPage? decisionPage => _objectContainer.IsRegistered<IDecisionPage>() ? _objectContainer.Resolve<IDecisionPage>() : null;
 
-
         public DecisionSteps(ScenarioContext context, IObjectContainer container)
         {
             _objectContainer = container;
             _scenarioContext = context;
         }
-
 
         [Then("the Decision page should be displayed")]
         public void ThenTheDecisionPageShouldBeDisplayed()
@@ -60,6 +56,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             _scenarioContext["AcceptableFor"] = decision;
             _scenarioContext["AcceptableForSubOption"] = subOption;
+
             subOption = subOption == "Use for other purpose" ? "Other" : subOption;
             decisionPage?.SelectDecision(subOption, decision);
         }
@@ -77,7 +74,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var day = currentDate.Day.ToString();
             var month = currentDate.Month.ToString();
             var year = currentDate.Year.ToString();
-            decisionPage?.EnterCurrentDateInDecisionPage(day, month, year);
+            decisionPage?.EnterDateInDecisionPage(day, month, year);
         }
 
         [Then("the main radio option {string} and the sub radio option {string} are selected by default")]
@@ -107,7 +104,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var day = currentDate.Day.ToString();
             var month = currentDate.Month.ToString();
             var year = currentDate.Year.ToString();
-            decisionPage?.EnterCurrentDateInDecisionPage(day, month, year);
+            decisionPage?.EnterDateInDecisionPage(day, month, year);
         }
 
         [Then("the {string} radio button option is pre populated")]
@@ -187,7 +184,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserEntersDate(string dateString)
         {
             var (day, month, year) = Utils.GetDayMonthYear(dateString);
-            decisionPage?.EnterCurrentDateInDecisionPage(day, month, year);            
+            decisionPage?.EnterDateInDecisionPage(day, month, year);            
+        }
+
+        [When("the user selects a future date using the date picker for By date")]
+        public void WhenTheUserSelectsAFutureDateUsingTheDatePickerForByDate()
+        {
+            decisionPage?.SelectFutureDateFromDatePicker();
         }
     }
 }

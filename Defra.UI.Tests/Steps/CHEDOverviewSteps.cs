@@ -3,7 +3,6 @@ using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
 
-
 namespace Defra.UI.Tests.Steps.IPAFF
 {
     [Binding]
@@ -103,6 +102,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
             chedOverviewPage?.SwitchTab(tabName);
         }
 
+        [When("the user clicks on Record control button")]
+        public void WhenTheUserClicksOnRecordControlButton()
+        {
+            chedOverviewPage?.ClickRecordControlButton();
+        }
+
         [Then("verifies Risk decision PHSI is set to {string}")]
         public void ThenVerifiesRiskDecisionPHSIIsSetTo(string decision)
         {
@@ -125,6 +130,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void ThenVerifiesFieldIsSetTo(string fieldName, string status)
         {
             Assert.True(chedOverviewPage?.VerifyDecisionRecordedBy(fieldName, status));
+        }
+
+        [When("the user clicks Record control button")]
+        public void WhenTheUserClicksRecordControlButton()
+        {
+            chedOverviewPage?.ClickRecordControl();
         }
     }
 }
