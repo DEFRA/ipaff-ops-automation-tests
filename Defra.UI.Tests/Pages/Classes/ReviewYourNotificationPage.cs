@@ -1269,9 +1269,6 @@ namespace Defra.UI.Tests.Pages.Classes
             return string.Empty;
         }
 
-        private static readonly System.Text.RegularExpressions.Regex PostcodeRegex =
-    new(@"^[A-Z]{1,2}\d{1,2}[A-Z]?\s?\d[A-Z]{2}$", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-
         private string ExtractCHEDPPAddressFromAddressText(string fullText)
         {
             if (string.IsNullOrEmpty(fullText))
@@ -1281,25 +1278,26 @@ namespace Defra.UI.Tests.Pages.Classes
             if (lines.Length > 1)
             {
                 var addressLine = lines[1].Trim();
+
+                // The review page shows: "street, city, postcode, country, phone"
+                // We only want: "street, city, postcode"
+
                 var parts = addressLine.Split(',', StringSplitOptions.TrimEntries);
 
+                // Take only the first 3 parts (street, city/region, postcode)
+                // This excludes both country and phone number
                 if (parts.Length >= 3)
                 {
-                    // DEFRA address has an extra address line so needs 5 parts (street1, street2, city, postcode)
-                    // before the country suffix, all other addresses need 3 parts (street, city, postcode)
                     if (parts[0].Equals("DEPARTMENT FOR ENVIRONMENT FOOD & RURAL AFFAIRS (D E F R A)"))
                     {
-                        return string.Join(", ", parts.Take(5));
+                        var addressWithoutCountryAndPhone = string.Join(", ", parts.Take(5));
+                        return addressWithoutCountryAndPhone;
                     }
-
-                    // If the 4th part is a UK postcode (e.g. "CW1 6GJ"), include it —
-                    // this handles addresses with an extra street part: street1, street2, city, postcode
-                    if (parts.Length >= 4 && PostcodeRegex.IsMatch(parts[3]))
+                    else
                     {
-                        return string.Join(", ", parts.Take(4));
+                        var addressWithoutCountryAndPhone = string.Join(", ", parts.Take(4));
+                        return addressWithoutCountryAndPhone;
                     }
-
-                    return string.Join(", ", parts.Take(3));
                 }
 
                 return addressLine;
