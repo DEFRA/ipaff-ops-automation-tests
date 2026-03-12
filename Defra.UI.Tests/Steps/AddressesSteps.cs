@@ -3,7 +3,6 @@ using NUnit.Framework;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
 using AventStack.ExtentReports.Gherkin.Model;
-using Defra.UI.Tests.Tools;
 
 namespace Defra.UI.Tests.Steps.IPAFF
 {
@@ -79,7 +78,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserClicksSameAsConsigneeForTheImporter()
         {
             addressesPage?.ClickImporterSameAsConsignee();
-            _scenarioContext["ImporterDetails"] = addressesPage.GetSelectedImporter();
+            _scenarioContext["ImporterDetails"] = addressesPage?.GetSelectedImporter();
         }
 
         [Then("the importer should be populated with the same details as the consignee {string} on the Addresses page")]

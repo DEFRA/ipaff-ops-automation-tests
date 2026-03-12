@@ -26,9 +26,13 @@ namespace Defra.UI.Tests.Pages.Classes
             _objectContainer = container;
         }
 
-        public bool IsPageLoaded()
+        public bool IsPageLoaded(string chedType)
         {
-            return DraftChedReference.Text.Contains("DRAFT") && DraftChedReference.Text.Contains("CHEDPP") && PageHeading.Text.Contains("Review your notification");
+            if(chedType.Equals("CHEDPP"))
+                return DraftChedReference.Text.Contains("DRAFT") && DraftChedReference.Text.Contains("CHEDPP") && PageHeading.Text.Contains("Review your notification");
+            else if (chedType.Equals("CHEDP"))
+                return DraftChedReference.Text.Contains("DRAFT") && DraftChedReference.Text.Contains("CHEDP") && PageHeading.Text.Contains("Review your notification");
+            return false;
         }
 
         public void ClickSaveAndContinue()

@@ -23,7 +23,6 @@ namespace Defra.UI.Tests.Steps
         [Then("the Clone a health or phytosanitary certificate page should be displayed")]
         public void ThenTheCloneAHealthOrPhytosanitaryCertificatePageShouldBeDisplayed()
         {
-            _scenarioContext["DocumentType"] = "Phytosanitary certificate";
             Assert.True(cloneAHealthOrPhytosanitaryCertificate?.IsPageLoaded(), "Clone a health or phytosanitary certificate page not loaded");
         }
 
