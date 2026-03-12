@@ -22,6 +22,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtCertificateIssueYear => _driver.FindElement(By.Id("certificate-date-of-issue-year"));
         private IWebElement txtConsignorConsigneeImporterName => _driver.FindElement(By.Id("party-name"));
         private IWebElement btnSearch => _driver.FindElement(By.Id("search"));
+        private IWebElement healthCertificatePageHeading => _driver.FindElement(By.Id("page-primary-title"));
 
         #endregion
 
@@ -67,7 +68,7 @@ namespace Defra.UI.Tests.Pages.Classes
             txtConsignorConsigneeImporterName.SendKeys(name);
         }
 
-        public NotificationDetails GetNotificationDetailsForCloning()
+        public NotificationDetails GetNotificationDetailsForCloningCHEDPP()
         {
             return new NotificationDetails
             {
@@ -84,7 +85,31 @@ namespace Defra.UI.Tests.Pages.Classes
                 Packages="10",
                 TypeOfPackage= "Box",
                 Quantity= "1000.0",
-                QuantityType= "Kilograms"
+                QuantityType= "Kilograms",
+                DocumentType = "Phytosanitary certificate"
+            };
+        }
+
+        public NotificationDetails GetNotificationDetailsForCloningCHEDP()
+        {
+            return new NotificationDetails
+            {
+                CertificateReferenceNumber = "NZL2026/AGL18/1",
+                CertificateDateOfIssue = "15/01/2026",
+                CountryOfOriginOfCertificate = "New Zealand",
+                ConsignorConsigneeOrImporterName = "ALLIANCE GROUP (NZ) LTD",
+                PurposeOfTheConsignment = "Human Consumption",
+                CommodityCode = "02044210",
+                Description = "Short forequarters",
+                GenusAndSpecies = "Ovis aries",
+                NetWeightWithUnits = "25200.9 kgs/units",
+                NetWeight = "25200.9",
+                Packages = "1255",
+                TypeOfPackage = "Carton",
+                Temperature = "Frozen",
+                Container = "MNBU4285672",
+                SealNumber= "NZMPI01354359",
+                DocumentType= "Veterinary health certificate"
             };
         }
 
@@ -102,5 +127,6 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             btnSearch.Click();
         }
+
     }
 }
