@@ -1,8 +1,8 @@
-﻿using Reqnroll.BoDi;
+﻿using Defra.UI.Tests.Data.Users;
+using Defra.UI.Tests.Pages.Interfaces;
 using NUnit.Framework;
 using Reqnroll;
-using Defra.UI.Tests.Pages.Interfaces;
-
+using Reqnroll.BoDi;
 
 namespace Defra.UI.Tests.Steps.IPAFF
 {
@@ -13,6 +13,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         private readonly ScenarioContext _scenarioContext;
 
         private IAboutConsignmentPage? aboutConsignmentPage => _objectContainer.IsRegistered<IAboutConsignmentPage>() ? _objectContainer.Resolve<IAboutConsignmentPage>() : null;
+        private IUserObject? UserObject => _objectContainer.IsRegistered<IUserObject>() ? _objectContainer.Resolve<IUserObject>() : null;
 
         public AboutConsignmentSteps(ScenarioContext context, IObjectContainer container)
         {
@@ -65,6 +66,20 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             aboutConsignmentPage?.SelectCompany(option);
             _scenarioContext["CompanyName"] = option;
+        }
+
+        [When("the user waits upto 10 minutes to select the {string} radio button option")]
+        public void WhenTheUserWaitsUpToTenMinutesToSelectTheRadioButtonOption(string role)
+        {
+            var businessName = UserObject?.GetUser("IPAFF", role)?.BusinessName;
+            Assert.That(businessName, Is.Not.Null.And.Not.Empty, $"BusinessName not found in Users.json for role '{role}'");
+
+            aboutConsignmentPage?.WaitAndSelectCompanyRadioButton(
+                businessName!,
+                maxWait: TimeSpan.FromMinutes(10),
+                retryInterval: TimeSpan.FromSeconds(30));
+
+            _scenarioContext["CompanyName"] = businessName;
         }
     }
 }

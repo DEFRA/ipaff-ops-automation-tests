@@ -119,8 +119,6 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SearchExistingDeliveryAddressPage, ISearchExistingDeliveryAddressPage>());            
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ConfirmExemptSpeciesPage, IConfirmExemptSpeciesPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<YourDownloadHasStarted, IYourDownloadHasStarted>());
-            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<RecordControlPage, IRecordControlPage>());
-            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ControlRecordedPage, IControlRecordedPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<UploadCommodityDetailsUsingCSVFilePage, IUploadCommodityDetailsUsingCSVFilePage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CheckUploadedCommodityPage, ICheckUploadedCommodityPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ConfirmationToDeclareGMSPage, IConfirmationToDeclareGMSPage>());
@@ -131,7 +129,12 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CreatingThisNotificationForPage, ICreatingThisNotificationForPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<DraftNotificationPage, IDraftNotificationPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<AddIntendedUseOfBulbsPage, IAddIntendedUseOfBulbsPage>());
-            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CheckOrUpdateCommodityDetailsPage, ICheckOrUpdateCommodityDetailsPage>()); 
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CheckOrUpdateCommodityDetailsPage, ICheckOrUpdateCommodityDetailsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<AreYouAPlantsImporterOrAgencyPage, IAreYouAPlantsImporterOrAgencyPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ManageYourAuthorisationsPage, IManageYourAuthorisationsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ChangeOrganisationSettingsPage, IChangeOrganisationSettingsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<AddAnAgentPage, IAddAnAgentPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SetPermissionsPage, ISetPermissionsPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ControlRecordedPage, IControlRecordedPage>()); 
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<RecordControlPage, IRecordControlPage>()); 
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<AddConsigneePage, IAddConsigneePage>()); 

@@ -12,10 +12,11 @@ namespace Defra.UI.Tests.Data.Users
         public string LoginInfo { get; set; }
         public string Environment { get; set; }
         public bool HomePage { get; set; }
-        public string Role {  get; set; }
-
+        public string Role { get; set; }
+        public string? BusinessName { get; set; }
+        public string? AgentCode { get; set; }
     }
-    
+
     public interface IUserObject
     {
         User GetUser(string application, string role);

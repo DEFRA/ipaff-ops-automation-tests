@@ -98,7 +98,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             importNotificationsPage?.SearchForNotification(reference);
         }
 
-
         [When("the user clicks Cookies link from the footer of the page")]
         public void WhenTheUserClicksCookiesLinkFromTheFooterOfThePage()
         {
@@ -209,7 +208,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             importNotificationsPage?.ClickCopyAsNewLink();
         }
-        
+
         [When("the user deletes all the stored values")]
         public void WhenTheUserDeletesAllTheStoredValues()
         {
@@ -222,5 +221,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
             importNotificationsPage?.ClickCloneButton();
         }
 
+        [When("the user clicks Manage trade partners")]
+        public void WhenTheUserClicksManageTradePartners()
+        {
+            importNotificationsPage?.ClickManageTradePartnersLink();
+        }
     }
 }
