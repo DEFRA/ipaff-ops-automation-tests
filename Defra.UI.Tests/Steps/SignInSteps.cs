@@ -27,14 +27,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext = context;
             _objectContainer = container;
         }
-       
+
         [Given(@"that I navigate to the IPAFF application")]
         [When(@"I navigate to the IPAFF application")]
         [When("the user logs back into IPAFFS application")]
         public void GivenThatINavigateToThePortCheckerApplication()
         {
             var url = urlBuilder.Default().BuildApp();
-            _driver?.Navigate().GoToUrl(url);           
+            _driver?.Navigate().GoToUrl(url);
         }
 
         [When(@"the user navigate to the BTMS application")]
@@ -57,6 +57,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void GivenThatTheUserNavigateToTheIPAFFSInternalPlantsInspectorApplication()
         {
             var url = ConfigSetup.BaseConfiguration.SearchProtectedNotifications.Url;
+            _driver?.Navigate().GoToUrl(url);
+        }
+
+        [When(@"the user navigates to the IPAFFS Intensified Official Controls application")]
+        [Given(@"the user navigates to the IPAFFS Intensified Official Controls application")]
+        public void GivenThatTheUserNavigateToTheIPAFFSIntensifiedOfficialControlsApplication()
+        {
+            var url = ConfigSetup.BaseConfiguration.IntensifiedOfficialControls.Url;
             _driver?.Navigate().GoToUrl(url);
         }
 
@@ -205,6 +213,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _signInPage?.IPAFFSInternalInspectorSignIn(userName, credential);
         }
 
+        [When("I have provided the IPAFFS Intensified Official Controls credentials and signin")]
+        public void WhenIHaveProvidedTheIPAFFSIntensifiedOfficialControlsCredentialsAndSignin()
+        {
+            var userName = ConfigSetup.BaseConfiguration.IntensifiedOfficialControls.User;
+            var credential = ConfigSetup.BaseConfiguration.IntensifiedOfficialControls.Credential;
+
+            _signInPage?.IPAFFSInternalInspectorSignIn(userName, credential);
+        }
 
         [When(@"I have provided the password for prototype research page")]
         public void WhenIHaveProvidedThePasswordForPrototypeResearchPage()
