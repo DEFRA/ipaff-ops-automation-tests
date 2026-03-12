@@ -29,7 +29,7 @@ Scenario: User creates and submits a B2C consignment notification - CHEDA Happy 
 	And the user clicks Save and continue
 	Then What is the main reason for importing the animals? page should be displayed with radio buttons
 	When the user chooses 'Internal market' and the sub-option 'Research'
-	And the user clicks Save and continue	
+	And the user clicks Save and continue
 	Then the Notification Hub page should be displayed
 	When the user clicks the Commodity hyperlink
 	Then the Commodity page should be displayed with the commodity and description entered
@@ -57,7 +57,7 @@ Scenario: User creates and submits a B2C consignment notification - CHEDA Happy 
 	And the user clicks on Add attachment link
 	And the user uploads the document 'IPAFFS Test Document' in the format '.docx'
 	Then the document 'IPAFFS Test Document' '.docx' is uploaded successfully
-	When the user clicks Save and continue	
+	When the user clicks Save and continue
 	Then the Addresses page should be displayed
 	When the user clicks Add a consignor or exporter
 	Then the Search for an existing consignor or exporter page should be displayed
@@ -282,7 +282,7 @@ Scenario: User creates and submits a CHEDA consignment notification with multipl
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 1
-	Then the user should be logged out successfully	
+	Then the user should be logged out successfully
 	When I navigate to the IPAFF Inspector application
 	Then I should see type of Gateway login page
 	And I have selected 'Sign in with Government Gateway' as login type
@@ -453,7 +453,7 @@ Scenario: User creates and submits a CHEDA consignment notification for Temporar
 	And the user enters arrival date at BCP or Port of entry as today's date
 	And the user enters estimated arrival time at BCP with future time
 	And the user enters estimated total journey time of the animals '8' hours
-	And the user clicks Save and continue	
+	And the user clicks Save and continue
 	Then the Transport after the BCP or Port of entry page should be displayed
 	When the user selects means of transport after BCP 'Road vehicle'
 	And the user enters transport identification after BCP 'TRANS456'
@@ -466,7 +466,7 @@ Scenario: User creates and submits a CHEDA consignment notification for Temporar
 	Then the Search for an existing transporter page should be displayed
 	When the user selects any one of the displayed transporters
 	Then the chosen transporter should be displayed on the Transporter page
-	When the user clicks Save and continue in Transporter page	
+	When the user clicks Save and continue in Transporter page
 	Then the Transport Contacts page should be displayed
 	When the user selects 'No' for Should we notify any transport contacts about inspections?
 	And the user clicks Save and continue
@@ -530,7 +530,7 @@ Scenario: User creates and submits a CHEDA consignment notification for Temporar
 	Then the Laboratory tests Select the commodity sampled page should be displayed
 	When the user clicks the Select link for the '0101' commodity code
 	Then the Laboratory tests Commodity to be tested page should be displayed
-	When the user selects '.AMINOGLYCOSIDE/AMINOSIDE' from the list of Laboratory tests	
+	When the user selects '.AMINOGLYCOSIDE/AMINOSIDE' from the list of Laboratory tests
 	Then the Laboratory tests Commodity sampled page should be displayed
 	And the Sample date and time is todays date with the time the lab test was selected
 	When the user populates the commodity sample details 'Initial analysis' 'Campden BRI' '12345' '3' 'Blood' 'Chilled'
@@ -556,8 +556,8 @@ Scenario: User creates and submits a CHEDA consignment notification for Temporar
 	When the user clicks on the Test '.AMINOGLYCOSIDE/AMINOSIDE'
 	Then the Record laboratory test information page should be displayed
 	When the user enters Sample use by date as '15''12''2025'
-	When the user enters Released date as '16''12''2025'
-	When the user selects 'Not satisfactory' for Conclusion
+	And the user enters Released date as '16''12''2025'
+	And the user selects 'Not satisfactory' for Conclusion
 	And the user clicks Save and continue
 	Then the Laboratory tests Review page should be displayed
 	When the user clicks Save and Return
@@ -606,7 +606,7 @@ Scenario: User creates and submits a CHEDA consignment notification with Transit
 	And the user verifies 'Transit' radio button exists with 'Exit border control post' dropdown and 'Destination country' dropdown
 	And the user verifies 'Re-entry' radio button exists with no sub-options
 	And the user verifies 'Temporary admission horses' radio button exists with 'Exit date' fields and 'Exit border control post' dropdown
-	When the user chooses 'Transit' as the main reason for importing the consignment
+	And the user chooses 'Transit' as the main reason for importing the consignment
 	And the user selects exit BCP 'Manchester Airport (animals) - GBMNC4'
 	And the user selects destination country 'Qatar'
 	And the user clicks Save and continue
@@ -867,7 +867,7 @@ Scenario: User creates and submits a CHEDA consignment notification with inspect
 	When the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
-	Then the notification returned in the search has the status 'NEW'
+	And the notification returned in the search has the status 'NEW'
 	And the Amend link should be available for the notification
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
@@ -927,7 +927,7 @@ Scenario: User creates and submits a CHEDA consignment notification with inspect
 	Then the Seal numbers page should be displayed
 	And 'No' is pre-selected for Are new seal numbers required?
 	And the user clicks Save and continue
-	Then the Laboratory tests page should be displayed
+	And the Laboratory tests page should be displayed
 	When the user select 'Yes' radio button on the Laboratory tests page
 	And the user clicks Save and continue
 	Then the Laboratory tests Reason for testing page should be displayed
@@ -982,22 +982,22 @@ Scenario: User creates and submits a CHEDA consignment notification with inspect
 	When the user clicks on the Test '.AMINOGLYCOSIDE/AMINOSIDE'
 	Then the Record laboratory test information page should be displayed
 	When the user enters Sample use by date as '15''12''2025'
-	When the user enters Released date as '16''12''2025'
-	When the user selects 'Satisfactory' for Conclusion
+	And the user enters Released date as '16''12''2025'
+	And the user selects 'Satisfactory' for Conclusion
 	And the user clicks Save and continue
 	Then the Laboratory tests Review page should be displayed
 	When the user clicks on the Test '.ANTITHYROID AGENTS'
 	Then the Record laboratory test information page should be displayed
 	When the user enters Sample use by date as '15''12''2025'
-	When the user enters Released date as '16''12''2025'
-	When the user selects 'Satisfactory' for Conclusion
+	And the user enters Released date as '16''12''2025'
+	And the user selects 'Satisfactory' for Conclusion
 	And the user clicks Save and continue
 	Then the Laboratory tests Review page should be displayed
 	When the user clicks on the Test '.CHEMICAL ELEMENTS'
 	Then the Record laboratory test information page should be displayed
 	When the user enters Sample use by date as '15''12''2025'
-	When the user enters Released date as '16''12''2025'
-	When the user selects 'Satisfactory' for Conclusion
+	And the user enters Released date as '16''12''2025'
+	And the user selects 'Satisfactory' for Conclusion
 	And the user clicks Save and continue
 	Then the Laboratory tests Review page should be displayed
 	And the user verifies multiple Laboratory tests are displayed with Results 'Satisfactory'
@@ -1076,7 +1076,7 @@ Scenario: User adds addresses to address book and amends a CHEDA notification to
 	And the user clicks Save and continue
 	Then What is the main reason for importing the animals? page should be displayed with radio buttons
 	When the user chooses 'Internal market' and the sub-option 'Research'
-	And the user clicks Save and continue	
+	And the user clicks Save and continue
 	Then the Notification Hub page should be displayed
 	When the user clicks the Commodity hyperlink
 	Then the Commodity page should be displayed with the commodity and description entered
@@ -1104,7 +1104,7 @@ Scenario: User adds addresses to address book and amends a CHEDA notification to
 	And the user clicks on Add attachment link
 	And the user uploads the document 'IPAFFS Test Document' in the format '.docx'
 	Then the document 'IPAFFS Test Document' '.docx' is uploaded successfully
-	When the user clicks Save and continue	
+	When the user clicks Save and continue
 	Then the Addresses page should be displayed
 	When the user clicks Add a consignor or exporter
 	Then the Search for an existing consignor or exporter page should be displayed
@@ -1163,7 +1163,7 @@ Scenario: User adds addresses to address book and amends a CHEDA notification to
 	Then the Choose operator type page should be displayed with 'Importer' 'Exporter' 'Transporter' and 'Packer' radio buttons
 	When the user selects operator type 'Importer' and clicks Continue
 	Then the Add operator details page should be displayed
-	When the user adds the operator 'Importer' details	
+	When the user adds the operator 'Importer' details
 	And the user clicks Save and Continue
 	Then the address has been added to your address book page should be displayed
 	When the user clicks Return to Address Book
@@ -1175,7 +1175,7 @@ Scenario: User adds addresses to address book and amends a CHEDA notification to
 	Then the Choose operator type page should be displayed with 'Importer' 'Exporter' 'Transporter' and 'Packer' radio buttons
 	When the user selects operator type 'Exporter' and clicks Continue
 	Then the Add operator details page should be displayed
-	When the user adds the operator 'Exporter' details	
+	When the user adds the operator 'Exporter' details
 	And the user clicks Save and Continue
 	Then the address has been added to your address book page should be displayed
 	When the user clicks Return to Address Book
@@ -1189,7 +1189,7 @@ Scenario: User adds addresses to address book and amends a CHEDA notification to
 	Then the Select the transporter type page should be displayed
 	When the user selects transporter type 'Private transporter' and clicks Continue
 	Then the Add operator details page should be displayed
-	When the user adds the operator 'Transporter' details	
+	When the user adds the operator 'Transporter' details
 	And the user clicks Save and Continue
 	Then the address has been added to your address book page should be displayed
 	When the user clicks Return to Address Book
@@ -1203,24 +1203,24 @@ Scenario: User adds addresses to address book and amends a CHEDA notification to
 	And the Amend link should be available for the notification
 	When the user clicks Amend
 	Then the Notification Hub page should be displayed
-	And the notification version should be 'V2'	
+	And the notification version should be 'V2'
 	When the user clicks on 'Consignor or Exporter, Consignee, Importer and Place of Destination' link
 	Then the Addresses page should be displayed
 	When the user clicks on Change link under 'Consignor or exporter'
 	Then the Search for an existing consignor or exporter page should be displayed
-	When the user selects the consignor or exporter from the address book 'Exporter' 
-	Then the chosen consignor from the address book should be displayed on the Addresses page 'Exporter' 
+	When the user selects the consignor or exporter from the address book 'Exporter'
+	Then the chosen consignor from the address book should be displayed on the Addresses page 'Exporter'
 	When the user clicks on Change link under 'Consignee'
 	Then the Search for an existing consignee page should be displayed
-	When the user selects the consignee from the address book 'Importer' 
-	Then the chosen consignee from the address book should be displayed on the Addresses page 'Importer' 
+	When the user selects the consignee from the address book 'Importer'
+	Then the chosen consignee from the address book should be displayed on the Addresses page 'Importer'
 	When the user clicks on Change link under 'Importer'
 	Then the Search for an existing importer page should be displayed
-	When the user selects the importer from the address book 'Importer' 
-	Then the chosen importer from the address book should be displayed on the Addresses page 'Importer' 
+	When the user selects the importer from the address book 'Importer'
+	Then the chosen importer from the address book should be displayed on the Addresses page 'Importer'
 	When the user clicks on Change link under 'Place of destination'
 	Then the Search for an existing place of destination page should be displayed
-	When the user selects the place of destination from the address book 'Importer' 
+	When the user selects the place of destination from the address book 'Importer'
 	Then the chosen place of destination from the address book should be displayed on the Addresses page 'Importer'
 	When the user clicks on Save and return to hub
 	Then the Notification Hub page should be displayed
@@ -1228,8 +1228,8 @@ Scenario: User adds addresses to address book and amends a CHEDA notification to
 	Then the Transporter page should be displayed
 	When the user clicks on Change link next to Transporter
 	Then the Search for an existing transporter page should be displayed
-	When the user searches for the transporter from the address book 'Transporter' 
-	And the user selects the transporter from the address book 'Transporter' 
+	When the user searches for the transporter from the address book 'Transporter'
+	And the user selects the transporter from the address book 'Transporter'
 	Then the chosen transporter from the address book should be displayed on the Transporter page 'Transporter'
 	When the user clicks Save and return to hub in Transporter page
 	Then the Notification Hub page should be displayed
@@ -1238,8 +1238,8 @@ Scenario: User adds addresses to address book and amends a CHEDA notification to
 	And the Consignor or exporter shows the new trader 'Exporter' on the review page
 	And the Consignee shows the new 'Importer' on the review page
 	And the Importer shows the new 'Importer' on the review page
-	And the Place of destination shows the new 'Importer' on the review page	
-	And the Transporter shows the new 'Transporter' on the review page	
+	And the Place of destination shows the new 'Importer' on the review page
+	And the Transporter shows the new 'Transporter' on the review page
 	When the user clicks Save and continue
 	Then the Declaration page should be displayed
 	When the user ticks the checkbox to declare that the information is true and correct
@@ -1298,7 +1298,7 @@ Scenario: User creates and amends a CHEDA notification, inspector requests amend
 	Then the Enter animal identification details page should be displayed
 	When the user populates the Horse name as 'Lightning'
 	And the user populates the Microchip number as 'MC123456789'
-	And the user populates the Passport number as 'PP987654321'	
+	And the user populates the Passport number as 'PP987654321'
 	And the user clicks Save and continue
 	Then the Additional animal details page should be displayed
 	When the user selects 'Approved bodies' for What are the animals certified for?
@@ -1444,7 +1444,7 @@ Scenario: User creates and amends a CHEDA notification, inspector requests amend
 	Then the certificate should be displayed in a new browser tab
 	When the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
-	Then the browser tab is closed	
+	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
 	When I navigate to the IPAFF Inspector application
@@ -1464,7 +1464,7 @@ Scenario: User creates and amends a CHEDA notification, inspector requests amend
 	When the user clicks Request amendment
 	Then the Request that the responsible person amends this CHED page should be displayed
 	When the user clicks Request amendment button
-	Then the Import notifications dashboard page should be displayed	
+	Then the Import notifications dashboard page should be displayed
 	When the user searches for the newly created notification on the Import notifications page
 	Then the notification should not be present in the inspector workflow
 	When the user logs out of IPAFFS Part 2
@@ -1589,22 +1589,22 @@ Scenario: User creates and amends a CHEDA notification, inspector requests amend
 	When the user clicks on the Test '.AMINOGLYCOSIDE/AMINOSIDE'
 	Then the Record laboratory test information page should be displayed
 	When the user enters Sample use by date as '15''12''2025'
-	When the user enters Released date as '16''12''2025'
-	When the user selects 'Satisfactory' for Conclusion
+	And the user enters Released date as '16''12''2025'
+	And the user selects 'Satisfactory' for Conclusion
 	And the user clicks Save and continue
 	Then the Laboratory tests Review page should be displayed
 	When the user clicks on the Test '.ANTITHYROID AGENTS'
 	Then the Record laboratory test information page should be displayed
 	When the user enters Sample use by date as '15''12''2025'
-	When the user enters Released date as '16''12''2025'
-	When the user selects 'Satisfactory' for Conclusion
+	And the user enters Released date as '16''12''2025'
+	And the user selects 'Satisfactory' for Conclusion
 	And the user clicks Save and continue
 	Then the Laboratory tests Review page should be displayed
 	When the user clicks on the Test '.CHEMICAL ELEMENTS'
 	Then the Record laboratory test information page should be displayed
 	When the user enters Sample use by date as '15''12''2025'
-	When the user enters Released date as '16''12''2025'
-	When the user selects 'Satisfactory' for Conclusion
+	And the user enters Released date as '16''12''2025'
+	And the user selects 'Satisfactory' for Conclusion
 	And the user clicks Save and continue
 	Then the Laboratory tests Review page should be displayed
 	When the user clicks Save and Return
@@ -1621,7 +1621,7 @@ Scenario: User creates and amends a CHEDA notification, inspector requests amend
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user clicks return to your dashboard link in decision submitted page
-	Then the Import notifications dashboard page should be displayed	
+	Then the Import notifications dashboard page should be displayed
 	When the user searches for the newly created notification on the Import notifications page
 	Then the notification returned in the search has the status 'VALID' on the Import notifications page
 
@@ -1769,7 +1769,7 @@ Scenario: User creates and submits a CHEDA notification, copies it as new and ve
 	And the user enters Latest Health Certificate date of issue from yesterday
 	And the user clicks on Add attachment link on the Latest Health Certificate page
 	And the user uploads the Veterinary Health Certificate 'IPAFFS Test Health Certificate' in the format '.docx'
-	Then the Veterinary Health Certificate 'IPAFFS Test Health Certificate' '.docx' is uploaded successfully	
+	Then the Veterinary Health Certificate 'IPAFFS Test Health Certificate' '.docx' is uploaded successfully
 	When the user clicks on Save and return to hub
 	Then the Notification Hub page should be displayed
 	When the user clicks on 'Animal identification details' link
@@ -1814,13 +1814,13 @@ Scenario: User creates and submits a CHEDA notification, copies it as new and ve
 	When the user enters the CPH number 'NEW/345/6789/0001'
 	And the user clicks on Save and return to hub
 	Then the Notification Hub page should be displayed
-	And the 'Transport contacts' task should have the status 'TO DO' 
+	And the 'Transport contacts' task should have the status 'TO DO'
 	When the user clicks on 'Transport contacts' link
 	Then the Transport Contacts page should be displayed
 	And the Should we notify any transport contacts about inspections? should not be copied from the original notification
 	When the user selects 'No' for Should we notify any transport contacts about inspections?
 	And the user clicks on Save and return to hub
-	When the user clicks on 'Contact address for consignment' link
+	And the user clicks on 'Contact address for consignment' link
 	Then the Contact address for consignment page should be displayed without the secondary title
 	And the Contact address for consignment should default to the first address on the list
 	When the user clicks on Save and return to hub
@@ -1982,7 +1982,7 @@ Scenario: User creates and submits a CHEDA notification with laboratory tests ch
 	And the user selects 'Satisfactory' for Welfare check
 	And the user selects '0' '%' for Number of dead animals
 	And the user selects '0' 'unit' for Number of unfit animals
-	And the user selects '0' for Number of births or abortions	
+	And the user selects '0' for Number of births or abortions
 	And the user clicks Save and continue
 	Then the Seal numbers page should be displayed
 	When the user selects 'No' radio button for Are new seal numbers required?
@@ -2002,7 +2002,7 @@ Scenario: User creates and submits a CHEDA notification with laboratory tests ch
 	When the user clicks the Select link for the '0103' commodity code
 	Then the Laboratory tests Commodity to be tested page should be displayed
 	When the user selects 'Animal diseases' in Laboratory test category
-	When the user selects 'Swine diseases' in Laboratory test subcategory
+	And the user selects 'Swine diseases' in Laboratory test subcategory
 	And the user clicks on Search
 	Then the Laboratory tests list should be filtered by the Laboratory test subcategory 'Swine diseases'
 	When the user selects any Laboratory test from the displayed list
@@ -2012,7 +2012,7 @@ Scenario: User creates and submits a CHEDA notification with laboratory tests ch
 	And the user verifies the Laboratory dropdown displays options
 	And the user verifies the Sample type dropdown displays options
 	And the user verifies the Storage temperature dropdown displays options
-	When the user populates the commodity sample details 'Initial analysis' 'Campden BRI' '12345' '3' 'Blood' 'Chilled'
+	And the user populates the commodity sample details 'Initial analysis' 'Campden BRI' '12345' '3' 'Blood' 'Chilled'
 	And the user clicks Save and continue
 	Then the Laboratory tests Review page should be displayed
 	And the user verifies the data in Laboratory tests review page

@@ -254,8 +254,8 @@ Scenario: Delegation of Authority Agent submits CHEDPP notification by uploading
 	And the dashboard page should be displayed
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
-		
-Scenario: Create a new import notification through clone a health or phytosanitary certificate process - SPS-9272 - CHED PP
+	
+Scenario: Create a new import notification through clone a health or phytosanitary certificate process - SPS-9272
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
@@ -269,8 +269,8 @@ Scenario: Create a new import notification through clone a health or phytosanita
 	And the user selected the importing option as 'Plants, plant products and other objects'
 	When the user clicks on continue button
 	Then the Certificate details page should be displayed
-	And the user searches for the notification for cloning which is not more than 90 days from creation
-	And the user provided notification details in the search input fields
+	And the user searches for the notification for cloning CHEDPP which is not more than 90 days from creation
+	And the user provided CHED PP notification details in the search input fields
 	When the user Clicks on Search button
 	Then the Phytosanitary certificate details page should be displayed
 	And the user verified all the details on Phytosanitary certificate details page
@@ -278,7 +278,7 @@ Scenario: Create a new import notification through clone a health or phytosanita
 	Then the Who are you creating this notification for page should be displayed
 	And the user selects the option of creating notification for as "Agent1"
 	When the user Clicks on Save and review button
-	Then the DRAFT CHEDPP notification code page should be displayed
+	Then the DRAFT 'CHEDPP' notification code page should be displayed
 	And the user records the Draft notification number
 	And the user verifies the following information is displayed within a red outlined box
 		| MissingOrIncorrect                                                         |

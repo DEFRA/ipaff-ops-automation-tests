@@ -148,7 +148,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var mismatches = new List<string>();
 
             // About the consignment
-            ValidateIfContains("ImportType", reviewPage?.GetPartOfImportType(), ref allDataMatches, mismatches);
+            ValidateIfContains("ImportType", reviewPage?.GetPartOfImportType(), ref allDataMatches, mismatches, true);
             ValidateIfExists("CountryOfOrigin", reviewPage?.GetCountryOfOrigin(), ref allDataMatches, mismatches);
             ValidateIfExists("ContryFromWhereConsigned", reviewPage?.GetCountryFromWhereConsigned(), ref allDataMatches, mismatches);
             ValidateIfExists("ConsignmentReferenceNumber", reviewPage?.GetConsignmentReferenceNumber(), ref allDataMatches, mismatches);
@@ -290,6 +290,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             ValidateIfExists("TotalNetWeight", reviewPage?.GetTotalNetWeight(), ref allDataMatches, mismatches);
             ValidateIfExists("TotalPackages", reviewPage?.GetTotalPackages(), ref allDataMatches, mismatches);
             ValidateIfExists("TotalGrossWeight", reviewPage?.GetTotalGrossWeight(), ref allDataMatches, mismatches);
+            ValidateIfExists("Temperature", reviewPage?.GetTemperature(), ref allDataMatches, mismatches);
             //ConfirmationToDeclareGMS exist for some GMS commodity codes only. 
             ValidateIfExists("ConfirmationToDeclareGMS", reviewPage?.GetConfirmationToDeclareGMS(), ref allDataMatches, mismatches);
 
@@ -299,6 +300,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
             ValidateIfExists("DocumentDateOfIssue", reviewPage?.GetAdditionalDocumentDateOfIssue(), ref allDataMatches, mismatches);
             ValidateFileNameWithTruncation("DocumentName", reviewPage?.GetAdditionalDocumentFileName(), ref allDataMatches, mismatches);
 
+            ValidateIfContains("HealthDocumentType", reviewPage?.GetLatestHealthDocumentType(), ref allDataMatches, mismatches, true);
+            ValidateIfExists("HealthCertificateReference", reviewPage?.GetHealthCertificateReference(), ref allDataMatches, mismatches);
+            ValidateIfExists("HealthCertificateDateOfIssue", reviewPage?.GetHealthCertificateDateOfIssue(), ref allDataMatches, mismatches);
+
+            //Approved Establishment Details
+            ValidateIfExists("ApprovedEstablishmentName", reviewPage?.GetApprovedEstablishmentName(), ref allDataMatches, mismatches);
+            ValidateIfExists("ApprovedEstablishmentCountry", reviewPage?.GetApprovedEstablishmentCountry(), ref allDataMatches, mismatches);
+            ValidateIfExists("ApprovedEstablishmentType", reviewPage?.GetApprovedEstablishmentType(), ref allDataMatches, mismatches);
+            ValidateIfExists("ApprovedEstablishmentApprovalNum", reviewPage?.GetApprovedEstablishmentApprovalNum(), ref allDataMatches, mismatches);
+
             // Addresses
             ValidateIfExists("ConsignorName", reviewPage?.GetConsignorName(), ref allDataMatches, mismatches);
             ValidateIfExists("ConsignorAddress", reviewPage?.GetCHEDPPConsignorAddress(), ref allDataMatches, mismatches);
@@ -306,9 +317,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
             ValidateIfExists("ImporterAddress", reviewPage?.GetCHEDPPImporterAddress(), ref allDataMatches, mismatches);
             ValidateIfExists("DeliveryAddressName", reviewPage?.GetDestinationName(), ref allDataMatches, mismatches);
             ValidateIfExists("DeliveryAddress", reviewPage?.GetDeliveryAddress(), ref allDataMatches, mismatches);
+            ValidateIfExists("PlaceOfDestinationName", reviewPage?.GetDestinationName(), ref allDataMatches, mismatches);
+            ValidateIfContains("PlaceOfDestinationAddressTextOnly", reviewPage?.GetDestinationAddressTextOnly(), ref allDataMatches, mismatches, true);
 
             // Transport details
             ValidateIfExists("BorderControlPost", reviewPage?.GetPortOfEntry(), ref allDataMatches, mismatches);
+            ValidateIfExists("PortOfEntry", reviewPage?.GetPortOfEntry(), ref allDataMatches, mismatches);
             ValidateIfExists("InspectionPremises", reviewPage?.GetInspectionPremises(), ref allDataMatches, mismatches);
             ValidateIfExists("MeansOfTransport", reviewPage?.GetMeansOfTransport(), ref allDataMatches, mismatches);
             ValidateIfExists("TransportId", reviewPage?.GetTransportId(), ref allDataMatches, mismatches);
@@ -318,11 +332,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
             ValidateIfExists("EstimatedArrivalTime", reviewPage?.GetEstimatedArrivalTime(), ref allDataMatches, mismatches);
             ValidateIfExists("IsCTC", reviewPage?.GetCTCUsage().Replace("-", "–"), ref allDataMatches, mismatches);
             ValidateIfExists("IsGVMS", reviewPage?.GetGVMSUsage(), ref allDataMatches, mismatches);
+            ValidateIfExists("ContainerNumber", reviewPage?.GetContainerNumber(), ref allDataMatches, mismatches);
+            ValidateIfExists("SealNumber", reviewPage?.GetSealNumber(), ref allDataMatches, mismatches);
 
             //Contact Details
             ValidateIfExists("ContactName", reviewPage?.GetContactName(), ref allDataMatches, mismatches);
             ValidateIfExists("ContactEmail", reviewPage?.GetContactEmail(), ref allDataMatches, mismatches);
             ValidateIfExists("ContactTelephone", reviewPage?.GetContactTelephone(), ref allDataMatches, mismatches);
+            ValidateIfExists("ConsignmentContactAddress", reviewPage?.GetConsignmentContactAddress(), ref allDataMatches, mismatches);
 
             ValidateIfExists("GrossVolume", reviewPage?.GetGrossVolume(), ref allDataMatches, mismatches);
             ValidateIfExists("GrossVolumetUnit", reviewPage?.GetGrossVolumeUnit(), ref allDataMatches, mismatches);
@@ -483,14 +500,21 @@ namespace Defra.UI.Tests.Steps.IPAFF
             }
         }
 
-        private void ValidateIfContains(string contextKey, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
+        private void ValidateIfContains(string contextKey, string? reviewValue, ref bool allDataMatches, List<string> mismatches, bool isContains = false)
         {
             if (_scenarioContext.ContainsKey(contextKey))
             {
                 var expectedValue = _scenarioContext.Get<string>(contextKey);
                 if (!string.IsNullOrEmpty(expectedValue))
                 {
-                    var isMatch = expectedValue.Contains(reviewValue?.Trim(), StringComparison.OrdinalIgnoreCase);
+                    var actualValue = reviewValue?.Trim().Replace("\r\n", "\n").Replace("\r", "\n");
+
+                    var isMatch = true;
+                    if (isContains)
+                        isMatch = actualValue.Contains(expectedValue, StringComparison.OrdinalIgnoreCase) || expectedValue.Contains(actualValue, StringComparison.OrdinalIgnoreCase);
+                    else
+                        isMatch = expectedValue.Equals(actualValue, StringComparison.OrdinalIgnoreCase);
+                    
                     if (!isMatch)
                     {
                         allDataMatches = false;
@@ -1110,10 +1134,17 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(isValid,
                 $"Catch certificate details validation failed. Mismatches: {string.Join("; ", mismatches)}");
         }
+
         [When("the user Clicks on Change link for Transport to the Border Control Post")]
         public void WhenTheUserClicksOnChangeLinkForTransportToTheBorderControlPost()
         {
             reviewPage?.ClickChangeLinkForTransportToTheBCP();
+        }
+
+        [When("the user Clicks on Change link for Transport to the port of entry")]
+        public void WhenTheUserClicksOnChangeLinkForTransportToThePortOfEntry()
+        {
+            reviewPage?.ClickChangeLinkForTransportToThePOE();
         }
 
         [When("the user Clicks on Change link for Goods movement services")]
@@ -1132,7 +1163,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserClicksOnChangeLinkForAddADeliveryAddress()
         {
             _scenarioContext["CompanyName"] = reviewPage?.GetImporterNameByChangeLink();
-            reviewPage?.ClickChangeLinkForAddDeliveryAddress();
+            reviewPage?.ClickChangeLinkForTraders();
         }
 
         [When("the user clicks View CHED grey button")]
@@ -1141,5 +1172,22 @@ namespace Defra.UI.Tests.Steps.IPAFF
             reviewPage?.ClickViewCHEDButton();
         }
 
+        [When("the user Clicks on Change link for Place of destination")]
+        public void WhenTheUserClicksOnChangeLinkForPlaceOfDestination()
+        {
+            reviewPage?.ClickChangeLinkForTraders();
+        }
+
+        [When("the user Clicks on Change link for Contact address for consignment")]
+        public void WhenTheUserClicksOnChangeLinkForContactAddressForConsignment()
+        {
+            reviewPage?.ClickChangeLinkForConsignmentContactAddress();
+        }
+
+        [When("the user clicks Add approved establishment details link in blue colour")]
+        public void WhenTheUserClicksAddApprovedEstablishmentDetailsLinkInBlueColour()
+        {
+            reviewPage?.ClickAddApprovedEstablishmentDetailsLink();
+        }
     }
 }
