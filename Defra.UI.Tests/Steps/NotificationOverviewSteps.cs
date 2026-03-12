@@ -78,5 +78,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             notificationOverviewPage?.ClickRequestAmendment();
         }
+
+        [Then("the notification status should include {string}")]
+        public void ThenTheNotificationStatusShouldInclude(string status)
+        {
+            Assert.True(notificationOverviewPage?.StatusContains(status),
+                $"Expected notification status to include '{status}'");
+        }
     }
 }
