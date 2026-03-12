@@ -64,11 +64,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["EstimatedArrivalTime"] = formattedTime;
         }
 
+        [When("the user Clicks on Save and review button from port of entry page")]
         [When("the user Clicks on Save and review button from Border Control Post page")]
         public void WhenTheUserClicksOnSaveAndReviewButtonFromBorderControlPostPage()
         {
             btnSaveAndReview.Click();
         }
-
     }
 }

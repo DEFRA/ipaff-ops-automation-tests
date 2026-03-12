@@ -147,7 +147,7 @@
         void ClickChangeLinkForTransportToTheBCP();
         void ClickChangeLinkForContactDetails();
         void ClickChangeLinkForGoodsMovementServices();
-        void ClickChangeLinkForAddDeliveryAddress();
+        void ClickChangeLinkForTraders();
         string GetImporterNameByChangeLink();
         void ClickViewCHEDButton();
         string GetContactName();
@@ -159,5 +159,14 @@
         string GetQuantityType();
         string GetGrossVolume();
         string GetGrossVolumeUnit();
+        void ClickChangeLinkForTransportToThePOE();
+        void ClickChangeLinkForConsignmentContactAddress();
+        void ClickAddApprovedEstablishmentDetailsLink();
+        string GetApprovedEstablishmentName();
+        string GetApprovedEstablishmentCountry();
+        string GetApprovedEstablishmentType();
+        string GetApprovedEstablishmentApprovalNum();
+        string GetDestinationAddressTextOnly();
+        string GetLatestHealthDocumentType();
     }
 }
