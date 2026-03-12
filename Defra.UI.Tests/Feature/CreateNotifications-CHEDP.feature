@@ -3386,3 +3386,8 @@ Scenario: Create a notification through clone a health or phytosanitary certific
 	And the notification should be present in the list
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
+
+Scenario: User creates and submits a CHEDP consignment notification - SPS-7374
+	Given the user navigates to the IPAFFS Intensified Official Controls application
+	When I have provided the IPAFFS Intensified Official Controls credentials and signin
+	Then the Intensified official controls page should be displayed
