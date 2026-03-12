@@ -3387,7 +3387,148 @@ Scenario: Create a notification through clone a health or phytosanitary certific
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
 
-Scenario: User creates and submits a CHEDP consignment notification - SPS-7374
+Scenario: User submits a CHEDP notification and creates an Intensified Official Control check against it - SPS-7374
+	Given that I navigate to the IPAFF application
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF credentials and signin
+	Then the user should be logged into Notification page
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Products of animal origin, germinal products or animal by-products' option
+	And the user clicks Save and continue
+	Then the Origin of the plants plant product or other objects page should be displayed
+	When the user chooses "China" from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing "China" as the Country of origin and Country from where consigned
+	When the user chooses "No" for Does your consignment require a region code?
+	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
+	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
+	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
+	And the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '16051000' commodity code
+	Then the commodity details should be populated '16051000' 'Crab'
+	When the user selects the type of commodity 'Composite products'
+	And the user selects species of commodity 'Geryon maritae'
+	And the user selects "No" for Do you want to add another commodity?
+	And the user clicks Save and continue
+	Then What is the main reason for importing the consignment? page should be displayed with radio buttons
+	When the user chooses "Internal market" and the sub-option "Human consumption"
+	And the user clicks Save and continue
+	Then Select the highest risk category for the commodities in this consignment page should be displayed
+	When the user chooses "Medium risk" risk category
+	And the user clicks Save and continue
+	Then the Health certificate required page should be displayed
+	When the user clicks continue button
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Commodity page should be displayed with the commodity and description entered
+	When the user populates Net weight as '1000'
+	And the user populates Number of packages as '10'
+	And the user selects type of package as 'Box'
+	And the user clicks the Update total button
+	Then the total gross weight should be greater than the net weight '1500'
+	When the user clicks Save and continue in commodity page
+	Then the Additional details page should be displayed
+	When the user selects 'Chilled' radio button on the Additional details page
+	And the user clicks Save and continue
+	Then the Catch cerificates page should be displayed
+	And the user selects "No" option for add catch certificate
+	When the user clicks Save and continue
+	Then the Latest Health Certificate page should be displayed
+	When the user enters Latest Health Certificate Document reference "INV12345"
+	And the user enters Latest Health Certificate date of issue "24""10""2025"
+	And the user clicks Latest Health Certificate add attachment link
+	And the user uploads the Latest Health Certificate document 'IPAFFS Test Document' in the format '.docx'
+	Then the Latest Health Certificate document 'IPAFFS Test Document' '.docx' is uploaded successfully
+	And the user clicks Save and continue
+	And the Accompanying documents page should be displayed
+	When the user selects Document type "Commercial invoice"
+	And the user enters Document reference "INV12345"
+	And the user enters date of issue "24/11/2025"
+	And the user clicks on Add attachment link
+	And the user uploads the document 'IPAFFS Test Health Certificate' in the format '.docx'
+	Then the document 'IPAFFS Test Health Certificate' '.docx' is uploaded successfully
+	And the user should be able to click Save and continue
+	And the Approved establishment of origin page should be displayed
+	When the user clicks Search for an approved establishment
+	Then the list of establishments should be displayed, filtered by Country of origin "China" type "Freezing Vessel" status "Approved"
+	When the user clicks Select for one of the establishments in the list
+	Then the Approved establishment of origin page should be displayed with the selected establishment
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee "DEF"
+	Then the chosen consignee "DEF" should be displayed on the Addresses page
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee "DEF" on the Addresses page
+	When the user clicks Add a place of destination
+	Then the Search for an existing place of destination page should be displayed
+	When the user selects a place of destination "DEF" with a UK country
+	Then the chosen place of destination "DEF" should be displayed on the Addresses page
+	When the user clicks Save and continue
+	Then the Transport to the port of entry page should be displayed
+	When the user populates the transport details "BRISTOL (GBBRS)" "No" "Road vehicle" "123456" "Doc1234"
+	And the user clicks Save and continue
+	Then the Goods movement services page should be displayed
+	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user clicks Save and continue
+	Then the Contact details page should be displayed, pre-populated with the user's details
+	When the user clicks Save and continue
+	Then the Nominated contacts page should be displayed
+	When the user clicks Save and continue
+	Then the Contact address for consignment page should be displayed
+	And the user selects a contact address for the consignment
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	And the user verifies all the data displayed in review page for commodity code "160"
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	When the user records the IPAFFS User details and CHED Reference
+	Then the details should be recorded
+	When the user logs out of IPAFFS Part 1
+	Then the user should be logged out successfully
 	Given the user navigates to the IPAFFS Intensified Official Controls application
 	When I have provided the IPAFFS Intensified Official Controls credentials and signin
-	Then the Intensified official controls page should be displayed
+	Then the Intensified Official Controls dashboard should be displayed
+	When the user clicks Create new Intensified control check button
+	Then the Create intensified official control screen should be displayed
+	When the user enters the CHED notification reference from the scenario context
+	And the user clicks Search for an approved establishment on the IOC page
+	Then the Choose approved establishment screen should be displayed
+	When the user selects the country of origin from the dropdown and clicks Search on the IOC page
+	Then the list of approved establishments is displayed for the selected country
+	When the user clicks Select for the approved establishment from the notification
+	Then the Create intensified official control screen should be displayed with the establishment details populated
+	When the user enters the commodity code '16051000' on the IOC page
+	Then the commodity code '16051000' and description is displayed on the IOC page
+	When the user clicks Search for Hazard on the IOC page
+	And the user enters the hazard category and hazard sub-category and clicks Search on the IOC page
+	Then the list of laboratory tests is displayed on the IOC page
+	When the user selects a hazard from the list and clicks Select
+	Then the Create intensified official control screen should be displayed with the lab test description populated
+	When the user enters the weight '1000' on the IOC page
+	And the user clicks Place under intensified official controls button
+	Then the Are you sure you want to create the intensified official control? page should be displayed
+	And the Yes create the intensified official control button should be displayed
+	And the No do not create the intensified official control link should be displayed
+	When the user clicks Yes create the intensified official control button
+	Then the Your intensified official control has been put in place banner should be displayed
+	And the intensified official control number in the format 'IOC.' should be displayed
+	When the user clicks Return to dashboard button on the IOC confirmation page
+	Then the Intensified Official Controls dashboard should be displayed
+	When the user locates the intensified official control just created
+	Then the status of the intensified official control should be 'Active'
+	When the user logs out of the Intensified Official Controls application
+	Then the user should be logged out successfully
