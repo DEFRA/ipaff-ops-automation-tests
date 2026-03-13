@@ -8,6 +8,7 @@
         bool SelectCommodityIntendedForRadio(string commIntendedForOption);
         void SelectAnimalCertification(string certificationOption);
         void SelectUnweanedAnimalsOption(string option);
+        bool IsUnweanedAnimalsRadioSelected(string unweanedAnimalsOption);
         void ClickSaveAndReview();
         bool AreAllCommIntendedForRadioOptionsDisplayed(List<string> commOptionsListExpected);
         string GetCommIntendedForRadioLabelText { get; }

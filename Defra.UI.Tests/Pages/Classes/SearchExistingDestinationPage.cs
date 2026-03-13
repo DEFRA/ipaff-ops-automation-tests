@@ -62,5 +62,6 @@ namespace Defra.UI.Tests.Pages.Classes
         public string GetSelectedDestinationName(string destinationName) => GetDestinationNameElement(destinationName).Text.Trim();
         public string GetSelectedDestinationAddress(string destinationName) => GetDestinationAddressElement(destinationName).Text.Trim();
         public string GetSelectedDestinationCountry(string destinationName) => GetDestinationCountryElement(destinationName).Text.Trim();
+        public string GetDestinationAddressTextOnly(string destinationName) => GetDestinationAddressElement(destinationName).Text.Trim().Replace(",","");
     }
 }

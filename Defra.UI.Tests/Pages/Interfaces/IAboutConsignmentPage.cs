@@ -13,5 +13,6 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void SelectToWhomNotificationCreatedFor(string option);
         bool IsWhichCompanyIsThisNotificationForPageLoaded();
         void SelectCompany(string option);
+        void WaitAndSelectCompanyRadioButton(string businessName, TimeSpan maxWait, TimeSpan retryInterval);
     }
 }

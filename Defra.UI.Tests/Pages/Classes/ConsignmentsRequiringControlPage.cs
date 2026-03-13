@@ -16,14 +16,14 @@ namespace Defra.UI.Tests.Pages.Classes
         #region Page Objects
         private IWebElement primaryTitle => _driver.WaitForElement(By.XPath("//*[@class='govuk-heading-xl govuk-!-margin-bottom-6 govuk-!-font-size-48 ']"), true);
         private IWebElement lnkChedRefNumSearcResult => _driver.FindElement(By.XPath("//*[normalize-space()='Reference Number' or normalize-space()='Reference number']//following-sibling::dd"));
-        private IWebElement lnkChedStatusSearcResult => _driver.FindElement(By.XPath("//*[normalize-space()='CHED status']//following-sibling::dd/strong[1]"));
+        private IWebElement lnkChedStatusSearcResult => _driver.FindElement(chedStatusBy);
         private IWebElement lnkChedRefNum => _driver.FindElement(By.XPath("//*[normalize-space()='Reference Number']/following-sibling::dd"));
         private IWebElement lblControlStatus => _driver.FindElement(By.XPath("//*[contains(@id,'control-status')]"));
         private IWebElement lnkFirstNotification => _driver.FindElement(By.XPath("(//*[contains(@id,'view-details')])[1]"));
         private IReadOnlyCollection<IWebElement> lblControlStatuses => _driver.FindElements(By.XPath("//*[contains(@id,'control-status')]"));
         private IReadOnlyCollection<IWebElement> lblNotificationDate => _driver.FindElements(By.XPath("//*[contains(@id,'decision-date')]"));
         private IWebElement lnkConsignmentControlPage(string link) => _driver.FindElement(By.XPath($"//a[normalize-space()='{link}']"));
-        private IWebElement btnSearch => _driver.FindElement(By.CssSelector("#search-notifications"));
+        private IWebElement btnSearch => _driver.FindElement(btnSearchBy);
         private IWebElement txtStartDay => _driver.FindElement(By.Id("start-date-day"));
         private IWebElement txtEndDay => _driver.FindElement(By.Id("end-date-day"));
         private IWebElement txtStartMonth => _driver.FindElement(By.Id("start-date-month"));
@@ -32,6 +32,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtEndYear => _driver.FindElement(By.Id("end-date-year"));
         private IWebElement drpdownSortBy => _driver.FindElement(By.Id("orderBy"));
         private IWebElement drpdownValue(string field) => _driver.FindElement(By.XPath($"//*[normalize-space(text())='{field}']/following-sibling::select"));
+        private By lblResultCountBy => By.Id("notification-count");
+        private By btnSearchBy => By.CssSelector("#search-notifications");
+        private By chedStatusBy => By.XPath("//*[normalize-space()='CHED status']//following-sibling::dd/strong[1]");
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -48,6 +51,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool VerifyNotificationStatus(string chedRef, string status)
         {
+            _driver.WaitForElementExists(lblResultCountBy);
             return lnkChedRefNumSearcResult.Text.Trim().Contains(chedRef)
                 && lnkChedStatusSearcResult.Text.ToUpper().Trim().Equals(status.ToUpper());
         }
@@ -56,31 +60,31 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             lnkChedRefNum.Click();
         }
-        
+
         public void ClickSearchButton()
         {
             btnSearch.Click();
         }
-        
+
         public void EnterStartDate(string day, string month, string year)
         {
             txtStartDay.SendKeys(day);
             txtStartMonth.SendKeys(month);
             txtStartYear.SendKeys(year);
         }
-        
+
         public void EnterEndDate(string day, string month, string year)
         {
             txtEndDay.SendKeys(day);
             txtEndMonth.SendKeys(month);
             txtEndYear.SendKeys(year);
         }
-        
+
         public bool VerifyControlStatus(string controlStatus)
         {
             return lblControlStatus.Text.Equals(controlStatus);
         }
-        
+
         public bool VerifyLink(string link)
         {
             return lnkConsignmentControlPage(link).Text.Equals(link);
@@ -90,17 +94,17 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             lnkConsignmentControlPage(link).Click();
         }
-        
+
         public void ClickFirstNotification()
         {
             lnkFirstNotification.Click();
         }
-        
+
         public bool VerifyDropdownFieldValue(string field, string value)
         {
             return new SelectElement(drpdownValue(field)).SelectedOption.Text.Equals(value);
         }
-        
+
         public void SelectControlStatus(string value, string field)
         {
             var select = new SelectElement(drpdownValue(field));
@@ -109,14 +113,14 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool VerifyTheControlStatus(string status)
         {
-            return lblControlStatuses.Count > 0 && lblControlStatuses.All(e => e.Text.Trim() == status);       
+            return lblControlStatuses.Count > 0 && lblControlStatuses.All(e => e.Text.Trim() == status);
         }
-        
+
         public bool VerifySortByDropdown(string sortBy)
         {
             return new SelectElement(drpdownSortBy).SelectedOption.Text.Equals(sortBy);
         }
-        
+
         public bool VerifyTheResultsInTheDateRange(string startDate, string endDate)
         {
             string inputFormat = "dd/MM/yyyy";
@@ -133,9 +137,9 @@ namespace Defra.UI.Tests.Pages.Classes
                 var uiDate = (date.Text ?? string.Empty).Trim();
 
                 if (!DateTime.TryParseExact(uiDate, uiFormat, CultureInfo.CurrentCulture, DateTimeStyles.None, out var dt))
-                    return false; 
+                    return false;
                 if (dt < start || dt > end)
-                    return false; 
+                    return false;
             }
             return true;
         }
@@ -152,30 +156,36 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool WaitForStatusWithSearch(string expectedStatus)
         {
-            int timeoutSeconds = 300;
-            int pollIntervalSeconds = 5;
+            const int timeoutSeconds = 300;
+            const int pollIntervalSeconds = 5;
 
-            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(timeoutSeconds)) 
-            { 
-                PollingInterval = TimeSpan.FromSeconds(pollIntervalSeconds) 
-            }; 
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(timeoutSeconds))
+            {
+                PollingInterval = TimeSpan.FromSeconds(pollIntervalSeconds)
+            };
 
             wait.IgnoreExceptionTypes(
-                typeof(NoSuchElementException), 
-                typeof(StaleElementReferenceException)); 
-            
-            return wait.Until(d => 
+                typeof(NoSuchElementException),
+                typeof(StaleElementReferenceException),
+                typeof(WebDriverException));
+
+            return wait.Until(d =>
             {
-                d.FindElement(By.CssSelector("#search-notifications")).Click();
+                d.FindElement(btnSearchBy).Click();
 
-                // Always re-find the status element
-                var status = d.FindElement(By.XPath("//*[normalize-space()='CHED status']//following-sibling::dd/strong[1]")).Text.Trim();
+                var statusWait = new WebDriverWait(d, TimeSpan.FromSeconds(10));
+                statusWait.IgnoreExceptionTypes(
+                    typeof(NoSuchElementException),
+                    typeof(StaleElementReferenceException));
 
-                // Check match
-                if (string.Equals(status, expectedStatus, StringComparison.OrdinalIgnoreCase)) 
-                    return true; 
-                else
-                    return false;  // keep waiting
+                var statusText = statusWait.Until(innerDriver =>
+                {
+                    var element = innerDriver.FindElement(chedStatusBy);
+                    var text = element.Text;
+                    return string.IsNullOrWhiteSpace(text) ? null : text.Trim();
+                });
+
+                return string.Equals(statusText, expectedStatus, StringComparison.OrdinalIgnoreCase);
             });
         }
     }

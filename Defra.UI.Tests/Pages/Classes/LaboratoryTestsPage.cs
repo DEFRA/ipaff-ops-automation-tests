@@ -24,6 +24,7 @@ namespace Defra.UI.Tests.Pages.Classes
             var inputId = label.GetAttribute("for");
             return _driver.FindElement(By.Id(inputId));
         }
+        private IWebElement rdoReasonForTesting(string labTestsReasonOption) => _driver.FindElement(By.XPath($"//label[contains(text(),'{labTestsReasonOption}')]/preceding-sibling::input"));
         private IWebElement selectForCommodityCode(string commodityCode) => _driver.FindElement(By.XPath($"(//td[text()='{commodityCode}']/following::a[text()='Select'])[1]"));
         private IWebElement lnkTestName(string testName) => _driver.FindElement(By.XPath($"//td/button[normalize-space(text())='{testName}']"));
         private IWebElement lnkSelectLabTest(string testName) => _driver.FindElement(By.XPath($"//td[text()='{testName}']/following::a[1]"));
@@ -88,6 +89,11 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             var radioInput = GetLabTestsReasonRadioButton(labTestsReason);
             radioInput.Click();
+        }
+
+        public bool IsReasonForTestingRadioSelected(string labTestsReasonOption)
+        {
+            return rdoReasonForTesting(labTestsReasonOption).GetAttribute("checked") != null;
         }
 
         public void ClickSelectForCommodityCode(string commodityCode)
@@ -196,6 +202,20 @@ namespace Defra.UI.Tests.Pages.Classes
                     && rowText.Contains(commodityDescription)
                     && rowText.Contains(labTestName)
                     && rowText.Contains("Pending")
+                    && rowText.Trim().Contains("Remove");
+            }
+            return false;
+        }
+
+        public bool VerifyLabTestsReviewPage(string commodityCode, string commodityDescription, string commoditySpecies, string labTestName, string conclusion)
+        {
+            foreach (var row in reviewTableFirstRow)
+            {
+                string rowText = row.Text;
+                return rowText.Contains(commodityCode)
+                    && rowText.Contains(commodityDescription)
+                    && rowText.Contains(labTestName)
+                    && rowText.Contains(conclusion)
                     && rowText.Trim().Contains("Remove");
             }
             return false;
