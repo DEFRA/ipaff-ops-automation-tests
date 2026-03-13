@@ -44,8 +44,8 @@ namespace Defra.UI.Tests.Steps
             chooseApprovedEstablishmentPage?.EnterEstablishmentName(name);
         }
 
-        [Then("the list of approved establishments is displayed for the selected country")]
-        public void ThenTheListOfApprovedEstablishmentsIsDisplayedForTheSelectedCountry()
+        [Then("the list of approved establishments are displayed for the selected country")]
+        public void ThenTheListOfApprovedEstablishmentsAreDisplayedForTheSelectedCountry()
         {
             var country = _scenarioContext.Get<string>("ApprovedEstablishmentCountry");
             Assert.True(

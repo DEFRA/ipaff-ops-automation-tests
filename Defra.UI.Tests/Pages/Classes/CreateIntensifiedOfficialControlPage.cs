@@ -20,6 +20,12 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtSelectedEstablishmentApprovalNumber => _driver.FindElement(By.XPath("//*[@id='selected-establishment']/td[3]"));
         private IWebElement txtCommodityCode => _driver.FindElement(By.Id("commodity-code"));
         private IWebElement btnSearchCommodities => _driver.FindElement(By.Id("choose-commodity"));
+        private IWebElement txtSelectedCommodityCode => _driver.FindElement(By.XPath("//*[@id='selected-commodity']/td[1]"));
+        private IWebElement txtSelectedCommodityDescription => _driver.FindElement(By.XPath("//*[@id='selected-commodity']/td[2]"));
+        private IWebElement btnSearchForHazard => _driver.FindElement(By.Id("choose-hazard"));
+        private IWebElement txtSelectedHazardName => _driver.FindElement(By.XPath("//*[@id='selected-hazard']/td[1]"));
+        private IWebElement txtNetWeight => _driver.FindElement(By.Id("net-weight"));
+        private IWebElement btnPlaceUnderIntensifiedOfficialControls => _driver.FindElement(By.Id("submit-button"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -63,6 +69,33 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickSearchCommodities()
         {
             btnSearchCommodities.Click();
+        }
+
+        public bool IsCommodityPopulated(string code, string description)
+        {
+            return txtSelectedCommodityCode.Text.Trim().Equals(code, StringComparison.OrdinalIgnoreCase)
+                && txtSelectedCommodityDescription.Text.Contains(description, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public void ClickSearchForHazard()
+        {
+            btnSearchForHazard.Click();
+        }
+
+        public bool IsHazardPopulated(string hazardName)
+        {
+            return txtSelectedHazardName.Text.Trim().Equals(hazardName, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public void EnterNetWeight(string netWeight)
+        {
+            txtNetWeight.Clear();
+            txtNetWeight.SendKeys(netWeight);
+        }
+
+        public void ClickPlaceUnderIntensifiedOfficialControls()
+        {
+            btnPlaceUnderIntensifiedOfficialControls.Click();
         }
 
         #endregion

@@ -35,5 +35,28 @@ namespace Defra.UI.Tests.Steps
         {
             intensifiedOfficialControlsDashboardPage?.ClickCreateNewIntensifiedControlCheck();
         }
+
+        [When("the user locates the intensified official control just created")]
+        public void WhenTheUserLocatesTheIntensifiedOfficialControlJustCreated()
+        {
+            var iocNumber = _scenarioContext.Get<string>("IntensifiedOfficialControlNumber");
+            var status = intensifiedOfficialControlsDashboardPage?.GetStatusForIOCNumber(iocNumber);
+            _scenarioContext["LocatedIOCStatus"] = status;
+        }
+
+        [Then("the status of the intensified official control should be {string}")]
+        public void ThenTheStatusOfTheIntensifiedOfficialControlShouldBe(string expectedStatus)
+        {
+            var actualStatus = _scenarioContext.Get<string>("LocatedIOCStatus");
+            Assert.True(
+                actualStatus.Equals(expectedStatus, StringComparison.OrdinalIgnoreCase),
+                $"Expected IOC status '{expectedStatus}' but found '{actualStatus}'");
+        }
+
+        [When("the user logs out of IPAFFS IOC")]
+        public void WhenTheUserLogsOutOfIPAFFSIOC()
+        {
+            intensifiedOfficialControlsDashboardPage?.ClickSignOut();
+        }
     }
 }

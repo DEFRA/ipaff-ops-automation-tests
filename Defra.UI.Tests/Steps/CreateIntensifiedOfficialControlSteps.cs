@@ -67,5 +67,45 @@ namespace Defra.UI.Tests.Steps
         {
             createIntensifiedOfficialControlPage?.ClickSearchCommodities();
         }
+
+        [Then("the Commodity code is populated with the details of the commodity from the notification")]
+        public void ThenTheCommodityCodeIsPopulatedWithTheDetailsOfTheCommodityFromTheNotification()
+        {
+            var code = _scenarioContext.Get<List<string>>("CommodityCode").First();
+            var description = _scenarioContext.Get<List<string>>("CommodityDescription").First();
+
+            Assert.True(
+                createIntensifiedOfficialControlPage?.IsCommodityPopulated(code, description),
+                $"Commodity table is not populated with the expected code '{code}' and description '{description}'");
+        }
+
+        [When("the user clicks the Search for hazard link")]
+        public void WhenTheUserClicksTheSearchForHazardLink()
+        {
+            createIntensifiedOfficialControlPage?.ClickSearchForHazard();
+        }
+
+        [Then("the Hazard is populated with the name of the selected laboratory test")]
+        public void ThenTheHazardIsPopulatedWithTheNameOfTheSelectedLaboratoryTest()
+        {
+            var hazardName = _scenarioContext.Get<string>("HazardName");
+
+            Assert.True(
+                createIntensifiedOfficialControlPage?.IsHazardPopulated(hazardName),
+                $"Hazard table is not populated with the expected name '{hazardName}'");
+        }
+
+        [When("the user enters the Net weight from the notification")]
+        public void WhenTheUserEntersTheNetWeightFromTheNotification()
+        {
+            var netWeights = _scenarioContext.Get<List<string>>("NetWeight");
+            createIntensifiedOfficialControlPage?.EnterNetWeight(netWeights.First());
+        }
+
+        [When("the user clicks the Place under intensified official controls button")]
+        public void WhenTheUserClicksThePlaceUnderIntensifiedOfficialControlsButton()
+        {
+            createIntensifiedOfficialControlPage?.ClickPlaceUnderIntensifiedOfficialControls();
+        }
     }
 }

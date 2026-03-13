@@ -4,5 +4,7 @@
     {
         bool IsPageLoaded();
         void ClickCreateNewIntensifiedControlCheck();
+        string GetStatusForIOCNumber(string iocNumber);
+        void ClickSignOut();
     }
 }
