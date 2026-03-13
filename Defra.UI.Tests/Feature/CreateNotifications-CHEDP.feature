@@ -3509,7 +3509,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	Then the Choose approved establishment screen should be displayed
 	When the user types in the name of the approved establishment from the notification
 	And the user selects the country of origin from the notification and clicks Search
-	Then the list of approved establishments is displayed for the selected country
+	Then the list of approved establishments are displayed for the selected country
 	When the user clicks Select for the approved establishment from the notification
 	Then the Create intensified official control screen should be displayed 
 	And the Establishment is populated with the details of the approved establishment from the notification
@@ -3518,23 +3518,25 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	Then the Select the commodity level screen should be displayed
 	When the user clicks Select for the commodity code from the notification 
 	Then the Create intensified official control screen should be displayed 
-	##And the Commodity code is populated with the details of the commodity from the notification
-	##When the user clicks Search for Hazard 
-	##And the user enters the hazard category and hazard sub-category and clicks Search 
-	##Then the list of laboratory tests is displayed 
-	##When the user selects a hazard from the list and clicks Select
-	##Then the Create intensified official control screen should be displayed with the lab test description populated
-	##When the user enters the weight '1000' 
-	##And the user clicks Place under intensified official controls button
-	##Then the Are you sure you want to create the intensified official control? page should be displayed
-	##And the Yes create the intensified official control button should be displayed
-	##And the No do not create the intensified official control link should be displayed
-	##When the user clicks Yes create the intensified official control button
-	##Then the Your intensified official control has been put in place banner should be displayed
-	##And the intensified official control number in the format 'IOC.' should be displayed
-	##When the user clicks Return to dashboard button on the IOC confirmation page
-	##Then the Intensified Official Controls dashboard should be displayed
-	##When the user locates the intensified official control just created
-	##Then the status of the intensified official control should be 'Active'
-	##When the user logs out of the Intensified Official Controls application
-	##Then the user should be logged out successfully
+	And the Commodity code is populated with the details of the commodity from the notification
+	When the user clicks the Search for hazard link
+	Then the Choose a hazard screen should be displayed
+	When the user selects the hazard category 'Animal diseases' and subcategory 'Crustacean diseases' and clicks Search
+	Then the list of laboratory tests are displayed tests for the hazard subcategory 'Crustacean diseases'
+	When the user clicks Select for the Laboratory test 'White spot disease' from the hazards table
+	Then the Create intensified official control screen should be displayed 
+	And the Hazard is populated with the name of the selected laboratory test
+	When the user enters the Net weight from the notification
+	And the user clicks the Place under intensified official controls button
+	Then the Are you sure you want to create the intensified official control? page is displayed
+	And the 'Yes, create the intensified official control' button is displayed
+	And the 'No, don't create the intensified official control' link is displayed
+	When the user clicks the 'Yes, create the intensified official control' button
+    Then the Your intensified official control has been put in place page should be displayed
+	And the Intensified official control number should be displayed in the correct format
+	When the user clicks Return to dashboard button
+	Then the Intensified Official Controls dashboard should be displayed
+	When the user locates the intensified official control just created
+	Then the status of the intensified official control should be 'ACTIVE'
+	When the user logs out of IPAFFS IOC
+	Then the user should be logged out of IPAFFS IOC successfully

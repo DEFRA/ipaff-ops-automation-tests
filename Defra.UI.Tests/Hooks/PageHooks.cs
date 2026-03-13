@@ -24,7 +24,7 @@ namespace Defra.UI.Tests.Hooks
         [BeforeScenario(Order = (int)HookRunOrder.Pages)]
         public void BeforeScenario()
         {
-              BindAllPages();
+            BindAllPages();
         }
 
         private void BindAllPages()
@@ -116,7 +116,7 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<RequestAmendmentPage, IRequestAmendmentPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<TransportToBorderControlPostPage, ITransportToBorderControlPostPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ImporterPackerDeliveryAddressConsignorPage, IImporterPackerDeliveryAddressConsignorPage>());
-            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SearchExistingDeliveryAddressPage, ISearchExistingDeliveryAddressPage>());            
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SearchExistingDeliveryAddressPage, ISearchExistingDeliveryAddressPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ConfirmExemptSpeciesPage, IConfirmExemptSpeciesPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<YourDownloadHasStarted, IYourDownloadHasStarted>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<UploadCommodityDetailsUsingCSVFilePage, IUploadCommodityDetailsUsingCSVFilePage>());
@@ -135,10 +135,10 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ChangeOrganisationSettingsPage, IChangeOrganisationSettingsPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<AddAnAgentPage, IAddAnAgentPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SetPermissionsPage, ISetPermissionsPage>());
-            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ControlRecordedPage, IControlRecordedPage>()); 
-            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<RecordControlPage, IRecordControlPage>()); 
-            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<AddConsigneePage, IAddConsigneePage>()); 
-            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<TheConsigneeHasBeenCreatedPage, ITheConsigneeHasBeenCreatedPage>()); 
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ControlRecordedPage, IControlRecordedPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<RecordControlPage, IRecordControlPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<AddConsigneePage, IAddConsigneePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<TheConsigneeHasBeenCreatedPage, ITheConsigneeHasBeenCreatedPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<HealthCertificateDetailsPage, IHealthCertificateDetailsPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CookiesPage, ICookiesPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ContactPage, IContactPage>());
@@ -146,6 +146,9 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CreateIntensifiedOfficialControlPage, ICreateIntensifiedOfficialControlPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ChooseApprovedEstablishmentPage, IChooseApprovedEstablishmentPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SelectCommodityLevelPage, ISelectCommodityLevelPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ChooseHazardPage, IChooseHazardPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<AreYouSureYouWantToCreateTheIOCPage, IAreYouSureYouWantToCreateTheIOCPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<YourIOCHasBeenPutInPlacePage, IYourIOCHasBeenPutInPlacePage>());
 
             //Read Email
             _objectContainer.RegisterInstanceAs(GetBaseWithScenarioContext<FetchCodeFromEmail, IFetchCodeFromEmail>());

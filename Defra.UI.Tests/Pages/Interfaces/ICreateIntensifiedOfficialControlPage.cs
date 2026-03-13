@@ -8,5 +8,10 @@
         bool IsEstablishmentPopulated(string name, string country, string approvalNumber);
         void EnterCommodityCode(string commodityCode);
         void ClickSearchCommodities();
+        bool IsCommodityPopulated(string code, string description);
+        void ClickSearchForHazard();
+        bool IsHazardPopulated(string hazardName);
+        void EnterNetWeight(string netWeight);
+        void ClickPlaceUnderIntensifiedOfficialControls();
     }
 }

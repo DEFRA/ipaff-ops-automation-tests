@@ -239,5 +239,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             governmentGatewayTypePage?.OpenNewTab();
         }
+
+        [Then("the user should be logged out of IPAFFS IOC successfully")]
+        public void ThenTheUserShouldBeLoggedOutOfIPAFFSIOCSuccessfully()
+        {
+            Assert.True(
+                _signInPage?.IsSignedOutFromIOC(),
+                "User was not successfully logged out of IPAFFS IOC");
+        }
     }
 }
