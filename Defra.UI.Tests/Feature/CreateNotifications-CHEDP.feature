@@ -3388,6 +3388,7 @@ Scenario: Create a notification through clone a health or phytosanitary certific
 	Then the user should be logged out successfully
 
 Scenario: User submits a CHEDP notification and creates an Intensified Official Control check against it - SPS-7374
+# Create CHEDP notification
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
@@ -3456,7 +3457,8 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	And the Approved establishment of origin page should be displayed
 	When the user clicks Search for an approved establishment
 	Then the list of establishments should be displayed, filtered by Country of origin "China" type "Freezing Vessel" status "Approved"
-	When the user clicks Select for one of the establishments in the list
+	When the user searches for the approved establishment 'RongCheng Marine Fishery CO.,LTDHAI YANG 1'
+	And the user clicks Select for one of the establishments in the list
 	Then the Approved establishment of origin page should be displayed with the selected establishment
 	When the user clicks Save and continue
 	Then the Addresses page should be displayed
@@ -3498,6 +3500,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	And the user records the IPAFFS User details and CHED Reference
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
+# IOC
 	Given the user navigates to the IPAFFS Intensified Official Controls application
 	When I have provided the IPAFFS Intensified Official Controls credentials and signin
 	Then the Intensified Official Controls dashboard should be displayed
@@ -3609,7 +3612,8 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	And the Approved establishment of origin page should be displayed
 	When the user clicks Search for an approved establishment
 	Then the list of establishments should be displayed, filtered by Country of origin "China" type "Freezing Vessel" status "Approved"
-	When the user clicks Select for one of the establishments in the list
+	When the user searches for the approved establishment 'RongCheng Marine Fishery CO.,LTDHAI YANG 1'
+	And the user clicks Select for one of the establishments in the list
 	Then the Approved establishment of origin page should be displayed with the selected establishment
 	When the user clicks Save and continue
 	Then the Addresses page should be displayed
@@ -3712,7 +3716,8 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	And the Approved establishment of origin page should be displayed
 	When the user clicks Search for an approved establishment
 	Then the list of establishments should be displayed, filtered by Country of origin "China" type "Freezing Vessel" status "Approved"
-	When the user clicks Select for one of the establishments in the list
+	When the user searches for the approved establishment 'RongCheng Marine Fishery CO.,LTDHAI YANG 1'
+	And the user clicks Select for one of the establishments in the list
 	Then the Approved establishment of origin page should be displayed with the selected establishment
 	When the user clicks Save and continue
 	Then the Addresses page should be displayed
@@ -3752,7 +3757,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	Then the Confirmation page should be displayed with the initial risk assessment
 	And the user records the IPAFFS User details and CHED Reference
 	When the user clicks Return to your dashboard
-	Then the Your import notifications page is displayed
+	Then the Your import notifications page is displayed	
 # 3 of 8
 	When the user clicks Create a new notification
 	Then the About the consignment/What are you importing? page should be displayed with radio buttons
@@ -3785,11 +3790,11 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	Then the Notification Hub page should be displayed
 	When the user clicks the Commodity hyperlink
 	Then the Commodity page should be displayed with the commodity and description entered
-	When the user populates Net weight as '1010'
+	When the user populates Net weight as '100'
 	And the user populates Number of packages as '1'
 	And the user selects type of package as 'Box'
 	And the user clicks the Update total button
-	Then the total gross weight should be greater than the net weight '1020'
+	Then the total gross weight should be greater than the net weight '110'
 	When the user clicks Save and continue in commodity page
 	Then the Additional details page should be displayed
 	When the user selects 'Chilled' radio button on the Additional details page
@@ -3815,7 +3820,8 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	And the Approved establishment of origin page should be displayed
 	When the user clicks Search for an approved establishment
 	Then the list of establishments should be displayed, filtered by Country of origin "China" type "Freezing Vessel" status "Approved"
-	When the user clicks Select for one of the establishments in the list
+	When the user searches for the approved establishment 'RongCheng Marine Fishery CO.,LTDHAI YANG 1'
+	And the user clicks Select for one of the establishments in the list
 	Then the Approved establishment of origin page should be displayed with the selected establishment
 	When the user clicks Save and continue
 	Then the Addresses page should be displayed
@@ -3855,7 +3861,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	Then the Confirmation page should be displayed with the initial risk assessment
 	And the user records the IPAFFS User details and CHED Reference
 	When the user clicks Return to your dashboard
-	Then the Your import notifications page is displayed
+	Then the Your import notifications page is displayed	
 # 4 of 8
 	When the user clicks Create a new notification
 	Then the About the consignment/What are you importing? page should be displayed with radio buttons
@@ -3888,11 +3894,11 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	Then the Notification Hub page should be displayed
 	When the user clicks the Commodity hyperlink
 	Then the Commodity page should be displayed with the commodity and description entered
-	When the user populates Net weight as '1010'
+	When the user populates Net weight as '100'
 	And the user populates Number of packages as '1'
 	And the user selects type of package as 'Box'
 	And the user clicks the Update total button
-	Then the total gross weight should be greater than the net weight '1020'
+	Then the total gross weight should be greater than the net weight '110'
 	When the user clicks Save and continue in commodity page
 	Then the Additional details page should be displayed
 	When the user selects 'Chilled' radio button on the Additional details page
@@ -3918,7 +3924,8 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	And the Approved establishment of origin page should be displayed
 	When the user clicks Search for an approved establishment
 	Then the list of establishments should be displayed, filtered by Country of origin "China" type "Freezing Vessel" status "Approved"
-	When the user clicks Select for one of the establishments in the list
+	When the user searches for the approved establishment 'RongCheng Marine Fishery CO.,LTDHAI YANG 1'
+	And the user clicks Select for one of the establishments in the list
 	Then the Approved establishment of origin page should be displayed with the selected establishment
 	When the user clicks Save and continue
 	Then the Addresses page should be displayed
@@ -3958,7 +3965,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	Then the Confirmation page should be displayed with the initial risk assessment
 	And the user records the IPAFFS User details and CHED Reference
 	When the user clicks Return to your dashboard
-	Then the Your import notifications page is displayed
+	Then the Your import notifications page is displayed	
 # 5 of 8
 	When the user clicks Create a new notification
 	Then the About the consignment/What are you importing? page should be displayed with radio buttons
@@ -3991,11 +3998,11 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	Then the Notification Hub page should be displayed
 	When the user clicks the Commodity hyperlink
 	Then the Commodity page should be displayed with the commodity and description entered
-	When the user populates Net weight as '1010'
+	When the user populates Net weight as '100'
 	And the user populates Number of packages as '1'
 	And the user selects type of package as 'Box'
 	And the user clicks the Update total button
-	Then the total gross weight should be greater than the net weight '1020'
+	Then the total gross weight should be greater than the net weight '110'
 	When the user clicks Save and continue in commodity page
 	Then the Additional details page should be displayed
 	When the user selects 'Chilled' radio button on the Additional details page
@@ -4021,7 +4028,8 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	And the Approved establishment of origin page should be displayed
 	When the user clicks Search for an approved establishment
 	Then the list of establishments should be displayed, filtered by Country of origin "China" type "Freezing Vessel" status "Approved"
-	When the user clicks Select for one of the establishments in the list
+	When the user searches for the approved establishment 'RongCheng Marine Fishery CO.,LTDHAI YANG 1'
+	And the user clicks Select for one of the establishments in the list
 	Then the Approved establishment of origin page should be displayed with the selected establishment
 	When the user clicks Save and continue
 	Then the Addresses page should be displayed
@@ -4061,7 +4069,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	Then the Confirmation page should be displayed with the initial risk assessment
 	And the user records the IPAFFS User details and CHED Reference
 	When the user clicks Return to your dashboard
-	Then the Your import notifications page is displayed
+	Then the Your import notifications page is displayed	
 # 6 of 8
 	When the user clicks Create a new notification
 	Then the About the consignment/What are you importing? page should be displayed with radio buttons
@@ -4094,11 +4102,11 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	Then the Notification Hub page should be displayed
 	When the user clicks the Commodity hyperlink
 	Then the Commodity page should be displayed with the commodity and description entered
-	When the user populates Net weight as '1010'
+	When the user populates Net weight as '100'
 	And the user populates Number of packages as '1'
 	And the user selects type of package as 'Box'
 	And the user clicks the Update total button
-	Then the total gross weight should be greater than the net weight '1020'
+	Then the total gross weight should be greater than the net weight '110'
 	When the user clicks Save and continue in commodity page
 	Then the Additional details page should be displayed
 	When the user selects 'Chilled' radio button on the Additional details page
@@ -4124,7 +4132,8 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	And the Approved establishment of origin page should be displayed
 	When the user clicks Search for an approved establishment
 	Then the list of establishments should be displayed, filtered by Country of origin "China" type "Freezing Vessel" status "Approved"
-	When the user clicks Select for one of the establishments in the list
+	When the user searches for the approved establishment 'RongCheng Marine Fishery CO.,LTDHAI YANG 1'
+	And the user clicks Select for one of the establishments in the list
 	Then the Approved establishment of origin page should be displayed with the selected establishment
 	When the user clicks Save and continue
 	Then the Addresses page should be displayed
@@ -4197,11 +4206,11 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	Then the Notification Hub page should be displayed
 	When the user clicks the Commodity hyperlink
 	Then the Commodity page should be displayed with the commodity and description entered
-	When the user populates Net weight as '1010'
+	When the user populates Net weight as '100'
 	And the user populates Number of packages as '1'
 	And the user selects type of package as 'Box'
 	And the user clicks the Update total button
-	Then the total gross weight should be greater than the net weight '1020'
+	Then the total gross weight should be greater than the net weight '110'
 	When the user clicks Save and continue in commodity page
 	Then the Additional details page should be displayed
 	When the user selects 'Chilled' radio button on the Additional details page
@@ -4227,7 +4236,8 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	And the Approved establishment of origin page should be displayed
 	When the user clicks Search for an approved establishment
 	Then the list of establishments should be displayed, filtered by Country of origin "China" type "Freezing Vessel" status "Approved"
-	When the user clicks Select for one of the establishments in the list
+	When the user searches for the approved establishment 'RongCheng Marine Fishery CO.,LTDHAI YANG 1'
+	And the user clicks Select for one of the establishments in the list
 	Then the Approved establishment of origin page should be displayed with the selected establishment
 	When the user clicks Save and continue
 	Then the Addresses page should be displayed
@@ -4268,7 +4278,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	And the user records the IPAFFS User details and CHED Reference
 	When the user clicks Return to your dashboard
 	Then the Your import notifications page is displayed
-# 8 of 8 
+# 8 of 8
 	When the user clicks Create a new notification
 	Then the About the consignment/What are you importing? page should be displayed with radio buttons
 	When the user chooses 'Products of animal origin, germinal products or animal by-products' option
@@ -4300,11 +4310,11 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	Then the Notification Hub page should be displayed
 	When the user clicks the Commodity hyperlink
 	Then the Commodity page should be displayed with the commodity and description entered
-	When the user populates Net weight as '1010'
+	When the user populates Net weight as '100'
 	And the user populates Number of packages as '1'
 	And the user selects type of package as 'Box'
 	And the user clicks the Update total button
-	Then the total gross weight should be greater than the net weight '1020'
+	Then the total gross weight should be greater than the net weight '110'
 	When the user clicks Save and continue in commodity page
 	Then the Additional details page should be displayed
 	When the user selects 'Chilled' radio button on the Additional details page
@@ -4330,7 +4340,8 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	And the Approved establishment of origin page should be displayed
 	When the user clicks Search for an approved establishment
 	Then the list of establishments should be displayed, filtered by Country of origin "China" type "Freezing Vessel" status "Approved"
-	When the user clicks Select for one of the establishments in the list
+	When the user searches for the approved establishment 'RongCheng Marine Fishery CO.,LTDHAI YANG 1'
+	And the user clicks Select for one of the establishments in the list
 	Then the Approved establishment of origin page should be displayed with the selected establishment
 	When the user clicks Save and continue
 	Then the Addresses page should be displayed
@@ -4372,7 +4383,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
 # IPAFFS part 2
-# 1 of 8
+#1 of 8
 	When I navigate to the IPAFF Inspector application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
@@ -4409,17 +4420,18 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	Then the Laboratory tests Select the commodity sampled page should be displayed
 	When the user clicks the Select link for the '16051000' commodity code
 	Then the Laboratory tests Commodity to be tested page should be displayed
-	When the user selects '.AMINOGLYCOSIDE/AMINOSIDE' from the list of Laboratory tests
+	When the user searches for the laboratory test 'White spot disease'
+	When the user selects 'White spot disease' from the list of Laboratory tests
 	Then the Laboratory tests Commodity sampled page should be displayed
 	When the user populates the commodity sample details 'Initial analysis' 'Campden BRI' '12345' '3' 'Blood' 'Chilled'
 	And the user clicks Save and continue
 	Then the Laboratory tests Review page should be displayed
-	When the user clicks on the Test '.AMINOGLYCOSIDE/AMINOSIDE'
+	When the user clicks on the Test 'White spot disease'
 	Then the Record laboratory test information page should be displayed
 	When the user enters Sample use by date as '15''12''2025'
-	When the user enters Sample use by date as today's date
+	#When the user enters Sample use by date as today's date
 	And the user enters Released date as '16''12''2025'
-	And the user enters Released date as 1 day from now
+	#And the user enters Released date as 1 day from now
 	And the user selects 'Not satisfactory' for Conclusion
 	And the user clicks Save and continue
 	Then the Laboratory tests Review page should be displayed
@@ -4440,7 +4452,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	And the user clicks Save and continue
 	Then the Review outcome decision page should be displayed
 	When the user populates the Date and time of checks
-	And the user populates the Date and time of checks as 1 day from now
+	#And the user populates the Date and time of checks as 1 day from now
 	And user clicks Submit decision
 	Then the Your checks have been submitted page should be displayed
 	When the user logs out of IPAFFS Part 2
