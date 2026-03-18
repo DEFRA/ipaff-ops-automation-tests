@@ -237,6 +237,26 @@ namespace Defra.UI.Tests.Pages.Classes
             return headingCommodityToTest.Text.Contains("Commodity to be tested");
         }
 
+        public void PopulateSampleDateAndTime(int daysAgo)
+        {
+            var targetDateTime = DateTime.Now.AddDays(-daysAgo);
+
+            txtSampleDateDay.Clear();
+            txtSampleDateDay.SendKeys(targetDateTime.Day.ToString());
+
+            txtSampleDateMonth.Clear();
+            txtSampleDateMonth.SendKeys(targetDateTime.Month.ToString());
+
+            txtSampleDateYear.Clear();
+            txtSampleDateYear.SendKeys(targetDateTime.Year.ToString());
+
+            txtSampleTimeHour.Clear();
+            txtSampleTimeHour.SendKeys(targetDateTime.Hour.ToString("D2"));
+
+            txtSampleTimeMinutes.Clear();
+            txtSampleTimeMinutes.SendKeys(targetDateTime.Minute.ToString("D2"));
+        }
+
         public string GetSampleDate()
         {
             var day = txtSampleDateDay.GetAttribute("value");

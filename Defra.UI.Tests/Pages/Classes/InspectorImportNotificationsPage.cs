@@ -56,6 +56,12 @@ namespace Defra.UI.Tests.Pages.Classes
             }
         }
 
+        public void SearchAndClickNotification(string chedRef)
+        {
+            SearchForChed(chedRef);
+            lnkChedRefNumSearcResult.Click();
+        }
+
         public bool VerifyNotificationIsPresent(string chedRef)
         {
             return lnkChedRefNumSearcResult.Text.Trim().Contains(chedRef);
