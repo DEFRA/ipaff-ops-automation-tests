@@ -49,5 +49,6 @@
         bool VerifyLaboratoryDropdownHasOptions();
         bool VerifySampleTypeDropdownHasOptions();
         bool VerifyStorageTemperatureDropdownHasOptions();
+        void EnterLaboratoryTestName(string testName);
     }
 }

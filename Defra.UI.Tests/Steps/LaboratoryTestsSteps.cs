@@ -370,5 +370,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(laboratoryTestsPage?.VerifyStorageTemperatureDropdownHasOptions(),
                 "Storage temperature dropdown does not display options");
         }
+
+        [When("the user searches for the laboratory test {string}")]
+        public void WhenTheUserSearchesForTheLaboratoryTest(string testName)
+        {
+            laboratoryTestsPage?.EnterLaboratoryTestName(testName);
+            laboratoryTestsPage?.ClickSearch();
+        }
     }
 }

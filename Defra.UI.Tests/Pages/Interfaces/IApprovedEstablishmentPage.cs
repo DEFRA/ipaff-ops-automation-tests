@@ -19,5 +19,6 @@
         void SelectTypeFromDropdown(string type);
         void SelectStatusFromDropdown(string status);
         void ClickSearchButton();
+        void EnterEstablishmentName(string name);
     }
 }
