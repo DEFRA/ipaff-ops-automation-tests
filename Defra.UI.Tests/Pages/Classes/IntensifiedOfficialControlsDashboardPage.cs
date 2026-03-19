@@ -84,6 +84,11 @@ namespace Defra.UI.Tests.Pages.Classes
             lnkFirstViewDetails.Click();
         }
 
+        public void ClickViewDetailsForIOCNumber(string iocNumber)
+        {
+            GetViewDetailsLinkByIOCNumber(iocNumber).Click();
+        }
+
         #endregion
     }
 }

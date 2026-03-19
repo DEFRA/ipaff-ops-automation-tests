@@ -3969,7 +3969,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	And the user records the IPAFFS User details and CHED Reference for notification 4
 	When the user clicks Return to your dashboard
 	Then the Your import notifications page is displayed	
- 5 of 8
+ # 5 of 8
 	When the user clicks Create a new notification
 	Then the About the consignment/What are you importing? page should be displayed with radio buttons
 	When the user chooses 'Products of animal origin, germinal products or animal by-products' option
@@ -4649,7 +4649,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	Then the Your checks have been submitted page should be displayed
 	When the user clicks return to your dashboard link in decision submitted page
 	Then the Import notifications dashboard page should be displayed
- 5 of 8
+ # 5 of 8
 	When the user searches for notification 5 on the Import notifications page
 	Then the Decision Hub page should be displayed
 	When the user clicks Save and set as in progress
@@ -4832,15 +4832,15 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	Then the Intensified Official Controls dashboard should be displayed
 	When I filter Intensified offical controls by Status 'Active' and Commodity '16051000'
 	And the user locates the intensified official control just created
-	And the user clicks the View details link for the intensified official control
+	And the user clicks the View details link for the intensified official control just created
 	Then the IOC details page should be displayed
 	And notification 1 is under the associated checks header
 	And notification 2 is under the associated checks header
 	And notification 5 is under the associated checks header
 	And notification 6 is under the associated checks header
-	And notification 3 is under the checked consignments header with count ''
-	And notification 4 is under the checked consignments header with count ''
-	And notification 7 is under the checked consignments header with count ''
-	And notification 8 is under the checked consignments header with count ''
+	And notification 3 is under the checked consignments header with count '1 (i)'
+	And notification 4 is under the checked consignments header with count '1 (ii)'
+	And notification 7 is under the checked consignments header with count '1 (iii)'
+	And notification 8 is under the checked consignments header with count '2 (iii)'
 	When the user logs out of IPAFFS IOC
 	Then the user should be logged out of IPAFFS IOC successfully
