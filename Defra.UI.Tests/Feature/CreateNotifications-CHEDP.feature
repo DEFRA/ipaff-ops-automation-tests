@@ -3078,3 +3078,25 @@ Scenario: User creates and submits a CHEDP consignment notification with multipl
 	Then the Confirmation page should be displayed with the initial risk assessment
 	And the user records the IPAFFS User details and CHED Reference
 	And the details should be recorded
+
+
+
+
+
+Scenario: Test PDF
+	Given that I navigate to the IPAFF application
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF credentials and signin
+	Then the user should be logged into Notification page
+	Then the dashboard page should be displayed
+	When user searches for the import notification
+	When the user clicks Show notification
+	Then the certificate should be displayed in a new browser tab
+	#When verifies the document 'CHEDREFERENCE' downloaded successfully
+	When the user checks that the data in the certificate matches the data entered into the notification
+	And the user closes the PDF browser tab
+	Then the browser tab is closed
+	When the user logs out of IPAFFS Part 1

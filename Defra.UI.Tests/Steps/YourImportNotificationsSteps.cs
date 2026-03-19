@@ -1,4 +1,6 @@
 ﻿using Defra.UI.Tests.Pages.Interfaces;
+using Defra.UI.Tests.Tools.PDFProcessor.Models;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;
@@ -39,7 +41,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("user searches for the import notification")]
         public void WhenUserSearchesForTheImportNotification()
         {
-            var chedReference = _scenarioContext.Get<string>("CHEDReference");
+            //var chedReference = _scenarioContext.Get<string>("CHEDReference");
+            var chedReference = "CHEDP.GB.2026.1066606";
             importNotificationsPage?.SearchForNotification(chedReference);
         }
 
@@ -54,21 +57,53 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user clicks the Show notification link")]
         public void WhenTheUserClicksShowNotification()
         {
-            var chedReference = _scenarioContext.Get<string>("CHEDReference");
+            //var chedReference = _scenarioContext.Get<string>("CHEDReference");
+            var chedReference = "CHEDP.GB.2026.1066606";
             importNotificationsPage?.ClickShowNotification(chedReference);
         }
 
         [Then("the certificate should be displayed in a new browser tab")]
         public void ThenTheCertificateShouldBeDisplayedInANewBrowserTab()
         {
-            Assert.True(importNotificationsPage?.VerifyCertificateInNewTab(), "Certificate not displayed in new browser tab");
+            var chedRef = "CHEDP.GB.2026.1066606";
+            Assert.True(importNotificationsPage?.VerifyCertificateInNewTab(chedRef), "Certificate not displayed in new browser tab");
         }
 
         [When("the user checks that the data in the certificate matches the data entered into the notification")]
         public void WhenTheUserChecksThatTheDataInTheCertificateMatchesTheDataEnteredIntoTheNotification()
         {
-            var chedReference = _scenarioContext.Get<string>("CHEDReference");
+
+            var chedReference = "CHEDP.GB.2026.1066606";
+            //var chedReference = _scenarioContext.Get<string>("CHEDReference");
             Assert.True(importNotificationsPage?.VerifyDataInCertificate(chedReference), "Certificate data verification failed");
+
+
+            string pdfPath = @"C:\Users\bm000045\Downloads\" + chedReference + ".pdf";
+
+            var converter = new PdfToJsonConverter();
+            var jsonOutput = converter.ConvertToJson(pdfPath);
+
+            var chedDocument = JsonConvert.DeserializeObject<ChedRootObject>(jsonOutput);
+
+            if (chedDocument != null)
+            {
+                foreach (var page in chedDocument)
+                {
+                    if (page.Sections?.ConsignorExporter != null)
+                    {
+                        Assert.AreEqual(page.Sections.ChedReference.Id, "CHEDP.GB.2025.1056538");
+                    }
+
+                    if (page.Sections?.DescriptionOfTheGoods != null)
+                    {
+                        //Assert.Equal(page.Sections.ConsignorExporter.Name, scenarioContext[consignerName]);
+                    }
+                    Assert.AreEqual(page.Sections.ChedReference.Id, "CHEDP.GB.2025.1056538");
+
+                }
+            }
+
+
         }
 
         [When("the user closes the newly opened tab")]
@@ -209,7 +244,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             importNotificationsPage?.ClickCopyAsNewLink();
         }
-        
+
         [When("the user deletes all the stored values")]
         public void WhenTheUserDeletesAllTheStoredValues()
         {

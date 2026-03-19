@@ -2,7 +2,11 @@
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Interactions;
+using Reqnroll;
 using Reqnroll.BoDi;
+using System.Net;
+using System.Net.Http;
 
 namespace Defra.UI.Tests.Pages.Classes
 {
@@ -96,7 +100,7 @@ namespace Defra.UI.Tests.Pages.Classes
             GetShowNotificationLink(chedReference).Click();
         }
 
-        public bool VerifyCertificateInNewTab()
+        public bool VerifyCertificateInNewTab(string chedReference)
         {
             var windowHandles = _driver.WindowHandles;
             if (windowHandles.Count > 1)
@@ -106,6 +110,19 @@ namespace Defra.UI.Tests.Pages.Classes
                 // Optional Wait for PDF to load (helps with screenshot rendering) - can remove if not needed
                 Thread.Sleep(2000);
 
+
+
+
+                //var httpClient = new HttpClient();
+                //byte[] pdfBytes = httpClient.GetByteArrayAsync(_driver.Url).GetAwaiter().GetResult();
+
+                //File.WriteAllBytes(@"C:\Users\bm000045\Downloads\" + chedReference + ".pdf", pdfBytes);
+
+
+                //using (var wc = new WebClient())
+                //{
+                //    wc.DownloadFile(_driver.Url, @"C:\Users\bm000045\Downloads\"+chedReference+".pdf");
+                //}
                 return _driver.Url.Contains("/certificate/pdf");
             }
             return false;
@@ -113,6 +130,36 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool VerifyDataInCertificate(string chedReference)
         {
+           
+            //var iframe = _driver.FindElement(By.XPath("//iframe"));
+            //_driver.SwitchTo().Frame(iframe);
+
+            // Locate the PDF viewer element
+            //var pdfViewer = _driver.FindElement(By.XPath("//pdf-viewer[@id='viewer']"));
+
+            // pdfViewer.Click();
+
+            //var body = _driver.FindElement(By.TagName("body"));
+            //body.Click();
+            // Send Ctrl + S
+            Actions actions = new Actions(_driver);
+            //actions.KeyDown(Keys.Control)
+            //       .SendKeys("s")
+            //       .KeyUp(Keys.Control)
+            //       .Perform();
+
+            actions.SendKeys(Keys.Control + "s").Perform();
+
+
+            _driver.SwitchTo().DefaultContent();
+
+
+            //code to download PDF
+
+            var httpClient = new HttpClient();
+            byte[] pdfBytes = httpClient.GetByteArrayAsync(_driver.Url).GetAwaiter().GetResult();
+
+            File.WriteAllBytes(@"C:\Users\bm000045\Downloads\" + chedReference + ".pdf", pdfBytes);
             return _driver.Url.Contains($"/{chedReference}/");
         }
 
