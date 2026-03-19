@@ -6,5 +6,8 @@
         void ClickCreateNewIntensifiedControlCheck();
         string GetStatusForIOCNumber(string iocNumber);
         void ClickSignOut();
+        void FilterByStatusAndCommodity(string status, string commodity);
+        bool HasSearchResults();
+        void ClickFirstResult();
     }
 }
