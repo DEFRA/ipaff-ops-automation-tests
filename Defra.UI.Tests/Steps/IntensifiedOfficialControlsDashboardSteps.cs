@@ -16,6 +16,16 @@ namespace Defra.UI.Tests.Steps
                 ? _objectContainer.Resolve<IIntensifiedOfficialControlsDashboardPage>()
                 : null;
 
+        private IIOCDetailsPage? iocDetailsPage =>
+            _objectContainer.IsRegistered<IIOCDetailsPage>()
+                ? _objectContainer.Resolve<IIOCDetailsPage>()
+                : null;
+
+        private IAreYouSureYouWantToStopTheIOCPage? areYouSureYouWantToStopTheIOCPage =>
+            _objectContainer.IsRegistered<IAreYouSureYouWantToStopTheIOCPage>()
+                ? _objectContainer.Resolve<IAreYouSureYouWantToStopTheIOCPage>()
+                : null;
+
         public IntensifiedOfficialControlsDashboardSteps(ScenarioContext context, IObjectContainer container)
         {
             _objectContainer = container;
@@ -57,6 +67,25 @@ namespace Defra.UI.Tests.Steps
         public void WhenTheUserLogsOutOfIPAFFSIOC()
         {
             intensifiedOfficialControlsDashboardPage?.ClickSignOut();
+        }
+
+        [When("I filter Intensified offical controls by Status {string} and Commodity {string}")]
+        public void WhenIFilterIntensifiedOfficalControlsByStatusAndCommodity(string status, string commodity)
+        {
+            intensifiedOfficialControlsDashboardPage?.FilterByStatusAndCommodity(status, commodity);
+        }
+
+        [Then("I stop any existing IOC")]
+        public void ThenIStopAnyExistingIOC()
+        {
+            if (intensifiedOfficialControlsDashboardPage?.HasSearchResults() != true)
+            {
+                return;
+            }
+
+            intensifiedOfficialControlsDashboardPage.ClickFirstResult();
+            iocDetailsPage?.ClickStopControl();
+            areYouSureYouWantToStopTheIOCPage?.ClickYesStopTheIntensifiedOfficialControl();
         }
     }
 }
