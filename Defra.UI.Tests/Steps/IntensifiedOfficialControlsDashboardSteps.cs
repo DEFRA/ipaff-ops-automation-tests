@@ -87,5 +87,12 @@ namespace Defra.UI.Tests.Steps
             iocDetailsPage?.ClickStopControl();
             areYouSureYouWantToStopTheIOCPage?.ClickYesStopTheIntensifiedOfficialControl();
         }
+
+        [When("the user clicks the View details link for the intensified official control just created")]
+        public void WhenTheUserClicksTheViewDetailsLinkForTheIntensifiedOfficialControlJustCreated()
+        {
+            var iocNumber = _scenarioContext.Get<string>("IntensifiedOfficialControlNumber");
+            intensifiedOfficialControlsDashboardPage?.ClickViewDetailsForIOCNumber(iocNumber);
+        }
     }
 }

@@ -9,5 +9,6 @@
         void FilterByStatusAndCommodity(string status, string commodity);
         bool HasSearchResults();
         void ClickFirstResult();
+        void ClickViewDetailsForIOCNumber(string iocNumber);
     }
 }

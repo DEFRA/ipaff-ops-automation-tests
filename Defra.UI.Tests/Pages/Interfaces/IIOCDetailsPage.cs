@@ -4,5 +4,8 @@
     {
         bool IsPageLoaded();
         void ClickStopControl();
+        bool IsUnderCheckedConsignments(string chedRef);
+        bool IsUnderCheckedConsignmentsWithCount(string chedRef, string count);
+        bool IsUnderAssociatedChedP(string chedRef);
     }
 }
