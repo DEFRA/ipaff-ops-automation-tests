@@ -3287,4 +3287,92 @@ Scenario: User creates and submits a notification with main reason as Re-entry, 
 	And the user verifies the control status is "CONTROL COMPLETE"
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
-	
+
+Scenario: Create a notification through clone a health or phytosanitary certificate process - SPS-7361
+	Given that I navigate to the IPAFF application
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF Agent credentials and signin
+	Then the user should be logged into Notification page
+	When the user Clicks on Clone a certificate button
+	Then the Clone a health or phytosanitary certificate page should be displayed
+	And the user verifies all the content in Clone a health or phytosanitary certificate page
+	And the user selected the importing option as 'Products of animal origin, germinal products or animal by-products'
+	When the user clicks on continue button
+	Then the Certificate details page should be displayed
+	And the user searches for the notification for cloning CHED P which is not more than 90 days from creation
+	And the user provided CHED P notification details in the search input fields
+	When the user Clicks on Search button
+	Then the Health certificate details page should be displayed
+	And the user verified all the details on Health certificate details page
+	When the user Clicks on Clone button
+	Then the DRAFT 'CHEDP' notification code page should be displayed
+	And the user records the Draft notification number
+	And the user verifies the following information is displayed within a red outlined box
+		| MissingOrIncorrect                                        |
+		| Add the port of entry                                     |
+		| Add the estimated arrival date at port of entry           |
+		| Add the estimated arrival time at port of entry           |
+		| Enter your contact details                                |
+		| Select if using the Goods Vehicle Movement Service (GVMS) |
+		| Add transport document                                    |
+		| Add the contact address for consignment                   |
+		| What is the place of destination                          |
+		| Select if using the Common Transit Convention (CTC)       |
+	When the user Clicks on Change link for Transport to the port of entry
+	Then the Transport to the port of entry page should be displayed
+	When the user populates the transport details 'BRISTOL (GBBRS)' 'Yes' 'Road vehicle' '250N, Conti Cordoba' 'Doc23456'
+	And the user Clicks on Save and review button from port of entry page
+	Then the Review your notification page should be displayed
+	When the user Clicks on Change link for Contact details
+	Then the Contact details page should be displayed, pre-populated with the user's details
+	When the user Clicks on Save and review button from Contact details page
+	Then the Review your notification page should be displayed
+	When the user Clicks on Change link for Goods movement services
+	Then the Goods movement services page should be displayed
+	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user Clicks on Save and review button from Goods movement services page
+	Then the Review your notification page should be displayed
+	When the user Clicks on Change link for Contact address for consignment
+	Then the Contact address for consignment page should be displayed
+	And the Contact address for consignment is prepopulated
+	When the user clicks on Save and review
+	Then the Review your notification page should be displayed
+	When the user Clicks on Change link for Place of destination
+	Then the Addresses page should be displayed
+	When the user clicks Add a place of destination
+	Then the Search for an existing place of destination page should be displayed
+	When the user selects a place of destination "ALLIANCE GROUP (NZ) LTD"
+	Then the chosen place of destination "ALLIANCE GROUP (NZ) LTD" should be displayed on the Addresses page
+	When the user Clicks on Save and review button from Addresses page
+	Then the Review your notification page should be displayed
+	When the user clicks Add approved establishment details link in blue colour
+	Then the Approved establishment of origin page should be displayed
+	When the user clicks Search for an approved establishment
+	And the user clicks Select for one of the establishments in the list
+	Then the Approved establishment of origin page should be displayed with the selected establishment
+	When the user clicks on Save and review
+	Then the Review your notification page should be displayed
+	And the data presented for review matches the data entered into the notification for CHED PP
+	When the user clicks on Save and continue button
+	Then the Declaration page should be displayed
+	When the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	When the user records the IPAFFS User details and CHED Reference
+	Then the details should be recorded
+	When the user clicks Return to your dashboard
+	Then the dashboard page should be displayed
+	When user searches for the import notification
+	Then the notification should be present in the list
+	When the user clicks Show notification
+	Then the certificate should be displayed in a new browser tab
+	When the user checks that the data in the certificate matches the data entered into the notification
+	And the user closes the PDF browser tab
+	Then the browser tab is closed
+	And the dashboard page should be displayed
+	And the notification should be present in the list
+	When the user logs out of IPAFFS Part 1
+	Then the user should be logged out successfully
