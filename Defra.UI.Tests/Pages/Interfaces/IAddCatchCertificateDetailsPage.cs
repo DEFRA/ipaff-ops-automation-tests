@@ -34,5 +34,6 @@
         void ClickSelectAllCheckbox();
         bool VerifyAllSpeciesAreSelected();
         void ClickSaveAndReturnToHubLink();
+        void SelectSpecies(string species, int certicateNumber);
     }
 }
