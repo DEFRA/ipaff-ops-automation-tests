@@ -110,9 +110,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             if (chedDocument != null)
             {
-
-                var jsoncc = JsonConvert.SerializeObject(allValues, Formatting.Indented);
-                Debug.WriteLine(jsoncc);
                 foreach (var page in chedDocument)
                 {
                     if (page.Sections?.ConsignorExporter != null)
