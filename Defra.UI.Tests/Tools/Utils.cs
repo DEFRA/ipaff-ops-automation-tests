@@ -1,4 +1,9 @@
-﻿using OpenQA.Selenium;
+﻿using Defra.UI.Framework.Driver;
+using Defra.UI.Tests.Data.Users;
+using NUnit.Framework;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 using Reqnroll;
 using System.Diagnostics;
 using System.Globalization;
@@ -142,6 +147,48 @@ namespace Defra.UI.Tests.Tools
         {
             return actual.OrderBy(x => x).SequenceEqual(expected.OrderBy(x => x));
         }
+
+        public static void DownloadPDF(string fileName, string pdfUrl, IUserObject UserObject)
+        {
+            var chromeOptions = new ChromeOptions();
+
+            var downloadDirectory = Path.Combine(Path.GetTempPath(), "automation-downloads");
+            Directory.CreateDirectory(downloadDirectory);
+
+            chromeOptions.AddUserProfilePreference("download.default_directory", downloadDirectory);
+            chromeOptions.AddUserProfilePreference("download.prompt_for_download", false);
+            chromeOptions.AddUserProfilePreference("download.directory_upgrade", true);
+            chromeOptions.AddUserProfilePreference("safebrowsing.enabled", true);
+            chromeOptions.AddUserProfilePreference("plugins.always_open_pdf_externally", true);
+
+
+            using (var tempDriver = new ChromeDriver(chromeOptions))
+
+            {
+                tempDriver.Navigate().GoToUrl(pdfUrl);
+
+                tempDriver.WaitForElement(By.Id("scp")).Click();
+                tempDriver.FindElement(By.Id("continueReplacement")).Click();
+
+                var jsonData = UserObject?.GetUser("IPAFF", "User");
+                var userObject = new User
+                {
+                    UserName = jsonData.UserName,
+                    Credential = jsonData.Credential
+                };
+                
+                tempDriver.WaitForElement(By.Id("user_id")).SendKeys(userObject.UserName);
+                tempDriver.FindElement(By.Id("password")).SendKeys(userObject.Credential);
+                Thread.Sleep(1000);
+                tempDriver.WaitForElement(By.Id("continue")).Click();
+                Thread.Sleep(1000);
+
+                IsDownloaded(fileName, "pdf");
+            }
+        }
+
+       
+
 
 
         #region WebDriver Extension Methods for Element Safety

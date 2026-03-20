@@ -90,7 +90,6 @@ namespace Defra.UI.Tests.Capabilities
             chromeOptions.AddUserProfilePreference("download.prompt_for_download", false);
             chromeOptions.AddUserProfilePreference("download.directory_upgrade", true);
             chromeOptions.AddUserProfilePreference("safebrowsing.enabled", true);
-            chromeOptions.AddUserProfilePreference("plugins.always_open_pdf_externally", true);
         }
     }    
 }

@@ -9,7 +9,7 @@
         void SearchForNotification(string notificationNumber);
         bool VerifyNotificationInList(string chedReference);
         void ClickShowNotification(string chedReference);
-        bool VerifyCertificateInNewTab(string chedRef);
+        bool VerifyCertificateInNewTab();
         bool VerifyDataInCertificate(string chedReference);
         void ClosePDFBrowserTab();
         bool VerifyBrowserTabClosed();
@@ -28,5 +28,6 @@
         void ClickCopyAsNewLink();
         bool VerifyNotificationStatus(string status);
         void ClickCloneButton();
+        string getPDFUrl();
     }
 }

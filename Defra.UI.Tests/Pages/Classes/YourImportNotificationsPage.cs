@@ -100,7 +100,7 @@ namespace Defra.UI.Tests.Pages.Classes
             GetShowNotificationLink(chedReference).Click();
         }
 
-        public bool VerifyCertificateInNewTab(string chedReference)
+        public bool VerifyCertificateInNewTab()
         {
             var windowHandles = _driver.WindowHandles;
             if (windowHandles.Count > 1)
@@ -110,22 +110,14 @@ namespace Defra.UI.Tests.Pages.Classes
                 // Optional Wait for PDF to load (helps with screenshot rendering) - can remove if not needed
                 Thread.Sleep(2000);
 
-
-
-
-                //var httpClient = new HttpClient();
-                //byte[] pdfBytes = httpClient.GetByteArrayAsync(_driver.Url).GetAwaiter().GetResult();
-
-                //File.WriteAllBytes(@"C:\Users\bm000045\Downloads\" + chedReference + ".pdf", pdfBytes);
-
-
-                //using (var wc = new WebClient())
-                //{
-                //    wc.DownloadFile(_driver.Url, @"C:\Users\bm000045\Downloads\"+chedReference+".pdf");
-                //}
-                return _driver.Url.Contains("/certificate/pdf");
+                 return _driver.Url.Contains("/certificate/pdf");
             }
             return false;
+        }
+
+        public string getPDFUrl()
+        {
+            return _driver.Url;
         }
 
         public bool VerifyDataInCertificate(string chedReference)
