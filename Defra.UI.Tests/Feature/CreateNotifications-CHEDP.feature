@@ -4425,14 +4425,14 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	When the user searches for the laboratory test 'White spot disease'
 	When the user selects 'White spot disease' from the list of Laboratory tests
 	Then the Laboratory tests Commodity sampled page should be displayed
-	When the user populates the sample date and time as 1 day(s) ago
+	When the user populates the sample date and time as 10 day(s) ago
 	And the user populates the commodity sample details 'Initial analysis' 'Campden BRI' '12345' '3' 'Blood' 'Chilled'
 	And the user clicks Save and continue
 	Then the Laboratory tests Review page should be displayed
 	When the user clicks on the Test 'White spot disease'
 	Then the Record laboratory test information page should be displayed
 	When the user enters Sample use by date as today's date
-	And the user enters Released date as 1 day(s) ago
+	And the user enters Released date as 10 day(s) ago
 	And the user selects 'Not satisfactory' for Conclusion
 	And the user clicks Save and continue
 	Then the Laboratory tests Review page should be displayed
@@ -4452,7 +4452,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	When the user selects "Prohibited" as reason for refusal
 	And the user clicks Save and continue
 	Then the Review outcome decision page should be displayed
-	When then user populates the Date and time of checks as 1 day(s) ago
+	When then user populates the Date and time of checks as 10 day(s) ago
 	And user clicks Submit decision
 	Then the Your checks have been submitted page should be displayed
 	When the user clicks return to your dashboard link in decision submitted page
@@ -4489,14 +4489,14 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	When the user searches for the laboratory test 'White spot disease'
 	When the user selects 'White spot disease' from the list of Laboratory tests
 	Then the Laboratory tests Commodity sampled page should be displayed
-	When the user populates the sample date and time as 2 day(s) ago
+	When the user populates the sample date and time as 9 day(s) ago
 	And the user populates the commodity sample details 'Initial analysis' 'Campden BRI' '12345' '3' 'Blood' 'Chilled'
 	And the user clicks Save and continue
 	Then the Laboratory tests Review page should be displayed
 	When the user clicks on the Test 'White spot disease'
 	Then the Record laboratory test information page should be displayed
 	When the user enters Sample use by date as today's date
-	And the user enters Released date as 2 day(s) ago
+	And the user enters Released date as 9 day(s) ago
 	And the user selects 'Not satisfactory' for Conclusion
 	And the user clicks Save and continue
 	Then the Laboratory tests Review page should be displayed
@@ -4516,266 +4516,13 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	When the user selects "Prohibited" as reason for refusal
 	And the user clicks Save and continue
 	Then the Review outcome decision page should be displayed
-	When then user populates the Date and time of checks as 2 day(s) ago
+	When then user populates the Date and time of checks as 9 day(s) ago
 	And user clicks Submit decision
 	Then the Your checks have been submitted page should be displayed
 	When the user clicks return to your dashboard link in decision submitted page
 	Then the Import notifications dashboard page should be displayed
 # 3 of 8
 	When the user searches for notification 3 on the Import notifications page
-	Then the Decision Hub page should be displayed
-	When the user clicks Save and set as in progress
-	Then the notification status should change from "NEW" to "IN PROGRESS"
-	When the user clicks Local reference number link in Record checks
-	Then Local reference number page should be displayed
-	When the user clicks Save and continue
-	Then the IUU page should be displayed
-	When the user selects 'No' and sub-option as '' for the IUU check
-	And the user clicks Save and continue
-	Then the Documentary check page should be displayed
-	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
-	Then the Identity and physical checks page should be displayed
-	When the user selects "Satisfactory" under "Full identity check" in identity check
-	And the user selects "Satisfactory" for physical check
-	And the user clicks Save and continue
-	Then the Seal numbers page should be displayed
-	And 'No' is pre-selected for Are new seal numbers required?
-	When the user clicks Save and continue
-	Then the Laboratory tests page should be displayed
-	When the user select 'Yes' radio button on the Laboratory tests page
-	And the user clicks Save and continue
-	Then the Laboratory tests Reason for testing page should be displayed
-	When the user select 'Intensified controls' reason radio button on the Laboratory tests page
-	And the user clicks Save and continue
-	Then the Laboratory tests Select the commodity sampled page should be displayed
-	When the user clicks the Select link for the '16051000' commodity code
-	Then the Laboratory tests Commodity to be tested page should be displayed
-	When the user searches for the laboratory test 'White spot disease'
-	When the user selects 'White spot disease' from the list of Laboratory tests
-	Then the Laboratory tests Commodity sampled page should be displayed
-	When the user populates the sample date and time as 3 day(s) ago
-	And the user populates the commodity sample details 'Initial analysis' 'Campden BRI' '12345' '3' 'Blood' 'Chilled'
-	And the user clicks Save and continue
-	Then the Laboratory tests Review page should be displayed
-	When the user clicks on the Test 'White spot disease'
-	Then the Record laboratory test information page should be displayed
-	When the user enters Sample use by date as today's date
-	And the user enters Released date as 3 day(s) ago
-	And the user selects 'Not satisfactory' for Conclusion
-	And the user clicks Save and continue
-	Then the Laboratory tests Review page should be displayed
-	When the user clicks Save and continue
-	Then the Decision page should be displayed
-	When the user selects Acceptable for 'Not acceptable' 'Destruction'
-	And the user enters 'Not satisfactory' in reason under Destruction
-	And the user enters 'today' date in By date
-	And the user clicks Save and continue
-	Then the Select a controlled destination page should be displayed
-	When the user clicks Add a controlled destination
-	Then the Search for an existing controlled destination page should be displayed
-	When the user selects a controlled destination
-	Then the chosen controlled destination should be displayed
-	When the user clicks Save and continue
-	Then the Reason for Refusal page should be displayed
-	When the user selects "Prohibited" as reason for refusal
-	And the user clicks Save and continue
-	Then the Review outcome decision page should be displayed
-	When then user populates the Date and time of checks as 3 day(s) ago
-	And user clicks Submit decision
-	Then the Your checks have been submitted page should be displayed
-	When the user clicks return to your dashboard link in decision submitted page
-	Then the Import notifications dashboard page should be displayed
-# 4 of 8
-	When the user searches for notification 4 on the Import notifications page
-	Then the Decision Hub page should be displayed
-	When the user clicks Save and set as in progress
-	Then the notification status should change from "NEW" to "IN PROGRESS"
-	When the user clicks Local reference number link in Record checks
-	Then Local reference number page should be displayed
-	When the user clicks Save and continue
-	Then the IUU page should be displayed
-	When the user selects 'No' and sub-option as '' for the IUU check
-	And the user clicks Save and continue
-	Then the Documentary check page should be displayed
-	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
-	Then the Identity and physical checks page should be displayed
-	When the user selects "Satisfactory" under "Full identity check" in identity check
-	And the user selects "Satisfactory" for physical check
-	And the user clicks Save and continue
-	Then the Seal numbers page should be displayed
-	And 'No' is pre-selected for Are new seal numbers required?
-	When the user clicks Save and continue
-	Then the Laboratory tests page should be displayed
-	When the user select 'Yes' radio button on the Laboratory tests page
-	And the user clicks Save and continue
-	Then the Laboratory tests Reason for testing page should be displayed
-	When the user select 'Intensified controls' reason radio button on the Laboratory tests page
-	And the user clicks Save and continue
-	Then the Laboratory tests Select the commodity sampled page should be displayed
-	When the user clicks the Select link for the '16051000' commodity code
-	Then the Laboratory tests Commodity to be tested page should be displayed
-	When the user searches for the laboratory test 'White spot disease'
-	When the user selects 'White spot disease' from the list of Laboratory tests
-	Then the Laboratory tests Commodity sampled page should be displayed
-	When the user populates the sample date and time as 4 day(s) ago
-	And the user populates the commodity sample details 'Initial analysis' 'Campden BRI' '12345' '3' 'Blood' 'Chilled'
-	And the user clicks Save and continue
-	Then the Laboratory tests Review page should be displayed
-	When the user clicks on the Test 'White spot disease'
-	Then the Record laboratory test information page should be displayed
-	When the user enters Sample use by date as today's date
-	And the user enters Released date as 4 day(s) ago
-	And the user selects 'Not satisfactory' for Conclusion
-	And the user clicks Save and continue
-	Then the Laboratory tests Review page should be displayed
-	When the user clicks Save and continue
-	Then the Decision page should be displayed
-	When the user selects Acceptable for 'Not acceptable' 'Destruction'
-	And the user enters 'Not satisfactory' in reason under Destruction
-	And the user enters 'today' date in By date
-	And the user clicks Save and continue
-	Then the Select a controlled destination page should be displayed
-	When the user clicks Add a controlled destination
-	Then the Search for an existing controlled destination page should be displayed
-	When the user selects a controlled destination
-	Then the chosen controlled destination should be displayed
-	When the user clicks Save and continue
-	Then the Reason for Refusal page should be displayed
-	When the user selects "Prohibited" as reason for refusal
-	And the user clicks Save and continue
-	Then the Review outcome decision page should be displayed
-	When then user populates the Date and time of checks as 4 day(s) ago
-	And user clicks Submit decision
-	Then the Your checks have been submitted page should be displayed
-	When the user clicks return to your dashboard link in decision submitted page
-	Then the Import notifications dashboard page should be displayed
- # 5 of 8
-	When the user searches for notification 5 on the Import notifications page
-	Then the Decision Hub page should be displayed
-	When the user clicks Save and set as in progress
-	Then the notification status should change from "NEW" to "IN PROGRESS"
-	When the user clicks Local reference number link in Record checks
-	Then Local reference number page should be displayed
-	When the user clicks Save and continue
-	Then the IUU page should be displayed
-	When the user selects 'No' and sub-option as '' for the IUU check
-	And the user clicks Save and continue
-	Then the Documentary check page should be displayed
-	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
-	Then the Identity and physical checks page should be displayed
-	When the user selects "Satisfactory" under "Full identity check" in identity check
-	And the user selects "Satisfactory" for physical check
-	And the user clicks Save and continue
-	Then the Seal numbers page should be displayed
-	And 'No' is pre-selected for Are new seal numbers required?
-	When the user clicks Save and continue
-	Then the Laboratory tests page should be displayed
-	When the user select 'Yes' radio button on the Laboratory tests page
-	And the user clicks Save and continue
-	Then the Laboratory tests Reason for testing page should be displayed
-	When the user select 'Intensified controls' reason radio button on the Laboratory tests page
-	And the user clicks Save and continue
-	Then the Laboratory tests Select the commodity sampled page should be displayed
-	When the user clicks the Select link for the '16051000' commodity code
-	Then the Laboratory tests Commodity to be tested page should be displayed
-	When the user searches for the laboratory test 'White spot disease'
-	When the user selects 'White spot disease' from the list of Laboratory tests
-	Then the Laboratory tests Commodity sampled page should be displayed
-	When the user populates the sample date and time as 5 day(s) ago
-	And the user populates the commodity sample details 'Initial analysis' 'Campden BRI' '12345' '3' 'Blood' 'Chilled'
-	And the user clicks Save and continue
-	Then the Laboratory tests Review page should be displayed
-# 6 of 8
-	When the user searches for notification 6 on the Import notifications page
-	Then the Decision Hub page should be displayed
-	When the user clicks Save and set as in progress
-	Then the notification status should change from "NEW" to "IN PROGRESS"
-	When the user clicks Local reference number link in Record checks
-	Then Local reference number page should be displayed
-	When the user clicks Save and continue
-	Then the IUU page should be displayed
-	When the user selects 'No' and sub-option as '' for the IUU check
-	And the user clicks Save and continue
-	Then the Documentary check page should be displayed
-	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
-	Then the Identity and physical checks page should be displayed
-	When the user selects "Satisfactory" under "Full identity check" in identity check
-	And the user selects "Satisfactory" for physical check
-	And the user clicks Save and continue
-	Then the Seal numbers page should be displayed
-	And 'No' is pre-selected for Are new seal numbers required?
-	When the user clicks Save and continue
-	Then the Laboratory tests page should be displayed
-	When the user select 'Yes' radio button on the Laboratory tests page
-	And the user clicks Save and continue
-	Then the Laboratory tests Reason for testing page should be displayed
-	When the user select 'Intensified controls' reason radio button on the Laboratory tests page
-	And the user clicks Save and continue
-	Then the Laboratory tests Select the commodity sampled page should be displayed
-	When the user clicks the Select link for the '16051000' commodity code
-	Then the Laboratory tests Commodity to be tested page should be displayed
-	When the user searches for the laboratory test 'White spot disease'
-	When the user selects 'White spot disease' from the list of Laboratory tests
-	Then the Laboratory tests Commodity sampled page should be displayed
-	When the user populates the sample date and time as 6 day(s) ago
-	And the user populates the commodity sample details 'Initial analysis' 'Campden BRI' '12345' '3' 'Blood' 'Chilled'
-	And the user clicks Save and continue
-	Then the Laboratory tests Review page should be displayed
-# 7 of 8
-	When the user searches for notification 7 on the Import notifications page
-	Then the Decision Hub page should be displayed
-	When the user clicks Save and set as in progress
-	Then the notification status should change from "NEW" to "IN PROGRESS"
-	When the user clicks Local reference number link in Record checks
-	Then Local reference number page should be displayed
-	When the user clicks Save and continue
-	Then the IUU page should be displayed
-	When the user selects 'No' and sub-option as '' for the IUU check
-	And the user clicks Save and continue
-	Then the Documentary check page should be displayed
-	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
-	Then the Identity and physical checks page should be displayed
-	When the user selects "Satisfactory" under "Full identity check" in identity check
-	And the user selects "Satisfactory" for physical check
-	And the user clicks Save and continue
-	Then the Seal numbers page should be displayed
-	And 'No' is pre-selected for Are new seal numbers required?
-	When the user clicks Save and continue
-	Then the Laboratory tests page should be displayed
-	When the user select 'Yes' radio button on the Laboratory tests page
-	And the user clicks Save and continue
-	Then the Laboratory tests Reason for testing page should be displayed
-	When the user select 'Intensified controls' reason radio button on the Laboratory tests page
-	And the user clicks Save and continue
-	Then the Laboratory tests Select the commodity sampled page should be displayed
-	When the user clicks the Select link for the '16051000' commodity code
-	Then the Laboratory tests Commodity to be tested page should be displayed
-	When the user searches for the laboratory test 'White spot disease'
-	When the user selects 'White spot disease' from the list of Laboratory tests
-	Then the Laboratory tests Commodity sampled page should be displayed
-	When the user populates the sample date and time as 7 day(s) ago
-	And the user populates the commodity sample details 'Initial analysis' 'Campden BRI' '12345' '3' 'Blood' 'Chilled'
-	And the user clicks Save and continue
-	Then the Laboratory tests Review page should be displayed
-	When the user clicks on the Test 'White spot disease'
-	Then the Record laboratory test information page should be displayed
-	When the user enters Sample use by date as today's date
-	And the user enters Released date as 7 day(s) ago
-	And the user selects 'Satisfactory' for Conclusion
-	And the user clicks Save and continue
-	Then the Laboratory tests Review page should be displayed
-	When the user clicks Save and continue
-	Then the Decision page should be displayed
-	When the user selects Acceptable for 'Internal market' 'Human consumption'
-	And the user clicks Save and continue
-	Then the Review outcome decision page should be displayed
-	When then user populates the Date and time of checks as 7 day(s) ago
-	And user clicks Submit decision
-	Then the Your checks have been submitted page should be displayed
-	When the user clicks return to your dashboard link in decision submitted page
-	Then the Import notifications dashboard page should be displayed
-# 8 of 8
-	When the user searches for notification 8 on the Import notifications page
 	Then the Decision Hub page should be displayed
 	When the user clicks Save and set as in progress
 	Then the notification status should change from "NEW" to "IN PROGRESS"
@@ -4814,6 +4561,214 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	Then the Record laboratory test information page should be displayed
 	When the user enters Sample use by date as today's date
 	And the user enters Released date as 8 day(s) ago
+	And the user selects 'Not satisfactory' for Conclusion
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	When the user clicks Save and continue
+	Then the Decision page should be displayed
+	When the user selects Acceptable for 'Not acceptable' 'Destruction'
+	And the user enters 'Not satisfactory' in reason under Destruction
+	And the user enters 'today' date in By date
+	And the user clicks Save and continue
+	Then the Select a controlled destination page should be displayed
+	When the user clicks Add a controlled destination
+	Then the Search for an existing controlled destination page should be displayed
+	When the user selects a controlled destination
+	Then the chosen controlled destination should be displayed
+	When the user clicks Save and continue
+	Then the Reason for Refusal page should be displayed
+	When the user selects "Prohibited" as reason for refusal
+	And the user clicks Save and continue
+	Then the Review outcome decision page should be displayed
+	When then user populates the Date and time of checks as 8 day(s) ago
+	And user clicks Submit decision
+	Then the Your checks have been submitted page should be displayed
+	When the user clicks return to your dashboard link in decision submitted page
+	Then the Import notifications dashboard page should be displayed
+# 4 of 8
+	When the user searches for notification 4 on the Import notifications page
+	Then the Decision Hub page should be displayed
+	When the user clicks Save and set as in progress
+	Then the notification status should change from "NEW" to "IN PROGRESS"
+	When the user clicks Local reference number link in Record checks
+	Then Local reference number page should be displayed
+	When the user clicks Save and continue
+	Then the IUU page should be displayed
+	When the user selects 'No' and sub-option as '' for the IUU check
+	And the user clicks Save and continue
+	Then the Documentary check page should be displayed
+	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
+	Then the Identity and physical checks page should be displayed
+	When the user selects "Satisfactory" under "Full identity check" in identity check
+	And the user selects "Satisfactory" for physical check
+	And the user clicks Save and continue
+	Then the Seal numbers page should be displayed
+	And 'No' is pre-selected for Are new seal numbers required?
+	When the user clicks Save and continue
+	Then the Laboratory tests page should be displayed
+	When the user select 'Yes' radio button on the Laboratory tests page
+	And the user clicks Save and continue
+	Then the Laboratory tests Reason for testing page should be displayed
+	When the user select 'Intensified controls' reason radio button on the Laboratory tests page
+	And the user clicks Save and continue
+	Then the Laboratory tests Select the commodity sampled page should be displayed
+	When the user clicks the Select link for the '16051000' commodity code
+	Then the Laboratory tests Commodity to be tested page should be displayed
+	When the user searches for the laboratory test 'White spot disease'
+	When the user selects 'White spot disease' from the list of Laboratory tests
+	Then the Laboratory tests Commodity sampled page should be displayed
+	When the user populates the sample date and time as 7 day(s) ago
+	And the user populates the commodity sample details 'Initial analysis' 'Campden BRI' '12345' '3' 'Blood' 'Chilled'
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	When the user clicks on the Test 'White spot disease'
+	Then the Record laboratory test information page should be displayed
+	When the user enters Sample use by date as today's date
+	And the user enters Released date as 7 day(s) ago
+	And the user selects 'Not satisfactory' for Conclusion
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	When the user clicks Save and continue
+	Then the Decision page should be displayed
+	When the user selects Acceptable for 'Not acceptable' 'Destruction'
+	And the user enters 'Not satisfactory' in reason under Destruction
+	And the user enters 'today' date in By date
+	And the user clicks Save and continue
+	Then the Select a controlled destination page should be displayed
+	When the user clicks Add a controlled destination
+	Then the Search for an existing controlled destination page should be displayed
+	When the user selects a controlled destination
+	Then the chosen controlled destination should be displayed
+	When the user clicks Save and continue
+	Then the Reason for Refusal page should be displayed
+	When the user selects "Prohibited" as reason for refusal
+	And the user clicks Save and continue
+	Then the Review outcome decision page should be displayed
+	When then user populates the Date and time of checks as 7 day(s) ago
+	And user clicks Submit decision
+	Then the Your checks have been submitted page should be displayed
+	When the user clicks return to your dashboard link in decision submitted page
+	Then the Import notifications dashboard page should be displayed
+ # 5 of 8
+	When the user searches for notification 5 on the Import notifications page
+	Then the Decision Hub page should be displayed
+	When the user clicks Save and set as in progress
+	Then the notification status should change from "NEW" to "IN PROGRESS"
+	When the user clicks Local reference number link in Record checks
+	Then Local reference number page should be displayed
+	When the user clicks Save and continue
+	Then the IUU page should be displayed
+	When the user selects 'No' and sub-option as '' for the IUU check
+	And the user clicks Save and continue
+	Then the Documentary check page should be displayed
+	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
+	Then the Identity and physical checks page should be displayed
+	When the user selects "Satisfactory" under "Full identity check" in identity check
+	And the user selects "Satisfactory" for physical check
+	And the user clicks Save and continue
+	Then the Seal numbers page should be displayed
+	And 'No' is pre-selected for Are new seal numbers required?
+	When the user clicks Save and continue
+	Then the Laboratory tests page should be displayed
+	When the user select 'Yes' radio button on the Laboratory tests page
+	And the user clicks Save and continue
+	Then the Laboratory tests Reason for testing page should be displayed
+	When the user select 'Intensified controls' reason radio button on the Laboratory tests page
+	And the user clicks Save and continue
+	Then the Laboratory tests Select the commodity sampled page should be displayed
+	When the user clicks the Select link for the '16051000' commodity code
+	Then the Laboratory tests Commodity to be tested page should be displayed
+	When the user searches for the laboratory test 'White spot disease'
+	When the user selects 'White spot disease' from the list of Laboratory tests
+	Then the Laboratory tests Commodity sampled page should be displayed
+	When the user populates the sample date and time as 6 day(s) ago
+	And the user populates the commodity sample details 'Initial analysis' 'Campden BRI' '12345' '3' 'Blood' 'Chilled'
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	When the user clicks Save and Return
+	Then the Decision Hub page should be displayed
+	When the user clicks Dashboard link
+	Then the Import notifications dashboard page should be displayed	
+# 6 of 8
+	When the user searches for notification 6 on the Import notifications page
+	Then the Decision Hub page should be displayed
+	When the user clicks Save and set as in progress
+	Then the notification status should change from "NEW" to "IN PROGRESS"
+	When the user clicks Local reference number link in Record checks
+	Then Local reference number page should be displayed
+	When the user clicks Save and continue
+	Then the IUU page should be displayed
+	When the user selects 'No' and sub-option as '' for the IUU check
+	And the user clicks Save and continue
+	Then the Documentary check page should be displayed
+	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
+	Then the Identity and physical checks page should be displayed
+	When the user selects "Satisfactory" under "Full identity check" in identity check
+	And the user selects "Satisfactory" for physical check
+	And the user clicks Save and continue
+	Then the Seal numbers page should be displayed
+	And 'No' is pre-selected for Are new seal numbers required?
+	When the user clicks Save and continue
+	Then the Laboratory tests page should be displayed
+	When the user select 'Yes' radio button on the Laboratory tests page
+	And the user clicks Save and continue
+	Then the Laboratory tests Reason for testing page should be displayed
+	When the user select 'Intensified controls' reason radio button on the Laboratory tests page
+	And the user clicks Save and continue
+	Then the Laboratory tests Select the commodity sampled page should be displayed
+	When the user clicks the Select link for the '16051000' commodity code
+	Then the Laboratory tests Commodity to be tested page should be displayed
+	When the user searches for the laboratory test 'White spot disease'
+	When the user selects 'White spot disease' from the list of Laboratory tests
+	Then the Laboratory tests Commodity sampled page should be displayed
+	When the user populates the sample date and time as 5 day(s) ago
+	And the user populates the commodity sample details 'Initial analysis' 'Campden BRI' '12345' '3' 'Blood' 'Chilled'
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	When the user clicks Save and Return
+	Then the Decision Hub page should be displayed
+	When the user clicks Dashboard link
+	Then the Import notifications dashboard page should be displayed
+# 7 of 8
+	When the user searches for notification 7 on the Import notifications page
+	Then the Decision Hub page should be displayed
+	When the user clicks Save and set as in progress
+	Then the notification status should change from "NEW" to "IN PROGRESS"
+	When the user clicks Local reference number link in Record checks
+	Then Local reference number page should be displayed
+	When the user clicks Save and continue
+	Then the IUU page should be displayed
+	When the user selects 'No' and sub-option as '' for the IUU check
+	And the user clicks Save and continue
+	Then the Documentary check page should be displayed
+	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
+	Then the Identity and physical checks page should be displayed
+	When the user selects "Satisfactory" under "Full identity check" in identity check
+	And the user selects "Satisfactory" for physical check
+	And the user clicks Save and continue
+	Then the Seal numbers page should be displayed
+	And 'No' is pre-selected for Are new seal numbers required?
+	When the user clicks Save and continue
+	Then the Laboratory tests page should be displayed
+	When the user select 'Yes' radio button on the Laboratory tests page
+	And the user clicks Save and continue
+	Then the Laboratory tests Reason for testing page should be displayed
+	When the user select 'Intensified controls' reason radio button on the Laboratory tests page
+	And the user clicks Save and continue
+	Then the Laboratory tests Select the commodity sampled page should be displayed
+	When the user clicks the Select link for the '16051000' commodity code
+	Then the Laboratory tests Commodity to be tested page should be displayed
+	When the user searches for the laboratory test 'White spot disease'
+	When the user selects 'White spot disease' from the list of Laboratory tests
+	Then the Laboratory tests Commodity sampled page should be displayed
+	When the user populates the sample date and time as 4 day(s) ago
+	And the user populates the commodity sample details 'Initial analysis' 'Campden BRI' '12345' '3' 'Blood' 'Chilled'
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	When the user clicks on the Test 'White spot disease'
+	Then the Record laboratory test information page should be displayed
+	When the user enters Sample use by date as today's date
+	And the user enters Released date as 4 day(s) ago
 	And the user selects 'Satisfactory' for Conclusion
 	And the user clicks Save and continue
 	Then the Laboratory tests Review page should be displayed
@@ -4822,7 +4777,60 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	When the user selects Acceptable for 'Internal market' 'Human consumption'
 	And the user clicks Save and continue
 	Then the Review outcome decision page should be displayed
-	When then user populates the Date and time of checks as 8 day(s) ago
+	When then user populates the Date and time of checks as 4 day(s) ago
+	And user clicks Submit decision
+	Then the Your checks have been submitted page should be displayed
+	When the user clicks return to your dashboard link in decision submitted page
+	Then the Import notifications dashboard page should be displayed
+# 8 of 8
+	When the user searches for notification 8 on the Import notifications page
+	Then the Decision Hub page should be displayed
+	When the user clicks Save and set as in progress
+	Then the notification status should change from "NEW" to "IN PROGRESS"
+	When the user clicks Local reference number link in Record checks
+	Then Local reference number page should be displayed
+	When the user clicks Save and continue
+	Then the IUU page should be displayed
+	When the user selects 'No' and sub-option as '' for the IUU check
+	And the user clicks Save and continue
+	Then the Documentary check page should be displayed
+	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
+	Then the Identity and physical checks page should be displayed
+	When the user selects "Satisfactory" under "Full identity check" in identity check
+	And the user selects "Satisfactory" for physical check
+	And the user clicks Save and continue
+	Then the Seal numbers page should be displayed
+	And 'No' is pre-selected for Are new seal numbers required?
+	When the user clicks Save and continue
+	Then the Laboratory tests page should be displayed
+	When the user select 'Yes' radio button on the Laboratory tests page
+	And the user clicks Save and continue
+	Then the Laboratory tests Reason for testing page should be displayed
+	When the user select 'Intensified controls' reason radio button on the Laboratory tests page
+	And the user clicks Save and continue
+	Then the Laboratory tests Select the commodity sampled page should be displayed
+	When the user clicks the Select link for the '16051000' commodity code
+	Then the Laboratory tests Commodity to be tested page should be displayed
+	When the user searches for the laboratory test 'White spot disease'
+	When the user selects 'White spot disease' from the list of Laboratory tests
+	Then the Laboratory tests Commodity sampled page should be displayed
+	When the user populates the sample date and time as 3 day(s) ago
+	And the user populates the commodity sample details 'Initial analysis' 'Campden BRI' '12345' '3' 'Blood' 'Chilled'
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	When the user clicks on the Test 'White spot disease'
+	Then the Record laboratory test information page should be displayed
+	When the user enters Sample use by date as today's date
+	And the user enters Released date as 3 day(s) ago
+	And the user selects 'Satisfactory' for Conclusion
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	When the user clicks Save and continue
+	Then the Decision page should be displayed
+	When the user selects Acceptable for 'Internal market' 'Human consumption'
+	And the user clicks Save and continue
+	Then the Review outcome decision page should be displayed
+	When then user populates the Date and time of checks as 3 day(s) ago
 	And user clicks Submit decision
 	Then the Your checks have been submitted page should be displayed
 	When the user logs out of IPAFFS Part 2

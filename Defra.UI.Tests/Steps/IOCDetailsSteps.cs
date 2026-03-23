@@ -37,8 +37,9 @@ namespace Defra.UI.Tests.Steps
         public void ThenNotificationIsUnderTheCheckedConsignmentsHeaderWithCount(int notificationNumber, string count)
         {
             var chedRef = _scenarioContext.Get<string>($"Notification_{notificationNumber}_CHEDReference");
+            var actualCount = iocDetailsPage?.GetCheckedConsignmentCount(chedRef);
             Assert.True(iocDetailsPage?.IsUnderCheckedConsignmentsWithCount(chedRef, count),
-                $"Notification {notificationNumber} (CHED ref: {chedRef}) was not found under the Checked consignments table with count '{count}'");
+                $"Notification {notificationNumber} (CHED ref: {chedRef}) was not found under the Checked consignments table with count '{count}'. Actual count value found: '{actualCount ?? "row not found"}'");
         }
     }
 }
