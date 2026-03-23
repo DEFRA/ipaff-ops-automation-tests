@@ -114,5 +114,17 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             Assert.True(documentsPage?.IsCatchCertificateSummaryUrlDisplayed(), "Catch certificate summary url didn't displayed");
         }
+
+        [When("the user clicks on Download link for the catch certificate")]
+        public void WhenTheUserClicksOnDownloadLinkForTheCatchCert()
+        {
+            documentsPage?.ClickDownloadLinkInCatchCertificate();
+        }
+        
+        [Then("the user verifies the {string} catch certificate is downloaded")]
+        public void WhenTheUserClicksOnDownloadLinkForTheCatchCert(string catchCertificate)
+        {
+            Assert.True(documentsPage?.IsCatchCertificateDownloaded(catchCertificate), "The catch certificate is not downloaded");
+        }
     }
 }
