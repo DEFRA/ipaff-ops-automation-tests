@@ -38,6 +38,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["CustomsDocumentCode"] = confirmationPage.GetCustomsDocumentCode();
         }
 
+        [When("the user records the IPAFFS User details and CHED Reference for notification {int}")]
+        [Then("the user records the IPAFFS User details and CHED Reference for notification {int}")]
+        public void WhenTheUserRecordsTheIPAFFSUserDetailsAndCHEDReferenceForNotification(int notificationNumber)
+        {
+            var prefix = $"Notification_{notificationNumber}_";
+            _scenarioContext[$"{prefix}CHEDReference"] = confirmationPage.GetCHEDReference();
+            _scenarioContext[$"{prefix}CustomsDeclarationReference"] = confirmationPage.GetCustomsDeclarationReference();
+            _scenarioContext[$"{prefix}CustomsDocumentCode"] = confirmationPage.GetCustomsDocumentCode();
+        }
+
         [When("the user clicks Return to your dashboard")]
         [When("the user clicks return to your dashboard link")]
         public void WhenTheUserClicksReturnToYourDashboard()

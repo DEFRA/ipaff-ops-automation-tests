@@ -61,6 +61,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement GetLabTestSpeciesCell(string commodityCode) => _driver.FindElement(By.XPath($"//table[@aria-label='select the commodity sampled table']//tbody//tr[td[text()='{commodityCode}']]//td[3]"));
         private IWebElement GetLabTestSelectHyperlink(string commodityCode) => _driver.FindElement(By.XPath($"//table[@aria-label='select the commodity sampled table']//tbody//tr[td[text()='{commodityCode}']]//a[contains(@id, 'choose-commodity-')]"));
         private IReadOnlyCollection<IWebElement> labTestCategoryRows => _driver.FindElements(By.XPath("//table[@aria-label='choose lab test table']//tbody//tr"));
+        private IWebElement txtLaboratoryTestName => _driver.FindElement(By.Id("laboratory-test-name"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -234,6 +235,26 @@ namespace Defra.UI.Tests.Pages.Classes
         public bool IsCommodityToBeTestedPageLoaded()
         {
             return headingCommodityToTest.Text.Contains("Commodity to be tested");
+        }
+
+        public void PopulateSampleDateAndTime(int daysAgo)
+        {
+            var targetDateTime = DateTime.Now.AddDays(-daysAgo);
+
+            txtSampleDateDay.Clear();
+            txtSampleDateDay.SendKeys(targetDateTime.Day.ToString());
+
+            txtSampleDateMonth.Clear();
+            txtSampleDateMonth.SendKeys(targetDateTime.Month.ToString());
+
+            txtSampleDateYear.Clear();
+            txtSampleDateYear.SendKeys(targetDateTime.Year.ToString());
+
+            txtSampleTimeHour.Clear();
+            txtSampleTimeHour.SendKeys(targetDateTime.Hour.ToString("D2"));
+
+            txtSampleTimeMinutes.Clear();
+            txtSampleTimeMinutes.SendKeys(targetDateTime.Minute.ToString("D2"));
         }
 
         public string GetSampleDate()
@@ -515,6 +536,12 @@ namespace Defra.UI.Tests.Pages.Classes
             {
                 return false;
             }
+        }
+
+        public void EnterLaboratoryTestName(string testName)
+        {
+            txtLaboratoryTestName.Clear();
+            txtLaboratoryTestName.SendKeys(testName);
         }
     }
 }
