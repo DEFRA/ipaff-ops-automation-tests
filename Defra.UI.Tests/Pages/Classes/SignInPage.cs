@@ -40,6 +40,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtIPAFFSIntInspectorPassword => _driver.FindElement(By.Name("passwd"));
         private IReadOnlyCollection<IWebElement> txtUser(string user) => _driver.FindElements(By.XPath($"//div[text()='{user}']"));
         private IWebElement txtUserEmailId(string user) => _driver.FindElement(By.XPath($"//div[text()='{user}']"));
+        private IWebElement IOCSignOutConfirmMessage => _driver.WaitForElement(By.Id("login_workload_logo_text"), true);
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -62,14 +63,14 @@ namespace Defra.UI.Tests.Pages.Classes
             UserId.SendKeys(userName);
             Password.SendKeys(password);
             _driver.WaitForElementCondition(ExpectedConditions.ElementToBeClickable(btnSignIn)).Click();
-           // _driver.WaitForElement(signInConfirmBy);
+            // _driver.WaitForElement(signInConfirmBy);
         }
 
         public void IPAFFSInternalInspectorSignIn(string userName, string password)
         {
             _driver.Wait(1);
 
-            if(txtUser(userName).Count() > 0)
+            if (txtUser(userName).Count() > 0)
                 txtUserEmailId(userName).Click();
             else
                 txtIPAFFSIntInspectorUserId.SendKeys(userName);
@@ -119,6 +120,11 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             ClickSignedOut();
             return SignOutGCConfirmMessage.Text.Contains("You need to sign in again");
+        }
+
+        public bool IsSignedOutFromIOC()
+        {
+            return IOCSignOutConfirmMessage.Text.Contains("You signed out of your account");
         }
 
         public void SignInToDynamics(string username, string password)

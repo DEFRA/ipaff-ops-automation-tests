@@ -36,6 +36,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IReadOnlyCollection<IWebElement> lstTypeInSearchResult => _driver.FindElements(By.XPath("//*[@id='establishments-search-results']//td[3]"));
         private IReadOnlyCollection<IWebElement> lstStatusInSearchResult => _driver.FindElements(By.XPath("//*[@id='establishments-search-results']//td[5]"));
         private IWebElement btnSearch => _driver.FindElement(By.Id("search"));
+        private IWebElement txtEstablishmentName => _driver.FindElement(By.Id("establishment-name"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -50,10 +51,10 @@ namespace Defra.UI.Tests.Pages.Classes
             return secondaryTitle.Text.Contains("Documents")
                 && primaryTitle.Text.Contains("Approved establishment of origin (where required)");
         }
-       
-        public void ClickSearchForApproved() 
-        { 
-            lnkSearchForApproved.Click(); 
+
+        public void ClickSearchForApproved()
+        {
+            lnkSearchForApproved.Click();
         }
 
         public bool VerifySelectedCountryOfOrigin(string country)
@@ -68,7 +69,7 @@ namespace Defra.UI.Tests.Pages.Classes
             return establishmentSearchResultFirstName.Text.Trim();
         }
 
-        public void ClickSelectEstablishment() 
+        public void ClickSelectEstablishment()
         {
             lnkSelectEstablishment.FirstOrDefault().Click();
         }
@@ -115,8 +116,8 @@ namespace Defra.UI.Tests.Pages.Classes
         }
 
         public bool VerifySelectedCountryOnlyDisplayed(string country)
-        {               
-            return lstCountryInSearchResult.All(x=>x.Text.Trim().Equals(country));
+        {
+            return lstCountryInSearchResult.All(x => x.Text.Trim().Equals(country));
         }
 
         public bool VerifySelectedTypeOnlyDisplayed(string type)
@@ -142,6 +143,12 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickSearchButton()
         {
             btnSearch.Click();
+        }
+
+        public void EnterEstablishmentName(string name)
+        {
+            txtEstablishmentName.Clear();
+            txtEstablishmentName.SendKeys(name);
         }
     }
 }

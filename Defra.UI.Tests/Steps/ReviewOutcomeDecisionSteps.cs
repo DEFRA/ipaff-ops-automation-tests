@@ -46,6 +46,18 @@ namespace Defra.UI.Tests.Steps.IPAFF
             reviewOutcomeDecisionPage?.EnterCurrentDateAndTime(day, month, year, hours, minutes);
         }
 
+        [When("then user populates the Date and time of checks as {int} day\\(s) ago")]
+        public void WhenThenUserPopulatesTheDateAndTimeOfChecksAsDaySAgo(int daysAgo)
+        {
+            DateTime targetDateTime = DateTime.Now.AddDays(-daysAgo);
+            string day = targetDateTime.Day.ToString();
+            string month = targetDateTime.Month.ToString();
+            string year = targetDateTime.Year.ToString();
+            string hours = targetDateTime.Hour.ToString();
+            string minutes = targetDateTime.Minute.ToString();
+            reviewOutcomeDecisionPage?.EnterCurrentDateAndTime(day, month, year, hours, minutes);
+        }
+
         [When("user clicks Submit decision")]
         public void WhenUserClicksSubmitDecision()
         {
