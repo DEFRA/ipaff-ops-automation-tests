@@ -70,5 +70,11 @@ namespace Defra.UI.Tests.Pages.Classes
                 return false;
             }
         }
+
+        public string? GetCheckedConsignmentCount(string chedRef)
+        {
+            var row = GetCheckedConsignmentRowByChedRef(chedRef);
+            return row.FindElement(By.XPath(".//td[1]")).Text.Trim();
+        }
     }
 }
