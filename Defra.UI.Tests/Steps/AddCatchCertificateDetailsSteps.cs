@@ -319,6 +319,13 @@ namespace Defra.UI.Tests.Steps
 
             _scenarioContext[$"CatchCertificateSpecies_Attachment{attachmentNumber}"] = species;
         }
+        
+        [When("the user selects the species {string} for certificate {int}")]
+        public void WhenTheUserSelectsSpeciesForCertificate(string species, int certificateNumber)
+        {
+            addCatchCertificateDetails?.SelectSpecies(species, certificateNumber);
+            _scenarioContext[$"CatchCertificateSpecies_Attachment{certificateNumber}"] = species;
+        }
 
         [When("the user clicks Save and return to hub link")]
         public void WhenTheUserClicksSaveAndReturnToHubLink()

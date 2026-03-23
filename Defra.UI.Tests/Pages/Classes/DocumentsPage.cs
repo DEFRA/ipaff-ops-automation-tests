@@ -21,6 +21,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement GetInspectorDocumentDateOfIssue(int index) => _driver.FindElement(By.Id($"additional-document-date-value-{index}"));
         private IWebElement lnkDownloadAllDocuments=> _driver.FindElement(By.Id("download-all"));
         private IWebElement lnkDownloadUrl => _driver.FindElement(By.Id("download-url"));
+        private IWebElement lnkDownloadLink => _driver.FindElement(By.XPath("(//a[normalize-space(text())='Download'])[1]"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -82,10 +83,20 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             lnkDownloadUrl.Click();
         }
+        
+        public void ClickDownloadLinkInCatchCertificate()
+        {
+            lnkDownloadLink.Click();
+        }
 
         public bool IsSingleCertificagteDownloaded(string chedReference)
         {
             return Utils.IsDownloaded(chedReference, "zip");
+        }
+        
+        public bool IsCatchCertificateDownloaded(string catchCertificate)
+        {
+            return Utils.IsDownloaded(catchCertificate, "docx");
         }
     }
 }

@@ -288,6 +288,7 @@ Scenario: User creates and submits a B2C consignment notification for Transit Re
 	Then the notification should be present in the list
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
+	When verifies the document 'CHEDREFERENCE' downloaded successfully
 	When the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
@@ -2345,8 +2346,10 @@ Scenario: Create and submits a B2C consignment notification - SPS-6937 CHEDP
 	When the user chooses "Internal market" and the sub-option "Human consumption"
 	And the user clicks Save and continue
 	Then Select the highest risk category for the commodities in this consignment page should be displayed
-	When the user chooses "Low risk" risk category
+	When the user chooses "Medium risk" risk category
 	And the user clicks Save and continue
+	Then the Health certificate required page should be displayed
+	When the user clicks continue button
 	Then the Notification Hub page should be displayed
 	When the user clicks the Commodity hyperlink
 	Then the Commodity page should be displayed with the commodity and description entered
@@ -2362,6 +2365,12 @@ Scenario: Create and submits a B2C consignment notification - SPS-6937 CHEDP
 	Then the Catch cerificates page should be displayed
 	And the user selects "No – all the wild fish in this consignment are exempt from IUU fishing controls" option for add catch certificate
 	When the user clicks Save and continue
+	Then the Latest Health Certificate page should be displayed
+	When the user enters Latest Health Certificate Document reference "INV12345"
+	And the user enters Latest Health Certificate date of issue "24""10""2025"
+	And the user clicks on Add attachment link
+	And the user uploads the document 'IPAFFS Test Health Certificate' in the format '.docx'
+	And the user clicks Save and continue
 	Then the Accompanying documents page should be displayed
 	When the user clicks Save and continue
 	Then the Approved establishment of origin page should be displayed
@@ -2410,26 +2419,30 @@ Scenario: Create and submits a B2C consignment notification - SPS-6937 CHEDP
 	Then Upload catch certificates page is displayed
 	When the user uploads the document 'IPAFFS Test Document 1' in the format '.docx'
 	Then Manage catch certificates page is displayed
-	And the user verifies there are '1' certificates attached
-	When the user clicks on Add details link
+	When the user selects the 'Yes' option for Do you need to upload more catch certificates?
+	And the user clicks Save and continue
+	When the user uploads the document 'IPAFFS Test Document 1' in the format '.docx'
+	Then Manage catch certificates page is displayed
+	When the user selects the 'Yes' option for Do you need to upload more catch certificates?
+	And the user clicks Save and continue
+	When the user uploads the document 'IPAFFS Test Document 1' in the format '.docx'
+	Then Manage catch certificates page is displayed
+	When the user selects the 'No' option for Do you need to upload more catch certificates?
+	And the user clicks Save and continue
 	Then Add catch certificate details page should be displayed
 	And 'Number of catch certificates in this attachment' is displayed in Add catch certificate page
-	And 'Change' is displayed in Add catch certificate page
-	When the user clicks on Change link in Add catch certificate details page
-	And the user enters "3" for Number of catch certificates in this attachment
-	And the user clicks on Update button
-	Then the user can see 3 Catch certificate reference details sections for input
 	When the user enters 'CatchRef001' in catch certificate reference 1
 	And the user enters Data of issue 1 as '01''02''2026' in Add catch certificate page
 	And the user enters 'United Kingdom of Great Britain and Northern Ireland' in Flag state of catching vessels 1
-	And the user Clicks on Update details 1
-	And the user enters 'CatchRef002' in catch certificate reference 2
-	And the user enters Data of issue 2 as '02''02''2026' in Add catch certificate page
-	And the user enters 'United Kingdom of Great Britain and Northern Ireland' in Flag state of catching vessels 2
-	And the user Clicks on Update details 2
-	And the user enters 'CatchRef003' in catch certificate reference 3
-	And the user enters Data of issue 3 as '03''02''2026' in Add catch certificate page
-	And the user enters 'United Kingdom of Great Britain and Northern Ireland' in Flag state of catching vessels 3
+	And the user clicks Save and continue
+	And the user enters 'CatchRef002' in catch certificate reference 1
+	And the user enters Data of issue 1 as '02''02''2026' in Add catch certificate page
+	And the user enters 'United Kingdom of Great Britain and Northern Ireland' in Flag state of catching vessels 1
+	And the user clicks Save and continue
+	And the user enters 'CatchRef003' in catch certificate reference 1
+	And the user enters Data of issue 1 as '03''02''2026' in Add catch certificate page
+	And the user enters 'United Kingdom of Great Britain and Northern Ireland' in Flag state of catching vessels 1
+	And the user selects the species 'Palaemonoidea' for certificate 1
 	And the user clicks Save and continue
 	Then Manage catch certificates page is displayed
 	When the user selects the 'No' option for Do you need to upload more catch certificates?
@@ -2437,52 +2450,27 @@ Scenario: Create and submits a B2C consignment notification - SPS-6937 CHEDP
 	Then Confirm exempt species page should be displayed
 	And the user selected "None of the species are exempt" option
 	When the user clicks Save and continue
-	Then the Accompanying documents page should be displayed
-	When the user clicks Save and continue
-	Then the Approved establishment of origin page should be displayed
-	When the user clicks Save and continue
-	Then the Addresses page should be displayed
-	When the user clicks Save and continue
-	Then the Transport to the port of entry page should be displayed
-	When the user clicks Save and continue
-	Then the Goods movement services page should be displayed
-	When the user clicks Save and continue
-	Then the Contact details page should be displayed, pre-populated with the user's details
-	When the user clicks Save and continue
-	Then the Nominated contacts page should be displayed
-	When the user clicks Save and continue
-	Then the Contact address for consignment page should be displayed
-	When the user clicks Save and continue
+	Then the Latest Health Certificate page should be displayed
+	When the user clicks on Save and return to hub
+	And the user clicks on 'Review and submit' link
 	Then the Review your notification page should be displayed
 	And the user verifies the 3 catch certificates reference details
 	When the user clicks on 1 Change link of Catch Cerfitificate Document section
 	Then Add catch certificate details page should be displayed
 	When the user enters 'France' in Flag state of catching vessels 1
-	And the user selects the "Jasus edwardsii,Metanephrops challengeri,Palaemonoidea" species under Select species being imported under this catch certificate
-	And the user Clicks on Update details 1
+	And the user selects the species 'Jasus edwardsii' for certificate 1
 	And the user clicks on Save and return to manage catch certificates link
 	Then Manage catch certificates page is displayed
 	When the user selects the 'No' option for Do you need to upload more catch certificates?
 	And the user clicks Save and continue
-	Then the Accompanying documents page should be displayed
+	Then Confirm exempt species page should be displayed
 	When the user clicks Save and continue
-	Then the Approved establishment of origin page should be displayed
-	When the user clicks Save and continue
-	Then the Addresses page should be displayed
-	When the user clicks Save and continue
-	Then the Transport to the port of entry page should be displayed
-	When the user clicks Save and continue
-	Then the Goods movement services page should be displayed
-	When the user clicks Save and continue
-	Then the Contact details page should be displayed, pre-populated with the user's details
-	When the user clicks Save and continue
-	Then the Nominated contacts page should be displayed
-	When the user clicks Save and continue
-	Then the Contact address for consignment page should be displayed
-	When the user clicks Save and continue
+	Then the Latest Health Certificate page should be displayed
+	When the user clicks on Save and return to hub
+	And the user clicks on 'Review and submit' link
 	Then the Review your notification page should be displayed
 	And the user verifies the 3 catch certificates reference details
-	And the user verifies the updated catch certificates 3 species details
+	And the user verifies the catch certificate details
 	When the user clicks Save and continue
 	Then the Declaration page should be displayed
 	When the user clicks Submit notification
@@ -2508,6 +2496,8 @@ Scenario: Create and submits a B2C consignment notification - SPS-6937 CHEDP
 	And the user verifies that Documents is downloaded into a .zip file with the title of the CHED certificates in Downloaded folder
 	When the user clicks Return to documents button
 	Then the Documents page should be displayed
+	When the user clicks on Download link for the catch certificate
+	Then the user verifies the 'IPAFFS Test Document 1(1)' catch certificate is downloaded
 	When the user clicks Save and set as in progress
 	Then the notification status should change from "NEW" to "IN PROGRESS"
 	When the user clicks Save and Return	
