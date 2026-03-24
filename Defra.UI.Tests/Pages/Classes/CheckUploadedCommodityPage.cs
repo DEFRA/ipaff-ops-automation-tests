@@ -5,6 +5,7 @@ using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
+using SeleniumExtras.WaitHelpers;
 
 namespace Defra.UI.Tests.Pages.Classes
 {
@@ -19,6 +20,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtUploadSuccessBannerContent => _driver.FindElement(By.XPath("//*[@class='govuk-notification-banner__content']/p"));
         private IWebElement txtInfoMessageHeading => _driver.FindElement(By.XPath("//h2[@class='govuk-heading-s']"));
         private IWebElement txtInfoMessageContent => _driver.FindElement(By.XPath("//p[@class='govuk-body']"));
+        private By lblUploading => By.XPath("//h3[text()='Uploading CSV...']");
+        private By lblSuccessBanner => By.XPath("//h2[text()='Upload successful']");
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -33,6 +36,30 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             return pageTitle.Text.Contains("Check uploaded commodity details");
         }
+
+
+        public bool WaitForUploadToCompleteAndVerifySuccessMessage(String successsMessage)
+        {
+            WebDriverWait _wait = new WebDriverWait(_driver, TimeSpan.FromMinutes(4));
+            try
+            {
+                // Wait for "uploading" to disappear
+                _wait.Until(d =>
+                {
+                    try { return !d.FindElement(lblUploading).Displayed; }
+                    catch(NoSuchElementException) { return true; }
+                });
+
+                // Wait for success message
+                _wait.Until(ExpectedConditions.ElementIsVisible(lblSuccessBanner));
+                return _driver.FindElement(lblSuccessBanner).Text.Equals(successsMessage);
+            }
+            catch
+            {
+                return false; // timeout or failure
+            }
+        }
+
 
         public bool IsUploadSuccessMsgDisplayed(string successMsg)
         {
@@ -115,8 +142,6 @@ namespace Defra.UI.Tests.Pages.Classes
                     {
                         Console.WriteLine($"[ReadOnlyCheck] Row {rowIndex + 1}: ✔ Read‑only");
                     }
-
-
 
                     try
                     {
@@ -347,6 +372,11 @@ namespace Defra.UI.Tests.Pages.Classes
                 case "Controlled atmosphere container":
                     cells = table.FindElements(By.XPath(
                        ".//div[contains(@class,'govuk-grid-row')][.//span[normalize-space()='Controlled atmosphere container']]//div[contains(@class,'govuk-grid-column-one-half')][2]/span"
+                    ));
+                    break;
+                case "Intended for final users (or commercial flower production)":
+                    cells = table.FindElements(By.XPath(
+                       ".//div[contains(@class,'govuk-grid-row')][.//span[contains(normalize-space(),'Intended for final users')]]//div[contains(@class,'govuk-grid-column-one-half')][2]/span"
                     ));
                     break;
 
