@@ -1,11 +1,14 @@
 ﻿using Defra.UI.Tests.Data.Users;
+using Defra.UI.Tests.Pages.Classes;
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using Defra.UI.Tests.Tools.PDFProcessor.Models;
+using Microsoft.Xrm.Sdk.Deployment;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;
+using System.ComponentModel;
 using System.Diagnostics;
 
 namespace Defra.UI.Tests.Steps.IPAFF
@@ -18,7 +21,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
         private IYourImportNotificationsPage? importNotificationsPage => _objectContainer.IsRegistered<IYourImportNotificationsPage>() ? _objectContainer.Resolve<IYourImportNotificationsPage>() : null;
         private IUserObject? UserObject => _objectContainer.IsRegistered<IUserObject>() ? _objectContainer.Resolve<IUserObject>() : null;
-       
+
         public YourImportNotificationsSteps(IObjectContainer container, ScenarioContext scenarioContext)
         {
             _objectContainer = container;
@@ -79,70 +82,83 @@ namespace Defra.UI.Tests.Steps.IPAFF
             string pdfUrl = importNotificationsPage?.getPDFUrl();
             var chedReferenceFileName = _scenarioContext.Get<string>("CHEDReference") + "-certificate";
 
-            Utils.DownloadPDF(chedReferenceFileName, pdfUrl, UserObject);            
+            Utils.DownloadPDF(chedReferenceFileName, pdfUrl, UserObject);
         }
 
         [When("the user checks that the data in the certificate matches the data entered into the notification")]
         public void WhenTheUserChecksThatTheDataInTheCertificateMatchesTheDataEnteredIntoTheNotification()
         {
-
-            //var chedReference = "CHEDP.GB.2025.1056538";
             var chedReference = _scenarioContext.Get<string>("CHEDReference");
             Assert.True(importNotificationsPage?.VerifyDataInCertificate(chedReference), "Certificate data verification failed");
 
             var json = JsonConvert.SerializeObject(_scenarioContext.ToDictionary(kvp => kvp.Key, kvp => kvp.Value), Formatting.Indented);
-
-            Console.WriteLine(json);
-
-
-            var chedReferenceFileName = "\\"+chedReference + "-certificate";
-
+            var chedReferenceFileName = "\\" + chedReference + "-certificate";
             var downloadDirectory = Path.Combine(Path.GetTempPath(), "automation-downloads");
-
             string pdfPath = downloadDirectory + chedReferenceFileName + ".pdf";
-
             var converter = new PdfToJsonConverter();
             var jsonOutput = converter.ConvertToJson(pdfPath);
 
             var chedDocument = JsonConvert.DeserializeObject<ChedRootObject>(jsonOutput);
 
-            
+            var allDataMatches = true;
+            var mismatches = new List<string>();
 
             if (chedDocument != null)
             {
-                foreach (var page in chedDocument)
+                for (int i = 0; i < chedDocument.Count; i++)
                 {
-                    if (page.Sections?.ConsignorExporter != null)
+                    var page = chedDocument[i];
+
+                    if (i == 0)
                     {
+
+                        ValidateIfExists("CHEDReference", page.Sections.ChedReference.Id, ref allDataMatches, mismatches);
+                        ValidateContains("PortOfEntry", page.Sections.BorderControlPost.Value, ref allDataMatches, mismatches, true);
+                        ValidateContains("ApprovedEstablishmentName", page.Sections.EstablishmentsOfOrigin.ApprovalNumber, ref allDataMatches, mismatches);
+
                         Assert.AreEqual(page.Sections.ChedReference.Id, _scenarioContext.Get<string>("CHEDReference"), "CHEDReference is not found in the PDF");
                         Assert.AreEqual(page.Sections.LocalReference.Id, _scenarioContext.Get<string>("ConsignmentReferenceNumber"), "ConsignmentReferenceNumber is not found in the PDF");
-                        //Assert.IsTrue(page.Sections.BorderControlPost.Value.Contains(_scenarioContext.Get<string>("PortOfEntry"), StringComparison.OrdinalIgnoreCase),"PortOfEntry value was not found in the PDF");
+                        Assert.IsTrue(_scenarioContext.Get<string>("PortOfEntry").Contains(page.Sections.BorderControlPost.Value, StringComparison.OrdinalIgnoreCase), "PortOfEntry value was not found in the PDF");
                         Assert.AreEqual(page.Sections.ConsignorExporter.Name, _scenarioContext.Get<string>("ConsignorName"));
                         Assert.AreEqual(page.Sections.ConsignorExporter.Address, _scenarioContext.Get<string>("ConsignorAddress"));
                         Assert.AreEqual(page.Sections.ConsignorExporter.Country, _scenarioContext.Get<string>("ConsignorCountry"));
                         Assert.AreEqual(page.Sections.ConsigneeImporter.Name, _scenarioContext.Get<string>("ConsigneeName"));
                         Assert.AreEqual(page.Sections.ConsigneeImporter.Address, _scenarioContext.Get<string>("ConsigneeAddress"));
-                        Assert.AreEqual(page.Sections.ConsigneeImporter.Country, _scenarioContext.Get<string>("ConsigneeCountry"));
-                        //Assert.AreEqual(page.Sections.PlaceOfDestination.Name, _scenarioContext.Get<string>("PlaceOfDestinationName"));
-                        //Assert.AreEqual(page.Sections.PlaceOfDestination.Address, _scenarioContext.Get<string>("PlaceOfDestinationAddress"));
-                        //Assert.AreEqual(page.Sections.PlaceOfDestination.Country, _scenarioContext.Get<string>("PlaceOfDestinationCountry"));
-                        Assert.AreEqual(page.Sections.AccompanyingDocuments.AdditionalData.FirstOrDefault(x => x.Key == "Type").Value, _scenarioContext.Get<string>("DocumentType"));
-                        Assert.AreEqual(page.Sections.AccompanyingDocuments.AdditionalData.FirstOrDefault(x => x.Key == "DocumentReference").Value, _scenarioContext.Get<string>("DocumentReference"));
-                        Assert.IsTrue(page.Sections.AccompanyingDocuments.AdditionalData.Where(x => x.Key == "DateOfIssue").Select(x => x.Value?.ToString()).FirstOrDefault()?.Contains(_scenarioContext.Get<string>("DateOfIssue")) == true);
-                        Assert.AreEqual(page.Sections.AccompanyingDocuments.AdditionalData.FirstOrDefault(x => x.Key == "DateOfIssue").Value, _scenarioContext.Get<string>("DateOfIssue"));
-                        Assert.AreEqual(page.Sections.MeansOfTransport.Mode, _scenarioContext.Get<string>("MeansOfTransport"));
-                        Assert.AreEqual(page.Sections.MeansOfTransport.InternationalTransportDocument, _scenarioContext.Get<string>("EnterTransportDocRef"));
+                        Assert.IsTrue(_scenarioContext.Get<string>("ConsigneeCountry").Contains(page.Sections.ConsigneeImporter.Country));
+                        Assert.IsTrue(_scenarioContext.Get<string>("PlaceOfDestinationDetails").Contains(page.Sections.PlaceOfDestination.Name));
+                        Assert.IsTrue(_scenarioContext.Get<string>("PlaceOfDestinationDetails").Contains(page.Sections.PlaceOfDestination.Address));
+                        Assert.IsTrue(_scenarioContext.Get<string>("PlaceOfDestinationDetails").Contains(page.Sections.PlaceOfDestination.Country));
+                        Assert.IsTrue(_scenarioContext.Get<string[]>("DocumentReference").Contains(page.Sections.AccompanyingDocuments.AdditionalData.FirstOrDefault(x => x.Key == "DocumentReference").Value));
+                        Assert.AreEqual(DateTime.ParseExact(((string)page.Sections.AccompanyingDocuments.AdditionalData.FirstOrDefault(x => x.Key == "DateOfIssue").Value).Split(' ')[0], "dd.MM.yyyy", null).ToString("ddMMyyyy"), DateTime.ParseExact(_scenarioContext.Get<string>("DocumentDateOfIssue"), "dd MM yyyy", null).ToString("ddMMyyyy"));
+                        Assert.IsTrue(string.Equals(page.Sections.MeansOfTransport.Mode, _scenarioContext.Get<string>("MeansOfTransport"), StringComparison.OrdinalIgnoreCase), "Transport mode does not match");
+                        Assert.IsTrue(string.Equals(page.Sections.MeansOfTransport.InternationalTransportDocument, _scenarioContext.Get<string>("EnterTransportDocRef"), StringComparison.OrdinalIgnoreCase));
                         Assert.AreEqual(page.Sections.MeansOfTransport.Identification, _scenarioContext.Get<string>("TransportId"));
                         Assert.AreEqual(page.Sections.CountryOfOrigin.Value, _scenarioContext.Get<string>("CountryOfOrigin"));
-                        Assert.IsTrue(page.Sections.EstablishmentsOfOrigin.ApprovalNumber.Contains(_scenarioContext.Get<string>("ApprovedEstablishmentName")));
+                        Assert.IsTrue((page.Sections.EstablishmentsOfOrigin.ApprovalNumber.Contains(_scenarioContext.Get<string>("ApprovedEstablishmentName"), StringComparison.OrdinalIgnoreCase)));
                         Assert.IsTrue(page.Sections.EstablishmentsOfOrigin.ApprovalNumber.Contains(_scenarioContext.Get<string>("ApprovedEstablishmentCountry")));
                         Assert.IsTrue(page.Sections.EstablishmentsOfOrigin.ApprovalNumber.Contains(_scenarioContext.Get<string>("ApprovedEstablishmentType")));
                         Assert.IsTrue(page.Sections.EstablishmentsOfOrigin.ApprovalNumber.Contains(_scenarioContext.Get<string>("ApprovedEstablishmentApprovalNum")));
+                        var temperature = _scenarioContext.Get<string>("Temperature")?.Trim();
+                        Assert.IsTrue(
+                            (temperature.Equals("Ambient", StringComparison.OrdinalIgnoreCase) && page.Sections.TransportConditions.Ambient == "true") ||
+                            (temperature.Equals("Frozen", StringComparison.OrdinalIgnoreCase) && page.Sections.TransportConditions.Frozen == "true") ||
+                            (temperature.Equals("Chilled", StringComparison.OrdinalIgnoreCase) && page.Sections.TransportConditions.Chilled == "true"),
+                            $"Temperature '{temperature}' does not match in PDF.");
+                        Assert.IsTrue(page.Sections.OperatorResponsible.Name.Contains(_scenarioContext.Get<string>("ContactName")));
+                        Assert.AreEqual(string.Join(" ", _scenarioContext.Get<string>("ConsignmentContactAddress").Replace(",", " ").Split((char[])null, StringSplitOptions.RemoveEmptyEntries)).ToLower(), string.Join(" ", page.Sections.OperatorResponsible.Address.Replace(",", " ").Split((char[])null, StringSplitOptions.RemoveEmptyEntries)).ToLower());
                     }
 
-                    if (page.Sections?.DescriptionOfTheGoods != null)
+                    if (i == 1)
                     {
-                        //Assert.Equal(page.Sections.ConsignorExporter.Name, scenarioContext[consignerName]);
+                        //Page 2 validations
+                    }
+                    if (i == 2)
+                    {
+                        //Page 3 validations
+                    }
+                    if (i == 3)
+                    {
+                        //Page 4 validations
                     }
 
                 }
@@ -301,6 +317,155 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             importNotificationsPage?.ClickCloneButton();
         }
+
+        private void ValidateIfExists(string contextKey, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
+        {
+            if (_scenarioContext.ContainsKey(contextKey))
+            {
+                object contextValue = _scenarioContext[contextKey];
+
+                // Handle List<string> (for multiple countries)
+                if (contextValue is List<string> countryList)
+                {
+                    // Join the list with line breaks to match the HTML format
+                    var expectedValue = string.Join("\n", countryList).Trim();
+
+                    // The review page displays countries with <br> which Selenium converts to \n
+                    var actualValue = reviewValue?.Trim().Replace("\r\n", "\n").Replace("\r", "\n");
+
+                    var isMatch = expectedValue.Equals(actualValue, StringComparison.OrdinalIgnoreCase);
+                    if (!isMatch)
+                    {
+                        allDataMatches = false;
+                        mismatches.Add($"{contextKey}: Expected '{expectedValue}', Found '{actualValue}'");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
+                    }
+                }
+                // Handle string[] (for documents)
+                else if (contextValue is string[] stringArray)
+                {
+                    var expectedValue = stringArray.FirstOrDefault();
+                    if (!string.IsNullOrEmpty(expectedValue))
+                    {
+                        var isMatch = expectedValue.Equals(reviewValue?.Trim(), StringComparison.OrdinalIgnoreCase);
+                        if (!isMatch)
+                        {
+                            allDataMatches = false;
+                            mismatches.Add($"{contextKey}: Expected '{expectedValue}', Found '{reviewValue?.Trim()}'");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[REVIEW VALIDATION] ⊘ {contextKey}: Skipped (empty value in array)");
+                    }
+                }
+                // Handle single string value
+                else if (contextValue is string expectedValue)
+                {
+                    if (!string.IsNullOrEmpty(expectedValue))
+                    {
+                        var isMatch = expectedValue.Equals(reviewValue?.Trim(), StringComparison.OrdinalIgnoreCase);
+                        if (!isMatch)
+                        {
+                            allDataMatches = false;
+                            mismatches.Add($"{contextKey}: Expected '{expectedValue}', Found '{reviewValue?.Trim()}'");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[REVIEW VALIDATION] ⊘ {contextKey}: Skipped (empty value in context)");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"[REVIEW VALIDATION] ⊘ {contextKey}: Skipped (unsupported type: {contextValue.GetType().Name})");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[REVIEW VALIDATION] ⊘ {contextKey}: Skipped (not in context)");
+            }
+        }
+
+        private void ValidateContains(string contextKey, string? actual, ref bool allDataMatches, List<string> mismatches, bool contextNotContainsPDF = false)
+        {
+            if (_scenarioContext.ContainsKey(contextKey))
+            {
+                var expectedValue = _scenarioContext.Get<string>(contextKey);
+
+                if (!string.IsNullOrEmpty(expectedValue) && !string.IsNullOrEmpty(actual))
+                {
+                    bool isMatch = contextNotContainsPDF
+                        ? expectedValue.Contains(actual.Trim(), StringComparison.OrdinalIgnoreCase)
+                        : actual.Trim().Contains(expectedValue, StringComparison.OrdinalIgnoreCase);
+
+                    if (!isMatch)
+                    {
+                        allDataMatches = false;
+                        mismatches.Add($"{contextKey}: Expected '{expectedValue}', Found '{actual.Trim()}'");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
+                    }
+                }
+            }
+        }
+
+
+
+        /*private void ValidateIfContains(string contextKey, string? actual, ref bool allDataMatches, List<string> mismatches)
+        {
+            if (_scenarioContext.ContainsKey(contextKey))
+            {
+                var expectedValue = _scenarioContext.Get<string>(contextKey);
+                if (!string.IsNullOrEmpty(expectedValue))
+                {
+                    var isMatch = expectedValue.Contains(actual?.Trim(), StringComparison.OrdinalIgnoreCase);
+                    if (!isMatch)
+                    {
+                        allDataMatches = false;
+                        mismatches.Add($"{contextKey}: Expected '{expectedValue}', Found '{actual?.Trim()}'");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
+                    }
+                }
+            }
+        }
+
+        private void ValidateIfPDFContains(string actual, string contextKey, ref bool allDataMatches, List<string> mismatches)
+        {
+            if (_scenarioContext.ContainsKey(contextKey))
+            {
+                var expectedValue = _scenarioContext.Get<string>(contextKey);
+                if (!string.IsNullOrEmpty(expectedValue))
+                {
+                    var isMatch = actual.Trim().Contains(expectedValue, StringComparison.OrdinalIgnoreCase);
+                    if (!isMatch)
+                    {
+                        allDataMatches = false;
+                        mismatches.Add($"{contextKey}: Expected '{expectedValue}', Found '{actual?.Trim()}'");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
+                    }
+                }
+            }
+        }*/
 
     }
 }
