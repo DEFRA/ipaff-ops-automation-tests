@@ -422,50 +422,5 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 }
             }
         }
-
-
-
-        /*private void ValidateIfContains(string contextKey, string? actual, ref bool allDataMatches, List<string> mismatches)
-        {
-            if (_scenarioContext.ContainsKey(contextKey))
-            {
-                var expectedValue = _scenarioContext.Get<string>(contextKey);
-                if (!string.IsNullOrEmpty(expectedValue))
-                {
-                    var isMatch = expectedValue.Contains(actual?.Trim(), StringComparison.OrdinalIgnoreCase);
-                    if (!isMatch)
-                    {
-                        allDataMatches = false;
-                        mismatches.Add($"{contextKey}: Expected '{expectedValue}', Found '{actual?.Trim()}'");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
-                    }
-                }
-            }
-        }
-
-        private void ValidateIfPDFContains(string actual, string contextKey, ref bool allDataMatches, List<string> mismatches)
-        {
-            if (_scenarioContext.ContainsKey(contextKey))
-            {
-                var expectedValue = _scenarioContext.Get<string>(contextKey);
-                if (!string.IsNullOrEmpty(expectedValue))
-                {
-                    var isMatch = actual.Trim().Contains(expectedValue, StringComparison.OrdinalIgnoreCase);
-                    if (!isMatch)
-                    {
-                        allDataMatches = false;
-                        mismatches.Add($"{contextKey}: Expected '{expectedValue}', Found '{actual?.Trim()}'");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
-                    }
-                }
-            }
-        }*/
-
     }
 }
