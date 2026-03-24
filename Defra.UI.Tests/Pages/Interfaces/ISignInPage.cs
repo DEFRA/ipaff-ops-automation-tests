@@ -16,5 +16,6 @@
         bool IsSignedOutFromYourDefraAccountPage();
         void EnterPassword();
         void IPAFFSInternalInspectorSignIn(string userName, string credential);
+        bool IsSignedOutFromIOC();
     }
 }

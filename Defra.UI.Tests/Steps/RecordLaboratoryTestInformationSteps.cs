@@ -72,6 +72,28 @@ namespace Defra.UI.Tests.Steps
             recordLaboratoryTestInformation?.SelectReleasedDateFromDatePicker();
         }
 
+        [When("the user enters Sample use by date as today's date")]
+        public void WhenTheUserEntersSampleUseByDateAsTodaysDate()
+        {
+            var today = DateTime.Now;
+            recordLaboratoryTestInformation?.EnterSampleUseByDate(
+                today.Day.ToString(),
+                today.Month.ToString(),
+                today.Year.ToString());
+            _scenarioContext["SampleUseByDate"] = today.ToString("d MMMM yyyy");
+        }
+
+        [When(@"the user enters Released date as {int} day\(s\) ago")]
+        public void WhenTheUserEntersReleasedDateAsDaysAgo(int daysAgo)
+        {
+            var targetDate = DateTime.Now.AddDays(-daysAgo);
+            recordLaboratoryTestInformation?.EnterReleasedDate(
+                targetDate.Day.ToString(),
+                targetDate.Month.ToString(),
+                targetDate.Year.ToString());
+            _scenarioContext["ReleasedDate"] = targetDate.ToString("d MMMM yyyy");
+        }
+
         [When("the user enters {string} in Laoratory test method textbox")]
         public void WhenTheUserEntersInLaoratoryTestMethodTextbox(string testMethod)
         {

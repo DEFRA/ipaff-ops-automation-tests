@@ -1,7 +1,6 @@
-﻿
-namespace Defra.UI.Tests.Configuration
+﻿namespace Defra.UI.Tests.Configuration
 {
-    public  class BaseConfiguration
+    public class BaseConfiguration
     {
         public TestConfiguration TestConfiguration { get; set; }
         public UiFrameworkConfiguration UiFrameworkConfiguration { get; set; }
@@ -9,5 +8,6 @@ namespace Defra.UI.Tests.Configuration
         public AzureConnectionConfig AzureConnectionConfig { get; set; }
         public SearchProtectedNotifications SearchProtectedNotifications { get; set; }
         public SearchCloneNotifications SearchCloneNotifications { get; set; }
+        public IntensifiedOfficialControls IntensifiedOfficialControls { get; set; }
     }
 }

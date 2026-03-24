@@ -17,5 +17,6 @@
         bool VerifyNotificationHeader(string link);
         bool VerifyLabel(string label);
         bool VerifyRiskOutcome(string chedRef, string riskOutcome);
+        void SearchAndClickNotification(string chedRef);
     }
 }
