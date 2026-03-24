@@ -122,36 +122,6 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool VerifyDataInCertificate(string chedReference)
         {
-           
-            //var iframe = _driver.FindElement(By.XPath("//iframe"));
-            //_driver.SwitchTo().Frame(iframe);
-
-            // Locate the PDF viewer element
-            //var pdfViewer = _driver.FindElement(By.XPath("//pdf-viewer[@id='viewer']"));
-
-            // pdfViewer.Click();
-
-            //var body = _driver.FindElement(By.TagName("body"));
-            //body.Click();
-            // Send Ctrl + S
-            Actions actions = new Actions(_driver);
-            //actions.KeyDown(Keys.Control)
-            //       .SendKeys("s")
-            //       .KeyUp(Keys.Control)
-            //       .Perform();
-
-            actions.SendKeys(Keys.Control + "s").Perform();
-
-
-            _driver.SwitchTo().DefaultContent();
-
-
-            //code to download PDF
-
-            var httpClient = new HttpClient();
-            byte[] pdfBytes = httpClient.GetByteArrayAsync(_driver.Url).GetAwaiter().GetResult();
-
-            File.WriteAllBytes(@"C:\Users\bm000045\Downloads\" + chedReference + ".pdf", pdfBytes);
             return _driver.Url.Contains($"/{chedReference}/");
         }
 
