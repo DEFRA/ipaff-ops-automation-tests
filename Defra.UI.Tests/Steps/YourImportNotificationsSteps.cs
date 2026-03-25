@@ -144,7 +144,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         ValidateContains("ApprovedEstablishmentType", page.Sections.EstablishmentsOfOrigin.ApprovalNumber, ref allDataMatches, mismatches);
                         ValidateContains("ApprovedEstablishmentApprovalNum", page.Sections.EstablishmentsOfOrigin.ApprovalNumber, ref allDataMatches, mismatches);
 
-                        string? pdfTemperature = page.Sections.TransportConditions switch
+                        string? pdfTemperature = page.Sections.TransportConditions 
+                        switch
                         {
                             { Ambient: "true" } => "Ambient",
                             { Frozen: "true" } => "Frozen",
@@ -175,11 +176,26 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     }
                     else if (pageNumber == 2)
                     {
-                        ValidateIfExists("CHEDReference", page.Sections.ChedReference.Id, ref allDataMatches, mismatches);
+                        var y = page.Sections.Ii2ChedReference.Id;
+                        ValidateIfExists("CHEDReference", page.Sections.Ii2ChedReference.Id, ref allDataMatches, mismatches);
+                        ValidateIfExists("CustomsDeclarationReference", page.Sections.Ii25BcpReferenceNumber.Value, ref allDataMatches, mismatches);
+                        //ValidateIfExists("DocumentaryCheckDecision", page.Sections.DocumentaryCheck., ref allDataMatches, mismatches);
+
+                        string? pdfDocCheckDecision = page.Sections.DocumentaryCheck 
+                        switch
+                        {
+                            { Satisfactory: "true" } => "Satisfactory",
+                            { SatisfactoryFollowingOfficialIntervention: "true" } => "Satisfactory Following Official Intervention",
+                            { NotSatisfactory: "true" } => "Not Satisfactory",
+                            { NotDone: "true" } => "Not Done",
+                            _ => null
+                        };
+                        ValidateIfExists("DocumentaryCheckDecision", pdfDocCheckDecision, ref allDataMatches, mismatches);
                     }
                     else if (pageNumber == 3)
                     {
-                        ValidateIfExists("CHEDReference", page.Sections.ChedReference.Id, ref allDataMatches, mismatches);
+                        var z = page.Sections.Iii2ChedReference.Id;
+                        ValidateIfExists("CHEDReference", page.Sections.Iii2ChedReference.Id, ref allDataMatches, mismatches);
                     }
                 }
             }
@@ -376,7 +392,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 }
 
 
-                // Temperature validation
+/*                // Temperature validation
                 if (contextKey == "Temperature")
                 {
                     var expectedTemp = _scenarioContext.Get<string>("Temperature")?.Trim();
@@ -397,8 +413,30 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     }
 
                     return;
-                }
+                }*/
 
+
+                // ✅ COMMON STRING FIELDS (Temperature-like / Decision-like)
+                if (_scenarioContext.ContainsKey(contextKey) && contextKey is "Temperature"
+                                                                 or "DocumentaryCheckDecision"
+                                                                 or "NewField1"
+                                                                 or "NewField2")
+                {
+                    var expected = _scenarioContext.Get<string>(contextKey)?.Trim();
+                    var actual = reviewValue?.Trim();
+
+                    if (!string.Equals(expected, actual, StringComparison.OrdinalIgnoreCase))
+                    {
+                        allDataMatches = false;
+                        mismatches.Add($"{contextKey}: Expected '{expected}', Found '{actual}'");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expected}' matches");
+                    }
+
+                    return;
+                }
 
 
                 // ConsignmentContactAddress special address-normalisation validation
@@ -557,5 +595,41 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 }
             }
         }
+
+
+/*        private bool ValidateMappedValue(
+            string contextKey,
+            string? actual,
+            Dictionary<string, string> mapping,
+            ref bool allDataMatches,
+            List<string> mismatches)
+        {
+            if (!_scenarioContext.ContainsKey(contextKey))
+                return false;
+
+            var expectedKey = _scenarioContext.Get<string>(contextKey)?.Trim();
+
+            if (expectedKey == null || actual == null)
+                return false;
+
+            if (!mapping.TryGetValue(expectedKey, out var expectedMapped))
+            {
+                mismatches.Add($"{contextKey}: Unexpected mapping key '{expectedKey}'");
+                allDataMatches = false;
+                return true; // handled
+            }
+
+            if (!expectedMapped.Equals(actual, StringComparison.OrdinalIgnoreCase))
+            {
+                allDataMatches = false;
+                mismatches.Add($"{contextKey}: Expected '{expectedMapped}', Found '{actual}'");
+            }
+            else
+            {
+                Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedMapped}' matches");
+            }
+
+            return true; // handled
+        }*/
     }
 }
