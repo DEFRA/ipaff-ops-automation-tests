@@ -1106,8 +1106,8 @@ Scenario: SPS-9104
 	Then the Notification Hub page should be displayed
 	When the user clicks the Commodity hyperlink
 	Then Check uploaded commodity details page should be displayed
-	#And all the displayed commodity data in all tables should be validated with the values given in the input
-	#And checks the information message heading 'If details are incorrect or missing' and content 'You will need to upload commodity details CSV file again. This will replace your previous upload.'
+	And all the displayed commodity data in all tables should be validated with the values given in the input
+	And checks the information message heading 'If details are incorrect or missing' and content 'You will need to upload commodity details CSV file again. This will replace your previous upload.'
 	When the user clicks Confirm and continue button
 	Then the Additional details page should be displayed
 	And user enters the total gross weight greater than the net weight '3500'

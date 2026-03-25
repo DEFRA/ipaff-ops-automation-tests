@@ -2636,8 +2636,7 @@ Scenario: Verify IUU and Catch certificate details for EU and Non-EU countries C
 	When the user populates the transport details "BRISTOL (GBBRS)" "No" "Road vehicle" "123456" "Doc1234"
 	When the user clicks Save and continue
 	Then the Goods movement services page should be displayed
-	When the user selects "Yes – add MRN now" for Are you using the Common Transit Convention (CTC)?
-	And the user can provide Movement Reference Number as "24GB123456789AB012"
+	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
 	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
 	When the user clicks Save and continue
 	Then the Contact details page should be displayed, pre-populated with the user's details
