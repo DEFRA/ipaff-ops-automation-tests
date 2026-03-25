@@ -83,7 +83,7 @@ namespace Defra.UI.Tests.Hooks
 
             _scenario = _feature.CreateNode<AventStack.ExtentReports.Gherkin.Model.Scenario>(_scenarioContext.ScenarioInfo.Title);
 
-            // Store scenario in ScenarioContext so PIMS hook can access it
+            // Store scenario in ScenarioContext so Dynamics hook can access it
             _scenarioContext.Set(_scenario, "ExtentScenario");
 
             if (isRunOnce)
@@ -199,9 +199,9 @@ namespace Defra.UI.Tests.Hooks
         [AfterStep]
         public void AfterStep()
         {
-            // AfterStepHooks (Order = 100) runs first and sets this flag for any PIMS step.
+            // AfterStepHooks (Order = 100) runs first and sets this flag for any Dynamics step (PIMS or IDCOMS).
             // Once active, all subsequent steps in the scenario are exclusively handled by AfterStepHooks.
-            if (_scenarioContext.ContainsKey("IsPimsActive") && _scenarioContext.Get<bool>("IsPimsActive"))
+            if (_scenarioContext.ContainsKey("IsDynamicsActive") && _scenarioContext.Get<bool>("IsDynamicsActive"))
             {
                 return;
             }

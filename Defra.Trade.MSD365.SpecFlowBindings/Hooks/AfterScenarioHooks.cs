@@ -32,11 +32,11 @@ public class AfterScenarioHooks : PowerAppsStepDefiner
     }
 
     /// <summary>
-    /// Logs scenario context values to the Extent report at the end of a passing PIMS scenario.
-    /// Failed PIMS scenarios already have context attached to the failing step in AfterStepHooks.
+    /// Logs scenario context values to the Extent report at the end of a passing Dynamics scenario.
+    /// Failed Dynamics scenarios already have context attached to the failing step in AfterStepHooks.
     /// </summary>
     [AfterScenario(Order = 100)]
-    public void LogContextForPassedPimsScenario()
+    public void LogContextForPassedDynamicsScenario()
     {
         if (!Client.BrowserInitiated)
         {
@@ -83,7 +83,7 @@ public class AfterScenarioHooks : PowerAppsStepDefiner
         {
             foreach (var context in scenarioContext)
             {
-                if (!context.Key.Equals("ExtentScenario") && !context.Key.Equals("IsPimsActive"))
+                if (!context.Key.Equals("ExtentScenario") && !context.Key.Equals("IsDynamicsActive"))
                 {
                     log.AppendLine($"{context.Key} : <b>{FormatValue(context.Value)}</b><br>");
                 }

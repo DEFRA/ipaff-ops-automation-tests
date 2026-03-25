@@ -5,9 +5,9 @@ using Capgemini.PowerApps.SpecFlowBindings.Extensions;
 using Microsoft.Dynamics365.UIAutomation.Api.UCI;
 using Microsoft.Dynamics365.UIAutomation.Browser;
 using OpenQA.Selenium;
+using Reqnroll;
 using System;
 using System.IO;
-using Reqnroll;
 
 /// <summary>
 /// Step bindings related to logging in.
@@ -15,6 +15,13 @@ using Reqnroll;
 [Binding]
 public class LoginSteps : PowerAppsStepDefiner
 {
+    private readonly ScenarioContext scenarioContext;
+
+    public LoginSteps(ScenarioContext scenarioContext)
+    {
+        this.scenarioContext = scenarioContext;
+    }
+
     /// <summary>
     /// Logs in to a given app as a given user.
     /// </summary>
@@ -27,6 +34,8 @@ public class LoginSteps : PowerAppsStepDefiner
     {
         SelectApplication(appName);
         GivenIAmLoggedInToTheAppAs1(appName, userAlias);
+
+        scenarioContext["IsDynamicsActive"] = true;
     }
 
     public static void GivenIAmLoggedInToTheAppAs1(string appName, string userAlias)

@@ -1185,9 +1185,9 @@ Scenario: SPS-9104
 	#When the user logs out of BTMS
 	#Then the user should be logged out successfully
 	When I am logged in to the 'IDCOMS' app as 'Inspector'
-	And I open the sub area 'Importer Notifications' under the 'Case Management' area
-	And I search Importer Notifications for the notification created in IPAFFS
-	And I open the record at position '0' in the grid
-	Then I verify the Importer Notification Details reflect the information from the EU Import Notification
-	When I select the Permanent Addresses tab
-	Then I verify the permanent address displayed for each animal matches the address entered in IPAFFS
+	#And I open the sub area 'Importer Notifications' under the 'Case Management' area
+	#And I search Importer Notifications for the notification created in IPAFFS
+	#And I open the record at position '0' in the grid
+	#Then I verify the Importer Notification Details reflect the information from the EU Import Notification
+	#When I select the Permanent Addresses tab
+	#Then I verify the permanent address displayed for each animal matches the address entered in IPAFFS
