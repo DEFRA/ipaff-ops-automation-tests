@@ -179,7 +179,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         var y = page.Sections.Ii2ChedReference.Id;
                         ValidateIfExists("CHEDReference", page.Sections.Ii2ChedReference.Id, ref allDataMatches, mismatches);
                         ValidateIfExists("CustomsDeclarationReference", page.Sections.Ii25BcpReferenceNumber.Value, ref allDataMatches, mismatches);
-                        //ValidateIfExists("DocumentaryCheckDecision", page.Sections.DocumentaryCheck., ref allDataMatches, mismatches);
 
                         string? pdfDocCheckDecision = page.Sections.DocumentaryCheck 
                         switch
@@ -198,6 +197,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         ValidateIfExists("CHEDReference", page.Sections.Iii2ChedReference.Id, ref allDataMatches, mismatches);
                     }
                 }
+            }
+            if (File.Exists(pdfPath))
+            {
+                File.Delete(pdfPath);
+                Console.WriteLine("File deleted successfully.");
+            }
+            else
+            {
+                Console.WriteLine("File not found to delete.");
             }
         }
 
