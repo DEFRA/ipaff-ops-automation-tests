@@ -85,7 +85,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             string pdfUrl = importNotificationsPage?.getPDFUrl();
             var chedReferenceFileName = _scenarioContext.Get<string>("CHEDReference") + "-certificate";
 
-            Utils.DownloadPDF(chedReferenceFileName, pdfUrl, UserObject);
+            Utils.DownloadPDF(chedReferenceFileName, pdfUrl, UserObject, _scenarioContext.Get<string>("UserRole"));
         }
 
         [When("the user checks that the data in the certificate matches the data entered into the notification")]
@@ -108,11 +108,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             if (chedDocumentPages != null)
             {
-                for (int pageNumber = 0; pageNumber < chedDocumentPages.Count; pageNumber++)
+                for (int pageNumber = 1; pageNumber <= chedDocumentPages.Count; pageNumber++)
                 {
-                    var page = chedDocumentPages[pageNumber];
+                    var page = chedDocumentPages[pageNumber-1];
 
-                    if (pageNumber == 0)
+                    if (pageNumber == 1)
                     {
                         ValidateIfExists("CHEDReference", page.Sections.ChedReference.Id, ref allDataMatches, mismatches);
                         ValidateIfExists("ConsignmentReferenceNumber", page.Sections.LocalReference.Id, ref allDataMatches, mismatches);
@@ -158,7 +158,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         ValidateIfExists("ConsignmentContactAddress", page.Sections.OperatorResponsible.Address, ref allDataMatches, mismatches);
                     }
 
-                    else if (pageNumber == 1)
+                    else if (pageNumber == 2)
                     {
                         var x = page.Sections.DescriptionOfTheGoods.ElementAt(0).Commodity;
                         ValidateIfExists("CommodityCode", page.Sections.DescriptionOfTheGoods.ElementAt(0).Commodity, ref allDataMatches, mismatches);
@@ -174,7 +174,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         ValidateContains("TotalPackages", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                         ValidateContains("TotalGrossWeight", page.Sections.TotalGrossWeight.Value, ref allDataMatches, mismatches);
                     }
-                    else if (pageNumber == 2)
+                    else if (pageNumber == 3)
                     {
                         var y = page.Sections.Ii2ChedReference.Id;
                         ValidateIfExists("CHEDReference", page.Sections.Ii2ChedReference.Id, ref allDataMatches, mismatches);
@@ -191,7 +191,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         };
                         ValidateIfExists("DocumentaryCheckDecision", pdfDocCheckDecision, ref allDataMatches, mismatches);
                     }
-                    else if (pageNumber == 3)
+                    else if (pageNumber == 4)
                     {
                         var z = page.Sections.Iii2ChedReference.Id;
                         ValidateIfExists("CHEDReference", page.Sections.Iii2ChedReference.Id, ref allDataMatches, mismatches);
