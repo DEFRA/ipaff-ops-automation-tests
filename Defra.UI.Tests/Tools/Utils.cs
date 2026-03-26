@@ -148,7 +148,7 @@ namespace Defra.UI.Tests.Tools
             return actual.OrderBy(x => x).SequenceEqual(expected.OrderBy(x => x));
         }
 
-        public static void DownloadPDF(string fileName, string pdfUrl, IUserObject UserObject)
+        public static void DownloadPDF(string fileName, string pdfUrl, IUserObject UserObject, string userRole)
         {
             var chromeOptions = new ChromeOptions();
 
@@ -170,7 +170,7 @@ namespace Defra.UI.Tests.Tools
                 tempDriver.WaitForElement(By.Id("scp")).Click();
                 tempDriver.FindElement(By.Id("continueReplacement")).Click();
 
-                var jsonData = UserObject?.GetUser("IPAFF", "User");
+                var jsonData = UserObject?.GetUser("IPAFF", userRole);
                 var userObject = new User
                 {
                     UserName = jsonData.UserName,

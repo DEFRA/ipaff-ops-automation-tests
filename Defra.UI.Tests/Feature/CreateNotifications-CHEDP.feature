@@ -340,7 +340,8 @@ Scenario: User creates and submits a B2C consignment notification for Transit Re
 	Then the Your checks have been submitted page should be displayed
 	When the user clicks View or print CHED button
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 2
