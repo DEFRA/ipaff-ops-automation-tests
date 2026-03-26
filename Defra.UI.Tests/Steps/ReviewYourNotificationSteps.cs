@@ -1189,5 +1189,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             reviewPage?.ClickAddApprovedEstablishmentDetailsLink();
         }
+
+        [When("the user clicks on Check commodity details link")]
+        public void WhenTheUserClicksOnCheckCommodityDetailsLink()
+        {
+            reviewPage?.ClickCheckCommodityDetailsLink();
+        }
     }
 }

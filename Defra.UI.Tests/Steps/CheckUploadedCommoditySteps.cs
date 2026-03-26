@@ -62,5 +62,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             checkUploadedCommodityPage?.ClickConfirmAndContinueButton();
         }
+
+        [Then("there is no banner stating Upload successful")]
+        public void ThenThereIsNoBannerStatingUploadSuccessful()
+        {
+            Assert.True(checkUploadedCommodityPage?.IsUploadSuccessBannerAbsent(), "Upload successful banner should not be displayed but was found");
+        }
     }
 }

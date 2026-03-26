@@ -511,5 +511,10 @@ namespace Defra.UI.Tests.Pages.Classes
             return txtInfoMessageHeading.Text.Trim().Contains(msgHeading)
                 && txtInfoMessageContent.Text.Trim().Contains(msgContent);
         }
+
+        public bool IsUploadSuccessBannerAbsent()
+        {
+            return _driver.FindElements(lblSuccessBanner).Count == 0;
+        }
     }
 }

@@ -11,5 +11,6 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void ClickConfirmAndContinueButton();
         bool IsPageLoaded();
         bool WaitForUploadToCompleteAndVerifySuccessMessage(string successMsg);
+        bool IsUploadSuccessBannerAbsent();
     }
 }
