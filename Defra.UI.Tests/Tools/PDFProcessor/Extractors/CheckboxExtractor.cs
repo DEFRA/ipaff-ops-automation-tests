@@ -58,8 +58,12 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Extractors
 
         private void ExtractFromPaths(Page page, Dictionary<string, string> checkboxes)
         {
-            var targetLabels = new[] { "Ambient", "Chilled", "Frozen", "Conforming", "Non-conforming" };
+            var targetLabels = new[] { "Ambient", "Chilled", "Frozen", "Conforming", "Non-conforming", "Satisfactory", "Not Satisfactory", 
+                "Not Done", "Satisfactory Following Official Intervension","Seal Check Only", "Full Identity Check","Random","Suspension",
+                "Intensified Contorls","Pending", "Yes", "No" };
+
             var words = page.GetWords().ToList();
+
             var paths = page.ExperimentalAccess.Paths.ToList();
 
             foreach (var label in targetLabels)
@@ -69,6 +73,10 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Extractors
                 if (labelWord == null && label == "Non-conforming")
                 {
                     labelWord = words.FirstOrDefault(w => w.Text.Contains("Non-conforming", StringComparison.OrdinalIgnoreCase));
+                }
+                else if (labelWord == null && label == "Acceptable for transit")
+                {
+                    labelWord = words.FirstOrDefault(w => w.Text.Contains("Acceptable for transit", StringComparison.OrdinalIgnoreCase));
                 }
 
                 if (labelWord != null)
