@@ -169,10 +169,10 @@ namespace Defra.UI.Tests.Pages.Classes
                 foreach (var row in dataTable.Rows)
                 {
                     string commodityCode = row.Values.First().Trim();
-                    if(!System.Text.RegularExpressions.Regex.IsMatch(commodityCode, @"^\d{8}$"))
+                    if (!System.Text.RegularExpressions.Regex.IsMatch(commodityCode, @"^\d{1,10}$"))
                     {
                         throw new Exception($"Invalid Commodity code '{commodityCode}'. " +
-                            "Commodity code must be exactly 8 digits (example: 08105000).");                           
+                            "Commodity code must be a maximum of 10 digits (example: 08105000 or 0709999020).");
                     }
 
                     var rowValues = row.Values.Select((v, index) =>
