@@ -13,13 +13,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
         private IApprovedEstablishmentPage? approvedEstablishmentPage => _objectContainer.IsRegistered<IApprovedEstablishmentPage>() ? _objectContainer.Resolve<IApprovedEstablishmentPage>() : null;
 
-
         public ApprovedEstablishmentSteps(ScenarioContext context, IObjectContainer container)
         {
             _objectContainer = container;
             _scenarioContext = context;
         }
-
 
         [Then("the Approved establishment of origin page should be displayed")]
         public void ThenTheApprovedEstablishmentOfOriginPageShouldBeDisplayed()
@@ -81,6 +79,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenIRemoveTheEstablishmentOfOrigin()
         {
             approvedEstablishmentPage?.ClickRemoveEstablishment();
+        }
+
+        [When(@"the user searches for the approved establishment {string}")]
+        public void WhenTheUserSearchesForTheApprovedEstablishment(string establishmentName)
+        {
+            approvedEstablishmentPage?.EnterEstablishmentName(establishmentName);
+            approvedEstablishmentPage?.ClickSearchButton();
         }
     }
 }

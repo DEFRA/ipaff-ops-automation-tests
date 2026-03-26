@@ -3,6 +3,7 @@ using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
 using Reqnroll.BoDi;
+using System.Diagnostics;
 
 namespace Defra.UI.Tests.Pages.Classes
 {
@@ -22,6 +23,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement rdoAgent => _driver.FindElement(By.XPath("//*[@id='for-own-organisation']/following-sibling::label"));
         private IWebElement rdoDiffOrg => _driver.FindElement(By.XPath("//*[@id='for-own-organisation-2']/following-sibling::label"));
         private IWebElement rdoCompany(string organisation) => _driver.FindElement(By.XPath($"//strong[normalize-space()='{organisation}']"));
+        private By rdoCompanyBy(string businessName) => By.XPath($"//label[contains(@class,'govuk-radios__label')]//strong[normalize-space()='{businessName}']");
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -59,7 +61,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void ClickImportingProduct(string option)
         {
-            if(option.Equals(optLiveAnimals.Text))
+            if (option.Equals(optLiveAnimals.Text))
                 optLiveAnimals.Click();
             else if (option.Equals(optProductsAnimalOrigin.Text))
                 optProductsAnimalOrigin.Click();
@@ -76,7 +78,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool IsWhoAreYouCreatingThisNotificationForPageLoaded()
         {
-            return secondaryTitle.Text.Contains("About the consignment") 
+            return secondaryTitle.Text.Contains("About the consignment")
                 && primaryTitle.Text.Contains("Who are you creating this notification for?");
         }
 
@@ -97,6 +99,28 @@ namespace Defra.UI.Tests.Pages.Classes
         public void SelectCompany(string option)
         {
             rdoCompany(option).Click();
+        }
+
+        public void WaitAndSelectCompanyRadioButton(string businessName, TimeSpan maxWait, TimeSpan retryInterval)
+        {
+            var stopwatch = Stopwatch.StartNew();
+
+            while (stopwatch.Elapsed < maxWait)
+            {
+                if (_driver.IsElementDisplayed(rdoCompanyBy(businessName)))
+                {
+                    rdoCompany(businessName).Click();
+                    return;
+                }
+
+                _driver.Navigate().Refresh();
+                _driver.Wait((int)retryInterval.TotalSeconds);
+            }
+
+            stopwatch.Stop();
+
+            throw new TimeoutException(
+                $"Company radio button for '{businessName}' was not visible on the 'Which company is this notification for' page within {maxWait.TotalMinutes} minutes.");
         }
     }
 }

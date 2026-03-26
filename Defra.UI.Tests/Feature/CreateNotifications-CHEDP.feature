@@ -288,6 +288,8 @@ Scenario: User creates and submits a B2C consignment notification for Transit Re
 	Then the notification should be present in the list
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
+	When verifies the document 'CHEDREFERENCE' downloaded successfully
+	When the user checks that the data in the certificate matches the data entered into the notification
 	When the user downloads the PDF for validation
 	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
@@ -518,7 +520,7 @@ Scenario: User creates and submits a B2C consignment notification for Transhipme
 	Then the browser tab is closed
 	When the user clicks Record control in Dashboard page
 	Then the Consignments requiring control page should be displayed
-	When the user searches for the CHED number
+	When the user searches for the CHED number	
 	Then the notification should be found with the status "Rejected"
 	And the user verifies the control status is "CONTROL REQUIRED"
 	When the user logs out of IPAFFS Part 2
@@ -2346,8 +2348,10 @@ Scenario: Create and submits a B2C consignment notification - SPS-6937 CHEDP
 	When the user chooses "Internal market" and the sub-option "Human consumption"
 	And the user clicks Save and continue
 	Then Select the highest risk category for the commodities in this consignment page should be displayed
-	When the user chooses "Low risk" risk category
+	When the user chooses "Medium risk" risk category
 	And the user clicks Save and continue
+	Then the Health certificate required page should be displayed
+	When the user clicks continue button
 	Then the Notification Hub page should be displayed
 	When the user clicks the Commodity hyperlink
 	Then the Commodity page should be displayed with the commodity and description entered
@@ -2363,6 +2367,12 @@ Scenario: Create and submits a B2C consignment notification - SPS-6937 CHEDP
 	Then the Catch cerificates page should be displayed
 	And the user selects "No – all the wild fish in this consignment are exempt from IUU fishing controls" option for add catch certificate
 	When the user clicks Save and continue
+	Then the Latest Health Certificate page should be displayed
+	When the user enters Latest Health Certificate Document reference "INV12345"
+	And the user enters Latest Health Certificate date of issue "24""10""2025"
+	And the user clicks on Add attachment link
+	And the user uploads the document 'IPAFFS Test Health Certificate' in the format '.docx'
+	And the user clicks Save and continue
 	Then the Accompanying documents page should be displayed
 	When the user clicks Save and continue
 	Then the Approved establishment of origin page should be displayed
@@ -2411,26 +2421,30 @@ Scenario: Create and submits a B2C consignment notification - SPS-6937 CHEDP
 	Then Upload catch certificates page is displayed
 	When the user uploads the document 'IPAFFS Test Document 1' in the format '.docx'
 	Then Manage catch certificates page is displayed
-	And the user verifies there are '1' certificates attached
-	When the user clicks on Add details link
+	When the user selects the 'Yes' option for Do you need to upload more catch certificates?
+	And the user clicks Save and continue
+	When the user uploads the document 'IPAFFS Test Document 1' in the format '.docx'
+	Then Manage catch certificates page is displayed
+	When the user selects the 'Yes' option for Do you need to upload more catch certificates?
+	And the user clicks Save and continue
+	When the user uploads the document 'IPAFFS Test Document 1' in the format '.docx'
+	Then Manage catch certificates page is displayed
+	When the user selects the 'No' option for Do you need to upload more catch certificates?
+	And the user clicks Save and continue
 	Then Add catch certificate details page should be displayed
 	And 'Number of catch certificates in this attachment' is displayed in Add catch certificate page
-	And 'Change' is displayed in Add catch certificate page
-	When the user clicks on Change link in Add catch certificate details page
-	And the user enters "3" for Number of catch certificates in this attachment
-	And the user clicks on Update button
-	Then the user can see 3 Catch certificate reference details sections for input
 	When the user enters 'CatchRef001' in catch certificate reference 1
 	And the user enters Data of issue 1 as '01''02''2026' in Add catch certificate page
 	And the user enters 'United Kingdom of Great Britain and Northern Ireland' in Flag state of catching vessels 1
-	And the user Clicks on Update details 1
-	And the user enters 'CatchRef002' in catch certificate reference 2
-	And the user enters Data of issue 2 as '02''02''2026' in Add catch certificate page
-	And the user enters 'United Kingdom of Great Britain and Northern Ireland' in Flag state of catching vessels 2
-	And the user Clicks on Update details 2
-	And the user enters 'CatchRef003' in catch certificate reference 3
-	And the user enters Data of issue 3 as '03''02''2026' in Add catch certificate page
-	And the user enters 'United Kingdom of Great Britain and Northern Ireland' in Flag state of catching vessels 3
+	And the user clicks Save and continue
+	And the user enters 'CatchRef002' in catch certificate reference 1
+	And the user enters Data of issue 1 as '02''02''2026' in Add catch certificate page
+	And the user enters 'United Kingdom of Great Britain and Northern Ireland' in Flag state of catching vessels 1
+	And the user clicks Save and continue
+	And the user enters 'CatchRef003' in catch certificate reference 1
+	And the user enters Data of issue 1 as '03''02''2026' in Add catch certificate page
+	And the user enters 'United Kingdom of Great Britain and Northern Ireland' in Flag state of catching vessels 1
+	And the user selects the species 'Palaemonoidea' for certificate 1
 	And the user clicks Save and continue
 	Then Manage catch certificates page is displayed
 	When the user selects the 'No' option for Do you need to upload more catch certificates?
@@ -2438,52 +2452,27 @@ Scenario: Create and submits a B2C consignment notification - SPS-6937 CHEDP
 	Then Confirm exempt species page should be displayed
 	And the user selected "None of the species are exempt" option
 	When the user clicks Save and continue
-	Then the Accompanying documents page should be displayed
-	When the user clicks Save and continue
-	Then the Approved establishment of origin page should be displayed
-	When the user clicks Save and continue
-	Then the Addresses page should be displayed
-	When the user clicks Save and continue
-	Then the Transport to the port of entry page should be displayed
-	When the user clicks Save and continue
-	Then the Goods movement services page should be displayed
-	When the user clicks Save and continue
-	Then the Contact details page should be displayed, pre-populated with the user's details
-	When the user clicks Save and continue
-	Then the Nominated contacts page should be displayed
-	When the user clicks Save and continue
-	Then the Contact address for consignment page should be displayed
-	When the user clicks Save and continue
+	Then the Latest Health Certificate page should be displayed
+	When the user clicks on Save and return to hub
+	And the user clicks on 'Review and submit' link
 	Then the Review your notification page should be displayed
 	And the user verifies the 3 catch certificates reference details
 	When the user clicks on 1 Change link of Catch Cerfitificate Document section
 	Then Add catch certificate details page should be displayed
 	When the user enters 'France' in Flag state of catching vessels 1
-	And the user selects the "Jasus edwardsii,Metanephrops challengeri,Palaemonoidea" species under Select species being imported under this catch certificate
-	And the user Clicks on Update details 1
+	And the user selects the species 'Jasus edwardsii' for certificate 1
 	And the user clicks on Save and return to manage catch certificates link
 	Then Manage catch certificates page is displayed
 	When the user selects the 'No' option for Do you need to upload more catch certificates?
 	And the user clicks Save and continue
-	Then the Accompanying documents page should be displayed
+	Then Confirm exempt species page should be displayed
 	When the user clicks Save and continue
-	Then the Approved establishment of origin page should be displayed
-	When the user clicks Save and continue
-	Then the Addresses page should be displayed
-	When the user clicks Save and continue
-	Then the Transport to the port of entry page should be displayed
-	When the user clicks Save and continue
-	Then the Goods movement services page should be displayed
-	When the user clicks Save and continue
-	Then the Contact details page should be displayed, pre-populated with the user's details
-	When the user clicks Save and continue
-	Then the Nominated contacts page should be displayed
-	When the user clicks Save and continue
-	Then the Contact address for consignment page should be displayed
-	When the user clicks Save and continue
+	Then the Latest Health Certificate page should be displayed
+	When the user clicks on Save and return to hub
+	And the user clicks on 'Review and submit' link
 	Then the Review your notification page should be displayed
 	And the user verifies the 3 catch certificates reference details
-	And the user verifies the updated catch certificates 3 species details
+	And the user verifies the catch certificate details
 	When the user clicks Save and continue
 	Then the Declaration page should be displayed
 	When the user clicks Submit notification
@@ -2509,6 +2498,8 @@ Scenario: Create and submits a B2C consignment notification - SPS-6937 CHEDP
 	And the user verifies that Documents is downloaded into a .zip file with the title of the CHED certificates in Downloaded folder
 	When the user clicks Return to documents button
 	Then the Documents page should be displayed
+	When the user clicks on Download link for the catch certificate
+	Then the user verifies the 'IPAFFS Test Document 1(1)' catch certificate is downloaded
 	When the user clicks Save and set as in progress
 	Then the notification status should change from "NEW" to "IN PROGRESS"
 	When the user clicks Save and Return	
@@ -3080,11 +3071,7 @@ Scenario: User creates and submits a CHEDP consignment notification with multipl
 	And the user records the IPAFFS User details and CHED Reference
 	And the details should be recorded
 
-
-
-
-
-Scenario: Test PDF
+Scenario: User creates and submits a notification with main reason as Re-entry, override the risk decision, reject the notification and creates record control CHEDP SPS-7373
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
@@ -3092,12 +3079,1768 @@ Scenario: Test PDF
 	Then I should redirected to the IPAFF Sign in using Government Gateway page
 	When I have provided the IPAFF credentials and signin
 	Then the user should be logged into Notification page
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Products of animal origin, germinal products or animal by-products' option
+	And the user clicks Save and continue
+	Then the Origin of the plants plant product or other objects page should be displayed
+	When the user chooses "Sweden" from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing "Sweden" as the Country of origin and Country from where consigned
+	When the user chooses "No" for Does your consignment require a region code?
+	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
+	When the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
+	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
+	When the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user clicks the 'WOOL, FINE OR COARSE ANIMAL HAIR; HORSEHAIR YARN AND WOVEN FABRIC' in the parent commodity tree
+	And the sub commodity list expands
+	And the user clicks '5101' 'Wool, not carded or combed' under the parent commodity
+	Then the Commodity page should be displayed
+	When the user selects "No" for Do you want to add another commodity?
+	And the user clicks Save and continue
+	Then What is the main reason for importing the consignment? page should be displayed with radio buttons
+	When the user chooses "Re-entry" and the sub-option ""
+	And the user clicks Save and continue
+	Then Select the highest risk category for the commodities in this consignment page should be displayed
+	When the user chooses "Medium risk" risk category
+	And the user clicks Save and continue
+	Then the Health certificate required page should be displayed
+	When the user clicks continue button
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Description of the goods/Commodity page should be displayed
+	When the user populates Net weight as '100'
+	And the user populates Number of packages as '10'
+	And the user selects type of package as 'Box'
+	When the user clicks the Update total button
+	Then the total gross weight should be greater than the net weight '150'
+	When the user clicks Save and continue in commodity page
+	Then the Additional details page should be displayed
+	When the user selects 'Ambient' radio button on the Additional details page
+	And the user clicks Save and continue
+	Then the Latest Health Certificate page should be displayed
+	When the user enters Latest Health Certificate Document reference "INV12345"
+	And the user enters Latest Health Certificate date of issue "24""10""2025"
+	And the user clicks on Add attachment link
+	And the user uploads the document 'IPAFFS Test Health Certificate' in the format '.docx'
+	And the user clicks Save and continue
+	Then the Accompanying documents page should be displayed
+	When the user selects Document type "Commercial invoice"
+	And the user enters Document reference "INV12345"
+	And the user enters date of issue '24/11/2025'
+	And the user clicks on Add attachment link
+	And the user uploads the document 'IPAFFS Test Document' in the format '.docx'
+	Then the document 'IPAFFS Test Document' '.docx' is uploaded successfully
+	And the user clicks Save and continue
+	And the Approved establishment of origin page should be displayed
+	When the user clicks Search for an approved establishment
+	Then the list of establishments should be displayed, filtered by Country of origin "Sweden" type "ABP Transport" status "Approved"
+	When the user clicks Select for one of the establishments in the list
+	Then the Approved establishment of origin page should be displayed with the selected establishment
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user clicks on Create a new consignor or exporter link
+	Then Add consignee page should be displayed
+	When the user enters Consignee name as 'Brook'
+	And the user enters Consignee address as 'Covent garden'
+	And the user enters Consignee City as 'Abingdon'
+	And the user enters the Consignee Postcode as 'OX1 1AD'
+	And the user enters the Consignee Telephone number as '07348764455'
+	And the user enters the Consignee Country as 'England'
+	And the user enters the Consignee Email as 'Brook@CG.com'
+	And the user clicks Save and continue
+	Then The consignee has been created page is displayed
+	When the user clicks Add to notification button
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee "DEF" with a UK country
+	Then the chosen consignee "DEF" should be displayed on the Addresses page
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee "DEF" on the Addresses page
+	When the user clicks Add a place of destination
+	Then the Search for an existing place of destination page should be displayed
+	When the user selects a place of destination "DEF" with a UK country
+	Then the chosen place of destination "DEF" should be displayed on the Addresses page
+	When the user clicks Save and continue
+	Then the Transport to the port of entry page should be displayed
+	When the user populates the transport details "BRISTOL (GBBRS)" "No" "Road vehicle" "123456" "Doc1234"
+	When the user clicks Save and continue
+	Then the Goods movement services page should be displayed
+	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	When the user clicks Save and continue
+	Then the Contact details page should be displayed, pre-populated with the user's details
+	When the user clicks Save and continue
+	Then the Nominated contacts page should be displayed
+	When the user clicks Save and continue
+	Then the Contact address for consignment page should be displayed
+	And the user selects a contact address for the consignment
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	When the user records the IPAFFS User details and CHED Reference
+	Then the details should be recorded
+	When the user clicks Return to your dashboard
 	Then the dashboard page should be displayed
 	When user searches for the import notification
+	Then the notification should be present in the list
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
-	When the user downloads the PDF for validation
 	When the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 1
+	Then the user should be logged out successfully
+	When I navigate to the IPAFF Inspector application
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF Inspector credentials and signin
+	Then the user should be logged into Import notifications page
+	When the user searches for the newly created notification on the Import notifications page
+	Then the user clicks the notification found with status "NEW"
+	And the Decision Hub page should be displayed
+	When the user clicks Save and set as in progress
+	Then the notification status should change from "NEW" to "IN PROGRESS"
+	When the user clicks Local reference number link in Record checks
+	Then Local reference number page should be displayed
+	When the user enters a local reference number and clicks Save and continue
+	Then the Documentary check page should be displayed
+	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
+	Then the Identity and physical checks page should be displayed
+	When the user selects "Satisfactory" under "Full identity check" in identity check
+	And the user selects "Satisfactory" for physical check
+	And the user clicks Save and Return
+	Then the Decision Hub page should be displayed
+	When the user clicks Seal numbers link
+	Then the Seal numbers page should be displayed
+	When the user clicks Save and Return
+	Then the Decision Hub page should be displayed
+	When the user clicks Laboratory tests link
+	Then the Laboratory tests page should be displayed
+	 When the user select "Yes" radio button on the Laboratory tests page
+	And the user clicks Save and continue
+	And the user select 'Random' reason radio button on the Laboratory tests page
+	And the user clicks Save and continue
+	Then the Laboratory tests page should be displayed
+	When the user clicks the Select link for the '5101' commodity code
+	Then the Laboratory tests page should be displayed
+	When the user clicks select link of one of the Laboratory test
+	Then the Laboratory tests Commodity sampled page should be displayed
+	When the user populates the commodity sample details 'Initial analysis' 'Campden BRI' '12345' '3' 'Blood' 'Chilled'
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	And the user verifies the data in Laboratory tests review page
+	When the user clicks Save and continue
+	Then the Decision page should be displayed
+	When the user changes the selection to "Re-dispatching" "Not acceptable" in the decision page
+	And the user enters currendate in decision page
+	And the user clicks Save and continue
+	Then the Reason for Refusal page should be displayed
+	When the user selects "Other, Create Border Notification" as reason for refusal
+	And the user clicks Save and continue
+	Then the Review outcome decision page should be displayed
+	When the user populates the Date and time of checks
+	And user clicks Submit decision
+	Then the Your checks have been submitted page should be displayed
+	And a border notification banner displaying the reason for refusal 'Refused for other border notification' under the title 'The result of this decision requires a border notification to be created' is displayed
+	When the user clicks View or print CHED
+	Then the certificate should be displayed in a new browser tab
+	When the user checks that the data in the certificate matches the data entered into the notification
+	And the user closes the PDF browser tab
+	Then the browser tab is closed
+	When the user clicks Record control in Dashboard page
+	Then the Consignments requiring control page should be displayed
+	When the user searches for the CHED number
+	Then the notification should be found with the status "REJECTED"
+	And the user verifies the control status is "CONTROL REQUIRED"
+	And the user clicks the notification found with status "REJECTED"
+	And the CHED overview page should be displayed
+	When the user clicks Record control button
+	Then Record control page should be displayed
+	When the user selects 'yes' for Did the consignment leave the UK?
+	And the user selects 'Airplane' as Means of transport
+	And the user enters 'Test123' as Identification
+	And the user enters 'TestDoc' in Documentaion
+	And the user enters 'today' date in Record control page
+	And the user selects 'Bristol - GBBRS1' as Exit BCP
+	And the user selects 'Brazil' as Destination country
+	And the user clicks the Submit control button
+	Then Your control has been recorded page should be displayed
+	And the CHED reference number is displayed
+	And the outcome is recorded as 'Consignment has left the UK'
+	When the user clicks View or print CHED button on Control recorded page
+	Then the certificate should be displayed in a new browser tab
+	When the user checks that the data in the certificate matches the data entered into the notification
+	And the user closes the PDF browser tab
+	Then the browser tab is closed
+	When the user clicks Return to Your Dashboard link in Record control recorded page
+	Then the Consignments requiring control page should be displayed
+	When the user searches for the CHED number
+	Then the notification should be found with the status "REJECTED"
+	And the user verifies the control status is "CONTROL COMPLETE"
+	When the user logs out of IPAFFS Part 2
+	Then the user should be logged out successfully
+
+Scenario: Create a notification through clone a health or phytosanitary certificate process - SPS-7361
+	Given that I navigate to the IPAFF application
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF Agent credentials and signin
+	Then the user should be logged into Notification page
+	When the user Clicks on Clone a certificate button
+	Then the Clone a health or phytosanitary certificate page should be displayed
+	And the user verifies all the content in Clone a health or phytosanitary certificate page
+	And the user selected the importing option as 'Products of animal origin, germinal products or animal by-products'
+	When the user clicks on continue button
+	Then the Certificate details page should be displayed
+	And the user searches for the notification for cloning CHED P which is not more than 90 days from creation
+	And the user provided CHED P notification details in the search input fields
+	When the user Clicks on Search button
+	Then the Health certificate details page should be displayed
+	And the user verified all the details on Health certificate details page
+	When the user Clicks on Clone button
+	Then the DRAFT 'CHEDP' notification code page should be displayed
+	And the user records the Draft notification number
+	And the user verifies the following information is displayed within a red outlined box
+		| MissingOrIncorrect                                        |
+		| Add the port of entry                                     |
+		| Add the estimated arrival date at port of entry           |
+		| Add the estimated arrival time at port of entry           |
+		| Enter your contact details                                |
+		| Select if using the Goods Vehicle Movement Service (GVMS) |
+		| Add transport document                                    |
+		| Add the contact address for consignment                   |
+		| What is the place of destination                          |
+		| Select if using the Common Transit Convention (CTC)       |
+	When the user Clicks on Change link for Transport to the port of entry
+	Then the Transport to the port of entry page should be displayed
+	When the user populates the transport details 'BRISTOL (GBBRS)' 'Yes' 'Road vehicle' '250N, Conti Cordoba' 'Doc23456'
+	And the user Clicks on Save and review button from port of entry page
+	Then the Review your notification page should be displayed
+	When the user Clicks on Change link for Contact details
+	Then the Contact details page should be displayed, pre-populated with the user's details
+	When the user Clicks on Save and review button from Contact details page
+	Then the Review your notification page should be displayed
+	When the user Clicks on Change link for Goods movement services
+	Then the Goods movement services page should be displayed
+	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user Clicks on Save and review button from Goods movement services page
+	Then the Review your notification page should be displayed
+	When the user Clicks on Change link for Contact address for consignment
+	Then the Contact address for consignment page should be displayed
+	And the Contact address for consignment is prepopulated
+	When the user clicks on Save and review
+	Then the Review your notification page should be displayed
+	When the user Clicks on Change link for Place of destination
+	Then the Addresses page should be displayed
+	When the user clicks Add a place of destination
+	Then the Search for an existing place of destination page should be displayed
+	When the user selects a place of destination "ALLIANCE GROUP (NZ) LTD"
+	Then the chosen place of destination "ALLIANCE GROUP (NZ) LTD" should be displayed on the Addresses page
+	When the user Clicks on Save and review button from Addresses page
+	Then the Review your notification page should be displayed
+	When the user clicks Add approved establishment details link in blue colour
+	Then the Approved establishment of origin page should be displayed
+	When the user clicks Search for an approved establishment
+	And the user clicks Select for one of the establishments in the list
+	Then the Approved establishment of origin page should be displayed with the selected establishment
+	When the user clicks on Save and review
+	Then the Review your notification page should be displayed
+	And the data presented for review matches the data entered into the notification for CHED PP
+	When the user clicks on Save and continue button
+	Then the Declaration page should be displayed
+	When the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	When the user records the IPAFFS User details and CHED Reference
+	Then the details should be recorded
+	When the user clicks Return to your dashboard
+	Then the dashboard page should be displayed
+	When user searches for the import notification
+	Then the notification should be present in the list
+	When the user clicks Show notification
+	Then the certificate should be displayed in a new browser tab
+	When the user checks that the data in the certificate matches the data entered into the notification
+	And the user closes the PDF browser tab
+	Then the browser tab is closed
+	And the dashboard page should be displayed
+	And the notification should be present in the list
+	When the user logs out of IPAFFS Part 1
+	Then the user should be logged out successfully
+
+Scenario: User submits a CHEDP notification and creates an Intensified Official Control check against it - SPS-7374
+# Stop any existing IOC
+	Given the user navigates to the IPAFFS Intensified Official Controls application
+	When I have provided the IPAFFS Intensified Official Controls credentials and signin
+	Then the Intensified Official Controls dashboard should be displayed
+	When I filter Intensified offical controls by Status 'Active' and Commodity '16051000'
+	Then I stop any existing IOC
+# Create CHEDP
+	Given that I navigate to the IPAFF application
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF credentials and signin
+	Then the user should be logged into Notification page
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Products of animal origin, germinal products or animal by-products' option
+	And the user clicks Save and continue
+	Then the Origin of the plants plant product or other objects page should be displayed
+	When the user chooses "China" from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing "China" as the Country of origin and Country from where consigned
+	When the user chooses "No" for Does your consignment require a region code?
+	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
+	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
+	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
+	And the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '16051000' commodity code
+	Then the commodity details should be populated '16051000' 'Crab'
+	When the user selects the type of commodity 'Composite products'
+	And the user selects species of commodity 'Geryon maritae'
+	And the user selects "No" for Do you want to add another commodity?
+	And the user clicks Save and continue
+	Then What is the main reason for importing the consignment? page should be displayed with radio buttons
+	When the user chooses "Internal market" and the sub-option "Human consumption"
+	And the user clicks Save and continue
+	Then Select the highest risk category for the commodities in this consignment page should be displayed
+	When the user chooses "Medium risk" risk category
+	And the user clicks Save and continue
+	Then the Health certificate required page should be displayed
+	When the user clicks continue button
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Commodity page should be displayed with the commodity and description entered
+	When the user populates Net weight as '1000'
+	And the user populates Number of packages as '1'
+	And the user selects type of package as 'Box'
+	And the user clicks the Update total button
+	Then the total gross weight should be greater than the net weight '1010'
+	When the user clicks Save and continue in commodity page
+	Then the Additional details page should be displayed
+	When the user selects 'Chilled' radio button on the Additional details page
+	And the user clicks Save and continue
+	Then the Catch cerificates page should be displayed
+	And the user selects "No" option for add catch certificate
+	When the user clicks Save and continue
+	Then the Latest Health Certificate page should be displayed
+	When the user enters Latest Health Certificate Document reference "INV12345"
+	And the user enters Latest Health Certificate date of issue "24""10""2025"
+	And the user clicks Latest Health Certificate add attachment link
+	And the user uploads the Latest Health Certificate document 'IPAFFS Test Document' in the format '.docx'
+	Then the Latest Health Certificate document 'IPAFFS Test Document' '.docx' is uploaded successfully
+	And the user clicks Save and continue
+	And the Accompanying documents page should be displayed
+	When the user selects Document type "Commercial invoice"
+	And the user enters Document reference "INV12345"
+	And the user enters date of issue "24/11/2025"
+	And the user clicks on Add attachment link
+	And the user uploads the document 'IPAFFS Test Health Certificate' in the format '.docx'
+	Then the document 'IPAFFS Test Health Certificate' '.docx' is uploaded successfully
+	And the user should be able to click Save and continue
+	And the Approved establishment of origin page should be displayed
+	When the user clicks Search for an approved establishment
+	Then the list of establishments should be displayed, filtered by Country of origin "China" type "Freezing Vessel" status "Approved"
+	When the user searches for the approved establishment 'RongCheng Marine Fishery CO.,LTDHAI YANG 1'
+	And the user clicks Select for one of the establishments in the list
+	Then the Approved establishment of origin page should be displayed with the selected establishment
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee "DEF"
+	Then the chosen consignee "DEF" should be displayed on the Addresses page
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee "DEF" on the Addresses page
+	When the user clicks Add a place of destination
+	Then the Search for an existing place of destination page should be displayed
+	When the user selects a place of destination "DEF" with a UK country
+	Then the chosen place of destination "DEF" should be displayed on the Addresses page
+	When the user clicks Save and continue
+	Then the Transport to the port of entry page should be displayed
+	When the user populates the transport details "BRISTOL (GBBRS)" "No" "Road vehicle" "123456" "Doc1234"
+	And the user clicks Save and continue
+	Then the Goods movement services page should be displayed
+	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user clicks Save and continue
+	Then the Contact details page should be displayed, pre-populated with the user's details
+	When the user clicks Save and continue
+	Then the Nominated contacts page should be displayed
+	When the user clicks Save and continue
+	Then the Contact address for consignment page should be displayed
+	And the user selects a contact address for the consignment
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	And the user verifies all the data displayed in review page for commodity code "160"
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the IPAFFS User details and CHED Reference
+	When the user logs out of IPAFFS Part 1
+	Then the user should be logged out successfully
+# IOC
+	When the user navigates to the IPAFFS Intensified Official Controls application
+	Then the Intensified Official Controls dashboard should be displayed
+	When the user clicks Create new intensified official control button
+	Then the Create intensified official control screen should be displayed
+	When the user enters the Certificate number from the notification
+	And the user clicks the Search for establishment link
+	Then the Choose approved establishment screen should be displayed
+	When the user types in the name of the approved establishment from the notification
+	And the user selects the country of origin from the notification and clicks Search
+	Then the list of approved establishments are displayed for the selected country
+	When the user clicks Select for the approved establishment from the notification
+	Then the Create intensified official control screen should be displayed 
+	And the Establishment is populated with the details of the approved establishment from the notification
+	When the user enters the commodity code from the notification
+	And the user clicks the Search commodities link
+	Then the Select the commodity level screen should be displayed
+	When the user clicks Select for the commodity code from the notification 
+	Then the Create intensified official control screen should be displayed 
+	And the Commodity code is populated with the details of the commodity from the notification
+	When the user clicks the Search for hazard link
+	Then the Choose a hazard screen should be displayed
+	When the user selects the hazard category 'Animal diseases' and subcategory 'Crustacean diseases' and clicks Search
+	Then the list of laboratory tests are displayed tests for the hazard subcategory 'Crustacean diseases'
+	When the user clicks Select for the Laboratory test 'White spot disease' from the hazards table
+	Then the Create intensified official control screen should be displayed 
+	And the Hazard is populated with the name of the selected laboratory test
+	When the user enters the Net weight from the notification
+	And the user clicks the Place under intensified official controls button
+	Then the Are you sure you want to create the intensified official control? page is displayed
+	And the 'Yes, create the intensified official control' button is displayed
+	And the 'No, don't create the intensified official control' link is displayed
+	When the user clicks the 'Yes, create the intensified official control' button
+	Then the Your intensified official control has been put in place page should be displayed
+	And the Intensified official control number should be displayed in the correct format
+	When the user clicks Return to dashboard button
+	Then the Intensified Official Controls dashboard should be displayed
+	When the user locates the intensified official control just created
+	Then the status of the intensified official control should be 'ACTIVE'
+# IPAFFS part 1
+# 1 of 8
+	Given that I navigate to the IPAFF application
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF credentials and signin
+	Then the user should be logged into Notification page
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Products of animal origin, germinal products or animal by-products' option
+	And the user clicks Save and continue
+	Then the Origin of the plants plant product or other objects page should be displayed
+	When the user chooses "China" from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing "China" as the Country of origin and Country from where consigned
+	When the user chooses "No" for Does your consignment require a region code?
+	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
+	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
+	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
+	And the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '16051000' commodity code
+	Then the commodity details should be populated '16051000' 'Crab'
+	When the user selects the type of commodity 'Composite products'
+	And the user selects species of commodity 'Geryon maritae'
+	And the user selects "No" for Do you want to add another commodity?
+	And the user clicks Save and continue
+	Then What is the main reason for importing the consignment? page should be displayed with radio buttons
+	When the user chooses "Internal market" and the sub-option "Human consumption"
+	And the user clicks Save and continue
+	Then Select the highest risk category for the commodities in this consignment page should be displayed
+	When the user chooses "Medium risk" risk category
+	And the user clicks Save and continue
+	Then the Health certificate required page should be displayed
+	When the user clicks continue button
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Commodity page should be displayed with the commodity and description entered
+	When the user populates Net weight as '99'
+	And the user populates Number of packages as '1'
+	And the user selects type of package as 'Box'
+	And the user clicks the Update total button
+	Then the total gross weight should be greater than the net weight '109'
+	When the user clicks Save and continue in commodity page
+	Then the Additional details page should be displayed
+	When the user selects 'Chilled' radio button on the Additional details page
+	And the user clicks Save and continue
+	Then the Catch cerificates page should be displayed
+	And the user selects "No" option for add catch certificate
+	When the user clicks Save and continue
+	Then the Latest Health Certificate page should be displayed
+	When the user enters Latest Health Certificate Document reference "INV12345"
+	And the user enters Latest Health Certificate date of issue "24""10""2025"
+	And the user clicks Latest Health Certificate add attachment link
+	And the user uploads the Latest Health Certificate document 'IPAFFS Test Document' in the format '.docx'
+	Then the Latest Health Certificate document 'IPAFFS Test Document' '.docx' is uploaded successfully
+	And the user clicks Save and continue
+	And the Accompanying documents page should be displayed
+	When the user selects Document type "Commercial invoice"
+	And the user enters Document reference "INV12345"
+	And the user enters date of issue "24/11/2025"
+	And the user clicks on Add attachment link
+	And the user uploads the document 'IPAFFS Test Health Certificate' in the format '.docx'
+	Then the document 'IPAFFS Test Health Certificate' '.docx' is uploaded successfully
+	And the user should be able to click Save and continue
+	And the Approved establishment of origin page should be displayed
+	When the user clicks Search for an approved establishment
+	Then the list of establishments should be displayed, filtered by Country of origin "China" type "Freezing Vessel" status "Approved"
+	When the user searches for the approved establishment 'RongCheng Marine Fishery CO.,LTDHAI YANG 1'
+	And the user clicks Select for one of the establishments in the list
+	Then the Approved establishment of origin page should be displayed with the selected establishment
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee "DEF"
+	Then the chosen consignee "DEF" should be displayed on the Addresses page
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee "DEF" on the Addresses page
+	When the user clicks Add a place of destination
+	Then the Search for an existing place of destination page should be displayed
+	When the user selects a place of destination "DEF" with a UK country
+	Then the chosen place of destination "DEF" should be displayed on the Addresses page
+	When the user clicks Save and continue
+	Then the Transport to the port of entry page should be displayed
+	When the user populates the transport details "BRISTOL (GBBRS)" "No" "Road vehicle" "123456" "Doc1234"
+	And the user clicks Save and continue
+	Then the Goods movement services page should be displayed
+	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user clicks Save and continue
+	Then the Contact details page should be displayed, pre-populated with the user's details
+	When the user clicks Save and continue
+	Then the Nominated contacts page should be displayed
+	When the user clicks Save and continue
+	Then the Contact address for consignment page should be displayed
+	And the user selects a contact address for the consignment
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the IPAFFS User details and CHED Reference for notification 1 
+	When the user clicks Return to your dashboard
+	Then the Your import notifications page is displayed
+# 2 of 8
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Products of animal origin, germinal products or animal by-products' option
+	And the user clicks Save and continue
+	Then the Origin of the plants plant product or other objects page should be displayed
+	When the user chooses "China" from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing "China" as the Country of origin and Country from where consigned
+	When the user chooses "No" for Does your consignment require a region code?
+	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
+	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
+	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
+	And the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '16051000' commodity code
+	Then the commodity details should be populated '16051000' 'Crab'
+	When the user selects the type of commodity 'Composite products'
+	And the user selects species of commodity 'Geryon maritae'
+	And the user selects "No" for Do you want to add another commodity?
+	And the user clicks Save and continue
+	Then What is the main reason for importing the consignment? page should be displayed with radio buttons
+	When the user chooses "Internal market" and the sub-option "Human consumption"
+	And the user clicks Save and continue
+	Then Select the highest risk category for the commodities in this consignment page should be displayed
+	When the user chooses "Medium risk" risk category
+	And the user clicks Save and continue
+	Then the Health certificate required page should be displayed
+	When the user clicks continue button
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Commodity page should be displayed with the commodity and description entered
+	When the user populates Net weight as '50'
+	And the user populates Number of packages as '1'
+	And the user selects type of package as 'Box'
+	And the user clicks the Update total button
+	Then the total gross weight should be greater than the net weight '60'
+	When the user clicks Save and continue in commodity page
+	Then the Additional details page should be displayed
+	When the user selects 'Chilled' radio button on the Additional details page
+	And the user clicks Save and continue
+	Then the Catch cerificates page should be displayed
+	And the user selects "No" option for add catch certificate
+	When the user clicks Save and continue
+	Then the Latest Health Certificate page should be displayed
+	When the user enters Latest Health Certificate Document reference "INV12345"
+	And the user enters Latest Health Certificate date of issue "24""10""2025"
+	And the user clicks Latest Health Certificate add attachment link
+	And the user uploads the Latest Health Certificate document 'IPAFFS Test Document' in the format '.docx'
+	Then the Latest Health Certificate document 'IPAFFS Test Document' '.docx' is uploaded successfully
+	And the user clicks Save and continue
+	And the Accompanying documents page should be displayed
+	When the user selects Document type "Commercial invoice"
+	And the user enters Document reference "INV12345"
+	And the user enters date of issue "24/11/2025"
+	And the user clicks on Add attachment link
+	And the user uploads the document 'IPAFFS Test Health Certificate' in the format '.docx'
+	Then the document 'IPAFFS Test Health Certificate' '.docx' is uploaded successfully
+	And the user should be able to click Save and continue
+	And the Approved establishment of origin page should be displayed
+	When the user clicks Search for an approved establishment
+	Then the list of establishments should be displayed, filtered by Country of origin "China" type "Freezing Vessel" status "Approved"
+	When the user searches for the approved establishment 'RongCheng Marine Fishery CO.,LTDHAI YANG 1'
+	And the user clicks Select for one of the establishments in the list
+	Then the Approved establishment of origin page should be displayed with the selected establishment
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee "DEF"
+	Then the chosen consignee "DEF" should be displayed on the Addresses page
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee "DEF" on the Addresses page
+	When the user clicks Add a place of destination
+	Then the Search for an existing place of destination page should be displayed
+	When the user selects a place of destination "DEF" with a UK country
+	Then the chosen place of destination "DEF" should be displayed on the Addresses page
+	When the user clicks Save and continue
+	Then the Transport to the port of entry page should be displayed
+	When the user populates the transport details "BRISTOL (GBBRS)" "No" "Road vehicle" "123456" "Doc1234"
+	And the user clicks Save and continue
+	Then the Goods movement services page should be displayed
+	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user clicks Save and continue
+	Then the Contact details page should be displayed, pre-populated with the user's details
+	When the user clicks Save and continue
+	Then the Nominated contacts page should be displayed
+	When the user clicks Save and continue
+	Then the Contact address for consignment page should be displayed
+	And the user selects a contact address for the consignment
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the IPAFFS User details and CHED Reference for notification 2
+	When the user clicks Return to your dashboard
+	Then the Your import notifications page is displayed	
+# 3 of 8
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Products of animal origin, germinal products or animal by-products' option
+	And the user clicks Save and continue
+	Then the Origin of the plants plant product or other objects page should be displayed
+	When the user chooses "China" from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing "China" as the Country of origin and Country from where consigned
+	When the user chooses "No" for Does your consignment require a region code?
+	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
+	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
+	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
+	And the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '16051000' commodity code
+	Then the commodity details should be populated '16051000' 'Crab'
+	When the user selects the type of commodity 'Composite products'
+	And the user selects species of commodity 'Geryon maritae'
+	And the user selects "No" for Do you want to add another commodity?
+	And the user clicks Save and continue
+	Then What is the main reason for importing the consignment? page should be displayed with radio buttons
+	When the user chooses "Internal market" and the sub-option "Human consumption"
+	And the user clicks Save and continue
+	Then Select the highest risk category for the commodities in this consignment page should be displayed
+	When the user chooses "Medium risk" risk category
+	And the user clicks Save and continue
+	Then the Health certificate required page should be displayed
+	When the user clicks continue button
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Commodity page should be displayed with the commodity and description entered
+	When the user populates Net weight as '3000'
+	And the user populates Number of packages as '1'
+	And the user selects type of package as 'Box'
+	And the user clicks the Update total button
+	Then the total gross weight should be greater than the net weight '3010'
+	When the user clicks Save and continue in commodity page
+	Then the Additional details page should be displayed
+	When the user selects 'Chilled' radio button on the Additional details page
+	And the user clicks Save and continue
+	Then the Catch cerificates page should be displayed
+	And the user selects "No" option for add catch certificate
+	When the user clicks Save and continue
+	Then the Latest Health Certificate page should be displayed
+	When the user enters Latest Health Certificate Document reference "INV12345"
+	And the user enters Latest Health Certificate date of issue "24""10""2025"
+	And the user clicks Latest Health Certificate add attachment link
+	And the user uploads the Latest Health Certificate document 'IPAFFS Test Document' in the format '.docx'
+	Then the Latest Health Certificate document 'IPAFFS Test Document' '.docx' is uploaded successfully
+	And the user clicks Save and continue
+	And the Accompanying documents page should be displayed
+	When the user selects Document type "Commercial invoice"
+	And the user enters Document reference "INV12345"
+	And the user enters date of issue "24/11/2025"
+	And the user clicks on Add attachment link
+	And the user uploads the document 'IPAFFS Test Health Certificate' in the format '.docx'
+	Then the document 'IPAFFS Test Health Certificate' '.docx' is uploaded successfully
+	And the user should be able to click Save and continue
+	And the Approved establishment of origin page should be displayed
+	When the user clicks Search for an approved establishment
+	Then the list of establishments should be displayed, filtered by Country of origin "China" type "Freezing Vessel" status "Approved"
+	When the user searches for the approved establishment 'RongCheng Marine Fishery CO.,LTDHAI YANG 1'
+	And the user clicks Select for one of the establishments in the list
+	Then the Approved establishment of origin page should be displayed with the selected establishment
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee "DEF"
+	Then the chosen consignee "DEF" should be displayed on the Addresses page
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee "DEF" on the Addresses page
+	When the user clicks Add a place of destination
+	Then the Search for an existing place of destination page should be displayed
+	When the user selects a place of destination "DEF" with a UK country
+	Then the chosen place of destination "DEF" should be displayed on the Addresses page
+	When the user clicks Save and continue
+	Then the Transport to the port of entry page should be displayed
+	When the user populates the transport details "BRISTOL (GBBRS)" "No" "Road vehicle" "123456" "Doc1234"
+	And the user clicks Save and continue
+	Then the Goods movement services page should be displayed
+	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user clicks Save and continue
+	Then the Contact details page should be displayed, pre-populated with the user's details
+	When the user clicks Save and continue
+	Then the Nominated contacts page should be displayed
+	When the user clicks Save and continue
+	Then the Contact address for consignment page should be displayed
+	And the user selects a contact address for the consignment
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the IPAFFS User details and CHED Reference for notification 3
+	When the user clicks Return to your dashboard
+	Then the Your import notifications page is displayed	
+# 4 of 8
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Products of animal origin, germinal products or animal by-products' option
+	And the user clicks Save and continue
+	Then the Origin of the plants plant product or other objects page should be displayed
+	When the user chooses "China" from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing "China" as the Country of origin and Country from where consigned
+	When the user chooses "No" for Does your consignment require a region code?
+	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
+	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
+	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
+	And the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '16051000' commodity code
+	Then the commodity details should be populated '16051000' 'Crab'
+	When the user selects the type of commodity 'Composite products'
+	And the user selects species of commodity 'Geryon maritae'
+	And the user selects "No" for Do you want to add another commodity?
+	And the user clicks Save and continue
+	Then What is the main reason for importing the consignment? page should be displayed with radio buttons
+	When the user chooses "Internal market" and the sub-option "Human consumption"
+	And the user clicks Save and continue
+	Then Select the highest risk category for the commodities in this consignment page should be displayed
+	When the user chooses "Medium risk" risk category
+	And the user clicks Save and continue
+	Then the Health certificate required page should be displayed
+	When the user clicks continue button
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Commodity page should be displayed with the commodity and description entered
+	When the user populates Net weight as '4000'
+	And the user populates Number of packages as '1'
+	And the user selects type of package as 'Box'
+	And the user clicks the Update total button
+	Then the total gross weight should be greater than the net weight '4010'
+	When the user clicks Save and continue in commodity page
+	Then the Additional details page should be displayed
+	When the user selects 'Chilled' radio button on the Additional details page
+	And the user clicks Save and continue
+	Then the Catch cerificates page should be displayed
+	And the user selects "No" option for add catch certificate
+	When the user clicks Save and continue
+	Then the Latest Health Certificate page should be displayed
+	When the user enters Latest Health Certificate Document reference "INV12345"
+	And the user enters Latest Health Certificate date of issue "24""10""2025"
+	And the user clicks Latest Health Certificate add attachment link
+	And the user uploads the Latest Health Certificate document 'IPAFFS Test Document' in the format '.docx'
+	Then the Latest Health Certificate document 'IPAFFS Test Document' '.docx' is uploaded successfully
+	And the user clicks Save and continue
+	And the Accompanying documents page should be displayed
+	When the user selects Document type "Commercial invoice"
+	And the user enters Document reference "INV12345"
+	And the user enters date of issue "24/11/2025"
+	And the user clicks on Add attachment link
+	And the user uploads the document 'IPAFFS Test Health Certificate' in the format '.docx'
+	Then the document 'IPAFFS Test Health Certificate' '.docx' is uploaded successfully
+	And the user should be able to click Save and continue
+	And the Approved establishment of origin page should be displayed
+	When the user clicks Search for an approved establishment
+	Then the list of establishments should be displayed, filtered by Country of origin "China" type "Freezing Vessel" status "Approved"
+	When the user searches for the approved establishment 'RongCheng Marine Fishery CO.,LTDHAI YANG 1'
+	And the user clicks Select for one of the establishments in the list
+	Then the Approved establishment of origin page should be displayed with the selected establishment
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee "DEF"
+	Then the chosen consignee "DEF" should be displayed on the Addresses page
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee "DEF" on the Addresses page
+	When the user clicks Add a place of destination
+	Then the Search for an existing place of destination page should be displayed
+	When the user selects a place of destination "DEF" with a UK country
+	Then the chosen place of destination "DEF" should be displayed on the Addresses page
+	When the user clicks Save and continue
+	Then the Transport to the port of entry page should be displayed
+	When the user populates the transport details "BRISTOL (GBBRS)" "No" "Road vehicle" "123456" "Doc1234"
+	And the user clicks Save and continue
+	Then the Goods movement services page should be displayed
+	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user clicks Save and continue
+	Then the Contact details page should be displayed, pre-populated with the user's details
+	When the user clicks Save and continue
+	Then the Nominated contacts page should be displayed
+	When the user clicks Save and continue
+	Then the Contact address for consignment page should be displayed
+	And the user selects a contact address for the consignment
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the IPAFFS User details and CHED Reference for notification 4
+	When the user clicks Return to your dashboard
+	Then the Your import notifications page is displayed	
+ # 5 of 8
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Products of animal origin, germinal products or animal by-products' option
+	And the user clicks Save and continue
+	Then the Origin of the plants plant product or other objects page should be displayed
+	When the user chooses "China" from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing "China" as the Country of origin and Country from where consigned
+	When the user chooses "No" for Does your consignment require a region code?
+	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
+	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
+	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
+	And the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '16051000' commodity code
+	Then the commodity details should be populated '16051000' 'Crab'
+	When the user selects the type of commodity 'Composite products'
+	And the user selects species of commodity 'Geryon maritae'
+	And the user selects "No" for Do you want to add another commodity?
+	And the user clicks Save and continue
+	Then What is the main reason for importing the consignment? page should be displayed with radio buttons
+	When the user chooses "Internal market" and the sub-option "Human consumption"
+	And the user clicks Save and continue
+	Then Select the highest risk category for the commodities in this consignment page should be displayed
+	When the user chooses "Medium risk" risk category
+	And the user clicks Save and continue
+	Then the Health certificate required page should be displayed
+	When the user clicks continue button
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Commodity page should be displayed with the commodity and description entered
+	When the user populates Net weight as '5000'
+	And the user populates Number of packages as '1'
+	And the user selects type of package as 'Box'
+	And the user clicks the Update total button
+	Then the total gross weight should be greater than the net weight '5010'
+	When the user clicks Save and continue in commodity page
+	Then the Additional details page should be displayed
+	When the user selects 'Chilled' radio button on the Additional details page
+	And the user clicks Save and continue
+	Then the Catch cerificates page should be displayed
+	And the user selects "No" option for add catch certificate
+	When the user clicks Save and continue
+	Then the Latest Health Certificate page should be displayed
+	When the user enters Latest Health Certificate Document reference "INV12345"
+	And the user enters Latest Health Certificate date of issue "24""10""2025"
+	And the user clicks Latest Health Certificate add attachment link
+	And the user uploads the Latest Health Certificate document 'IPAFFS Test Document' in the format '.docx'
+	Then the Latest Health Certificate document 'IPAFFS Test Document' '.docx' is uploaded successfully
+	And the user clicks Save and continue
+	And the Accompanying documents page should be displayed
+	When the user selects Document type "Commercial invoice"
+	And the user enters Document reference "INV12345"
+	And the user enters date of issue "24/11/2025"
+	And the user clicks on Add attachment link
+	And the user uploads the document 'IPAFFS Test Health Certificate' in the format '.docx'
+	Then the document 'IPAFFS Test Health Certificate' '.docx' is uploaded successfully
+	And the user should be able to click Save and continue
+	And the Approved establishment of origin page should be displayed
+	When the user clicks Search for an approved establishment
+	Then the list of establishments should be displayed, filtered by Country of origin "China" type "Freezing Vessel" status "Approved"
+	When the user searches for the approved establishment 'RongCheng Marine Fishery CO.,LTDHAI YANG 1'
+	And the user clicks Select for one of the establishments in the list
+	Then the Approved establishment of origin page should be displayed with the selected establishment
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee "DEF"
+	Then the chosen consignee "DEF" should be displayed on the Addresses page
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee "DEF" on the Addresses page
+	When the user clicks Add a place of destination
+	Then the Search for an existing place of destination page should be displayed
+	When the user selects a place of destination "DEF" with a UK country
+	Then the chosen place of destination "DEF" should be displayed on the Addresses page
+	When the user clicks Save and continue
+	Then the Transport to the port of entry page should be displayed
+	When the user populates the transport details "BRISTOL (GBBRS)" "No" "Road vehicle" "123456" "Doc1234"
+	And the user clicks Save and continue
+	Then the Goods movement services page should be displayed
+	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user clicks Save and continue
+	Then the Contact details page should be displayed, pre-populated with the user's details
+	When the user clicks Save and continue
+	Then the Nominated contacts page should be displayed
+	When the user clicks Save and continue
+	Then the Contact address for consignment page should be displayed
+	And the user selects a contact address for the consignment
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the IPAFFS User details and CHED Reference for notification 5
+	When the user clicks Return to your dashboard
+	Then the Your import notifications page is displayed	
+# 6 of 8
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Products of animal origin, germinal products or animal by-products' option
+	And the user clicks Save and continue
+	Then the Origin of the plants plant product or other objects page should be displayed
+	When the user chooses "China" from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing "China" as the Country of origin and Country from where consigned
+	When the user chooses "No" for Does your consignment require a region code?
+	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
+	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
+	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
+	And the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '16051000' commodity code
+	Then the commodity details should be populated '16051000' 'Crab'
+	When the user selects the type of commodity 'Composite products'
+	And the user selects species of commodity 'Geryon maritae'
+	And the user selects "No" for Do you want to add another commodity?
+	And the user clicks Save and continue
+	Then What is the main reason for importing the consignment? page should be displayed with radio buttons
+	When the user chooses "Internal market" and the sub-option "Human consumption"
+	And the user clicks Save and continue
+	Then Select the highest risk category for the commodities in this consignment page should be displayed
+	When the user chooses "Medium risk" risk category
+	And the user clicks Save and continue
+	Then the Health certificate required page should be displayed
+	When the user clicks continue button
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Commodity page should be displayed with the commodity and description entered
+	When the user populates Net weight as '6000'
+	And the user populates Number of packages as '1'
+	And the user selects type of package as 'Box'
+	And the user clicks the Update total button
+	Then the total gross weight should be greater than the net weight '6010'
+	When the user clicks Save and continue in commodity page
+	Then the Additional details page should be displayed
+	When the user selects 'Chilled' radio button on the Additional details page
+	And the user clicks Save and continue
+	Then the Catch cerificates page should be displayed
+	And the user selects "No" option for add catch certificate
+	When the user clicks Save and continue
+	Then the Latest Health Certificate page should be displayed
+	When the user enters Latest Health Certificate Document reference "INV12345"
+	And the user enters Latest Health Certificate date of issue "24""10""2025"
+	And the user clicks Latest Health Certificate add attachment link
+	And the user uploads the Latest Health Certificate document 'IPAFFS Test Document' in the format '.docx'
+	Then the Latest Health Certificate document 'IPAFFS Test Document' '.docx' is uploaded successfully
+	And the user clicks Save and continue
+	And the Accompanying documents page should be displayed
+	When the user selects Document type "Commercial invoice"
+	And the user enters Document reference "INV12345"
+	And the user enters date of issue "24/11/2025"
+	And the user clicks on Add attachment link
+	And the user uploads the document 'IPAFFS Test Health Certificate' in the format '.docx'
+	Then the document 'IPAFFS Test Health Certificate' '.docx' is uploaded successfully
+	And the user should be able to click Save and continue
+	And the Approved establishment of origin page should be displayed
+	When the user clicks Search for an approved establishment
+	Then the list of establishments should be displayed, filtered by Country of origin "China" type "Freezing Vessel" status "Approved"
+	When the user searches for the approved establishment 'RongCheng Marine Fishery CO.,LTDHAI YANG 1'
+	And the user clicks Select for one of the establishments in the list
+	Then the Approved establishment of origin page should be displayed with the selected establishment
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee "DEF"
+	Then the chosen consignee "DEF" should be displayed on the Addresses page
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee "DEF" on the Addresses page
+	When the user clicks Add a place of destination
+	Then the Search for an existing place of destination page should be displayed
+	When the user selects a place of destination "DEF" with a UK country
+	Then the chosen place of destination "DEF" should be displayed on the Addresses page
+	When the user clicks Save and continue
+	Then the Transport to the port of entry page should be displayed
+	When the user populates the transport details "BRISTOL (GBBRS)" "No" "Road vehicle" "123456" "Doc1234"
+	And the user clicks Save and continue
+	Then the Goods movement services page should be displayed
+	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user clicks Save and continue
+	Then the Contact details page should be displayed, pre-populated with the user's details
+	When the user clicks Save and continue
+	Then the Nominated contacts page should be displayed
+	When the user clicks Save and continue
+	Then the Contact address for consignment page should be displayed
+	And the user selects a contact address for the consignment
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the IPAFFS User details and CHED Reference for notification 6
+	When the user clicks Return to your dashboard
+	Then the Your import notifications page is displayed
+# 7 of 8
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Products of animal origin, germinal products or animal by-products' option
+	And the user clicks Save and continue
+	Then the Origin of the plants plant product or other objects page should be displayed
+	When the user chooses "China" from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing "China" as the Country of origin and Country from where consigned
+	When the user chooses "No" for Does your consignment require a region code?
+	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
+	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
+	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
+	And the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '16051000' commodity code
+	Then the commodity details should be populated '16051000' 'Crab'
+	When the user selects the type of commodity 'Composite products'
+	And the user selects species of commodity 'Geryon maritae'
+	And the user selects "No" for Do you want to add another commodity?
+	And the user clicks Save and continue
+	Then What is the main reason for importing the consignment? page should be displayed with radio buttons
+	When the user chooses "Internal market" and the sub-option "Human consumption"
+	And the user clicks Save and continue
+	Then Select the highest risk category for the commodities in this consignment page should be displayed
+	When the user chooses "Medium risk" risk category
+	And the user clicks Save and continue
+	Then the Health certificate required page should be displayed
+	When the user clicks continue button
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Commodity page should be displayed with the commodity and description entered
+	When the user populates Net weight as '7000'
+	And the user populates Number of packages as '1'
+	And the user selects type of package as 'Box'
+	And the user clicks the Update total button
+	Then the total gross weight should be greater than the net weight '7010'
+	When the user clicks Save and continue in commodity page
+	Then the Additional details page should be displayed
+	When the user selects 'Chilled' radio button on the Additional details page
+	And the user clicks Save and continue
+	Then the Catch cerificates page should be displayed
+	And the user selects "No" option for add catch certificate
+	When the user clicks Save and continue
+	Then the Latest Health Certificate page should be displayed
+	When the user enters Latest Health Certificate Document reference "INV12345"
+	And the user enters Latest Health Certificate date of issue "24""10""2025"
+	And the user clicks Latest Health Certificate add attachment link
+	And the user uploads the Latest Health Certificate document 'IPAFFS Test Document' in the format '.docx'
+	Then the Latest Health Certificate document 'IPAFFS Test Document' '.docx' is uploaded successfully
+	And the user clicks Save and continue
+	And the Accompanying documents page should be displayed
+	When the user selects Document type "Commercial invoice"
+	And the user enters Document reference "INV12345"
+	And the user enters date of issue "24/11/2025"
+	And the user clicks on Add attachment link
+	And the user uploads the document 'IPAFFS Test Health Certificate' in the format '.docx'
+	Then the document 'IPAFFS Test Health Certificate' '.docx' is uploaded successfully
+	And the user should be able to click Save and continue
+	And the Approved establishment of origin page should be displayed
+	When the user clicks Search for an approved establishment
+	Then the list of establishments should be displayed, filtered by Country of origin "China" type "Freezing Vessel" status "Approved"
+	When the user searches for the approved establishment 'RongCheng Marine Fishery CO.,LTDHAI YANG 1'
+	And the user clicks Select for one of the establishments in the list
+	Then the Approved establishment of origin page should be displayed with the selected establishment
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee "DEF"
+	Then the chosen consignee "DEF" should be displayed on the Addresses page
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee "DEF" on the Addresses page
+	When the user clicks Add a place of destination
+	Then the Search for an existing place of destination page should be displayed
+	When the user selects a place of destination "DEF" with a UK country
+	Then the chosen place of destination "DEF" should be displayed on the Addresses page
+	When the user clicks Save and continue
+	Then the Transport to the port of entry page should be displayed
+	When the user populates the transport details "BRISTOL (GBBRS)" "No" "Road vehicle" "123456" "Doc1234"
+	And the user clicks Save and continue
+	Then the Goods movement services page should be displayed
+	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user clicks Save and continue
+	Then the Contact details page should be displayed, pre-populated with the user's details
+	When the user clicks Save and continue
+	Then the Nominated contacts page should be displayed
+	When the user clicks Save and continue
+	Then the Contact address for consignment page should be displayed
+	And the user selects a contact address for the consignment
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the IPAFFS User details and CHED Reference for notification 7
+	When the user clicks Return to your dashboard
+	Then the Your import notifications page is displayed
+# 8 of 8
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Products of animal origin, germinal products or animal by-products' option
+	And the user clicks Save and continue
+	Then the Origin of the plants plant product or other objects page should be displayed
+	When the user chooses "China" from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing "China" as the Country of origin and Country from where consigned
+	When the user chooses "No" for Does your consignment require a region code?
+	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
+	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
+	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
+	And the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '16051000' commodity code
+	Then the commodity details should be populated '16051000' 'Crab'
+	When the user selects the type of commodity 'Composite products'
+	And the user selects species of commodity 'Geryon maritae'
+	And the user selects "No" for Do you want to add another commodity?
+	And the user clicks Save and continue
+	Then What is the main reason for importing the consignment? page should be displayed with radio buttons
+	When the user chooses "Internal market" and the sub-option "Human consumption"
+	And the user clicks Save and continue
+	Then Select the highest risk category for the commodities in this consignment page should be displayed
+	When the user chooses "Medium risk" risk category
+	And the user clicks Save and continue
+	Then the Health certificate required page should be displayed
+	When the user clicks continue button
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Commodity page should be displayed with the commodity and description entered
+	When the user populates Net weight as '8000'
+	And the user populates Number of packages as '1'
+	And the user selects type of package as 'Box'
+	And the user clicks the Update total button
+	Then the total gross weight should be greater than the net weight '8010'
+	When the user clicks Save and continue in commodity page
+	Then the Additional details page should be displayed
+	When the user selects 'Chilled' radio button on the Additional details page
+	And the user clicks Save and continue
+	Then the Catch cerificates page should be displayed
+	And the user selects "No" option for add catch certificate
+	When the user clicks Save and continue
+	Then the Latest Health Certificate page should be displayed
+	When the user enters Latest Health Certificate Document reference "INV12345"
+	And the user enters Latest Health Certificate date of issue "24""10""2025"
+	And the user clicks Latest Health Certificate add attachment link
+	And the user uploads the Latest Health Certificate document 'IPAFFS Test Document' in the format '.docx'
+	Then the Latest Health Certificate document 'IPAFFS Test Document' '.docx' is uploaded successfully
+	And the user clicks Save and continue
+	And the Accompanying documents page should be displayed
+	When the user selects Document type "Commercial invoice"
+	And the user enters Document reference "INV12345"
+	And the user enters date of issue "24/11/2025"
+	And the user clicks on Add attachment link
+	And the user uploads the document 'IPAFFS Test Health Certificate' in the format '.docx'
+	Then the document 'IPAFFS Test Health Certificate' '.docx' is uploaded successfully
+	And the user should be able to click Save and continue
+	And the Approved establishment of origin page should be displayed
+	When the user clicks Search for an approved establishment
+	Then the list of establishments should be displayed, filtered by Country of origin "China" type "Freezing Vessel" status "Approved"
+	When the user searches for the approved establishment 'RongCheng Marine Fishery CO.,LTDHAI YANG 1'
+	And the user clicks Select for one of the establishments in the list
+	Then the Approved establishment of origin page should be displayed with the selected establishment
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee "DEF"
+	Then the chosen consignee "DEF" should be displayed on the Addresses page
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee "DEF" on the Addresses page
+	When the user clicks Add a place of destination
+	Then the Search for an existing place of destination page should be displayed
+	When the user selects a place of destination "DEF" with a UK country
+	Then the chosen place of destination "DEF" should be displayed on the Addresses page
+	When the user clicks Save and continue
+	Then the Transport to the port of entry page should be displayed
+	When the user populates the transport details "BRISTOL (GBBRS)" "No" "Road vehicle" "123456" "Doc1234"
+	And the user clicks Save and continue
+	Then the Goods movement services page should be displayed
+	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user clicks Save and continue
+	Then the Contact details page should be displayed, pre-populated with the user's details
+	When the user clicks Save and continue
+	Then the Nominated contacts page should be displayed
+	When the user clicks Save and continue
+	Then the Contact address for consignment page should be displayed
+	And the user selects a contact address for the consignment
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the IPAFFS User details and CHED Reference for notification 8
+	When the user logs out of IPAFFS Part 1
+	Then the user should be logged out successfully
+# IPAFFS part 2
+# 1 of 8
+	When I navigate to the IPAFF Inspector application
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF Inspector credentials and signin
+	Then the user should be logged into Import notifications page
+	When the user searches for notification 1 on the Import notifications page
+	Then the Decision Hub page should be displayed
+	When the user clicks Save and set as in progress
+	Then the notification status should change from "NEW" to "IN PROGRESS"
+	When the user clicks Local reference number link in Record checks
+	Then Local reference number page should be displayed
+	When the user clicks Save and continue
+	Then the IUU page should be displayed
+	When the user selects 'No' and sub-option as '' for the IUU check
+	And the user clicks Save and continue
+	Then the Documentary check page should be displayed
+	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
+	Then the Identity and physical checks page should be displayed
+	When the user selects "Satisfactory" under "Full identity check" in identity check
+	And the user selects "Satisfactory" for physical check
+	And the user clicks Save and continue
+	Then the Seal numbers page should be displayed
+	And 'No' is pre-selected for Are new seal numbers required?
+	When the user clicks Save and continue
+	Then the Laboratory tests page should be displayed
+	When the user select 'Yes' radio button on the Laboratory tests page
+	And the user clicks Save and continue
+	Then the Laboratory tests Reason for testing page should be displayed
+	When the user select 'Intensified controls' reason radio button on the Laboratory tests page
+	And the user clicks Save and continue
+	Then the Laboratory tests Select the commodity sampled page should be displayed
+	When the user clicks the Select link for the '16051000' commodity code
+	Then the Laboratory tests Commodity to be tested page should be displayed
+	When the user searches for the laboratory test 'White spot disease'
+	When the user selects 'White spot disease' from the list of Laboratory tests
+	Then the Laboratory tests Commodity sampled page should be displayed
+	When the user populates the sample date and time as 10 day(s) ago
+	And the user populates the commodity sample details 'Initial analysis' 'Campden BRI' '12345' '3' 'Blood' 'Chilled'
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	When the user clicks on the Test 'White spot disease'
+	Then the Record laboratory test information page should be displayed
+	When the user enters Sample use by date as today's date
+	And the user enters Released date as 10 day(s) ago
+	And the user selects 'Not satisfactory' for Conclusion
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	When the user clicks Save and continue
+	Then the Decision page should be displayed
+	When the user selects Acceptable for 'Not acceptable' 'Destruction'
+	And the user enters 'Not satisfactory' in reason under Destruction
+	And the user enters 'today' date in By date
+	And the user clicks Save and continue
+	Then the Select a controlled destination page should be displayed
+	When the user clicks Add a controlled destination
+	Then the Search for an existing controlled destination page should be displayed
+	When the user selects a controlled destination
+	Then the chosen controlled destination should be displayed
+	When the user clicks Save and continue
+	Then the Reason for Refusal page should be displayed
+	When the user selects "Prohibited" as reason for refusal
+	And the user clicks Save and continue
+	Then the Review outcome decision page should be displayed
+	When then user populates the Date and time of checks as 10 day(s) ago
+	And user clicks Submit decision
+	Then the Your checks have been submitted page should be displayed
+	When the user clicks return to your dashboard link in decision submitted page
+	Then the Import notifications dashboard page should be displayed
+# 2 of 8
+	When the user searches for notification 2 on the Import notifications page
+	Then the Decision Hub page should be displayed
+	When the user clicks Save and set as in progress
+	Then the notification status should change from "NEW" to "IN PROGRESS"
+	When the user clicks Local reference number link in Record checks
+	Then Local reference number page should be displayed
+	When the user clicks Save and continue
+	Then the IUU page should be displayed
+	When the user selects 'No' and sub-option as '' for the IUU check
+	And the user clicks Save and continue
+	Then the Documentary check page should be displayed
+	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
+	Then the Identity and physical checks page should be displayed
+	When the user selects "Satisfactory" under "Full identity check" in identity check
+	And the user selects "Satisfactory" for physical check
+	And the user clicks Save and continue
+	Then the Seal numbers page should be displayed
+	And 'No' is pre-selected for Are new seal numbers required?
+	When the user clicks Save and continue
+	Then the Laboratory tests page should be displayed
+	When the user select 'Yes' radio button on the Laboratory tests page
+	And the user clicks Save and continue
+	Then the Laboratory tests Reason for testing page should be displayed
+	When the user select 'Intensified controls' reason radio button on the Laboratory tests page
+	And the user clicks Save and continue
+	Then the Laboratory tests Select the commodity sampled page should be displayed
+	When the user clicks the Select link for the '16051000' commodity code
+	Then the Laboratory tests Commodity to be tested page should be displayed
+	When the user searches for the laboratory test 'White spot disease'
+	When the user selects 'White spot disease' from the list of Laboratory tests
+	Then the Laboratory tests Commodity sampled page should be displayed
+	When the user populates the sample date and time as 9 day(s) ago
+	And the user populates the commodity sample details 'Initial analysis' 'Campden BRI' '12345' '3' 'Blood' 'Chilled'
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	When the user clicks on the Test 'White spot disease'
+	Then the Record laboratory test information page should be displayed
+	When the user enters Sample use by date as today's date
+	And the user enters Released date as 9 day(s) ago
+	And the user selects 'Not satisfactory' for Conclusion
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	When the user clicks Save and continue
+	Then the Decision page should be displayed
+	When the user selects Acceptable for 'Not acceptable' 'Destruction'
+	And the user enters 'Not satisfactory' in reason under Destruction
+	And the user enters 'today' date in By date
+	And the user clicks Save and continue
+	Then the Select a controlled destination page should be displayed
+	When the user clicks Add a controlled destination
+	Then the Search for an existing controlled destination page should be displayed
+	When the user selects a controlled destination
+	Then the chosen controlled destination should be displayed
+	When the user clicks Save and continue
+	Then the Reason for Refusal page should be displayed
+	When the user selects "Prohibited" as reason for refusal
+	And the user clicks Save and continue
+	Then the Review outcome decision page should be displayed
+	When then user populates the Date and time of checks as 9 day(s) ago
+	And user clicks Submit decision
+	Then the Your checks have been submitted page should be displayed
+	When the user clicks return to your dashboard link in decision submitted page
+	Then the Import notifications dashboard page should be displayed
+# 3 of 8
+	When the user searches for notification 3 on the Import notifications page
+	Then the Decision Hub page should be displayed
+	When the user clicks Save and set as in progress
+	Then the notification status should change from "NEW" to "IN PROGRESS"
+	When the user clicks Local reference number link in Record checks
+	Then Local reference number page should be displayed
+	When the user clicks Save and continue
+	Then the IUU page should be displayed
+	When the user selects 'No' and sub-option as '' for the IUU check
+	And the user clicks Save and continue
+	Then the Documentary check page should be displayed
+	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
+	Then the Identity and physical checks page should be displayed
+	When the user selects "Satisfactory" under "Full identity check" in identity check
+	And the user selects "Satisfactory" for physical check
+	And the user clicks Save and continue
+	Then the Seal numbers page should be displayed
+	And 'No' is pre-selected for Are new seal numbers required?
+	When the user clicks Save and continue
+	Then the Laboratory tests page should be displayed
+	When the user select 'Yes' radio button on the Laboratory tests page
+	And the user clicks Save and continue
+	Then the Laboratory tests Reason for testing page should be displayed
+	When the user select 'Intensified controls' reason radio button on the Laboratory tests page
+	And the user clicks Save and continue
+	Then the Laboratory tests Select the commodity sampled page should be displayed
+	When the user clicks the Select link for the '16051000' commodity code
+	Then the Laboratory tests Commodity to be tested page should be displayed
+	When the user searches for the laboratory test 'White spot disease'
+	When the user selects 'White spot disease' from the list of Laboratory tests
+	Then the Laboratory tests Commodity sampled page should be displayed
+	When the user populates the sample date and time as 8 day(s) ago
+	And the user populates the commodity sample details 'Initial analysis' 'Campden BRI' '12345' '3' 'Blood' 'Chilled'
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	When the user clicks on the Test 'White spot disease'
+	Then the Record laboratory test information page should be displayed
+	When the user enters Sample use by date as today's date
+	And the user enters Released date as 8 day(s) ago
+	And the user selects 'Not satisfactory' for Conclusion
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	When the user clicks Save and continue
+	Then the Decision page should be displayed
+	When the user selects Acceptable for 'Not acceptable' 'Destruction'
+	And the user enters 'Not satisfactory' in reason under Destruction
+	And the user enters 'today' date in By date
+	And the user clicks Save and continue
+	Then the Select a controlled destination page should be displayed
+	When the user clicks Add a controlled destination
+	Then the Search for an existing controlled destination page should be displayed
+	When the user selects a controlled destination
+	Then the chosen controlled destination should be displayed
+	When the user clicks Save and continue
+	Then the Reason for Refusal page should be displayed
+	When the user selects "Prohibited" as reason for refusal
+	And the user clicks Save and continue
+	Then the Review outcome decision page should be displayed
+	When then user populates the Date and time of checks as 8 day(s) ago
+	And user clicks Submit decision
+	Then the Your checks have been submitted page should be displayed
+	When the user clicks return to your dashboard link in decision submitted page
+	Then the Import notifications dashboard page should be displayed
+# 4 of 8
+	When the user searches for notification 4 on the Import notifications page
+	Then the Decision Hub page should be displayed
+	When the user clicks Save and set as in progress
+	Then the notification status should change from "NEW" to "IN PROGRESS"
+	When the user clicks Local reference number link in Record checks
+	Then Local reference number page should be displayed
+	When the user clicks Save and continue
+	Then the IUU page should be displayed
+	When the user selects 'No' and sub-option as '' for the IUU check
+	And the user clicks Save and continue
+	Then the Documentary check page should be displayed
+	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
+	Then the Identity and physical checks page should be displayed
+	When the user selects "Satisfactory" under "Full identity check" in identity check
+	And the user selects "Satisfactory" for physical check
+	And the user clicks Save and continue
+	Then the Seal numbers page should be displayed
+	And 'No' is pre-selected for Are new seal numbers required?
+	When the user clicks Save and continue
+	Then the Laboratory tests page should be displayed
+	When the user select 'Yes' radio button on the Laboratory tests page
+	And the user clicks Save and continue
+	Then the Laboratory tests Reason for testing page should be displayed
+	When the user select 'Intensified controls' reason radio button on the Laboratory tests page
+	And the user clicks Save and continue
+	Then the Laboratory tests Select the commodity sampled page should be displayed
+	When the user clicks the Select link for the '16051000' commodity code
+	Then the Laboratory tests Commodity to be tested page should be displayed
+	When the user searches for the laboratory test 'White spot disease'
+	When the user selects 'White spot disease' from the list of Laboratory tests
+	Then the Laboratory tests Commodity sampled page should be displayed
+	When the user populates the sample date and time as 7 day(s) ago
+	And the user populates the commodity sample details 'Initial analysis' 'Campden BRI' '12345' '3' 'Blood' 'Chilled'
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	When the user clicks on the Test 'White spot disease'
+	Then the Record laboratory test information page should be displayed
+	When the user enters Sample use by date as today's date
+	And the user enters Released date as 7 day(s) ago
+	And the user selects 'Not satisfactory' for Conclusion
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	When the user clicks Save and continue
+	Then the Decision page should be displayed
+	When the user selects Acceptable for 'Not acceptable' 'Destruction'
+	And the user enters 'Not satisfactory' in reason under Destruction
+	And the user enters 'today' date in By date
+	And the user clicks Save and continue
+	Then the Select a controlled destination page should be displayed
+	When the user clicks Add a controlled destination
+	Then the Search for an existing controlled destination page should be displayed
+	When the user selects a controlled destination
+	Then the chosen controlled destination should be displayed
+	When the user clicks Save and continue
+	Then the Reason for Refusal page should be displayed
+	When the user selects "Prohibited" as reason for refusal
+	And the user clicks Save and continue
+	Then the Review outcome decision page should be displayed
+	When then user populates the Date and time of checks as 7 day(s) ago
+	And user clicks Submit decision
+	Then the Your checks have been submitted page should be displayed
+	When the user clicks return to your dashboard link in decision submitted page
+	Then the Import notifications dashboard page should be displayed
+ # 5 of 8
+	When the user searches for notification 5 on the Import notifications page
+	Then the Decision Hub page should be displayed
+	When the user clicks Save and set as in progress
+	Then the notification status should change from "NEW" to "IN PROGRESS"
+	When the user clicks Local reference number link in Record checks
+	Then Local reference number page should be displayed
+	When the user clicks Save and continue
+	Then the IUU page should be displayed
+	When the user selects 'No' and sub-option as '' for the IUU check
+	And the user clicks Save and continue
+	Then the Documentary check page should be displayed
+	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
+	Then the Identity and physical checks page should be displayed
+	When the user selects "Satisfactory" under "Full identity check" in identity check
+	And the user selects "Satisfactory" for physical check
+	And the user clicks Save and continue
+	Then the Seal numbers page should be displayed
+	And 'No' is pre-selected for Are new seal numbers required?
+	When the user clicks Save and continue
+	Then the Laboratory tests page should be displayed
+	When the user select 'Yes' radio button on the Laboratory tests page
+	And the user clicks Save and continue
+	Then the Laboratory tests Reason for testing page should be displayed
+	When the user select 'Intensified controls' reason radio button on the Laboratory tests page
+	And the user clicks Save and continue
+	Then the Laboratory tests Select the commodity sampled page should be displayed
+	When the user clicks the Select link for the '16051000' commodity code
+	Then the Laboratory tests Commodity to be tested page should be displayed
+	When the user searches for the laboratory test 'White spot disease'
+	When the user selects 'White spot disease' from the list of Laboratory tests
+	Then the Laboratory tests Commodity sampled page should be displayed
+	When the user populates the sample date and time as 6 day(s) ago
+	And the user populates the commodity sample details 'Initial analysis' 'Campden BRI' '12345' '3' 'Blood' 'Chilled'
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	When the user clicks Save and Return
+	Then the Decision Hub page should be displayed
+	When the user clicks Dashboard link
+	Then the Import notifications dashboard page should be displayed	
+# 6 of 8
+	When the user searches for notification 6 on the Import notifications page
+	Then the Decision Hub page should be displayed
+	When the user clicks Save and set as in progress
+	Then the notification status should change from "NEW" to "IN PROGRESS"
+	When the user clicks Local reference number link in Record checks
+	Then Local reference number page should be displayed
+	When the user clicks Save and continue
+	Then the IUU page should be displayed
+	When the user selects 'No' and sub-option as '' for the IUU check
+	And the user clicks Save and continue
+	Then the Documentary check page should be displayed
+	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
+	Then the Identity and physical checks page should be displayed
+	When the user selects "Satisfactory" under "Full identity check" in identity check
+	And the user selects "Satisfactory" for physical check
+	And the user clicks Save and continue
+	Then the Seal numbers page should be displayed
+	And 'No' is pre-selected for Are new seal numbers required?
+	When the user clicks Save and continue
+	Then the Laboratory tests page should be displayed
+	When the user select 'Yes' radio button on the Laboratory tests page
+	And the user clicks Save and continue
+	Then the Laboratory tests Reason for testing page should be displayed
+	When the user select 'Intensified controls' reason radio button on the Laboratory tests page
+	And the user clicks Save and continue
+	Then the Laboratory tests Select the commodity sampled page should be displayed
+	When the user clicks the Select link for the '16051000' commodity code
+	Then the Laboratory tests Commodity to be tested page should be displayed
+	When the user searches for the laboratory test 'White spot disease'
+	When the user selects 'White spot disease' from the list of Laboratory tests
+	Then the Laboratory tests Commodity sampled page should be displayed
+	When the user populates the sample date and time as 5 day(s) ago
+	And the user populates the commodity sample details 'Initial analysis' 'Campden BRI' '12345' '3' 'Blood' 'Chilled'
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	When the user clicks Save and Return
+	Then the Decision Hub page should be displayed
+	When the user clicks Dashboard link
+	Then the Import notifications dashboard page should be displayed
+# 7 of 8
+	When the user searches for notification 7 on the Import notifications page
+	Then the Decision Hub page should be displayed
+	When the user clicks Save and set as in progress
+	Then the notification status should change from "NEW" to "IN PROGRESS"
+	When the user clicks Local reference number link in Record checks
+	Then Local reference number page should be displayed
+	When the user clicks Save and continue
+	Then the IUU page should be displayed
+	When the user selects 'No' and sub-option as '' for the IUU check
+	And the user clicks Save and continue
+	Then the Documentary check page should be displayed
+	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
+	Then the Identity and physical checks page should be displayed
+	When the user selects "Satisfactory" under "Full identity check" in identity check
+	And the user selects "Satisfactory" for physical check
+	And the user clicks Save and continue
+	Then the Seal numbers page should be displayed
+	And 'No' is pre-selected for Are new seal numbers required?
+	When the user clicks Save and continue
+	Then the Laboratory tests page should be displayed
+	When the user select 'Yes' radio button on the Laboratory tests page
+	And the user clicks Save and continue
+	Then the Laboratory tests Reason for testing page should be displayed
+	When the user select 'Intensified controls' reason radio button on the Laboratory tests page
+	And the user clicks Save and continue
+	Then the Laboratory tests Select the commodity sampled page should be displayed
+	When the user clicks the Select link for the '16051000' commodity code
+	Then the Laboratory tests Commodity to be tested page should be displayed
+	When the user searches for the laboratory test 'White spot disease'
+	When the user selects 'White spot disease' from the list of Laboratory tests
+	Then the Laboratory tests Commodity sampled page should be displayed
+	When the user populates the sample date and time as 4 day(s) ago
+	And the user populates the commodity sample details 'Initial analysis' 'Campden BRI' '12345' '3' 'Blood' 'Chilled'
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	When the user clicks on the Test 'White spot disease'
+	Then the Record laboratory test information page should be displayed
+	When the user enters Sample use by date as today's date
+	And the user enters Released date as 4 day(s) ago
+	And the user selects 'Satisfactory' for Conclusion
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	When the user clicks Save and continue
+	Then the Decision page should be displayed
+	When the user selects Acceptable for 'Internal market' 'Human consumption'
+	And the user clicks Save and continue
+	Then the Review outcome decision page should be displayed
+	When then user populates the Date and time of checks as 4 day(s) ago
+	And user clicks Submit decision
+	Then the Your checks have been submitted page should be displayed
+	When the user clicks return to your dashboard link in decision submitted page
+	Then the Import notifications dashboard page should be displayed
+# 8 of 8
+	When the user searches for notification 8 on the Import notifications page
+	Then the Decision Hub page should be displayed
+	When the user clicks Save and set as in progress
+	Then the notification status should change from "NEW" to "IN PROGRESS"
+	When the user clicks Local reference number link in Record checks
+	Then Local reference number page should be displayed
+	When the user clicks Save and continue
+	Then the IUU page should be displayed
+	When the user selects 'No' and sub-option as '' for the IUU check
+	And the user clicks Save and continue
+	Then the Documentary check page should be displayed
+	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
+	Then the Identity and physical checks page should be displayed
+	When the user selects "Satisfactory" under "Full identity check" in identity check
+	And the user selects "Satisfactory" for physical check
+	And the user clicks Save and continue
+	Then the Seal numbers page should be displayed
+	And 'No' is pre-selected for Are new seal numbers required?
+	When the user clicks Save and continue
+	Then the Laboratory tests page should be displayed
+	When the user select 'Yes' radio button on the Laboratory tests page
+	And the user clicks Save and continue
+	Then the Laboratory tests Reason for testing page should be displayed
+	When the user select 'Intensified controls' reason radio button on the Laboratory tests page
+	And the user clicks Save and continue
+	Then the Laboratory tests Select the commodity sampled page should be displayed
+	When the user clicks the Select link for the '16051000' commodity code
+	Then the Laboratory tests Commodity to be tested page should be displayed
+	When the user searches for the laboratory test 'White spot disease'
+	When the user selects 'White spot disease' from the list of Laboratory tests
+	Then the Laboratory tests Commodity sampled page should be displayed
+	When the user populates the sample date and time as 3 day(s) ago
+	And the user populates the commodity sample details 'Initial analysis' 'Campden BRI' '12345' '3' 'Blood' 'Chilled'
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	When the user clicks on the Test 'White spot disease'
+	Then the Record laboratory test information page should be displayed
+	When the user enters Sample use by date as today's date
+	And the user enters Released date as 3 day(s) ago
+	And the user selects 'Satisfactory' for Conclusion
+	And the user clicks Save and continue
+	Then the Laboratory tests Review page should be displayed
+	When the user clicks Save and continue
+	Then the Decision page should be displayed
+	When the user selects Acceptable for 'Internal market' 'Human consumption'
+	And the user clicks Save and continue
+	Then the Review outcome decision page should be displayed
+	When then user populates the Date and time of checks as 3 day(s) ago
+	And user clicks Submit decision
+	Then the Your checks have been submitted page should be displayed
+	When the user logs out of IPAFFS Part 2
+	Then the user should be logged out successfully
+# IOC
+	When the user navigates to the IPAFFS Intensified Official Controls application
+	Then the Intensified Official Controls dashboard should be displayed
+	When I filter Intensified offical controls by Status 'Active' and Commodity '16051000'
+	And the user locates the intensified official control just created
+	And the user clicks the View details link for the intensified official control just created
+	Then the IOC details page should be displayed
+	And notification 1 is under the associated checks header
+	And notification 2 is under the associated checks header
+	And notification 5 is under the associated checks header
+	And notification 6 is under the associated checks header
+	And notification 3 is under the checked consignments header with count '1 (i)'
+	And notification 4 is under the checked consignments header with count '1 (ii)'
+	And notification 7 is under the checked consignments header with count '1 (iii)'
+	And notification 8 is under the checked consignments header with count '2 (iii)'
+	When the user logs out of IPAFFS IOC
+	Then the user should be logged out of IPAFFS IOC successfully

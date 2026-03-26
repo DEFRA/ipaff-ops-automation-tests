@@ -27,6 +27,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement lnkSaveAndReturnToManageCertificate => _driver.FindElement(By.Id("save-and-return-manage-catch-certificates"));
         private IWebElement lnkSaveAndReturnToHub => _driver.FindElement(By.Id("save-and-return"));
         private IWebElement selectSpeciesByName(string name) => _driver.FindElement(By.XPath($"//div[@id='checkbox-{name}-1']//input"));
+        private IWebElement selectSpecies(string name, int certificateNumber) => _driver.FindElement(By.XPath($"//div[@id='checkbox-{name}-{certificateNumber}']//input"));
         private IWebElement attachmentCaption => _driver.FindElement(By.XPath("//span[contains(@class, 'govuk-caption-l')]"));
         private IWebElement numberOfCertificatesLabel => _driver.FindElement(By.XPath("//div[@class='govuk-summary-list__key']"));
         private IWebElement changeLink => _driver.FindElement(By.XPath("//span[contains(@class, 'govuk-details__summary-text')]"));
@@ -105,6 +106,7 @@ namespace Defra.UI.Tests.Pages.Classes
         public void SelectSpecies(int species) => selectSpecies(species).Click();
 
         public void SelectSpeciesByName(string species) => selectSpeciesByName(species).Click();
+        public void SelectSpecies(string species, int certificateNumber) => selectSpecies(species, certificateNumber).Click();
 
         public void ClickChangeLink() => lnkChange.Click();
 

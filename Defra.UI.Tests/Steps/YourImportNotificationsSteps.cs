@@ -35,6 +35,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the dashboard page should be displayed")]
         [Then("the user is taken to the Your import notifications page")]
         [Then("the Your notifications page is displayed")]
+        [Then("the Your import notifications page is displayed")]
         [Then("the user is taken back to the dashboard page")]
         public void ThenTheDashboardShouldBeDisplayed()
         {
@@ -227,7 +228,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["CHEDReference"] = reference;
             importNotificationsPage?.SearchForNotification(reference);
         }
-
 
         [When("the user clicks Cookies link from the footer of the page")]
         public void WhenTheUserClicksCookiesLinkFromTheFooterOfThePage()

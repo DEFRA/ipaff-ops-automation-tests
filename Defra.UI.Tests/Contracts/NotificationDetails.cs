@@ -7,7 +7,7 @@
         public string CertificateDateOfIssue { get; set; }
         public string ConsignorConsigneeOrImporterName { get; set; }
         public string PurposeOfTheConsignment { get; set; }
-        public string CommodityCode {  get; set; }
+        public string CommodityCode { get; set; }
         public string Description { get; set; }
         public string GenusAndSpecies { get; set; }
         public string NetWeight { get; set; }
@@ -16,6 +16,9 @@
         public string TypeOfPackage { get; set; }
         public string Quantity { get; set; }
         public string QuantityType { get; set; }
-
+        public string Temperature {get;set;}
+        public string Container { get; set; }
+        public string SealNumber { get; set; }
+        public string DocumentType { get; internal set; }
     }
 }

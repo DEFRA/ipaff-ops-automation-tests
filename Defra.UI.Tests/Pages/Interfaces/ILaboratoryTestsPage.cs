@@ -31,6 +31,7 @@
         bool IsReasonForTestingPageLoaded();
         bool IsSelectCommoditySampledPageLoaded();
         bool IsCommodityToBeTestedPageLoaded();
+        void PopulateSampleDateAndTime(int daysAgo);
         string GetSampleDate();
         string GetSampleTime();
         bool IsAddAnotherTestLinkDisplayed();
@@ -49,5 +50,6 @@
         bool VerifyLaboratoryDropdownHasOptions();
         bool VerifySampleTypeDropdownHasOptions();
         bool VerifyStorageTemperatureDropdownHasOptions();
+        void EnterLaboratoryTestName(string testName);
     }
 }

@@ -11,5 +11,9 @@
         void ClickDownloadUrlLink();
         bool IsSingleCertificagteDownloaded(string chedReference);
         bool IsCatchCertificateSummaryUrlDisplayed();
+
+        void ClickDownloadLinkInCatchCertificate();
+        bool IsCatchCertificateDownloaded(string catchCert);
+
     }
 }

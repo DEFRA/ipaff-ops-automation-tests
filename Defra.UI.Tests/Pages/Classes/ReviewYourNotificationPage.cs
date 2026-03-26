@@ -20,7 +20,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         // About the consignment
         private By importTypeBy => By.Id("importing");
-        private By countryOfOriginBy => By.Id("country-of-origin");
+        private By countryOfOriginBy => By.XPath("//*[@id='country-of-origin'] | //dt[normalize-space()='Country of origin']/following-sibling::dd");
         private By countryFromWhereConsignedBy => By.XPath("//dt[text()='Country from where consigned']//following-sibling::dd");
         private By mainReasonForImportBy => By.Id("purpose-of-consignment-value");
         private By pointOfExitBy => By.XPath("//dt[@id='point-of-exit-header']/following-sibling::dd");
@@ -83,12 +83,20 @@ namespace Defra.UI.Tests.Pages.Classes
         private By healthCertificateDateOfIssueBy => By.Id("latest-health-document-issue-date");
         private By healthCertificateFileNameBy => By.XPath("//table[@id='latest-health-certificate-table']//a[contains(@id,'attachment-view')]");
         private By additionalDocumentTypeBy => By.Id("veterinary-document-type-1");
+        private By healthDocumentTypeBy => By.Id("latest-health-document-type");
         private By additionalDocumentReferenceBy => By.Id("veterinary-document-reference-1");
         private By additionalDocumentDateOfIssueBy => By.Id("veterinary-document-issue-date-1");
         private By additionalDocumentFileNameBy => By.XPath("//table[@id='additional-documents-table']//a[contains(@id,'attachment-view')]");
         private By catchCertificateHeadingBy => By.Id("catch-certificate-details-heading");
         private By catchCertificateSummaryTableBy => By.Id("catch-certificate-summary-table");
         private By catchCertificateSummaryRowsBy => By.XPath("//table[@id='catch-certificate-summary-table']//tbody//tr");
+
+        //Approved Establishment Details
+        private By approvedEstablishmentNameBy => By.XPath("//tr[@id='establishments-row-1']/td[1]");
+        private By approvedEstablishmentCountryBy => By.XPath("//tr[@id='establishments-row-1']/td[2]");
+        private By approvedEstablishmentTypeBy => By.XPath("//tr[@id='establishments-row-1']/td[3]");
+        private By approvedEstablishmentApprovalNumBy => By.XPath("//tr[@id='establishments-row-1']/td[4]");
+
 
         // Addresses
         private By consignorDetailsBy => By.Id("consignor");
@@ -140,10 +148,12 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement catchCertificateCommodityCode(int row, int column) => _driver.FindElement(By.XPath($"(//table[@id='catch-certificate-details-table'])[1]//tbody/tr[{row}]/td[{column}]"));
         private IWebElement catchCertificateSpeciesDescription(int row, int column) => _driver.FindElement(By.XPath($"(//table[@id='catch-certificate-details-table'])[1]//tbody/tr[{row}]/td[{column}]"));
         private IReadOnlyCollection<IWebElement> lnkChangeCatchCertificateLinks => _driver.FindElements(By.Id("add-catch-certificate-details-change-link"));
-        private IWebElement lnkChangeLinkForTransportBCP => _driver.FindElement(By.Id("transport-to-bip-change-link"));
+        private IWebElement lnkChangeLinkForTransport => _driver.FindElement(By.Id("transport-to-bip-change-link"));
         private IWebElement lnkChangeLinkForContactDetailsChange => _driver.FindElement(By.Id("responsible-person-contact-details-change-link"));
+        private IWebElement lnkChangeLinkForConsignmentContactAddress => _driver.FindElement(By.Id("organisation-branch-address-change-link"));
         private IWebElement lnkGoodsMovementServicesChange => _driver.FindElement(By.Id("goods-movement-services-change-link"));
         private IWebElement lnkTraderDeliveryAddressChange => _driver.FindElement(By.Id("traders-change-link"));
+        private IWebElement lnkAddApprovedEstablishmentDetails => _driver.FindElement(By.Id("add-when-no-approved-establishments-link"));
         private IWebElement pImporterName => _driver.FindElement(By.XPath("(//dd[@id='importer']/p)[1]"));
         private IWebElement btnViewChed => _driver.FindElement(By.Id("show-notification"));
         private IWebElement ddContactName => _driver.FindElement(By.Id("responsible-contact-name"));
@@ -153,8 +163,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private By tdControlledAtmosphereContainer => By.XPath("//th[normalize-space()='Controlled atmosphere container']/parent::tr/following-sibling::tr[1]/td[6]");
         private By tdQuantity => By.XPath("//th[normalize-space()='Quantity']/parent::tr/following-sibling::tr[1]/td[3]");
         private By tdQuantityType => By.XPath("//th[normalize-space()='Quantity type']/parent::tr/following-sibling::tr[1]/td[4]");
-        private IWebElement tdGrossVolume => _driver.FindElement(By.XPath("//td[normalize-space()='Total gross volume']/following-sibling::td"));
-        private IWebElement tdGrossVolumeUnit => _driver.FindElement(By.XPath("//td[normalize-space()='Total gross volume unit']/following-sibling::td"));
+        private By tdGrossVolume => By.XPath("//td[normalize-space()='Total gross volume']/following-sibling::td");
+        private By tdGrossVolumeUnit => By.XPath("//td[normalize-space()='Total gross volume unit']/following-sibling::td");
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -789,6 +799,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         // Documents - Simple getters
         public string GetHealthCertificateReference() => _driver.SafelyGetText(healthCertificateReferenceBy);
+        public string GetLatestHealthDocumentType() => _driver.SafelyGetText(healthDocumentTypeBy);
         public string GetAdditionalDocumentType() => _driver.SafelyGetText(additionalDocumentTypeBy);
         public string GetAdditionalDocumentReference() => _driver.SafelyGetText(additionalDocumentReferenceBy);
         public string GetHealthCertificateFileName() => _driver.SafelyGetText(healthCertificateFileNameBy);
@@ -799,6 +810,12 @@ namespace Defra.UI.Tests.Pages.Classes
         public string GetCatchedDocumentReference() => _driver.SafelyGetText(additionalDocumentReferenceBy);
         public string GetCatchedCertificateFileName() => _driver.SafelyGetText(healthCertificateFileNameBy);
         public string GetCatchedDocumentFileName() => _driver.SafelyGetText(additionalDocumentFileNameBy);
+
+        //Approved Establishment Details
+        public string GetApprovedEstablishmentName() => _driver.SafelyGetText(approvedEstablishmentNameBy);
+        public string GetApprovedEstablishmentCountry() => _driver.SafelyGetText(approvedEstablishmentCountryBy);
+        public string GetApprovedEstablishmentType() => _driver.SafelyGetText(approvedEstablishmentTypeBy);
+        public string GetApprovedEstablishmentApprovalNum() => _driver.SafelyGetText(approvedEstablishmentApprovalNumBy);
 
         // Date methods with parsing logic
         public string GetHealthCertificateDateOfIssue()
@@ -1452,7 +1469,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void ClickChangeLinkForTransportToTheBCP()
         {
-            lnkChangeLinkForTransportBCP.Click();
+            lnkChangeLinkForTransport.Click();
         }
 
         public void ClickChangeLinkForContactDetails()
@@ -1465,7 +1482,7 @@ namespace Defra.UI.Tests.Pages.Classes
             lnkGoodsMovementServicesChange.Click();
         }
 
-        public void ClickChangeLinkForAddDeliveryAddress()
+        public void ClickChangeLinkForTraders()
         {
             lnkTraderDeliveryAddressChange.Click();
         }
@@ -1517,7 +1534,41 @@ namespace Defra.UI.Tests.Pages.Classes
                 return string.Empty;
             return text;
         }
-        public string GetGrossVolume() => tdGrossVolume.Text.Trim();
-        public string GetGrossVolumeUnit() => tdGrossVolumeUnit.Text.Trim();
+
+        public string GetGrossVolume()
+        {
+            var text = _driver.SafelyGetText(tdGrossVolume);
+            if (string.IsNullOrEmpty(text))
+                return string.Empty;
+            return text;
+        }
+
+        public string GetGrossVolumeUnit()
+        {
+            var text = _driver.SafelyGetText(tdGrossVolumeUnit);
+            if (string.IsNullOrEmpty(text))
+                return string.Empty;
+            return text;
+        }
+        public void ClickChangeLinkForTransportToThePOE()
+        {
+            lnkChangeLinkForTransport.Click();
+        }
+
+        public void ClickChangeLinkForConsignmentContactAddress()
+        {
+           lnkChangeLinkForConsignmentContactAddress.Click();
+        }
+
+        public void ClickAddApprovedEstablishmentDetailsLink()
+        {
+            lnkAddApprovedEstablishmentDetails.Click();
+        }
+
+        public string GetDestinationAddressTextOnly()
+        {
+            var fullText = _driver.SafelyGetText(destinationDetailsBy);
+            return fullText.Replace(",", "");
+        }
     }
 }

@@ -49,6 +49,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement lnkCopyAsNew => _driver.FindElement(By.CssSelector("button[id*='copy-as-new']"));
         private IWebElement lnkContact => _driver.FindElement(By.XPath("//a[contains(text(),'Contact')]"));
         private IWebElement lnkCookies => _driver.FindElement(By.Id("button-cookies"));
+        private IWebElement lnkManageTradePartners => _driver.FindElement(By.Id("manage-trade-partners-link"));
         private By NotificationStatusBy => By.Id("status-0");
         private By GetAmendLinkBy(string chedRef) => By.Id($"amend-details-{chedRef}");
         private By GetCopyAsNewLinkBy(string chedRef) => By.Id($"copy-as-new-{chedRef}");
@@ -154,6 +155,7 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickViewDetailsLink() => lnkViewDetails.Click();
         public void ClickContactLink() => lnkContact.Click();
         public void ClickCopyAsNewLink() => lnkCopyAsNew.Click();
+        public void ClickManageTradePartnersLink() => lnkManageTradePartners.Click();
 
         public bool IsSearchNotiByPanelDisplayed => searchNotificationsPanel != null && searchNotificationsPanel.Displayed;
         public bool AreAllSearchFieldsDisplayed()

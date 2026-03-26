@@ -27,14 +27,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext = context;
             _objectContainer = container;
         }
-       
+
         [Given(@"that I navigate to the IPAFF application")]
         [When(@"I navigate to the IPAFF application")]
         [When("the user logs back into IPAFFS application")]
         public void GivenThatINavigateToThePortCheckerApplication()
         {
             var url = urlBuilder.Default().BuildApp();
-            _driver?.Navigate().GoToUrl(url);           
+            _driver?.Navigate().GoToUrl(url);
         }
 
         [When(@"the user navigate to the BTMS application")]
@@ -57,6 +57,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void GivenThatTheUserNavigateToTheIPAFFSInternalPlantsInspectorApplication()
         {
             var url = ConfigSetup.BaseConfiguration.SearchProtectedNotifications.Url;
+            _driver?.Navigate().GoToUrl(url);
+        }
+
+        [When(@"the user navigates to the IPAFFS Intensified Official Controls application")]
+        [Given(@"the user navigates to the IPAFFS Intensified Official Controls application")]
+        public void GivenThatTheUserNavigateToTheIPAFFSIntensifiedOfficialControlsApplication()
+        {
+            var url = ConfigSetup.BaseConfiguration.IntensifiedOfficialControls.Url;
             _driver?.Navigate().GoToUrl(url);
         }
 
@@ -183,6 +191,19 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _signInPage?.SignIn(userObject.UserName, userObject.Credential);
         }
 
+        [When(@"I have provided the IPAFF {string} credentials and signin")]
+        public void WhenIHaveProvidedTheIPAFFCredentialsAndSignin(string role)
+        {
+            var jsonData = UserObject?.GetUser("IPAFF", role);
+            var userObject = new User
+            {
+                UserName = jsonData.UserName,
+                Credential = jsonData.Credential
+            };
+
+            _signInPage?.SignIn(userObject.UserName, userObject.Credential);
+        }
+
         [When("I have provided the IPAFFS Internal Plants Inspector credentials and signin")]
         public void WhenIHaveProvidedTheIPAFFSInternalPlantsInspectorCredentialsAndSignin()
         {
@@ -192,6 +213,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _signInPage?.IPAFFSInternalInspectorSignIn(userName, credential);
         }
 
+        [When("I have provided the IPAFFS Intensified Official Controls credentials and signin")]
+        public void WhenIHaveProvidedTheIPAFFSIntensifiedOfficialControlsCredentialsAndSignin()
+        {
+            var userName = ConfigSetup.BaseConfiguration.IntensifiedOfficialControls.User;
+            var credential = ConfigSetup.BaseConfiguration.IntensifiedOfficialControls.Credential;
+
+            _signInPage?.IPAFFSInternalInspectorSignIn(userName, credential);
+        }
 
         [When(@"I have provided the password for prototype research page")]
         public void WhenIHaveProvidedThePasswordForPrototypeResearchPage()
@@ -209,6 +238,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUsersOpensANewTab()
         {
             governmentGatewayTypePage?.OpenNewTab();
+        }
+
+        [Then("the user should be logged out of IPAFFS IOC successfully")]
+        public void ThenTheUserShouldBeLoggedOutOfIPAFFSIOCSuccessfully()
+        {
+            Assert.True(
+                _signInPage?.IsSignedOutFromIOC(),
+                "User was not successfully logged out of IPAFFS IOC");
         }
     }
 }

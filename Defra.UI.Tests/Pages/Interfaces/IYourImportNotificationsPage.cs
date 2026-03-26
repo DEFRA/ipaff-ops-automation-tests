@@ -28,6 +28,7 @@
         void ClickCopyAsNewLink();
         bool VerifyNotificationStatus(string status);
         void ClickCloneButton();
+        void ClickManageTradePartnersLink();
         string getPDFUrl();
     }
 }

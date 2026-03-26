@@ -11,5 +11,6 @@
         void SelectExitBCP(string exitBCP);
         void SelectDestinationCountry(string destination);
         void ClickSubmitControlButton();
+        void EnterDate(string day, string month, string year);
     }
 }

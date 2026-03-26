@@ -8,5 +8,6 @@
         string GetSelectedDestinationName(string destinationName);
         string GetSelectedDestinationAddress(string destinationName);
         string GetSelectedDestinationCountry(string destinationName);
+        string GetDestinationAddressTextOnly(string destinationName);
     }
 }
