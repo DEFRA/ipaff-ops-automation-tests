@@ -52,11 +52,91 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
         this.scenarioContext = scenarioContext;
     }
 
+    [Then(@"the '(.*)' view is displayed")]
+    public void ThenTheViewIsDisplayed(string expectedViewName)
+    {
+        Driver.WaitForTransaction();
+
+        var viewSelectorButton = Driver.WaitUntilAvailable(
+            By.XPath("//button[contains(@data-id,'ViewSelector') and not(contains(@data-id,'ViewSelector_1'))]"),
+            $"View selector button could not be found.");
+
+        var actualViewName = viewSelectorButton.GetAttribute("aria-label")?.Trim() ?? string.Empty;
+
+        actualViewName.Should().Be(expectedViewName,
+            $"Expected view to be '{expectedViewName}' but found '{actualViewName}'");
+    }
+
+    [When("I search Import Notifications for the notification created in IPAFFS")]
     [When("I search Importer Notifications for the notification created in IPAFFS")]
     public void WhenISearchImporterNotificationsForTheNotificationCreatedInIPAFFS()
     {
+        // Comment out after the test data is refreshed with the correct reference number
+        scenarioContext["CHEDReference"] = "CHEDPP.GB.2026.1066873";
         var chedReference = scenarioContext.Get<string>("CHEDReference");
         XrmApp.Grid.Search(chedReference);
+        Driver.WaitForTransaction();
+    }
+
+    [Then("the notification created in IPAFFS should be returned")]
+    public void ThenTheNotificationCreatedInIPAFFSShouldBeReturned()
+    {
+        Driver.WaitForTransaction();
+
+        var expectedChedReference = scenarioContext.Get<string>("CHEDReference");
+
+        var rows = Driver.FindElements(By.XPath("//div[@class='ag-center-cols-container']//div[@role='row']"));
+
+        rows.Should().HaveCount(1, $"Expected exactly 1 result for CHED reference '{expectedChedReference}' but found {rows.Count}.");
+
+        var chedReferenceCell = rows[0].FindElement(By.XPath(".//div[@col-id='trd_chedppreference']//a"));
+
+        var actualChedReference = chedReferenceCell.Text.Trim();
+
+        actualChedReference.Should().Be(expectedChedReference,
+            $"Expected CHED reference '{expectedChedReference}' but found '{actualChedReference}'.");
+    }
+
+    [Then("I verify the Import Notification page is displayed for the notification created in IPAFFS")]
+    public void ThenIVerifyTheImportNotificationPageIsDisplayedForTheNotificationCreatedInIPAFFS()
+    {
+        Driver.WaitForTransaction();
+
+        var expectedChedReference = scenarioContext.Get<string>("CHEDReference");
+
+        var pageHeader = Driver.WaitUntilAvailable(
+            By.XPath("//span[@data-id='entity_name_span']"),
+            "Import Notification page header could not be found.");
+
+        var actualPageHeader = pageHeader.Text.Trim();
+        actualPageHeader.Should().Be("Import Notification",
+            $"Expected page header to be 'Import Notification' but found '{actualPageHeader}'.");
+
+        var chedReferenceHeader = Driver.WaitUntilAvailable(
+            By.XPath("//h1[@data-id='header_title']"),
+            $"CHED reference header could not be found on the Import Notification page.");
+
+        var actualChedReference = chedReferenceHeader.Text
+            .Replace("- Saved", string.Empty)
+            .Trim();
+
+        actualChedReference.Should().Be(expectedChedReference,
+            $"Expected CHED reference header to be '{expectedChedReference}' but found '{actualChedReference}'.");
+    }
+
+    [When("I click the reference number in the Work Order field for the notification created in IPAFFS")]
+    public void WhenIClickTheReferenceNumberInTheWorkOrderFieldForTheNotificationCreatedInIPAFFS()
+    {
+        Driver.WaitForTransaction();
+
+        var expectedChedReference = scenarioContext.Get<string>("CHEDReference");
+
+        var workOrderLink = Driver.WaitUntilAvailable(
+            By.XPath($"//div[@data-id='trd_workorderid.fieldControl-LookupResultsDropdown_trd_workorderid_selected_tag' and @aria-label='{expectedChedReference}']"),
+            $"Work Order field link for CHED reference '{expectedChedReference}' could not be found.");
+
+        workOrderLink.Click();
+
         Driver.WaitForTransaction();
     }
 

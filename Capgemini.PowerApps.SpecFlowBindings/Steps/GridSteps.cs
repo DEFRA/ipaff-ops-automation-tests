@@ -23,6 +23,7 @@ public class GridSteps : PowerAppsStepDefiner
     public static void WhenIOpenTheRecordAtPositionInTheGrid(int index)
     {
         XrmApp.Grid.OpenRecord(index);
+        Driver.WaitForTransaction();
     }
 
     /// <summary>
@@ -58,6 +59,7 @@ public class GridSteps : PowerAppsStepDefiner
     public static void WhenISwitchToTheViewInTheGrid(string viewName)
     {
         XrmApp.Grid.SwitchView(viewName);
+        Driver.WaitForTransaction();
     }
 
     /// <summary>
