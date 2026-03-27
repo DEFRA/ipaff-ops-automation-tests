@@ -34,7 +34,6 @@ public class LoginSteps : PowerAppsStepDefiner
     {
         SelectApplication(appName);
         GivenIAmLoggedInToTheAppAs1(appName, userAlias);
-        Driver.WaitForTransaction();
 
         scenarioContext["IsDynamicsActive"] = true;
     }

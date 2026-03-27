@@ -1206,14 +1206,18 @@ Scenario: SPS-9104
 	And I search Import Notifications for the notification created in IPAFFS
 	Then the notification created in IPAFFS should be returned
 	When I open the record at position '0' in the grid
-	Then I can see the 'Summary' tab
-	And I verify the Import Notification page is displayed for the notification created in IPAFFS
+	Then I verify the Import Notification page is displayed for the notification created in IPAFFS
+	And I can see the 'Summary' tab
 	When I click the reference number in the Work Order field for the notification created in IPAFFS
-	#Then the Import tab of the Work Order page is displayed
-	#When I assign Work Order to myself
-	#Then the Substatus should be 'Assigned'
-	#When I check the Commodity Lines frame shows Active Import Commodity Lines
-	#Then all the Commodity Lines should be validated with the values given in the input
+	Then I verify the Work Order page is displayed for the notification created in IPAFFS
+	And I can see the 'Import' tab
+	When I click the Assign command
+	Then I can see the Assign Work Order popup is displayed
+	When I click the Assign button
+	Then the Substatus of the Work Order should be Assigned
+	And the Owner of the Work Order should be me
+	When I check that the Commodity Lines frame shows 'Active Import Commodity Lines'
+	Then all the Commodity Lines should be validated with the values given in the input
 	#When I double click on a Commodity Line with Regulatory Authority set to 'PHSI'
 	#Then the Import Commodity Line page is displayed
 	#And the settings are displayed as HMI Inspection Required 'No' PHSI Inspection Required 'Yes' Inspection Classification 'Mandatory / Controlled / Reduced / Not Notifiable'
