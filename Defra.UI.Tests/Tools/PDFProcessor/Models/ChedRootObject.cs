@@ -1,6 +1,7 @@
-using PdfExtraction.Models;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 
-namespace Defra.UI.Tests.Tools.PDFProcessor.Models
+namespace PdfExtraction.Models
 {
     public class ChedRootObject : List<ChedPageObject> { }
 
