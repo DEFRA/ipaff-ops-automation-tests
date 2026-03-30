@@ -1,7 +1,6 @@
 using Newtonsoft.Json;
-using System.Collections.Generic;
 
-namespace PdfExtraction.Models
+namespace Defra.UI.Tests.Tools.PDFProcessor.Models
 {
     // A generic class to hold the fields of any section
     public class ChedSection

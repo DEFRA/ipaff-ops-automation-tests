@@ -1,12 +1,9 @@
-namespace PdfExtraction
+namespace Defra.UI.Tests.Tools.PDFProcessor.Models
 {
-    public partial class PdfToJsonConverter
+    public class WorkingSection
     {
-        private class WorkingSection
-        {
-            public string Header { get; set; } = "";
-            public double StartX { get; set; }
-            public List<string> Content { get; set; } = new List<string>();
-        }
+        public string Header { get; set; } = "";
+        public double StartX { get; set; }
+        public List<string> Content { get; set; } = new List<string>();
     }
 }
