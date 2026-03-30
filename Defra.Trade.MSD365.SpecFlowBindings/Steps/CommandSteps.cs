@@ -94,6 +94,7 @@ public class CommandSteps : PowerAppsStepDefiner
             });
     }
 
+    [When(@"I click the Back button in the command bar")]
     [When(@"I go back")]
     public static void WhenIgoBack()
     {

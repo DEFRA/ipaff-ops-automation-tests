@@ -147,9 +147,8 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
     }
 
     private static readonly string[] ValidRegulatoryAuthorities = ["PHSI", "HMI", "Joint"];
-    private const int CommodityLinesPageSize = 50;
     private const string EppoCodeColumnDataId = "trd_eppocode";
-    private const string RegulatoryAuthorityColumnDataId = "trd_regulatoryauthority";
+    private const string RegulatoryAuthorityColumnDataId = "trd_regulatoryauthoritycode";
 
     [Then(@"all the Commodity Lines should be validated with the values given in the input")]
     public void ThenAllTheCommodityLinesShouldBeValidatedWithTheValuesGivenInTheInput()
@@ -688,13 +687,15 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
             var dataRows = grid.FindElements(
                 By.XPath(".//div[@role='row'][@aria-label='Data']"));
 
+            ScrollGridUntilBothColumnsVisible();
+
             foreach (var row in dataRows)
             {
                 var eppoCell = row.FindElement(
                     By.XPath(".//div[@role='gridcell'][@aria-colindex='5']//span[@role='presentation']"));
 
                 var regulatoryCell = row.FindElement(
-                    By.XPath($".//div[@role='gridcell'][contains(@id,'{RegulatoryAuthorityColumnDataId}')]//span[@role='presentation']"));
+                    By.XPath(".//div[@role='gridcell'][@aria-colindex='11']//span[@role='presentation']"));
 
                 collectedRows.Add((eppoCell.Text.Trim(), regulatoryCell.Text.Trim()));
             }
@@ -731,40 +732,135 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
 
     private void SortCommodityLinesByEppoCodeAscending()
     {
-        var eppoColumnHeader = Driver.WaitUntilAvailable(
-            By.XPath($"//div[contains(@class,'wj-header') and @data-id='{EppoCodeColumnDataId}']//button"),
+        var eppoColumnHeaderButton = Driver.WaitUntilAvailable(
+            By.XPath($"//div[contains(@id,'_headerButton{EppoCodeColumnDataId}')]"),
             "EPPO Code column header button could not be found.");
 
-        // Check current sort state on the accessible row header cell
-        var sortableCell = Driver.WaitUntilAvailable(
-            By.XPath($"//div[@role='columnheader'][contains(@aria-sort,'')][@title='Eppo Code']"));
-
-        var currentSort = sortableCell?.GetAttribute("aria-sort") ?? "none";
-
-        if (currentSort == "ascending")
-        {
-            return;
-        }
-
-        eppoColumnHeader.Click();
+        eppoColumnHeaderButton.Click();
         Driver.WaitForTransaction();
 
-        if (currentSort == "descending")
-        {
-            // Was descending, one click went to ascending — done
-            return;
-        }
+        var sortAtoZMenuItem = Driver.WaitUntilAvailable(
+            By.XPath("//button[@name='Sort A to Z' and @role='menuitemradio']"),
+            "Sort A to Z menu item could not be found.");
 
-        // Was 'none', first click may have gone to ascending or descending depending on the grid default
-        sortableCell = Driver.WaitUntilAvailable(
-            By.XPath($"//div[@role='columnheader'][@title='Eppo Code']"));
-        var newSort = sortableCell?.GetAttribute("aria-sort") ?? "none";
+        sortAtoZMenuItem.Click();
+        Driver.WaitForTransaction();
+    }
 
-        if (newSort == "descending")
+    private void ScrollGridUntilBothColumnsVisible()
+    {
+        const string findScrollRootAndCheckScript = @"
+            var grid = document.querySelector('div[role=""grid""][aria-label*=""Import Commodity Lines""]');
+            if (!grid) return null;
+            var scrollRoot = grid.closest('[wj-part=""root""]') || grid.parentElement;
+            if (!scrollRoot) return null;
+            var eppoVisible = grid.querySelector('div[role=""gridcell""][aria-colindex=""5""]') !== null;
+            var regAuthVisible = grid.querySelector('div[role=""gridcell""][aria-colindex=""11""]') !== null;
+            return JSON.stringify({
+                scrollLeft: scrollRoot.scrollLeft,
+                scrollWidth: scrollRoot.scrollWidth,
+                clientWidth: scrollRoot.clientWidth,
+                eppoVisible: eppoVisible,
+                regAuthVisible: regAuthVisible
+            });";
+
+        const string scrollIncrementScript = @"
+            var grid = document.querySelector('div[role=""grid""][aria-label*=""Import Commodity Lines""]');
+            if (!grid) return;
+            var scrollRoot = grid.closest('[wj-part=""root""]') || grid.parentElement;
+            if (scrollRoot) { scrollRoot.scrollLeft += 300; }";
+
+        const int maxAttempts = 40;
+
+        for (var attempt = 0; attempt < maxAttempts; attempt++)
         {
-            eppoColumnHeader.Click();
+            var resultJson = Driver.ExecuteScript(findScrollRootAndCheckScript) as string;
+
+            if (resultJson == null)
+            {
+                throw new InvalidOperationException("Commodity Lines grid scroll container could not be found.");
+            }
+
+            var eppoVisible = resultJson.Contains(@"""eppoVisible"":true");
+            var regAuthVisible = resultJson.Contains(@"""regAuthVisible"":true");
+
+            if (eppoVisible && regAuthVisible)
+            {
+                return;
+            }
+
+            Driver.ExecuteScript(scrollIncrementScript);
+
             Driver.WaitForTransaction();
         }
+
+        throw new InvalidOperationException(
+            $"Could not scroll the Commodity Lines grid to show both EPPO Code (col 5) and " +
+            $"Regulatory Authority (col 11) simultaneously after {maxAttempts} attempts. " +
+            $"Consider reviewing the column layout or increasing the max attempts.");
+    }
+
+    [When(@"I sort Commodity Lines by Regulatory Authority")]
+    public void WhenISortCommodityLinesByRegulatoryAuthority()
+    {
+        ScrollGridUntilBothColumnsVisible();
+        Driver.WaitForTransaction();
+
+        var regulatoryAuthorityHeaderButton = Driver.WaitUntilAvailable(
+            By.XPath($"//div[contains(@id,'_headerButton{RegulatoryAuthorityColumnDataId}')]"),
+            "Regulatory Authority column header button could not be found.");
+
+        regulatoryAuthorityHeaderButton.Click();
+        Driver.WaitForTransaction();
+
+        var sortAtoZMenuItem = Driver.WaitUntilAvailable(
+            By.XPath("//button[@name='Sort A to Z' and @role='menuitemradio']"),
+            "Sort A to Z menu item could not be found.");
+
+        sortAtoZMenuItem.Click();
+        Driver.WaitForTransaction();
+    }
+
+    [When(@"I double click on a Commodity Line with Regulatory Authority set to '(.*)'")]
+    public void WhenIDoubleClickOnACommodityLineWithRegulatoryAuthoritySetTo(string regulatoryAuthority)
+    {
+        ScrollGridUntilBothColumnsVisible();
+        Driver.WaitForTransaction();
+
+        var grid = Driver.WaitUntilAvailable(
+            By.XPath("//div[@role='grid'][contains(@aria-label,'Import Commodity Lines')]"),
+            "Commodity Lines grid could not be found.");
+
+        var dataRows = grid.FindElements(By.XPath(".//div[@role='row'][@aria-label='Data']"));
+
+        int matchingIndex = -1;
+        string matchedEppoCode = null;
+
+        for (var i = 0; i < dataRows.Count; i++)
+        {
+            var regulatoryCells = dataRows[i].FindElements(
+                By.XPath(".//div[@role='gridcell'][@aria-colindex='11']//span[@role='presentation']"));
+
+            if (regulatoryCells.Count == 0 ||
+                !regulatoryCells[0].Text.Trim().Equals(regulatoryAuthority, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            var eppoCells = dataRows[i].FindElements(
+                By.XPath(".//div[@role='gridcell'][@aria-colindex='5']//span[@role='presentation']"));
+
+            matchedEppoCode = eppoCells.Count > 0 ? eppoCells[0].Text.Trim() : "(EPPO code not visible)";
+            matchingIndex = i;
+            break;
+        }
+
+        matchingIndex.Should().BeGreaterOrEqualTo(0,
+            $"No Commodity Line with Regulatory Authority '{regulatoryAuthority}' could be found on the current page.");
+
+        XrmApp.Entity.SubGrid.OpenSubGridRecord("Import_notification_commodity_lines_subgrid", matchingIndex);
+
+        Driver.WaitForTransaction();
     }
 
     [Given(@"'(.*)' has updated the status of the work order associated to '(.*)' to '(.*)'")]
