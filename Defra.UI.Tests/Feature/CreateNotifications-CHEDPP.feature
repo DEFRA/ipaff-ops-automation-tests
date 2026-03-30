@@ -1211,11 +1211,11 @@ Scenario: SPS-9104
 	When I click the reference number in the Work Order field for the notification created in IPAFFS
 	Then I verify the Work Order page is displayed for the notification created in IPAFFS
 	And I can see the 'Import' tab
-	#When I click the Assign command
-	#Then I can see the Assign Work Order popup is displayed
-	#When I click the Assign button
-	#Then the Substatus of the Work Order should be Assigned
-	#And the Owner of the Work Order should be me
+	When I click the Assign command
+	Then I can see the Assign Work Order popup is displayed
+	When I click the Assign button
+	Then the Substatus of the Work Order should be Assigned
+	And the Owner of the Work Order should be me
 	When I check that the Commodity Lines frame shows 'Active Import Commodity Lines'
 	Then all the Commodity Lines should be validated with the values given in the input
 	When I sort Commodity Lines by Regulatory Authority
@@ -1235,7 +1235,17 @@ Scenario: SPS-9104
 	When I sort Commodity Lines by Regulatory Authority
 	And I double click on a Commodity Line with Regulatory Authority set to 'Joint'
 	Then the Import Commodity Line page is displayed
-	And the settings are displayed as HMI Inspection Required 'Yes', PHSI Inspection Required 'Yes' and Inspection Classification 'Mandatory / Controlled / Reduced / Not Notifiable'
+	And the settings are displayed as HMI Inspection Required 'Yes', PHSI Inspection Required 'No' and Inspection Classification 'Mandatory / Controlled / Reduced / Not Notifiable'
 	When I click the Back button in the command bar
 	Then I verify the Work Order page is displayed for the notification created in IPAFFS
 	And I can see the 'Import' tab
+	When I select the 'Work Order Tasks' tab
+	Then I can see following Work Order Tasks 'HMI Check' 'Document Check' 'Imports Phyto Certificate Audit' 'Identity & Physical Check'
+	When I click on the 'Document Check' task
+	And I maximise the popup
+	Then I verify the 'Document Check' popup is displayed
+	And I can see the 'Summary' tab
+	When I click the Assign command
+	Then I can see the Assign Work Order Task popup is displayed
+	When I click the Assign button
+	Then the Owner of the Work Order should be me

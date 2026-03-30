@@ -42,6 +42,96 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
     }
 
     /// <summary>
+    /// Verifies that all specified Work Order Task names are present in the workorderservicetasksgrid.
+    /// </summary>
+    [Then(@"I can see following Work Order Tasks (.*)")]
+    public void ThenICanSeeFollowingWorkOrderTasks(string taskNamesRaw)
+    {
+        Driver.WaitForTransaction();
+
+        // Parse the space-separated quoted task names from the step argument.
+        // e.g. 'HMI Check' 'Document Check' 'Imports Phyto Certificate Audit' 'Identity & Physical Check'
+        var expectedTaskNames = System.Text.RegularExpressions.Regex
+            .Matches(taskNamesRaw, @"'([^']+)'")
+            .Select(m => m.Groups[1].Value.Trim())
+            .ToList();
+
+        expectedTaskNames.Should().NotBeEmpty("at least one task name must be specified in the step.");
+
+        var gridContainer = Driver.WaitUntilAvailable(
+            By.XPath("//div[@data-id='dataSetRoot_workorderservicetasksgrid']"),
+            "Work Order Service Tasks grid could not be found.");
+
+        // Task names are rendered as <a role="link" aria-label="<task name>"> inside the msdyn_name column cells.
+        // The aria-label attribute is stable — it is set from the record data, not CSS-in-JS hashing.
+        foreach (var taskName in expectedTaskNames)
+        {
+            var taskLink = gridContainer.FindElements(
+                By.XPath($".//div[@col-id='msdyn_name']//a[@role='link' and @aria-label='{taskName}']"));
+
+            taskLink.Count.Should().Be(1,
+                $"Expected to find exactly one Work Order Task named '{taskName}' in the grid but found {taskLink.Count}.");
+        }
+    }
+
+    /// <summary>
+    /// Clicks on a Work Order Task link by name in the workorderservicetasksgrid.
+    /// </summary>
+    /// <param name="taskName">The name of the task to click.</param>
+    [When(@"I click on the '(.*)' task")]
+    public void WhenIClickOnTheTask(string taskName)
+    {
+        Driver.WaitForTransaction();
+
+        var gridContainer = Driver.WaitUntilAvailable(
+            By.XPath("//div[@data-id='dataSetRoot_workorderservicetasksgrid']"),
+            "Work Order Service Tasks grid could not be found.");
+
+        var taskLink = Driver.WaitUntilAvailable(
+            By.XPath($".//div[@col-id='msdyn_name']//a[@role='link' and @aria-label='{taskName}']"),
+            $"Work Order Task '{taskName}' could not be found in the grid.");
+
+        taskLink.Click();
+        Driver.WaitForTransaction();
+    }
+
+    /// <summary>
+    /// Verifies that the Work Order Task popup is displayed with the expected title.
+    /// </summary>
+    /// <param name="expectedTitle">The expected popup title.</param>
+    [Then(@"I verify the '(.*)' popup is displayed")]
+    public void ThenIVerifyThePopupIsDisplayed(string expectedTitle)
+    {
+        Driver.WaitForTransaction();
+
+        var popupTitle = Driver.WaitUntilAvailable(
+            By.XPath("//h2[@data-id='header_title']"),
+            $"Popup title header could not be found when verifying '{expectedTitle}' popup.");
+
+        var actualTitle = popupTitle.Text
+            .Replace("- Saved", string.Empty)
+            .Trim();
+
+        actualTitle.Should().Be(expectedTitle,
+            $"Expected popup title to be '{expectedTitle}' but found '{actualTitle}'.");
+    }
+
+    [Then("I can see the Assign Work Order Task popup is displayed")]
+    public void ThenICanSeeTheAssignWorkOrderTaskPopupIsDisplayed()
+    {
+        Driver.WaitForTransaction();
+
+        var assignDialog = Driver.WaitUntilAvailable(
+            By.XPath("//div[@data-id='Assign' and @data-uci-dialog='true']"),
+            "Assign Work Order dialog could not be found.");
+
+        var dialogHeader = assignDialog.FindElement(By.XPath(".//h1[@data-id='assignheader_id']"));
+
+        dialogHeader.Text.Trim().Should().Be("Assign Work Order Task",
+            $"Expected dialog header to be 'Assign Work Order' but found '{dialogHeader.Text.Trim()}'.");
+    }
+
+    /// <summary>
     /// Updates an application's work order to have submitted or unsubmitted time associated with the service tasks for a given bookable resource.
     /// </summary>
     /// <param name="applicationAlias">The alias of the application.</param>
