@@ -1,6 +1,6 @@
-using PdfExtraction.Models;
+using System.Collections.Generic;
 
-namespace Defra.UI.Tests.Tools.PDFProcessor.Models
+namespace PdfExtraction.Models
 {
     // Represents the root list of pages
     public class ChedDocument : List<ExtractedPage> { }

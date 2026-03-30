@@ -1,4 +1,4 @@
-namespace Defra.UI.Tests.Tools.PDFProcessor.Models
+namespace PdfExtraction
 {
     public partial class PdfToJsonConverter
     {

@@ -1,7 +1,8 @@
+using System.Collections.Generic;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
 
-namespace Defra.UI.Tests.Tools.PDFProcessor.Extractors
+namespace PdfExtraction.Extractors
 {
     /// <summary>
     /// Extracts form field data using text analysis
