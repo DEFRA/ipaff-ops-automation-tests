@@ -1,18 +1,12 @@
 ﻿using Defra.UI.Tests.Data.Users;
-using Defra.UI.Tests.Pages.Classes;
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
+using Defra.UI.Tests.Tools.PDFProcessor;
 using Defra.UI.Tests.Tools.PDFProcessor.Models;
-using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
-using DocumentFormat.OpenXml.Presentation;
-using Microsoft.Xrm.Sdk.Deployment;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
 
 namespace Defra.UI.Tests.Steps.IPAFF
 {
@@ -177,9 +171,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     }
                     else if (pageNumber == 3)
                     {
-                        var y = page.Sections.Ii2ChedReference.Id;
-                        ValidateIfExists("CHEDReference", page.Sections.Ii2ChedReference.Id, ref allDataMatches, mismatches);
-                        ValidateIfExists("CustomsDeclarationReference", page.Sections.Ii25BcpReferenceNumber.Value, ref allDataMatches, mismatches);
+                        ValidateIfExists("CHEDReference", page.Sections.II2ChedReference.Id, ref allDataMatches, mismatches);
+                        ValidateIfExists("CustomsDeclarationReference", page.Sections.II25BcpReferenceNumber.Id, ref allDataMatches, mismatches);
 
                         string? pdfDocCheckDecision = page.Sections.DocumentaryCheck 
                         switch
@@ -191,11 +184,58 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             _ => null
                         };
                         ValidateIfExists("DocumentaryCheckDecision", pdfDocCheckDecision, ref allDataMatches, mismatches);
+
+                        string? pdfIdentityCheck = page.Sections.IdentityCheck
+                        switch
+                        {
+                            { SealCheckOnly: "true" } => "SealCheckOnly",
+                            { FullIdentityCheck: "true" } => "FullIdentityCheck",
+                            _ => null
+                        };
+                        ValidateIfExists("IdentityCheck", pdfIdentityCheck, ref allDataMatches, mismatches);
+                        
+                        string? pdfIdentityCheckDecision = page.Sections.IdentityCheck
+                        switch
+                        {
+                            { Satisfactory: "true" } => "Satisfactory",
+                            { NotSatisfactory: "true" } => "Not Satisfactory",
+                            _ => null
+                        };
+                        ValidateIfExists("IdentityCheckDecision", pdfIdentityCheckDecision, ref allDataMatches, mismatches);
+
+                        string? pdfPhysicalCheck = page.Sections.PhysicalCheck
+                        switch
+                        {
+                            { Satisfactory: "true" } => "Satisfactory",
+                            { NotSatisfactory: "true" } => "Not Satisfactory",
+                            _ => null
+                        };
+                        ValidateIfExists("PhysicalCheck", pdfPhysicalCheck, ref allDataMatches, mismatches);
+
+                        string? pdfLaboratoryTests = page.Sections.LaboratoryTests
+                        switch
+                        {
+                            { Satisfactory: "true" } => "Satisfactory",
+                            { NotSatisfactory: "true" } => "Not Satisfactory",
+                            { Random: "true" } => "Random",
+                            { Suspicion: "true" } => "Suspicion",
+                            { IntensifiedControls: "true" } => "IntensifiedControls",
+                            { Pending: "true" } => "Pending",
+                            _ => null
+                        };
+                        ValidateIfExists("LaboratoryTests", pdfLaboratoryTests, ref allDataMatches, mismatches);
+
+                        ValidateContains("IUUSubOption", page.Sections.CustomsDocumentReference.Value, ref allDataMatches, mismatches);
+
+                        var c = (string?)page.Sections.IdentificationOfBcp.AdditionalData.ElementAt(2).Value;
+
+                        ValidateContains("PortOfEntry", (string?)page.Sections.IdentificationOfBcp.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches, true);
+                        ValidateContains("DestinationCountry", page.Sections.AcceptableForTransit.Value, ref allDataMatches, mismatches);
+                        ValidateContains("ExitBorderControlPost", (string?)page.Sections.AcceptableForTransit.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches, true);                        
                     }
                     else if (pageNumber == 4)
                     {
-                        var z = page.Sections.Iii2ChedReference.Id;
-                        ValidateIfExists("CHEDReference", page.Sections.Iii2ChedReference.Id, ref allDataMatches, mismatches);
+                        ValidateIfExists("CHEDReference", page.Sections.III2ChedReference.Id, ref allDataMatches, mismatches);
                     }
                 }
             }
@@ -396,39 +436,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         mismatches.Add($"{contextKey}: Date parsing failed - {ex.Message}");
                     }
 
-                    return; // stop further processing
+                    return; 
                 }
 
-
-/*                // Temperature validation
-                if (contextKey == "Temperature")
-                {
-                    var expectedTemp = _scenarioContext.Get<string>("Temperature")?.Trim();
-
-                    bool isMatch =
-                        (expectedTemp.Equals("Ambient", StringComparison.OrdinalIgnoreCase) && reviewValue == "Ambient") ||
-                        (expectedTemp.Equals("Frozen", StringComparison.OrdinalIgnoreCase) && reviewValue == "Frozen") ||
-                        (expectedTemp.Equals("Chilled", StringComparison.OrdinalIgnoreCase) && reviewValue == "Chilled");
-
-                    if (!isMatch)
-                    {
-                        allDataMatches = false;
-                        mismatches.Add($"{contextKey}: Expected '{expectedTemp}', Found '{reviewValue}'");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedTemp}' matches");
-                    }
-
-                    return;
-                }*/
-
-
-                // ✅ COMMON STRING FIELDS (Temperature-like / Decision-like)
                 if (_scenarioContext.ContainsKey(contextKey) && contextKey is "Temperature"
                                                                  or "DocumentaryCheckDecision"
-                                                                 or "NewField1"
-                                                                 or "NewField2")
+                                                                 or "IdentityCheck"
+                                                                 or "PhysicalCheck"
+                                                                 or "LaboratoryTests")
                 {
                     var expected = _scenarioContext.Get<string>(contextKey)?.Trim();
                     var actual = reviewValue?.Trim();
@@ -560,17 +575,19 @@ namespace Defra.UI.Tests.Steps.IPAFF
             }
         }
 
-        private void ValidateContains(string contextKey, string? actual, ref bool allDataMatches, List<string> mismatches, bool contextNotContainsPDF = false)
+        private void ValidateContains(string contextKey, string? actual, ref bool allDataMatches, List<string> mismatches, bool contextContainsPDF = false)
         {
             if (_scenarioContext.ContainsKey(contextKey))
             {
-                //var expectedValue = _scenarioContext.Get<string>(contextKey);
                 object rawExpected = _scenarioContext[contextKey];
                 string expectedValue;
 
                 if (rawExpected is string s)
                 {
                     expectedValue = s.Trim();
+                    if (expectedValue.Trim() == "No need to inspect - exempt or not applicable") expectedValue = "IUUNA";
+                    if (contextKey.Trim() == "ExitBorderControlPost") expectedValue = expectedValue.Split('(')[0].Trim();
+
                 }
                 else if (rawExpected is string[] arr)
                 {
@@ -587,7 +604,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 if (!string.IsNullOrEmpty(expectedValue) && !string.IsNullOrEmpty(actual))
                 {
 
-                    bool isMatch = contextNotContainsPDF
+                    bool isMatch = contextContainsPDF
                         ? expectedValue.Contains(actual.Trim(), StringComparison.OrdinalIgnoreCase)
                         : actual.Trim().Contains(expectedValue, StringComparison.OrdinalIgnoreCase);
 
@@ -603,41 +620,5 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 }
             }
         }
-
-
-/*        private bool ValidateMappedValue(
-            string contextKey,
-            string? actual,
-            Dictionary<string, string> mapping,
-            ref bool allDataMatches,
-            List<string> mismatches)
-        {
-            if (!_scenarioContext.ContainsKey(contextKey))
-                return false;
-
-            var expectedKey = _scenarioContext.Get<string>(contextKey)?.Trim();
-
-            if (expectedKey == null || actual == null)
-                return false;
-
-            if (!mapping.TryGetValue(expectedKey, out var expectedMapped))
-            {
-                mismatches.Add($"{contextKey}: Unexpected mapping key '{expectedKey}'");
-                allDataMatches = false;
-                return true; // handled
-            }
-
-            if (!expectedMapped.Equals(actual, StringComparison.OrdinalIgnoreCase))
-            {
-                allDataMatches = false;
-                mismatches.Add($"{contextKey}: Expected '{expectedMapped}', Found '{actual}'");
-            }
-            else
-            {
-                Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedMapped}' matches");
-            }
-
-            return true; // handled
-        }*/
     }
 }
