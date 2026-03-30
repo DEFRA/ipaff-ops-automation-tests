@@ -1,7 +1,6 @@
 using Newtonsoft.Json;
-using System.Collections.Generic;
 
-namespace PdfExtraction.Models
+namespace Defra.UI.Tests.Tools.PDFProcessor.Models
 {
     // Example of a strongly typed wrapper if you wanted to map the specific sections
     // You would deserialize the "Sections" dictionary into this object instead of Dictionary<string, ChedSection>

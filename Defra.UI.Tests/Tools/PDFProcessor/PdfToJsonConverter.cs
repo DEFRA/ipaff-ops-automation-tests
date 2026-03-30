@@ -1,14 +1,12 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Text;
+using Defra.UI.Tests.Tools.PDFProcessor.Extractors;
+using Defra.UI.Tests.Tools.PDFProcessor.Models;
 using Newtonsoft.Json;
+using System.Text;
+using System.Text.RegularExpressions;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
-using PdfExtraction.Models;
-using PdfExtraction.Extractors;
 
-namespace PdfExtraction
+namespace Defra.UI.Tests.Tools.PDFProcessor
 {
     public partial class PdfToJsonConverter
     {

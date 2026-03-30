@@ -1,4 +1,4 @@
-namespace PdfExtraction.Models
+namespace Defra.UI.Tests.Tools.PDFProcessor.Models
 {
     public class ExtractedPage
     {
