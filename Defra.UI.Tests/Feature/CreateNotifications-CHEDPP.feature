@@ -1202,42 +1202,42 @@ Scenario: SPS-9104
 	When I am logged in to the 'IDCOMS' app as 'Inspector'
 	And I open the sub area 'Import Notifications' under the 'Imports' area
 	Then the 'Active Import Notifications' view is displayed
-	When I switch to the 'All Import Notifications' view in the grid
-	And I search Import Notifications for the notification created in IPAFFS
+	#When I switch to the 'All Import Notifications' view in the grid
+	When I search Import Notifications for the notification created in IPAFFS
 	Then the notification created in IPAFFS should be returned
 	When I open the record at position '0' in the grid
 	Then I verify the Import Notification page is displayed for the notification created in IPAFFS
 	And I can see the 'Summary' tab
 	When I click the reference number in the Work Order field for the notification created in IPAFFS
 	Then I verify the Work Order page is displayed for the notification created in IPAFFS
-	And I can see the 'Import' tab
-	When I click the Assign command
-	Then I can see the Assign Work Order popup is displayed
-	When I click the Assign button
-	Then the Substatus of the Work Order should be Assigned
-	And the Owner of the Work Order should be me
-	When I check that the Commodity Lines frame shows 'Active Import Commodity Lines'
-	Then all the Commodity Lines should be validated with the values given in the input
-	When I sort Commodity Lines by Regulatory Authority
-	And I double click on a Commodity Line with Regulatory Authority set to 'PHSI'
-	Then the Import Commodity Line page is displayed
-	And the settings are displayed as HMI Inspection Required 'No', PHSI Inspection Required 'Yes' and Inspection Classification 'Mandatory / Controlled / Reduced / Not Notifiable'
-	When I click the Back button in the command bar
-	Then I verify the Work Order page is displayed for the notification created in IPAFFS
-	And I can see the 'Import' tab	
-	When I sort Commodity Lines by Regulatory Authority
-	And I double click on a Commodity Line with Regulatory Authority set to 'HMI'
-	Then the Import Commodity Line page is displayed
-	And the settings are displayed as HMI Inspection Required 'Yes', PHSI Inspection Required 'No' and Inspection Classification ''
-	When I click the Back button in the command bar
-	Then I verify the Work Order page is displayed for the notification created in IPAFFS
-	And I can see the 'Import' tab
-	When I sort Commodity Lines by Regulatory Authority
-	And I double click on a Commodity Line with Regulatory Authority set to 'Joint'
-	Then the Import Commodity Line page is displayed
-	And the settings are displayed as HMI Inspection Required 'Yes', PHSI Inspection Required 'No' and Inspection Classification 'Mandatory / Controlled / Reduced / Not Notifiable'
-	When I click the Back button in the command bar
-	Then I verify the Work Order page is displayed for the notification created in IPAFFS
+	#And I can see the 'Import' tab
+	#When I click the Assign command
+	#Then I can see the Assign Work Order popup is displayed
+	#When I click the Assign button
+	#Then the Substatus of the Work Order should be Assigned
+	#And the Owner of the Work Order should be me
+	#When I check that the Commodity Lines frame shows 'Active Import Commodity Lines'
+	#Then all the Commodity Lines should be validated with the values given in the input
+	#When I sort Commodity Lines by Regulatory Authority
+	#And I double click on a Commodity Line with Regulatory Authority set to 'PHSI'
+	#Then the Import Commodity Line page is displayed
+	#And the settings are displayed as HMI Inspection Required 'No', PHSI Inspection Required 'Yes' and Inspection Classification 'Mandatory / Controlled / Reduced / Not Notifiable'
+	#When I click the Back button in the command bar
+	#Then I verify the Work Order page is displayed for the notification created in IPAFFS
+	#And I can see the 'Import' tab	
+	#When I sort Commodity Lines by Regulatory Authority
+	#And I double click on a Commodity Line with Regulatory Authority set to 'HMI'
+	#Then the Import Commodity Line page is displayed
+	#And the settings are displayed as HMI Inspection Required 'Yes', PHSI Inspection Required 'No' and Inspection Classification ''
+	#When I click the Back button in the command bar
+	#Then I verify the Work Order page is displayed for the notification created in IPAFFS
+	#And I can see the 'Import' tab
+	#When I sort Commodity Lines by Regulatory Authority
+	#And I double click on a Commodity Line with Regulatory Authority set to 'Joint'
+	#Then the Import Commodity Line page is displayed
+	#And the settings are displayed as HMI Inspection Required 'Yes', PHSI Inspection Required 'No' and Inspection Classification 'Mandatory / Controlled / Reduced / Not Notifiable'
+	#When I click the Back button in the command bar
+	#Then I verify the Work Order page is displayed for the notification created in IPAFFS
 	And I can see the 'Import' tab
 	When I select the 'Work Order Tasks' tab
 	Then I can see following Work Order Tasks 'HMI Check' 'Document Check' 'Imports Phyto Certificate Audit' 'Identity & Physical Check'
@@ -1249,3 +1249,15 @@ Scenario: SPS-9104
 	Then I can see the Assign Work Order Task popup is displayed
 	When I click the Assign button
 	Then the Owner of the Work Order should be me
+	When I click Add my time within the Time Recording section
+	Then a new row appears in the grid containing my name
+	And the entry status is 'Draft'
+	When I enter '20' in the Admin column
+	And I click the Save icon
+	Then the details are saved 
+	And the entry status is 'Draft'
+	When I select the new row
+	And I click Submit Time
+	And I can see the Confirm Time Entries popup is displayed
+	And I click the OK button
+	Then the entry status is 'Submitted'

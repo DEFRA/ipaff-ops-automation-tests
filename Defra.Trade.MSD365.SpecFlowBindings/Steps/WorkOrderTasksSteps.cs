@@ -30,15 +30,16 @@ using Reqnroll;
 public class WorkOrderTasksSteps : PowerAppsStepDefiner
 {
     private SessionContext ctx;
-    private readonly ScenarioContext _scenarioContext;
+    private readonly ScenarioContext scenarioContext;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WorkOrderTasksSteps"/> class.
     /// </summary>
     /// <param name="ctx">SessionContext.</param>
-    public WorkOrderTasksSteps(SessionContext ctx)
+    public WorkOrderTasksSteps(SessionContext ctx, ScenarioContext scenarioContext = null)
     {
         this.ctx = ctx;
+        this.scenarioContext = scenarioContext;
     }
 
     /// <summary>
@@ -108,9 +109,7 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
             By.XPath("//h2[@data-id='header_title']"),
             $"Popup title header could not be found when verifying '{expectedTitle}' popup.");
 
-        var actualTitle = popupTitle.Text
-            .Replace("- Saved", string.Empty)
-            .Trim();
+        var actualTitle = popupTitle.Text;            
 
         actualTitle.Should().Be(expectedTitle,
             $"Expected popup title to be '{expectedTitle}' but found '{actualTitle}'.");
@@ -129,6 +128,235 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
 
         dialogHeader.Text.Trim().Should().Be("Assign Work Order Task",
             $"Expected dialog header to be 'Assign Work Order' but found '{dialogHeader.Text.Trim()}'.");
+    }
+
+    /// <summary>
+    /// Clicks the 'Add my time' command button in the Time Recording subgrid.
+    /// </summary>
+    [When(@"I click Add my time within the Time Recording section")]
+    public void WhenIClickAddMyTimeWithinTheTimeRecordingSection()
+    {
+        Driver.WaitForTransaction();
+
+        var addMyTimeButton = Driver.WaitUntilAvailable(
+            By.XPath("//button[@data-id='trd_timerecording|NoRelationship|SubGridStandard|trd.trd_timerecording.AddMyTime.Button']"),
+            "Add my time button could not be found in the Time Recording section.");
+
+        addMyTimeButton.Click();
+        Driver.WaitForTransaction();
+    }
+
+    /// <summary>
+    /// Verifies that a new row appears in the Time Recording subgrid containing the current user's name in the Inspector column.
+    /// </summary>
+    [Then(@"a new row appears in the grid containing my name")]
+    public void ThenANewRowAppearsInTheGridContainingMyName()
+    {
+        Driver.WaitForTransaction();
+
+        var currentUser = TestConfig.GetUser("Inspector", useCurrentUser: true);
+        var localPart = currentUser.Username.Split('@')[0];
+        var expectedName = string.Join(" ", localPart.Split('.')
+            .Select(p => char.ToUpper(p[0]) + p.Substring(1)));
+
+        var grid = Driver.WaitUntilAvailable(
+            By.XPath("//div[@data-id='timerecordings_admin_subgrid_container']//div[@role='grid'][contains(@aria-label,'Time Recording')]"),
+            "Time Recording grid could not be found.");
+
+        // Inspector is at aria-colindex='3' in the WijMo grid as confirmed in the HTML.
+        var inspectorCells = grid.FindElements(
+            By.XPath(".//div[@role='row'][@aria-label='Data']//div[@role='gridcell'][@aria-colindex='3']//span[@role='presentation']"));
+
+        inspectorCells.Should().NotBeEmpty(
+            "Expected at least one row in the Time Recording grid after clicking Add my time.");
+
+        var matchingCell = inspectorCells.FirstOrDefault(
+            cell => cell.Text.Trim().Equals(expectedName, StringComparison.OrdinalIgnoreCase));
+
+        matchingCell.Should().NotBeNull(
+            $"Expected to find a row with Inspector '{expectedName}' in the Time Recording grid but no matching row was found. " +
+            $"Found inspectors: [{string.Join(", ", inspectorCells.Select(c => $"'{c.Text.Trim()}'"))}].");
+    }
+
+    /// <summary>
+    /// Verifies that the entry status for the current user's row in the Time Recording subgrid matches the expected value.
+    /// </summary>
+    /// <param name="expectedEntryStatus">The expected entry status value e.g. 'Draft'.</param>
+    [Then(@"the entry status is '(.*)'")]
+    public void ThenTheEntryStatusIs(string expectedEntryStatus)
+    {
+        Driver.WaitForTransaction();
+
+        var currentUser = TestConfig.GetUser("Inspector", useCurrentUser: true);
+        var localPart = currentUser.Username.Split('@')[0];
+        var expectedName = string.Join(" ", localPart.Split('.')
+            .Select(p => char.ToUpper(p[0]) + p.Substring(1)));
+
+        var grid = Driver.WaitUntilAvailable(
+            By.XPath("//div[@data-id='timerecordings_admin_subgrid_container']//div[@role='grid'][contains(@aria-label,'Time Recording')]"),
+            "Time Recording grid could not be found.");
+
+        var dataRows = grid.FindElements(
+            By.XPath(".//div[@role='row'][@aria-label='Data']"));
+
+        dataRows.Should().NotBeEmpty("Expected at least one row in the Time Recording grid.");
+
+        // Find the row where aria-colindex='3' (Inspector) matches the current user,
+        // then assert aria-colindex='2' (Entry Status) on that same row.
+        IWebElement matchingRow = null;
+
+        foreach (var row in dataRows)
+        {
+            var inspectorCells = row.FindElements(
+                By.XPath(".//div[@role='gridcell'][@aria-colindex='3']//span[@role='presentation']"));
+
+            if (inspectorCells.Count > 0 &&
+                inspectorCells[0].Text.Trim().Equals(expectedName, StringComparison.OrdinalIgnoreCase))
+            {
+                matchingRow = row;
+                break;
+            }
+        }
+
+        matchingRow.Should().NotBeNull(
+            $"Could not find a Time Recording row for Inspector '{expectedName}' when verifying entry status.");
+
+        var entryStatusCell = matchingRow.FindElement(
+            By.XPath(".//div[@role='gridcell'][@aria-colindex='2']//span[@role='presentation']"));
+
+        entryStatusCell.Text.Trim().Should().Be(expectedEntryStatus,
+            $"Expected Entry Status to be '{expectedEntryStatus}' for Inspector '{expectedName}' " +
+            $"but found '{entryStatusCell.Text.Trim()}'.");
+    }
+
+    /// <summary>
+    /// Enters a value into the Admin column cell for the current user's row in the Time Recording subgrid
+    /// and stores it in the scenario context for later assertion.
+    /// </summary>
+    /// <param name="value">The value to enter e.g. '20'.</param>
+    [When(@"I enter '(.*)' in the Admin column")]
+    public void WhenIEnterInTheAdminColumn(string value)
+    {
+        Driver.WaitForTransaction();
+
+        var currentUser = TestConfig.GetUser("Inspector", useCurrentUser: true);
+        var localPart = currentUser.Username.Split('@')[0];
+        var expectedName = string.Join(" ", localPart.Split('.')
+            .Select(p => char.ToUpper(p[0]) + p.Substring(1)));
+
+        var grid = Driver.WaitUntilAvailable(
+            By.XPath("//div[@data-id='timerecordings_admin_subgrid_container']//div[@role='grid'][contains(@aria-label,'Time Recording')]"),
+            "Time Recording grid could not be found.");
+
+        var dataRows = grid.FindElements(By.XPath(".//div[@role='row'][@aria-label='Data']"));
+
+        dataRows.Should().NotBeEmpty("Expected at least one row in the Time Recording grid.");
+
+        IWebElement matchingRow = null;
+
+        foreach (var row in dataRows)
+        {
+            var inspectorCells = row.FindElements(
+                By.XPath(".//div[@role='gridcell'][@aria-colindex='3']//span[@role='presentation']"));
+
+            if (inspectorCells.Count > 0 &&
+                inspectorCells[0].Text.Trim().Equals(expectedName, StringComparison.OrdinalIgnoreCase))
+            {
+                matchingRow = row;
+                break;
+            }
+        }
+
+        matchingRow.Should().NotBeNull(
+            $"Could not find a Time Recording row for Inspector '{expectedName}' to enter Admin value.");
+
+        var adminCell = matchingRow.FindElement(
+            By.XPath(".//div[@role='gridcell'][@aria-colindex='5']"));
+
+        adminCell.Click();
+        Driver.WaitForTransaction();
+
+        var numericInput = adminCell.FindElement(By.XPath(".//input[@wj-part='input' and contains(@class,'wj-numeric')]"));
+
+        numericInput.SendKeys(Keys.Control + "a");
+        numericInput.SendKeys(Keys.Delete);
+        numericInput.SendKeys(value);
+        Driver.WaitForTransaction();
+
+        scenarioContext["AdminTimeValue"] = value;
+    }
+
+    /// <summary>
+    /// Verifies that the Admin time value for the current user's row has been saved correctly
+    /// in the Time Recording subgrid, displayed as '{value} minutes'.
+    /// </summary>
+    [Then(@"the details are saved")]
+    public void ThenTheDetailsAreSaved()
+    {
+        Driver.WaitForTransaction();
+
+        scenarioContext.TryGetValue("AdminTimeValue", out string enteredValue);
+        enteredValue.Should().NotBeNullOrEmpty(
+            "AdminTimeValue was not found in the scenario context — ensure 'When I enter ... in the Admin column' ran before this step.");
+
+        var expectedAdminDisplay = $"{enteredValue} minutes";
+
+        var currentUser = TestConfig.GetUser("Inspector", useCurrentUser: true);
+        var localPart = currentUser.Username.Split('@')[0];
+        var expectedName = string.Join(" ", localPart.Split('.')
+            .Select(p => char.ToUpper(p[0]) + p.Substring(1)));
+
+        var grid = Driver.WaitUntilAvailable(
+            By.XPath("//div[@data-id='timerecordings_admin_subgrid_container']//div[@role='grid'][contains(@aria-label,'Time Recording')]"),
+            "Time Recording grid could not be found.");
+
+        var dataRows = grid.FindElements(By.XPath(".//div[@role='row'][@aria-label='Data']"));
+
+        dataRows.Should().NotBeEmpty("Expected at least one row in the Time Recording grid after saving.");
+
+        IWebElement matchingRow = null;
+
+        foreach (var row in dataRows)
+        {
+            var inspectorCells = row.FindElements(
+                By.XPath(".//div[@role='gridcell'][@aria-colindex='3']//span[@role='presentation']"));
+
+            if (inspectorCells.Count > 0 &&
+                inspectorCells[0].Text.Trim().Equals(expectedName, StringComparison.OrdinalIgnoreCase))
+            {
+                matchingRow = row;
+                break;
+            }
+        }
+
+        matchingRow.Should().NotBeNull(
+            $"Could not find the Time Recording row for Inspector '{expectedName}' when verifying save.");
+
+        // After saving, the WijMo cell reverts to read-only display showing '{value} minutes'
+        // e.g. entering '20' saves as '20 minutes' as confirmed in the post-save HTML.
+        var adminCell = matchingRow.FindElement(
+            By.XPath(".//div[@role='gridcell'][@aria-colindex='5']//span[@role='presentation']"));
+
+        adminCell.Text.Trim().Should().Be(expectedAdminDisplay,
+            $"Expected Admin value for Inspector '{expectedName}' to display as '{expectedAdminDisplay}' " +
+            $"but found '{adminCell.Text.Trim()}'.");
+    }
+
+    /// <summary>
+    /// Clicks the Save icon in the Time Recording subgrid header to persist inline edits.
+    /// </summary>
+    [When(@"I click the Save icon")]
+    public void WhenIClickTheSaveIcon()
+    {
+        Driver.WaitForTransaction();
+
+        // The Save button is in the WijMo grid column header area with a stable title="Save" attribute.
+        var saveButton = Driver.WaitUntilAvailable(
+            By.XPath("//div[@data-id='timerecordings_admin_subgrid_container']//button[@title='Save' and contains(@class,'cc-ds-header-save-btn')]"),
+            "Save button could not be found in the Time Recording subgrid.");
+
+        saveButton.Click();
+        Driver.WaitForTransaction();
     }
 
     /// <summary>
