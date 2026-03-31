@@ -5,6 +5,7 @@
 namespace Defra.Trade.Plants.SpecFlowBindings.Steps;
 
 using Capgemini.PowerApps.SpecFlowBindings;
+using Capgemini.PowerApps.SpecFlowBindings.Extensions;
 using Capgemini.PowerApps.SpecFlowBindings.Steps;
 using Defra.Trade.Plants.BusinessLogic.ReferenceData;
 using Defra.Trade.Plants.Model;
@@ -12,16 +13,17 @@ using Defra.Trade.Plants.SpecFlowBindings.Context;
 using Defra.Trade.Plants.SpecFlowBindings.Extensions;
 using Defra.Trade.Plants.SpecFlowBindings.Helpers;
 using FluentAssertions;
+using Microsoft.Dynamics365.UIAutomation.Api.UCI;
 using Microsoft.Dynamics365.UIAutomation.Browser;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Metadata;
 using Microsoft.Xrm.Sdk.Query;
 using OpenQA.Selenium;
 using Polly;
+using Reqnroll;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Reqnroll;
 
 /// <summary>
 /// Steps for api interacting with test data creation.
@@ -109,7 +111,9 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
             By.XPath("//h2[@data-id='header_title']"),
             $"Popup title header could not be found when verifying '{expectedTitle}' popup.");
 
-        var actualTitle = popupTitle.Text;            
+        var actualTitle = popupTitle.Text
+            .Replace("- Saved", string.Empty)
+            .Trim();
 
         actualTitle.Should().Be(expectedTitle,
             $"Expected popup title to be '{expectedTitle}' but found '{actualTitle}'.");
@@ -281,6 +285,7 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
         numericInput.SendKeys(Keys.Control + "a");
         numericInput.SendKeys(Keys.Delete);
         numericInput.SendKeys(value);
+        numericInput.SendKeys(Keys.Enter);
         Driver.WaitForTransaction();
 
         scenarioContext["AdminTimeValue"] = value;
@@ -357,6 +362,138 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
 
         saveButton.Click();
         Driver.WaitForTransaction();
+    }
+
+    /// <summary>
+    /// Selects the Time Recording row belonging to the current user in the subgrid by moving the mouse to column 1 and clicking,
+    /// but only if it is not already selected.
+    /// </summary>
+    [When(@"I select the new row in the grid")]
+    public void WhenISelectTheNewRowInTheGrid()
+    {
+        Driver.WaitForTransaction();
+
+        var currentUser = TestConfig.GetUser("Inspector", useCurrentUser: true);
+        var localPart = currentUser.Username.Split('@')[0];
+        var expectedName = string.Join(" ", localPart.Split('.')
+            .Select(p => char.ToUpper(p[0]) + p.Substring(1)));
+
+        var grid = Driver.WaitUntilAvailable(
+            By.XPath("//div[@data-id='timerecordings_admin_subgrid_container']//div[@role='grid'][contains(@aria-label,'Time Recording')]"),
+            "Time Recording grid could not be found.");
+
+        var dataRows = grid.FindElements(By.XPath(".//div[@role='row'][@aria-label='Data']"));
+
+        dataRows.Should().NotBeEmpty("Expected at least one row in the Time Recording grid.");
+
+        // Find the row for the current user by matching the Inspector column (aria-colindex='3').
+        IWebElement matchingRow = null;
+        foreach (var row in dataRows)
+        {
+            var inspectorCells = row.FindElements(
+                By.XPath(".//div[@role='gridcell'][@aria-colindex='3']//span[@role='presentation']"));
+
+            if (inspectorCells.Count > 0 &&
+                inspectorCells[0].Text.Trim().Equals(expectedName, StringComparison.OrdinalIgnoreCase))
+            {
+                matchingRow = row;
+                break;
+            }
+        }
+
+        matchingRow.Should().NotBeNull(
+            $"Could not find a Time Recording row for Inspector '{expectedName}' to select.");
+
+        // Check if the row is already selected via aria-selected="true"
+        var isSelected = matchingRow.GetAttribute("aria-selected") == "true";
+
+        if (!isSelected)
+        {
+            var targetCell = matchingRow.FindElement(
+                By.XPath(".//div[@role='gridcell'][@aria-colindex='1']"));
+            targetCell.Click();
+
+            Driver.WaitForTransaction();
+        }
+    }
+
+    /// <summary>
+    /// Clicks the 'Submit Time' command button in the Time Recording subgrid.
+    /// </summary>
+    [When(@"I click Submit Time")]
+    public void WhenIClickSubmitTime()
+    {
+        Driver.WaitForTransaction();
+
+        var submitTimeButton = Driver.WaitUntilAvailable(
+            By.XPath("//button[@data-id='trd_timerecording|NoRelationship|SubGridStandard|trd.Mscrm.SubGrid.trd_timerecording.SubmitTimeButton']"),
+            "Submit Time button could not be found in the Time Recording subgrid.");
+
+        submitTimeButton.Click();
+        Driver.WaitForTransaction();
+    }
+
+    /// <summary>
+    /// Verifies the Confirm Time Entries confirmation dialog is displayed.
+    /// </summary>
+    [Then(@"I can see the Confirm Time Entries popup is displayed")]
+    public void ThenICanSeeTheConfirmTimeEntriesPopupIsDisplayed()
+    {
+        Driver.WaitForTransaction();
+
+        var dialog = Driver.WaitUntilAvailable(
+            By.XPath("//div[@data-id='confirmdialog'][@data-uci-dialog='true']"),
+            "Confirm Time Entries dialog could not be found.");
+
+        var titleElement = dialog.FindElement(By.XPath(".//h1[@data-id='dialogTitleText']"));
+
+        titleElement.Text.Trim().Should().Be("Confirm Time Entries",
+            $"Expected dialog title to be 'Confirm Time Entries' but found '{titleElement.Text.Trim()}'.");
+    }
+
+    /// <summary>
+    /// Clicks the OK button on the currently displayed confirmation dialog.
+    /// </summary>
+    [When(@"I click the OK button")]
+    public void WhenIClickTheOkButton()
+    {
+        Driver.WaitForTransaction();
+
+        var okButton = Driver.WaitUntilAvailable(
+            By.XPath("//div[@data-id='confirmdialog']//button[@data-id='confirmButton']"),
+            "OK button could not be found on the confirmation dialog.");
+
+        okButton.Click();
+        Driver.WaitForTransaction();
+    }
+
+    /// <summary>
+    /// Clicks the 'Mark Complete' command in the current context.
+    /// </summary>
+    [When(@"I click Mark Complete")]
+    public void WhenIClickMarkComplete()
+    {
+        Driver.WaitForTransaction();
+        CommandSteps.WhenISelectTheCommand("Mark Complete");
+        Driver.WaitForTransaction();
+    }
+
+    /// <summary>
+    /// Verifies that a grey read-only banner is displayed with the specified text.
+    /// </summary>
+    /// <param name="bannerText">The expected banner text.</param>
+    [Then(@"a grey banner is displayed '(.*)'")]
+    public void ThenAGreyBannerIsDisplayed(string bannerText)
+    {
+        Driver.WaitForTransaction();
+
+        // The read-only notification banner text is inside a span with data-id="warningNotification"
+        var banner = Driver.WaitUntilAvailable(
+            By.XPath("//span[@data-id='warningNotification']"),
+            "Read-only banner was not found.");
+
+        banner.Text.Trim().Should().Be(bannerText,
+            $"Expected read-only banner text to be '{bannerText}' but found '{banner.Text.Trim()}'.");
     }
 
     /// <summary>
@@ -553,7 +690,7 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
                 Values = { workOrder.Id, null },
             };
 
-            DataCollection<Entity> queryResults = null;
+            Microsoft.Xrm.Sdk.DataCollection<Microsoft.Xrm.Sdk.Entity> queryResults = null;
             Wait.Until(TimeSpan.FromSeconds(180), () => (queryResults = svc.RetrieveMultiple(query).Entities).Count >= commoditiesToComplete);
             context.ClearChanges();
 
