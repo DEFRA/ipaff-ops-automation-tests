@@ -863,6 +863,96 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
         Driver.WaitForTransaction();
     }
 
+    /// <summary>
+    /// Asserts that the specified Work Order Task in the workorderservicetasksgrid has the expected Status.
+    /// </summary>
+    /// <param name="taskName">The name of the Work Order Task.</param>
+    /// <param name="expectedStatus">The expected Status value (e.g., "Active", "Inactive").</param>
+    [Then(@"the Work Order Task '(.*)' Status is '(.*)'")]
+    public void ThenTheWorkOrderTaskStatusIs(string taskName, string expectedStatus)
+    {
+        Driver.WaitForTransaction();
+
+        // Find the grid container for Work Order Service Tasks
+        var grid = Driver.WaitUntilAvailable(
+            By.XPath("//div[@data-id='dataSetRoot_workorderservicetasksgrid']"),
+            "Work Order Service Tasks grid could not be found.");
+
+        // Find all rows in the AG Grid
+        var rows = grid.FindElements(By.XPath(".//div[contains(@class,'ag-center-cols-container')]/div[@role='row']"));
+        rows.Should().NotBeEmpty("Expected at least one row in the Work Order Service Tasks grid.");
+
+        // Find the row where the Name column (aria-colindex='2') matches the taskName
+        IWebElement matchingRow = null;
+        foreach (var row in rows)
+        {
+            var nameCell = row.FindElements(By.XPath(".//div[@role='gridcell'][@aria-colindex='2']//span[@role='presentation']"))
+                .FirstOrDefault();
+            if (nameCell != null && nameCell.Text.Trim().Equals(taskName, StringComparison.OrdinalIgnoreCase))
+            {
+                matchingRow = row;
+                break;
+            }
+        }
+
+        matchingRow.Should().NotBeNull($"Could not find a Work Order Task row with Name '{taskName}'.");
+
+        // Status is in aria-colindex='4'
+        var statusCell = matchingRow.FindElement(
+            By.XPath(".//div[@role='gridcell'][@aria-colindex='4']//label[@aria-label]")
+        );
+
+        var actualStatus = statusCell.GetAttribute("aria-label").Trim();
+
+        actualStatus.Should().Be(expectedStatus,
+            $"Expected Status for Work Order Task '{taskName}' to be '{expectedStatus}' but found '{actualStatus}'.");
+    }
+
+    /// <summary>
+    /// Asserts that the specified Work Order Task in the workorderservicetasksgrid has the expected % Complete value.
+    /// </summary>
+    /// <param name="taskName">The name of the Work Order Task.</param>
+    /// <param name="expectedPercentComplete">The expected % Complete value (e.g., "100.00").</param>
+    [Then(@"the Work Order Task '(.*)' % Complete is '(.*)'")]
+    public void ThenTheWorkOrderTaskPercentCompleteIs(string taskName, string expectedPercentComplete)
+    {
+        Driver.WaitForTransaction();
+
+        // Find the grid container for Work Order Service Tasks
+        var grid = Driver.WaitUntilAvailable(
+            By.XPath("//div[@data-id='dataSetRoot_workorderservicetasksgrid']"),
+            "Work Order Service Tasks grid could not be found.");
+
+        // Find all rows in the AG Grid
+        var rows = grid.FindElements(By.XPath(".//div[contains(@class,'ag-center-cols-container')]/div[@role='row']"));
+        rows.Should().NotBeEmpty("Expected at least one row in the Work Order Service Tasks grid.");
+
+        // Find the row where the Name column (aria-colindex='2') matches the taskName
+        IWebElement matchingRow = null;
+        foreach (var row in rows)
+        {
+            var nameCell = row.FindElements(By.XPath(".//div[@role='gridcell'][@aria-colindex='2']//span[@role='presentation']"))
+                .FirstOrDefault();
+            if (nameCell != null && nameCell.Text.Trim().Equals(taskName, StringComparison.OrdinalIgnoreCase))
+            {
+                matchingRow = row;
+                break;
+            }
+        }
+
+        matchingRow.Should().NotBeNull($"Could not find a Work Order Task row with Name '{taskName}'.");
+
+        // % Complete is in aria-colindex='6'
+        var percentCell = matchingRow.FindElement(
+            By.XPath(".//div[@role='gridcell'][@aria-colindex='6']//label[@aria-label]")
+        );
+
+        var actualPercent = percentCell.GetAttribute("aria-label").Trim();
+
+        actualPercent.Should().Be(expectedPercentComplete,
+            $"Expected % Complete for Work Order Task '{taskName}' to be '{expectedPercentComplete}' but found '{actualPercent}'.");
+    }
+
     [Given(@"'(.*)' has updated the status of the work order associated to '(.*)' to '(.*)'")]
     public void GivenHasUpdatedTheStatusOfTheWorkOrderAssociatedToTo(string userAlias, string applicationAlias, string subStatusName)
     {

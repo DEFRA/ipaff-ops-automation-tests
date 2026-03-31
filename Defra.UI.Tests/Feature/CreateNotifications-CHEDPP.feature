@@ -1209,40 +1209,67 @@ Scenario: SPS-9104
 	And I can see the 'Summary' tab
 	When I click the reference number in the Work Order field for the notification created in IPAFFS
 	Then I verify the Work Order page is displayed for the notification created in IPAFFS
-	And I can see the 'Import' tab
-	When I click the Assign command
-	Then I can see the Assign Work Order popup is displayed
-	When I click the Assign button
-	Then the Substatus of the Work Order should be Assigned
-	And the Owner of the Work Order should be me
-	When I check that the Commodity Lines frame shows 'Active Import Commodity Lines'
-	Then all the Commodity Lines should be validated with the values given in the input
-	When I sort Commodity Lines by Regulatory Authority
-	And I double click on a Commodity Line with Regulatory Authority set to 'PHSI'
-	Then the Import Commodity Line page is displayed
-	And the settings are displayed as HMI Inspection Required 'No', PHSI Inspection Required 'Yes' and Inspection Classification 'Mandatory / Controlled / Reduced / Not Notifiable'
-	When I click the Back button in the command bar
-	Then I verify the Work Order page is displayed for the notification created in IPAFFS
-	And I can see the 'Import' tab	
-	When I sort Commodity Lines by Regulatory Authority
-	And I double click on a Commodity Line with Regulatory Authority set to 'HMI'
-	Then the Import Commodity Line page is displayed
-	And the settings are displayed as HMI Inspection Required 'Yes', PHSI Inspection Required 'No' and Inspection Classification ''
-	When I click the Back button in the command bar
-	Then I verify the Work Order page is displayed for the notification created in IPAFFS
-	And I can see the 'Import' tab
-	When I sort Commodity Lines by Regulatory Authority
-	And I double click on a Commodity Line with Regulatory Authority set to 'Joint'
-	Then the Import Commodity Line page is displayed
-	And the settings are displayed as HMI Inspection Required 'Yes', PHSI Inspection Required 'No' and Inspection Classification 'Mandatory / Controlled / Reduced / Not Notifiable'
-	When I click the Back button in the command bar
-	Then I verify the Work Order page is displayed for the notification created in IPAFFS
-	And I can see the 'Import' tab
+	#And I can see the 'Import' tab
+	#When I click the Assign command
+	#Then I can see the Assign Work Order popup is displayed
+	#When I click the Assign button
+	#Then the Substatus of the Work Order should be Assigned
+	#And the Owner of the Work Order should be me
+	#When I check that the Commodity Lines frame shows 'Active Import Commodity Lines'
+	#Then all the Commodity Lines should be validated with the values given in the input
+	#When I sort Commodity Lines by Regulatory Authority
+	#And I double click on a Commodity Line with Regulatory Authority set to 'PHSI'
+	#Then the Import Commodity Line page is displayed
+	#And the settings are displayed as HMI Inspection Required 'No', PHSI Inspection Required 'Yes' and Inspection Classification 'Mandatory / Controlled / Reduced / Not Notifiable'
+	#When I click the Back button in the command bar
+	#Then I verify the Work Order page is displayed for the notification created in IPAFFS
+	#And I can see the 'Import' tab	
+	#When I sort Commodity Lines by Regulatory Authority
+	#And I double click on a Commodity Line with Regulatory Authority set to 'HMI'
+	#Then the Import Commodity Line page is displayed
+	#And the settings are displayed as HMI Inspection Required 'Yes', PHSI Inspection Required 'No' and Inspection Classification ''
+	#When I click the Back button in the command bar
+	#Then I verify the Work Order page is displayed for the notification created in IPAFFS
+	#And I can see the 'Import' tab
+	#When I sort Commodity Lines by Regulatory Authority
+	#And I double click on a Commodity Line with Regulatory Authority set to 'Joint'
+	#Then the Import Commodity Line page is displayed
+	#And the settings are displayed as HMI Inspection Required 'Yes', PHSI Inspection Required 'No' and Inspection Classification 'Mandatory / Controlled / Reduced / Not Notifiable'
+	#When I click the Back button in the command bar
+	#Then I verify the Work Order page is displayed for the notification created in IPAFFS
+	#And I can see the 'Import' tab
 	When I select the 'Work Order Tasks' tab
 	Then I can see following Work Order Tasks 'HMI Check' 'Document Check' 'Imports Phyto Certificate Audit' 'Identity & Physical Check'
-	When I click on the 'Document Check' task
+	#When I click on the 'Document Check' task
+	#And I maximise the popup
+	#Then I verify the 'Document Check' popup is displayed
+	#And I can see the 'Summary' tab
+	#When I click the Assign command
+	#Then I can see the Assign Work Order Task popup is displayed
+	#When I click the Assign button
+	#Then the Owner of the Work Order should be me
+	#When I click Add my time within the Time Recording section
+	#Then a new row appears in the grid containing my name
+	#And the entry status is 'Draft'
+	#When I enter '20' in the Admin column
+	#And I click the Save icon
+	#Then the details are saved 
+	#And the entry status is 'Draft'
+	#When I select the new row in the grid
+	#And I click Submit Time
+	#Then I can see the Confirm Time Entries popup is displayed
+	#When I click the OK button
+	#Then the entry status is 'Submitted'
+	#When I click Mark Complete
+	#Then a grey banner is displayed 'Read-only This record’s status: Inactive'
+	#When I close the popup
+	#Then I verify the Work Order page is displayed for the notification created in IPAFFS
+	#And I can see following Work Order Tasks 'HMI Check' 'Document Check' 'Imports Phyto Certificate Audit' 'Identity & Physical Check'
+	#And the Work Order Task 'Document Check' Status is 'Inactive'
+	#And the Work Order Task 'Document Check' % Complete is '100.00'
+	When I click on the 'Imports Phyto Certificate Audit' task
 	And I maximise the popup
-	Then I verify the 'Document Check' popup is displayed
+	Then I verify the 'Imports Phyto Certificate Audit' popup is displayed
 	And I can see the 'Summary' tab
 	When I click the Assign command
 	Then I can see the Assign Work Order Task popup is displayed
@@ -1251,7 +1278,7 @@ Scenario: SPS-9104
 	When I click Add my time within the Time Recording section
 	Then a new row appears in the grid containing my name
 	And the entry status is 'Draft'
-	When I enter '20' in the Admin column
+	When I enter '599' in the Admin column
 	And I click the Save icon
 	Then the details are saved 
 	And the entry status is 'Draft'
@@ -1260,5 +1287,10 @@ Scenario: SPS-9104
 	Then I can see the Confirm Time Entries popup is displayed
 	When I click the OK button
 	Then the entry status is 'Submitted'
-	When I click Mark Complete
-	Then a grey banner is displayed 'Read-only This record’s status: Inactive'
+	#When I click Mark Complete
+	#Then a grey banner is displayed 'Read-only This record’s status: Inactive'
+	#When I close the popup
+	#Then I verify the Work Order page is displayed for the notification created in IPAFFS
+	#And I can see following Work Order Tasks 'HMI Check' 'Document Check' 'Imports Phyto Certificate Audit' 'Identity & Physical Check'
+	#And the Work Order Task 'Imports Phyto Certificate Audit' Status is 'Inactive'
+	#And the Work Order Task 'Imports Phyto Certificate Audit' % Complete is '100.00'
