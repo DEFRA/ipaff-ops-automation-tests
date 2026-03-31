@@ -160,5 +160,14 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
 
         [JsonProperty("II11AcceptableForTransit")]
         public ChedSection AcceptableForTransit { get; set; }
+
+        [JsonProperty("II9AcceptableForTranshipment")]
+        public ChedSection AcceptableForTranshipment { get; set; }
+
+        [JsonProperty("II16NotAcceptable")]
+        public ChedSection NotAcceptable { get; set; }
+        
+        [JsonProperty("II17ReasonForRefusal")]
+        public ChedSection ReasonForRefusal { get; set; }
     }
 }

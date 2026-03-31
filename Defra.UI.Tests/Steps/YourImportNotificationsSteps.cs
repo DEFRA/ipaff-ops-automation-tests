@@ -3,6 +3,7 @@ using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using Defra.UI.Tests.Tools.PDFProcessor;
 using Defra.UI.Tests.Tools.PDFProcessor.Models;
+using Faker;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using Reqnroll;
@@ -230,8 +231,25 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         var c = (string?)page.Sections.IdentificationOfBcp.AdditionalData.ElementAt(2).Value;
 
                         ValidateContains("PortOfEntry", (string?)page.Sections.IdentificationOfBcp.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches, true);
-                        ValidateContains("DestinationCountry", page.Sections.AcceptableForTransit.Value, ref allDataMatches, mismatches);
-                        ValidateContains("ExitBorderControlPost", (string?)page.Sections.AcceptableForTransit.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches, true);                        
+
+                        if(page.Sections.AcceptableForTransit != null)
+                        {
+                            ValidateContains("DestinationCountry", page.Sections.AcceptableForTransit.Value, ref allDataMatches, mismatches);
+                            ValidateContains("ExitBorderControlPost", (string?)page.Sections.AcceptableForTransit.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches, true);
+                        }
+                        if (page.Sections.AcceptableForTranshipment  != null)
+                        {
+                            ValidateContains("DestinationCountry", page.Sections.AcceptableForTranshipment.Value, ref allDataMatches, mismatches);
+                            ValidateContains("ExitBorderControlPost", (string?)page.Sections.AcceptableForTranshipment.Country, ref allDataMatches, mismatches);
+                        }
+                        if (page.Sections.NotAcceptable != null)
+                        {
+                            ValidateContains("AcceptableForSubOption", page.Sections.NotAcceptable.Value, ref allDataMatches, mismatches);
+                        }
+                        if (page.Sections.ReasonForRefusal != null)
+                        {
+                            ValidateContains("ReasonForRefusal", page.Sections.ReasonForRefusal.Value, ref allDataMatches, mismatches);
+                        }
                     }
                     else if (pageNumber == 4)
                     {
