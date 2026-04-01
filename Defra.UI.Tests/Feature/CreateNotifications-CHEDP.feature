@@ -904,7 +904,7 @@ Scenario: Admin submits a notification and records decision and validate cookies
 	When the user clicks View or print CHED button
 	Then the certificate should be displayed in a new browser tab
 	When the user downloads the PDF for validation
-	And the user checks that the data in the certificate matches the data entered into the notification
+	When the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 2

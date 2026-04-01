@@ -125,20 +125,20 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
                         var docRefEntry = page.Sections.AccompanyingDocuments.AdditionalData.FirstOrDefault(x => x.Key == "DocumentReference");
                         var documentReference = docRefEntry.Key == null ? null : docRefEntry.Value?.ToString();
-                        ValidateContains("DocumentReference", documentReference, ref allDataMatches, mismatches, true);
+                        ValidateContains("HealthCertificateReference", documentReference, ref allDataMatches, mismatches, true);
 
                         var dateEntry = page.Sections.AccompanyingDocuments.AdditionalData.FirstOrDefault(x => x.Key == "DateOfIssue");
                         var reviewDate = dateEntry.Key == null ? null : dateEntry.Value?.ToString();
-                        ValidateIfExists("DocumentDateOfIssue", reviewDate, ref allDataMatches, mismatches);
+                        ValidateIfExists("HealthCertificateDateOfIssue", reviewDate, ref allDataMatches, mismatches);
 
                         ValidateIfExists("MeansOfTransport", page.Sections.MeansOfTransport.Mode, ref allDataMatches, mismatches);
                         ValidateIfExists("EnterTransportDocRef", page.Sections.MeansOfTransport.InternationalTransportDocument, ref allDataMatches, mismatches);
                         ValidateIfExists("TransportId", page.Sections.MeansOfTransport.Identification, ref allDataMatches, mismatches);
                         ValidateIfExists("CountryOfOrigin", page.Sections.CountryOfOrigin.Value, ref allDataMatches, mismatches);
-                        ValidateContains("ApprovedEstablishmentName", page.Sections.EstablishmentsOfOrigin.ApprovalNumber, ref allDataMatches, mismatches);
-                        ValidateContains("ApprovedEstablishmentCountry", page.Sections.EstablishmentsOfOrigin.ApprovalNumber, ref allDataMatches, mismatches);
-                        ValidateContains("ApprovedEstablishmentType", page.Sections.EstablishmentsOfOrigin.ApprovalNumber, ref allDataMatches, mismatches);
-                        ValidateContains("ApprovedEstablishmentApprovalNum", page.Sections.EstablishmentsOfOrigin.ApprovalNumber, ref allDataMatches, mismatches);
+                        ValidateContains("ApprovedEstablishmentName", page.Sections.EstablishmentsOfOrigin?.ApprovalNumber, ref allDataMatches, mismatches);
+                        ValidateContains("ApprovedEstablishmentCountry", page.Sections.EstablishmentsOfOrigin?.ApprovalNumber, ref allDataMatches, mismatches);
+                        ValidateContains("ApprovedEstablishmentType", page.Sections.EstablishmentsOfOrigin?.ApprovalNumber, ref allDataMatches, mismatches);
+                        ValidateContains("ApprovedEstablishmentApprovalNum", page.Sections.EstablishmentsOfOrigin?.ApprovalNumber, ref allDataMatches, mismatches);
 
                         string? pdfTemperature = page.Sections.TransportConditions 
                         switch
@@ -157,14 +157,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     else if (pageNumber == 2)
                     {
                         var x = page.Sections.DescriptionOfTheGoods.ElementAt(0).Commodity;
-                        ValidateIfExists("CommodityCode", page.Sections.DescriptionOfTheGoods.ElementAt(0).Commodity, ref allDataMatches, mismatches);
+                        ValidateIfExists("CommodityCode", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                         ValidateContains("CommodityDescription", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                         ValidateContains("Species", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                         ValidateContains("NetWeight", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                         ValidateContains("NumberOfPackages", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                         ValidateContains("PackageType", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                         ValidateContains("TypeOfCommodity", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
-                        ValidateContains("EstablishmentOfOrigin", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
+                        ValidateContains("EstablishmentListFirstName", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                         ValidateContains("CountryOfOrigin", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                         ValidateContains("TotalNetWeight", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                         ValidateContains("TotalPackages", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
@@ -431,7 +431,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 object contextValue = _scenarioContext[contextKey];
 
                 // Date validation for DocumentDateOfIssue
-                if (contextKey == "DocumentDateOfIssue")
+                if (contextKey == "HealthCertificateDateOfIssue")
                 {
                     try
                     {
@@ -439,7 +439,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         var reviewDateString = reviewValue?.Split(' ')[0]; // take only dd.MM.yyyy
 
                         var reviewDate = DateTime.ParseExact(reviewDateString, "dd.MM.yyyy", null);
-                        var expectedDate = DateTime.ParseExact(_scenarioContext.Get<string>("DocumentDateOfIssue"), "dd MM yyyy", null);
+                        var expectedDate = DateTime.ParseExact(_scenarioContext.Get<string>("HealthCertificateDateOfIssue"), "dd MM yyyy", null);
 
                         var reviewFormatted = reviewDate.ToString("ddMMyyyy");
                         var expectedFormatted = expectedDate.ToString("ddMMyyyy");
@@ -618,6 +618,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     // join array into one string (adjust to comma if needed)
                     expectedValue = string.Join(" ", arr).Trim();
                 }
+                else if (rawExpected is List<string> list)
+                {
+                    expectedValue = string.Join(" ", rawExpected);
+                    expectedValue = string.Join(" ", list.Select(x => x?.ToString())).Trim();
+                }
                 else
                 {
                     mismatches.Add($"{contextKey}: Unsupported type '{rawExpected.GetType().Name}'");
@@ -642,6 +647,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
                     }
                 }
+            }
+            else
+            {
+                Console.WriteLine($"[REVIEW VALIDATION] ⊘ {contextKey}: Skipped (not in context)");
             }
         }
     }

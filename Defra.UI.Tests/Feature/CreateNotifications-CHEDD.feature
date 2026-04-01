@@ -150,7 +150,8 @@ Scenario: User creates and submits a B2C consignment notification - CHEDD Happy 
 	Then the Your checks have been submitted page should be displayed
 	When the user clicks View or print CHED
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 2
@@ -272,6 +273,7 @@ Scenario: User creates and submits a notification, override the risk decision, r
 	Then the notification should be present in the list
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
+	When the user downloads the PDF for validation
 	When the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
@@ -385,6 +387,7 @@ Scenario: User creates and submits a notification, override the risk decision, r
 	Then the notification is displayed on the inspector dashboard
 	When the user clicks View CHED link
 	Then the certificate should be displayed in a new browser tab
+	When the user downloads the PDF for validation
 	When the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
