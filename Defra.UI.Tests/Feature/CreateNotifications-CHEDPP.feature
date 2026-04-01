@@ -1267,26 +1267,34 @@ Scenario: SPS-9104
 	#And I can see following Work Order Tasks 'HMI Check' 'Document Check' 'Imports Phyto Certificate Audit' 'Identity & Physical Check'
 	#And the Work Order Task 'Document Check' Status is 'Inactive'
 	#And the Work Order Task 'Document Check' % Complete is '100.00'
-	When I click on the 'Imports Phyto Certificate Audit' task
-	And I maximise the popup
-	Then I verify the 'Imports Phyto Certificate Audit' popup is displayed
-	And I can see the 'Summary' tab
-	When I click the Assign command
-	Then I can see the Assign Work Order Task popup is displayed
-	When I click the Assign button
-	Then the Owner of the Work Order should be me
-	When I click Add my time within the Time Recording section
-	Then a new row appears in the grid containing my name
-	And the entry status is 'Draft'
-	When I enter '599' in the Admin column
-	And I click the Save icon
-	Then the details are saved 
-	And the entry status is 'Draft'
-	When I select the new row in the grid
-	And I click Submit Time
-	Then I can see the Confirm Time Entries popup is displayed
-	When I click the OK button
-	Then the entry status is 'Submitted'
+	#When I click on the 'Imports Phyto Certificate Audit' task
+	#And I maximise the popup
+	#Then I verify the 'Imports Phyto Certificate Audit' popup is displayed
+	#And I can see the 'Summary' tab
+	#When I click the Assign command
+	#Then I can see the Assign Work Order Task popup is displayed
+	#When I click the Assign button
+	#Then the Owner of the Work Order should be me
+	#When I click Add my time within the Time Recording section
+	#Then a new row appears in the grid containing my name
+	#And the entry status is 'Draft'
+	#When I enter '599' in the Admin column
+	#And I click the Save icon
+	#Then the details are saved 
+	#And the entry status is 'Draft'
+	#When I select the new row in the grid
+	#And I click Submit Time
+	#Then I can see the Confirm Time Entries popup is displayed
+	#When I click the OK button
+	#Then the entry status is 'Submitted'
+	#When I update the Audit status to 'Audited'
+	#And I update the Date documents received to today's date
+	#And I update the Documents match electronic copy? to 'Yes'
+	#Then the Audit status field is 'Audited'
+	#And the Date documents received field is today's date
+	#And the Documents match electronic copy? field is 'Yes'
+	#When I click the Save icon above the Accompanying Documents grid
+	#Then the Accompanying Documents grid details are saved
 	#When I click Mark Complete
 	#Then a grey banner is displayed 'Read-only This record’s status: Inactive'
 	#When I close the popup
@@ -1294,3 +1302,9 @@ Scenario: SPS-9104
 	#And I can see following Work Order Tasks 'HMI Check' 'Document Check' 'Imports Phyto Certificate Audit' 'Identity & Physical Check'
 	#And the Work Order Task 'Imports Phyto Certificate Audit' Status is 'Inactive'
 	#And the Work Order Task 'Imports Phyto Certificate Audit' % Complete is '100.00'
+	# Implement steps below for Identity & Physical Check
+	When I click on the 'Identity & Physical Check' task
+	And I maximise the popup
+	Then I verify the 'Identity & Physical Check' popup is displayed
+	And I can see the 'Summary' tab
+	When I select the 'Samples' tab

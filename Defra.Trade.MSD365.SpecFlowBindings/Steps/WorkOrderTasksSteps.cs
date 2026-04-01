@@ -235,7 +235,9 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
 
     /// <summary>
     /// Enters a value into the Admin column cell for the current user's row in the Time Recording subgrid
-    /// and stores it in the scenario context for later assertion.
+    /// and stores the expected display value in the scenario context for later assertion.
+    /// Values >= 60 are stored as hours (to 2 decimal places if not whole), otherwise as minutes.
+    /// e.g. 59 => "59 minutes", 300 => "5 hours", 599 => "9.98 hours"
     /// </summary>
     /// <param name="value">The value to enter e.g. '20'.</param>
     [When(@"I enter '(.*)' in the Admin column")]
@@ -288,23 +290,37 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
         numericInput.SendKeys(Keys.Enter);
         Driver.WaitForTransaction();
 
-        scenarioContext["AdminTimeValue"] = value;
+        // Calculate the expected display value: >= 60 => hours, < 60 => minutes.
+        var minutes = int.Parse(value);
+        string expectedDisplay;
+
+        if (minutes >= 60)
+        {
+            var hours = minutes / 60.0;
+            expectedDisplay = hours % 1 == 0
+                ? $"{(int)hours} hours"
+                : $"{hours:F2} hours";
+        }
+        else
+        {
+            expectedDisplay = $"{minutes} minutes";
+        }
+
+        scenarioContext["AdminTimeValue"] = expectedDisplay;
     }
 
     /// <summary>
     /// Verifies that the Admin time value for the current user's row has been saved correctly
-    /// in the Time Recording subgrid, displayed as '{value} minutes'.
+    /// in the Time Recording subgrid, using the pre-calculated display value from the scenario context.
     /// </summary>
     [Then(@"the details are saved")]
     public void ThenTheDetailsAreSaved()
     {
         Driver.WaitForTransaction();
 
-        scenarioContext.TryGetValue("AdminTimeValue", out string enteredValue);
-        enteredValue.Should().NotBeNullOrEmpty(
+        scenarioContext.TryGetValue("AdminTimeValue", out string expectedAdminDisplay);
+        expectedAdminDisplay.Should().NotBeNullOrEmpty(
             "AdminTimeValue was not found in the scenario context — ensure 'When I enter ... in the Admin column' ran before this step.");
-
-        var expectedAdminDisplay = $"{enteredValue} minutes";
 
         var currentUser = TestConfig.GetUser("Inspector", useCurrentUser: true);
         var localPart = currentUser.Username.Split('@')[0];
@@ -337,8 +353,7 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
         matchingRow.Should().NotBeNull(
             $"Could not find the Time Recording row for Inspector '{expectedName}' when verifying save.");
 
-        // After saving, the WijMo cell reverts to read-only display showing '{value} minutes'
-        // e.g. entering '20' saves as '20 minutes' as confirmed in the post-save HTML.
+        // After saving, the WijMo cell reverts to read-only display showing the calculated value.
         var adminCell = matchingRow.FindElement(
             By.XPath(".//div[@role='gridcell'][@aria-colindex='5']//span[@role='presentation']"));
 
@@ -494,6 +509,205 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
 
         banner.Text.Trim().Should().Be(bannerText,
             $"Expected read-only banner text to be '{bannerText}' but found '{banner.Text.Trim()}'.");
+    }
+
+    /// <summary>
+    /// Updates the Audit Status field in the first row of the Accompanying Documents subgrid.
+    /// </summary>
+    /// <param name="auditStatus">The audit status value to select e.g. 'Pass'.</param>
+    [When(@"I update the Audit status to '(.*)'")]
+    public void WhenIUpdateTheAuditStatusTo(string auditStatus)
+    {
+        Driver.WaitForTransaction();
+
+        var grid = Driver.WaitUntilAvailable(
+            By.XPath("//div[@data-id='AccompanyingDocuments_container']//div[@role='grid'][contains(@aria-label,'All Phyto Audits')]"),
+            "Accompanying Documents grid could not be found.");
+
+        var auditStatusCell = grid.FindElement(
+            By.XPath(".//div[@role='row'][@aria-label='Data']//div[@role='gridcell'][@aria-colindex='5']"));
+
+        auditStatusCell.Click();
+        Driver.WaitForTransaction();
+
+        // The active cell expands into a WijMo combobox — click the dropdown header to open it.
+        var activeCell = Driver.WaitUntilAvailable(
+            By.XPath("//div[@role='gridcell'][@aria-colindex='5'][@aria-selected='true']//div[@wj-part='header']"),
+            "Audit Status dropdown header could not be found.");
+
+        activeCell.Click();
+        Driver.WaitForTransaction();
+
+        // Audit Status dropdown uses role="menuitem" and class="wj-listbox-item".
+        var option = Driver.WaitUntilAvailable(
+            By.XPath($"//div[contains(@class,'wj-listbox')]//div[contains(@class,'wj-listbox-item') and @role='menuitem' and normalize-space(text())='{auditStatus}']"),
+            $"Audit Status option '{auditStatus}' could not be found in the dropdown.");
+
+        option.Click();
+        Driver.WaitForTransaction();
+    }
+
+    /// <summary>
+    /// Updates the Date documents received field in the first row of the Accompanying Documents subgrid to today's date.
+    /// </summary>
+    [When(@"I update the Date documents received to today's date")]
+    public void WhenIUpdateTheDateDocumentsReceivedToTodaysDate()
+    {
+        Driver.WaitForTransaction();
+
+        var todayFormatted = DateTime.Today.ToString("dd/MM/yyyy");
+
+        var grid = Driver.WaitUntilAvailable(
+            By.XPath("//div[@data-id='AccompanyingDocuments_container']//div[@role='grid'][contains(@aria-label,'All Phyto Audits')]"),
+            "Accompanying Documents grid could not be found.");
+
+        var dateCell = grid.FindElement(
+            By.XPath(".//div[@role='row'][@aria-label='Data']//div[@role='gridcell'][@aria-colindex='6']"));
+
+        dateCell.Click();
+        Driver.WaitForTransaction();
+
+        // The active cell expands into a WijMo date input — type into wj-part="input".
+        var dateInput = Driver.WaitUntilAvailable(
+            By.XPath("//div[@role='gridcell'][@aria-colindex='6'][@aria-selected='true']//input[@wj-part='input']"),
+            "Date documents received input could not be found.");
+
+        dateInput.SendKeys(Keys.Control + "a");
+        dateInput.SendKeys(Keys.Delete);
+        dateInput.SendKeys(todayFormatted);
+        dateInput.SendKeys(Keys.Tab);
+        Driver.WaitForTransaction();
+
+        scenarioContext["DateDocumentsReceived"] = todayFormatted;
+    }
+
+    /// <summary>
+    /// Updates the Documents match electronic copy? field in the first row of the Accompanying Documents subgrid.
+    /// </summary>
+    /// <param name="value">The value to select e.g. 'Yes'.</param>
+    [When(@"I update the Documents match electronic copy\? to '(.*)'")]
+    public void WhenIUpdateTheDocumentsMatchElectronicCopyTo(string value)
+    {
+        Driver.WaitForTransaction();
+
+        var grid = Driver.WaitUntilAvailable(
+            By.XPath("//div[@data-id='AccompanyingDocuments_container']//div[@role='grid'][contains(@aria-label,'All Phyto Audits')]"),
+            "Accompanying Documents grid could not be found.");
+
+        var documentsMatchCell = grid.FindElement(
+            By.XPath(".//div[@role='row'][@aria-label='Data']//div[@role='gridcell'][@aria-colindex='7']"));
+
+        documentsMatchCell.Click();
+        Driver.WaitForTransaction();
+
+        // The active cell expands into a WijMo grid editor input — type the value to filter the dropdown.
+        var editorInput = Driver.WaitUntilAvailable(
+            By.XPath("//div[@role='gridcell'][@aria-colindex='7'][@aria-selected='true']//input[contains(@class,'wj-grid-editor')]"),
+            "Documents match electronic copy? input could not be found.");
+
+        editorInput.SendKeys(Keys.Control + "a");
+        editorInput.SendKeys(Keys.Delete);
+        editorInput.SendKeys(value);
+        editorInput.SendKeys(Keys.Tab);
+        Driver.WaitForTransaction();
+    }
+
+    /// <summary>
+    /// Verifies the Audit Status field displays the expected value in the Accompanying Documents subgrid.
+    /// </summary>
+    /// <param name="expectedStatus">The expected audit status value e.g. 'Pass'.</param>
+    [Then(@"the Audit status field is '(.*)'")]
+    public void ThenTheAuditStatusFieldIs(string expectedStatus)
+    {
+        Driver.WaitForTransaction();
+
+        var grid = Driver.WaitUntilAvailable(
+            By.XPath("//div[@data-id='AccompanyingDocuments_container']//div[@role='grid'][contains(@aria-label,'All Phyto Audits')]"),
+            "Accompanying Documents grid could not be found.");
+
+        var auditStatusCell = grid.FindElement(
+            By.XPath(".//div[@role='row'][@aria-label='Data']//div[@role='gridcell'][@aria-colindex='5']//span[@role='presentation']"));
+
+        auditStatusCell.Text.Trim().Should().Be(expectedStatus,
+            $"Expected Audit Status to be '{expectedStatus}' but found '{auditStatusCell.Text.Trim()}'.");
+    }
+
+    /// <summary>
+    /// Verifies the Date documents received field displays today's date in the Accompanying Documents subgrid.
+    /// </summary>
+    [Then(@"the Date documents received field is today's date")]
+    public void ThenTheDateDocumentsReceivedFieldIsTodaysDate()
+    {
+        Driver.WaitForTransaction();
+
+        scenarioContext.TryGetValue("DateDocumentsReceived", out string expectedDate);
+        expectedDate.Should().NotBeNullOrEmpty(
+            "DateDocumentsReceived was not found in the scenario context — ensure 'When I update the Date documents received to today's date' ran before this step.");
+
+        var grid = Driver.WaitUntilAvailable(
+            By.XPath("//div[@data-id='AccompanyingDocuments_container']//div[@role='grid'][contains(@aria-label,'All Phyto Audits')]"),
+            "Accompanying Documents grid could not be found.");
+
+        var dateCell = grid.FindElement(
+            By.XPath(".//div[@role='row'][@aria-label='Data']//div[@role='gridcell'][@aria-colindex='6']//span[@role='presentation']"));
+
+        dateCell.Text.Trim().Should().Be(expectedDate,
+            $"Expected Date documents received to be '{expectedDate}' but found '{dateCell.Text.Trim()}'.");
+    }
+
+    /// <summary>
+    /// Verifies the Documents match electronic copy? field displays the expected value in the Accompanying Documents subgrid.
+    /// </summary>
+    /// <param name="expectedValue">The expected value e.g. 'Yes'.</param>
+    [Then(@"the Documents match electronic copy\? field is '(.*)'")]
+    public void ThenTheDocumentsMatchElectronicCopyFieldIs(string expectedValue)
+    {
+        Driver.WaitForTransaction();
+
+        var grid = Driver.WaitUntilAvailable(
+            By.XPath("//div[@data-id='AccompanyingDocuments_container']//div[@role='grid'][contains(@aria-label,'All Phyto Audits')]"),
+            "Accompanying Documents grid could not be found.");
+
+        var documentsMatchCell = grid.FindElement(
+            By.XPath(".//div[@role='row'][@aria-label='Data']//div[@role='gridcell'][@aria-colindex='7']//span[@role='presentation']"));
+
+        documentsMatchCell.Text.Trim().Should().Be(expectedValue,
+            $"Expected Documents match electronic copy? to be '{expectedValue}' but found '{documentsMatchCell.Text.Trim()}'.");
+    }
+
+    /// <summary>
+    /// Clicks the Save icon in the Accompanying Documents subgrid header to persist inline edits.
+    /// </summary>
+    [When(@"I click the Save icon above the Accompanying Documents grid")]
+    public void WhenIClickTheSaveIconAboveTheAccompanyingDocumentsGrid()
+    {
+        Driver.WaitForTransaction();
+
+        var saveButton = Driver.WaitUntilAvailable(
+            By.XPath("//div[@data-id='AccompanyingDocuments_container']//button[@title='Save' and contains(@class,'cc-ds-header-save-btn')]"),
+            "Save button could not be found in the Accompanying Documents subgrid.");
+
+        saveButton.Click();
+        Driver.WaitForTransaction();
+    }
+
+    /// <summary>
+    /// Verifies that the Accompanying Documents subgrid details have been saved by confirming the Save button is disabled.
+    /// </summary>
+    [Then(@"the Accompanying Documents grid details are saved")]
+    public void ThenTheAccompanyingDocumentsGridDetailsAreSaved()
+    {
+        Driver.WaitForTransaction();
+
+        // After saving, the Save button becomes disabled — confirming no pending changes remain.
+        var saveButton = Driver.WaitUntilAvailable(
+            By.XPath("//div[@data-id='AccompanyingDocuments_container']//button[@title='Save' and contains(@class,'cc-ds-header-save-btn')]"),
+            "Save button could not be found in the Accompanying Documents subgrid.");
+
+        var isDisabled = saveButton.GetAttribute("disabled");
+
+        isDisabled.Should().NotBeNull(
+            "Expected the Save button to be disabled after saving the Accompanying Documents grid, indicating all changes were persisted.");
     }
 
     /// <summary>
