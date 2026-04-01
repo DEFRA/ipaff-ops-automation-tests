@@ -3261,7 +3261,8 @@ Scenario: User creates and submits a notification with main reason as Re-entry, 
 	And a border notification banner displaying the reason for refusal 'Refused for other border notification' under the title 'The result of this decision requires a border notification to be created' is displayed
 	When the user clicks View or print CHED
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user clicks Record control in Dashboard page
