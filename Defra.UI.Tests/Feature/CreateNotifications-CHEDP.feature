@@ -903,6 +903,7 @@ Scenario: Admin submits a notification and records decision and validate cookies
 	Then the Your checks have been submitted page should be displayed
 	When the user clicks View or print CHED button
 	Then the certificate should be displayed in a new browser tab
+	When the user downloads the PDF for validation
 	When the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed

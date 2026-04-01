@@ -135,10 +135,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         ValidateIfExists("EnterTransportDocRef", page.Sections.MeansOfTransport.InternationalTransportDocument, ref allDataMatches, mismatches);
                         ValidateIfExists("TransportId", page.Sections.MeansOfTransport.Identification, ref allDataMatches, mismatches);
                         ValidateIfExists("CountryOfOrigin", page.Sections.CountryOfOrigin.Value, ref allDataMatches, mismatches);
-                        ValidateContains("ApprovedEstablishmentName", page.Sections.EstablishmentsOfOrigin.ApprovalNumber, ref allDataMatches, mismatches);
-                        ValidateContains("ApprovedEstablishmentCountry", page.Sections.EstablishmentsOfOrigin.ApprovalNumber, ref allDataMatches, mismatches);
-                        ValidateContains("ApprovedEstablishmentType", page.Sections.EstablishmentsOfOrigin.ApprovalNumber, ref allDataMatches, mismatches);
-                        ValidateContains("ApprovedEstablishmentApprovalNum", page.Sections.EstablishmentsOfOrigin.ApprovalNumber, ref allDataMatches, mismatches);
+                        ValidateContains("ApprovedEstablishmentName", page.Sections.EstablishmentsOfOrigin?.ApprovalNumber, ref allDataMatches, mismatches);
+                        ValidateContains("ApprovedEstablishmentCountry", page.Sections.EstablishmentsOfOrigin?.ApprovalNumber, ref allDataMatches, mismatches);
+                        ValidateContains("ApprovedEstablishmentType", page.Sections.EstablishmentsOfOrigin?.ApprovalNumber, ref allDataMatches, mismatches);
+                        ValidateContains("ApprovedEstablishmentApprovalNum", page.Sections.EstablishmentsOfOrigin?.ApprovalNumber, ref allDataMatches, mismatches);
 
                         string? pdfTemperature = page.Sections.TransportConditions 
                         switch
