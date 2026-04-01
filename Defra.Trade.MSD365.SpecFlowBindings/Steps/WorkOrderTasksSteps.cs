@@ -151,6 +151,106 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
     }
 
     /// <summary>
+    /// Locates the Time Recording WijMo grid element, searching across both known subgrid container
+    /// data-id values used by different task types:
+    /// - 'timerecordings_admin_subgrid_container' (Document Check, Imports Phyto Certificate Audit)
+    /// - 'timerecordings_subgrid_container' (Identity &amp; Physical Check)
+    /// </summary>
+    private IWebElement GetTimeRecordingGrid()
+    {
+        // Use an XPath union to match either known container data-id in a single search.
+        return Driver.WaitUntilAvailable(
+            By.XPath(
+                "//div[@data-id='timerecordings_admin_subgrid_container' or @data-id='timerecordings_subgrid_container']" +
+                "//div[@role='grid'][contains(@aria-label,'Time Recording')]"),
+            "Time Recording grid could not be found in either 'timerecordings_admin_subgrid_container' or 'timerecordings_subgrid_container'.");
+    }
+
+    /// <summary>
+    /// Locates the Time Recording Save button, searching across both known subgrid container
+    /// data-id values used by different task types.
+    /// </summary>
+    private IWebElement GetTimeRecordingSaveButton()
+    {
+        return Driver.WaitUntilAvailable(
+            By.XPath(
+                "(//div[@data-id='timerecordings_admin_subgrid_container'] | //div[@data-id='timerecordings_subgrid_container'])" +
+                "//button[@title='Save' and contains(@class,'cc-ds-header-save-btn')]"),
+            "Save button could not be found in the Time Recording subgrid.");
+    }
+
+    /// <summary>
+    /// Resolves the aria-colindex of a named column in the Time Recording grid by matching the column header title.
+    /// This is resilient to column position differences across task types.
+    /// </summary>
+    /// <param name="grid">The Time Recording WijMo grid element.</param>
+    /// <param name="columnTitle">The column header title e.g. 'Inspector', 'Admin', 'Travel'.</param>
+    /// <returns>The aria-colindex string value for the matching column header.</returns>
+    private static string GetTimeRecordingColumnIndex(IWebElement grid, string columnTitle)
+    {
+        var columnHeaders = grid.FindElements(
+            By.XPath($".//div[@role='columnheader' and @title='{columnTitle}']"));
+
+        columnHeaders.Should().NotBeEmpty(
+            $"Could not find a column header with title '{columnTitle}' in the Time Recording grid.");
+
+        var ariaColIndex = columnHeaders[0].GetAttribute("aria-colindex");
+
+        ariaColIndex.Should().NotBeNullOrEmpty(
+            $"Column header '{columnTitle}' did not have an aria-colindex attribute.");
+
+        return ariaColIndex;
+    }
+
+    /// <summary>
+    /// Finds the Time Recording row in the grid belonging to the current user by dynamically
+    /// resolving the Inspector column index from the column header title.
+    /// Retries for up to 10 seconds to allow the WijMo grid to fully render after transactions
+    /// such as dialog dismissal or save operations.
+    /// </summary>
+    /// <param name="grid">The Time Recording WijMo grid element.</param>
+    /// <param name="expectedName">The expected inspector display name e.g. 'Harbir Sandhu'.</param>
+    /// <returns>The matching row element.</returns>
+    private static IWebElement GetTimeRecordingRowForCurrentUser(IWebElement grid, string expectedName)
+    {
+        IWebElement matchingRow = null;
+
+        Policy
+            .Handle<Exception>()
+            .OrResult<IWebElement>(row => row == null)
+            .WaitAndRetry(5, retryAttempt => TimeSpan.FromSeconds(2))
+            .Execute(() =>
+            {
+                // Re-resolve the inspector column index on each attempt in case the grid
+                // re-renders and the column headers are replaced in the DOM.
+                var inspectorColIndex = GetTimeRecordingColumnIndex(grid, "Inspector");
+
+                var dataRows = grid.FindElements(By.XPath(".//div[@role='row'][@aria-label='Data']"));
+
+                if (dataRows.Count == 0)
+                {
+                    return matchingRow = null;
+                }
+
+                foreach (var row in dataRows)
+                {
+                    var inspectorCells = row.FindElements(
+                        By.XPath($".//div[@role='gridcell'][@aria-colindex='{inspectorColIndex}']//span[@role='presentation']"));
+
+                    if (inspectorCells.Count > 0 &&
+                        inspectorCells[0].Text.Trim().Equals(expectedName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return matchingRow = row;
+                    }
+                }
+
+                return matchingRow = null;
+            });
+
+        return matchingRow;
+    }
+
+    /// <summary>
     /// Verifies that a new row appears in the Time Recording subgrid containing the current user's name in the Inspector column.
     /// </summary>
     [Then(@"a new row appears in the grid containing my name")]
@@ -163,13 +263,11 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
         var expectedName = string.Join(" ", localPart.Split('.')
             .Select(p => char.ToUpper(p[0]) + p.Substring(1)));
 
-        var grid = Driver.WaitUntilAvailable(
-            By.XPath("//div[@data-id='timerecordings_admin_subgrid_container']//div[@role='grid'][contains(@aria-label,'Time Recording')]"),
-            "Time Recording grid could not be found.");
+        var grid = GetTimeRecordingGrid();
+        var inspectorColIndex = GetTimeRecordingColumnIndex(grid, "Inspector");
 
-        // Inspector is at aria-colindex='3' in the WijMo grid as confirmed in the HTML.
         var inspectorCells = grid.FindElements(
-            By.XPath(".//div[@role='row'][@aria-label='Data']//div[@role='gridcell'][@aria-colindex='3']//span[@role='presentation']"));
+            By.XPath($".//div[@role='row'][@aria-label='Data']//div[@role='gridcell'][@aria-colindex='{inspectorColIndex}']//span[@role='presentation']"));
 
         inspectorCells.Should().NotBeEmpty(
             "Expected at least one row in the Time Recording grid after clicking Add my time.");
@@ -196,37 +294,16 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
         var expectedName = string.Join(" ", localPart.Split('.')
             .Select(p => char.ToUpper(p[0]) + p.Substring(1)));
 
-        var grid = Driver.WaitUntilAvailable(
-            By.XPath("//div[@data-id='timerecordings_admin_subgrid_container']//div[@role='grid'][contains(@aria-label,'Time Recording')]"),
-            "Time Recording grid could not be found.");
+        var grid = GetTimeRecordingGrid();
+        var entryStatusColIndex = GetTimeRecordingColumnIndex(grid, "Entry Status");
 
-        var dataRows = grid.FindElements(
-            By.XPath(".//div[@role='row'][@aria-label='Data']"));
-
-        dataRows.Should().NotBeEmpty("Expected at least one row in the Time Recording grid.");
-
-        // Find the row where aria-colindex='3' (Inspector) matches the current user,
-        // then assert aria-colindex='2' (Entry Status) on that same row.
-        IWebElement matchingRow = null;
-
-        foreach (var row in dataRows)
-        {
-            var inspectorCells = row.FindElements(
-                By.XPath(".//div[@role='gridcell'][@aria-colindex='3']//span[@role='presentation']"));
-
-            if (inspectorCells.Count > 0 &&
-                inspectorCells[0].Text.Trim().Equals(expectedName, StringComparison.OrdinalIgnoreCase))
-            {
-                matchingRow = row;
-                break;
-            }
-        }
+        var matchingRow = GetTimeRecordingRowForCurrentUser(grid, expectedName);
 
         matchingRow.Should().NotBeNull(
             $"Could not find a Time Recording row for Inspector '{expectedName}' when verifying entry status.");
 
         var entryStatusCell = matchingRow.FindElement(
-            By.XPath(".//div[@role='gridcell'][@aria-colindex='2']//span[@role='presentation']"));
+            By.XPath($".//div[@role='gridcell'][@aria-colindex='{entryStatusColIndex}']//span[@role='presentation']"));
 
         entryStatusCell.Text.Trim().Should().Be(expectedEntryStatus,
             $"Expected Entry Status to be '{expectedEntryStatus}' for Inspector '{expectedName}' " +
@@ -234,14 +311,17 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
     }
 
     /// <summary>
-    /// Enters a value into the Admin column cell for the current user's row in the Time Recording subgrid
+    /// Enters a value into a named column cell for the current user's row in the Time Recording subgrid
     /// and stores the expected display value in the scenario context for later assertion.
+    /// The column index is resolved dynamically from the column header title, making this resilient
+    /// to grids where column positions differ across task types.
     /// Values >= 60 are stored as hours (to 2 decimal places if not whole), otherwise as minutes.
     /// e.g. 59 => "59 minutes", 300 => "5 hours", 599 => "9.98 hours"
     /// </summary>
-    /// <param name="value">The value to enter e.g. '20'.</param>
-    [When(@"I enter '(.*)' in the Admin column")]
-    public void WhenIEnterInTheAdminColumn(string value)
+    /// <param name="value">The numeric value to enter e.g. '20'.</param>
+    /// <param name="columnName">The column header name e.g. 'Admin', 'Travel', 'Inspection'.</param>
+    [When(@"I enter '(.*)' in the (Admin|Travel|Inspection) column")]
+    public void WhenIEnterInTheColumn(string value, string columnName)
     {
         Driver.WaitForTransaction();
 
@@ -250,137 +330,101 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
         var expectedName = string.Join(" ", localPart.Split('.')
             .Select(p => char.ToUpper(p[0]) + p.Substring(1)));
 
-        var grid = Driver.WaitUntilAvailable(
-            By.XPath("//div[@data-id='timerecordings_admin_subgrid_container']//div[@role='grid'][contains(@aria-label,'Time Recording')]"),
-            "Time Recording grid could not be found.");
+        var grid = GetTimeRecordingGrid();
+        var ariaColIndex = GetTimeRecordingColumnIndex(grid, columnName);
 
-        var dataRows = grid.FindElements(By.XPath(".//div[@role='row'][@aria-label='Data']"));
-
-        dataRows.Should().NotBeEmpty("Expected at least one row in the Time Recording grid.");
-
-        IWebElement matchingRow = null;
-
-        foreach (var row in dataRows)
-        {
-            var inspectorCells = row.FindElements(
-                By.XPath(".//div[@role='gridcell'][@aria-colindex='3']//span[@role='presentation']"));
-
-            if (inspectorCells.Count > 0 &&
-                inspectorCells[0].Text.Trim().Equals(expectedName, StringComparison.OrdinalIgnoreCase))
-            {
-                matchingRow = row;
-                break;
-            }
-        }
+        var matchingRow = GetTimeRecordingRowForCurrentUser(grid, expectedName);
 
         matchingRow.Should().NotBeNull(
-            $"Could not find a Time Recording row for Inspector '{expectedName}' to enter Admin value.");
+            $"Could not find a Time Recording row for Inspector '{expectedName}' to enter {columnName} value.");
 
-        var adminCell = matchingRow.FindElement(
-            By.XPath(".//div[@role='gridcell'][@aria-colindex='5']"));
+        var targetCell = matchingRow.FindElement(
+            By.XPath($".//div[@role='gridcell'][@aria-colindex='{ariaColIndex}']"));
 
-        adminCell.Click();
+        targetCell.Click();
         Driver.WaitForTransaction();
 
-        var numericInput = adminCell.FindElement(By.XPath(".//input[@wj-part='input' and contains(@class,'wj-numeric')]"));
+        var numericInput = targetCell.FindElement(
+            By.XPath(".//input[@wj-part='input' and contains(@class,'wj-numeric')]"));
 
         numericInput.SendKeys(Keys.Control + "a");
         numericInput.SendKeys(Keys.Delete);
         numericInput.SendKeys(value);
-        numericInput.SendKeys(Keys.Enter);
+        numericInput.SendKeys(Keys.Tab);
         Driver.WaitForTransaction();
 
-        // Calculate the expected display value: >= 60 => hours, < 60 => minutes.
         var minutes = int.Parse(value);
         string expectedDisplay;
 
         if (minutes >= 60)
         {
             var hours = minutes / 60.0;
-            expectedDisplay = hours % 1 == 0
-                ? $"{(int)hours} hours"
-                : $"{hours:F2} hours";
+
+            if (hours % 1 == 0)
+            {
+                var wholeHours = (int)hours;
+                expectedDisplay = wholeHours == 1 ? "1 hour" : $"{wholeHours} hours";
+            }
+            else
+            {
+                expectedDisplay = $"{hours:F2} hours";
+            }
         }
         else
         {
-            expectedDisplay = $"{minutes} minutes";
+            expectedDisplay = minutes == 1 ? "1 minute" : $"{minutes} minutes";
         }
 
-        scenarioContext["AdminTimeValue"] = expectedDisplay;
+        scenarioContext[$"{columnName}TimeValue"] = expectedDisplay;
     }
 
     /// <summary>
-    /// Verifies that the Admin time value for the current user's row has been saved correctly
-    /// in the Time Recording subgrid, using the pre-calculated display value from the scenario context.
+    /// Verifies that all time values entered during the scenario have been saved correctly
+    /// in the Time Recording subgrid for the current user's row.
+    /// Validates each column (Admin, Travel, Inspection) that was stored in the scenario context,
+    /// resolving column positions dynamically from the column header title.
     /// </summary>
     [Then(@"the details are saved")]
     public void ThenTheDetailsAreSaved()
     {
         Driver.WaitForTransaction();
 
-        scenarioContext.TryGetValue("AdminTimeValue", out string expectedAdminDisplay);
-        expectedAdminDisplay.Should().NotBeNullOrEmpty(
-            "AdminTimeValue was not found in the scenario context — ensure 'When I enter ... in the Admin column' ran before this step.");
+        var columnNamesToVerify = new[] { "Admin", "Travel", "Inspection" }
+            .Where(col => scenarioContext.ContainsKey($"{col}TimeValue"))
+            .ToList();
+
+        columnNamesToVerify.Should().NotBeEmpty(
+            "No time values were found in the scenario context — ensure at least one 'When I enter ... in the ... column' step ran before this step.");
 
         var currentUser = TestConfig.GetUser("Inspector", useCurrentUser: true);
         var localPart = currentUser.Username.Split('@')[0];
         var expectedName = string.Join(" ", localPart.Split('.')
             .Select(p => char.ToUpper(p[0]) + p.Substring(1)));
 
-        var grid = Driver.WaitUntilAvailable(
-            By.XPath("//div[@data-id='timerecordings_admin_subgrid_container']//div[@role='grid'][contains(@aria-label,'Time Recording')]"),
-            "Time Recording grid could not be found.");
+        var grid = GetTimeRecordingGrid();
 
-        var dataRows = grid.FindElements(By.XPath(".//div[@role='row'][@aria-label='Data']"));
-
-        dataRows.Should().NotBeEmpty("Expected at least one row in the Time Recording grid after saving.");
-
-        IWebElement matchingRow = null;
-
-        foreach (var row in dataRows)
-        {
-            var inspectorCells = row.FindElements(
-                By.XPath(".//div[@role='gridcell'][@aria-colindex='3']//span[@role='presentation']"));
-
-            if (inspectorCells.Count > 0 &&
-                inspectorCells[0].Text.Trim().Equals(expectedName, StringComparison.OrdinalIgnoreCase))
-            {
-                matchingRow = row;
-                break;
-            }
-        }
+        var matchingRow = GetTimeRecordingRowForCurrentUser(grid, expectedName);
 
         matchingRow.Should().NotBeNull(
             $"Could not find the Time Recording row for Inspector '{expectedName}' when verifying save.");
 
-        // After saving, the WijMo cell reverts to read-only display showing the calculated value.
-        var adminCell = matchingRow.FindElement(
-            By.XPath(".//div[@role='gridcell'][@aria-colindex='5']//span[@role='presentation']"));
+        foreach (var columnName in columnNamesToVerify)
+        {
+            scenarioContext.TryGetValue($"{columnName}TimeValue", out string expectedDisplay);
 
-        adminCell.Text.Trim().Should().Be(expectedAdminDisplay,
-            $"Expected Admin value for Inspector '{expectedName}' to display as '{expectedAdminDisplay}' " +
-            $"but found '{adminCell.Text.Trim()}'.");
+            var ariaColIndex = GetTimeRecordingColumnIndex(grid, columnName);
+
+            var cell = matchingRow.FindElement(
+                By.XPath($".//div[@role='gridcell'][@aria-colindex='{ariaColIndex}']//span[@role='presentation']"));
+
+            cell.Text.Trim().Should().Be(expectedDisplay,
+                $"Expected {columnName} value for Inspector '{expectedName}' to display as '{expectedDisplay}' " +
+                $"but found '{cell.Text.Trim()}'.");
+        }
     }
 
     /// <summary>
-    /// Clicks the Save icon in the Time Recording subgrid header to persist inline edits.
-    /// </summary>
-    [When(@"I click the Save icon")]
-    public void WhenIClickTheSaveIcon()
-    {
-        Driver.WaitForTransaction();
-
-        // The Save button is in the WijMo grid column header area with a stable title="Save" attribute.
-        var saveButton = Driver.WaitUntilAvailable(
-            By.XPath("//div[@data-id='timerecordings_admin_subgrid_container']//button[@title='Save' and contains(@class,'cc-ds-header-save-btn')]"),
-            "Save button could not be found in the Time Recording subgrid.");
-
-        saveButton.Click();
-        Driver.WaitForTransaction();
-    }
-
-    /// <summary>
-    /// Selects the Time Recording row belonging to the current user in the subgrid by moving the mouse to column 1 and clicking,
+    /// Selects the Time Recording row belonging to the current user in the subgrid,
     /// but only if it is not already selected.
     /// </summary>
     [When(@"I select the new row in the grid")]
@@ -393,43 +437,37 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
         var expectedName = string.Join(" ", localPart.Split('.')
             .Select(p => char.ToUpper(p[0]) + p.Substring(1)));
 
-        var grid = Driver.WaitUntilAvailable(
-            By.XPath("//div[@data-id='timerecordings_admin_subgrid_container']//div[@role='grid'][contains(@aria-label,'Time Recording')]"),
-            "Time Recording grid could not be found.");
+        var grid = GetTimeRecordingGrid();
 
-        var dataRows = grid.FindElements(By.XPath(".//div[@role='row'][@aria-label='Data']"));
-
-        dataRows.Should().NotBeEmpty("Expected at least one row in the Time Recording grid.");
-
-        // Find the row for the current user by matching the Inspector column (aria-colindex='3').
-        IWebElement matchingRow = null;
-        foreach (var row in dataRows)
-        {
-            var inspectorCells = row.FindElements(
-                By.XPath(".//div[@role='gridcell'][@aria-colindex='3']//span[@role='presentation']"));
-
-            if (inspectorCells.Count > 0 &&
-                inspectorCells[0].Text.Trim().Equals(expectedName, StringComparison.OrdinalIgnoreCase))
-            {
-                matchingRow = row;
-                break;
-            }
-        }
+        var matchingRow = GetTimeRecordingRowForCurrentUser(grid, expectedName);
 
         matchingRow.Should().NotBeNull(
             $"Could not find a Time Recording row for Inspector '{expectedName}' to select.");
 
-        // Check if the row is already selected via aria-selected="true"
         var isSelected = matchingRow.GetAttribute("aria-selected") == "true";
 
         if (!isSelected)
         {
-            var targetCell = matchingRow.FindElement(
+            // The row selection checkbox is always rendered at aria-colindex='1' in the WijMo grid
+            // and does not have a stable column header title to resolve dynamically.
+            var selectionCell = matchingRow.FindElement(
                 By.XPath(".//div[@role='gridcell'][@aria-colindex='1']"));
-            targetCell.Click();
 
+            selectionCell.Click();
             Driver.WaitForTransaction();
         }
+    }
+
+    /// <summary>
+    /// Clicks the Save icon in the Time Recording subgrid header to persist inline edits.
+    /// </summary>
+    [When(@"I click the Save icon")]
+    public void WhenIClickTheSaveIcon()
+    {
+        Driver.WaitForTransaction();
+
+        GetTimeRecordingSaveButton().Click();
+        Driver.WaitForTransaction();
     }
 
     /// <summary>
@@ -708,6 +746,90 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
 
         isDisabled.Should().NotBeNull(
             "Expected the Save button to be disabled after saving the Accompanying Documents grid, indicating all changes were persisted.");
+    }
+
+    /// <summary>
+    /// Verifies that the specified tab is displayed and selected on the current Work Order Task form.
+    /// </summary>
+    /// <param name="tabName">The name of the tab to verify e.g. 'Summary', 'Samples', 'Notes'.</param>
+    [Then(@"the '(.*)' tab is displayed and selected")]
+    public void ThenTheTabIsDisplayedAndSelected(string tabName)
+    {
+        Driver.WaitForTransaction();
+
+        // Tabs are identified by aria-label matching the tab name and aria-selected="true" when active.
+        var tab = Driver.WaitUntilAvailable(
+            By.XPath($"//ul[@role='tablist']//li[@role='tab' and @aria-label='{tabName}']"),
+            $"'{tabName}' tab could not be found on the Work Order Task form.");
+
+        var isSelected = tab.GetAttribute("aria-selected");
+
+        isSelected.Should().Be("true",
+            $"Expected the '{tabName}' tab to be selected but it was not (aria-selected='{isSelected}').");
+    }
+
+    /// <summary>
+    /// Verifies that the Import Commodity Lines grid is populated with between 480 and 500 rows,
+    /// using the AG Grid status bar row count which reflects the total dataset regardless of virtualisation.
+    /// </summary>
+    [Then(@"the Import Commodity Lines grid is populated with the commodity lines from the notification created in IPAFFS")]
+    public void ThenTheImportCommodityLinesGridIsPopulatedWithTheCommodityLinesFromTheNotificationCreatedInIPAFFS()
+    {
+        Driver.WaitForTransaction();
+
+        var gridContainer = Driver.WaitUntilAvailable(
+            By.XPath("//div[@data-id='dataSetRoot_subgrid_import_commodity_lines']"),
+            "Import Commodity Lines grid container could not be found.");
+
+        // The AG Grid status bar displays the total row count regardless of virtualisation,
+        // e.g. <span class="statusTextContainer-182">Rows: 499</span>
+        var statusText = Driver.WaitUntilAvailable(
+            By.XPath("//div[@data-id='dataSetRoot_subgrid_import_commodity_lines']//span[contains(@class,'statusTextContainer') and starts-with(normalize-space(text()),'Rows:')]"),
+            "Import Commodity Lines grid status bar row count could not be found.");
+
+        var rawText = statusText.Text.Trim();
+
+        // Parse the integer from e.g. "Rows: 499"
+        var rowCountText = rawText.Replace("Rows:", string.Empty).Trim();
+
+        int.TryParse(rowCountText, out var rowCount).Should().BeTrue(
+            $"Expected the status bar to contain a parseable row count but found '{rawText}'.");
+
+        rowCount.Should().BeGreaterThan(480,
+            $"Expected more than 480 Import Commodity Lines rows but the status bar reported {rowCount}.");
+
+        rowCount.Should().BeLessOrEqualTo(500,
+            $"Expected no more than 500 Import Commodity Lines rows but the status bar reported {rowCount}.");
+    }
+
+    /// <summary>
+    /// Verifies that the Lab Samples grid is empty, showing no data rows.
+    /// </summary>
+    [Then(@"the Lab Samples grid is empty")]
+    public void ThenTheLabSamplesGridIsEmpty()
+    {
+        Driver.WaitForTransaction();
+
+        var gridContainer = Driver.WaitUntilAvailable(
+            By.XPath("//div[@data-id='dataSetRoot_subgrid_lab_samples']"),
+            "Lab Samples grid container could not be found.");
+
+        // When empty the AG Grid renders a no-rows overlay — confirmed in the HTML.
+        var noRowsOverlay = gridContainer.FindElements(
+            By.XPath(".//div[contains(@class,'ag-overlay-no-rows-wrapper')]//div[contains(@class,'label')]"));
+
+        noRowsOverlay.Should().NotBeEmpty(
+            "Expected the Lab Samples grid to display the empty state overlay but it was not found.");
+
+        noRowsOverlay[0].Text.Trim().Should().Be("We didn't find anything to show here",
+            $"Expected empty Lab Samples grid message but found '{noRowsOverlay[0].Text.Trim()}'.");
+
+        // Additionally confirm no data rows are present.
+        var dataRows = gridContainer.FindElements(
+            By.XPath(".//div[@role='row'][@aria-label='Press SPACE to select this row.']"));
+
+        dataRows.Should().BeEmpty(
+            $"Expected no rows in the Lab Samples grid but found {dataRows.Count}.");
     }
 
     /// <summary>
