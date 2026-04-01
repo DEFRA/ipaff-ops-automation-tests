@@ -156,8 +156,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
                     else if (pageNumber == 2)
                     {
-                        var x = page.Sections.DescriptionOfTheGoods.ElementAt(0).Commodity;
-                        ValidateIfExists("CommodityCode", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
+                        var x = page.Sections.DescriptionOfTheGoods.ElementAt(0).Value;
+                        ValidateContains("CommodityCode", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                         ValidateContains("CommodityDescription", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                         ValidateContains("Species", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                         ValidateContains("NetWeight", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
@@ -461,6 +461,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     }
 
                     return; 
+                }
+
+                if (_scenarioContext.ContainsKey(contextKey) && contextKey is "IdentityCheck" or "IdentityCheckType")
+                {
+                    contextValue = (contextKey.Equals("IdentityCheck")? _scenarioContext.Get<string>("IdentityCheck").Replace(" ", "", StringComparison.OrdinalIgnoreCase): _scenarioContext.Get<string>("IdentityCheckType").Replace(" ", "", StringComparison.OrdinalIgnoreCase));
+                    reviewValue = reviewValue.Replace(" ", "", StringComparison.OrdinalIgnoreCase);
                 }
 
                 if (_scenarioContext.ContainsKey(contextKey) && contextKey is "Temperature"
