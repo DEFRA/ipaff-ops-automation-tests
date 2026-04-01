@@ -92,6 +92,9 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
 
         [JsonProperty("I35Declaration")]
         public ChedSection Declaration { get; set; }
+        
+        [JsonProperty("I20ForTranshipmentOnwardTravel")]
+        public ChedSection TranshipmentOnwardTravel { get; set; }
 
         // Part II
         [JsonProperty("PartIIControls")]

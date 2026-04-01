@@ -139,6 +139,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         ValidateContains("ApprovedEstablishmentCountry", page.Sections.EstablishmentsOfOrigin?.ApprovalNumber, ref allDataMatches, mismatches);
                         ValidateContains("ApprovedEstablishmentType", page.Sections.EstablishmentsOfOrigin?.ApprovalNumber, ref allDataMatches, mismatches);
                         ValidateContains("ApprovedEstablishmentApprovalNum", page.Sections.EstablishmentsOfOrigin?.ApprovalNumber, ref allDataMatches, mismatches);
+                        ValidateContains("TranshipmentDestinationCountry", page.Sections.TranshipmentOnwardTravel.Country, ref allDataMatches, mismatches);
 
                         string? pdfTemperature = page.Sections.TransportConditions 
                         switch
