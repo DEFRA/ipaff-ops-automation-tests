@@ -3199,6 +3199,7 @@ Scenario: User creates and submits a notification with main reason as Re-entry, 
 	Then the notification should be present in the list
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
+	When the user downloads the PDF for validation
 	When the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
@@ -3285,6 +3286,7 @@ Scenario: User creates and submits a notification with main reason as Re-entry, 
 	And the outcome is recorded as 'Consignment has left the UK'
 	When the user clicks View or print CHED button on Control recorded page
 	Then the certificate should be displayed in a new browser tab
+	When the user downloads the PDF for validation
 	When the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
