@@ -468,7 +468,7 @@ Scenario: User creates and submits a B2C consignment notification for Transhipme
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
 	When the user downloads the PDF for validation
-	When the user checks that the data in the certificate matches the data entered into the notification
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 1
@@ -516,7 +516,7 @@ Scenario: User creates and submits a B2C consignment notification for Transhipme
 	When the user clicks View CHED link
 	Then the certificate should be displayed in a new browser tab
 	When the user downloads the PDF for validation
-	When the user checks that the data in the certificate matches the data entered into the notification
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user clicks Record control in Dashboard page
@@ -903,7 +903,8 @@ Scenario: Admin submits a notification and records decision and validate cookies
 	Then the Your checks have been submitted page should be displayed
 	When the user clicks View or print CHED button
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 2
@@ -1086,7 +1087,8 @@ Scenario: User creates a B2C consignment notification, updates it from the revie
 	Then the notification should be present in the list
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	And user searches for the import notification
 	Then the notification should be present in the list
@@ -1123,7 +1125,8 @@ Scenario: User creates a B2C consignment notification, updates it from the revie
 	When the user clicks Return to your dashboard
 	And the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 1
@@ -1191,7 +1194,8 @@ Scenario: User creates a B2C consignment notification, updates it from the revie
 	Then the Your checks have been submitted page should be displayed
 	When the user clicks View or print CHED button
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 2
@@ -2060,7 +2064,8 @@ Scenario: Create and Submit B2C Consignment with Two Commodities and Catch Certi
 	Then the Your checks have been submitted page should be displayed
 	When the user clicks View or print CHED button
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 2
