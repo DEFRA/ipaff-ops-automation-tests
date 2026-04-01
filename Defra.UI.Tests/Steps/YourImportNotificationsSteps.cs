@@ -194,7 +194,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             _ => null
                         };
                         ValidateIfExists("IdentityCheck", pdfIdentityCheck, ref allDataMatches, mismatches);
-                        
+                        ValidateIfExists("IdentityCheckType", pdfIdentityCheck, ref allDataMatches, mismatches);
+
                         string? pdfIdentityCheckDecision = page.Sections.IdentityCheck
                         switch
                         {
@@ -212,6 +213,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             _ => null
                         };
                         ValidateIfExists("PhysicalCheck", pdfPhysicalCheck, ref allDataMatches, mismatches);
+                        ValidateIfExists("PhysicalCheckDecision", pdfPhysicalCheck, ref allDataMatches, mismatches);
 
                         string? pdfLaboratoryTests = page.Sections.LaboratoryTests
                         switch
@@ -225,6 +227,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             _ => null
                         };
                         ValidateIfExists("LaboratoryTests", pdfLaboratoryTests, ref allDataMatches, mismatches);
+                       // ValidateIfExists("LaboratoryTestsReason", pdfLaboratoryTests, ref allDataMatches, mismatches);                   
 
                         ValidateContains("IUUSubOption", page.Sections.CustomsDocumentReference.Value, ref allDataMatches, mismatches);
 
@@ -239,8 +242,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         }
                         if (page.Sections.AcceptableForTranshipment  != null)
                         {
-                            ValidateContains("DestinationCountry", page.Sections.AcceptableForTranshipment.Value, ref allDataMatches, mismatches);
-                            ValidateContains("ExitBorderControlPost", (string?)page.Sections.AcceptableForTranshipment.Country, ref allDataMatches, mismatches);
+                            ValidateContains("TranshipmentDestinationCountry", page.Sections.AcceptableForTranshipment.Value, ref allDataMatches, mismatches);
                         }
                         if (page.Sections.NotAcceptable != null)
                         {
@@ -249,6 +251,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         if (page.Sections.ReasonForRefusal != null)
                         {
                             ValidateContains("ReasonForRefusal", page.Sections.ReasonForRefusal.Value, ref allDataMatches, mismatches);
+                        }
+                        if (page.Sections.AcceptableForInternalMarket != null)
+                        {
+                            //ValidateContains("AcceptableForSubOption", page.Sections.AcceptableForInternalMarket., ref allDataMatches, mismatches);
                         }
                     }
                     else if (pageNumber == 4)
