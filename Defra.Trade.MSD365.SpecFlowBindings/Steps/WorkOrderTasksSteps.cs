@@ -138,9 +138,8 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
 
     /// <summary>
     /// Clicks on a Work Order Task link by name in the workorderservicetasksgrid.
-    /// Retries once if an ElementClickInterceptedException is thrown — indicating a tooltip
-    /// overlay (ms-Callout) is blocking the click. The retry refreshes the subgrid to
-    /// collapse all rows and dismiss any active tooltip before attempting the click again.
+    /// Uses JavaScript click to bypass any ms-Callout tooltip overlay that may be
+    /// positioned over the link at the browser's hit-test coordinates.
     /// </summary>
     /// <param name="taskName">The name of the task to click.</param>
     [When(@"I click on the '(.*)' task")]
@@ -148,24 +147,15 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
     {
         Driver.WaitForTransaction();
 
-        Policy
-            .Handle<ElementClickInterceptedException>()
-            .WaitAndRetry(2, _ => TimeSpan.FromSeconds(5),
-                onRetry: (_, _, attempt, _) =>
-                {
-                    // The ms-Callout tooltip from a previously hovered row is intercepting the click.
-                    // Refresh the subgrid to collapse all rows and clear the tooltip overlay.
-                    XrmApp.Entity.SubGrid.ClickCommand("workorderservicetasksgrid", "Refresh");
-                    Driver.WaitForTransaction();
-                })
-            .Execute(() =>
-            {
-                var taskLink = Driver.WaitUntilAvailable(
-                    By.XPath($"//div[@data-id='dataSetRoot_workorderservicetasksgrid']//div[@col-id='msdyn_name']//a[@role='link' and @aria-label='{taskName}']"),
-                    $"Work Order Task '{taskName}' could not be found in the grid.");
+        var taskLink = Driver.WaitUntilAvailable(
+            By.XPath($"//div[@data-id='dataSetRoot_workorderservicetasksgrid']//div[@col-id='msdyn_name']//a[@role='link' and @aria-label='{taskName}']"),
+            $"Work Order Task '{taskName}' could not be found in the grid.");
 
-                taskLink.Click();
-            });
+        // Use JavaScript click to bypass the ms-Callout tooltip overlay that intercepts
+        // the WebDriver click when a previously hovered row's tooltip is still visible.
+        // IJavaScriptExecutor.click() does not go through the browser's hit-test pipeline
+        // so the tooltip position is irrelevant.
+        Driver.ExecuteScript("arguments[0].click();", taskLink);
 
         Driver.WaitForTransaction();
     }
