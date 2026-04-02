@@ -1206,10 +1206,10 @@ Scenario: SPS-9104
 	Then the notification created in IPAFFS should be returned
 	When I open the record at position '0' in the grid
 	Then I verify the Import Notification page is displayed for the notification created in IPAFFS
-	And I can see the 'Summary' tab
+	And the 'Summary' tab is displayed and selected
 	When I click the reference number in the Work Order field for the notification created in IPAFFS
 	Then I verify the Work Order page is displayed for the notification created in IPAFFS
-	And I can see the 'Import' tab
+	And the 'Import' tab is displayed and selected
 	When I click the Assign command
 	Then I can see the Assign Work Order popup is displayed
 	When I click the Assign button
@@ -1223,27 +1223,27 @@ Scenario: SPS-9104
 	And the settings are displayed as HMI Inspection Required 'No', PHSI Inspection Required 'Yes' and Inspection Classification 'Mandatory / Controlled / Reduced / Not Notifiable'
 	When I click the Back button in the command bar
 	Then I verify the Work Order page is displayed for the notification created in IPAFFS
-	And I can see the 'Import' tab	
+	And the 'Import' tab is displayed and selected
 	When I sort Commodity Lines by Regulatory Authority
 	And I double click on a Commodity Line with Regulatory Authority set to 'HMI'
 	Then the Import Commodity Line page is displayed
 	And the settings are displayed as HMI Inspection Required 'Yes', PHSI Inspection Required 'No' and Inspection Classification ''
 	When I click the Back button in the command bar
 	Then I verify the Work Order page is displayed for the notification created in IPAFFS
-	And I can see the 'Import' tab
+	And the 'Import' tab is displayed and selected
 	When I sort Commodity Lines by Regulatory Authority
 	And I double click on a Commodity Line with Regulatory Authority set to 'Joint'
 	Then the Import Commodity Line page is displayed
 	And the settings are displayed as HMI Inspection Required 'Yes', PHSI Inspection Required 'No' and Inspection Classification 'Mandatory / Controlled / Reduced / Not Notifiable'
 	When I click the Back button in the command bar
 	Then I verify the Work Order page is displayed for the notification created in IPAFFS
-	And I can see the 'Import' tab
+	And the 'Import' tab is displayed and selected
 	When I select the 'Work Order Tasks' tab
 	Then I can see following Work Order Tasks 'HMI Check' 'Document Check' 'Imports Phyto Certificate Audit' 'Identity & Physical Check'
 	When I click on the 'Document Check' task
 	And I maximise the popup
 	Then I verify the 'Document Check' popup is displayed
-	And I can see the 'Summary' tab
+	And the 'Summary' tab is displayed and selected
 	When I click the Assign command
 	Then I can see the Assign Work Order Task popup is displayed
 	When I click the Assign button
@@ -1270,7 +1270,7 @@ Scenario: SPS-9104
 	When I click on the 'Imports Phyto Certificate Audit' task
 	And I maximise the popup
 	Then I verify the 'Imports Phyto Certificate Audit' popup is displayed
-	And I can see the 'Summary' tab
+	And the 'Summary' tab is displayed and selected
 	When I click the Assign command
 	Then I can see the Assign Work Order Task popup is displayed
 	When I click the Assign button

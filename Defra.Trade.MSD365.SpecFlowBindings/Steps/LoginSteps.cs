@@ -59,14 +59,52 @@ public class LoginSteps : PowerAppsStepDefiner
 
         Console.WriteLine("Logged-in success with the user =  " + user.Username);
 
-        try
+        // The 'Sign in to continue' prompt appears multiple times during the MSAL token refresh
+        // cycle. The navbar-container can briefly appear between prompts, so it is not a reliable
+        // completion signal on its own. Instead, we wait until the navbar is present AND the
+        // prompt has been absent for 5 consecutive seconds before proceeding.
+        var signInPromptDeadline = DateTime.UtcNow.AddSeconds(90);
+        DateTime? promptAbsentSince = null;
+
+        while (DateTime.UtcNow < signInPromptDeadline)
         {
-            Driver.WaitUntilAvailable(By.XPath("//h1[text() = 'Sign in to continue']"), 30.Seconds());
-            Driver.WaitUntilAvailable(By.XPath("//*[normalize-space(text()) ='Sign in']")).Click();
-        }
-        catch (NoSuchElementException e)
-        {
-            //no action
+            var signInPrompt = Driver.FindElements(By.XPath("//h1[text() = 'Sign in to continue']"));
+
+            if (signInPrompt.Count > 0)
+            {
+                // Prompt visible — reset the stability timer and dismiss it.
+                promptAbsentSince = null;
+
+                try
+                {
+                    Driver.WaitUntilAvailable(
+                        By.XPath("//*[normalize-space(text()) ='Sign in']"),
+                        5.Seconds())
+                        ?.Click();
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // DOM replaced between locate and click — next iteration re-locates.
+                }
+                catch (NoSuchElementException)
+                {
+                    // no action
+                }
+            }
+            else
+            {
+                // Prompt not visible — start or check the stability timer.
+                promptAbsentSince ??= DateTime.UtcNow;
+
+                var navBar = Driver.FindElements(By.XPath("//div[@data-id='navbar-container']"));
+                if (navBar.Count > 0 && (DateTime.UtcNow - promptAbsentSince.Value).TotalSeconds >= 5)
+                {
+                    // Navbar present and prompt has been absent for 5 seconds — login is stable.
+                    break;
+                }
+            }
+
+            Thread.Sleep(TimeSpan.FromSeconds(1));
         }
 
         if (!url.Query.Contains("appid") && appName != "ChargeUI")
@@ -75,6 +113,19 @@ public class LoginSteps : PowerAppsStepDefiner
         }
 
         CloseTeachingBubbles();
+
+        // Final safety net — if the shell still hasn't stabilised, a refresh resolves
+        // the stuck token refresh state.
+        var shellConfirmed = Driver.WaitUntilAvailable(
+            By.XPath("//div[@data-id='navbar-container']"),
+            10.Seconds());
+
+        if (shellConfirmed == null)
+        {
+            Console.WriteLine("App shell did not load after login — refreshing to recover from stuck token refresh.");
+            Driver.Navigate().Refresh();
+            Driver.WaitForTransaction();
+        }
     }
 
     private static void CloseTeachingBubbles()

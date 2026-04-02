@@ -4,13 +4,14 @@
 
 namespace Defra.Trade.Plants.SpecFlowBindings.Steps;
 
+using Capgemini.PowerApps.SpecFlowBindings;
 using FluentAssertions;
 using Microsoft.Dynamics365.UIAutomation.Browser;
 using OpenQA.Selenium;
+using Polly;
 using Reqnroll;
 using System;
 using System.Linq;
-using Capgemini.PowerApps.SpecFlowBindings;
 
 /// <summary>
 /// Step bindings relating to the Import Commodity Line functional area.
@@ -36,16 +37,48 @@ public sealed class ImportCommoditySteps : PowerAppsStepDefiner
 
     [Then(@"the settings are displayed as HMI Inspection Required '(.*)', PHSI Inspection Required '(.*)' and Inspection Classification '(.*)'")]
     public void ThenTheSettingsAreDisplayed(
-        string expectedHmiInspectionRequired,
-        string expectedPhsiInspectionRequired,
-        string expectedInspectionClassifications)
+    string expectedHmiInspectionRequired,
+    string expectedPhsiInspectionRequired,
+    string expectedInspectionClassifications)
     {
         Driver.WaitForTransaction();
 
-        var actualHmi = GetHeaderFieldValue("HMI Inspection Required");
-        var actualPhsi = GetHeaderFieldValue("PHSI Inspection Required");
-        var actualClassification = GetHeaderFieldValue("Inspection Classification");
+        // The header field values are populated asynchronously after navigation and can briefly
+        // render with stale data before the form fully resolves. Retry for up to 30 seconds
+        // to allow the fields to settle without issuing a full page Refresh (which would
+        // navigate away from the record).
+        string actualHmi = null;
+        string actualPhsi = null;
+        string actualClassification = null;
 
+        Policy
+            .Handle<Exception>()
+            .OrResult<bool>(allMatch => !allMatch)
+            .WaitAndRetry(6, _ => TimeSpan.FromSeconds(5),
+                onRetry: (_, _, attempt, _) =>
+                    Console.WriteLine(
+                        $"[ThenTheSettingsAreDisplayed] Attempt {attempt}: " +
+                        $"HMI='{actualHmi}', PHSI='{actualPhsi}', Classification='{actualClassification}' — retrying..."))
+            .Execute(() =>
+            {
+                actualHmi = GetHeaderFieldValue("HMI Inspection Required");
+                actualPhsi = GetHeaderFieldValue("PHSI Inspection Required");
+                actualClassification = GetHeaderFieldValue("Inspection Classification");
+
+                var hmiMatch = actualHmi == expectedHmiInspectionRequired;
+                var phsiMatch = actualPhsi == expectedPhsiInspectionRequired;
+
+                var classificationMatch = string.IsNullOrWhiteSpace(expectedInspectionClassifications)
+                    ? actualClassification is "---" or ""
+                    : expectedInspectionClassifications
+                        .Split('/')
+                        .Select(v => v.Trim())
+                        .Contains(actualClassification, StringComparer.OrdinalIgnoreCase);
+
+                return hmiMatch && phsiMatch && classificationMatch;
+            });
+
+        // Final assertions — at this point all values have stabilised or the retry budget is exhausted.
         actualHmi.Should().Be(expectedHmiInspectionRequired,
             $"Expected HMI Inspection Required to be '{expectedHmiInspectionRequired}' but found '{actualHmi}'.");
 

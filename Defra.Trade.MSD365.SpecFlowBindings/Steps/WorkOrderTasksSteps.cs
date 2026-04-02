@@ -46,6 +46,8 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
 
     /// <summary>
     /// Verifies that all specified Work Order Task names are present in the workorderservicetasksgrid.
+    /// Refreshes the subgrid and retries for up to 3 minutes to allow tasks to finish rendering
+    /// after navigation or popup dismissal — consistent with the commodity lines load pattern.
     /// </summary>
     [Then(@"I can see following Work Order Tasks (.*)")]
     public void ThenICanSeeFollowingWorkOrderTasks(string taskNamesRaw)
@@ -61,24 +63,84 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
 
         expectedTaskNames.Should().NotBeEmpty("at least one task name must be specified in the step.");
 
+        WaitForWorkOrderTasksToLoad(expectedTaskNames, timeout: TimeSpan.FromMinutes(5));
+
         var gridContainer = Driver.WaitUntilAvailable(
             By.XPath("//div[@data-id='dataSetRoot_workorderservicetasksgrid']"),
             "Work Order Service Tasks grid could not be found.");
 
-        // Task names are rendered as <a role="link" aria-label="<task name>"> inside the msdyn_name column cells.
-        // The aria-label attribute is stable — it is set from the record data, not CSS-in-JS hashing.
+        // Final assertions after the grid has stabilised.
         foreach (var taskName in expectedTaskNames)
         {
-            var taskLink = gridContainer.FindElements(
+            var taskLinks = gridContainer.FindElements(
                 By.XPath($".//div[@col-id='msdyn_name']//a[@role='link' and @aria-label='{taskName}']"));
 
-            taskLink.Count.Should().Be(1,
-                $"Expected to find exactly one Work Order Task named '{taskName}' in the grid but found {taskLink.Count}.");
+            taskLinks.Count.Should().Be(1,
+                $"Expected to find exactly one Work Order Task named '{taskName}' in the grid " +
+                $"but found {taskLinks.Count} after waiting.");
         }
     }
 
     /// <summary>
+    /// Polls the Work Order Service Tasks subgrid by checking for all expected task name links,
+    /// refreshing the subgrid between attempts, until all tasks are present or the timeout expires.
+    /// Uses XrmApp.Entity.SubGrid.ClickCommand to target the subgrid Refresh command specifically,
+    /// avoiding a full page refresh that would reset the Work Order form state.
+    /// </summary>
+    /// <param name="expectedTaskNames">The task names that must all be present in the grid.</param>
+    /// <param name="timeout">How long to keep retrying before giving up.</param>
+    private void WaitForWorkOrderTasksToLoad(List<string> expectedTaskNames, TimeSpan timeout)
+    {
+        const string subGridName = "workorderservicetasksgrid";
+        var deadline = DateTime.UtcNow.Add(timeout);
+        var attempt = 0;
+
+        while (DateTime.UtcNow < deadline)
+        {
+            attempt++;
+
+            var gridContainer = Driver.WaitUntilAvailable(
+                By.XPath("//div[@data-id='dataSetRoot_workorderservicetasksgrid']"),
+                "Work Order Service Tasks grid could not be found.");
+
+            var missingTasks = expectedTaskNames
+                .Where(taskName => gridContainer
+                    .FindElements(By.XPath($".//div[@col-id='msdyn_name']//a[@role='link' and @aria-label='{taskName}']"))
+                    .Count != 1)
+                .ToList();
+
+            if (missingTasks.Count == 0)
+            {
+                return;
+            }
+
+            XrmApp.Entity.SubGrid.ClickCommand(subGridName, "Refresh");
+            Driver.WaitForTransaction();
+            Thread.Sleep(TimeSpan.FromSeconds(10));
+        }
+
+        // Timed out — collect final state for a useful failure message.
+        var gridFinal = Driver.WaitUntilAvailable(
+            By.XPath("//div[@data-id='dataSetRoot_workorderservicetasksgrid']"),
+            "Work Order Service Tasks grid could not be found.");
+
+        var stillMissing = expectedTaskNames
+            .Where(taskName => gridFinal
+                .FindElements(By.XPath($".//div[@col-id='msdyn_name']//a[@role='link' and @aria-label='{taskName}']"))
+                .Count != 1)
+            .ToList();
+
+        stillMissing.Should().BeEmpty(
+            $"Timed out after {timeout.TotalMinutes} minute(s) and {attempt} subgrid refresh attempt(s) " +
+            $"waiting for all Work Order Tasks to appear. " +
+            $"Still missing after timeout: [{string.Join(", ", stillMissing.Select(t => $"'{t}'"))}].");
+    }
+
+    /// <summary>
     /// Clicks on a Work Order Task link by name in the workorderservicetasksgrid.
+    /// Retries once if an ElementClickInterceptedException is thrown — indicating a tooltip
+    /// overlay (ms-Callout) is blocking the click. The retry refreshes the subgrid to
+    /// collapse all rows and dismiss any active tooltip before attempting the click again.
     /// </summary>
     /// <param name="taskName">The name of the task to click.</param>
     [When(@"I click on the '(.*)' task")]
@@ -86,15 +148,25 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
     {
         Driver.WaitForTransaction();
 
-        var gridContainer = Driver.WaitUntilAvailable(
-            By.XPath("//div[@data-id='dataSetRoot_workorderservicetasksgrid']"),
-            "Work Order Service Tasks grid could not be found.");
+        Policy
+            .Handle<ElementClickInterceptedException>()
+            .WaitAndRetry(2, _ => TimeSpan.FromSeconds(5),
+                onRetry: (_, _, attempt, _) =>
+                {
+                    // The ms-Callout tooltip from a previously hovered row is intercepting the click.
+                    // Refresh the subgrid to collapse all rows and clear the tooltip overlay.
+                    XrmApp.Entity.SubGrid.ClickCommand("workorderservicetasksgrid", "Refresh");
+                    Driver.WaitForTransaction();
+                })
+            .Execute(() =>
+            {
+                var taskLink = Driver.WaitUntilAvailable(
+                    By.XPath($"//div[@data-id='dataSetRoot_workorderservicetasksgrid']//div[@col-id='msdyn_name']//a[@role='link' and @aria-label='{taskName}']"),
+                    $"Work Order Task '{taskName}' could not be found in the grid.");
 
-        var taskLink = Driver.WaitUntilAvailable(
-            By.XPath($".//div[@col-id='msdyn_name']//a[@role='link' and @aria-label='{taskName}']"),
-            $"Work Order Task '{taskName}' could not be found in the grid.");
+                taskLink.Click();
+            });
 
-        taskLink.Click();
         Driver.WaitForTransaction();
     }
 

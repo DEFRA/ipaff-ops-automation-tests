@@ -38,28 +38,34 @@ namespace Defra.UI.Tests.Pages.Classes
         }
 
 
-        public bool WaitForUploadToCompleteAndVerifySuccessMessage(String successsMessage)
+        public bool WaitForUploadToCompleteAndVerifySuccessMessage(string successMessage)
         {
-            WebDriverWait _wait = new WebDriverWait(_driver, TimeSpan.FromMinutes(4));
             try
             {
-                // Wait for "uploading" to disappear
-                _wait.Until(d =>
+                // Wait up to 4 minutes for the "Uploading CSV..." spinner to disappear.
+                // The spinner clearing does not mean the upload is complete — the server
+                // continues processing after the spinner is removed from the DOM.
+                var uploadingWait = new WebDriverWait(_driver, TimeSpan.FromMinutes(4));
+                uploadingWait.Until(d =>
                 {
                     try { return !d.FindElement(lblUploading).Displayed; }
-                    catch(NoSuchElementException) { return true; }
+                    catch (NoSuchElementException) { return true; }
                 });
 
-                // Wait for success message
-                _wait.Until(ExpectedConditions.ElementIsVisible(lblSuccessBanner));
-                return _driver.FindElement(lblSuccessBanner).Text.Equals(successsMessage);
+                // Wait up to a further 4 minutes for the success banner to appear.
+                // This is a separate budget from the spinner wait — the server-side CSV
+                // processing can continue well after the spinner clears, particularly for
+                // large uploads (500 commodity lines). Both phases each get their full budget.
+                var bannerWait = new WebDriverWait(_driver, TimeSpan.FromMinutes(4));
+                bannerWait.Until(ExpectedConditions.ElementIsVisible(lblSuccessBanner));
+
+                return _driver.FindElement(lblSuccessBanner).Text.Equals(successMessage);
             }
             catch
             {
-                return false; // timeout or failure
+                return false;
             }
         }
-
 
         public bool IsUploadSuccessMsgDisplayed(string successMsg)
         {

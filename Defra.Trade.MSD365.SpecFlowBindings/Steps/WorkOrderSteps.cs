@@ -666,6 +666,13 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
         var inputTable = scenarioContext["AllCommodityDetails"] as Table;
         inputTable.Should().NotBeNull("AllCommodityDetails was not found in the scenario context.");
 
+        var expectedRowCount = inputTable.Rows.Count;
+
+        // The Dynamics commodity lines are loaded asynchronously from IPAFFS after the work order
+        // is created. Poll with a page refresh until all lines are present, up to 2 minutes.
+        // This prevents premature pagination termination when only a partial dataset has loaded.
+        WaitForCommodityLinesToLoad(expectedRowCount, timeout: TimeSpan.FromMinutes(2));
+
         var sortedExpected = inputTable.Rows
             .OrderBy(r => r["EPPO code"])
             .ToList();
@@ -730,6 +737,76 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
         }
     }
 
+    /// <summary>
+    /// Polls the Import Commodity Lines grid by counting rows across all pages,
+    /// refreshing the form between attempts, until the expected count is reached
+    /// or the timeout expires.
+    /// </summary>
+    /// <param name="expectedRowCount">The total number of commodity lines expected.</param>
+    /// <param name="timeout">How long to keep retrying before giving up.</param>
+    private void WaitForCommodityLinesToLoad(int expectedRowCount, TimeSpan timeout)
+    {
+        var deadline = DateTime.UtcNow.Add(timeout);
+
+        while (DateTime.UtcNow < deadline)
+        {
+            var currentCount = CountCommodityLinesAcrossAllPages();
+
+            if (currentCount >= expectedRowCount)
+            {
+                return;
+            }
+
+            // Refresh resets the grid to page 1 and clears any active sort/filter,
+            // so no manual navigation back to the first page is needed before recounting.
+            CommandSteps.WhenISelectTheCommand("Refresh");
+            Driver.WaitForTransaction();
+        }
+
+        // Final count after timeout — let the assertion produce a clear failure message.
+        var finalCount = CountCommodityLinesAcrossAllPages();
+        finalCount.Should().BeGreaterOrEqualTo(expectedRowCount,
+            $"Timed out after {timeout.TotalMinutes} minutes waiting for {expectedRowCount} " +
+            $"commodity lines to load. Final count across all pages was {finalCount}.");
+    }
+
+    /// <summary>
+    /// Counts the total number of commodity line data rows across all pages
+    /// without collecting cell values, purely to check whether loading is complete.
+    /// Leaves the grid on the last visited page.
+    /// </summary>
+    private int CountCommodityLinesAcrossAllPages()
+    {
+        var total = 0;
+
+        while (true)
+        {
+            Driver.WaitForTransaction();
+
+            var grid = Driver.WaitUntilAvailable(
+                By.XPath("//div[@role='grid'][contains(@aria-label,'Import Commodity Lines')]"),
+                "Import Commodity Lines grid could not be found while counting rows.");
+
+            var dataRows = grid.FindElements(
+                By.XPath(".//div[@role='row'][@aria-label='Data']"));
+
+            total += dataRows.Count;
+
+            var nextButton = Driver.WaitUntilAvailable(
+                By.XPath("//button[contains(@id,'_nextPage')]"),
+                "Pagination next button could not be found while counting rows.");
+
+            if (nextButton.GetAttribute("disabled") != null)
+            {
+                break;
+            }
+
+            nextButton.Click();
+        }
+
+        return total;
+    }
+    
     private void SortCommodityLinesByEppoCodeAscending()
     {
         var eppoColumnHeaderButton = Driver.WaitUntilAvailable(
