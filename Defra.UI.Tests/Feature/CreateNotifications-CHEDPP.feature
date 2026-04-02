@@ -564,7 +564,7 @@ Scenario: Agent submits CHEDPP notification for Trader after being delegated aut
 	Then the notification should be present in the list
 	And the notification status should include 'TRADE PARTNER'
 
-	
+@Dynamics	
 Scenario: SPS-9104
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page

@@ -2,6 +2,7 @@
 
 using Capgemini.PowerApps.SpecFlowBindings;
 using Capgemini.PowerApps.SpecFlowBindings.Extensions;
+using Defra.Trade.Plants.SpecFlowBindings.Helpers;
 using Microsoft.Dynamics365.UIAutomation.Api.UCI;
 using Microsoft.Dynamics365.UIAutomation.Browser;
 using OpenQA.Selenium;
@@ -22,13 +23,13 @@ public class LoginSteps : PowerAppsStepDefiner
         this.scenarioContext = scenarioContext;
     }
 
-    /// <summary>
-    /// Logs in to a given app as a given user.
-    /// </summary>
-    /// <param name="appName">The name of the app.</param>
-    /// <param name="userAlias">The alias of the user.</param>
-    //[Scope(Tag = "Trade")]
-    [Given("I am logged in to the {string} app as {string}")]
+/// <summary>
+/// Logs in to a given app as a given user.
+/// </summary>
+/// <param name="appName">The name of the app.</param>
+/// <param name="userAlias">The alias of the user.</param>
+//[Scope(Tag = "Trade")]
+[Given("I am logged in to the {string} app as {string}")]
     [When("I am logged in to the {string} app as {string}")]
     public void GivenIAmLoggedInToTheAppAs(string appName, string userAlias)
     {
@@ -53,14 +54,11 @@ public class LoginSteps : PowerAppsStepDefiner
         else
             url = TestConfig.GetChargeUIUrl();
 
-        Console.WriteLine("Username logged in with = " + user.Username);
+        Console.WriteLine("Logging in with = " + user.Username);
 
         XrmApp.OnlineLogin.Login(url, user.Username.ToSecureString(), user.Password.ToSecureString());
 
-        Console.WriteLine("Logged-in success with the user =  " + user.Username);
-
-        // Dismiss any 'Sign in to continue' MSAL prompts that appear immediately after login.
-        DismissSignInPrompts();
+        SignInPromptHelper.DismissSignInPrompts(Driver, "post-login");
 
         if (!url.Query.Contains("appid") && appName != "ChargeUI")
         {
@@ -69,71 +67,9 @@ public class LoginSteps : PowerAppsStepDefiner
 
         CloseTeachingBubbles();
 
-        // Dismiss any further prompts triggered by OpenApp() or CloseTeachingBubbles()
-        // before handing control back to the test.
-        DismissSignInPrompts();
-    }
-
-    /// <summary>
-    /// Dismisses all 'Sign in to continue' MSAL token refresh prompts that appear after login.
-    /// Each prompt is clicked and confirmed closed before the next iteration, handling the case
-    /// where multiple prompts appear sequentially during the AAD token refresh cycle.
-    /// Also waits for any residual modal overlay to clear before returning.
-    /// Times out after 90 seconds if prompts do not resolve.
-    /// </summary>
-    private static void DismissSignInPrompts()
-    {
-        var deadline = DateTime.UtcNow.AddSeconds(90);
-
-        while (DateTime.UtcNow < deadline)
-        {
-            var prompt = Driver.FindElements(By.XPath("//h1[text() = 'Sign in to continue']"));
-
-            if (prompt.Count == 0)
-            {
-                var modalGone = Driver.FindElements(
-                    By.XPath("//div[contains(@id,'modalDialogRoot')]")).Count == 0;
-
-                if (modalGone)
-                {
-                    return;
-                }
-
-                // Modal still present — wait briefly in case a further prompt is about to appear.
-                Thread.Sleep(TimeSpan.FromSeconds(2));
-                continue;
-            }
-
-            try
-            {
-                Driver.WaitUntilAvailable(
-                    By.XPath("//*[normalize-space(text()) ='Sign in']"),
-                    5.Seconds())
-                    ?.Click();
-            }
-            catch (StaleElementReferenceException)
-            {
-                // DOM replaced mid-click — next iteration re-locates.
-                continue;
-            }
-            catch (NoSuchElementException)
-            {
-                continue;
-            }
-
-            // Wait for this prompt instance to fully disappear before looping again.
-            var promptGoneDeadline = DateTime.UtcNow.AddSeconds(15);
-            while (DateTime.UtcNow < promptGoneDeadline)
-            {
-                if (Driver.FindElements(By.XPath("//h1[text() = 'Sign in to continue']")).Count == 0)
-                {
-                    break;
-                }
-
-                Thread.Sleep(TimeSpan.FromSeconds(1));
-            }
-        }
-    }
+        SignInPromptHelper.DismissSignInPrompts(Driver, "post-navigation");
+        Console.WriteLine("Logged-in successfully with the user =  " + user.Username);
+    }  
 
     private static void CloseTeachingBubbles()
     {

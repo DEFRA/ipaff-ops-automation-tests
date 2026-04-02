@@ -71,14 +71,11 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
     [When("I search Importer Notifications for the notification created in IPAFFS")]
     public void WhenISearchImporterNotificationsForTheNotificationCreatedInIPAFFS()
     {
-        // TODO: Remove this temporary data injection once the full IPAFFS scenario populates CHEDReference in the scenario context.
-        if (!scenarioContext.ContainsKey("AllCommodityDetails"))
-        {
-            scenarioContext["CHEDReference"] = "CHEDPP.GB.2026.1066921";
-        }
         var chedReference = scenarioContext.Get<string>("CHEDReference");
+        SignInPromptHelper.DismissSignInPrompts(Driver, "pre-search");
         XrmApp.Grid.Search(chedReference);
         Driver.WaitForTransaction();
+        SignInPromptHelper.DismissSignInPrompts(Driver, "post-search");
     }
 
     [Then("the notification created in IPAFFS should be returned")]
