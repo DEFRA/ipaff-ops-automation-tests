@@ -239,7 +239,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         if(page.Sections.AcceptableForTransit != null)
                         {
                             ValidateContains("DestinationCountry", page.Sections.AcceptableForTransit.Value, ref allDataMatches, mismatches);
-                            ValidateContains("ExitBorderControlPost", (string?)page.Sections.AcceptableForTransit.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches, true);
+                            ValidateContains("ExitBorderControlPost", (string?)page.Sections.AcceptableForTransit.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches);
                         }
                         if (page.Sections.AcceptableForTranshipment  != null)
                         {
