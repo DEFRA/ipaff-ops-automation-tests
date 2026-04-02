@@ -452,7 +452,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         }
                         else
                         {
-                            Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedFormatted}' matches");
+                            Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{expectedFormatted}' matches");
                         }
                     }
                     catch (Exception ex)
@@ -486,7 +486,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     }
                     else
                     {
-                        Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expected}' matches");
+                        Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{expected}' matches");
                     }
 
                     return;
@@ -524,7 +524,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     else
                     {
                         Console.WriteLine(
-                            $"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedFormatted}' matches"
+                            $"[PDF VALIDATION] ✓ {contextKey}: '{expectedFormatted}' matches"
                         );
                     }
 
@@ -549,7 +549,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     }
                     else
                     {
-                        Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
+                        Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
                     }
                 }
                 // Handle string[] (for documents)
@@ -566,12 +566,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         }
                         else
                         {
-                            Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
+                            Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
                         }
                     }
                     else
                     {
-                        Console.WriteLine($"[REVIEW VALIDATION] ⊘ {contextKey}: Skipped (empty value in array)");
+                        Console.WriteLine($"[PDF VALIDATION] ⊘ {contextKey}: Skipped (empty value in array)");
                     }
                 }
                 // Handle single string value
@@ -587,22 +587,22 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         }
                         else
                         {
-                            Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
+                            Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
                         }
                     }
                     else
                     {
-                        Console.WriteLine($"[REVIEW VALIDATION] ⊘ {contextKey}: Skipped (empty value in context)");
+                        Console.WriteLine($"[PDF VALIDATION] ⊘ {contextKey}: Skipped (empty value in context)");
                     }
                 }
                 else
                 {
-                    Console.WriteLine($"[REVIEW VALIDATION] ⊘ {contextKey}: Skipped (unsupported type: {contextValue.GetType().Name})");
+                    Console.WriteLine($"[PDF VALIDATION] ⊘ {contextKey}: Skipped (unsupported type: {contextValue.GetType().Name})");
                 }
             }
             else
             {
-                Console.WriteLine($"[REVIEW VALIDATION] ⊘ {contextKey}: Skipped (not in context)");
+                Console.WriteLine($"[PDF VALIDATION] ⊘ {contextKey}: Skipped (not in context)");
             }
         }
 
@@ -651,13 +651,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     }
                     else
                     {
-                        Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
+                        Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
                     }
                 }
             }
             else
             {
-                Console.WriteLine($"[REVIEW VALIDATION] ⊘ {contextKey}: Skipped (not in context)");
+                Console.WriteLine($"[PDF VALIDATION] ⊘ {contextKey}: Skipped (not in context)");
             }
         }
     }
