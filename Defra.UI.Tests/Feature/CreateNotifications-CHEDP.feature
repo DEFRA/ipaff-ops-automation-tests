@@ -819,7 +819,7 @@ Scenario: Admin submits a notification and records decision and validate cookies
 	Then the Addresses page should be displayed
 	When the user clicks Add a consignor or exporter
 	Then the Search for an existing consignor or exporter page should be displayed
-	When the user selects one of the displayed consignors or exporters "abc"
+	When the user selects a consignor or exporter "abc"
 	Then the chosen consignor or exporter "abc" should be displayed on the Addresses page
 	When the user clicks Add a consignee
 	Then the Search for an existing consignee page should be displayed
