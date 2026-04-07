@@ -125,20 +125,24 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
                         var docRefEntry = page.Sections.AccompanyingDocuments.AdditionalData.FirstOrDefault(x => x.Key == "DocumentReference");
                         var documentReference = docRefEntry.Key == null ? null : docRefEntry.Value?.ToString();
-                        ValidateContains("HealthCertificateReference", documentReference, ref allDataMatches, mismatches, true);
-
                         var dateEntry = page.Sections.AccompanyingDocuments.AdditionalData.FirstOrDefault(x => x.Key == "DateOfIssue");
                         var reviewDate = dateEntry.Key == null ? null : dateEntry.Value?.ToString();
+
+                        ValidateContains("HealthCertificateReference", documentReference, ref allDataMatches, mismatches, true);                            
                         ValidateIfExists("HealthCertificateDateOfIssue", reviewDate, ref allDataMatches, mismatches);
+
+                        ValidateContains("DocumentReference", documentReference, ref allDataMatches, mismatches, true);
+                        ValidateIfExists("DocumentDateOfIssue", reviewDate, ref allDataMatches, mismatches);
+
 
                         ValidateIfExists("MeansOfTransport", page.Sections.MeansOfTransport.Mode, ref allDataMatches, mismatches);
                         ValidateIfExists("EnterTransportDocRef", page.Sections.MeansOfTransport.InternationalTransportDocument, ref allDataMatches, mismatches);
                         ValidateIfExists("TransportId", page.Sections.MeansOfTransport.Identification, ref allDataMatches, mismatches);
                         ValidateIfExists("CountryOfOrigin", page.Sections.CountryOfOrigin.Value, ref allDataMatches, mismatches);
-                        ValidateContains("ApprovedEstablishmentName", page.Sections.EstablishmentsOfOrigin?.ApprovalNumber, ref allDataMatches, mismatches);
-                        ValidateContains("ApprovedEstablishmentCountry", page.Sections.EstablishmentsOfOrigin?.ApprovalNumber, ref allDataMatches, mismatches);
-                        ValidateContains("ApprovedEstablishmentType", page.Sections.EstablishmentsOfOrigin?.ApprovalNumber, ref allDataMatches, mismatches);
-                        ValidateContains("ApprovedEstablishmentApprovalNum", page.Sections.EstablishmentsOfOrigin?.ApprovalNumber, ref allDataMatches, mismatches);
+                        ValidateContains("ApprovedEstablishmentName", page.Sections.EstablishmentsOfOrigin?.Value, ref allDataMatches, mismatches);
+                        ValidateContains("ApprovedEstablishmentCountry", page.Sections.EstablishmentsOfOrigin?.Value, ref allDataMatches, mismatches);
+                        ValidateContains("ApprovedEstablishmentType", page.Sections.EstablishmentsOfOrigin?.Value, ref allDataMatches, mismatches);
+                        ValidateContains("ApprovedEstablishmentApprovalNum", page.Sections.EstablishmentsOfOrigin?.Value, ref allDataMatches, mismatches);
                         ValidateContains("TranshipmentDestinationCountry", page.Sections.TranshipmentOnwardTravel?.Country, ref allDataMatches, mismatches);
 
                         string? pdfTemperature = page.Sections.TransportConditions 
@@ -252,6 +256,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         if (page.Sections.ReasonForRefusal != null)
                         {
                             ValidateContains("ReasonForRefusal", page.Sections.ReasonForRefusal.Value, ref allDataMatches, mismatches);
+                            ValidateContains("AdditionalReasonForRefusal", page.Sections.ReasonForRefusal.Value, ref allDataMatches, mismatches);
                         }
                         if (page.Sections.AcceptableForInternalMarket != null)
                         {
