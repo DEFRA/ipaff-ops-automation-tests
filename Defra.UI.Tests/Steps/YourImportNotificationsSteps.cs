@@ -223,16 +223,24 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         string? pdfLaboratoryTests = page.Sections.LaboratoryTests
                         switch
                         {
-                            { Satisfactory: "true" } => "Satisfactory",
-                            { NotSatisfactory: "true" } => "Not Satisfactory",
                             { Random: "true" } => "Random",
                             { Suspicion: "true" } => "Suspicion",
                             { IntensifiedControls: "true" } => "IntensifiedControls",
+                            _ => null
+                        };
+                        ValidateIfExists("LaboratoryTestsReason", pdfLaboratoryTests, ref allDataMatches, mismatches);
+
+                        string? pdfLaboratoryTestResult = page.Sections.LaboratoryTests
+                        switch
+                        {
+                            { Satisfactory: "true" } => "Satisfactory",
+                            { NotSatisfactory: "true" } => "Not Satisfactory",
                             { Pending: "true" } => "Pending",
                             _ => null
                         };
-                        ValidateIfExists("LaboratoryTests", pdfLaboratoryTests, ref allDataMatches, mismatches);
-                       // ValidateIfExists("LaboratoryTestsReason", pdfLaboratoryTests, ref allDataMatches, mismatches);                   
+                        ValidateIfExists("LaboratoryTestsReason", pdfLaboratoryTestResult, ref allDataMatches, mismatches);
+
+                        ValidateIfExists("LaboratoryTestName", (string?)page.Sections.LaboratoryTests.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches);                   
 
                         ValidateContains("IUUSubOption", page.Sections.CustomsDocumentReference.Value, ref allDataMatches, mismatches);
 
