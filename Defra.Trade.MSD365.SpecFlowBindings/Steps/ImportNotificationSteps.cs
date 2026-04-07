@@ -71,11 +71,10 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
     [When("I search Importer Notifications for the notification created in IPAFFS")]
     public void WhenISearchImporterNotificationsForTheNotificationCreatedInIPAFFS()
     {
+        //scenarioContext["CHEDReference"] = "CHEDPP.GB.2026.1067026";
         var chedReference = scenarioContext.Get<string>("CHEDReference");
-        SignInPromptHelper.DismissSignInPrompts(Driver, "pre-search");
         XrmApp.Grid.Search(chedReference);
         Driver.WaitForTransaction();
-        SignInPromptHelper.DismissSignInPrompts(Driver, "post-search");
     }
 
     [Then("the notification created in IPAFFS should be returned")]

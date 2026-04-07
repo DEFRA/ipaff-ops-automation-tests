@@ -669,9 +669,9 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
         var expectedRowCount = inputTable.Rows.Count;
 
         // The Dynamics commodity lines are loaded asynchronously from IPAFFS after the work order
-        // is created. Poll with a page refresh until all lines are present, up to 2 minutes.
+        // is created. Poll with a page refresh until all lines are present, up to 3 minutes.
         // This prevents premature pagination termination when only a partial dataset has loaded.
-        WaitForCommodityLinesToLoad(expectedRowCount, timeout: TimeSpan.FromMinutes(2));
+        WaitForCommodityLinesToLoad(expectedRowCount, timeout: TimeSpan.FromMinutes(3));
 
         var sortedExpected = inputTable.Rows
             .OrderBy(r => r["EPPO code"])

@@ -782,15 +782,19 @@ public class GridSteps : PowerAppsStepDefiner
         }
     }
 
-    [Scope(Tag = "Dynamics")]
+    [When(@"I open the record in the grid")]
+    public static void WhenIOpenTheRecordInTheGrid()
+    {
+        XrmApp.Grid.OpenRecord(0);
+        Driver.WaitForTransaction();
+    }
+
     [When(@"I open the record at position '(\d+)' in the grid")]
     [When(@"I open the (\d+(?:(?:st)|(?:nd)|(?:rd)|(?:th))) record in the grid")]
     public static void WhenIOpenTheRecordAtPositionInTheGrid(int index)
     {
-        SignInPromptHelper.DismissSignInPrompts(Driver, "pre-open-record");
         XrmApp.Grid.OpenRecord(index);
         Driver.WaitForTransaction();
-        SignInPromptHelper.DismissSignInPrompts(Driver, "post-open-record");
     }
 
     [Scope(Tag = "Trade")]

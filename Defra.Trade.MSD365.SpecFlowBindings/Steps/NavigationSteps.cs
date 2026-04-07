@@ -32,16 +32,13 @@ public class NavigationSteps : PowerAppsStepDefiner
         this.ctx = ctx;
     }
 
-    [Scope(Tag = "Dynamics")]
-    [When("I open the sub area {string} under the {string} area")]
-    [Then("I open the sub area {string} under the {string} area")]
-    public static void WhenIOpenTheSubAreaUnderTheArea(string subAreaName, string areaName)
+    [When("I click on {string} under the {string} area")]
+    [Then("I click on {string} under the {string} area")]
+    public static void WhenIClickOnUnderTheArea(string subAreaName, string areaName)
     {
-        SignInPromptHelper.DismissSignInPrompts(Driver, "pre-navigation");
         Driver.WaitForTransaction();
         XrmApp.Navigation.OpenSubArea(areaName, subAreaName);
         Driver.WaitForTransaction();
-        SignInPromptHelper.DismissSignInPrompts(Driver, "post-navigation");
     }
 
     /// <summary>

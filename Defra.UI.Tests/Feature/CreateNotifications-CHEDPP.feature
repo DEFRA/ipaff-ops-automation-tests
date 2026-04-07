@@ -1200,11 +1200,11 @@ Scenario: SPS-9104
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
 	When I am logged in to the 'IDCOMS' app as 'Inspector'
-	And I open the sub area 'Import Notifications' under the 'Imports' area
+	And I click on 'Import Notifications' under the 'Imports' area
 	Then the 'Active Import Notifications' view is displayed
 	When I search Import Notifications for the notification created in IPAFFS
 	Then the notification created in IPAFFS should be returned
-	When I open the record at position '0' in the grid
+	When I open the record in the grid
 	Then I verify the Import Notification page is displayed for the notification created in IPAFFS
 	And the 'Summary' tab is displayed and selected
 	When I click the reference number in the Work Order field for the notification created in IPAFFS
@@ -1339,3 +1339,17 @@ Scenario: SPS-9104
 	And I can see following Work Order Tasks 'HMI Check' 'Document Check' 'Imports Phyto Certificate Audit' 'Identity & Physical Check'
 	And the Work Order Task 'Identity & Physical Check' Status is 'Inactive'
 	And the Work Order Task 'Identity & Physical Check' % Complete is '100.00'
+	When I click IPAFFS from the header ribbon
+	Then the user can see the Decision Hub for the notification created in IPAFFS
+	And the user can see 2 hypertext links
+	When the user clicks Save and set as in progress
+	Then the notification status should change from 'NEW' to 'IN PROGRESS'
+	When the user clicks on Record HMI checks link
+	Then the Record HMI checks page should be displayed
+	And the Commodities HMI check status should be 'TO DO'
+	When the user sets the commodities status to 'Compliant'
+	And the Validity period is 7 days
+	And the user clicks Save and return to work order
+	Then I switch back to the Dynamics tab
+	And I verify the Work Order page is displayed for the notification created in IPAFFS
+	And the 'Import' tab is displayed and selected
