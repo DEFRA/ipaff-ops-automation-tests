@@ -1199,6 +1199,7 @@ Scenario: SPS-9104
 	And the user checks commodity code "0810907590", description "Ardisia crenata", quantity "3.0", authority "PHSI,HMI" and decision "Decision not given,Decision not given"
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
+	And I close the browser
 	When I am logged in to the 'IDCOMS' app as 'Inspector'
 	And I click on 'Import Notifications' under the 'Imports' area
 	Then the 'Active Import Notifications' view is displayed
@@ -1340,6 +1341,13 @@ Scenario: SPS-9104
 	And the Work Order Task 'Identity & Physical Check' Status is 'Inactive'
 	And the Work Order Task 'Identity & Physical Check' % Complete is '100.00'
 	When I click IPAFFS from the header ribbon
+	And I switch to the IPAFFS tab
+	# Temp steps \/
+	And the user logs out of IPAFFS Part 2
+	When I switch back to the Dynamics tab
+	Then I verify the Work Order page is displayed for the notification created in IPAFFS
+	And the 'Work Order Tasks' tab is displayed and selected
+	# Temp steps /\
 	#Then the user can see the Decision Hub for the notification created in IPAFFS
 	#And the user can see 2 hypertext links
 	#When the user clicks Save and set as in progress

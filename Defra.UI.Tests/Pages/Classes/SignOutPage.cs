@@ -39,5 +39,15 @@ namespace Defra.UI.Tests.Pages.Classes
             return logOutPageHeading.Text.Contains("You have signed out")
                || logOutPageHeading.Text.Contains("Your Defra account");
         }
+
+        public void CloseBrowser()
+        {
+            try
+            {
+                _driver.Quit();
+                _driver.Dispose();
+            }
+            catch { }
+        }
     }
 }

@@ -6,14 +6,23 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using Reqnroll;
 using Reqnroll.BoDi;
-using System.Reflection;
 
 /// <summary>
 /// Step bindings that handle driver hand-off when Dynamics opens IPAFFS in a new tab.
+///
+/// Architecture:
+/// Assembly 1 (Defra.UI.Tests) owns Browser 1 — all IPAFFS page classes resolve IWebDriver
+/// from its BoDi container. Assembly 2 (this assembly) owns Browser 2 (the Dynamics/EasyRepro
+/// driver). The two containers are siblings with no shared ancestry, so IWebDriver cannot be
+/// injected across them. ScenarioContext is the shared channel: the Dynamics driver (switched
+/// to the IPAFFS tab) is stored here and re-registered into Assembly 1's container by
+/// the "I switch to the IPAFFS tab" step in SignOutSteps.
 /// </summary>
 [Binding]
 public class BrowserTransitionSteps : PowerAppsStepDefiner
 {
+    private const string IpaffsDomainFragment = "defra.cloud";
+
     private readonly IObjectContainer _objectContainer;
     private readonly ScenarioContext _scenarioContext;
 
@@ -24,140 +33,59 @@ public class BrowserTransitionSteps : PowerAppsStepDefiner
     }
 
     /// <summary>
-    /// Clicks the IPAFFS link in the Dynamics header ribbon, waits for the new tab to open,
-    /// then forcibly swaps the IWebDriver instance in both BoDi's registration store AND
-    /// its resolved-objects cache so all subsequent IPAFFS page classes resolve the Dynamics
-    /// driver focused on the IPAFFS tab.
+    /// Clicks the IPAFFS command in the Dynamics ribbon, waits for the new tab to open,
+    /// waits for Azure AD SSO to complete, then stores the Dynamics driver (focused on the
+    /// IPAFFS tab) in ScenarioContext for Assembly 1 to pick up via the hand-off step.
     /// </summary>
     [When("I click IPAFFS from the header ribbon")]
     public void WhenIClickIPAFFSFromTheHeaderRibbon()
     {
-        var handlesBefore = Driver.WindowHandles.ToList();
+        var dynamicsDriver = Driver;
 
         Driver.WaitForTransaction();
+        var handlesBefore = dynamicsDriver.WindowHandles.ToList();
+
         CommandSteps.WhenISelectTheCommand("IPAFFS");
         Driver.WaitForTransaction();
 
         // Wait for the new IPAFFS tab to open
-        var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(30));
+        var wait = new WebDriverWait(dynamicsDriver, TimeSpan.FromSeconds(30));
         wait.Until(d => d.WindowHandles.Count > handlesBefore.Count);
 
-        // Switch the Dynamics driver to the new IPAFFS tab
-        var newHandle = Driver.WindowHandles.Except(handlesBefore).Single();
-        Driver.SwitchTo().Window(newHandle);
+        // Switch to the new tab
+        var ipaffsHandle = dynamicsDriver.WindowHandles.Except(handlesBefore).Single();
+        dynamicsDriver.SwitchTo().Window(ipaffsHandle);
 
-        // Wait for IPAFFS to fully load
-        wait.Until(d => !string.IsNullOrEmpty(d.Url) && d.Url != "about:blank");
+        // Wait for the Azure AD SSO redirect chain to land on the IPAFFS host
+        var ipaffsWait = new WebDriverWait(dynamicsDriver, TimeSpan.FromSeconds(60));
+        ipaffsWait.Until(d =>
+            d.Url.Contains(IpaffsDomainFragment, StringComparison.OrdinalIgnoreCase)
+            && ((IJavaScriptExecutor)d).ExecuteScript("return document.readyState").ToString() == "complete");
 
-        // Store handles so we can switch back later
         _scenarioContext["DynamicsWindowHandle"] = handlesBefore.Last();
-        _scenarioContext["IpaffsInDynamicsBrowserHandle"] = newHandle;
+        _scenarioContext["IpaffsInDynamicsBrowserHandle"] = ipaffsHandle;
+        _scenarioContext["DynamicsIpaffsDriver"] = dynamicsDriver;
 
-        // Swap IWebDriver in both BoDi's registration store and resolved-objects cache
-        SwapRegisteredWebDriver(Driver);
-
-        // Signal to AfterStepHooks that we are now executing IPAFFS steps
-        _scenarioContext["IsDynamicsActive"] = false;
-
-        Console.WriteLine($"Switched Dynamics driver to IPAFFS tab: {newHandle}. IPAFFS step definitions will now use this driver.");
+        Console.WriteLine($"[BrowserTransition] IPAFFS SSO complete. Driver stored for hand-off. URL: {dynamicsDriver.Url}");
     }
 
     /// <summary>
-    /// Switches the Dynamics driver back to the Dynamics tab.
-    /// The registered IWebDriver IS the Dynamics driver — switching its active window
-    /// is sufficient since BoDi returns the same instance to all consumers.
+    /// Switches the Dynamics driver back to the original Dynamics tab so subsequent
+    /// Dynamics step definitions continue to operate on the correct window.
     /// </summary>
     [When("I switch back to the Dynamics tab")]
-    [Then("I switch back to the Dynamics tab")]
     public void WhenISwitchBackToDynamicsTab()
     {
-        var dynamicsHandle = _scenarioContext.Get<string>("DynamicsWindowHandle");
+        if (!_scenarioContext.TryGetValue("DynamicsWindowHandle", out string dynamicsHandle)
+            || string.IsNullOrWhiteSpace(dynamicsHandle))
+        {
+            throw new InvalidOperationException(
+                "No Dynamics window handle found in ScenarioContext. " +
+                "Ensure 'When I click IPAFFS from the header ribbon' ran before this step.");
+        }
+
         Driver.SwitchTo().Window(dynamicsHandle);
 
-        // Restore Dynamics active flag so AfterStepHooks resumes Dynamics reporting
-        _scenarioContext["IsDynamicsActive"] = true;
-
-        Console.WriteLine($"Switched back to Dynamics tab: {dynamicsHandle}.");
-    }
-
-    /// <summary>
-    /// Bypasses BoDi's "already resolved" guard by updating IWebDriver in both:
-    ///   1. The registration store  — so future Resolve() calls return the new driver
-    ///   2. The resolved-objects cache — so cached resolutions are also replaced
-    /// Both fields must be updated; updating only the registration has no effect once
-    /// the interface has been resolved because BoDi serves the cached value.
-    /// </summary>
-    private void SwapRegisteredWebDriver(IWebDriver newDriver)
-    {
-        var containerType = _objectContainer.GetType();
-        const BindingFlags nonPublicInstance = BindingFlags.NonPublic | BindingFlags.Instance;
-
-        // ── 1. Swap the instance in the registrations dictionary ──────────────────
-        var registrationsField = containerType.GetField("registrations", nonPublicInstance)
-                              ?? containerType.GetField("_registrations", nonPublicInstance)
-                              ?? throw new InvalidOperationException(
-                                     "Could not locate BoDi's internal registrations field. " +
-                                     "Check the BoDi version for the correct field name.");
-
-        var registrations = registrationsField.GetValue(_objectContainer)
-                            ?? throw new InvalidOperationException("BoDi registrations dictionary is null.");
-
-        var getItemMethod = registrations.GetType().GetMethod("get_Item")
-                            ?? throw new InvalidOperationException("Could not find get_Item on registrations dictionary.");
-
-        foreach (var key in (System.Collections.IEnumerable)registrations.GetType().GetProperty("Keys")!.GetValue(registrations)!)
-        {
-            var registeredType = key.GetType().GetProperty("Type")?.GetValue(key) as Type;
-            if (registeredType != typeof(IWebDriver))
-                continue;
-
-            var registration = getItemMethod.Invoke(registrations, [key])
-                               ?? throw new InvalidOperationException("BoDi IWebDriver registration entry is null.");
-
-            var instanceField = registration.GetType().GetField("instance", nonPublicInstance)
-                             ?? registration.GetType().GetField("_instance", nonPublicInstance)
-                             ?? throw new InvalidOperationException(
-                                    "Could not locate the instance field on BoDi's InstanceRegistration. " +
-                                    "Check the BoDi version for the correct field name.");
-
-            instanceField.SetValue(registration, newDriver);
-            break;
-        }
-
-        // ── 2. Evict the stale entry from BoDi's resolved-objects cache ───────────
-        // BoDi caches resolved instances in a Dictionary<RegistrationKey, object>
-        // under the field "resolvedObjects" (or "_resolvedObjects").
-        // Once cached, Resolve<T>() returns the cached value regardless of the
-        // registration, so we must remove the IWebDriver entry to force a fresh
-        // lookup that returns our updated registration.
-        var resolvedField = containerType.GetField("resolvedObjects", nonPublicInstance)
-                         ?? containerType.GetField("_resolvedObjects", nonPublicInstance);
-
-        if (resolvedField != null)
-        {
-            var resolvedObjects = resolvedField.GetValue(_objectContainer);
-            if (resolvedObjects != null)
-            {
-                var removeMethod = resolvedObjects.GetType().GetMethod("Remove",
-                    [resolvedObjects.GetType().GetGenericArguments()[0]]);
-
-                if (removeMethod != null)
-                {
-                    foreach (var key in ((System.Collections.IEnumerable)resolvedObjects.GetType()
-                                           .GetProperty("Keys")!.GetValue(resolvedObjects)!)
-                                        .Cast<object>().ToList())
-                    {
-                        var keyType = key.GetType().GetProperty("Type")?.GetValue(key) as Type;
-                        if (keyType == typeof(IWebDriver))
-                        {
-                            removeMethod.Invoke(resolvedObjects, [key]);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        Console.WriteLine("Successfully swapped IWebDriver instance in BoDi container (registration + cache).");
+        Console.WriteLine($"[BrowserTransition] Switched Dynamics driver back to handle: {dynamicsHandle}");
     }
 }

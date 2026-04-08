@@ -213,6 +213,36 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
     }
 
     /// <summary>
+    /// Locates the Time Recording WijMo grid element and resolves the subgrid name from the container
+    /// data-id, searching across both known subgrid container data-id values used by different task types:
+    /// - 'timerecordings_admin_subgrid_container' (Document Check, Imports Phyto Certificate Audit)
+    /// - 'timerecordings_subgrid_container' (Identity &amp; Physical Check)
+    /// </summary>
+    /// <returns>
+    /// A tuple of the WijMo grid element and the subgrid name
+    /// e.g. ("timerecordings_admin_subgrid") derived from the matched container data-id.
+    /// </returns>
+    private (IWebElement Grid, string SubGridName) GetTimeRecordingGridWithName()
+    {
+        var container = Driver.WaitUntilAvailable(
+            By.XPath(
+                "//div[@data-id='timerecordings_admin_subgrid_container' or @data-id='timerecordings_subgrid_container']"),
+            "Time Recording subgrid container could not be found in either 'timerecordings_admin_subgrid_container' or 'timerecordings_subgrid_container'.");
+
+        // Derive the subgrid name by stripping '_container' from the data-id attribute.
+        var containerId = container.GetAttribute("data-id");
+        var subGridName = containerId.Replace("_container", string.Empty);
+
+        var grid = container.FindElement(
+            By.XPath(".//div[@role='grid'][contains(@aria-label,'Time Recording')]"));
+
+        grid.Should().NotBeNull(
+            $"Time Recording grid element could not be found inside container '{containerId}'.");
+
+        return (grid, subGridName);
+    }
+
+    /// <summary>
     /// Locates the Time Recording WijMo grid element, searching across both known subgrid container
     /// data-id values used by different task types:
     /// - 'timerecordings_admin_subgrid_container' (Document Check, Imports Phyto Certificate Audit)
@@ -220,12 +250,62 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
     /// </summary>
     private IWebElement GetTimeRecordingGrid()
     {
-        // Use an XPath union to match either known container data-id in a single search.
-        return Driver.WaitUntilAvailable(
-            By.XPath(
-                "//div[@data-id='timerecordings_admin_subgrid_container' or @data-id='timerecordings_subgrid_container']" +
-                "//div[@role='grid'][contains(@aria-label,'Time Recording')]"),
-            "Time Recording grid could not be found in either 'timerecordings_admin_subgrid_container' or 'timerecordings_subgrid_container'.");
+        return GetTimeRecordingGridWithName().Grid;
+    }
+
+    /// <summary>
+    /// Verifies that the entry status for the current user's row in the Time Recording subgrid matches the expected value.
+    /// Clicks the Time Recording subgrid Refresh command between retries to force the grid to reload
+    /// from the server — required when the status update (e.g. Draft -> Submitted) is asynchronous
+    /// and the WijMo grid does not automatically re-render after the confirmation dialog is dismissed.
+    /// Retries up to 6 times with a 5-second gap (30 seconds total) before failing.
+    /// </summary>
+    /// <param name="expectedEntryStatus">The expected entry status value e.g. 'Draft', 'Submitted'.</param>
+    [Then(@"the entry status is '(.*)'")]
+    public void ThenTheEntryStatusIs(string expectedEntryStatus)
+    {
+        Driver.WaitForTransaction();
+
+        var currentUser = TestConfig.GetUser("Inspector", useCurrentUser: true);
+        var localPart = currentUser.Username.Split('@')[0];
+        var expectedName = string.Join(" ", localPart.Split('.')
+            .Select(p => char.ToUpper(p[0]) + p.Substring(1)));
+
+        string actualStatus = null;
+
+        Policy
+            .Handle<Exception>()
+            .OrResult<string>(status => !string.Equals(status, expectedEntryStatus, StringComparison.OrdinalIgnoreCase))
+            .WaitAndRetry(6, retryAttempt =>
+            {
+                // Resolve the subgrid name dynamically and click its Refresh command so the grid
+                // reloads the latest server-side status rather than reading a stale cached value.
+                var (_, subGridName) = GetTimeRecordingGridWithName();
+                XrmApp.Entity.SubGrid.ClickCommand(subGridName, "Refresh");
+                Driver.WaitForTransaction();
+
+                return TimeSpan.FromSeconds(5);
+            })
+            .Execute(() =>
+            {
+                Driver.WaitForTransaction();
+
+                var grid = GetTimeRecordingGrid();
+                var entryStatusColIndex = GetTimeRecordingColumnIndex(grid, "Entry Status");
+                var matchingRow = GetTimeRecordingRowForCurrentUser(grid, expectedName);
+
+                matchingRow.Should().NotBeNull(
+                    $"Could not find a Time Recording row for Inspector '{expectedName}' when verifying entry status.");
+
+                var entryStatusCell = matchingRow.FindElement(
+                    By.XPath($".//div[@role='gridcell'][@aria-colindex='{entryStatusColIndex}']//span[@role='presentation']"));
+
+                return actualStatus = entryStatusCell.Text.Trim();
+            });
+
+        actualStatus.Should().Be(expectedEntryStatus,
+            $"Expected Entry Status to be '{expectedEntryStatus}' for Inspector '{expectedName}' " +
+            $"but found '{actualStatus}' after retrying.");
     }
 
     /// <summary>
@@ -340,51 +420,7 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
         matchingCell.Should().NotBeNull(
             $"Expected to find a row with Inspector '{expectedName}' in the Time Recording grid but no matching row was found. " +
             $"Found inspectors: [{string.Join(", ", inspectorCells.Select(c => $"'{c.Text.Trim()}'"))}].");
-    }
-
-    /// <summary>
-    /// Verifies that the entry status for the current user's row in the Time Recording subgrid matches the expected value.
-    /// Retries for up to 30 seconds to allow for asynchronous status updates (e.g. Draft -> Submitted
-    /// after confirming time submission) before asserting the final value.
-    /// </summary>
-    /// <param name="expectedEntryStatus">The expected entry status value e.g. 'Draft', 'Submitted'.</param>
-    [Then(@"the entry status is '(.*)'")]
-    public void ThenTheEntryStatusIs(string expectedEntryStatus)
-    {
-        Driver.WaitForTransaction();
-
-        var currentUser = TestConfig.GetUser("Inspector", useCurrentUser: true);
-        var localPart = currentUser.Username.Split('@')[0];
-        var expectedName = string.Join(" ", localPart.Split('.')
-            .Select(p => char.ToUpper(p[0]) + p.Substring(1)));
-
-        string actualStatus = null;
-
-        Policy
-            .Handle<Exception>()
-            .OrResult<string>(status => !string.Equals(status, expectedEntryStatus, StringComparison.OrdinalIgnoreCase))
-            .WaitAndRetry(6, retryAttempt => TimeSpan.FromSeconds(5))
-            .Execute(() =>
-            {
-                Driver.WaitForTransaction();
-
-                var grid = GetTimeRecordingGrid();
-                var entryStatusColIndex = GetTimeRecordingColumnIndex(grid, "Entry Status");
-                var matchingRow = GetTimeRecordingRowForCurrentUser(grid, expectedName);
-
-                matchingRow.Should().NotBeNull(
-                    $"Could not find a Time Recording row for Inspector '{expectedName}' when verifying entry status.");
-
-                var entryStatusCell = matchingRow.FindElement(
-                    By.XPath($".//div[@role='gridcell'][@aria-colindex='{entryStatusColIndex}']//span[@role='presentation']"));
-
-                return actualStatus = entryStatusCell.Text.Trim();
-            });
-
-        actualStatus.Should().Be(expectedEntryStatus,
-            $"Expected Entry Status to be '{expectedEntryStatus}' for Inspector '{expectedName}' " +
-            $"but found '{actualStatus}' after retrying.");
-    }
+    }   
 
     /// <summary>
     /// Enters a value into a named column cell for the current user's row in the Time Recording subgrid
