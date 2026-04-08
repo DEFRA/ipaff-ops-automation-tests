@@ -155,6 +155,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["AnalysisType"] = analysisType;
             _scenarioContext["SampleDate"] = laboratoryTestsPage?.GetSampleDate();
             _scenarioContext["SampleTime"] = laboratoryTestsPage?.GetSampleTime();
+            _scenarioContext["LabTestName"] = labTest;
+            _scenarioContext["LabSampleReference"] = sampleReference;
+            _scenarioContext["NumberOfLabSamples"] = numberOfSamples;
+            _scenarioContext["LabSampleType"] = sampleType;
+            _scenarioContext["LabSampleStorageTemperature"] = storageTemperature;
+
         }
 
         [When("the user selects any Laboratory test from the displayed list")]

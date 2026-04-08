@@ -146,7 +146,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When(@"I have provided the IPAFF Agent credentials and signin")]
         public void WhenIHaveProvidedTheIPAFFAgentCredentialsAndSignin()
         {
-            var jsonData = UserObject?.GetUser("IPAFF", "Agent");
+            string userRole = "Agent";
+            var jsonData = UserObject?.GetUser("IPAFF", userRole);
+            _scenarioContext["UserRole"] = userRole;
             var userObject = new User
             {
                 UserName = jsonData.UserName,

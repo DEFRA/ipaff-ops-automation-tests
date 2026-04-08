@@ -128,6 +128,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         var dateEntry = page.Sections.AccompanyingDocuments.AdditionalData.FirstOrDefault(x => x.Key == "DateOfIssue");
                         var reviewDate = dateEntry.Key == null ? null : dateEntry.Value?.ToString();
 
+                        //ValidateContains("HealthDocumentType", documentReference, ref allDataMatches, mismatches, true);                            
                         ValidateContains("HealthCertificateReference", documentReference, ref allDataMatches, mismatches, true);                            
                         ValidateIfExists("HealthCertificateDateOfIssue", reviewDate, ref allDataMatches, mismatches);
 
