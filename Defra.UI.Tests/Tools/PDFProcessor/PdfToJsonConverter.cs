@@ -401,6 +401,23 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
                 sectionHeader = "I.25 For-reentry";
             }
 
+            if (sectionHeader.Contains("II.25", StringComparison.OrdinalIgnoreCase) && sectionHeader.Contains("BCP Reference Number", StringComparison.OrdinalIgnoreCase))
+            {
+                var ii25Match = Regex.Match(
+                    sectionHeader,
+                    @"II\.25\.?\s*BCP\s+Reference\s+Number\s*(?<val>.+)$",
+                    RegexOptions.IgnoreCase);
+                if (ii25Match.Success)
+                {
+                    var v = ii25Match.Groups["val"].Value.Trim();
+                    if (!string.IsNullOrWhiteSpace(v))
+                    {
+                        contentLines.Insert(0, v);
+                    }
+                }
+                sectionHeader = "II.25 BCP Reference Number";
+            }
+
             // Special handling for I.31 to support array of objects for multi-row values
             if (sectionHeader.Contains("I.31", StringComparison.OrdinalIgnoreCase) && 
                 sectionHeader.Contains("Description of the goods", StringComparison.OrdinalIgnoreCase))
@@ -1571,9 +1588,9 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
             if (sectionName.Contains("II.12", StringComparison.OrdinalIgnoreCase))
             {
                 sectionData.Clear();
-                if (fullText.Contains("Human consumption", StringComparison.OrdinalIgnoreCase))
+                if (!string.IsNullOrWhiteSpace(fullText))
                 {
-                    sectionData["value"] = "Human consumption";
+                    sectionData["value"] = fullText.Trim();
                 }
             }
 
@@ -1758,6 +1775,25 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
                     formFields.TryGetValue("II.23.CustomsDocumentReference", out var ii23FromPage))
                 {
                     headerValue = ii23FromPage?.Trim() ?? "";
+                }
+
+                sectionData["value"] = headerValue;
+            }
+
+            if (sectionName.Contains("II.25", StringComparison.OrdinalIgnoreCase) && sectionName.Contains("BCP Reference Number", StringComparison.OrdinalIgnoreCase))
+            {
+                sectionData.Clear();
+
+                var headerValue = "";
+                if (!string.IsNullOrWhiteSpace(fullText))
+                {
+                    headerValue = fullText.Trim();
+                }
+
+                if (string.IsNullOrWhiteSpace(headerValue) &&
+                    formFields.TryGetValue("II.25.BCPReferenceNumber", out var ii25FromPage))
+                {
+                    headerValue = ii25FromPage?.Trim() ?? "";
                 }
 
                 sectionData["value"] = headerValue;
