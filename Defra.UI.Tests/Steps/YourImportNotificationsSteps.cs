@@ -179,7 +179,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     else if (pageNumber == 3)
                     {
                         ValidateIfExists("CHEDReference", page.Sections.II2ChedReference.Id, ref allDataMatches, mismatches);
-                        ValidateIfExists("CustomsDeclarationReference", page.Sections.II25BcpReferenceNumber.Id, ref allDataMatches, mismatches);
+                        ValidateIfExists("CustomsDeclarationReference", page.Sections.II25BcpReferenceNumber.Value, ref allDataMatches, mismatches);
 
                         string? pdfDocCheckDecision = page.Sections.DocumentaryCheck 
                         switch
@@ -269,7 +269,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         }
                         if (page.Sections.AcceptableForInternalMarket != null)
                         {
-                            //ValidateContains("AcceptableForSubOption", page.Sections.AcceptableForInternalMarket., ref allDataMatches, mismatches);
+                            ValidateContains("AcceptableForSubOption", page.Sections.AcceptableForInternalMarket.Value, ref allDataMatches, mismatches);
                         }
                     }
                     else if (pageNumber == 4)
