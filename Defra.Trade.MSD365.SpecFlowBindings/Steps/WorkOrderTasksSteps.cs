@@ -344,8 +344,10 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
 
     /// <summary>
     /// Verifies that the entry status for the current user's row in the Time Recording subgrid matches the expected value.
+    /// Retries for up to 30 seconds to allow for asynchronous status updates (e.g. Draft -> Submitted
+    /// after confirming time submission) before asserting the final value.
     /// </summary>
-    /// <param name="expectedEntryStatus">The expected entry status value e.g. 'Draft'.</param>
+    /// <param name="expectedEntryStatus">The expected entry status value e.g. 'Draft', 'Submitted'.</param>
     [Then(@"the entry status is '(.*)'")]
     public void ThenTheEntryStatusIs(string expectedEntryStatus)
     {
@@ -356,20 +358,32 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
         var expectedName = string.Join(" ", localPart.Split('.')
             .Select(p => char.ToUpper(p[0]) + p.Substring(1)));
 
-        var grid = GetTimeRecordingGrid();
-        var entryStatusColIndex = GetTimeRecordingColumnIndex(grid, "Entry Status");
+        string actualStatus = null;
 
-        var matchingRow = GetTimeRecordingRowForCurrentUser(grid, expectedName);
+        Policy
+            .Handle<Exception>()
+            .OrResult<string>(status => !string.Equals(status, expectedEntryStatus, StringComparison.OrdinalIgnoreCase))
+            .WaitAndRetry(6, retryAttempt => TimeSpan.FromSeconds(5))
+            .Execute(() =>
+            {
+                Driver.WaitForTransaction();
 
-        matchingRow.Should().NotBeNull(
-            $"Could not find a Time Recording row for Inspector '{expectedName}' when verifying entry status.");
+                var grid = GetTimeRecordingGrid();
+                var entryStatusColIndex = GetTimeRecordingColumnIndex(grid, "Entry Status");
+                var matchingRow = GetTimeRecordingRowForCurrentUser(grid, expectedName);
 
-        var entryStatusCell = matchingRow.FindElement(
-            By.XPath($".//div[@role='gridcell'][@aria-colindex='{entryStatusColIndex}']//span[@role='presentation']"));
+                matchingRow.Should().NotBeNull(
+                    $"Could not find a Time Recording row for Inspector '{expectedName}' when verifying entry status.");
 
-        entryStatusCell.Text.Trim().Should().Be(expectedEntryStatus,
+                var entryStatusCell = matchingRow.FindElement(
+                    By.XPath($".//div[@role='gridcell'][@aria-colindex='{entryStatusColIndex}']//span[@role='presentation']"));
+
+                return actualStatus = entryStatusCell.Text.Trim();
+            });
+
+        actualStatus.Should().Be(expectedEntryStatus,
             $"Expected Entry Status to be '{expectedEntryStatus}' for Inspector '{expectedName}' " +
-            $"but found '{entryStatusCell.Text.Trim()}'.");
+            $"but found '{actualStatus}' after retrying.");
     }
 
     /// <summary>

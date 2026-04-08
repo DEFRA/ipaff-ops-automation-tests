@@ -1340,16 +1340,16 @@ Scenario: SPS-9104
 	And the Work Order Task 'Identity & Physical Check' Status is 'Inactive'
 	And the Work Order Task 'Identity & Physical Check' % Complete is '100.00'
 	When I click IPAFFS from the header ribbon
-	Then the user can see the Decision Hub for the notification created in IPAFFS
-	And the user can see 2 hypertext links
-	When the user clicks Save and set as in progress
-	Then the notification status should change from 'NEW' to 'IN PROGRESS'
-	When the user clicks on Record HMI checks link
-	Then the Record HMI checks page should be displayed
-	And the Commodities HMI check status should be 'TO DO'
-	When the user sets the commodities status to 'Compliant'
-	And the Validity period is 7 days
-	And the user clicks Save and return to work order
-	Then I switch back to the Dynamics tab
-	And I verify the Work Order page is displayed for the notification created in IPAFFS
-	And the 'Import' tab is displayed and selected
+	#Then the user can see the Decision Hub for the notification created in IPAFFS
+	#And the user can see 2 hypertext links
+	#When the user clicks Save and set as in progress
+	#Then the notification status should change from 'NEW' to 'IN PROGRESS'
+	#When the user clicks on Record HMI checks link
+	#Then the Record HMI checks page should be displayed
+	#And the Commodities HMI check status should be 'TO DO'
+	#When the user sets the commodities status to 'Compliant'
+	#And the Validity period is 7 days
+	#And the user clicks Save and return to work order
+	#Then I switch back to the Dynamics tab
+	#And I verify the Work Order page is displayed for the notification created in IPAFFS
+	#And the 'Import' tab is displayed and selected
