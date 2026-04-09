@@ -11,44 +11,12 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
     public partial class PdfToJsonConverter
     {
         private readonly CheckboxExtractor _checkboxExtractor;
-        private readonly FormExtractor _formExtractor; 
-
-        private static readonly string[] KnownKeywords = new[] {
-            "Country and place of issue", "Name", "Address", "ISO Code",
-            "Organisation", "Type", "Document reference", "Date of issue", "Commercial documentary references",
-            "Name of Signatory", "Date", "Time", "Approval Number",
-            "Means of transport", "Identification", "International transport document", "Mode",
-            "Total Gross Weight", "Total Net Weight", "Total number of packages", "Commodity",
-            "Date of signature", "Signature", "Full name", "Net Weight", "Package Count",
-            "Product Type", "Establishment of Origin", "Country of Origin", "Region of Origin",
-            "Place of destination", "Consignor/Exporter", "Consignee/Importer", "Operator responsible for the consignment",
-            "Accompanying documents", "Prior notification", "Country of dispatch", "Establishments of Origin",
-            "Transport conditions", "Container No/Seal No", "Goods certified as", "Conformity of the goods",
-            "For internal market", "Means of transport after BCP/storage", "Transporter", "Date of departure",
-            "Description of the goods", "Declaration", "Previous CHED", "Subsequent CHEDs", "BCP Reference Number",
-            "Documentary Check", "Identity Check", "Physical Check", "Laboratory tests", "Acceptable for internal market",
-            "Identification of BCP", "Certifying officer", "Inspection fees", "Customs Document Reference",
-            "Details on", "Follow up", "Official Inspector", "Local Reference", "Border Control Post/Control Point /Control Unit",
-            "CHED Reference", "Border Control Post/Control Point /Control Unit code",
-            "Stamp", "Unit number",
-            "TRACES unit No", "Exit BCP", "3rd country", "Country of destination", "Exit authority", "Code"
-        }.OrderByDescending(k => k.Length).ToArray();
-
-        private static readonly string[] BooleanFlags = new[] {
-            "Ambient", "Chilled", "Frozen",
-            "Conforming", "Non-conforming",
-            "Human Consumption", "Animal Feeedingstuff", "Technical use", "Other",
-            "EU Standard", "National Requirements",
-            "Satisfactory", "Not Satisfactory", "Not Done",
-            "Seal Check Only", "Full Identity Check",
-            "Random", "Suspicion", "Intensified Controls", "Pending",
-            "Validation", "Acceptable", "Refused"
-        };
+        private readonly FormExtractor _formExtractor;
 
         public PdfToJsonConverter()
         {
             _checkboxExtractor = new CheckboxExtractor();
-            _formExtractor = new FormExtractor(); 
+            _formExtractor = new FormExtractor();
         }
 
         public string ConvertToJson(string pdfPath)
@@ -128,6 +96,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
                 var partIndex = lineText.IndexOf("PART I", StringComparison.OrdinalIgnoreCase);
                 if (partIndex == -1) partIndex = lineText.IndexOf("PART II", StringComparison.OrdinalIgnoreCase);
                 if (partIndex == -1) partIndex = lineText.IndexOf("PART III", StringComparison.OrdinalIgnoreCase);
+                if (partIndex == -1) partIndex = lineText.IndexOf("PART IV", StringComparison.OrdinalIgnoreCase);
 
                 if (partIndex >= 0)
                 {
@@ -247,7 +216,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
             var currentContentWords = new List<string>();
             double currentStartX = 0;
 
-            var sectionStartRegex = new Regex(@"^((?:I{1,3}|IV)\.\d+(\.\d*)?\.?)");
+            var sectionStartRegex = new Regex(@"^((?:I{1,3})\.\d+(?:\.\d*)?\.?|IV\.)");
             var splitHeaderPart1 = new Regex(@"^(I{1,3}|IV)\.?$");
             var splitHeaderPart2 = new Regex(@"^(\d+(\.\d*)?\.?)$");
 
@@ -290,6 +259,43 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
 
                         i++;
                     }
+                }
+
+                else if (wordText.Equals("Fiche", StringComparison.OrdinalIgnoreCase) && i + 2 < lineWords.Count &&
+                         lineWords[i + 1].Text.Equals("for", StringComparison.OrdinalIgnoreCase) &&
+                         lineWords[i + 2].Text.Equals("sampling", StringComparison.OrdinalIgnoreCase))
+                {
+                    isSectionStart = true;
+                    detectedHeader = "IV. Fiche for sampling";
+                    i += 2;
+                }
+                else if (wordText.Equals("References", StringComparison.OrdinalIgnoreCase) &&
+                         (i == 0 || !lineWords[i - 1].Text.Equals("IV.", StringComparison.OrdinalIgnoreCase)))
+                {
+                    isSectionStart = true;
+                    detectedHeader = "IV. References";
+                }
+                else if (wordText.Equals("Identification", StringComparison.OrdinalIgnoreCase) && i + 3 < lineWords.Count &&
+                         lineWords[i + 1].Text.Equals("of", StringComparison.OrdinalIgnoreCase) &&
+                         lineWords[i + 2].Text.Equals("the", StringComparison.OrdinalIgnoreCase) &&
+                         lineWords[i + 3].Text.Equals("sample", StringComparison.OrdinalIgnoreCase))
+                {
+                    isSectionStart = true;
+                    detectedHeader = "IV. Identification of the sample";
+                    i += 3;
+                }
+                else if (wordText.Equals("Requested", StringComparison.OrdinalIgnoreCase) && i + 1 < lineWords.Count &&
+                         lineWords[i + 1].Text.Equals("analysis", StringComparison.OrdinalIgnoreCase))
+                {
+                    isSectionStart = true;
+                    detectedHeader = "IV. Requested analysis";
+                    i += 1;
+                }
+                else if (wordText.Equals("Results", StringComparison.OrdinalIgnoreCase) &&
+                         (i == 0 || !lineWords[i - 1].Text.Contains("Sample", StringComparison.OrdinalIgnoreCase)))
+                {
+                    isSectionStart = true;
+                    detectedHeader = "IV. Results";
                 }
 
                 if (isSectionStart)
@@ -419,7 +425,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
             }
 
             // Special handling for I.31 to support array of objects for multi-row values
-            if (sectionHeader.Contains("I.31", StringComparison.OrdinalIgnoreCase) && 
+            if (sectionHeader.Contains("I.31", StringComparison.OrdinalIgnoreCase) &&
                 sectionHeader.Contains("Description of the goods", StringComparison.OrdinalIgnoreCase))
             {
                 // Check for "Descriptions followed by Table" pattern (Grouped layout)
@@ -465,10 +471,10 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
                             var combinedContent = new List<string> { descriptions[i], "Commodity Country of Origin Net weight Package count", dataRows[i] };
                             var chunkData = new Dictionary<string, object>();
                             ParseContent(chunkData, sectionHeader, combinedContent, formFields, checkboxes);
-                            
+
                             chunkData["Value"] = string.Join(" ", combinedContent);
                             var cleanChunk = new Dictionary<string, object>();
-                            foreach(var kvp in chunkData) cleanChunk[SanitizePropertyName(kvp.Key)] = kvp.Value;
+                            foreach (var kvp in chunkData) cleanChunk[SanitizePropertyName(kvp.Key)] = kvp.Value;
                             descItems.Add(cleanChunk);
                         }
                         sections[SanitizePropertyName(sectionHeader)] = descItems;
@@ -492,7 +498,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
                                 var chunkData = new Dictionary<string, object>();
                                 ParseContent(chunkData, sectionHeader, currentChunk, formFields, checkboxes);
                                 var cleanChunk = new Dictionary<string, object>();
-                                foreach(var kvp in chunkData) cleanChunk[SanitizePropertyName(kvp.Key)] = kvp.Value;
+                                foreach (var kvp in chunkData) cleanChunk[SanitizePropertyName(kvp.Key)] = kvp.Value;
                                 items.Add(cleanChunk);
                             }
                             currentChunk = new List<string>();
@@ -511,7 +517,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
                     var chunkData = new Dictionary<string, object>();
                     ParseContent(chunkData, sectionHeader, currentChunk, formFields, checkboxes);
                     var cleanChunk = new Dictionary<string, object>();
-                    foreach(var kvp in chunkData) cleanChunk[SanitizePropertyName(kvp.Key)] = kvp.Value;
+                    foreach (var kvp in chunkData) cleanChunk[SanitizePropertyName(kvp.Key)] = kvp.Value;
                     items.Add(cleanChunk);
                 }
 
@@ -575,7 +581,12 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
                 "Details on", "Follow up", "Official Inspector", "Local Reference", "Border Control Post/Control Point /Control Unit",
                 "CHED Reference", "Border Control Post/Control Point /Control Unit code",
                 "Stamp", "Unit number",
-                "TRACES unit No", "Exit BCP", "3rd country", "Country of destination", "Exit authority", "Code"
+                "TRACES unit No", "Exit BCP", "3rd country", "Country of destination", "Exit authority", "Code",
+                "Name of the inspector", "Phone/email", "Phone/Email", "Certificate reference number", "Countries of origin",
+                "EPPO Code", "Harmful organism/name", "Inspector conclusion", "Motivation",
+                "Sample date", "Sample time", "Sample batch Nr.", "Sample use by date", "Sample type",
+                "Number of samples", "Conservation of samples", "Laboratory test", "Laboratory test method",
+                "Released date", "Sample/R results", "Laboratory conclusion", "Phone Email"
             }.OrderByDescending(k => k.Length).ToArray();
 
             foreach (var keyword in knownKeywords)
@@ -995,8 +1006,8 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
                     {
                         shouldSkipField = true;
                     }
-                    else if ((kvp.Key.Length > 0 && char.IsDigit(kvp.Key[0])) || 
-                             kvp.Key.StartsWith("Operator responsible") || 
+                    else if ((kvp.Key.Length > 0 && char.IsDigit(kvp.Key[0])) ||
+                             kvp.Key.StartsWith("Operator responsible") ||
                              kvp.Key.StartsWith("I, the undersigned"))
                     {
                         shouldSkipField = true;
@@ -1532,7 +1543,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
                     {
                         testValue = "";
                     }
-                    
+
                     if (!string.IsNullOrWhiteSpace(testValue))
                         sectionData["Test"] = testValue;
                 }
@@ -1562,7 +1573,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
                 {
                     if (!sectionData.ContainsKey(k)) sectionData[k] = "false";
                 }
-                
+
                 if (!sectionData.ContainsKey("Test"))
                 {
                     sectionData["Test"] = "";
@@ -1780,6 +1791,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
                 sectionData["value"] = headerValue;
             }
 
+            // II.25 BCP Reference Number: Specific Cleanup
             if (sectionName.Contains("II.25", StringComparison.OrdinalIgnoreCase) && sectionName.Contains("BCP Reference Number", StringComparison.OrdinalIgnoreCase))
             {
                 sectionData.Clear();
@@ -1863,10 +1875,10 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
 
                 // If values are actually labels (e.g. from an empty form), clear them
                 // This handles cases where lookahead might have caught too much or labels were extracted as values
-                var allLabels = new[] { 
-                    "Country of destination", "ISO Code", "Exit authority", "Code", 
-                    "Means of transport", "Mode", "International transport document", 
-                    "Identification", "Date and time" 
+                var allLabels = new[] {
+                    "Country of destination", "ISO Code", "Exit authority", "Code",
+                    "Means of transport", "Mode", "International transport document",
+                    "Identification", "Date and time"
                 };
 
                 foreach (var k in expectedKeys)
@@ -1876,7 +1888,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
 
                     foreach (var label in allLabels)
                     {
-                        if (val.Equals(label, StringComparison.OrdinalIgnoreCase) || 
+                        if (val.Equals(label, StringComparison.OrdinalIgnoreCase) ||
                             val.StartsWith(label + " ", StringComparison.OrdinalIgnoreCase) ||
                             val.Contains(" " + label + " ", StringComparison.OrdinalIgnoreCase))
                         {
@@ -1973,6 +1985,130 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
                 sectionData["Compliance of the consignment"] = complianceOutcome;
             }
 
+            // IV. Fiche for sampling: Specific Cleanup
+            if (sectionName.Equals("IV. Fiche for sampling", StringComparison.OrdinalIgnoreCase))
+            {
+                var val = sectionData.ContainsKey("value") ? sectionData["value"]?.ToString() ?? "" : "";
+                sectionData.Clear();
+                sectionData["value"] = val;
+            }
+
+
+            // IV. References: Specific Cleanup
+            if (sectionName.Equals("IV. References", StringComparison.OrdinalIgnoreCase))
+            {
+                var keysToKeep = new[] { "Name", "Name of the inspector", "Phone/email", "Certificate reference number" };
+
+                // Robust Phone/Email extraction
+                // The text often looks like: "Phone/Email +44 /email@address.com 1179 381171 Certificate reference number"
+                var matchPhoneEmail = Regex.Match(fullText, @"Phone/Email\s+(?<val>.*?)(?=\s*Certificate\s+reference\s+number|$)", RegexOptions.IgnoreCase);
+                if (matchPhoneEmail.Success)
+                {
+                    var rawVal = matchPhoneEmail.Groups["val"].Value.Trim();
+                    // Extract email
+                    var emailMatch = Regex.Match(rawVal, @"\S+@\S+");
+                    var email = emailMatch.Success ? emailMatch.Value.TrimStart('/') : "";
+                    // Extract phone parts (things that aren't the email)
+                    var phoneParts = Regex.Replace(rawVal, Regex.Escape(emailMatch.Success ? emailMatch.Value : ""), "").Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    var phone = string.Join(" ", phoneParts).Trim().TrimEnd('/');
+
+                    if (!string.IsNullOrEmpty(phone) && !string.IsNullOrEmpty(email))
+                        sectionData["Phone/email"] = $"{phone}/{email}";
+                    else if (!string.IsNullOrEmpty(phone))
+                        sectionData["Phone/email"] = phone;
+                    else if (!string.IsNullOrEmpty(email))
+                        sectionData["Phone/email"] = email;
+                }
+
+                // Because keys contain spaces, let's use the raw form and they'll be sanitized to NameOfTheInspector etc.
+                var keysToRemove = sectionData.Keys.Where(k => !keysToKeep.Contains(k, StringComparer.OrdinalIgnoreCase)).ToList();
+                foreach (var k in keysToRemove) sectionData.Remove(k);
+            }
+
+            // IV. Identification of the sample: Specific Cleanup
+            if (sectionName.Equals("IV. Identification of the sample", StringComparison.OrdinalIgnoreCase))
+            {
+                var keysToKeep = new[] { "Establishments of origin", "Countries of origin", "Country of dispatch", "Place of destination", "Commodity", "EPPO Code" };
+
+                // Specific extraction for PlaceOfDestination to prevent bleeding into Commodity
+                var matchPlace = Regex.Match(fullText, @"Place of destination\s+(?<val>.*?)(?=\s+\d+\.\s*\d+)", RegexOptions.IgnoreCase);
+                if (matchPlace.Success) sectionData["Place of destination"] = matchPlace.Groups["val"].Value.Trim();
+
+                // Custom extraction for Commodity:
+                // Captures the sequence starting with digit pattern (e.g. 1. 51 ...) until Eppo Code or next section
+                var matchCommodity = Regex.Match(fullText, @"(?<val>\d+\.\s*\d+\s+.*?)(?=\s*Eppo\s+Code|\s*$)", RegexOptions.IgnoreCase);
+                if (matchCommodity.Success)
+                {
+                    string comm = matchCommodity.Groups["val"].Value.Trim();
+                    // Just removing the 'Commodity' literal injected by parser if any
+                    comm = Regex.Replace(comm, @"\bCommodity\s*", "", RegexOptions.IgnoreCase).Trim();
+                    sectionData["Commodity"] = comm;
+                }
+
+                var keysToRemove = sectionData.Keys.Where(k => !keysToKeep.Contains(k, StringComparer.OrdinalIgnoreCase)).ToList();
+                foreach (var k in keysToRemove) sectionData.Remove(k);
+            }
+
+            // IV. Requested analysis: Specific Cleanup
+            if (sectionName.Equals("IV. Requested analysis", StringComparison.OrdinalIgnoreCase))
+            {
+                var keysToKeep = new[] { "Harmful organism/name", "Inspector conclusion", "Motivation" };
+
+                // Extracted name often drops the prefix or is missed by keyword extraction
+                var matchHarmful = Regex.Match(fullText, @"Harmful organism name\s+(?<val>.*?)(?=\s*Inspector\s+conclusion|\s*Motivation|$)", RegexOptions.IgnoreCase);
+                if (matchHarmful.Success && (!sectionData.ContainsKey("Harmful organism/name") || string.IsNullOrWhiteSpace(sectionData["Harmful organism/name"]?.ToString())))
+                {
+                    sectionData["Harmful organism/name"] = matchHarmful.Groups["val"].Value.Trim();
+                }
+
+                var keysToRemove = sectionData.Keys.Where(k => !keysToKeep.Contains(k, StringComparer.OrdinalIgnoreCase)).ToList();
+                foreach (var k in keysToRemove) sectionData.Remove(k);
+            }
+
+            // IV. Results: Specific Cleanup
+            if (sectionName.Equals("IV. Results", StringComparison.OrdinalIgnoreCase))
+            {
+                var keysToKeep = new[] { "Name", "Address", "Identification", "Phone/email", "Sample date", "Sample time", "Sample batch Nr.", "Sample use by date", "Sample type", "Number of samples", "Conservation of samples", "Laboratory test", "Laboratory test method", "Released date", "Sample Results", "Laboratory conclusion" };
+
+                // Fix Identification: If it's currently a number, re-extract from text to handle non-numeric values like lab names.
+                if (sectionData.TryGetValue("Identification", out var identObj))
+                {
+                    var identStr = identObj?.ToString() ?? "";
+                    if (Regex.IsMatch(identStr, @"^\d+$"))
+                    {
+                        var matchIdent = Regex.Match(fullText, @"Identification\s+(?<val>.*?)(?=\s+Phone/Email|$)", RegexOptions.IgnoreCase);
+                        if (matchIdent.Success && !string.IsNullOrWhiteSpace(matchIdent.Groups["val"].Value))
+                        {
+                            sectionData["Identification"] = matchIdent.Groups["val"].Value.Trim();
+                        }
+                    }
+                }
+
+                // Map "Sample results" to "Sample Results" (schema requirement)
+                if (sectionData.TryGetValue("Sample results", out var srObj))
+                {
+                    sectionData["Sample Results"] = srObj;
+                    sectionData.Remove("Sample results");
+                }
+                else if (!sectionData.ContainsKey("Sample Results"))
+                {
+                    sectionData["Sample Results"] = "";
+                }
+
+                // If "Released date" captured "Sample results", clear it.
+                if (sectionData.TryGetValue("Released date", out var rdObj))
+                {
+                    var rdStr = rdObj?.ToString() ?? "";
+                    if (rdStr.Contains("Sample results", StringComparison.OrdinalIgnoreCase))
+                    {
+                        sectionData["Released date"] = "";
+                    }
+                }
+
+                var keysToRemove = sectionData.Keys.Where(k => !keysToKeep.Contains(k, StringComparer.OrdinalIgnoreCase)).ToList();
+                foreach (var k in keysToRemove) sectionData.Remove(k);
+            }
+
             // III.6 Official Inspector: Specific Cleanup
             if (sectionName.Contains("III.6", StringComparison.OrdinalIgnoreCase))
             {
@@ -1993,7 +2129,12 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
                 "Time", "Date", "Approval Number", "Type", "Organisation",
                 "Document reference", "Date of issue", "Date", "Time", "Approval Number", "Means of transport", "Identification", "International transport document",
                 "Name of Signatory", "Total Gross Weight", "Total Net Weight", "Total number of packages", "Commercial documentary references", "Commodity", "Date of signature", "Signature", "Full name", "Species", "Net Weight", "Package Count", "Product Type", "Establishment of Origin", "Country of Origin",
-                "Commercial documentary references", "Commodity", "Date of signature", "Signature", "Full name", "Species", "Net Weight", "Package Count", "Product Type", "Establishment of Origin", "Country of Origin"
+                "Commercial documentary references", "Commodity", "Date of signature", "Signature", "Full name", "Species", "Net Weight", "Package Count", "Product Type", "Establishment of Origin", "Country of Origin",
+                "Name of the inspector", "Phone/email", "Phone/Email", "Certificate reference number", "Countries of origin",
+                "EPPO Code", "Harmful organism/name", "Inspector conclusion", "Motivation",
+                "Sample date", "Sample time", "Sample batch Nr.", "Sample use by date", "Sample type",
+                "Number of samples", "Conservation of samples", "Laboratory test", "Laboratory test method",
+                "Released date", "Sample results", "Sample/R results", "Laboratory conclusion", "Phone Email"
             }.OrderByDescending(k => k.Length).ToArray();
 
             foreach (var line in lines)
@@ -2015,7 +2156,6 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
                 // Check for "Key Value" without colon for specific known keys
                 // Handle multiple keys in one line "Country England ISO Code GB-ENG"
                 string remainingLine = line.Trim();
-                bool foundAny = false;
 
                 // Repeatedly try to find keys at the start of the remaining string
                 // or if not at start, split the line if multiple keys exist
@@ -2136,8 +2276,8 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
                 return keys.Contains(fieldName, StringComparer.OrdinalIgnoreCase);
             }
 
-        // II.6 relies strictly on prefixed checkboxes (II.6::*) via ii6Map later in SaveSection.
-        // Returning false here prevents global checkboxes (like 'Satisfactory' from II.5) from bleeding into II.6.
+            // II.6 relies strictly on prefixed checkboxes (II.6::*) via ii6Map later in SaveSection.
+            // Returning false here prevents global checkboxes (like 'Satisfactory' from II.5) from bleeding into II.6.
 
             if (sectionName.Contains("II.11", StringComparison.OrdinalIgnoreCase))
             {
@@ -2354,13 +2494,19 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
 
             return text.StartsWith("PART I: DESCRIPTION") ||
                    text.StartsWith("PART II: CONTROLS") ||
-                   text.StartsWith("PART III: FOLLOW UP");
+                   text.StartsWith("PART III: FOLLOW UP") ||
+                   text.StartsWith("PART IV");
         }
 
         private string SanitizePropertyName(string name)
         {
             if (string.IsNullOrWhiteSpace(name)) return name;
             if (name == "I.25 For-reentry") return "I25For-reentry";
+            if (name == "IV. Requested analysis") return "IVRequested analysis";
+            if (name == "IV. Fiche for sampling") return "IVFicheForSampling";
+            if (name == "IV. References") return "IVReferences";
+            if (name == "IV. Identification of the sample") return "IVIdentificationOfTheSample";
+            if (name == "IV. Results") return "IVResults";
             if (name == "value" || name == "Value") return "value";
 
             // Split by non-alphanumeric characters to handle spaces, dots, slashes, etc.
