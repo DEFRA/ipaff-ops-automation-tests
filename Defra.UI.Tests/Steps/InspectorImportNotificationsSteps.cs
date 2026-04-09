@@ -37,6 +37,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
             inspectorImportNotificationsPage?.SearchForChed(chedRef);
         }
 
+        [When("the user searches for notification {int} on the Import notifications page")]
+        public void WhenTheUserSearchesForNotificationOnTheImportNotificationsPage(int notificationNumber)
+        {
+            var chedRef = _scenarioContext.Get<string>($"Notification_{notificationNumber}_CHEDReference");
+            inspectorImportNotificationsPage?.SearchAndClickNotification(chedRef);
+        }
+
         [When("the user clicks the notification found with status {string}")]
         [Then("the user clicks the notification found with status {string}")]
         [Then("the user searches for the CHED D notification that was recently submitted")]

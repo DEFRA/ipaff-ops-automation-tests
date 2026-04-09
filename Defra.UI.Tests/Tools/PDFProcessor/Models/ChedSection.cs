@@ -19,7 +19,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
         public string InternationalTransportDocument { get; set; }
         public string Identification { get; set; }
         public string ProductType { get; set; }
-        public string Item { get; set; }
+        public string Species { get; set; }
         public string Commodity { get; set; }
         public string NetWeight { get; set; }
         public string PackageCount { get; set; }
@@ -55,6 +55,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
         public string LocalCompetentAuthority { get; set; }
         public string SecondEntryPoint { get; set; }
         public string ArrivalOfConsignment { get; set; }
+        public string ComplianceOfTheConsignment { get; set; }
 
         // Catch-all for any other dynamic fields
         [JsonExtensionData]
