@@ -12,7 +12,6 @@ namespace Defra.Trade.MSD365.SpecFlowBindings.Hooks
     public class AfterStepHooks : PowerAppsStepDefiner
     {
         private readonly ScenarioContext _scenarioContext;
-        private static bool _isDynamicsActive = false;
 
         public AfterStepHooks(ScenarioContext scenarioContext)
         {
@@ -22,33 +21,24 @@ namespace Defra.Trade.MSD365.SpecFlowBindings.Hooks
         [BeforeScenario(Order = 200)]
         public void BeforeScenario()
         {
-            // Reset flags at start of each scenario
-            _isDynamicsActive = false;
             _scenarioContext["IsDynamicsActive"] = false;
         }
 
         [AfterStep(Order = 100)]
         public void AfterStep()
         {
-            // Only check BrowserInitiated AFTER the flag has been set via ScenarioContext.
-            // Accessing Client.BrowserInitiated lazily instantiates WebClient, spawning a second browser.
-            // Instead, rely solely on the ScenarioContext flag which is explicitly set by the login step.
-            if (!_isDynamicsActive)
+            // Always read directly from ScenarioContext — the flag can be toggled
+            // mid-scenario (e.g. set false when handing off to the IPAFFS tab,
+            // restored to true when switching back to the Dynamics tab).
+            // A cached static field would miss those mid-scenario changes.
+            var isDynamicsActive = _scenarioContext.ContainsKey("IsDynamicsActive")
+                                   && _scenarioContext.Get<bool>("IsDynamicsActive");
+
+            if (!isDynamicsActive)
             {
-                // Check the scenario context flag - this is set by the Dynamics login step
-                // NOT by checking Client.BrowserInitiated which would spawn a second browser
-                var isDynamicsActiveInContext = _scenarioContext.ContainsKey("IsDynamicsActive") &&
-                                               _scenarioContext.Get<bool>("IsDynamicsActive");
-
-                if (!isDynamicsActiveInContext)
-                {
-                    return;
-                }
-
-                _isDynamicsActive = true;
+                return;
             }
 
-            // Only log to the Extent report for Dynamics steps that have failed
             if (_scenarioContext.TestError != null)
             {
                 try
@@ -76,7 +66,6 @@ namespace Defra.Trade.MSD365.SpecFlowBindings.Hooks
             }
             else
             {
-                // Log passing Dynamics steps without a screenshot
                 try
                 {
                     var windowHandles = Driver.WindowHandles;
@@ -96,12 +85,21 @@ namespace Defra.Trade.MSD365.SpecFlowBindings.Hooks
 
         private string CreateLogForContextValues()
         {
+            var internalKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "ExtentScenario",
+                "IsDynamicsActive",
+                "DynamicsWindowHandle",
+                "IpaffsInDynamicsBrowserHandle",
+                "DynamicsIpaffsDriver"
+            };
+
             var log = new StringBuilder("<pre>");
             try
             {
                 foreach (var context in _scenarioContext)
                 {
-                    if (!context.Key.Equals("ExtentScenario") && !context.Key.Equals("IsDynamicsActive"))
+                    if (!internalKeys.Contains(context.Key))
                     {
                         log.AppendLine($"{context.Key} : <b>{FormatValue(context.Value)}</b><br>");
                     }

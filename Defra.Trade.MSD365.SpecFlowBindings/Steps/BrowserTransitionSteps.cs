@@ -17,6 +17,11 @@ using Reqnroll.BoDi;
 /// injected across them. ScenarioContext is the shared channel: the Dynamics driver (switched
 /// to the IPAFFS tab) is stored here and re-registered into Assembly 1's container by
 /// the "I switch to the IPAFFS tab" step in SignOutSteps.
+///
+/// Reporting ownership:
+/// - Before this step: IsDynamicsActive=true  → Dynamics AfterStepHooks owns screenshots (Browser 2, Dynamics tab)
+/// - After this step:  IsDynamicsActive=false → WebDriverHook.AfterStep owns screenshots (Browser 2, IPAFFS tab)
+/// - After "I switch back to the Dynamics tab": IsDynamicsActive=true → Dynamics AfterStepHooks resumes
 /// </summary>
 [Binding]
 public class BrowserTransitionSteps : PowerAppsStepDefiner
@@ -36,6 +41,9 @@ public class BrowserTransitionSteps : PowerAppsStepDefiner
     /// Clicks the IPAFFS command in the Dynamics ribbon, waits for the new tab to open,
     /// waits for Azure AD SSO to complete, then stores the Dynamics driver (focused on the
     /// IPAFFS tab) in ScenarioContext for Assembly 1 to pick up via the hand-off step.
+    ///
+    /// Sets IsDynamicsActive=false so that WebDriverHook.AfterStep takes over step reporting
+    /// for all subsequent IPAFFS steps, using Browser 2's driver on the IPAFFS tab.
     /// </summary>
     [When("I click IPAFFS from the header ribbon")]
     public void WhenIClickIPAFFSFromTheHeaderRibbon()
@@ -66,12 +74,16 @@ public class BrowserTransitionSteps : PowerAppsStepDefiner
         _scenarioContext["IpaffsInDynamicsBrowserHandle"] = ipaffsHandle;
         _scenarioContext["DynamicsIpaffsDriver"] = dynamicsDriver;
 
+        // Hand reporting back to WebDriverHook — the next steps interact with IPAFFS
+        // via Browser 2's driver on the IPAFFS tab, which WebDriverHook will use for screenshots
+        _scenarioContext["IsDynamicsActive"] = false;
+
         Console.WriteLine($"[BrowserTransition] IPAFFS SSO complete. Driver stored for hand-off. URL: {dynamicsDriver.Url}");
     }
 
     /// <summary>
-    /// Switches the Dynamics driver back to the original Dynamics tab so subsequent
-    /// Dynamics step definitions continue to operate on the correct window.
+    /// Switches the Dynamics driver back to the original Dynamics tab and restores
+    /// Dynamics reporting ownership so subsequent Dynamics steps are captured correctly.
     /// </summary>
     [When("I switch back to the Dynamics tab")]
     public void WhenISwitchBackToDynamicsTab()
@@ -85,6 +97,9 @@ public class BrowserTransitionSteps : PowerAppsStepDefiner
         }
 
         Driver.SwitchTo().Window(dynamicsHandle);
+
+        // Restore Dynamics reporting ownership for any steps after this point
+        _scenarioContext["IsDynamicsActive"] = true;
 
         Console.WriteLine($"[BrowserTransition] Switched Dynamics driver back to handle: {dynamicsHandle}");
     }

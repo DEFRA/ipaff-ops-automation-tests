@@ -32,13 +32,23 @@ public class AfterScenarioHooks : PowerAppsStepDefiner
     }
 
     /// <summary>
+    /// Returns true only when the Dynamics browser is active and owns step reporting.
+    /// When IsDynamicsActive is false (e.g. during the IPAFFS tab hand-off phase),
+    /// WebDriverHook owns reporting and these hooks must stand down.
+    /// </summary>
+    private bool IsDynamicsReportingActive =>
+        Client.BrowserInitiated
+        && scenarioContext.ContainsKey("IsDynamicsActive")
+        && scenarioContext.Get<bool>("IsDynamicsActive");
+
+    /// <summary>
     /// Logs scenario context values to the Extent report at the end of a passing Dynamics scenario.
     /// Failed Dynamics scenarios already have context attached to the failing step in AfterStepHooks.
     /// </summary>
     [AfterScenario(Order = 100)]
     public void LogContextForPassedDynamicsScenario()
     {
-        if (!Client.BrowserInitiated)
+        if (!IsDynamicsReportingActive)
         {
             return;
         }
@@ -60,30 +70,53 @@ public class AfterScenarioHooks : PowerAppsStepDefiner
     }
 
     /// <summary>
-    /// Publishes the screenshot of the browser when a test fails.
+    /// Publishes the screenshot of the Dynamics browser when a Dynamics-owned test fails.
+    /// Skipped when IsDynamicsActive is false — in that phase WebDriverHook owns screenshots.
     /// </summary>
     [AfterScenario(Order = 100)]
     public void PublishScreenshotForFailedScenario()
     {
-        if (this.scenarioContext.ScenarioExecutionStatus == ScenarioExecutionStatus.TestError && Client.BrowserInitiated)
+        if (scenarioContext.ScenarioExecutionStatus != ScenarioExecutionStatus.TestError)
         {
-            var fileName = string.Concat(this.scenarioContext.ScenarioInfo.Title.Split(Path.GetInvalidFileNameChars()));
-            var screenshotPath = Path.Combine(ScreenshotsFolder.FullName, $"{fileName}.jpg");
-            Console.WriteLine(new Uri(screenshotPath));
-            var screenshotBase64 = Convert.ToBase64String(File.ReadAllBytes(screenshotPath));
-            Console.WriteLine("SCREENSHOT");
-            Console.WriteLine($"SCREENSHOT[ {screenshotBase64} ]SCREENSHOT");
+            return;
         }
+
+        if (!IsDynamicsReportingActive)
+        {
+            return;
+        }
+
+        var fileName = string.Concat(scenarioContext.ScenarioInfo.Title.Split(Path.GetInvalidFileNameChars()));
+        var screenshotPath = Path.Combine(ScreenshotsFolder.FullName, $"{fileName}.jpg");
+
+        if (!File.Exists(screenshotPath))
+        {
+            return;
+        }
+
+        Console.WriteLine(new Uri(screenshotPath));
+        var screenshotBase64 = Convert.ToBase64String(File.ReadAllBytes(screenshotPath));
+        Console.WriteLine("SCREENSHOT");
+        Console.WriteLine($"SCREENSHOT[ {screenshotBase64} ]SCREENSHOT");
     }
 
     private string CreateLogForContextValues()
     {
+        var internalKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "ExtentScenario",
+            "IsDynamicsActive",
+            "DynamicsWindowHandle",
+            "IpaffsInDynamicsBrowserHandle",
+            "DynamicsIpaffsDriver"
+        };
+
         var log = new StringBuilder("<pre>");
         try
         {
             foreach (var context in scenarioContext)
             {
-                if (!context.Key.Equals("ExtentScenario") && !context.Key.Equals("IsDynamicsActive"))
+                if (!internalKeys.Contains(context.Key))
                 {
                     log.AppendLine($"{context.Key} : <b>{FormatValue(context.Value)}</b><br>");
                 }
