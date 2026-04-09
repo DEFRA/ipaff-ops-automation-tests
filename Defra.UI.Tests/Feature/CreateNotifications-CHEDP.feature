@@ -1892,7 +1892,7 @@ Scenario: Create and Submit B2C Consignment with Two Commodities and Catch Certi
 	And the user searches '16052190' commodity code
 	Then the commodity details should be populated '16052190' 'Other' for second commodity
 	When the user selects the type of commodity 'Composite products'
-	And the user selects species of commodity 'Penaeus (Litopenaeus) vannamei'
+	And the user selects species of commodity 'Astacoidae'
 	And the user selects "No" for Do you want to add another commodity?
 	And the user clicks Save and continue
 	Then What is the main reason for importing the consignment? page should be displayed with radio buttons
@@ -1945,7 +1945,7 @@ Scenario: Create and Submit B2C Consignment with Two Commodities and Catch Certi
 	And 'Select all' is displayed in Add catch certificate page
 	And 'Save and return to manage catch certificates' is displayed in Add catch certificate page
 	And 'Save and return to hub' is displayed in Add catch certificate page
-	When the user selects the 'Penaeus spp.,Penaeus (Litopenaeus) vannamei' species under Select species being imported under this catch certificate
+	When the user selects the 'Penaeus spp.,Astacoidae' species under Select species being imported under this catch certificate
 	And the user clicks Save and continue
 	Then Add catch certificate details page should be displayed
 	And 'Number of catch certificates in this attachment' is displayed in Add catch certificate page
@@ -1958,7 +1958,7 @@ Scenario: Create and Submit B2C Consignment with Two Commodities and Catch Certi
 	And 'Select all' is displayed in Add catch certificate page
 	And 'Save and return to manage catch certificates' is displayed in Add catch certificate page
 	And 'Save and return to hub' is displayed in Add catch certificate page
-	When the user selects the 'Penaeus spp.,Penaeus (Litopenaeus) vannamei' species under Select species being imported under this catch certificate
+	When the user selects the 'Penaeus spp.,Astacoidae' species under Select species being imported under this catch certificate
 	And the user clicks Save and continue
 	Then Manage catch certificates page is displayed
 	When the user selects the 'No' option for Do you need to upload more catch certificates?
@@ -1987,7 +1987,8 @@ Scenario: Create and Submit B2C Consignment with Two Commodities and Catch Certi
 	Then the Addresses page should be displayed
 	When the user clicks Add a consignor or exporter
 	Then the Search for an existing consignor or exporter page should be displayed
-	When the user selects one of the displayed consignors or exporters "ABC"
+	#When the user selects one of the displayed consignors or exporters "ABC"
+	When the user selects a consignor or exporter "ABC"
 	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
 	When the user clicks Add a consignee
 	Then the Search for an existing consignee page should be displayed
@@ -2084,7 +2085,7 @@ Scenario: Create and Submit B2C Consignment with Two Commodities and Catch Certi
 	When the user searches for the CHED created earlier
 	Then the BTMS search result screen should be displayed
 	And the user checks commodity code "03061792", description "Penaeus spp.", quantity "13300", authority "POAO IUU" and decision "Acceptable for Internal Market Decision not given" after the decision given
-	And the user checks commodity code "16052190", description "Penaeus (Litopenaeus) vannamei", quantity "3240", authority "POAO IUU" and decision "Acceptable for Internal Market Decision not given" after the decision given
+	And the user checks commodity code "16052190", description "Astacoidae", quantity "3240", authority "POAO IUU" and decision "Acceptable for Internal Market Decision not given" after the decision given
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
 
