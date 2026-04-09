@@ -1,7 +1,5 @@
 ﻿using Reqnroll.BoDi;
 using Defra.UI.Tests.Configuration;
-using Microsoft.Extensions.Configuration;
-using System.Reflection;
 
 namespace Defra.UI.Tests.Data.Users
 {
@@ -29,27 +27,27 @@ namespace Defra.UI.Tests.Data.Users
         public UserObject(IObjectContainer objectContainer) => _objectContainer = objectContainer;
         private readonly object _lock = new object();
 
-
         public User GetUser(string application, string role)
         {
-            User? user;
-
             lock (_lock)
             {
-                var environment = ConfigSetup.BaseConfiguration.TestConfiguration.Environment;
+                var credentials = ConfigSetup.BaseConfiguration.UserCredentials;
+                if (credentials != null && credentials.TryGetValue(role, out var userCredential)
+                    && !string.IsNullOrWhiteSpace(userCredential.UserName))
+                {
+                    return new User
+                    {
+                        UserName = userCredential.UserName,
+                        Credential = userCredential.Credential,
+                        BusinessName = userCredential.BusinessName,
+                        AgentCode = userCredential.AgentCode,
+                        Role = role
+                    };
+                }
 
-                var jsonPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                var filePath = Path.Combine(jsonPath, "Data", "Users", application.ToUpper(), environment.ToUpper(), "Users.json");
-
-                var builder = new ConfigurationBuilder();
-                builder.AddJsonFile(filePath, false, true);
-                var settings = builder.Build();
-                var usersList = settings.GetSection("Users").Get<List<User>>();
-
-                user = usersList?.FirstOrDefault(x => x.Role.Equals(role)) ?? new User();
+                throw new InvalidOperationException(
+                    $"No credentials found for role '{role}'. Ensure UserCredentials are configured in appsettings.json.");
             }
-
-            return user ?? new User { };
         }
     }
 }

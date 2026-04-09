@@ -17,7 +17,6 @@
 
   <ItemGroup>
     <None Remove="Data\Users\IPAFF\DEV\Users.json" />
-    <None Remove="Data\Users\IPAFF\PRE\Users.json" />
     <None Remove="Data\Users\IPAFF\TST\Users.json" />
   </ItemGroup>
 
@@ -32,9 +31,6 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Data\Users\IPAFF\DEV\Users.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Data\Users\IPAFF\PRE\Users.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Data\Users\IPAFF\TST\Users.json">
@@ -161,6 +157,10 @@
       <Visible>$(UsingMicrosoftNETSdk)</Visible>
       <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
     </SpecFlowFeatureFiles>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\Users\IPAFF\PRE\" />
   </ItemGroup>
 
 
