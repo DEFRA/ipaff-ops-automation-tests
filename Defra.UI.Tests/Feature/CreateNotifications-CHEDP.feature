@@ -989,7 +989,7 @@ Scenario: User creates a B2C consignment notification, updates it from the revie
 	Then the Addresses page should be displayed
 	When the user clicks Add a consignor or exporter
 	Then the Search for an existing consignor or exporter page should be displayed
-	When the user selects one of the displayed consignors or exporters "ABC"
+	When the user selects a consignor or exporter "ABC"
 	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
 	When the user clicks Add a consignee
 	Then the Search for an existing consignee page should be displayed
@@ -1055,7 +1055,7 @@ Scenario: User creates a B2C consignment notification, updates it from the revie
 	Then the Addresses page should be displayed
 	When the user clicks on Change link under 'Consignor or exporter'
 	Then the Search for an existing consignor or exporter page should be displayed
-	When the user selects one of the displayed consignors or exporters "ABC"
+	When the user selects a consignor or exporter "ABC"
 	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
 	When the user clicks on Change link under 'Consignee'
 	Then the Search for an existing consignee page should be displayed
@@ -1101,7 +1101,7 @@ Scenario: User creates a B2C consignment notification, updates it from the revie
 	Then the Addresses page should be displayed
 	When the user clicks on Change link under 'Consignor or exporter'
 	Then the Search for an existing consignor or exporter page should be displayed
-	When the user selects one of the displayed consignors or exporters "ABC"
+	When the user selects a consignor or exporter "ABC"
 	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
 	When the user clicks on Change link under 'Consignee'
 	Then the Search for an existing consignee page should be displayed
@@ -2618,7 +2618,7 @@ Scenario: Verify IUU and Catch certificate details for EU and Non-EU countries C
 	Then the Addresses page should be displayed
 	When the user clicks Add a consignor or exporter
 	Then the Search for an existing consignor or exporter page should be displayed
-	When the user selects one of the displayed consignors or exporters "ABC"
+	When the user selects a consignor or exporter "ABC"
 	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
 	When the user clicks Add a consignee
 	Then the Search for an existing consignee page should be displayed
@@ -2795,7 +2795,7 @@ Scenario: Verify IUU and Catch certificate details for EU and Non-EU countries C
 	Then the Addresses page should be displayed
 	When the user clicks Add a consignor or exporter
 	Then the Search for an existing consignor or exporter page should be displayed
-	When the user selects one of the displayed consignors or exporters "ABC"
+	When the user selects a consignor or exporter "ABC"
 	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
 	When the user clicks Add a consignee
 	Then the Search for an existing consignee page should be displayed
