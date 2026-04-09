@@ -165,6 +165,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         var x = page.Sections.DescriptionOfTheGoods.ElementAt(0).Value;
                         ValidateContains("CommodityCode", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                         ValidateContains("CommodityDescription", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
+                        ValidateContains("CommodityCodeFirstCommodity", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
+                        ValidateContains("CommodityDescFirstCommodity", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                         ValidateContains("Species", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                         ValidateContains("NetWeight", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                         ValidateContains("NumberOfPackages", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
@@ -653,10 +655,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
                 if (!string.IsNullOrEmpty(expectedValue) && !string.IsNullOrEmpty(actual))
                 {
+                    string RemoveWhitespace(string s) => string.Concat(s.Where(c => !char.IsWhiteSpace(c)));
 
                     bool isMatch = contextContainsPDF
-                        ? expectedValue.Contains(actual.Trim(), StringComparison.OrdinalIgnoreCase)
-                        : actual.Trim().Contains(expectedValue, StringComparison.OrdinalIgnoreCase);
+                        ? RemoveWhitespace(expectedValue).Contains(RemoveWhitespace(actual), StringComparison.OrdinalIgnoreCase)
+                        : RemoveWhitespace(actual).Contains(RemoveWhitespace(expectedValue), StringComparison.OrdinalIgnoreCase);
 
                     if (!isMatch)
                     {

@@ -698,7 +698,7 @@ Scenario: User submits B2C consignment notification, inspector rejects and creat
 	Then the Addresses page should be displayed
 	When the user clicks Add a consignor or exporter
 	Then the Search for an existing consignor or exporter page should be displayed
-	When the user selects one of the displayed consignors or exporters "ABC"
+	When the user selects a consignor or exporter "ABC"
 	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
 	When the user clicks Add a consignee
 	Then the Search for an existing consignee page should be displayed
@@ -841,7 +841,8 @@ Scenario: User submits B2C consignment notification, inspector rejects and creat
 	Then the notification should be present in the list of part 2 dashboard
 	When the user clicks View CHED link
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	Then the user clicks the notification found with status "REJECTED"
@@ -1207,7 +1208,8 @@ Scenario: User submits B2C consignment notification, reason for refusal and crea
 	Then the notification should be present in the list
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 1
@@ -1378,7 +1380,8 @@ Scenario: User submits B2C consignment notification, reason for refusal and crea
 	Then the notification should be present in the list
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 1
@@ -1553,7 +1556,8 @@ Scenario: User submits consignment notification, inspector overrides the risk de
 	Then the notification should be present in the list
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 1
