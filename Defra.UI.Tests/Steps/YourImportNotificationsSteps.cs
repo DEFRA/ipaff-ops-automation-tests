@@ -184,8 +184,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             ValidateContains("NetWeightSecondCommodity", page.Sections.DescriptionOfTheGoods.ElementAt(1).Value, ref allDataMatches, mismatches);
                             ValidateContains("NumOfPackagesSecondCommodity", page.Sections.DescriptionOfTheGoods.ElementAt(1).Value, ref allDataMatches, mismatches);
                             ValidateContains("TypeOfPackageSecondCommodity", page.Sections.DescriptionOfTheGoods.ElementAt(1).Value, ref allDataMatches, mismatches);
-                            ValidateContains("TypeOfPackageSecondCommodity", page.Sections.DescriptionOfTheGoods.ElementAt(1).Value, ref allDataMatches, mismatches);
-                            
+                                                        
                             ValidateContains("TotalNetWeight", page.Sections.TotalNetWeight.Value, ref allDataMatches, mismatches);
                             ValidateContains("TotalPackages", page.Sections.TotalNumberOfPackages.Value, ref allDataMatches, mismatches);
                             ValidateContains("TotalGrossWeight", page.Sections.TotalGrossWeight.Value, ref allDataMatches, mismatches);
