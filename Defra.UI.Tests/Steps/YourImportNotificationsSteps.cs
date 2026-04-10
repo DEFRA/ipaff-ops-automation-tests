@@ -162,7 +162,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
                     else if (pageNumber == 2)
                     {
-                        if(page.Sections.DescriptionOfTheGoods.ElementAt(1).Value != null)
+                        if (page.Sections.DescriptionOfTheGoods?.Count > 1)
                         {
                             ValidateContains("CommodityCodeFirstCommodity", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                             ValidateContains("CommodityDescFirstCommodity", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
@@ -180,8 +180,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             ValidateContains("NetWeightSecondCommodity", page.Sections.DescriptionOfTheGoods.ElementAt(1).Value, ref allDataMatches, mismatches);
                             ValidateContains("NumOfPackagesSecondCommodity", page.Sections.DescriptionOfTheGoods.ElementAt(1).Value, ref allDataMatches, mismatches);
                             ValidateContains("TypeOfPackageSecondCommodity", page.Sections.DescriptionOfTheGoods.ElementAt(1).Value, ref allDataMatches, mismatches);
-                            ValidateContains("TypeOfPackageSecondCommodity", page.Sections.DescriptionOfTheGoods.ElementAt(1).Value, ref allDataMatches, mismatches);
-                            
+                                                        
                             ValidateContains("TotalNetWeight", page.Sections.TotalNetWeight.Value, ref allDataMatches, mismatches);
                             ValidateContains("TotalPackages", page.Sections.TotalNumberOfPackages.Value, ref allDataMatches, mismatches);
                             ValidateContains("TotalGrossWeight", page.Sections.TotalGrossWeight.Value, ref allDataMatches, mismatches);

@@ -277,6 +277,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var commodityCodes = _scenarioContext.GetFromContext<List<string>>("CommodityCode", []);
             commodityCodes.Add(commCode);
             _scenarioContext["CommodityCode"] = commodityCodes;
+            _scenarioContext["CommodityDescription"] = commDescription;
             commodityPage?.SelectCommodityInTheCommTree(commDescription);
         }
 
