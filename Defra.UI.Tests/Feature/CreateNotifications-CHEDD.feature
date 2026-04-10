@@ -449,7 +449,7 @@ Scenario: User verifies Address book page search, submits notification for 'Non-
 	And the sub commodity list expands
 	And the user clicks '1006' 'Rice' under the parent commodity
 	And the sub commodity list expands
-	And the user selects the second commodity '100610' 'Rice in the husk (paddy or rough)' under the parent commodity
+	And the user selects the '100610' 'Rice in the husk (paddy or rough)' under the parent commodity
 	Then the Commodity page should be displayed
 	When the user selects "No" for Do you want to add another commodity?
 	And the user clicks Save and continue
@@ -626,6 +626,7 @@ Scenario: User verifies Address book page search, submits notification for 'Non-
 	Then the notification is displayed on the inspector dashboard
 	When the user clicks View CHED link
 	Then the certificate should be displayed in a new browser tab
+	When the user downloads the PDF for validation
 	When the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed

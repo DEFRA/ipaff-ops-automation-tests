@@ -65,6 +65,9 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
 
         [JsonProperty("I19ConformityOfTheGoods")]
         public ChedSection ConformityOfTheGoods { get; set; }
+        
+        [JsonProperty("I22Market")]
+        public ChedSection NonInternalMarket { get; set; }
 
         [JsonProperty("I23ForInternalMarket")]
         public ChedSection ForInternalMarket { get; set; }

@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;
+using System.Text.RegularExpressions;
 
 namespace Defra.UI.Tests.Steps.IPAFF
 {
@@ -135,6 +136,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         ValidateContains("DocumentReference", documentReference, ref allDataMatches, mismatches, true);
                         ValidateIfExists("DocumentDateOfIssue", reviewDate, ref allDataMatches, mismatches);
 
+                        ValidateIfExists("ContryFromWhereConsigned", page.Sections.CountryOfDispatch.Value, ref allDataMatches, mismatches);
+                        ValidateIfExists("CommodityIntendedFor", page.Sections.GoodsCertifiedAs.Value, ref allDataMatches, mismatches);
+                        ValidateContains("PlaceOfExit", page.Sections.NonInternalMarket?.Value, ref allDataMatches, mismatches);
 
                         ValidateIfExists("MeansOfTransport", page.Sections.MeansOfTransport.Mode, ref allDataMatches, mismatches);
                         ValidateIfExists("EnterTransportDocRef", page.Sections.MeansOfTransport.InternationalTransportDocument, ref allDataMatches, mismatches);
@@ -162,7 +166,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
                     else if (pageNumber == 2)
                     {
-                        if(page.Sections.DescriptionOfTheGoods.ElementAt(1).Value != null)
+                        if(page.Sections.DescriptionOfTheGoods?.Count > 1)
                         {
                             ValidateContains("CommodityCodeFirstCommodity", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                             ValidateContains("CommodityDescFirstCommodity", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
@@ -202,7 +206,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             ValidateContains("EstablishmentListFirstName", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                             ValidateContains("CountryOfOrigin", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                             ValidateContains("TotalNetWeight", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("TotalPackages", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("TotalPackages", page.Sections.DescriptionOfTheGoods.ElementAt(0).PackageCount, ref allDataMatches, mismatches);
                             ValidateContains("TotalGrossWeight", page.Sections.TotalGrossWeight.Value, ref allDataMatches, mismatches);
                         }
                     }
@@ -663,6 +667,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     expectedValue = s.Trim();
                     if (expectedValue.Trim() == "No need to inspect - exempt or not applicable") expectedValue = "IUUNA";
                     if (contextKey.Trim() == "ExitBorderControlPost") expectedValue = expectedValue.Split('(')[0].Trim();
+                    if (contextKey.Trim() == "TotalPackages") actual = Regex.Matches(actual, @"\d+").Select(m => int.Parse(m.Value)).Sum().ToString(); ;
 
                 }
                 else if (rawExpected is string[] arr)
