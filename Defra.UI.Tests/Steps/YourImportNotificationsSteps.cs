@@ -310,6 +310,29 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     {
                         ValidateIfExists("CHEDReference", page.Sections.III2ChedReference.Id, ref allDataMatches, mismatches);
                     }
+                    else if (pageNumber == 5)
+                    {
+                        ValidateIfExists("CHEDReference", (string?)page.Sections.References.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches);
+                        ValidateContains("PortOfEntry", page.Sections.References.Name, ref allDataMatches, mismatches);
+                        //ValidateContains("EstablishmentListFirstName", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches);
+                        ValidateContains("CountryOfOrigin", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches);
+                        ValidateIfExists("ContryFromWhereConsigned", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.ElementAt(4).Value, ref allDataMatches, mismatches);
+                        ValidateContains("PlaceOfDestinationDetails", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.ElementAt(3).Value, ref allDataMatches, mismatches, true);
+                        ValidateContains("CommodityCode", page.Sections.IdentificationOfTheSample.Commodity, ref allDataMatches, mismatches);
+                        ValidateContains("CommodityDescription", page.Sections.IdentificationOfTheSample.Commodity, ref allDataMatches, mismatches);
+                        ValidateContains("Species", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
+                        ValidateIfExists("LaboratoryTestsReason", (string?)page.Sections.RequestedAnalysis.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches);
+                        //ValidateIfExists("AnalysisType", (string?)page.Sections.LabResults.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches);
+                        ValidateIfExists("LabTestName", (string?)page.Sections.LabResults.Name, ref allDataMatches, mismatches);
+                        ValidateIfExists("LabSampleReference", (string?)page.Sections.LabResults.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches);
+                        ValidateIfExists("NumberOfLabSamples", (string?)page.Sections.LabResults.AdditionalData.ElementAt(4).Value, ref allDataMatches, mismatches);
+                        ValidateIfExists("LabSampleType", (string?)page.Sections.LabResults.AdditionalData.ElementAt(3).Value, ref allDataMatches, mismatches);
+                        ValidateIfExists("LabSampleStorageTemperature", (string?)page.Sections.LabResults.AdditionalData.ElementAt(5).Value, ref allDataMatches, mismatches);
+                        ValidateIfExists("SampleDate", (string?)page.Sections.LabResults.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
+                        ValidateIfExists("SampleTime", (string?)page.Sections.LabResults.AdditionalData.ElementAt(11).Value, ref allDataMatches, mismatches);
+                        ValidateIfExists("LaboratoryTestName", (string?)page.Sections.LabResults.AdditionalData.ElementAt(6).Value, ref allDataMatches, mismatches);
+
+                    }
                 }
             }
             if (File.Exists(pdfPath))
@@ -665,7 +688,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 {
                     expectedValue = s.Trim();
                     if (expectedValue.Trim() == "No need to inspect - exempt or not applicable") expectedValue = "IUUNA";
-                    if (contextKey.Trim() == "ExitBorderControlPost") expectedValue = expectedValue.Split('(')[0].Trim();
+                    if (contextKey.Trim() == "ExitBorderControlPost" || contextKey.Trim() == "PortOfEntry") expectedValue = expectedValue.Split('(')[0].Trim();
                     if (contextKey.Trim() == "TotalPackages") actual = Regex.Matches(actual, @"\d+").Select(m => int.Parse(m.Value)).Sum().ToString(); ;
 
                 }

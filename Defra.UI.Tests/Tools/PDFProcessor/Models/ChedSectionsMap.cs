@@ -175,5 +175,20 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
         
         [JsonProperty("II17ReasonForRefusal")]
         public ChedSection ReasonForRefusal { get; set; }
+        
+        [JsonProperty("IVResults")]
+        public ChedSection LabResults { get; set; } 
+        
+        [JsonProperty("IVRequested analysis")]
+        public ChedSection RequestedAnalysis { get; set; }
+        
+        [JsonProperty("IVIdentificationOfTheSample")]
+        public ChedSection IdentificationOfTheSample { get; set; }
+        
+        [JsonProperty("IVReferences")]
+        public ChedSection References { get; set; }
+        
+        [JsonProperty("IVFicheForSampling")]
+        public ChedSection FicheForSampling { get; set; }
     }
 }
