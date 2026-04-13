@@ -102,7 +102,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             var allDataMatches = true;
             var mismatches = new List<string>();
-
+            
             if (chedDocumentPages != null)
             {
                 for (int pageNumber = 1; pageNumber <= chedDocumentPages.Count; pageNumber++)
@@ -129,7 +129,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         var dateEntry = page.Sections.AccompanyingDocuments.AdditionalData.FirstOrDefault(x => x.Key == "DateOfIssue");
                         var reviewDate = dateEntry.Key == null ? null : dateEntry.Value?.ToString();
 
-                        //ValidateContains("HealthDocumentType", documentReference, ref allDataMatches, mismatches, true);                            
+                        ValidateContains("HealthDocumentType", (string?)page.Sections.AccompanyingDocuments.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches, true);                            
                         ValidateContains("HealthCertificateReference", documentReference, ref allDataMatches, mismatches, true);                            
                         ValidateIfExists("HealthCertificateDateOfIssue", reviewDate, ref allDataMatches, mismatches);
 
@@ -140,15 +140,26 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         ValidateIfExists("CommodityIntendedFor", page.Sections.GoodsCertifiedAs.Value, ref allDataMatches, mismatches);
                         ValidateContains("PlaceOfExit", page.Sections.NonInternalMarket?.Value, ref allDataMatches, mismatches);
 
-                        ValidateIfExists("MeansOfTransport", page.Sections.MeansOfTransport.Mode, ref allDataMatches, mismatches);
-                        ValidateIfExists("EnterTransportDocRef", page.Sections.MeansOfTransport.InternationalTransportDocument, ref allDataMatches, mismatches);
-                        ValidateIfExists("TransportId", page.Sections.MeansOfTransport.Identification, ref allDataMatches, mismatches);
+                        ValidateContains("MeansOfTransport", page.Sections.MeansOfTransport.Mode, ref allDataMatches, mismatches);
+                        ValidateContains("EnterTransportDocRef", page.Sections.MeansOfTransport.Mode, ref allDataMatches, mismatches);
+                        //ValidateIfExists("EnterTransportDocRef", page.Sections.MeansOfTransport.InternationalTransportDocument, ref allDataMatches, mismatches);
+                        ValidateContains("TransportId", page.Sections.MeansOfTransport.Identification, ref allDataMatches, mismatches);
                         ValidateIfExists("CountryOfOrigin", page.Sections.CountryOfOrigin.Value, ref allDataMatches, mismatches);
                         ValidateContains("ApprovedEstablishmentName", page.Sections.EstablishmentsOfOrigin?.Value, ref allDataMatches, mismatches);
                         ValidateContains("ApprovedEstablishmentCountry", page.Sections.EstablishmentsOfOrigin?.Value, ref allDataMatches, mismatches);
                         ValidateContains("ApprovedEstablishmentType", page.Sections.EstablishmentsOfOrigin?.Value, ref allDataMatches, mismatches);
                         ValidateContains("ApprovedEstablishmentApprovalNum", page.Sections.EstablishmentsOfOrigin?.Value, ref allDataMatches, mismatches);
                         ValidateContains("TranshipmentDestinationCountry", page.Sections.TranshipmentOnwardTravel?.Country, ref allDataMatches, mismatches);
+                        
+                        
+                        ValidateContains("SealNumber", page.Sections.ContainerNoSealNo?.Value, ref allDataMatches, mismatches);
+                        ValidateContains("ContainerNumber", page.Sections.ContainerNoSealNo?.Value, ref allDataMatches, mismatches);
+                        
+                        
+                        ValidateContains("EstimatedArrivalDate", page.Sections.PriorNotification?.Date, ref allDataMatches, mismatches);
+                        ValidateContains("EstimatedArrivalTime", page.Sections.PriorNotification?.Time, ref allDataMatches, mismatches);
+
+
 
                         string? pdfTemperature = page.Sections.TransportConditions 
                         switch
@@ -689,7 +700,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     expectedValue = s.Trim();
                     if (expectedValue.Trim() == "No need to inspect - exempt or not applicable") expectedValue = "IUUNA";
                     if (contextKey.Trim() == "ExitBorderControlPost" || contextKey.Trim() == "PortOfEntry") expectedValue = expectedValue.Split('(')[0].Trim();
-                    if (contextKey.Trim() == "TotalPackages") actual = Regex.Matches(actual, @"\d+").Select(m => int.Parse(m.Value)).Sum().ToString(); ;
+                    if (contextKey.Trim() == "TotalPackages") actual = Regex.Matches(actual, @"\d+").Select(m => int.Parse(m.Value)).Sum().ToString();
+                    if (contextKey.Trim() == "EstimatedArrivalDate") expectedValue = DateTime.ParseExact(expectedValue, "dd MMM yyyy", System.Globalization.CultureInfo.InvariantCulture).ToString("dd.MM.yyyy");
+                    ;
 
                 }
                 else if (rawExpected is string[] arr)
