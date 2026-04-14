@@ -136,8 +136,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         ValidateContains("DocumentReference", documentReference, ref allDataMatches, mismatches, true);
                         ValidateIfExists("DocumentDateOfIssue", reviewDate, ref allDataMatches, mismatches);
 
-                        ValidateIfExists("ContryFromWhereConsigned", page.Sections.CountryOfDispatch.Value, ref allDataMatches, mismatches);
-                        ValidateIfExists("CommodityIntendedFor", page.Sections.GoodsCertifiedAs.Value, ref allDataMatches, mismatches);
+                        ValidateIfExists("ContryFromWhereConsigned", page.Sections.CountryOfDispatch?.Value, ref allDataMatches, mismatches);
+                        ValidateIfExists("CommodityIntendedFor", page.Sections.GoodsCertifiedAs?.Value, ref allDataMatches, mismatches);
                         ValidateContains("PlaceOfExit", page.Sections.NonInternalMarket?.Value, ref allDataMatches, mismatches);
 
                         ValidateContains("MeansOfTransport", page.Sections.MeansOfTransport.Mode, ref allDataMatches, mismatches);
@@ -171,8 +171,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         };
                         ValidateIfExists("Temperature", pdfTemperature, ref allDataMatches, mismatches);
 
-                        ValidateContains("ContactName", page.Sections.OperatorResponsible.Name, ref allDataMatches, mismatches);
-                        ValidateIfExists("ConsignmentContactAddress", page.Sections.OperatorResponsible.Address, ref allDataMatches, mismatches);
+                        ValidateContains("ContactName", page.Sections.OperatorResponsible?.Name, ref allDataMatches, mismatches);
+                        ValidateIfExists("ConsignmentContactAddress", page.Sections.OperatorResponsible?.Address, ref allDataMatches, mismatches);
                     }
 
                     else if (pageNumber == 2)
@@ -217,14 +217,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             ValidateContains("CountryOfOrigin", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                             ValidateContains("TotalNetWeight", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                             ValidateContains("TotalPackages", page.Sections.DescriptionOfTheGoods.ElementAt(0).PackageCount, ref allDataMatches, mismatches);
-                            ValidateContains("TotalGrossWeight", page.Sections.TotalGrossWeight.Value, ref allDataMatches, mismatches);
+                            ValidateContains("TotalGrossWeight", page.Sections.TotalGrossWeight?.Value, ref allDataMatches, mismatches);
                         }
                     }
                         
                     else if (pageNumber == 3)
                     {
                         ValidateIfExists("CHEDReference", page.Sections.II2ChedReference.Id, ref allDataMatches, mismatches);
-                        ValidateIfExists("CustomsDeclarationReference", page.Sections.II25BcpReferenceNumber.Value, ref allDataMatches, mismatches);
+                        ValidateIfExists("CustomsDeclarationReference", page.Sections.II25BcpReferenceNumber?.Value, ref allDataMatches, mismatches);
 
                         string? pdfDocCheckDecision = page.Sections.DocumentaryCheck 
                         switch
@@ -292,29 +292,29 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
                         var c = (string?)page.Sections.IdentificationOfBcp.AdditionalData.ElementAt(2).Value;
 
-                        ValidateContains("PortOfEntry", (string?)page.Sections.IdentificationOfBcp.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches, true);
+                        ValidateContains("PortOfEntry", (string?)page.Sections.IdentificationOfBcp?.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches, true);
 
                         if(page.Sections.AcceptableForTransit != null)
                         {
-                            ValidateContains("DestinationCountry", page.Sections.AcceptableForTransit.Value, ref allDataMatches, mismatches);
-                            ValidateContains("ExitBorderControlPost", (string?)page.Sections.AcceptableForTransit.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches);
+                            ValidateContains("DestinationCountry", page.Sections.AcceptableForTransit?.Value, ref allDataMatches, mismatches);
+                            ValidateContains("ExitBorderControlPost", (string?)page.Sections.AcceptableForTransit?.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches);
                         }
                         if (page.Sections.AcceptableForTranshipment  != null)
                         {
-                            ValidateContains("TranshipmentDestinationCountry", page.Sections.AcceptableForTranshipment.Value, ref allDataMatches, mismatches);
+                            ValidateContains("TranshipmentDestinationCountry", page.Sections.AcceptableForTranshipment?.Value, ref allDataMatches, mismatches);
                         }
                         if (page.Sections.NotAcceptable != null)
                         {
-                            ValidateContains("AcceptableForSubOption", page.Sections.NotAcceptable.Value, ref allDataMatches, mismatches);
+                            ValidateContains("AcceptableForSubOption", page.Sections.NotAcceptable?.Value, ref allDataMatches, mismatches);
                         }
                         if (page.Sections.ReasonForRefusal != null)
                         {
-                            ValidateContains("ReasonForRefusal", page.Sections.ReasonForRefusal.Value, ref allDataMatches, mismatches);
-                            ValidateContains("AdditionalReasonForRefusal", page.Sections.ReasonForRefusal.Value, ref allDataMatches, mismatches);
+                            ValidateContains("ReasonForRefusal", page.Sections.ReasonForRefusal?.Value, ref allDataMatches, mismatches);
+                            ValidateContains("AdditionalReasonForRefusal", page.Sections.ReasonForRefusal?.Value, ref allDataMatches, mismatches);
                         }
                         if (page.Sections.AcceptableForInternalMarket != null)
                         {
-                            ValidateContains("AcceptableForSubOption", page.Sections.AcceptableForInternalMarket.Value, ref allDataMatches, mismatches);
+                            ValidateContains("AcceptableForSubOption", page.Sections.AcceptableForInternalMarket?.Value, ref allDataMatches, mismatches);
                         }
                     }
                     else if (pageNumber == 4)
