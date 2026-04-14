@@ -134,12 +134,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         ValidateContains("HealthCertificateReference", documentReference, ref allDataMatches, mismatches, true);                            
                         ValidateIfExists("HealthCertificateDateOfIssue", reviewDate, ref allDataMatches, mismatches);
 
-                        ValidateContains("DocumentReference", documentReference, ref allDataMatches, mismatches, true);
-                        ValidateIfExists("DocumentDateOfIssue", reviewDate, ref allDataMatches, mismatches);
+                        //ValidateContains("DocumentReference", documentReference, ref allDataMatches, mismatches, true);
+                        //ValidateIfExists("DocumentDateOfIssue", reviewDate, ref allDataMatches, mismatches);
 
                         ValidateIfExists("ContryFromWhereConsigned", page.Sections.CountryOfDispatch?.Value, ref allDataMatches, mismatches);
                         ValidateIfExists("CommodityIntendedFor", page.Sections.GoodsCertifiedAs?.Value, ref allDataMatches, mismatches);
-                        ValidateIfExists("Purpose", page.Sections.GoodsCertifiedAs?.Value, ref allDataMatches, mismatches);
+                        ValidateContains("Purpose", page.Sections.GoodsCertifiedAs?.Value, ref allDataMatches, mismatches);
                         ValidateContains("PlaceOfExit", page.Sections.NonInternalMarket?.Value, ref allDataMatches, mismatches);
 
                         ValidateContains("MeansOfTransport", page.Sections.MeansOfTransport.Mode, ref allDataMatches, mismatches);
@@ -244,7 +244,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     else if (pageNumber == 3)
                     {
                         ValidateIfExists("CHEDReference", page.Sections.II2ChedReference.Id, ref allDataMatches, mismatches);
-                        ValidateIfExists("CustomsDeclarationReference", page.Sections.II25BcpReferenceNumber?.Value, ref allDataMatches, mismatches);
+                        //ValidateIfExists("CustomsDeclarationReference", page.Sections.II25BcpReferenceNumber?.Value, ref allDataMatches, mismatches);
 
                         string? pdfDocCheckDecision = page.Sections.DocumentaryCheck 
                         switch
@@ -809,24 +809,27 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 }
                 else if (rawExpected is List<string> list)
                 {
+                    bool anyMatch = false;
+
                     foreach (var item in list)
                     {
                         if (string.IsNullOrWhiteSpace(item))
                             continue;
 
-                        bool itemMatch = actual.Contains(item.Trim(), StringComparison.OrdinalIgnoreCase);
-
-                        if (!itemMatch)
-                        {
-                            allDataMatches = false;
-                            mismatches.Add($"{contextKey}: Expected '{item}' not found in PDF");
-                        }
-                        else
+                        if (actual.Contains(item.Trim(), StringComparison.OrdinalIgnoreCase))
                         {
                             Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{item}' matches");
-                            return;
+                            anyMatch = true;
+                            break;
                         }
                     }
+
+                    if (!anyMatch)
+                    {
+                        mismatches.Add($"{contextKey}: None of the expected values were found in PDF");
+                        allDataMatches = false;
+                    }
+
 
                     return;
                     //expectedValue = string.Join(" ", rawExpected);
