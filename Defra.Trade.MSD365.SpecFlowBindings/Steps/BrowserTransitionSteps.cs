@@ -22,11 +22,17 @@ using Reqnroll.BoDi;
 /// - Before this step: IsDynamicsActive=true  → Dynamics AfterStepHooks owns screenshots (Browser 2, Dynamics tab)
 /// - After this step:  IsDynamicsActive=false → WebDriverHook.AfterStep owns screenshots (Browser 2, IPAFFS tab)
 /// - After "I switch back to the Dynamics tab": IsDynamicsActive=true → Dynamics AfterStepHooks resumes
+///
+/// Tab behaviour:
+/// - Clicking IPAFFS in the Dynamics ribbon opens IPAFFS in a NEW tab (Browser 2 switches to it).
+/// - Clicking "Return to work order" in IPAFFS navigates the CURRENT tab back to Dynamics
+///   in-place — no window handle switch is required on the way back.
 /// </summary>
 [Binding]
 public class BrowserTransitionSteps : PowerAppsStepDefiner
 {
     private const string IpaffsDomainFragment = "defra.cloud";
+    private const string DynamicsDomainFragment = "dynamics.com";
 
     private readonly IObjectContainer _objectContainer;
     private readonly ScenarioContext _scenarioContext;
@@ -82,25 +88,34 @@ public class BrowserTransitionSteps : PowerAppsStepDefiner
     }
 
     /// <summary>
-    /// Switches the Dynamics driver back to the original Dynamics tab and restores
-    /// Dynamics reporting ownership so subsequent Dynamics steps are captured correctly.
+    /// Switches reporting ownership back to Dynamics after "Return to work order" is clicked
+    /// in IPAFFS. Because that button navigates the current tab in-place back to Dynamics
+    /// (no new window is opened), no window handle switch is needed — we simply wait for
+    /// the Dynamics page to finish loading on the same tab, then restore Dynamics reporting.
     /// </summary>
     [When("I switch back to the Dynamics tab")]
     public void WhenISwitchBackToDynamicsTab()
     {
-        if (!_scenarioContext.TryGetValue("DynamicsWindowHandle", out string dynamicsHandle)
-            || string.IsNullOrWhiteSpace(dynamicsHandle))
+        if (!_scenarioContext.TryGetValue("DynamicsIpaffsDriver", out IWebDriver dynamicsDriver)
+            || dynamicsDriver == null)
         {
             throw new InvalidOperationException(
-                "No Dynamics window handle found in ScenarioContext. " +
+                "No Dynamics IPAFFS driver found in ScenarioContext. " +
                 "Ensure 'When I click IPAFFS from the header ribbon' ran before this step.");
         }
 
-        Driver.SwitchTo().Window(dynamicsHandle);
+        // "Return to work order" navigates the current tab back to Dynamics in-place.
+        // Wait for the page to land on the Dynamics host and reach a ready state.
+        var wait = new WebDriverWait(dynamicsDriver, TimeSpan.FromSeconds(60));
+        wait.Until(d =>
+            d.Url.Contains(DynamicsDomainFragment, StringComparison.OrdinalIgnoreCase)
+            && ((IJavaScriptExecutor)d).ExecuteScript("return document.readyState").ToString() == "complete");
+
+        Driver.WaitForTransaction();
 
         // Restore Dynamics reporting ownership for any steps after this point
         _scenarioContext["IsDynamicsActive"] = true;
 
-        Console.WriteLine($"[BrowserTransition] Switched Dynamics driver back to handle: {dynamicsHandle}");
+        Console.WriteLine($"[BrowserTransition] Dynamics page loaded in-place. Reporting restored. URL: {dynamicsDriver.Url}");
     }
 }

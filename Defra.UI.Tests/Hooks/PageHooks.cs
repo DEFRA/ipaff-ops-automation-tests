@@ -151,6 +151,7 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<YourIOCHasBeenPutInPlacePage, IYourIOCHasBeenPutInPlacePage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IOCDetailsPage, IIOCDetailsPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<AreYouSureYouWantToStopTheIOCPage, IAreYouSureYouWantToStopTheIOCPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<RecordHmiChecksPage, IRecordHmiChecksPage>());
 
             //Read Email
             _objectContainer.RegisterInstanceAs(GetBaseWithScenarioContext<FetchCodeFromEmail, IFetchCodeFromEmail>());

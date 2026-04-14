@@ -71,7 +71,38 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
     public void WhenIClickTheAssignCommand()
     {
         Driver.WaitForTransaction();
-        CommandSteps.WhenISelectTheCommand("Assign");
+
+        // Determine whether the Assign command should be clicked inside a maximised popup
+        // or on the main Work Order page command bar.
+        //
+        // When called after "I click on the '<task>' task" + "I maximise the popup", the popup
+        // container is present in the DOM and its own command bar may not yet have fully rendered.
+        // Clicking via CommandSteps.WhenISelectTheCommand in this state hits the Work Order page's
+        // overflow button instead, causing ElementClickInterceptedException.
+        //
+        // When called from the Work Order page (no active popup), fall through to the standard helper.
+        var popupContainers = Driver.FindElements(
+            By.XPath("//section[contains(@id,'popupContainer')]"));
+
+        if (popupContainers.Count > 0)
+        {
+            // Wait for the popup's own Assign button to be present and visible before clicking.
+            // Scope to the popup container to avoid matching the Work Order command bar.
+            var popupAssignButton = Driver.WaitUntilAvailable(
+                By.XPath("//section[contains(@id,'popupContainer')]//button[@aria-label='Assign' or @title='Assign']"),
+                TimeSpan.FromSeconds(30),
+                "Assign button could not be found in the popup command bar within 30 seconds.");
+
+            Driver.ExecuteScript("arguments[0].scrollIntoView({block:'center'});", popupAssignButton);
+            Driver.WaitForTransaction();
+
+            popupAssignButton.Click();
+        }
+        else
+        {
+            CommandSteps.WhenISelectTheCommand("Assign");
+        }
+
         Driver.WaitForTransaction();
     }
 
