@@ -23,6 +23,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtInNextSteps => _driver.FindElement(By.XPath("//*[normalize-space()='Next steps']/following-sibling::p"));
         private IWebElement btnCreateBorderNotification => _driver.FindElement(By.Id("create-border-notification"));
         private IWebElement lblDecisionOutcome => _driver.FindElement(By.Id("decision-outcome"));
+        private IWebElement lnkReturnToDecisionHub => _driver.FindElement(By.Id("phsi-checks-multiple-summary"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -98,5 +99,10 @@ namespace Defra.UI.Tests.Pages.Classes
         public bool VerifyOutcome(string outcome) => lblDecisionOutcome.Text.Trim().Equals(outcome);
 
         public void ClickCreateBorderNotiButton() => btnCreateBorderNotification.Click();
+
+        public void ClickReturnToDecisionHub()
+        {
+            lnkReturnToDecisionHub.Click();
+        }
     }
 }

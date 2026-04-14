@@ -34,8 +34,9 @@ namespace Defra.UI.Tests.Pages.Classes
             _driver.FindElement(By.XPath($"//button[contains(@class,'link-button') and normalize-space()='{checkName}']"));
         private IWebElement txtRecordChecksStatus(string checkName) =>
             _driver.FindElement(By.XPath(
-                $"//button[contains(@class,'link-button') and normalize-space()='{checkName}']" +
-                $"/ancestor::td/following-sibling::td//strong[contains(@class,'govuk-tag')]"));
+                $"//td[normalize-space()='{checkName}' or " +
+                $".//button[contains(@class,'link-button') and normalize-space()='{checkName}']]" +
+                $"/following-sibling::td//strong[contains(@class,'govuk-tag')]"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();

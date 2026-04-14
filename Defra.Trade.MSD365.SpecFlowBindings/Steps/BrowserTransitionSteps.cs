@@ -88,10 +88,15 @@ public class BrowserTransitionSteps : PowerAppsStepDefiner
     }
 
     /// <summary>
-    /// Switches reporting ownership back to Dynamics after "Return to work order" is clicked
-    /// in IPAFFS. Because that button navigates the current tab in-place back to Dynamics
-    /// (no new window is opened), no window handle switch is needed — we simply wait for
-    /// the Dynamics page to finish loading on the same tab, then restore Dynamics reporting.
+    /// Switches reporting ownership back to Dynamics. Handles two distinct cases:
+    ///
+    /// 1. In-place navigation: "Return to work order" navigates the current tab back to
+    ///    Dynamics — no window handle switch is needed. We simply wait for the Dynamics
+    ///    host to load on the same tab.
+    ///
+    /// 2. Tab closed: The IPAFFS tab has been closed (e.g. after logout). The Dynamics
+    ///    driver's current handle is no longer valid, so we switch to the stored
+    ///    DynamicsWindowHandle before waiting for the page to load.
     /// </summary>
     [When("I switch back to the Dynamics tab")]
     public void WhenISwitchBackToDynamicsTab()
@@ -104,8 +109,27 @@ public class BrowserTransitionSteps : PowerAppsStepDefiner
                 "Ensure 'When I click IPAFFS from the header ribbon' ran before this step.");
         }
 
-        // "Return to work order" navigates the current tab back to Dynamics in-place.
-        // Wait for the page to land on the Dynamics host and reach a ready state.
+        // Determine whether the current window handle is still open.
+        // If the IPAFFS tab has been closed, the handle will no longer appear in WindowHandles,
+        // so we must switch to the stored Dynamics handle explicitly before waiting for the page.
+        var currentHandleIsOpen = IsHandleOpen(dynamicsDriver, dynamicsDriver.CurrentWindowHandle);
+
+        if (!currentHandleIsOpen)
+        {
+            if (!_scenarioContext.TryGetValue("DynamicsWindowHandle", out string dynamicsHandle)
+                || string.IsNullOrWhiteSpace(dynamicsHandle))
+            {
+                throw new InvalidOperationException(
+                    "The current browser window has been closed and no DynamicsWindowHandle was found " +
+                    "in ScenarioContext to switch back to. Ensure 'When I click IPAFFS from the header ribbon' " +
+                    "ran before this step.");
+            }
+
+            dynamicsDriver.SwitchTo().Window(dynamicsHandle);
+            Console.WriteLine($"[BrowserTransition] IPAFFS tab was closed. Switched Dynamics driver to handle: {dynamicsHandle}");
+        }
+
+        // Wait for the Dynamics page to be fully loaded on whichever tab is now active.
         var wait = new WebDriverWait(dynamicsDriver, TimeSpan.FromSeconds(60));
         wait.Until(d =>
             d.Url.Contains(DynamicsDomainFragment, StringComparison.OrdinalIgnoreCase)
@@ -113,9 +137,26 @@ public class BrowserTransitionSteps : PowerAppsStepDefiner
 
         Driver.WaitForTransaction();
 
-        // Restore Dynamics reporting ownership for any steps after this point
+        // Restore Dynamics reporting ownership for any steps after this point.
         _scenarioContext["IsDynamicsActive"] = true;
 
-        Console.WriteLine($"[BrowserTransition] Dynamics page loaded in-place. Reporting restored. URL: {dynamicsDriver.Url}");
+        Console.WriteLine($"[BrowserTransition] Dynamics reporting restored. URL: {dynamicsDriver.Url}");
+    }
+
+    /// <summary>
+    /// Returns true if the given window handle still exists in the driver's open windows.
+    /// Uses a safe check rather than relying on the driver throwing when the handle is invalid,
+    /// which varies by browser/driver version.
+    /// </summary>
+    private static bool IsHandleOpen(IWebDriver driver, string handle)
+    {
+        try
+        {
+            return driver.WindowHandles.Contains(handle);
+        }
+        catch
+        {
+            return false;
+        }
     }
 }
