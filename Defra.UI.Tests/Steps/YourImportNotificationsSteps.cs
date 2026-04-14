@@ -1,4 +1,5 @@
-﻿using Defra.UI.Tests.Data.Users;
+﻿using Defra.UI.Tests.Contracts;
+using Defra.UI.Tests.Data.Users;
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using Defra.UI.Tests.Tools.PDFProcessor;
@@ -173,11 +174,29 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
                         ValidateContains("ContactName", page.Sections.OperatorResponsible.Name, ref allDataMatches, mismatches);
                         ValidateIfExists("ConsignmentContactAddress", page.Sections.OperatorResponsible.Address, ref allDataMatches, mismatches);
+
+                        if (_scenarioContext.ContainsKey("CloningHealthCertificateDetails"))
+                        { 
+                            ValidateIfExists("ConsignorConsigneeOrImporterName", page.Sections.ConsigneeImporter.Name, ref allDataMatches, mismatches);
+                            ValidateIfExists("PurposeOfTheConsignment", page.Sections.GoodsCertifiedAs.Value, ref allDataMatches, mismatches);
+                        }
                     }
 
                     else if (pageNumber == 2)
                     {
-                        if(page.Sections.DescriptionOfTheGoods?.Count > 1)
+                        if (_scenarioContext.ContainsKey("CloningHealthCertificateDetails"))
+                        {
+                            //Clone scenario
+                            ValidateContains("CommodityCode", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("Description", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("GenusAndSpecies", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("NetWeight", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("Packages", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("TypeOfPackage", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("EstablishmentListFirstName", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("CountryOfOriginOfCertificate", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
+                        }
+                        else if (page.Sections.DescriptionOfTheGoods?.Count > 1)
                         {
                             ValidateContains("CommodityCodeFirstCommodity", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                             ValidateContains("CommodityDescFirstCommodity", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
@@ -315,6 +334,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         if (page.Sections.AcceptableForInternalMarket != null)
                         {
                             ValidateContains("AcceptableForSubOption", page.Sections.AcceptableForInternalMarket.Value, ref allDataMatches, mismatches);
+                        }
+
+                        if (_scenarioContext.ContainsKey("CloningHealthCertificateDetails"))
+                        {
+                            ValidateContains("PurposeOfTheConsignment", page.Sections.AcceptableForInternalMarket.Value, ref allDataMatches, mismatches);
                         }
                     }
                     else if (pageNumber == 4)
@@ -509,11 +533,35 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
         private void ValidateIfExists(string contextKey, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
         {
-            if (_scenarioContext.ContainsKey(contextKey))
+            if (_scenarioContext.ContainsKey("CloningHealthCertificateDetails") && (contextKey.Equals("ConsignorConsigneeOrImporterName") || contextKey.Equals("PurposeOfTheConsignment")))
+            {
+                string expectedValue = null;
+                var details = _scenarioContext.Get<NotificationDetails>("CloningHealthCertificateDetails");
+                var property = typeof(NotificationDetails).GetProperty(contextKey);
+                expectedValue = property?.GetValue(details)?.ToString()?.Trim();
+
+                if (expectedValue != null && !string.IsNullOrEmpty(expectedValue.ToString()))
+                {
+                    var isMatch = expectedValue.Equals(reviewValue?.Trim(), StringComparison.OrdinalIgnoreCase);
+                    if (!isMatch)
+                    {
+                        allDataMatches = false;
+                        mismatches.Add($"{contextKey}: Expected '{expectedValue}', Found '{reviewValue?.Trim()}'");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"[PDF VALIDATION] ⊘ {contextKey}: Skipped (empty value in array)");
+                }
+            }
+            else if (_scenarioContext.ContainsKey(contextKey))
             {
                 object contextValue = _scenarioContext[contextKey];
-
-                // Date validation for DocumentDateOfIssue
+             // Date validation for DocumentDateOfIssue
                 if (contextKey == "HealthCertificateDateOfIssue")
                 {
                     try
@@ -690,7 +738,44 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
         private void ValidateContains(string contextKey, string? actual, ref bool allDataMatches, List<string> mismatches, bool contextContainsPDF = false)
         {
-            if (_scenarioContext.ContainsKey(contextKey))
+            if (_scenarioContext.ContainsKey("CloningHealthCertificateDetails") && (contextKey.Equals("CommodityCode") || contextKey.Equals("Description")
+                || contextKey.Equals("GenusAndSpecies") || contextKey.Equals("NetWeight")
+                || contextKey.Equals("Packages") || contextKey.Equals("TypeOfPackage")
+                || contextKey.Equals("CountryOfOriginOfCertificate") || contextKey.Equals("PurposeOfTheConsignment")
+                || contextKey.Equals("EstablishmentListFirstName")))
+            {
+                string expectedValue = null;
+                var details = _scenarioContext.Get<NotificationDetails>("CloningHealthCertificateDetails");
+                var property = typeof(NotificationDetails).GetProperty(contextKey);
+                expectedValue = property?.GetValue(details)?.ToString()?.Trim();
+
+                if(contextKey.Equals("Packages") || contextKey.Equals("NetWeight"))
+                {
+                    var rawValue = property?.GetValue(details);
+                    double numericValue = Convert.ToDouble(rawValue);
+                    expectedValue = (numericValue * 2).ToString();
+                }
+
+                if (expectedValue != null && !string.IsNullOrEmpty(expectedValue.ToString()))
+                {
+                    string RemoveWhitespace(string s) => string.Concat(s.Where(c => !char.IsWhiteSpace(c)));
+
+                    bool isMatch = contextContainsPDF
+                        ? RemoveWhitespace(expectedValue).Contains(RemoveWhitespace(actual), StringComparison.OrdinalIgnoreCase)
+                        : RemoveWhitespace(actual).Contains(RemoveWhitespace(expectedValue), StringComparison.OrdinalIgnoreCase);
+
+                    if (!isMatch)
+                    {
+                        allDataMatches = false;
+                        mismatches.Add($"{contextKey}: Expected '{expectedValue}', Found '{actual.Trim()}'");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
+                    }
+                }
+            }
+            else if (_scenarioContext.ContainsKey(contextKey))
             {
                 object rawExpected = _scenarioContext[contextKey];
                 string expectedValue;
