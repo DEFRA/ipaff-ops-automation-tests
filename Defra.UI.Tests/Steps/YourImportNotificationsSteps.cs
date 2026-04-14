@@ -139,11 +139,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
                         ValidateIfExists("ContryFromWhereConsigned", page.Sections.CountryOfDispatch?.Value, ref allDataMatches, mismatches);
                         ValidateIfExists("CommodityIntendedFor", page.Sections.GoodsCertifiedAs?.Value, ref allDataMatches, mismatches);
+                        ValidateIfExists("Purpose", page.Sections.GoodsCertifiedAs?.Value, ref allDataMatches, mismatches);
                         ValidateContains("PlaceOfExit", page.Sections.NonInternalMarket?.Value, ref allDataMatches, mismatches);
 
                         ValidateContains("MeansOfTransport", page.Sections.MeansOfTransport.Mode, ref allDataMatches, mismatches);
-                        ValidateContains("EnterTransportDocRef", page.Sections.MeansOfTransport.Mode, ref allDataMatches, mismatches);
-                        //ValidateIfExists("EnterTransportDocRef", page.Sections.MeansOfTransport.InternationalTransportDocument, ref allDataMatches, mismatches);
+                        //ValidateContains("EnterTransportDocRef", page.Sections.MeansOfTransport.Mode, ref allDataMatches, mismatches);
+                        ValidateIfExists("EnterTransportDocRef", page.Sections.MeansOfTransport.InternationalTransportDocument, ref allDataMatches, mismatches);
                         ValidateContains("TransportId", page.Sections.MeansOfTransport.Identification, ref allDataMatches, mismatches);
                         ValidateIfExists("CountryOfOrigin", page.Sections.CountryOfOrigin.Value, ref allDataMatches, mismatches);
                         ValidateContains("ApprovedEstablishmentName", page.Sections.EstablishmentsOfOrigin?.Value, ref allDataMatches, mismatches);
@@ -370,6 +371,17 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     }
                 }
             }
+            if (!allDataMatches)
+            {
+                Console.WriteLine("[PDF VALIDATION] Data mismatches found:");
+                foreach (var mismatch in mismatches)
+                {
+                    Console.WriteLine($"[PDF VALIDATION] {mismatch}");
+                }
+            }
+
+            Assert.True(allDataMatches, $"PDF data validation failed. Mismatches: {string.Join(", ", mismatches)}");
+
             if (File.Exists(pdfPath))
             {
                 File.Delete(pdfPath);
