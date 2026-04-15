@@ -139,7 +139,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private By consignmentContactAddressBy => By.Id("organisation-branch-address-address");
 
         //Error Message
-        private IReadOnlyCollection<IWebElement> lblErrorMessages => _driver.FindElements(By.XPath("//div[@class='govuk-error-summary']/div/ul/li"));
+        private IReadOnlyCollection<IWebElement> lblErrorMessages => _driver.FindElements(By.XPath("//div[@class='govuk-error-summary__body']/ul/li"));
         private IWebElement lblCatchCertificateHeader => _driver.FindElement(By.Id("catch-certificate-details-heading"));
         private IWebElement lblCatchCertificateRowNoneAttached => _driver.FindElement(By.Id("catch-certificates-none-attached"));
         private IWebElement catchCertificateFlagState(int row, int column) => _driver.FindElement(By.XPath($"//table[@id='catch-certificate-summary-table']//tr[{row}]/td[{column}]"));

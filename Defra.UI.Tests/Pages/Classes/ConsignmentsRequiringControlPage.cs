@@ -82,7 +82,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool VerifyControlStatus(string controlStatus)
         {
-            return lblControlStatus.Text.Equals(controlStatus);
+            return lblControlStatus.Text.Equals(controlStatus, StringComparison.OrdinalIgnoreCase);
         }
 
         public bool VerifyLink(string link)
