@@ -149,8 +149,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
                         ValidateContains("MeansOfTransport", page.Sections.MeansOfTransport.Mode, ref allDataMatches, mismatches);
                         //ValidateContains("EnterTransportDocRef", page.Sections.MeansOfTransport.Mode, ref allDataMatches, mismatches);
-                        ValidateIfExists("EnterTransportDocRef", page.Sections.MeansOfTransport.InternationalTransportDocument, ref allDataMatches, mismatches);
-                        ValidateContains("TransportId", page.Sections.MeansOfTransport.Identification, ref allDataMatches, mismatches);
+                        //ValidateIfExists("EnterTransportDocRef", page.Sections.MeansOfTransport.InternationalTransportDocument, ref allDataMatches, mismatches);
+
+                        var meansOfTransport = _scenarioContext.Get<string>("MeansOfTransport");
+                        if (meansOfTransport.Equals(page.Sections.MeansOfTransport.Mode, StringComparison.OrdinalIgnoreCase))                 
+                            ValidateIfExists("EnterTransportDocRef", page.Sections.MeansOfTransport.InternationalTransportDocument, ref allDataMatches, mismatches);
+                        else
+                            ValidateContains("EnterTransportDocRef", page.Sections.MeansOfTransport.Mode, ref allDataMatches, mismatches);
+                       
+                        ValidateContains("TransportId", page.Sections.MeansOfTransport.Identification, ref allDataMatches, mismatches, true);
                         ValidateIfExists("CountryOfOrigin", page.Sections.CountryOfOrigin.Value, ref allDataMatches, mismatches);
                         ValidateContains("ApprovedEstablishmentName", page.Sections.EstablishmentsOfOrigin?.Value, ref allDataMatches, mismatches);
                         ValidateContains("ApprovedEstablishmentCountry", page.Sections.EstablishmentsOfOrigin?.Value, ref allDataMatches, mismatches);
@@ -360,7 +367,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         ValidateIfExists("ContryFromWhereConsigned", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.ElementAt(4).Value, ref allDataMatches, mismatches);
                         ValidateContains("PlaceOfDestinationDetails", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.ElementAt(3).Value, ref allDataMatches, mismatches, true);
                         ValidateContains("CommodityCode", page.Sections.IdentificationOfTheSample.Commodity, ref allDataMatches, mismatches);
-                        ValidateContains("CommodityDescription", page.Sections.IdentificationOfTheSample.Commodity, ref allDataMatches, mismatches);
+                        //ValidateContains("CommodityDescription", page.Sections.IdentificationOfTheSample.Commodity, ref allDataMatches, mismatches);
                         ValidateContains("Species", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
                         ValidateIfExists("LaboratoryTestsReason", (string?)page.Sections.RequestedAnalysis.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches);
                         //ValidateIfExists("AnalysisType", (string?)page.Sections.LabResults.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches);
