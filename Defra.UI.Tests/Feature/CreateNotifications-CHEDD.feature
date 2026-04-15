@@ -1295,6 +1295,7 @@ Scenario: User submits B2C consignment notification, reason for refusal and crea
 	Then Border notifications dashboard page should be displayed
 	When the user logs out of Border notifications in IPAFFS Part 1
 	Then the user should be logged out successfully
+	When the user deletes all the stored values
 	When I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
