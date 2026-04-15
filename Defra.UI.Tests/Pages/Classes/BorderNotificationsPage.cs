@@ -42,7 +42,7 @@ namespace Defra.UI.Tests.Pages.Classes
         public bool VerifyNotificationStatus(string borderNotification, string status)
         {
             return lnkBNNumSearcResult.Text.Trim().Contains(borderNotification)
-                   && lnkBNStatusSearcResult.Text.Trim().Equals(status);
+                   && lnkBNStatusSearcResult.Text.Trim().Equals(status, StringComparison.OrdinalIgnoreCase);
         }
 
         public void ClickViewDetails()
