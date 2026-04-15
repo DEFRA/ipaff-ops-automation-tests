@@ -119,10 +119,10 @@ Scenario: User creates and submits a B2C consignment notification - CHEDD Happy 
 	When I have provided the IPAFF Gateway Inspector credentials and signin
 	Then the user should be logged into Import notifications page
 	When the user searches for the newly created notification on the Import notifications page
-	Then the user clicks the notification found with status "NEW"
+	Then the user clicks the notification found with status "New"
 	Then the Decision Hub page should be displayed
 	When the user clicks Save and set as in progress
-	Then the notification status should change from "NEW" to "IN PROGRESS"
+	Then the notification status should change from "New" to "In Progress"
 	When the user clicks Local reference number link in Record checks
 	Then Local reference number page should be displayed
 	When the user clicks Save and continue without entering the local reference number data
@@ -303,10 +303,10 @@ Scenario: User creates and submits a notification, override the risk decision, r
 	When I have provided the IPAFF Gateway Inspector credentials and signin
 	Then the user should be logged into Import notifications page
 	When the user searches for the newly created notification on the Import notifications page
-	Then the user clicks the notification found with status "NEW"
+	Then the user clicks the notification found with status "New"
 	Then the Decision Hub page should be displayed
 	When the user clicks Save and set as in progress
-	Then the notification status should change from "NEW" to "IN PROGRESS"
+	Then the notification status should change from "New" to "In Proress"
 	When the user clicks Local reference number link in Record checks
 	Then Local reference number page should be displayed
 	When the user enters a local reference number and clicks Save and continue
@@ -373,7 +373,7 @@ Scenario: User creates and submits a notification, override the risk decision, r
 	And the user clicks Return to dashboard button
 	Then Border notifications dashboard page should be displayed
 	When the user searches for the newly created border notification
-	Then the border notification found with status "NEW"
+	Then the border notification found with status "New"
 	When the user logs out of Border notifications in IPAFFS Part 2 
 	Then the user should be logged out successfully
 	When I navigate to the IPAFF Inspector application

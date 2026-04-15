@@ -36,7 +36,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private List<IWebElement> documentRows => _driver.WaitForElements(By.XPath("//div[@class='additional-documents__grid-row additional-document-info']")).ToList();
         private List<IWebElement> fileNames => _driver.FindElements(fileNamesBy).ToList();
         private List<IWebElement> datePickerDateList => _driver.WaitForElements(By.XPath("//table[@class='date-picker__date-table']//tr/td")).ToList();
-        private IWebElement errorSummaryTitle => _driver.WaitForElement(By.Id("error-summary-title"));
+        private IWebElement errorSummaryTitle => _driver.WaitForElement(By.ClassName("govuk-error-summary__title"));
         private IWebElement errorSummaryMsg => _driver.WaitForElement(By.XPath("//ul[contains(@class,'govuk-error-summary__list')]/li/a"));
         private IWebElement errorMsgFieldLevel => _driver.WaitForElement(By.Id("fileUpload-error"));
         private By downloadAttachmentLinkLocator => By.XPath("//a[contains(@aria-label,'Download') and contains(@href,'/attachment/')]");

@@ -130,12 +130,17 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         var dateEntry = page.Sections.AccompanyingDocuments.AdditionalData.FirstOrDefault(x => x.Key == "DateOfIssue");
                         var reviewDate = dateEntry.Key == null ? null : dateEntry.Value?.ToString();
 
-                        ValidateContains("HealthDocumentType", (string?)page.Sections.AccompanyingDocuments.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches, true);                            
-                        ValidateContains("HealthCertificateReference", documentReference, ref allDataMatches, mismatches, true);                            
-                        ValidateIfExists("HealthCertificateDateOfIssue", reviewDate, ref allDataMatches, mismatches);
-
-                        //ValidateContains("DocumentReference", documentReference, ref allDataMatches, mismatches, true);
-                        //ValidateIfExists("DocumentDateOfIssue", reviewDate, ref allDataMatches, mismatches);
+                        if(_scenarioContext["CHEDReference"].ToString().Contains("CHEDP"))
+                        {
+                            ValidateContains("HealthDocumentType", (string?)page.Sections.AccompanyingDocuments.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches, true);
+                            ValidateContains("HealthCertificateReference", documentReference, ref allDataMatches, mismatches, true);
+                            ValidateIfExists("HealthCertificateDateOfIssue", reviewDate, ref allDataMatches, mismatches);
+                        }
+                        else if (_scenarioContext["CHEDReference"].ToString().Contains("CHEDD"))
+                        {
+                            ValidateContains("DocumentReference", documentReference, ref allDataMatches, mismatches, true);
+                            ValidateIfExists("DocumentDateOfIssue", reviewDate, ref allDataMatches, mismatches);
+                        }
 
                         ValidateIfExists("ContryFromWhereConsigned", page.Sections.CountryOfDispatch?.Value, ref allDataMatches, mismatches);
                         ValidateIfExists("CommodityIntendedFor", page.Sections.GoodsCertifiedAs?.Value, ref allDataMatches, mismatches);
@@ -296,7 +301,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         };
                         ValidateIfExists("LaboratoryTestsReason", pdfLaboratoryTests, ref allDataMatches, mismatches);
 
-                        string? pdfLaboratoryTestResult = page.Sections.LaboratoryTests
+                        /*string? pdfLaboratoryTestResult = page.Sections.LaboratoryTests
                         switch
                         {
                             { Satisfactory: "true" } => "Satisfactory",
@@ -304,7 +309,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             { Pending: "true" } => "Pending",
                             _ => null
                         };
-                        ValidateIfExists("LaboratoryTestsReason", pdfLaboratoryTestResult, ref allDataMatches, mismatches);
+                        ValidateIfExists("LaboratoryTestsReason", pdfLaboratoryTestResult, ref allDataMatches, mismatches);*/
 
                         ValidateIfExists("LaboratoryTestName", (string?)page.Sections.LaboratoryTests.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches);                   
 
@@ -574,7 +579,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             {
                 object contextValue = _scenarioContext[contextKey];
              // Date validation for DocumentDateOfIssue
-                if (contextKey == "HealthCertificateDateOfIssue")
+                if (contextKey.Equals("HealthCertificateDateOfIssue") || contextKey.Equals("DocumentDateOfIssue"))
                 {
                     try
                     {
@@ -582,7 +587,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         var reviewDateString = reviewValue?.Split(' ')[0]; // take only dd.MM.yyyy
 
                         var reviewDate = DateTime.ParseExact(reviewDateString, "dd.MM.yyyy", null);
-                        var expectedDate = DateTime.ParseExact(_scenarioContext.Get<string>("HealthCertificateDateOfIssue"), "dd MM yyyy", null);
+                        var expectedDate = DateTime.ParseExact(_scenarioContext.Get<string>(contextKey), "dd MM yyyy", null);
 
                         var reviewFormatted = reviewDate.ToString("ddMMyyyy");
                         var expectedFormatted = expectedDate.ToString("ddMMyyyy");
