@@ -2789,7 +2789,7 @@ Scenario: Verify IUU and Catch certificate details for EU and Non-EU countries C
 	And the user clicks Save and continue
 	And the Approved establishment of origin page should be displayed
 	When the user clicks Search for an approved establishment
-	Then the list of establishments should be displayed, filtered by Country of origin "Argentina" type "Cold Stores" status "Approved"
+	Then the list of establishments should be displayed, filtered by Country of origin "Argentina" type "Processing Plant" status "Approved"
 	When the user clicks Select for one of the establishments in the list
 	Then the Approved establishment of origin page should be displayed with the selected establishment
 	When the user clicks Save and continue

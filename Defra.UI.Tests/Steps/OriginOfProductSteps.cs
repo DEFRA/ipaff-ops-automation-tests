@@ -34,6 +34,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             originOfProductPage?.SelectCountryOfOrigin(country);
             _scenarioContext["CountryOfOrigin"] = country;
+            _scenarioContext["ContryFromWhereConsigned"] = country;
         }
     }
 }

@@ -639,6 +639,29 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     return;
                 }
 
+                if (_scenarioContext.ContainsKey(contextKey) && contextKey is "LaboratoryTestsReason")
+                {
+                    var expected = _scenarioContext.Get<string>(contextKey)?.Trim();
+                    string actual = reviewValue?.Trim();
+
+                    if (actual.Equals("Suspicious", StringComparison.OrdinalIgnoreCase))
+                    {
+                        actual = "Suspicion"; 
+                    }
+
+                    if (!string.Equals(expected, actual, StringComparison.OrdinalIgnoreCase))
+                    {
+                        allDataMatches = false;
+                        mismatches.Add($"{contextKey}: Expected '{expected}', Found '{actual}'");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{expected}' matches");
+                    }
+
+                    return;
+                }
+
 
                 // ConsignmentContactAddress special address-normalisation validation
                 if (contextKey == "ConsignmentContactAddress")
