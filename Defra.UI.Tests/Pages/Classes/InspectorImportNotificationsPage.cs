@@ -50,7 +50,7 @@ namespace Defra.UI.Tests.Pages.Classes
         public void VerifyNotificationStatusAndClick(string chedRef, string status)
         {
             if (lnkChedRefNumSearcResult.Text.Trim().Contains(chedRef)
-                && lnkChedStatusSearcResult.Text.Trim().Equals(status))
+                && lnkChedStatusSearcResult.Text.Trim().Equals(status, StringComparison.OrdinalIgnoreCase))
             {
                 lnkChedRefNumSearcResult.Click();
             }

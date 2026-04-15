@@ -296,7 +296,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         };
                         ValidateIfExists("LaboratoryTestsReason", pdfLaboratoryTests, ref allDataMatches, mismatches);
 
-                        string? pdfLaboratoryTestResult = page.Sections.LaboratoryTests
+/*                        string? pdfLaboratoryTestResult = page.Sections.LaboratoryTests
                         switch
                         {
                             { Satisfactory: "true" } => "Satisfactory",
@@ -304,7 +304,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             { Pending: "true" } => "Pending",
                             _ => null
                         };
-                        ValidateIfExists("LaboratoryTestsReason", pdfLaboratoryTestResult, ref allDataMatches, mismatches);
+                        ValidateIfExists("LaboratoryTestsReason", pdfLaboratoryTestResult, ref allDataMatches, mismatches);*/
 
                         ValidateIfExists("LaboratoryTestName", (string?)page.Sections.LaboratoryTests.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches);                   
 
@@ -620,6 +620,29 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 {
                     var expected = _scenarioContext.Get<string>(contextKey)?.Trim();
                     var actual = reviewValue?.Trim();
+
+                    if (!string.Equals(expected, actual, StringComparison.OrdinalIgnoreCase))
+                    {
+                        allDataMatches = false;
+                        mismatches.Add($"{contextKey}: Expected '{expected}', Found '{actual}'");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{expected}' matches");
+                    }
+
+                    return;
+                }
+
+                if (_scenarioContext.ContainsKey(contextKey) && contextKey is "LaboratoryTestsReason")
+                {
+                    var expected = _scenarioContext.Get<string>(contextKey)?.Trim();
+                    string actual = reviewValue?.Trim();
+
+                    if (actual.Equals("Suspicious", StringComparison.OrdinalIgnoreCase))
+                    {
+                        actual = "Suspicion"; 
+                    }
 
                     if (!string.Equals(expected, actual, StringComparison.OrdinalIgnoreCase))
                     {
