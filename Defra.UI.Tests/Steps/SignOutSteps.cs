@@ -145,5 +145,19 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 }
             }
         }
+
+        [Then("the Inspector is logged out of IPAFFS successfully")]
+        public void ThenTheInspectorIsLoggedOutOfIPAFFSSuccessfully()
+        {
+            Assert.True(
+                signOutPage?.VerifyInspectorSignedOutPage(),
+                "Inspector sign-out page was not displayed — expected 'You signed out of your account'.");
+        }
+
+        [When("the user closes the IPAFFS tab")]
+        public void WhenTheUserClosesTheIpaffsTab()
+        {
+            signOutPage?.CloseCurrentTab();
+        }
     }
 }

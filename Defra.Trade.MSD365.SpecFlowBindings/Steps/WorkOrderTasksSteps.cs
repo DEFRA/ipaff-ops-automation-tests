@@ -394,6 +394,8 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
 
     /// <summary>
     /// Verifies that a new row appears in the Time Recording subgrid containing the current user's name in the Inspector column.
+    /// Refreshes the subgrid and retries for up to 30 seconds to allow the WijMo grid to render
+    /// the new row after 'Add my time' — the row creation is asynchronous and may not be immediately visible.
     /// </summary>
     [Then(@"a new row appears in the grid containing my name")]
     public void ThenANewRowAppearsInTheGridContainingMyName()
@@ -405,22 +407,38 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
         var expectedName = string.Join(" ", localPart.Split('.')
             .Select(p => char.ToUpper(p[0]) + p.Substring(1)));
 
-        var grid = GetTimeRecordingGrid();
-        var inspectorColIndex = GetTimeRecordingColumnIndex(grid, "Inspector");
+        IWebElement matchingCell = null;
 
-        var inspectorCells = grid.FindElements(
-            By.XPath($".//div[@role='row'][@aria-label='Data']//div[@role='gridcell'][@aria-colindex='{inspectorColIndex}']//span[@role='presentation']"));
+        Policy
+            .Handle<Exception>()
+            .OrResult<IWebElement>(cell => cell == null)
+            .WaitAndRetry(6, retryAttempt =>
+            {
+                // Refresh the Time Recording subgrid between attempts to force the grid
+                // to reload from the server — the new row may not yet be rendered after
+                // 'Add my time' triggers an async record creation.
+                var (_, subGridName) = GetTimeRecordingGridWithName();
+                XrmApp.Entity.SubGrid.ClickCommand(subGridName, "Refresh");
+                Driver.WaitForTransaction();
 
-        inspectorCells.Should().NotBeEmpty(
-            "Expected at least one row in the Time Recording grid after clicking Add my time.");
+                return TimeSpan.FromSeconds(5);
+            })
+            .Execute(() =>
+            {
+                var grid = GetTimeRecordingGrid();
+                var inspectorColIndex = GetTimeRecordingColumnIndex(grid, "Inspector");
 
-        var matchingCell = inspectorCells.FirstOrDefault(
-            cell => cell.Text.Trim().Equals(expectedName, StringComparison.OrdinalIgnoreCase));
+                var inspectorCells = grid.FindElements(
+                    By.XPath($".//div[@role='row'][@aria-label='Data']//div[@role='gridcell'][@aria-colindex='{inspectorColIndex}']//span[@role='presentation']"));
+
+                return matchingCell = inspectorCells.FirstOrDefault(
+                    cell => cell.Text.Trim().Equals(expectedName, StringComparison.OrdinalIgnoreCase));
+            });
 
         matchingCell.Should().NotBeNull(
-            $"Expected to find a row with Inspector '{expectedName}' in the Time Recording grid but no matching row was found. " +
-            $"Found inspectors: [{string.Join(", ", inspectorCells.Select(c => $"'{c.Text.Trim()}'"))}].");
-    }   
+            $"Expected to find a row with Inspector '{expectedName}' in the Time Recording grid after retrying " +
+            $"but no matching row was found.");
+    }
 
     /// <summary>
     /// Enters a value into a named column cell for the current user's row in the Time Recording subgrid

@@ -28,6 +28,16 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtRiskDecisionPHSIValue => _driver.FindElement(By.XPath("//*[normalize-space()='Risk decision PHSI']/following-sibling::dd/strong"));
         private IWebElement txtRiskDecisionHMIValue => _driver.FindElement(By.XPath("//*[normalize-space()='Risk decision HMI']/following-sibling::dd/strong"));
         private IWebElement txtDocumentCheckValue => _driver.FindElement(By.XPath("//*[normalize-space()='Document check']/following-sibling::dd/strong"));
+        private IWebElement lblStatusLabel => _driver.FindElement(By.Id("Status-Label"));
+        private IWebElement lblReferenceNumber => _driver.FindElement(By.Id("reference-number"));
+        private IWebElement lblChecksCount => _driver.FindElement(By.XPath("//h2[contains(@class,'text-align-right')]"));
+
+        private IReadOnlyCollection<IWebElement> allCheckDecisionTags =>
+            _driver.FindElements(By.XPath(
+                "//dt[normalize-space()='Document check' or " +
+                "normalize-space()='Identity check' or " +
+                "normalize-space()='Physical check']" +
+                "/following-sibling::dd/strong"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -145,6 +155,30 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickRecordControl()
         {
             btnRecordControl.Click();
+        }
+
+        public bool VerifyNotificationStatus(string expectedStatus, string chedReference)
+        {
+            return lblReferenceNumber.Text.Trim().Equals(chedReference, StringComparison.OrdinalIgnoreCase)
+                   && lblStatusLabel.Text.Trim().Equals(expectedStatus, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public bool VerifyChecksCount(int shown, int total)
+        {
+            var expectedCount = $"{shown} of {total}";
+            return lblChecksCount.Text.Trim()
+                .Equals(expectedCount, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public (bool AllMatch, int Total, List<string> NonMatchingValues) VerifyAllCheckDecisions(params string[] acceptedDecisions)
+        {
+            var checkTags = allCheckDecisionTags;
+            var nonMatching = checkTags
+                .Select(tag => tag.Text.Trim())
+                .Where(text => !acceptedDecisions.Any(d => d.Equals(text, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
+
+            return (checkTags.Count > 0 && nonMatching.Count == 0, checkTags.Count, nonMatching);
         }
     }
 }

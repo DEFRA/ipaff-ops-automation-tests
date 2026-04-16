@@ -8,5 +8,7 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void BTMSSignOut();
         bool VerifySignedOutPage();
         void CloseBrowser();
+        bool VerifyInspectorSignedOutPage();
+        void CloseCurrentTab();
     }
 }

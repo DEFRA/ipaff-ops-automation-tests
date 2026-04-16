@@ -21,5 +21,8 @@
         bool VerifyShowChedButton();
         bool VerifyTab(string tabName);
         void ClickRecordControlButton();
+        bool VerifyNotificationStatus(string expectedStatus, string chedReference);
+        bool VerifyChecksCount(int shown, int total);
+        (bool AllMatch, int Total, List<string> NonMatchingValues) VerifyAllCheckDecisions(params string[] acceptedDecisions);
     }
 }

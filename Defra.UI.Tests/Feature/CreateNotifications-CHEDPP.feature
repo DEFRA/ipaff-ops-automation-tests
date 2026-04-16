@@ -1345,11 +1345,11 @@ Scenario: SPS-9104
 	Then the user can see the Decision Hub for the notification created in IPAFFS
 	And the user can see 2 hypertext links 'Record PHSI checks' 'Record HMI checks'
 	When the user clicks Save and set as in progress
-	Then the notification status should change from 'NEW' to 'IN PROGRESS'
-	And the 'Record HMI checks' status is 'TO DO'
+	Then the notification status should change from 'New' to 'In progress'
+	And the 'Record HMI checks' status is 'To do'
 	When the user clicks on the Record checks link 'Record HMI checks'
 	Then the Record HMI checks page should be displayed
-	And the Commodities HMI check status should be 'TO DO'
+	And the Commodities HMI check status should be 'To do'
 	When the user sets the Commodities status to 'Compliant'
 	And the Validity period is 7 days
 	And the user clicks Save and return to work order
@@ -1359,8 +1359,8 @@ Scenario: SPS-9104
 	When I click IPAFFS from the header ribbon
 	And I switch to the IPAFFS tab
 	Then the user can see the Decision Hub for the notification created in IPAFFS
-	And the 'Record HMI checks' status is 'COMPLETED'
-	And the 'Record PHSI checks' status is 'IN PROGRESS'
+	And the 'Record HMI checks' status is 'Completed'
+	And the 'Record PHSI checks' status is 'In progress'
 	When the user clicks on the Record checks link 'Record PHSI checks'
 	Then the Select which checks to record page should be displayed
 	And there are 'documentary checks' still to do
@@ -1373,3 +1373,16 @@ Scenario: SPS-9104
 	Then the Your checks have been submitted page is displayed
 	When the user clicks Return to Decision hub
 	Then the CHED overview page should be displayed
+	And the notification status is 'Valid' for the notification created in IPAFFS
+	When the user switches to 'Checks' tab in CHED Overview page
+	Then all the checks are 'Compliant' or 'Auto cleared' showing 10 of 500
+	When the user logs out of IPAFFS Part 2
+	Then the Inspector is logged out of IPAFFS successfully
+	When the user closes the IPAFFS tab
+	And I switch back to the Dynamics tab
+	Then I verify the Work Order page is displayed for the notification created in IPAFFS
+	When I click on 'Import Notifications' under the 'Imports' area
+	Then the 'Active Import Notifications' view is displayed
+	When I search Import Notifications for the notification created in IPAFFS
+	#Then the notification created in IPAFFS should not be returned
+	#Then the notification created in IPAFFS should be returned

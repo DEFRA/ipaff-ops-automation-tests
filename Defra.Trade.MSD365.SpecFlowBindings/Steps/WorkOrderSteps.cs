@@ -837,7 +837,7 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
 
         return total;
     }
-    
+
     private void SortCommodityLinesByEppoCodeAscending()
     {
         var eppoColumnHeaderButton = Driver.WaitUntilAvailable(
@@ -851,7 +851,7 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
             By.XPath("//button[@name='Sort A to Z' and @role='menuitemradio']"),
             "Sort A to Z menu item could not be found.");
 
-        sortAtoZMenuItem.Click();
+        Driver.ExecuteScript("arguments[0].click();", sortAtoZMenuItem);
         Driver.WaitForTransaction();
     }
 

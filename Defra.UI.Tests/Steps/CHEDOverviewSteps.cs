@@ -137,5 +137,36 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             chedOverviewPage?.ClickRecordControl();
         }
+
+        [Then("the notification status is {string} for the notification created in IPAFFS")]
+        public void ThenTheNotificationStatusIsForTheNotificationCreatedInIPAFFS(string expectedStatus)
+        {
+            var chedReference = _scenarioContext.ContainsKey("CHEDReference")
+                ? _scenarioContext.Get<string>("CHEDReference")
+                : null;
+
+            Assert.That(chedReference, Is.Not.Null.And.Not.Empty,
+                "CHEDReference was not found in scenario context — ensure the CHED reference was recorded earlier in the scenario.");
+
+            Assert.True(
+                chedOverviewPage?.VerifyNotificationStatus(expectedStatus, chedReference),
+                $"Expected CHED Overview status to be '{expectedStatus}' for reference '{chedReference}'.");
+        }
+
+        [Then("all the checks are {string} or {string} showing {int} of {int}")]
+        public void ThenAllTheChecksAreOrShowingCount(string expectedDecision, string alternateDecision, int shown, int total)
+        {
+            Assert.True(
+                chedOverviewPage?.VerifyChecksCount(shown, total),
+                $"Expected the checks count to show '{shown} of {total}' but a different count was displayed.");
+
+            var result = chedOverviewPage?.VerifyAllCheckDecisions(expectedDecision, alternateDecision);
+
+            Assert.True(
+                result?.AllMatch,
+                $"Expected all {result?.Total} check decision tags to be '{expectedDecision}' or '{alternateDecision}' " +
+                $"but {result?.NonMatchingValues.Count} were not. " +
+                $"Non-matching values: [{string.Join(", ", result?.NonMatchingValues.Select(v => $"'{v}'") ?? [])}].");
+        }
     }
 }
