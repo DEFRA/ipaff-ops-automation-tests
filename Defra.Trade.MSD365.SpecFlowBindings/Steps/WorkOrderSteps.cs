@@ -998,29 +998,26 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
         }
         else
         {
-            // For the Wijmo cc-grid, Selenium IWebElement references become stale between
-            // FindElement and dispatchEvent because Wijmo virtualises rows — the same DOM node
-            // gets reassigned to the first visible row (HMI) before the dispatch fires.
-            //
-            // Searching and dispatching atomically in a single JS call eliminates the stale
-            // reference window entirely and guarantees the correct row is opened.
-            const string findAndDispatchScript = @"
-                var authority = arguments[0].toLowerCase();
-                var rows = document.querySelectorAll('div[role=""row""][aria-label=""Data""]');
-                for (var i = 0; i < rows.length; i++) {
-                    var cell = rows[i].querySelector('div[role=""gridcell""][aria-colindex=""11""] span[role=""presentation""]');
-                    if (cell && cell.textContent.trim().toLowerCase() === authority) {
-                        var gridCell = cell.closest('div[role=""gridcell""]') || cell.parentElement;
-                        gridCell.dispatchEvent(new MouseEvent('dblclick', { bubbles: true, cancelable: true, view: window }));
-                        return true;
-                    }
-                }
-                return false;";
+            // For the Wijmo cc-grid, use Selenium's Actions to perform a genuine double-click
+            // on the matching regulatory authority cell. This avoids all synthetic event
+            // coordinate issues and lets the browser handle the interaction natively.
+            var grid = Driver.WaitUntilAvailable(
+                By.XPath("//div[@role='grid'][contains(@aria-label,'Import Commodity Lines')]"),
+                "Commodity Lines grid could not be found.");
 
-            var found = (bool)(Driver.ExecuteScript(findAndDispatchScript, regulatoryAuthority.ToLower()) ?? false);
+            var matchingCell = grid.FindElements(
+                By.XPath(".//div[@role='row'][@aria-label='Data']" +
+                         $"//div[@role='gridcell'][@aria-colindex='11']" +
+                         $"[.//span[@role='presentation']]"))
+                .FirstOrDefault(cell =>
+                    cell.FindElement(By.XPath(".//span[@role='presentation']"))
+                        .Text.Trim()
+                        .Equals(regulatoryAuthority, StringComparison.OrdinalIgnoreCase));
 
-            found.Should().BeTrue(
+            matchingCell.Should().NotBeNull(
                 $"No Commodity Line with Regulatory Authority '{regulatoryAuthority}' could be found on the current page.");
+
+            new Actions(Driver).DoubleClick(matchingCell).Perform();
         }
 
         Driver.WaitForTransaction();

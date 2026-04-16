@@ -13,6 +13,7 @@ using Microsoft.Dynamics365.UIAutomation.Browser;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using OpenQA.Selenium;
+using Polly;
 using Reqnroll;
 using System;
 using System.Linq;
@@ -69,8 +70,7 @@ public class InspectionResultSteps : PowerAppsStepDefiner
     /// <summary>
     /// Verifies that the specified check's Status field contains one of two expected values.
     /// Each status is a readonly input with aria-label matching '{checkName} Status'.
-    /// Exception: 'HMI Doc Check' maps to 'HMI Check Status' — the HMI section has a single
-    /// status field regardless of check sub-type.
+    /// PHSI checks live in the 'PHSI Inspection Results' section; all others live in 'HMI Inspection Results'.
     /// </summary>
     /// <param name="checkName">The check name parameter from Gherkin e.g. 'PHSI Doc Check'.</param>
     /// <param name="expectedValue">The primary expected status value e.g. 'Compliant'.</param>
@@ -82,28 +82,72 @@ public class InspectionResultSteps : PowerAppsStepDefiner
 
         var ariaLabel = $"{checkName} Status";
 
-        // The status field renders before the async data binding populates its value.
-        // Poll until the value is non-empty, then assert — avoids a false empty-string failure.
+        // Derive the containing section from the check name prefix.
+        // PHSI checks live in 'PHSI Inspection Results'; everything else is HMI.
+        var sectionName = checkName.StartsWith("PHSI", StringComparison.OrdinalIgnoreCase)
+            ? "PHSI Inspection Results"
+            : "HMI Inspection Results";
+
+        // Re-find both the section and the input on every attempt.
+        // WaitUntil captures the section element once and reuses it, which causes
+        // StaleElementReferenceException when Dynamics replaces PCF DOM nodes during
+        // async rendering — WaitUntil silently swallows this as false and times out.
+        // Polly retries the entire lookup so staleness is never an issue.
         string actualValue = null;
+        string debugSectionFound = "not attempted";
+        string debugInputFound = "not attempted";
+        string debugInputValue = "not attempted";
 
-        Driver.WaitUntil(
-            _ =>
-            {
-                var statusInput = Driver.FindElements(
-                    By.XPath($"//input[@aria-label='{ariaLabel}']"))
-                    .FirstOrDefault();
+        var populated = Policy
+    .Handle<Exception>()
+    .OrResult<bool>(result => !result)
+    .WaitAndRetry(
+        retryCount: 12,
+        sleepDurationProvider: _ => TimeSpan.FromSeconds(5),
+        onRetry: (outcome, delay, attempt, _) =>
+        {
+            var reason = outcome.Exception != null
+                ? $"exception: {outcome.Exception.GetType().Name} — {outcome.Exception.Message}"
+                : $"value was '{debugInputValue}'";
 
-                if (statusInput == null)
-                {
-                    return false;
-                }
+            Console.WriteLine(
+                $"[ThenTheCheckStatusIsCompliantOrAutoCleared] Attempt {attempt}/12: " +
+                $"section='{debugSectionFound}', input='{debugInputFound}', {reason}. " +
+                $"Retrying in {delay.TotalSeconds}s...");
+        })
+    .Execute(() =>
+    {
+        Driver.WaitForTransaction();
 
-                actualValue = statusInput.GetAttribute("value")?.Trim() ?? string.Empty;
-                return !string.IsNullOrEmpty(actualValue);
-            },
-            TimeSpan.FromSeconds(30),
-            () => throw new InvalidOperationException(
-                $"'{ariaLabel}' field did not populate within 30 seconds on the Inspection Result form."));
+        var sections = Driver.FindElements(By.XPath($"//section[@aria-label='{sectionName}']"));
+        debugSectionFound = sections.Count > 0 ? $"found ({sections.Count})" : "NOT FOUND";
+
+        if (sections.Count == 0)
+        {
+            return false;
+        }
+
+        var section = sections[0];
+
+        var inputs = section.FindElements(By.XPath($".//input[@aria-label='{ariaLabel}']"));
+        debugInputFound = inputs.Count > 0 ? $"found ({inputs.Count})" : "NOT FOUND";
+
+        if (inputs.Count == 0)
+        {
+            return false;
+        }
+
+        debugInputValue = inputs[0].GetAttribute("value")?.Trim() ?? string.Empty;
+        actualValue = debugInputValue;
+
+        return !string.IsNullOrEmpty(actualValue);
+    });
+
+        populated.Should().BeTrue(
+            $"'{ariaLabel}' field did not populate within 60 seconds on the Inspection Result form. " +
+            $"Last debug state — section '{sectionName}': {debugSectionFound}, " +
+            $"input '{ariaLabel}': {debugInputFound}, " +
+            $"last value read: '{debugInputValue}'.");
 
         actualValue.Should().BeOneOf(
             [expectedValue, alternateValue],

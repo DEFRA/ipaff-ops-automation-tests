@@ -1406,7 +1406,7 @@ Scenario: SPS-9104
 	And the 'PHSI Physical Check' Status is 'Compliant' or 'Auto cleared'
 	And the 'HMI Inspection Results' section is blank
 	When I click the Back button in the command bar
-	Then I verify the Work Order page is displayed for the notification created in IPAFFS
+	Then I verify the Import Notification page is displayed for the notification created in IPAFFS
 	And the 'Commodity Lines' tab is displayed and selected
 	When I sort Commodity Lines by Regulatory Authority
 	And I double click on a Commodity Line with Regulatory Authority set to 'HMI'
@@ -1416,7 +1416,7 @@ Scenario: SPS-9104
 	And the 'PHSI Inspection Results' section is blank
 	And the 'HMI Check' Status is 'Compliant' or 'Auto cleared'
 	When I click the Back button in the command bar
-	Then I verify the Work Order page is displayed for the notification created in IPAFFS
+	Then I verify the Import Notification page is displayed for the notification created in IPAFFS
 	And the 'Commodity Lines' tab is displayed and selected
 	When I sort Commodity Lines by Regulatory Authority
 	And I double click on a Commodity Line with Regulatory Authority set to 'Joint'
@@ -1426,17 +1426,15 @@ Scenario: SPS-9104
 	And the 'PHSI Doc Check' Status is 'Compliant' or 'Auto cleared'
 	And the 'PHSI Identity Check' Status is 'Compliant' or 'Auto cleared'
 	And the 'PHSI Physical Check' Status is 'Compliant' or 'Auto cleared'
-	And the 'HMI Doc Check' Status is 'Compliant' or 'Auto cleared'
+	And the 'HMI Check' Status is 'Compliant' or 'Auto cleared'
 	When I click the Back button in the command bar
-	Then I verify the Work Order page is displayed for the notification created in IPAFFS
+	Then I verify the Import Notification page is displayed for the notification created in IPAFFS
 	And the 'Commodity Lines' tab is displayed and selected
 	When I select the 'Summary' tab
 	Then the 'Summary' tab is displayed and selected
 	When I click the reference number in the Work Order field for the notification created in IPAFFS
 	Then I verify the Work Order page is displayed for the notification created in IPAFFS
 	And the 'Import' tab is displayed and selected
-
-
 	#When I click the Charges command from the Related dropdown
 	#Then the 'Charges' tab is displayed and selected
 	#And I check that the Charges tab shows 'Charge Associated View'
