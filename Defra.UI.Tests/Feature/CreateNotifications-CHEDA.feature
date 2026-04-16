@@ -125,10 +125,10 @@ Scenario: User creates and submits a B2C consignment notification - CHEDA Happy 
 	When I have provided the IPAFF Heathrow Inspector credentials and signin
 	Then the user should be logged into Import notifications page
 	When the user searches for the newly created notification on the Import notifications page
-	Then the user clicks the notification found with status 'NEW'
+	Then the user clicks the notification found with status 'New'
 	And the Decision Hub page should be displayed
 	When the user clicks Save and set as in progress
-	Then the notification status should change from 'NEW' to 'IN PROGRESS'
+	Then the notification status should change from 'New' to 'In progress'
 	When the user clicks Local reference number link in Record checks
 	Then Local reference number page should be displayed
 	When the user enters a local reference number and clicks Save and continue
@@ -291,10 +291,10 @@ Scenario: User creates and submits a CHEDA consignment notification with multipl
 	When I have provided the IPAFF Heathrow Inspector credentials and signin
 	Then the user should be logged into Import notifications page
 	When the user searches for the newly created notification on the Import notifications page
-	Then the user clicks the notification found with status 'NEW'
+	Then the user clicks the notification found with status 'New'
 	And the Decision Hub page should be displayed
 	When the user clicks Save and set as in progress
-	Then the notification status should change from 'NEW' to 'IN PROGRESS'
+	Then the notification status should change from 'New' to 'In progress'
 	When the user clicks Local reference number link in Record checks
 	Then Local reference number page should be displayed
 	When the user enters a local reference number and clicks Save and continue
@@ -500,10 +500,10 @@ Scenario: User creates and submits a CHEDA consignment notification for Temporar
 	When I have provided the IPAFF Heathrow Inspector credentials and signin
 	Then the user should be logged into Import notifications page
 	When the user searches for the newly created notification on the Import notifications page
-	Then the user clicks the notification found with status 'NEW'
+	Then the user clicks the notification found with status 'New'
 	And the Decision Hub page should be displayed
 	When the user clicks Save and set as in progress
-	Then the notification status should change from 'NEW' to 'IN PROGRESS'
+	Then the notification status should change from 'New' to 'In progress'
 	When the user clicks Local reference number link in Record checks
 	Then Local reference number page should be displayed
 	When the user enters a local reference number and clicks Save and continue
@@ -714,10 +714,10 @@ Scenario: User creates and submits a CHEDA consignment notification with Transit
 	When I have provided the IPAFF Heathrow Inspector credentials and signin
 	Then the user should be logged into Import notifications page
 	When the user searches for the newly created notification on the Import notifications page
-	Then the user clicks the notification found with status 'NEW'
+	Then the user clicks the notification found with status 'New'
 	And the Decision Hub page should be displayed
 	When the user clicks Save and set as in progress
-	Then the notification status should change from 'NEW' to 'IN PROGRESS'
+	Then the notification status should change from 'New' to 'In progress'
 	When the user clicks Local reference number link in Record checks
 	Then Local reference number page should be displayed
 	When the user enters a local reference number and clicks Save and continue
@@ -867,7 +867,7 @@ Scenario: User creates and submits a CHEDA consignment notification with inspect
 	When the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
-	And the notification returned in the search has the status 'NEW'
+	And the notification returned in the search has the status 'New'
 	And the Amend link should be available for the notification
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
@@ -879,10 +879,10 @@ Scenario: User creates and submits a CHEDA consignment notification with inspect
 	When I have provided the IPAFF Heathrow Inspector credentials and signin
 	Then the user should be logged into Import notifications page
 	When the user searches for the newly created notification on the Import notifications page
-	Then the user clicks the notification found with status 'NEW'
+	Then the user clicks the notification found with status 'New'
 	And the Decision Hub page should be displayed
 	When the user clicks Save and set as in progress
-	Then the notification status should change from 'NEW' to 'IN PROGRESS'
+	Then the notification status should change from 'New' to 'In progress'
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
 	When I navigate to the IPAFF application
@@ -908,7 +908,7 @@ Scenario: User creates and submits a CHEDA consignment notification with inspect
 	When I have provided the IPAFF Heathrow Inspector credentials and signin
 	Then the user should be logged into Import notifications page
 	When the user searches for the newly created notification on the Import notifications page
-	Then the user clicks the notification found with status 'IN PROGRESS'
+	Then the user clicks the notification found with status 'In progress'
 	And the Decision Hub page should be displayed
 	When the user clicks Local reference number link in Record checks
 	Then Local reference number page should be displayed
@@ -1040,7 +1040,7 @@ Scenario: User creates and submits a CHEDA consignment notification with inspect
 	Then the user should be logged into Notification page
 	When user searches for the import notification
 	Then the notification should be present in the list
-	And the notification returned in the search has the status 'VALID'
+	And the notification returned in the search has the status 'Valid'
 	And the Amend link should not be available for the notification
 	When the user clicks View details for the notification
 	Then the Review your notification page should be displayed
@@ -1199,7 +1199,7 @@ Scenario: User adds addresses to address book and amends a CHEDA notification to
 	Then the dashboard page should be displayed
 	When the user searches for the import notification
 	Then the notification should be present in the list
-	And the notification returned in the search has the status 'NEW'
+	And the notification returned in the search has the status 'New'
 	And the Amend link should be available for the notification
 	When the user clicks Amend
 	Then the Notification Hub page should be displayed
@@ -1366,7 +1366,7 @@ Scenario: User creates and amends a CHEDA notification, inspector requests amend
 	Then the dashboard page should be displayed
 	When user searches for the import notification
 	Then the notification should be present in the list
-	And the notification returned in the search has the status 'NEW'
+	And the notification returned in the search has the status 'New'
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
 	When the user checks that the data in the certificate matches the data entered into the notification
@@ -1455,10 +1455,10 @@ Scenario: User creates and amends a CHEDA notification, inspector requests amend
 	When I have provided the IPAFF Heathrow Inspector credentials and signin
 	Then the user should be logged into Import notifications page
 	When the user searches for the newly created notification on the Import notifications page
-	Then the user clicks the notification found with status 'NEW'
+	Then the user clicks the notification found with status 'New'
 	And the Decision Hub page should be displayed
 	When the user clicks Save and set as in progress
-	Then the notification status should change from 'NEW' to 'IN PROGRESS'
+	Then the notification status should change from 'New' to 'In progress'
 	When the user clicks View notification of consignment
 	Then the Notification overview page should be displayed
 	When the user clicks Request amendment
@@ -1478,7 +1478,7 @@ Scenario: User creates and amends a CHEDA notification, inspector requests amend
 	Then the user should be logged into Notification page
 	When user searches for the import notification
 	Then the notification should be present in the list
-	And the notification returned in the search has the status 'AMEND'
+	And the notification returned in the search has the status 'Amend'
 	When the user clicks Amend
 	Then the Notification Hub page should be displayed
 	When the user clicks on 'Origin of the import' link
@@ -1512,11 +1512,11 @@ Scenario: User creates and amends a CHEDA notification, inspector requests amend
 	When I have provided the IPAFF Heathrow Inspector credentials and signin
 	Then the user should be logged into Import notifications page
 	When the user searches for the newly created notification on the Import notifications page
-	Then the user clicks the notification found with status 'NEW'
+	Then the user clicks the notification found with status 'New'
 	And the Decision Hub page should be displayed
-	And the notification status should change from 'AMEND' to 'NEW'
+	And the notification status should change from 'Amend' to 'New'
 	When the user clicks Save and set as in progress
-	Then the notification status should change from 'NEW' to 'IN PROGRESS'
+	Then the notification status should change from 'New' to 'In progress'
 	When the user clicks Local reference number link in Record checks
 	Then Local reference number page should be displayed
 	When the user enters a local reference number and clicks Save and continue
@@ -1623,7 +1623,7 @@ Scenario: User creates and amends a CHEDA notification, inspector requests amend
 	When the user clicks return to your dashboard link in decision submitted page
 	Then the Import notifications dashboard page should be displayed
 	When the user searches for the newly created notification on the Import notifications page
-	Then the notification returned in the search has the status 'VALID' on the Import notifications page
+	Then the notification returned in the search has the status 'Valid' on the Import notifications page
 
 Scenario: User creates and submits a CHEDA notification, copies it as new and verifies copied values - SPS-7389
 	Given that I navigate to the IPAFF application
@@ -1814,7 +1814,7 @@ Scenario: User creates and submits a CHEDA notification, copies it as new and ve
 	When the user enters the CPH number 'NEW/345/6789/0001'
 	And the user clicks on Save and return to hub
 	Then the Notification Hub page should be displayed
-	And the 'Transport contacts' task should have the status 'TO DO'
+	And the 'Transport contacts' task should have the status 'To do'
 	When the user clicks on 'Transport contacts' link
 	Then the Transport Contacts page should be displayed
 	And the Should we notify any transport contacts about inspections? should not be copied from the original notification
@@ -1966,10 +1966,10 @@ Scenario: User creates and submits a CHEDA notification with laboratory tests ch
 	When I have provided the IPAFF Heathrow Inspector credentials and signin
 	Then the user should be logged into Import notifications page
 	When the user searches for the newly created notification on the Import notifications page
-	Then the user clicks the notification found with status 'NEW'
+	Then the user clicks the notification found with status 'New'
 	And the Decision Hub page should be displayed
 	When the user clicks Save and set as in progress
-	Then the notification status should change from 'NEW' to 'IN PROGRESS'
+	Then the notification status should change from 'New' to 'In progress'
 	When the user clicks Local reference number link in Record checks
 	Then Local reference number page should be displayed
 	When the user clicks Save and continue without entering the local reference number data
@@ -2329,7 +2329,7 @@ Scenario: User creates and submits a notification, override the risk decision, r
 	Then the dashboard page should be displayed
 	When user searches for the import notification
 	Then the notification should be present in the list
-	And the notification returned in the search has the status 'NEW'
+	And the notification returned in the search has the status 'New'
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
 	When the user checks that the data in the certificate matches the data entered into the notification
@@ -2345,10 +2345,10 @@ Scenario: User creates and submits a notification, override the risk decision, r
 	When I have provided the IPAFF Heathrow Inspector credentials and signin
 	Then the user should be logged into Import notifications page
 	When the user searches for the newly created notification on the Import notifications page
-	Then the user clicks the notification found with status 'NEW'
+	Then the user clicks the notification found with status 'New'
 	And the Decision Hub page should be displayed
 	When the user clicks Save and set as in progress
-	Then the notification status should change from 'NEW' to 'IN PROGRESS'
+	Then the notification status should change from 'New' to 'In progress'
 	When the user clicks Local reference number link in Record checks
 	Then Local reference number page should be displayed
 	When the user enters a local reference number and clicks Save and continue
@@ -2429,7 +2429,7 @@ Scenario: User creates and submits a notification, override the risk decision, r
 	Then the Consignments requiring control page should be displayed
 	When the user searches for the CHED number
 	Then the notification should be found with the status "Rejected"
-	And the user verifies the control status is "CONTROL REQUIRED"
+	And the user verifies the control status is "Control required"
 	When the user clicks on the CHED reference number link
 	Then the CHED overview page should be displayed
 	When the user clicks on Record control button

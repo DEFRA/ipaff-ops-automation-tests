@@ -45,12 +45,13 @@ namespace Defra.UI.Tests.Pages.Classes
             txtCHEDRefInput.Clear();
             txtCHEDRefInput.SendKeys(chedRef);
             btnSearch.Click();
+            _driver.WaitForAjax(); 
         }
 
         public void VerifyNotificationStatusAndClick(string chedRef, string status)
         {
             if (lnkChedRefNumSearcResult.Text.Trim().Contains(chedRef)
-                && lnkChedStatusSearcResult.Text.Trim().Equals(status))
+                && lnkChedStatusSearcResult.Text.Trim().Equals(status, StringComparison.OrdinalIgnoreCase))
             {
                 lnkChedRefNumSearcResult.Click();
             }

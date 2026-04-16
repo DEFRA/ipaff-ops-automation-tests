@@ -3535,7 +3535,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	When the user clicks Return to dashboard button
 	Then the Intensified Official Controls dashboard should be displayed
 	When the user locates the intensified official control just created
-	Then the status of the intensified official control should be 'ACTIVE'
+	Then the status of the intensified official control should be 'Active'
 # IPAFFS part 1
 # 1 of 8
 	Given that I navigate to the IPAFF application
@@ -4388,7 +4388,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	When the user searches for notification 1 on the Import notifications page
 	Then the Decision Hub page should be displayed
 	When the user clicks Save and set as in progress
-	Then the notification status should change from "NEW" to "IN PROGRESS"
+	Then the notification status should change from "New" to "In progress"
 	When the user clicks Local reference number link in Record checks
 	Then Local reference number page should be displayed
 	When the user clicks Save and continue
@@ -4452,7 +4452,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	When the user searches for notification 2 on the Import notifications page
 	Then the Decision Hub page should be displayed
 	When the user clicks Save and set as in progress
-	Then the notification status should change from "NEW" to "IN PROGRESS"
+	Then the notification status should change from "New" to "In progress"
 	When the user clicks Local reference number link in Record checks
 	Then Local reference number page should be displayed
 	When the user clicks Save and continue
@@ -4516,7 +4516,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	When the user searches for notification 3 on the Import notifications page
 	Then the Decision Hub page should be displayed
 	When the user clicks Save and set as in progress
-	Then the notification status should change from "NEW" to "IN PROGRESS"
+	Then the notification status should change from "New" to "In progress"
 	When the user clicks Local reference number link in Record checks
 	Then Local reference number page should be displayed
 	When the user clicks Save and continue
@@ -4580,7 +4580,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	When the user searches for notification 4 on the Import notifications page
 	Then the Decision Hub page should be displayed
 	When the user clicks Save and set as in progress
-	Then the notification status should change from "NEW" to "IN PROGRESS"
+	Then the notification status should change from "New" to "In progress"
 	When the user clicks Local reference number link in Record checks
 	Then Local reference number page should be displayed
 	When the user clicks Save and continue
@@ -4644,7 +4644,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	When the user searches for notification 5 on the Import notifications page
 	Then the Decision Hub page should be displayed
 	When the user clicks Save and set as in progress
-	Then the notification status should change from "NEW" to "IN PROGRESS"
+	Then the notification status should change from "New" to "In progress"
 	When the user clicks Local reference number link in Record checks
 	Then Local reference number page should be displayed
 	When the user clicks Save and continue
@@ -4684,7 +4684,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	When the user searches for notification 6 on the Import notifications page
 	Then the Decision Hub page should be displayed
 	When the user clicks Save and set as in progress
-	Then the notification status should change from "NEW" to "IN PROGRESS"
+	Then the notification status should change from "New" to "In progress"
 	When the user clicks Local reference number link in Record checks
 	Then Local reference number page should be displayed
 	When the user clicks Save and continue
@@ -4724,7 +4724,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	When the user searches for notification 7 on the Import notifications page
 	Then the Decision Hub page should be displayed
 	When the user clicks Save and set as in progress
-	Then the notification status should change from "NEW" to "IN PROGRESS"
+	Then the notification status should change from "New" to "In progress"
 	When the user clicks Local reference number link in Record checks
 	Then Local reference number page should be displayed
 	When the user clicks Save and continue
@@ -4777,7 +4777,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	When the user searches for notification 8 on the Import notifications page
 	Then the Decision Hub page should be displayed
 	When the user clicks Save and set as in progress
-	Then the notification status should change from "NEW" to "IN PROGRESS"
+	Then the notification status should change from "New" to "In progress"
 	When the user clicks Local reference number link in Record checks
 	Then Local reference number page should be displayed
 	When the user clicks Save and continue

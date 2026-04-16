@@ -64,7 +64,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool VerifyStatusUpdate(string stausNew, string statusInProgress)
         {
-            return txtUpdatedStatus.Text.Trim().Equals(statusInProgress);
+            return txtUpdatedStatus.Text.Trim().Equals(statusInProgress, StringComparison.OrdinalIgnoreCase);
         }
 
         public void ClickLocalRefNumLink()
