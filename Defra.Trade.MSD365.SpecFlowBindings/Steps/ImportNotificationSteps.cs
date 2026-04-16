@@ -67,11 +67,27 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
             $"Expected view to be '{expectedViewName}' but found '{actualViewName}'");
     }
 
+    /// <summary>
+    /// Switches the Import Notifications grid to the specified view.
+    /// Uses XrmApp.Grid.SwitchView which clicks the ViewSelector button and selects
+    /// the matching view by name from the dropdown — consistent with GridSteps.WhenISwitchToTheViewInTheGrid.
+    /// </summary>
+    /// <param name="viewName">The name of the view to switch to e.g. 'Inactive Import Notifications'.</param>
+    [When(@"I change the Import Notifications view to '(.*)'")]
+    public void WhenIChangeTheImportNotificationsViewTo(string viewName)
+    {
+        Driver.WaitForTransaction();
+
+        XrmApp.Grid.SwitchView(viewName);
+
+        Driver.WaitForTransaction();
+    }
+
     [When("I search Import Notifications for the notification created in IPAFFS")]
     [When("I search Importer Notifications for the notification created in IPAFFS")]
     public void WhenISearchImporterNotificationsForTheNotificationCreatedInIPAFFS()
     {
-        //scenarioContext["CHEDReference"] = "CHEDPP.GB.2026.1067538";
+        scenarioContext["CHEDReference"] = "CHEDPP.GB.2026.1067538";
         var chedReference = scenarioContext.Get<string>("CHEDReference");
         XrmApp.Grid.Search(chedReference);
         Driver.WaitForTransaction();
@@ -94,6 +110,47 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
 
         actualChedReference.Should().Be(expectedChedReference,
             $"Expected CHED reference '{expectedChedReference}' but found '{actualChedReference}'.");
+    }
+
+    /// <summary>
+    /// Verifies that the notification created in IPAFFS is no longer returned in the search results.
+    /// If the record is still present, repeats the search every 30 seconds for up to 10 minutes —
+    /// there is a processing delay in Dynamics after IPAFFS checks are completed before the record
+    /// is removed from the Active Import Notifications view.
+    /// </summary>
+    [Then("the notification created in IPAFFS should not be returned")]
+    public void ThenTheNotificationCreatedInIPAFFSShouldNotBeReturned()
+    {
+        var expectedChedReference = scenarioContext.Get<string>("CHEDReference");
+
+        Policy
+            .Handle<Exception>()
+            .OrResult<int>(count => count > 0)
+            .WaitAndRetry(20, retryAttempt =>
+            {
+                // Re-search on each retry to refresh the grid with the latest Dynamics data.
+                XrmApp.Grid.Search(expectedChedReference);
+                Driver.WaitForTransaction();
+
+                return TimeSpan.FromSeconds(30);
+            })
+            .Execute(() =>
+            {
+                Driver.WaitForTransaction();
+
+                return Driver.FindElements(
+                    By.XPath("//div[@class='ag-center-cols-container']//div[@role='row']")).Count;
+            });
+
+        // Final assertion after retries are exhausted — produces a clear failure message if still present.
+        Driver.WaitForTransaction();
+
+        var remainingRows = Driver.FindElements(
+            By.XPath("//div[@class='ag-center-cols-container']//div[@role='row']"));
+
+        remainingRows.Should().BeEmpty(
+            $"Expected CHED reference '{expectedChedReference}' to no longer appear in the Active Import Notifications " +
+            $"view after waiting up to 10 minutes, but {remainingRows.Count} row(s) were still returned.");
     }
 
     [Then("I verify the Import Notification page is displayed for the notification created in IPAFFS")]
@@ -121,6 +178,51 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
 
         actualChedReference.Should().Be(expectedChedReference,
             $"Expected CHED reference header to be '{expectedChedReference}' but found '{actualChedReference}'.");
+    }
+
+    /// <summary>
+    /// Verifies that the Import Notification Status header field displays the expected value.
+    /// Uses data-preview_orientation='column' as the stable anchor — CSS class names (pa-*) are
+    /// dynamically generated and must not be used as locators.
+    /// Structure: div[@data-preview_orientation='column'] → div[value] + div[label text only]
+    /// </summary>
+    /// <param name="expectedStatus">The expected status value e.g. 'Inactive'.</param>
+    [Then(@"the Import Notification Status is '(.*)'")]
+    public void ThenTheImportNotificationStatusIs(string expectedStatus)
+    {
+        Driver.WaitForTransaction();
+
+        // The label div is a direct child leaf div with text 'Status' (no child elements).
+        // The value div is the first sibling div and contains the actual status text as a leaf descendant.
+        var statusValue = Driver.WaitUntilAvailable(
+            By.XPath("//div[@data-preview_orientation='column']" +
+                     "[child::div[not(*) and normalize-space(text())='Status']]" +
+                     "/div[1]/descendant::div[not(*) and normalize-space(.)!=''][1]"),
+            "Import Notification Status value could not be found in the page header.");
+
+        statusValue.Text.Trim().Should().Be(expectedStatus,
+            $"Expected Import Notification Status to be '{expectedStatus}' but found '{statusValue.Text.Trim()}'.");
+    }
+
+    /// <summary>
+    /// Verifies that the Import Notification Status Reason header field displays the expected value.
+    /// Uses data-preview_orientation='column' as the stable anchor — CSS class names (pa-*) are
+    /// dynamically generated and must not be used as locators.
+    /// </summary>
+    /// <param name="expectedStatusReason">The expected status reason value e.g. 'Completed'.</param>
+    [Then(@"the Import Notification Status Reason is '(.*)'")]
+    public void ThenTheImportNotificationStatusReasonIs(string expectedStatusReason)
+    {
+        Driver.WaitForTransaction();
+
+        var statusReasonValue = Driver.WaitUntilAvailable(
+            By.XPath("//div[@data-preview_orientation='column']" +
+                     "[child::div[not(*) and normalize-space(text())='Status Reason']]" +
+                     "/div[1]/descendant::div[not(*) and normalize-space(.)!=''][1]"),
+            "Import Notification Status Reason value could not be found in the page header.");
+
+        statusReasonValue.Text.Trim().Should().Be(expectedStatusReason,
+            $"Expected Import Notification Status Reason to be '{expectedStatusReason}' but found '{statusReasonValue.Text.Trim()}'.");
     }
 
     [When("I click the reference number in the Work Order field for the notification created in IPAFFS")]

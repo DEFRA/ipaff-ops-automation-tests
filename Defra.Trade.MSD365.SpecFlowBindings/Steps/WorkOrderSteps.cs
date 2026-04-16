@@ -878,17 +878,40 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
             var scrollRoot = grid.closest('[wj-part=""root""]') || grid.parentElement;
             if (scrollRoot) { scrollRoot.scrollLeft += 300; }";
 
-        const int maxAttempts = 40;
+        // Two separate limits:
+        //   - gridReadyAttempts: how many times to wait for the grid/scroll-root to appear before giving up.
+        //   - maxScrollAttempts: how many incremental scrolls to try once the grid IS present.
+        // Separating them gives a clear failure message for each distinct failure mode.
+        const int gridReadyAttempts = 20;
+        const int maxScrollAttempts = 40;
 
-        for (var attempt = 0; attempt < maxAttempts; attempt++)
+        // Phase 1: Wait for the grid and its scroll container to be present in the DOM.
+        // The Wijmo grid renders asynchronously after the tab activates, so the scroll root
+        // may not exist immediately when this method is called.
+        string resultJson = null;
+        for (var waitAttempt = 0; waitAttempt < gridReadyAttempts; waitAttempt++)
         {
-            var resultJson = Driver.ExecuteScript(findScrollRootAndCheckScript) as string;
+            resultJson = Driver.ExecuteScript(findScrollRootAndCheckScript) as string;
 
-            if (resultJson == null)
+            if (resultJson != null)
             {
-                throw new InvalidOperationException("Commodity Lines grid scroll container could not be found.");
+                break;
             }
 
+            Driver.WaitForTransaction();
+        }
+
+        if (resultJson == null)
+        {
+            throw new InvalidOperationException(
+                $"The Import Commodity Lines grid scroll container could not be found after waiting " +
+                $"{gridReadyAttempts} attempts. The grid may not have finished rendering.");
+        }
+
+        // Phase 2: Scroll horizontally until both col 5 (EPPO Code) and col 11 (Regulatory Authority)
+        // are simultaneously present in the DOM. Wijmo virtualises columns outside the viewport.
+        for (var scrollAttempt = 0; scrollAttempt < maxScrollAttempts; scrollAttempt++)
+        {
             var eppoVisible = resultJson.Contains(@"""eppoVisible"":true");
             var regAuthVisible = resultJson.Contains(@"""regAuthVisible"":true");
 
@@ -898,13 +921,17 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
             }
 
             Driver.ExecuteScript(scrollIncrementScript);
-
             Driver.WaitForTransaction();
+
+            // Re-read after each scroll — the grid may now expose different columns.
+            resultJson = Driver.ExecuteScript(findScrollRootAndCheckScript) as string
+                ?? throw new InvalidOperationException(
+                    "The Import Commodity Lines grid scroll container disappeared during scrolling.");
         }
 
         throw new InvalidOperationException(
             $"Could not scroll the Commodity Lines grid to show both EPPO Code (col 5) and " +
-            $"Regulatory Authority (col 11) simultaneously after {maxAttempts} attempts. " +
+            $"Regulatory Authority (col 11) simultaneously after {maxScrollAttempts} scroll attempts. " +
             $"Consider reviewing the column layout or increasing the max attempts.");
     }
 
@@ -935,38 +962,66 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
         ScrollGridUntilBothColumnsVisible();
         Driver.WaitForTransaction();
 
-        var grid = Driver.WaitUntilAvailable(
-            By.XPath("//div[@role='grid'][contains(@aria-label,'Import Commodity Lines')]"),
-            "Commodity Lines grid could not be found.");
+        // EasyRepro's OpenSubGridRecord uses contains(@data-lp-id,...) which only matches the
+        // AgGrid (Import tab). The Wijmo cc-grid (Commodity Lines tab) renders cells without
+        // data-lp-id, so OpenSubGridRecord fails there with NoSuchElementException.
+        var isAgGrid = Driver.FindElements(
+            By.XPath("//div[@id='dataSetRoot_Import_notification_commodity_lines_subgrid']")).Count > 0;
 
-        var dataRows = grid.FindElements(By.XPath(".//div[@role='row'][@aria-label='Data']"));
-
-        int matchingIndex = -1;
-        string matchedEppoCode = null;
-
-        for (var i = 0; i < dataRows.Count; i++)
+        if (isAgGrid)
         {
-            var regulatoryCells = dataRows[i].FindElements(
-                By.XPath(".//div[@role='gridcell'][@aria-colindex='11']//span[@role='presentation']"));
+            // For AgGrid, find the index of the matching row via Selenium and use EasyRepro.
+            var grid = Driver.WaitUntilAvailable(
+                By.XPath("//div[@role='grid'][contains(@aria-label,'Import Commodity Lines')]"),
+                "Commodity Lines grid could not be found.");
 
-            if (regulatoryCells.Count == 0 ||
-                !regulatoryCells[0].Text.Trim().Equals(regulatoryAuthority, StringComparison.OrdinalIgnoreCase))
+            var dataRows = grid.FindElements(By.XPath(".//div[@role='row'][@aria-label='Data']"));
+            var matchingIndex = -1;
+
+            for (var i = 0; i < dataRows.Count; i++)
             {
-                continue;
+                var regulatoryCells = dataRows[i].FindElements(
+                    By.XPath(".//div[@role='gridcell'][@aria-colindex='11']//span[@role='presentation']"));
+
+                if (regulatoryCells.Count > 0 &&
+                    regulatoryCells[0].Text.Trim().Equals(regulatoryAuthority, StringComparison.OrdinalIgnoreCase))
+                {
+                    matchingIndex = i;
+                    break;
+                }
             }
 
-            var eppoCells = dataRows[i].FindElements(
-                By.XPath(".//div[@role='gridcell'][@aria-colindex='5']//span[@role='presentation']"));
+            matchingIndex.Should().BeGreaterOrEqualTo(0,
+                $"No Commodity Line with Regulatory Authority '{regulatoryAuthority}' could be found on the current page.");
 
-            matchedEppoCode = eppoCells.Count > 0 ? eppoCells[0].Text.Trim() : "(EPPO code not visible)";
-            matchingIndex = i;
-            break;
+            XrmApp.Entity.SubGrid.OpenSubGridRecord("Import_notification_commodity_lines_subgrid", matchingIndex);
         }
+        else
+        {
+            // For the Wijmo cc-grid, Selenium IWebElement references become stale between
+            // FindElement and dispatchEvent because Wijmo virtualises rows — the same DOM node
+            // gets reassigned to the first visible row (HMI) before the dispatch fires.
+            //
+            // Searching and dispatching atomically in a single JS call eliminates the stale
+            // reference window entirely and guarantees the correct row is opened.
+            const string findAndDispatchScript = @"
+                var authority = arguments[0].toLowerCase();
+                var rows = document.querySelectorAll('div[role=""row""][aria-label=""Data""]');
+                for (var i = 0; i < rows.length; i++) {
+                    var cell = rows[i].querySelector('div[role=""gridcell""][aria-colindex=""11""] span[role=""presentation""]');
+                    if (cell && cell.textContent.trim().toLowerCase() === authority) {
+                        var gridCell = cell.closest('div[role=""gridcell""]') || cell.parentElement;
+                        gridCell.dispatchEvent(new MouseEvent('dblclick', { bubbles: true, cancelable: true, view: window }));
+                        return true;
+                    }
+                }
+                return false;";
 
-        matchingIndex.Should().BeGreaterOrEqualTo(0,
-            $"No Commodity Line with Regulatory Authority '{regulatoryAuthority}' could be found on the current page.");
+            var found = (bool)(Driver.ExecuteScript(findAndDispatchScript, regulatoryAuthority.ToLower()) ?? false);
 
-        XrmApp.Entity.SubGrid.OpenSubGridRecord("Import_notification_commodity_lines_subgrid", matchingIndex);
+            found.Should().BeTrue(
+                $"No Commodity Line with Regulatory Authority '{regulatoryAuthority}' could be found on the current page.");
+        }
 
         Driver.WaitForTransaction();
     }
