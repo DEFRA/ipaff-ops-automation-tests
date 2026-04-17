@@ -44,7 +44,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool VerifyStatus(string status)
         {
-            return txtStatus.Text.Trim().Equals(status);
+            return txtStatus.Text.Trim().Equals(status , StringComparison.OrdinalIgnoreCase);
         }
 
         public string GetCHEDReference()

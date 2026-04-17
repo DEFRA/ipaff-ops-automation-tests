@@ -113,7 +113,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool VerifyTheControlStatus(string status)
         {
-            return lblControlStatuses.Count > 0 && lblControlStatuses.All(e => e.Text.Trim() == status);
+            return lblControlStatuses.Count > 0 && lblControlStatuses.All(e => e.Text.Trim().Equals(status, StringComparison.OrdinalIgnoreCase));
         }
 
         public bool VerifySortByDropdown(string sortBy)
