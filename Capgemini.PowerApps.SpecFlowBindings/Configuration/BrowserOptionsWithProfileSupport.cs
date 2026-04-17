@@ -27,6 +27,12 @@ public class BrowserOptionsWithProfileSupport : BrowserOptions, ICloneable
     {
         var options = base.ToChrome();
 
+        // Override the EasyRepro default which sets always_open_pdf_externally=true.
+        // This causes PDFs opened via window.open or target="_blank" to immediately
+        // close their tab and trigger a download instead of rendering in Chrome's
+        // built-in PDF viewer — which breaks IPAFFS Show CHED verification steps.
+        options.AddUserProfilePreference("plugins.always_open_pdf_externally", false);
+
         if (!string.IsNullOrEmpty(this.ProfileDirectory))
         {
             options.AddArgument($"--user-data-dir={this.ProfileDirectory}");

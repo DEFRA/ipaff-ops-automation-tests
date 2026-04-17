@@ -109,10 +109,20 @@ public class BrowserTransitionSteps : PowerAppsStepDefiner
                 "Ensure 'When I click IPAFFS from the header ribbon' ran before this step.");
         }
 
-        // Determine whether the current window handle is still open.
-        // If the IPAFFS tab has been closed, the handle will no longer appear in WindowHandles,
-        // so we must switch to the stored Dynamics handle explicitly before waiting for the page.
-        var currentHandleIsOpen = IsHandleOpen(dynamicsDriver, dynamicsDriver.CurrentWindowHandle);
+        // Safely get the current window handle — calling CurrentWindowHandle throws
+        // 'no such window' when the previously focused tab (e.g. the IPAFFS tab) has
+        // been closed, which must be caught before passing to IsHandleOpen.
+        string currentHandle = null;
+        try
+        {
+            currentHandle = dynamicsDriver.CurrentWindowHandle;
+        }
+        catch
+        {
+            // Current window was closed — currentHandle remains null.
+        }
+
+        var currentHandleIsOpen = currentHandle != null && IsHandleOpen(dynamicsDriver, currentHandle);
 
         if (!currentHandleIsOpen)
         {

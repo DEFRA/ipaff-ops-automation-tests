@@ -17,12 +17,12 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement btnCopyAsReplacement => _driver.FindElement(By.Id("replace-certificate"));
         private IWebElement lnkReplacedBy => _driver.FindElement(By.Id("replaced-by"));
         private IWebElement lnkReplacedCertificate => _driver.FindElement(By.Id("replaced-certificate"));
-        private IWebElement btnShowCHED => _driver.FindElement(By.XPath("//*[@id='show-certificate']/span"));
+        private IWebElement btnShowCHED => _driver.FindElement(By.Id("show-certificate"));
         private IWebElement lnkClearAll => _driver.FindElement(By.XPath("//a[text()='Clear all']"));
         private IWebElement lblFieldValue(string fieldName) => _driver.FindElement(By.XPath($"(//*[normalize-space(text())='{fieldName}']/following-sibling::td)[1]"));
-        private IWebElement lblFieldValueInChecks(string fieldName,string sectionName) => _driver.FindElement(By.XPath($"(//*[normalize-space(text())='{sectionName}']/following::*[normalize-space(text())='{fieldName}']/following-sibling::td)[1]"));
-        private IWebElement lblFieldValueInControl(string fieldName,string sectionName) => _driver.FindElement(By.XPath($"(//h2[normalize-space(text())='{sectionName}']/following::*[normalize-space(text())='{fieldName}']/following-sibling::td)[1]"));
-        private IWebElement lblFieldValueForTable(string fieldName,string column) => _driver.FindElement(By.XPath($"//th[normalize-space()='{fieldName}']/following::td[{column}]"));
+        private IWebElement lblFieldValueInChecks(string fieldName, string sectionName) => _driver.FindElement(By.XPath($"(//*[normalize-space(text())='{sectionName}']/following::*[normalize-space(text())='{fieldName}']/following-sibling::td)[1]"));
+        private IWebElement lblFieldValueInControl(string fieldName, string sectionName) => _driver.FindElement(By.XPath($"(//h2[normalize-space(text())='{sectionName}']/following::*[normalize-space(text())='{fieldName}']/following-sibling::td)[1]"));
+        private IWebElement lblFieldValueForTable(string fieldName, string column) => _driver.FindElement(By.XPath($"//th[normalize-space()='{fieldName}']/following::td[{column}]"));
         private IWebElement lnkTab(string tabName) => _driver.FindElement(By.XPath($"//a[@id='tab_{tabName}']"));
         private IWebElement btnRecordControl => _driver.FindElement(By.Id("record-control"));
         private IWebElement txtRiskDecisionPHSIValue => _driver.FindElement(By.XPath("//*[normalize-space()='Risk decision PHSI']/following-sibling::dd/strong"));
@@ -86,12 +86,12 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             lnkReplacedBy.Click();
         }
-        
+
         public bool VerifyShowChedButton()
         {
             return btnShowCHED.Text.Equals("Show CHED");
         }
-        
+
         public bool VerifyTab(string tabName)
         {
             return lnkTab((tabName == "Checks" ? "decision" : tabName).ToLower()).Text.Equals(tabName);
@@ -112,7 +112,7 @@ namespace Defra.UI.Tests.Pages.Classes
             _driver.ScrollAndClick(lblFieldValue(fieldName));
             return !string.IsNullOrEmpty(lblFieldValue(fieldName).Text);
         }
-        
+
         public bool IsFieldValuePresent(string fieldName, string sectionName)
         {
             if (sectionName.ToLower().Equals("control"))
@@ -131,7 +131,7 @@ namespace Defra.UI.Tests.Pages.Classes
         }
 
         public void ClickRecordControlButton() => btnRecordControl.Click();
-        
+
         public bool VerifyDecisionRecordedBy(string fieldName, string status)
         {
             return lblFieldValue(fieldName).Text.Trim().Equals(status);
@@ -179,6 +179,17 @@ namespace Defra.UI.Tests.Pages.Classes
                 .ToList();
 
             return (checkTags.Count > 0 && nonMatching.Count == 0, checkTags.Count, nonMatching);
+        }
+
+        /// <summary>
+        /// Opens the Show CHED PDF in a new tab via JavaScript window.open.
+        /// Using window.open instead of a direct Selenium click avoids Chrome routing
+        /// the PDF content-type response to the download manager rather than the viewer.
+        /// </summary>
+        public void ClickShowChed()
+        {
+            var href = btnShowCHED.GetAttribute("href");
+            ((IJavaScriptExecutor)_driver).ExecuteScript("window.open(arguments[0], '_blank');", href);
         }
     }
 }

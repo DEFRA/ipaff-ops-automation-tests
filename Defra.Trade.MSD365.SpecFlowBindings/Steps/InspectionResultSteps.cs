@@ -99,49 +99,50 @@ public class InspectionResultSteps : PowerAppsStepDefiner
         string debugInputValue = "not attempted";
 
         var populated = Policy
-    .Handle<Exception>()
-    .OrResult<bool>(result => !result)
-    .WaitAndRetry(
-        retryCount: 12,
-        sleepDurationProvider: _ => TimeSpan.FromSeconds(5),
-        onRetry: (outcome, delay, attempt, _) =>
-        {
-            var reason = outcome.Exception != null
-                ? $"exception: {outcome.Exception.GetType().Name} — {outcome.Exception.Message}"
-                : $"value was '{debugInputValue}'";
+            .Handle<Exception>()
+            .OrResult<bool>(result => !result)
+            .WaitAndRetry(
+                retryCount: 12,
+                sleepDurationProvider: _ => TimeSpan.FromSeconds(5),
+                onRetry: (outcome, delay, attempt, _) =>
+                {
+                    var reason = outcome.Exception != null
+                        ? $"exception: {outcome.Exception.GetType().Name} — {outcome.Exception.Message}"
+                        : $"value was '{debugInputValue}'";
 
-            Console.WriteLine(
-                $"[ThenTheCheckStatusIsCompliantOrAutoCleared] Attempt {attempt}/12: " +
-                $"section='{debugSectionFound}', input='{debugInputFound}', {reason}. " +
-                $"Retrying in {delay.TotalSeconds}s...");
-        })
-    .Execute(() =>
-    {
-        Driver.WaitForTransaction();
+                    Console.WriteLine(
+                        $"[ThenTheCheckStatusIsCompliantOrAutoCleared] Attempt {attempt}/12: " +
+                        $"section='{debugSectionFound}', input='{debugInputFound}', {reason}. " +
+                        $"Retrying in {delay.TotalSeconds}s...");
+                })
+            .Execute(() =>
+            {
+                Driver.WaitForTransaction();
 
-        var sections = Driver.FindElements(By.XPath($"//section[@aria-label='{sectionName}']"));
-        debugSectionFound = sections.Count > 0 ? $"found ({sections.Count})" : "NOT FOUND";
+                // Re-find the section on every attempt — avoids stale element references.
+                var sections = Driver.FindElements(By.XPath($"//section[@aria-label='{sectionName}']"));
+                debugSectionFound = sections.Count > 0 ? $"found ({sections.Count})" : "NOT FOUND";
 
-        if (sections.Count == 0)
-        {
-            return false;
-        }
+                if (sections.Count == 0)
+                {
+                    return false;
+                }
 
-        var section = sections[0];
+                var section = sections[0];
 
-        var inputs = section.FindElements(By.XPath($".//input[@aria-label='{ariaLabel}']"));
-        debugInputFound = inputs.Count > 0 ? $"found ({inputs.Count})" : "NOT FOUND";
+                var inputs = section.FindElements(By.XPath($".//input[@aria-label='{ariaLabel}']"));
+                debugInputFound = inputs.Count > 0 ? $"found ({inputs.Count})" : "NOT FOUND";
 
-        if (inputs.Count == 0)
-        {
-            return false;
-        }
+                if (inputs.Count == 0)
+                {
+                    return false;
+                }
 
-        debugInputValue = inputs[0].GetAttribute("value")?.Trim() ?? string.Empty;
-        actualValue = debugInputValue;
+                debugInputValue = inputs[0].GetAttribute("value")?.Trim() ?? string.Empty;
+                actualValue = debugInputValue;
 
-        return !string.IsNullOrEmpty(actualValue);
-    });
+                return !string.IsNullOrEmpty(actualValue);
+            });
 
         populated.Should().BeTrue(
             $"'{ariaLabel}' field did not populate within 60 seconds on the Inspection Result form. " +

@@ -13,12 +13,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
         private ICHEDOverviewPage? chedOverviewPage => _objectContainer.IsRegistered<ICHEDOverviewPage>() ? _objectContainer.Resolve<ICHEDOverviewPage>() : null;
 
+        // Required to snapshot window handles before the PDF tab opens, so that
+        // VerifyCertificateInNewTab has an accurate baseline to detect the new handle.
+        private IYourImportNotificationsPage? importNotificationsPage => _objectContainer.IsRegistered<IYourImportNotificationsPage>() ? _objectContainer.Resolve<IYourImportNotificationsPage>() : null;
+
         public CHEDOverviewSteps(ScenarioContext context, IObjectContainer container)
         {
             _objectContainer = container;
             _scenarioContext = context;
         }
-
 
         [Then("the CHED overview page should be displayed")]
         public void ThenTheCHEDOverviewPageShouldBeDisplayed()
@@ -59,7 +62,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             chedOverviewPage?.ClickReplacedByLink();
         }
-        
+
         [When("the user clicks Clear all in consinments requiring control page")]
         public void WhenTheUserClicksClearAll()
         {
@@ -69,7 +72,22 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("Show CHED button is displayed")]
         public void TheShowChedButtonIsDisplayed()
         {
-            Assert.IsTrue(chedOverviewPage?.VerifyShowChedButton() , "The Show CHED button is not present");
+            Assert.IsTrue(chedOverviewPage?.VerifyShowChedButton(), "The Show CHED button is not present");
+        }
+
+        /// <summary>
+        /// Snapshots window handles before opening the PDF so that VerifyCertificateInNewTab
+        /// can correctly identify the new tab even when multiple tabs are already open
+        /// (e.g. the Dynamics hand-off flow where Browser 2 already has 2 tabs).
+        /// window.open in ClickShowChed is synchronous — the tab exists in WindowHandles
+        /// before VerifyCertificateInNewTab runs — so the snapshot must be taken here,
+        /// before the call to ClickShowChed.
+        /// </summary>
+        [When("the user clicks on the Show CHED button")]
+        public void WhenTheUserClicksOnTheShowChedButton()
+        {
+            importNotificationsPage?.RecordHandlesBeforePdfOpen();
+            chedOverviewPage?.ClickShowChed();
         }
 
         [Then("the user verifies {string} tab in CHED Overview page")]
@@ -77,23 +95,23 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             Assert.IsTrue(chedOverviewPage?.VerifyTab(tabName), "The " + tabName + " is not present");
         }
-        
+
         [Then("the user verifies the value is present for {string}")]
         public void ThenTheUserVerifiesValueIsPresent(string fieldName)
         {
             Assert.IsTrue(chedOverviewPage?.IsFieldValuePresent(fieldName), "The field value for " + fieldName + " is not present");
         }
-        
+
         [Then("the user verifies the value is present for {string} under {string}")]
         public void ThenTheUserVerifiesValueIsPresent(string fieldName, string sectionName)
         {
-            Assert.IsTrue(chedOverviewPage?.IsFieldValuePresent(fieldName,sectionName), "The field value for " + fieldName + " is not present");
+            Assert.IsTrue(chedOverviewPage?.IsFieldValuePresent(fieldName, sectionName), "The field value for " + fieldName + " is not present");
         }
-        
+
         [Then("the user verifies the value is present for {string} in {string} column")]
         public void ThenTheUserVerifiesValueIsPresentInColumn(string fieldName, string column)
         {
-            Assert.IsTrue(chedOverviewPage?.IsFieldValuePresentInTable(fieldName, column), "The field value for " + fieldName + " is not present in "+column);
+            Assert.IsTrue(chedOverviewPage?.IsFieldValuePresentInTable(fieldName, column), "The field value for " + fieldName + " is not present in " + column);
         }
 
         [When("the user switches to {string} tab in CHED Overview page")]

@@ -354,7 +354,17 @@ namespace Defra.UI.Tests.Hooks
             {
                 SwitchToValidWindow(driver);
 
+                // Guard against PDF tabs and other non-HTML contexts where document.body is null,
+                // which causes NullReferenceException inside Convert.ToInt32 before the outer
+                // catch can protect it.
                 var js = (IJavaScriptExecutor)driver;
+
+                var bodyExists = js.ExecuteScript("return document.body !== null && document.body !== undefined");
+                if (bodyExists == null || !(bool)bodyExists)
+                {
+                    ((ITakesScreenshot)driver).GetScreenshot().SaveAsFile(filePath);
+                    return $"./Screenshots/{uniqueFileName}";
+                }
 
                 int totalHeight = Convert.ToInt32(js.ExecuteScript(
                     "return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight)"));

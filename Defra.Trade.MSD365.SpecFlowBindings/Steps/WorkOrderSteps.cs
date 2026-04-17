@@ -1113,6 +1113,37 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
             $"Expected % Complete for Work Order Task '{taskName}' to be '{expectedPercentComplete}' but found '{actualPercent}'.");
     }
 
+    /// <summary>
+    /// Opens the Related tab dropdown and selects the specified item by scrolling it into view
+    /// within the flyout before clicking. Required because the flyout container has a fixed
+    /// max-height with overflow-y:auto — items below the fold (e.g. 'Charges') are present in
+    /// the DOM but not clickable until scrolled into view.
+    /// </summary>
+    /// <param name="relatedTabName">The aria-label of the Related menu item e.g. 'Charges'.</param>
+    [When(@"I select the '(.*)' tab from the Related tab dropdown")]
+    public void WhenISelectTheTabFromTheRelatedTabDropdown(string relatedTabName)
+    {
+        Driver.WaitForTransaction();
+
+        // Wait for the flyout container to be present and visible.
+        var flyout = Driver.WaitUntilAvailable(
+            By.XPath("//div[@data-id='relatedTabMenuList']"),
+            $"Related tab flyout menu could not be found when selecting '{relatedTabName}'.");
+
+        // Find the menu item by its aria-label inside the flyout.
+        var menuItem = Driver.WaitUntilAvailable(
+            By.XPath($"//div[@data-id='relatedTabMenuList']//div[@role='menuitem' and @aria-label='{relatedTabName}']"),
+            $"Related tab menu item '{relatedTabName}' could not be found in the flyout.");
+
+        // Scroll the item into view within the flyout — the container has a fixed max-height
+        // with overflow-y:auto so items below the fold are not clickable without scrolling.
+        Driver.ExecuteScript("arguments[0].scrollIntoView({block:'nearest'});", menuItem);
+        Driver.WaitForTransaction();
+
+        menuItem.Click();
+        Driver.WaitForTransaction();
+    }
+
     [Given(@"'(.*)' has updated the status of the work order associated to '(.*)' to '(.*)'")]
     public void GivenHasUpdatedTheStatusOfTheWorkOrderAssociatedToTo(string userAlias, string applicationAlias, string subStatusName)
     {

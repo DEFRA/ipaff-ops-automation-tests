@@ -14,6 +14,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
         private IReviewYourNotificationPage? reviewPage => _objectContainer.IsRegistered<IReviewYourNotificationPage>() ? _objectContainer.Resolve<IReviewYourNotificationPage>() : null;
         private ISummaryPage? summaryPage => _objectContainer.IsRegistered<ISummaryPage>() ? _objectContainer.Resolve<ISummaryPage>() : null;
+        private IYourImportNotificationsPage? importNotificationsPage => _objectContainer.IsRegistered<IYourImportNotificationsPage>() ? _objectContainer.Resolve<IYourImportNotificationsPage>() : null;
 
         public ReviewYourNotificationSteps(ScenarioContext context, IObjectContainer container)
         {
@@ -1169,6 +1170,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user clicks View CHED grey button")]
         public void WhenTheUserClicksViewCHEDGreyButton()
         {
+            importNotificationsPage?.RecordHandlesBeforePdfOpen();
             reviewPage?.ClickViewCHEDButton();
         }
 
