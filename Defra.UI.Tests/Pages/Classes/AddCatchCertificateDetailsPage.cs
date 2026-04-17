@@ -47,8 +47,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement lnkAddTheCommodity => _driver.FindElement(By.LinkText("add the commodity"));
         private IWebElement chkSelectAll => _driver.FindElement(By.Id("select-all-checkbox-1"));
         private IReadOnlyCollection<IWebElement> speciesCheckboxes => _driver.FindElements(By.XPath("//div[@id='commodities-species-table-1']//input[@type='checkbox' and contains(@id, 'species-')]"));
-        private IReadOnlyCollection<IWebElement> catchCertificateReferenceErrors => _driver.FindElements(By.XPath("//span[@class='govuk-error-message' and contains(text(), 'catch certificate reference')]"));
-        private IReadOnlyCollection<IWebElement> flagStateErrors => _driver.FindElements(By.XPath("//span[@class='govuk-error-message' and contains(text(), 'flag state')]"));
+        private IReadOnlyCollection<IWebElement> catchCertificateReferenceErrors => _driver.FindElements(By.XPath("//p[@class='govuk-error-message' and contains(text(), 'catch certificate reference')]"));
+        private IReadOnlyCollection<IWebElement> flagStateErrors => _driver.FindElements(By.XPath("//p[@class='govuk-error-message' and contains(text(), 'flag state')]"));
         private IReadOnlyCollection<IWebElement> dateOfIssueErrors => _driver.FindElements(By.Id("date-of-issue-error"));
         private IReadOnlyCollection<IWebElement> dropdownOptions => _driver.FindElements(By.XPath("//ul[@id='flag-state-1__listbox']//li[@role='option']"));
 

@@ -35,7 +35,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement GetReasonRadioButton(string reasonText) =>
             _driver.FindElement(By.XPath($"//label[contains(@class, 'govuk-radios__label') and contains(normalize-space(), '{reasonText}')]"));
         private IWebElement GetTranitSubOption(string subOption) =>
-            _driver.FindElement(By.XPath($"//label[contains(@class, 'govuk-radios__label')and contains(normalize-space(.), 'Transit')]/following::div[1]/*[contains(normalize-space(.), '{subOption}')]"));
+            _driver.FindElement(By.XPath($"//label[contains(@class, 'govuk-radios__label')and contains(normalize-space(.), 'Transit')]/following::div[2]/*[contains(normalize-space(.), '{subOption}')]"));
         private IWebElement GetInternalMarketSubOption(string subOptionText) =>
             _driver.FindElement(By.XPath($"//div[contains(@id,'internalmarket-conditional')]//label[contains(@class, 'govuk-radios__label') and normalize-space()='{subOptionText}']"));
         private IWebElement txtDay => _driver.WaitForElement(By.Id("estimated-arrival-at-port-of-exit-date-day"));
