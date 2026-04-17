@@ -161,7 +161,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When(@"I have provided the IPAFF Trader credentials and signin")]
         public void WhenIHaveProvidedTheIPAFFTraderCredentialsAndSignin()
         {
-            var jsonData = UserObject?.GetUser("IPAFF", "Trader");
+            string userRole = "Trader";
+            var jsonData = UserObject?.GetUser("IPAFF", userRole);
+            _scenarioContext["UserRole"] = userRole;
             var userObject = new User
             {
                 UserName = jsonData.UserName,
