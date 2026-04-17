@@ -343,7 +343,7 @@ Scenario: Create a new import notification through clone a health or phytosanita
 	Then the dashboard page should be displayed
 	When user searches for the import notification
 	Then the notification should be present in the list
-	And the notification returned in the search has the status 'NEW'
+	And the notification returned in the search has the status 'New'
 	When the user clicks View details for the notification
 	Then the Review your notification page should be displayed
 	And the data presented for review matches the data entered into the notification for CHED PP
