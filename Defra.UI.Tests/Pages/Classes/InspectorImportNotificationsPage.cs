@@ -24,7 +24,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement lnkRecordDecision => _driver.FindElement(By.Id("decision-dashboard-nav"));
         private IWebElement lnkCreateNotificationAsAdmin => _driver.FindElement(By.Id("notification-dashboard-nav"));
         private IWebElement txtNoNotificationsFound => _driver.FindElement(By.Id("notifications-not-found"));
-        private IWebElement lnkHeader(string link) => _driver.FindElement(By.XPath($"//a[text()='{link}']"));
+        private IWebElement lnkHeader(string link) => _driver.FindElement(By.XPath($"//*[normalize-space(text())='{link}']"));
         private IWebElement lblImportNotificationPage(string label) => _driver.FindElement(By.XPath($"//*[normalize-space(text())='{label}']"));
         #endregion
 
@@ -91,10 +91,10 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             if (type.Equals("original"))
                 return lnkChedRefNumSearcResult.Text.Trim().Contains(chedRef)
-                    && lnkChedStatusSearcResult.Text.Trim().Equals(status);
+                    && lnkChedStatusSearcResult.Text.Trim().Equals(status, StringComparison.OrdinalIgnoreCase);
             else if (type.Equals("replacement"))
                 return lnkChedRefNumSearcResult.Text.Trim().Contains(replacementChedReference)
-                    && lnkChedStatusSearcResult.Text.Trim().Equals(status);
+                    && lnkChedStatusSearcResult.Text.Trim().Equals(status, StringComparison.OrdinalIgnoreCase);
             else
                 return false;
         }
