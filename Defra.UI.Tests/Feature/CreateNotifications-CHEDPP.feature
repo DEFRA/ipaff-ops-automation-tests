@@ -248,7 +248,8 @@ Scenario: Delegation of Authority Agent submits CHEDPP notification by uploading
 	Then the notification should be present in the list
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the CHED PP notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	And the dashboard page should be displayed
