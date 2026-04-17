@@ -1178,17 +1178,17 @@ Scenario: SPS-9104
 	#And the dashboard page should be displayed
 	#When the user logs out of IPAFFS Part 1
 	#Then the user should be logged out successfully
-	When the user navigate to the BTMS application
-	Then I click Sign in button
-	And I should see type of Gateway login page
-	And I have selected "Government Gateway" as login type
-	And I click Sign in button
-	And I should see type of Gateway login page
-	And I have selected "Sign in with Government Gateway" as login type
-	When I click Continue button from How do you want to sign in page
-	Then I should redirected to the BTMS Sign in using Government Gateway page
-	When I have provided the BTMS credentials and signin
-	Then the BTMS search screen should be displayed
+	#When the user navigate to the BTMS application
+	#Then I click Sign in button
+	#And I should see type of Gateway login page
+	#And I have selected "Government Gateway" as login type
+	#And I click Sign in button
+	#And I should see type of Gateway login page
+	#And I have selected "Sign in with Government Gateway" as login type
+	#When I click Continue button from How do you want to sign in page
+	#Then I should redirected to the BTMS Sign in using Government Gateway page
+	#When I have provided the BTMS credentials and signin
+	#Then the BTMS search screen should be displayed
 	#When the user searches for the CHED created earlier
 	#Then the BTMS search result screen should be displayed
 	#And the user checks commodity code "06012030", description "Calanthe biloba", quantity "3.0", authority "PHSI" and decision "Decision not given"
@@ -1197,8 +1197,8 @@ Scenario: SPS-9104
 	#And the user checks commodity code "06029045", description "Acer maximowiczii", quantity "3.0", authority "PHSI" and decision "Decision not given"
 	#And the user checks commodity code "0709999020", description "Abelmoschus esculentus", quantity "3.0", authority "HMI" and decision "Decision not given"
 	#And the user checks commodity code "0810907590", description "Ardisia crenata", quantity "3.0", authority "PHSI,HMI" and decision "Decision not given,Decision not given"
-	When the user logs out of BTMS
-	Then the user should be logged out successfully
+	#When the user logs out of BTMS
+	#Then the user should be logged out successfully
 	When I am logged in to the 'IDCOMS' app as 'Inspector'
 	#And I click on 'Import Notifications' under the 'Imports' area
 	#Then the 'Active Import Notifications' view is displayed
@@ -1375,15 +1375,15 @@ Scenario: SPS-9104
 	#And the notification status is 'Valid' for the notification created in IPAFFS
 	#When the user switches to 'Checks' tab in CHED Overview page
 	#Then all the checks are 'Compliant' or 'Auto cleared' showing 10 of 500
-	#When the user logs out of IPAFFS Part 2
-	#Then the Inspector is logged out of IPAFFS successfully
-	#When the user closes the IPAFFS tab
-	#And I switch back to the Dynamics tab
-	#Then I verify the Work Order page is displayed for the notification created in IPAFFS
+	When the user logs out of IPAFFS Part 2
+	Then the Inspector is logged out of IPAFFS successfully
+	When the user closes the IPAFFS tab
+	And I switch back to the Dynamics tab
+	Then I verify the Work Order page is displayed for the notification created in IPAFFS
 	When I click on 'Import Notifications' under the 'Imports' area
-	#Then the 'Active Import Notifications' view is displayed
-	#When I search Import Notifications for the notification created in IPAFFS
-	#Then the notification created in IPAFFS should not be returned
+	Then the 'Active Import Notifications' view is displayed
+	When I search Import Notifications for the notification created in IPAFFS
+	Then the notification created in IPAFFS should not be returned
 	When I change the Import Notifications view to 'Inactive Import Notifications'
 	Then the 'Inactive Import Notifications' view is displayed
 	When I search Import Notifications for the notification created in IPAFFS
@@ -1391,57 +1391,58 @@ Scenario: SPS-9104
 	When I open the record in the grid
 	Then I verify the Import Notification page is displayed for the notification created in IPAFFS
 	And the 'Summary' tab is displayed and selected
-	#And the Import Notification Status is 'Inactive'
-	#And the Import Notification Status Reason is 'Completed'
-	#When I select the 'Commodity Lines' tab
-	#Then the 'Commodity Lines' tab is displayed and selected
-	#When I sort Commodity Lines by Regulatory Authority
-	#And I double click on a Commodity Line with Regulatory Authority set to 'PHSI'
-	#Then the Import Commodity Line page is displayed
-	#When I select the 'Inspection Results' tab
-	#Then the 'Inspection Results' tab is displayed and selected
-	#And the 'PHSI Doc Check' Status is 'Compliant' or 'Auto cleared'
-	#And the 'PHSI Identity Check' Status is 'Compliant' or 'Auto cleared'
-	#And the 'PHSI Physical Check' Status is 'Compliant' or 'Auto cleared'
-	#And the 'HMI Inspection Results' section is blank
-	#When I click the Back button in the command bar
-	#Then I verify the Import Notification page is displayed for the notification created in IPAFFS
-	#And the 'Commodity Lines' tab is displayed and selected
-	#When I sort Commodity Lines by Regulatory Authority
-	#And I double click on a Commodity Line with Regulatory Authority set to 'HMI'
-	#Then the Import Commodity Line page is displayed
-	#When I select the 'Inspection Results' tab
-	#Then the 'Inspection Results' tab is displayed and selected
-	#And the 'PHSI Inspection Results' section is blank
-	#And the 'HMI Check' Status is 'Compliant' or 'Auto cleared'
-	#When I click the Back button in the command bar
-	#Then I verify the Import Notification page is displayed for the notification created in IPAFFS
-	#And the 'Commodity Lines' tab is displayed and selected
-	#When I sort Commodity Lines by Regulatory Authority
-	#And I double click on a Commodity Line with Regulatory Authority set to 'Joint'
-	#Then the Import Commodity Line page is displayed
-	#When I select the 'Inspection Results' tab
-	#Then the 'Inspection Results' tab is displayed and selected
-	#And the 'PHSI Doc Check' Status is 'Compliant' or 'Auto cleared'
-	#And the 'PHSI Identity Check' Status is 'Compliant' or 'Auto cleared'
-	#And the 'PHSI Physical Check' Status is 'Compliant' or 'Auto cleared'
-	#And the 'HMI Check' Status is 'Compliant' or 'Auto cleared'
-	#When I click the Back button in the command bar
-	#Then I verify the Import Notification page is displayed for the notification created in IPAFFS
-	#And the 'Commodity Lines' tab is displayed and selected
-	#When I select the 'Summary' tab
-	#Then the 'Summary' tab is displayed and selected
+	And the Import Notification Status is 'Inactive'
+	And the Import Notification Status Reason is 'Completed'
+	When I select the 'Commodity Lines' tab
+	Then the 'Commodity Lines' tab is displayed and selected
+	When I sort Commodity Lines by Regulatory Authority
+	And I double click on a Commodity Line with Regulatory Authority set to 'PHSI'
+	Then the Import Commodity Line page is displayed
+	When I select the 'Inspection Results' tab
+	Then the 'Inspection Results' tab is displayed and selected
+	And the 'PHSI Doc Check' Status is 'Compliant' or 'Auto cleared'
+	And the 'PHSI Identity Check' Status is 'Compliant' or 'Auto cleared'
+	And the 'PHSI Physical Check' Status is 'Compliant' or 'Auto cleared'
+	And the 'HMI Inspection Results' section is blank
+	When I click the Back button in the command bar
+	Then I verify the Import Notification page is displayed for the notification created in IPAFFS
+	And the 'Commodity Lines' tab is displayed and selected
+	When I sort Commodity Lines by Regulatory Authority
+	And I double click on a Commodity Line with Regulatory Authority set to 'HMI'
+	Then the Import Commodity Line page is displayed
+	When I select the 'Inspection Results' tab
+	Then the 'Inspection Results' tab is displayed and selected
+	And the 'PHSI Inspection Results' section is blank
+	And the 'HMI Check' Status is 'Compliant' or 'Auto cleared'
+	When I click the Back button in the command bar
+	Then I verify the Import Notification page is displayed for the notification created in IPAFFS
+	And the 'Commodity Lines' tab is displayed and selected
+	When I sort Commodity Lines by Regulatory Authority
+	And I double click on a Commodity Line with Regulatory Authority set to 'Joint'
+	Then the Import Commodity Line page is displayed
+	When I select the 'Inspection Results' tab
+	Then the 'Inspection Results' tab is displayed and selected
+	And the 'PHSI Doc Check' Status is 'Compliant' or 'Auto cleared'
+	And the 'PHSI Identity Check' Status is 'Compliant' or 'Auto cleared'
+	And the 'PHSI Physical Check' Status is 'Compliant' or 'Auto cleared'
+	And the 'HMI Check' Status is 'Compliant' or 'Auto cleared'
+	When I click the Back button in the command bar
+	Then I verify the Import Notification page is displayed for the notification created in IPAFFS
+	And the 'Commodity Lines' tab is displayed and selected
+	When I select the 'Summary' tab
+	Then the 'Summary' tab is displayed and selected
 	When I click the reference number in the Work Order field for the notification created in IPAFFS
 	Then I verify the Work Order page is displayed for the notification created in IPAFFS
 	And the 'Import' tab is displayed and selected
-	#When I select the 'Related' tab
-	#And I select the 'Charges' tab from the Related tab dropdown
-	#Then the 'Charges' tab is displayed and selected
-	#And I check that the Charges tab shows 'Charge Associated View'
-	#And the 'Identity & Physical Check' Charges records have been created
-	#And the 'Document Check' Charges records have been created
+	When I select the 'Related' tab
+	And I select the 'Charges' tab from the Related tab dropdown
+	Then the 'Charges' tab is displayed and selected
+	And I check that the Charges tab shows 'Charge Associated View'
+	And the 'Identity & Physical Check' Charges records have been created
+	And the 'Document Check' Charges records have been created
 	When I click IPAFFS from the header ribbon
 	And I switch to the IPAFFS tab
+	And I have provided the IPAFFS credentials and signin via Dynamics
 	Then the CHED overview page should be displayed
 	When the user clicks on the Show CHED button
 	Then the certificate should be displayed in a new browser tab
@@ -1454,8 +1455,8 @@ Scenario: SPS-9104
 	And I switch back to the Dynamics tab
 	Then I verify the Work Order page is displayed for the notification created in IPAFFS
 	When I sign out
-	Then the Inspector is logged out of the 'IDCOMS' app successfully
-	When I switch to the IPAFFS tab
+	Then the Inspector is logged out of Dynamics successfully
+	When I switch to BTMS
 	And the user navigate to the BTMS application
 	Then I click Sign in button
 	And I should see type of Gateway login page
@@ -1467,10 +1468,10 @@ Scenario: SPS-9104
 	Then I should redirected to the BTMS Sign in using Government Gateway page
 	When I have provided the BTMS credentials and signin
 	Then the BTMS search screen should be displayed
-	#When the user searches for the CHED created earlier
-	#Then the BTMS search result screen should be displayed
-	#And the user checks commodity code "06012030", description "Calanthe biloba", quantity "3.0", authority "PHSI" and decision "Decision not given"
-	#And the user checks commodity code "06029045", description "Abutilon indicum", quantity "3.0", authority "PHSI" and decision "Decision not given"
-	#And the user checks commodity code "06029045", description "Acaciella angustissima", quantity "3.0", authority "PHSI" and decision "Decision not given"
-	#When the user logs out of BTMS
-	#Then the user should be logged out successfully
+	When the user searches for the CHED created earlier
+	Then the BTMS search result screen should be displayed
+	And the user checks commodity code "06012030", description "Calanthe biloba", quantity "3.0", authority "PHSI" and decision "Decision not given"
+	And the user checks commodity code "06029045", description "Abutilon indicum", quantity "3.0", authority "PHSI" and decision "Decision not given"
+	And the user checks commodity code "06029045", description "Acaciella angustissima", quantity "3.0", authority "PHSI" and decision "Decision not given"
+	When the user logs out of BTMS
+	Then the user should be logged out successfully

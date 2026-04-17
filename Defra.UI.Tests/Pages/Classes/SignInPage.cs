@@ -7,7 +7,6 @@ using Reqnroll.BoDi;
 using SeleniumExtras.WaitHelpers;
 using Microsoft.Dynamics365.UIAutomation.Browser;
 
-
 namespace Defra.UI.Tests.Pages.Classes
 {
     public class SignInPage : ISignInPage
@@ -41,6 +40,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IReadOnlyCollection<IWebElement> txtUser(string user) => _driver.FindElements(By.XPath($"//div[text()='{user}']"));
         private IWebElement txtUserEmailId(string user) => _driver.FindElement(By.XPath($"//div[text()='{user}']"));
         private IWebElement IOCSignOutConfirmMessage => _driver.WaitForElement(By.Id("login_workload_logo_text"), true);
+        private By AadPickAccountHeadingBy => By.CssSelector("div[role='heading'][aria-level='1'][data-bind='text: title']");
+        private IWebElement AadAccountTile(string userName) => _driver.FindElement(By.CssSelector($"div[role='button'][data-test-id='{userName}']"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -63,7 +64,6 @@ namespace Defra.UI.Tests.Pages.Classes
             UserId.SendKeys(userName);
             Password.SendKeys(password);
             _driver.WaitForElementCondition(ExpectedConditions.ElementToBeClickable(btnSignIn)).Click();
-            // _driver.WaitForElement(signInConfirmBy);
         }
 
         public void IPAFFSInternalInspectorSignIn(string userName, string password)
@@ -75,8 +75,37 @@ namespace Defra.UI.Tests.Pages.Classes
             else
                 txtIPAFFSIntInspectorUserId.SendKeys(userName);
 
-
             _driver.WaitForElementCondition(ExpectedConditions.ElementToBeClickable(BtnNext)).Click();
+            txtIPAFFSIntInspectorPassword.SendKeys(password);
+            _driver.WaitForElementCondition(ExpectedConditions.ElementToBeClickable(BtnSignin)).Click();
+        }
+
+        /// <summary>
+        /// Handles the AAD "Pick an account" sign-in flow when IPAFFS opens inside
+        /// the Dynamics browser. If the account picker is shown, clicks
+        /// the tile matching the IDCOMS username. Then enters the password and submits.
+        /// SSO may bypass the picker silently, in which case the wait times out gracefully.
+        /// </summary>
+        public void IPAFFSSignInViaDynamics(string userName, string password)
+        {
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(15));
+
+            try
+            {
+                wait.Until(d =>
+                {
+                    var heading = d.FindElement(AadPickAccountHeadingBy);
+                    return heading.Text.Trim()
+                        .Contains("Pick an account", StringComparison.OrdinalIgnoreCase);
+                });
+
+                AadAccountTile(userName).Click();
+            }
+            catch (WebDriverTimeoutException)
+            {
+                // "Pick an account" did not appear — AAD SSO handled authentication silently.
+            }
+
             txtIPAFFSIntInspectorPassword.SendKeys(password);
             _driver.WaitForElementCondition(ExpectedConditions.ElementToBeClickable(BtnSignin)).Click();
         }
@@ -139,11 +168,10 @@ namespace Defra.UI.Tests.Pages.Classes
                 wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//h1[text() = 'Please sign in again']")));
                 Signin.Click();
             }
-            catch (NoSuchElementException e)
+            catch (NoSuchElementException)
             {
 
             }
-
         }
 
         public void CPSignIn(string userName, string password)

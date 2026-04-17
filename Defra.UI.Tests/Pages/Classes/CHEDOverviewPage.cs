@@ -182,14 +182,14 @@ namespace Defra.UI.Tests.Pages.Classes
         }
 
         /// <summary>
-        /// Opens the Show CHED PDF in a new tab via JavaScript window.open.
-        /// Using window.open instead of a direct Selenium click avoids Chrome routing
-        /// the PDF content-type response to the download manager rather than the viewer.
+        /// Clicks the Show CHED button to open the PDF certificate in a new browser tab.
+        /// Chrome's built-in PDF viewer is used because plugins.always_open_pdf_externally
+        /// is overridden to false in BrowserOptionsWithProfileSupport.ToChrome(), which prevents
+        /// the EasyRepro default from routing the PDF response to the download manager.
         /// </summary>
         public void ClickShowChed()
         {
-            var href = btnShowCHED.GetAttribute("href");
-            ((IJavaScriptExecutor)_driver).ExecuteScript("window.open(arguments[0], '_blank');", href);
+            btnShowCHED.Click();
         }
     }
 }

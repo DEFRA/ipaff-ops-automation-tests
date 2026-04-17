@@ -52,6 +52,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         /// Must be called after "When I click IPAFFS from the header ribbon" and before any
         /// IPAFFS page interaction steps.
         /// </summary>
+        [When("I switch to BTMS")]
         [When("I switch to the IPAFFS tab")]
         public void WhenISwitchToTheIpaffsTab()
         {

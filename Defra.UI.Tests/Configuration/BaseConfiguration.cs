@@ -9,6 +9,7 @@ public class BaseConfiguration
     public SearchProtectedNotifications SearchProtectedNotifications { get; set; }
     public SearchCloneNotifications SearchCloneNotifications { get; set; }
     public IntensifiedOfficialControls IntensifiedOfficialControls { get; set; }
+    public IDCOMSInspector IDCOMSInspector { get; set; }
     public Dictionary<string, UserCredential> UserCredentials { get; set; }
 }
 
