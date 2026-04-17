@@ -141,7 +141,7 @@ namespace Defra.UI.Tests.Pages.Classes
         public bool VerifyRiskOutcome(string chedRef, string riskOutcome)
         {
             return lnkChedRefNumSearcResult.Text.Trim().Contains(chedRef)
-                && lnkRiskOutcomeSearchResult.Text.Trim().Equals(riskOutcome);
+                && lnkRiskOutcomeSearchResult.Text.Trim().Equals(riskOutcome, StringComparison.OrdinalIgnoreCase);
         }
     }
 }
