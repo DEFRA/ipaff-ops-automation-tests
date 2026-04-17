@@ -288,7 +288,6 @@ Scenario: User creates and submits a B2C consignment notification for Transit Re
 	Then the notification should be present in the list
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
-	When verifies the document 'CHEDREFERENCE' downloaded successfully
 	When the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
