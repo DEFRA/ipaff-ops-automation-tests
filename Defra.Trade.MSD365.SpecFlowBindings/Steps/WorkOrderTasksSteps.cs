@@ -880,6 +880,7 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
 
     /// <summary>
     /// Verifies that the specified tab is displayed and selected on the current Work Order Task form.
+    /// Polls aria-selected to handle the async delay between the tab click and DOM update.
     /// </summary>
     /// <param name="tabName">The name of the tab to verify e.g. 'Summary', 'Samples', 'Notes'.</param>
     [Then(@"the '(.*)' tab is displayed and selected")]
@@ -887,15 +888,30 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
     {
         Driver.WaitForTransaction();
 
-        // Tabs are identified by aria-label matching the tab name and aria-selected="true" when active.
-        var tab = Driver.WaitUntilAvailable(
-            By.XPath($"//ul[@role='tablist']//li[@role='tab' and @aria-label='{tabName}']"),
-            $"'{tabName}' tab could not be found on the Work Order Task form.");
+        // aria-selected is updated asynchronously after SelectTab fires the click event.
+        // Poll until the attribute flips to "true" or the retry budget is exhausted.
+        string actualAriaSelected = null;
 
-        var isSelected = tab.GetAttribute("aria-selected");
+        Policy
+            .Handle<Exception>()
+            .OrResult<bool>(selected => !selected)
+            .WaitAndRetry(6, _ => TimeSpan.FromSeconds(5),
+                onRetry: (_, _, attempt, _) =>
+                    Console.WriteLine(
+                        $"[ThenTheTabIsDisplayedAndSelected] Attempt {attempt}: " +
+                        $"tab='{tabName}', aria-selected='{actualAriaSelected}' — retrying..."))
+            .Execute(() =>
+            {
+                var tab = Driver.WaitUntilAvailable(
+                    By.XPath($"//ul[@role='tablist']//li[@role='tab' and @aria-label='{tabName}']"),
+                    $"'{tabName}' tab could not be found on the form.");
 
-        isSelected.Should().Be("true",
-            $"Expected the '{tabName}' tab to be selected but it was not (aria-selected='{isSelected}').");
+                actualAriaSelected = tab.GetAttribute("aria-selected");
+                return actualAriaSelected == "true";
+            });
+
+        actualAriaSelected.Should().Be("true",
+            $"Expected the '{tabName}' tab to be selected but it was not (aria-selected='{actualAriaSelected}') after retrying.");
     }
 
     /// <summary>

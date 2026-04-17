@@ -1125,8 +1125,26 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
     {
         Driver.WaitForTransaction();
 
+        // Locate the Related tab in the tablist. aria-expanded indicates whether the flyout is open.
+        var relatedTab = Driver.WaitUntilAvailable(
+            By.XPath("//ul[@role='tablist']//li[@role='tab' and @aria-haspopup='true' and @aria-label='Related']"),
+            "Related tab could not be found in the tablist.");
+
+        // Open the flyout only if it is not already expanded.
+        var isExpanded = relatedTab.GetAttribute("aria-expanded");
+        if (!string.Equals(isExpanded, "true", StringComparison.OrdinalIgnoreCase))
+        {
+            relatedTab.Click();
+            Driver.WaitForTransaction();
+
+            // Wait until aria-expanded flips to "true" before proceeding.
+            Driver.WaitUntilAvailable(
+                By.XPath("//ul[@role='tablist']//li[@role='tab' and @aria-haspopup='true' and @aria-label='Related' and @aria-expanded='true']"),
+                "Related tab flyout did not open (aria-expanded did not become 'true').");
+        }
+
         // Wait for the flyout container to be present and visible.
-        var flyout = Driver.WaitUntilAvailable(
+        Driver.WaitUntilAvailable(
             By.XPath("//div[@data-id='relatedTabMenuList']"),
             $"Related tab flyout menu could not be found when selecting '{relatedTabName}'.");
 

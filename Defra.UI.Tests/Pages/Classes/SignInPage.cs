@@ -36,12 +36,13 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement btnContinue => _driver.WaitForElement(By.Id("continueReplacement"));
         private IWebElement txtLoging => _driver.WaitForElement(By.XPath("//input[@id='password']"), true);
         private IWebElement txtIPAFFSIntInspectorUserId => _driver.FindElement(By.Name("loginfmt"));
-        private IWebElement txtIPAFFSIntInspectorPassword => _driver.FindElement(By.Name("passwd"));
+        private IWebElement txtIPAFFSIntInspectorPassword => _driver.WaitForElement(By.Name("passwd"));
         private IReadOnlyCollection<IWebElement> txtUser(string user) => _driver.FindElements(By.XPath($"//div[text()='{user}']"));
         private IWebElement txtUserEmailId(string user) => _driver.FindElement(By.XPath($"//div[text()='{user}']"));
         private IWebElement IOCSignOutConfirmMessage => _driver.WaitForElement(By.Id("login_workload_logo_text"), true);
         private By AadPickAccountHeadingBy => By.CssSelector("div[role='heading'][aria-level='1'][data-bind='text: title']");
-        private IWebElement AadAccountTile(string userName) => _driver.FindElement(By.CssSelector($"div[role='button'][data-test-id='{userName}']"));
+        private By AadAccountTileBy(string userName) => By.CssSelector($"div[role='button'][data-test-id='{userName}']");
+        private IWebElement AadAccountTile(string userName) => _driver.WaitForElement(AadAccountTileBy(userName));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();

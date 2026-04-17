@@ -49,16 +49,16 @@ public class LoginSteps : PowerAppsStepDefiner
             wait.Until(driver =>
             {
                 var element = driver.FindElement(
-                    By.CssSelector("div[role='heading'][aria-level='1'][data-bind='text: title']"));
+                    By.Id("login_workload_logo_text"));
 
                 return element.Text.Trim()
-                    .Contains("Pick an account", StringComparison.OrdinalIgnoreCase);
+                    .Contains("You signed out of your account", StringComparison.OrdinalIgnoreCase);
             });
         }
         catch (OpenQA.Selenium.WebDriverTimeoutException)
         {
             throw new InvalidOperationException(
-                $"Expected to see 'Pick an account' after signing out of Dynamics but the page did not appear within 30 seconds. " +
+                $"Expected to see 'You signed out of your account' after signing out of Dynamics but the page did not appear within 30 seconds. " +
                 $"Current URL: {Driver.Url}");
         }
     }
