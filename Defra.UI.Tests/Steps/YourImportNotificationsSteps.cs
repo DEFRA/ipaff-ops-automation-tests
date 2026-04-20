@@ -477,7 +477,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         if (_scenarioContext.ContainsKey("CloningHealthCertificateDetails"))
                         {
                             //Clone scenario
-                            ValidateContains("CommodityCode", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("CommodityCode", page.Sections.CHEDPPPageII, ref allDataMatches, mismatches);
                             ValidateContains("Description", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                             ValidateContains("GenusAndSpecies", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                             ValidateContains("NetWeight", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
