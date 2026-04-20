@@ -985,6 +985,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     expectedValue = s.Trim();
                     if (expectedValue.Trim() == "No need to inspect - exempt or not applicable") expectedValue = "IUUNA";
                     if (contextKey.Trim() == "ExitBorderControlPost" || contextKey.Trim() == "PortOfEntry") expectedValue = expectedValue.Split('(')[0].Trim();
+                    if (contextKey.Trim() == "InspectionPremises") expectedValue = expectedValue.Split('-')[0].Trim();
+                    if (contextKey.Trim() == "ImporterAddress") actual = actual.Replace("Address ", "").Trim();
                     if (contextKey.Trim() == "TotalPackages") actual = Regex.Matches(actual, @"\d+").Select(m => int.Parse(m.Value)).Sum().ToString();
                     if (contextKey.Trim() == "EstimatedArrivalDate") expectedValue = DateTime.ParseExact(expectedValue, "dd MMM yyyy", System.Globalization.CultureInfo.InvariantCulture).ToString("dd.MM.yyyy");
                     ;
