@@ -26,13 +26,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
 
         [JsonProperty("I6ConsigneeImporter")]
         public ChedSection ConsigneeImporter { get; set; }
-        
-        [JsonProperty("Ii300324CartonFranceFrPlantsIn")]
-        public ChedSection CHEDPPPageII { get; set; }
-        
-        [JsonProperty("PartIIControls")]
-        public ChedSection PartIIControls { get; set; }
-
+                       
         [JsonProperty("I7PlaceOfDestination")]
         public ChedSection PlaceOfDestination { get; set; }
 
@@ -106,6 +100,10 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
         public ChedSection TranshipmentOnwardTravel { get; set; }
 
         // Part II
+
+        [JsonProperty("Ii300324CartonFranceFrPlantsIn")]
+        public ChedSection CHEDPPPageII { get; set; }
+
         [JsonProperty("PartIIControls")]
         public ChedSection PartIIControls { get; set; }
 
