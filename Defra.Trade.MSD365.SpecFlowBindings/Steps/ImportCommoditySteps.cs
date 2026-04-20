@@ -28,8 +28,8 @@ public sealed class ImportCommoditySteps : PowerAppsStepDefiner
         Driver.WaitForTransaction();
 
         var pageHeader = Driver.WaitUntilAvailable(
-            By.XPath("//span[@data-id='entity_name_span']"),
-            "Import Commodity Line page header could not be found.");
+            By.XPath("//span[@data-id='entity_name_span'][normalize-space(text())='Import Commodity Line']"),
+            "Import Commodity Line page header could not be found — the page may still be showing 'Work Order'.");
 
         pageHeader.Text.Trim().Should().Be("Import Commodity Line",
             $"Expected page header to be 'Import Commodity Line' but found '{pageHeader.Text.Trim()}'.");

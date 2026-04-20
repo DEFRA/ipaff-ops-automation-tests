@@ -1097,7 +1097,7 @@ Scenario: SPS-9104
 		|     0709999020 | Abelmoschus esculentus                   | ABMES     |         |       |                                                            |                  1 | BG              |        2 | STM           |               3 | Yes                             |
 		|     0810907590 | Ardisia crenata                          | ADACN     |         |       |                                                            |                  1 | BG              |        2 | STM           |               3 | Yes                             |
 	Then CSV file should be uploaded successfully with 'Upload successful' message and validate the count of commodity
-	#And all the displayed commodity data in all tables should be validated with the values given in the input
+	And all the displayed commodity data in all tables should be validated with the values given in the input
 	And checks the information message heading 'If details are incorrect or missing' and content 'You will need to upload commodity details CSV file again. This will replace your previous upload.'
 	When the user clicks Confirm and continue button
 	Then What is the main reason for importing the consignment? page should be displayed
@@ -1106,7 +1106,7 @@ Scenario: SPS-9104
 	Then the Notification Hub page should be displayed
 	When the user clicks the Commodity hyperlink
 	Then Check uploaded commodity details page should be displayed
-	#And all the displayed commodity data in all tables should be validated with the values given in the input
+	And all the displayed commodity data in all tables should be validated with the values given in the input
 	And checks the information message heading 'If details are incorrect or missing' and content 'You will need to upload commodity details CSV file again. This will replace your previous upload.'
 	When the user clicks Confirm and continue button
 	Then the Additional details page should be displayed
@@ -1150,7 +1150,7 @@ Scenario: SPS-9104
 	When the user clicks on Check commodity details link
 	Then Check uploaded commodity details page should be displayed
 	And there is no banner stating Upload successful
-	#And all the displayed commodity data in all tables should be validated with the values given in the input
+	And all the displayed commodity data in all tables should be validated with the values given in the input
 	And checks the information message heading 'If details are incorrect or missing' and content 'You will need to upload commodity details CSV file again. This will replace your previous upload.'
 	When the user clicks Confirm and continue button
 	Then the Additional details page should be displayed
