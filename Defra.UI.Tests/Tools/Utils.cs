@@ -338,8 +338,11 @@ namespace Defra.UI.Tests.Tools
         public static OperatorDetails GenerateOperatorDetails(string? operatorType)
         {
             // List of all countries from IPAFFS dropdown with their best-match Bogus locales
+            // Exclude non-Latin script locales and countries whose names contain commas
+            // (commas break ExtractCountryFromAddressText which splits on comma delimiters)
             var countryLocaleMap = GetCountryLocaleMapping()
                 .Where(kvp => !NonLatinLocales.Contains(kvp.Value))
+                .Where(kvp => !kvp.Key.Contains(','))
                 .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
             // Great Britain countries

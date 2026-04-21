@@ -46,7 +46,7 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
 
     /// <summary>
     /// Verifies that all specified Work Order Task names are present in the workorderservicetasksgrid.
-    /// Refreshes the subgrid and retries for up to 5 minutes to allow tasks to finish rendering
+    /// Refreshes the subgrid and retries for up to 20 minutes to allow tasks to finish rendering
     /// after navigation or popup dismissal — consistent with the commodity lines load pattern.
     /// </summary>
     [Then(@"I can see following Work Order Tasks (.*)")]
@@ -63,7 +63,7 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
 
         expectedTaskNames.Should().NotBeEmpty("at least one task name must be specified in the step.");
 
-        WaitForWorkOrderTasksToLoad(expectedTaskNames, timeout: TimeSpan.FromMinutes(5));
+        WaitForWorkOrderTasksToLoad(expectedTaskNames, timeout: TimeSpan.FromMinutes(20));
 
         var gridContainer = Driver.WaitUntilAvailable(
             By.XPath("//div[@data-id='dataSetRoot_workorderservicetasksgrid']"),

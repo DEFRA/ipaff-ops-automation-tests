@@ -42,21 +42,21 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             try
             {
-                // Wait up to 4 minutes for the "Uploading CSV..." spinner to disappear.
+                // Wait up to 5 minutes for the "Uploading CSV..." spinner to disappear.
                 // The spinner clearing does not mean the upload is complete — the server
                 // continues processing after the spinner is removed from the DOM.
-                var uploadingWait = new WebDriverWait(_driver, TimeSpan.FromMinutes(4));
+                var uploadingWait = new WebDriverWait(_driver, TimeSpan.FromMinutes(5));
                 uploadingWait.Until(d =>
                 {
                     try { return !d.FindElement(lblUploading).Displayed; }
                     catch (NoSuchElementException) { return true; }
                 });
 
-                // Wait up to a further 4 minutes for the success banner to appear.
+                // Wait up to a further 10 minutes for the success banner to appear.
                 // This is a separate budget from the spinner wait — the server-side CSV
                 // processing can continue well after the spinner clears, particularly for
                 // large uploads (500 commodity lines). Both phases each get their full budget.
-                var bannerWait = new WebDriverWait(_driver, TimeSpan.FromMinutes(4));
+                var bannerWait = new WebDriverWait(_driver, TimeSpan.FromMinutes(10));
                 bannerWait.Until(ExpectedConditions.ElementIsVisible(lblSuccessBanner));
 
                 return _driver.FindElement(lblSuccessBanner).Text.Equals(successMessage);

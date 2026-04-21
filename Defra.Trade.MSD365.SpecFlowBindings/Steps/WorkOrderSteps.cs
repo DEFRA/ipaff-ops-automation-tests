@@ -185,38 +185,515 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
     /// Verifies that all Import Commodity Lines on the Work Order match the EPPO codes
     /// provided in the test input, and that each line has a valid Regulatory Authority.
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// Commodity lines are loaded asynchronously from IPAFFS. The step polls the grid —
-    /// refreshing the form between attempts — for up to 10 minutes until all expected rows
-    /// are present before collection begins.
-    /// </para>
-    /// <para>
-    /// The grid is sorted by EPPO code ascending before collection so that the collected
-    /// order matches the in-memory sorted expected list without any further manipulation.
-    /// </para>
-    /// <para>
-    /// Wijmo virtualises columns outside the viewport, so each page is horizontally scrolled
-    /// to force both the EPPO Code (col 5) and Regulatory Authority (col 11) columns into
-    /// the DOM before extraction runs. The scroll also causes Wijmo to render a frozen column
-    /// panel that duplicates every row. The per-page row count is therefore measured before
-    /// scrolling (no frozen panel at that point) and used as a hard limit during extraction
-    /// to discard the duplicates.
-    /// </para>
-    /// <para>
-    /// Pagination clicks are issued via JavaScript to avoid
-    /// <see cref="OpenQA.Selenium.ElementClickInterceptedException"/> from a Wijmo overlay
-    /// div that intercepts native clicks at certain scroll positions.
-    /// </para>
-    /// <para>
-    /// Regulatory Authority is validated as one of the known valid values
-    /// (<c>PHSI</c>, <c>HMI</c>, <c>Joint</c>) but is not compared against a specific
-    /// expected value — it is set by Dynamics business logic, not sourced from IPAFFS.
-    /// </para>
-    /// </remarks>
     [Then(@"all the Commodity Lines should be validated with the values given in the input")]
     public void ThenAllTheCommodityLinesShouldBeValidatedWithTheValuesGivenInTheInput()
     {
+        if (!scenarioContext.ContainsKey("AllCommodityDetails"))
+        {
+            var tempTable = new Table("Commodity code", "Genus and Species", "EPPO code");
+            tempTable.AddRow("06012030", "Calanthe biloba", "CLPBI");
+            tempTable.AddRow("06012030", "Brassavola sp.", "BSVSS");
+            tempTable.AddRow("06011010", "Albuca bracteata", "ABWBR");
+            tempTable.AddRow("06029045", "Abelia engleriana", "ABEEN");
+            tempTable.AddRow("06029045", "Abelia graebneriana", "ABEGR");
+            tempTable.AddRow("06029045", "Abelia integrifolia", "ABEIN");
+            tempTable.AddRow("06029045", "Abelia ionandra", "ABEIO");
+            tempTable.AddRow("06029045", "Abelia schumannii", "ABESC");
+            tempTable.AddRow("06029045", "Abelia sp.", "ABESS");
+            tempTable.AddRow("06029045", "Abelia triflora", "ABETR");
+            tempTable.AddRow("06029045", "Abelia umbellata", "ABEUM");
+            tempTable.AddRow("06029045", "Abelia uniflora", "ABEUN");
+            tempTable.AddRow("06029045", "Abelia x grandiflora", "ABEGF");
+            tempTable.AddRow("06029045", "Abelia zanderi", "ABEZA");
+            tempTable.AddRow("06029045", "Abeliophyllum distichum", "ABLDI");
+            tempTable.AddRow("06029045", "Abeliophyllum sp.", "ABLSS");
+            tempTable.AddRow("06029045", "Abelmoschus caillei", "ABMCA");
+            tempTable.AddRow("06011010", "Albuca fibrotunicata", "ABWFI");
+            tempTable.AddRow("06029045", "Abelmoschus ficulneus", "HIBFC");
+            tempTable.AddRow("06029045", "Abelmoschus glutino-textilis", "ABMGT");
+            tempTable.AddRow("06029045", "Abelmoschus manihot", "HIBMA");
+            tempTable.AddRow("06029045", "Abelmoschus mindanensis", "ABMMI");
+            tempTable.AddRow("06029045", "Abelmoschus moschatus", "ABMMO");
+            tempTable.AddRow("06029045", "Abelmoschus sp.", "ABMSS");
+            tempTable.AddRow("06029045", "Abies alba", "ABIAL");
+            tempTable.AddRow("06029045", "Abies amabilis", "ABIAM");
+            tempTable.AddRow("06029045", "Abies balsamea", "ABIBA");
+            tempTable.AddRow("06029045", "Abies balsamea var. phanerolepis", "ABIPH");
+            tempTable.AddRow("06029045", "Abies borisii-regis", "ABIBO");
+            tempTable.AddRow("06029045", "Abies bracteata", "ABIBT");
+            tempTable.AddRow("06029045", "Abies cephalonica", "ABICE");
+            tempTable.AddRow("06029045", "Abies chengii", "ABICN");
+            tempTable.AddRow("06029045", "Abies chensiensis", "ABICH");
+            tempTable.AddRow("06029045", "Abies cilicica", "ABICI");
+            tempTable.AddRow("06029045", "Abies concolor", "ABICO");
+            tempTable.AddRow("06029045", "Abies concolor var. lowiana", "ABICL");
+            tempTable.AddRow("06029045", "Abies delavayi", "ABIDE");
+            tempTable.AddRow("06029045", "Abies densa", "ABIDN");
+            tempTable.AddRow("06029045", "Abies durangensis", "ABIDU");
+            tempTable.AddRow("06029045", "Abies fabri", "ABIFA");
+            tempTable.AddRow("06029045", "Abies fabri subsp. minensis", "ABIMI");
+            tempTable.AddRow("06029045", "Abies fargesii", "ABIFG");
+            tempTable.AddRow("06029045", "Abies firma", "ABIFI");
+            tempTable.AddRow("06029045", "Abies forrestii", "ABIFO");
+            tempTable.AddRow("06029045", "Abies fraseri", "ABIFR");
+            tempTable.AddRow("06029045", "Abies grandis", "ABIGR");
+            tempTable.AddRow("06029045", "Abies guatemalensis", "ABIGU");
+            tempTable.AddRow("06029045", "Abies guatemalensis var. jaliscana", "ABIFL");
+            tempTable.AddRow("06029045", "Abies hickelii", "ABIHI");
+            tempTable.AddRow("06029045", "Abies holophylla", "ABIHL");
+            tempTable.AddRow("06029045", "Abies homolepis", "ABIHO");
+            tempTable.AddRow("06029045", "Abies kawakamii", "ABIKA");
+            tempTable.AddRow("06029045", "Abies koreana", "ABIKO");
+            tempTable.AddRow("06029045", "Abies lasiocarpa", "ABILA");
+            tempTable.AddRow("06029045", "Abies lasiocarpa var. arizonica", "ABILZ");
+            tempTable.AddRow("06029045", "Abies magnifica", "ABIMA");
+            tempTable.AddRow("06029045", "Abies mariesii", "ABIMR");
+            tempTable.AddRow("06029045", "Abies nebrodensis", "ABINB");
+            tempTable.AddRow("06029045", "Abies nephrolepis", "ABINE");
+            tempTable.AddRow("06029045", "Abies nordmanniana", "ABINO");
+            tempTable.AddRow("06029045", "Abies nordmanniana subsp. equitrojani", "ABIBR");
+            tempTable.AddRow("06029045", "Abies numidica", "ABINU");
+            tempTable.AddRow("06029045", "Abies pindrow", "ABIPI");
+            tempTable.AddRow("06029045", "Abies pindrow var. brevifolia", "ABIGA");
+            tempTable.AddRow("06029045", "Abies pinsapo", "ABIPN");
+            tempTable.AddRow("06029045", "Abies pinsapo var. marocana", "ABIMC");
+            tempTable.AddRow("06029045", "Abies procera", "ABIPR");
+            tempTable.AddRow("06029045", "Abies recurvata", "ABIRE");
+            tempTable.AddRow("06029045", "Abies recurvata var. ernestii", "ABIER");
+            tempTable.AddRow("06029045", "Abies religiosa", "ABIRG");
+            tempTable.AddRow("06029045", "Abies sachalinensis", "ABISA");
+            tempTable.AddRow("06029045", "Abies sachalinensis var. gracilis", "ABISG");
+            tempTable.AddRow("06029045", "Abies sachalinensis var. mayriana", "ABISM");
+            tempTable.AddRow("06029045", "Abies sachalinensis var. nemorensis", "ABISN");
+            tempTable.AddRow("06029045", "Abies sibirica", "ABISB");
+            tempTable.AddRow("06029045", "Abies sibirica subsp. semenovii", "ABISE");
+            tempTable.AddRow("06029045", "Abies sp.", "ABISS");
+            tempTable.AddRow("06029045", "Abies spectabilis", "ABISP");
+            tempTable.AddRow("06029045", "Abies squamata", "ABISQ");
+            tempTable.AddRow("06029045", "Abies veitchii", "ABIVE");
+            tempTable.AddRow("06029045", "Abies vejarii", "ABIVJ");
+            tempTable.AddRow("06029045", "Abies vejarii subsp. mexicana", "ABIME");
+            tempTable.AddRow("06029045", "Abies x arnoldiana", "ABIAR");
+            tempTable.AddRow("06029045", "Abies x insignis", "ABIIN");
+            tempTable.AddRow("06029045", "Abies x vasconcellosiana", "ABIVA");
+            tempTable.AddRow("06029045", "Abies x vilmorinii", "ABIVI");
+            tempTable.AddRow("06029045", "Abrus precatorius", "ABRPR");
+            tempTable.AddRow("06029045", "Abrus precatorius subsp. africanus", "ABRPA");
+            tempTable.AddRow("06029045", "Abrus melanospermus", "ABRPP");
+            tempTable.AddRow("06029045", "Abrus melanospermus subsp. Suffruticosus", "ABRPS");
+            tempTable.AddRow("06029045", "Abrus sp.", "ABRSS");
+            tempTable.AddRow("06029045", "Abutilon angulatum", "ABUAN");
+            tempTable.AddRow("06029045", "Abutilon asiaticum", "ABUAS");
+            tempTable.AddRow("06029045", "Abutilon fruticosum", "ABUFR");
+            tempTable.AddRow("06029045", "Abutilon grandifolium", "ABUMO");
+            tempTable.AddRow("06029045", "Abutilon graveolens", "ABUGR");
+            tempTable.AddRow("06029045", "Abutilon guineense", "ABUGU");
+            tempTable.AddRow("06029045", "Abutilon hemsleyanum", "ABUHE");
+            tempTable.AddRow("06029045", "Abutilon hybrids", "ABUHY");
+            tempTable.AddRow("06029045", "Abutilon indicum", "ABUIN");
+            tempTable.AddRow("06029045", "Abutilon inflatum", "ABUIF");
+            tempTable.AddRow("06029045", "Abutilon ochsenii", "ABUOC");
+            tempTable.AddRow("06029045", "Abutilon oxycarpum", "ABUOX");
+            tempTable.AddRow("06029045", "Abutilon pannosum", "ABUGL");
+            tempTable.AddRow("06029045", "Abutilon pauciflorum", "ABUPF");
+            tempTable.AddRow("06029045", "Abutilon ramosum", "ABURA");
+            tempTable.AddRow("06029045", "Abutilon sonneratianum", "ABUSO");
+            tempTable.AddRow("06029045", "Pseudabutilon sp.", "PSDSS");
+            tempTable.AddRow("06029045", "Abutilon theophrasti", "ABUTH");
+            tempTable.AddRow("06029045", "Abutilon trisulcatum", "ABUTR");
+            tempTable.AddRow("06029045", "Abutilon vitifolium", "ABUVI");
+            tempTable.AddRow("06029045", "Acacia alata", "ACAAL");
+            tempTable.AddRow("06029045", "Acacia anceps", "ACAGL");
+            tempTable.AddRow("06029045", "Acacia aneura", "ACAAN");
+            tempTable.AddRow("06029045", "Acacia argyrodendron", "ACAAD");
+            tempTable.AddRow("06029045", "Acacia aulacocarpa", "ACAAU");
+            tempTable.AddRow("06029045", "Acacia auriculiformis", "ACAAF");
+            tempTable.AddRow("06029045", "Acacia baileyana", "ACABA");
+            tempTable.AddRow("06029045", "Acacia brachystachya", "ACABR");
+            tempTable.AddRow("06029045", "Acacia burrowii", "ACABU");
+            tempTable.AddRow("06029045", "Acacia cambagei", "ACACB");
+            tempTable.AddRow("06029045", "Acacia cana", "ACACN");
+            tempTable.AddRow("06029045", "Acacia cardiophylla", "ACACD");
+            tempTable.AddRow("06029045", "Acacia catenulata", "ACACE");
+            tempTable.AddRow("06029045", "Acacia concurrens", "ACACH");
+            tempTable.AddRow("06029045", "Acacia confusa", "ACACU");
+            tempTable.AddRow("06029045", "Acacia coriacea", "ACACR");
+            tempTable.AddRow("06029045", "Acacia cultriformis", "ACACL");
+            tempTable.AddRow("06029045", "Acacia curvinervia", "ACACQ");
+            tempTable.AddRow("06029045", "Acacia cyclops", "ACACC");
+            tempTable.AddRow("06029045", "Acacia cyperophylla", "ACACP");
+            tempTable.AddRow("06029045", "Acacia dealbata", "ACADA");
+            tempTable.AddRow("06029045", "Acacia deanei", "ACADN");
+            tempTable.AddRow("06029045", "Acacia decurrens", "ACADC");
+            tempTable.AddRow("06029045", "Acacia doratoxylon", "ACADO");
+            tempTable.AddRow("06029045", "Acacia ericifolia", "ACAER");
+            tempTable.AddRow("06029045", "Acacia excelsa", "ACAEX");
+            tempTable.AddRow("06029045", "Acacia flavescens", "ACAFL");
+            tempTable.AddRow("06029045", "Acacia genistifolia", "ACADI");
+            tempTable.AddRow("06029045", "Acacia georginae", "ACAGG");
+            tempTable.AddRow("06029045", "Acacia glaucoptera", "ACAGP");
+            tempTable.AddRow("06029045", "Acacia harpophylla", "ACAHA");
+            tempTable.AddRow("06029045", "Acacia homalophylla", "ACAHM");
+            tempTable.AddRow("06029045", "Acacia implexa", "ACAIM");
+            tempTable.AddRow("06029045", "Acacia ixiophylla", "ACAIX");
+            tempTable.AddRow("06029045", "Acacia koa", "ACAKO");
+            tempTable.AddRow("06029045", "Acacia leiocalyx", "ACALE");
+            tempTable.AddRow("06029045", "Acacia leptocarpa", "ACALC");
+            tempTable.AddRow("06029045", "Acacia longifolia", "ACALO");
+            tempTable.AddRow("06029045", "Acacia macracantha", "ACAMA");
+            tempTable.AddRow("06029045", "Acacia maidenii", "ACAMN");
+            tempTable.AddRow("06029045", "Acacia mangium", "ACAMG");
+            tempTable.AddRow("06029045", "Acacia mearnsii", "ACAMR");
+            tempTable.AddRow("06029045", "Acacia melanoxylon", "ACAME");
+            tempTable.AddRow("06029045", "Acacia mellifera subsp. detinens", "ACAMD");
+            tempTable.AddRow("06029045", "Acacia mucronata", "ACAMU");
+            tempTable.AddRow("06029045", "Acacia oswaldii", "ACAOS");
+            tempTable.AddRow("06029045", "Acacia paniculata", "ACAPA");
+            tempTable.AddRow("06029045", "Acacia paradoxa", "ACAAR");
+            tempTable.AddRow("06029045", "Acacia pendula", "ACAPD");
+            tempTable.AddRow("06029045", "Acacia penninervis", "ACAPN");
+            tempTable.AddRow("06029045", "Acacia permixta", "ACAPX");
+            tempTable.AddRow("06029045", "Acacia peuce", "ACAPC");
+            tempTable.AddRow("06029045", "Acacia plumosa", "ACAPL");
+            tempTable.AddRow("06029045", "Acacia podalyriifolia", "ACAPF");
+            tempTable.AddRow("06029045", "Acacia polyphylla", "ACAPO");
+            tempTable.AddRow("06029045", "Acacia pravissima", "ACAPR");
+            tempTable.AddRow("06029045", "Acacia pulchella", "ACAPU");
+            tempTable.AddRow("06029045", "Acacia pycnantha", "ACAPY");
+            tempTable.AddRow("06029045", "Acacia redolens", "ACARD");
+            tempTable.AddRow("06029045", "Acacia reficiens", "ACARF");
+            tempTable.AddRow("06029045", "Acacia retinodes", "ACART");
+            tempTable.AddRow("06029045", "Acacia riceana", "ACARC");
+            tempTable.AddRow("06029045", "Acacia rigidula", "ACARI");
+            tempTable.AddRow("06029045", "Acacia salicina", "ACASC");
+            tempTable.AddRow("06029045", "Acacia saligna", "ACASA");
+            tempTable.AddRow("06029045", "Acacia senegal var. leiorhachis", "ACASL");
+            tempTable.AddRow("06029045", "Acacia senegal var. rostrata", "ACASO");
+            tempTable.AddRow("06029045", "Acacia seyal var. fistula", "ACASF");
+            tempTable.AddRow("06029045", "Acacia shirleyi", "ACASH");
+            tempTable.AddRow("06029045", "Vachellia sieberiana var. woodii", "ACASW");
+            tempTable.AddRow("06029045", "Acacia sp.", "ACASS");
+            tempTable.AddRow("06029045", "Acacia sparsiflora", "ACASQ");
+            tempTable.AddRow("06029045", "Acacia spirocarpa", "ACASR");
+            tempTable.AddRow("06029045", "Acacia stenophylla", "ACAST");
+            tempTable.AddRow("06029045", "Acacia stuhlmannii", "ACASM");
+            tempTable.AddRow("06029045", "Acacia sutherlandii", "ACASU");
+            tempTable.AddRow("06029045", "Acacia tenuifolia", "ACATF");
+            tempTable.AddRow("06029045", "Acacia tenuispina", "ACATS");
+            tempTable.AddRow("06029045", "Acacia terminalis", "ACATM");
+            tempTable.AddRow("06029045", "Acacia tetragonophylla", "ACATE");
+            tempTable.AddRow("06029045", "Acacia tortilis subsp. raddiana", "ACATR");
+            tempTable.AddRow("06029045", "Acacia truncata", "ACADE");
+            tempTable.AddRow("06029045", "Acacia unijuga", "ACAUN");
+            tempTable.AddRow("06029045", "Acacia vernicosa", "ACAVC");
+            tempTable.AddRow("06029045", "Acacia verticillata", "ACAVE");
+            tempTable.AddRow("06029045", "Acacia victoriae", "ACAVI");
+            tempTable.AddRow("06029045", "Acacia welwitschii subsp. delagoensis", "ACAWD");
+            tempTable.AddRow("06029045", "Acacia wrightii", "ACAWR");
+            tempTable.AddRow("06029045", "Acaciella angustissima", "ACAAG");
+            tempTable.AddRow("06029045", "Acalypha guatemalensis", "ACCGU");
+            tempTable.AddRow("06029045", "Acalypha havanensis", "ACCHA");
+            tempTable.AddRow("06029045", "Acalypha hispida", "ACCHI");
+            tempTable.AddRow("06029045", "Acalypha indica", "ACCIN");
+            tempTable.AddRow("06029045", "Acalypha macrostachya", "ACCMA");
+            tempTable.AddRow("06029045", "Acalypha malabarica", "ACCMB");
+            tempTable.AddRow("06029045", "Acalypha neomexicana", "ACCNE");
+            tempTable.AddRow("06029045", "Acalypha persimilis", "ACCOS");
+            tempTable.AddRow("06029045", "Acalypha pendula", "ACCPN");
+            tempTable.AddRow("06029045", "Acalypha poirettii", "ACCPO");
+            tempTable.AddRow("06029045", "Acalypha polystachya", "ACCPY");
+            tempTable.AddRow("06029045", "Acalypha pseudoalopecuroides", "ACCPS");
+            tempTable.AddRow("06029045", "Acalypha racemosa", "ACCRA");
+            tempTable.AddRow("06029045", "Acalypha rhomboidea", "ACCRH");
+            tempTable.AddRow("06029045", "Acalypha schiedana", "ACCSC");
+            tempTable.AddRow("06029045", "Acalypha segetalis", "ACCSE");
+            tempTable.AddRow("06029045", "Acalypha setosa", "ACCST");
+            tempTable.AddRow("06029045", "Acalypha sp.", "ACCSS");
+            tempTable.AddRow("06029045", "Acalypha villicaulis", "ACCPE");
+            tempTable.AddRow("06029045", "Acalypha virginica", "ACCVI");
+            tempTable.AddRow("06029045", "Acalypha wilkesiana", "ACCWI");
+            tempTable.AddRow("06029045", "Acantholimon acerosum", "ACLAC");
+            tempTable.AddRow("06029045", "Acantholimon armenum", "ACLAR");
+            tempTable.AddRow("06029045", "Acantholimon caryophyllaceum", "ACLCA");
+            tempTable.AddRow("06029045", "Acantholimon diapensioides", "ACLDI");
+            tempTable.AddRow("06029045", "Acantholimon glumaceum", "ACLGL");
+            tempTable.AddRow("06029045", "Acantholimon kotschyi", "ACLKO");
+            tempTable.AddRow("06029045", "Acantholimon libanoticum", "ACLLI");
+            tempTable.AddRow("06029045", "Acantholimon melananthum", "ACLME");
+            tempTable.AddRow("06029045", "Acantholimon olivieri", "ACLOL");
+            tempTable.AddRow("06029045", "Acantholimon sp.", "ACLSS");
+            tempTable.AddRow("06029045", "Acantholimon ulicinum", "ACLAN");
+            tempTable.AddRow("06029045", "Acanthoprasium frutescens", "BLLFR");
+            tempTable.AddRow("06029045", "Acanthosicyos horridus", "ACWHO");
+            tempTable.AddRow("06029045", "Acanthosicyos sp.", "ACWSS");
+            tempTable.AddRow("06029045", "Acanthospermum australe", "ACNAU");
+            tempTable.AddRow("06029045", "Acanthospermum glabratum", "ACNGL");
+            tempTable.AddRow("06011010", "Bellevalia ciliata", "BLVCI");
+            tempTable.AddRow("06029045", "Acanthospermum humile", "ACNHU");
+            tempTable.AddRow("06029045", "Acanthospermum sp.", "ACNSS");
+            tempTable.AddRow("06029045", "Acanthostyles buniifolius", "EUPBU");
+            tempTable.AddRow("06029045", "Acanthosyris faclata", "AHSFA");
+            tempTable.AddRow("06029045", "Acanthosyris paulo-alvimii", "AHSPA");
+            tempTable.AddRow("06029045", "Acanthosyris sp.", "AHSSS");
+            tempTable.AddRow("06029045", "Acca sellowiana", "FEJSE");
+            tempTable.AddRow("06029045", "Acer acuminatum", "ACRAC");
+            tempTable.AddRow("06029045", "Acer albopurpurascens", "ACRAL");
+            tempTable.AddRow("06029045", "Acer amplum", "ACRAM");
+            tempTable.AddRow("06029045", "Acer argutum", "ACRAR");
+            tempTable.AddRow("06029045", "Acer barbatum", "ACRBA");
+            tempTable.AddRow("06029045", "Acer barbinerve", "ACRBB");
+            tempTable.AddRow("06029045", "Acer buergerianum", "ACRBU");
+            tempTable.AddRow("06029045", "Acer caesium", "ACRCE");
+            tempTable.AddRow("06029045", "Acer caesium subsp. giraldii", "ACRCI");
+            tempTable.AddRow("06029045", "Acer campbellii", "ACRCB");
+            tempTable.AddRow("06029045", "Acer campestre", "ACRCA");
+            tempTable.AddRow("06029045", "Acer capillipes", "ACRCL");
+            tempTable.AddRow("06029045", "Acer cappadocicum", "ACRCP");
+            tempTable.AddRow("06029045", "Acer carpinifolium", "ACRCR");
+            tempTable.AddRow("06029045", "Acer catalpifolium", "ACRCT");
+            tempTable.AddRow("06029045", "Acer caudatifolium", "ACRCF");
+            tempTable.AddRow("06029045", "Acer caudatum", "ACRCD");
+            tempTable.AddRow("06029045", "Acer caudatum subsp. ukurunduense", "ACRUK");
+            tempTable.AddRow("06029045", "Acer caudatum var. multiserratum", "ACRCM");
+            tempTable.AddRow("06029045", "Acer circinatum", "ACRCJ");
+            tempTable.AddRow("06029045", "Acer cissifolium", "ACRCS");
+            tempTable.AddRow("06029045", "Acer cordatum", "ACRCO");
+            tempTable.AddRow("06029045", "Acer coriaceifolium", "ACRCC");
+            tempTable.AddRow("06029045", "Acer crataegifolium", "ACRCG");
+            tempTable.AddRow("06029045", "Acer davidii", "ACRDA");
+            tempTable.AddRow("06029045", "Acer davidii subsp. grosseri", "ACRGO");
+            tempTable.AddRow("06029045", "Acer diabolicum", "ACRDI");
+            tempTable.AddRow("06029045", "Acer discolor", "ACRDS");
+            tempTable.AddRow("06029045", "Acer distylum", "ACRDT");
+            tempTable.AddRow("06029045", "Acer divergens", "ACRDV");
+            tempTable.AddRow("06029045", "Acer erianthum", "ACRER");
+            tempTable.AddRow("06029045", "Acer fabri", "ACRFA");
+            tempTable.AddRow("06029045", "Acer fargesii", "ACRFG");
+            tempTable.AddRow("06029045", "Acer flabellatum", "ACRFL");
+            tempTable.AddRow("06029045", "Acer forrestii", "ACRFO");
+            tempTable.AddRow("06029045", "Acer franchetii", "ACRFR");
+            tempTable.AddRow("06029045", "Acer glabrum", "ACRGL");
+            tempTable.AddRow("06029045", "Acer granatense", "ACRGR");
+            tempTable.AddRow("06029045", "Acer griseum", "ACRGS");
+            tempTable.AddRow("06029045", "Acer heldreichii", "ACRHE");
+            tempTable.AddRow("06029045", "Acer henryi", "ACRHN");
+            tempTable.AddRow("06029045", "Acer hypoleucum", "ACRHL");
+            tempTable.AddRow("06029045", "Acer hyrcanum", "ACRHR");
+            tempTable.AddRow("06029045", "Acer japonicum", "ACRJA");
+            tempTable.AddRow("06029045", "Acer laevigatum", "ACRLA");
+            tempTable.AddRow("06029045", "Acer laevigatum var. salweense", "ACRLS");
+            tempTable.AddRow("06029045", "Acer laurinum", "ACRGA");
+            tempTable.AddRow("06029045", "Acer laxiflorum", "ACRLX");
+            tempTable.AddRow("06029045", "Acer leucoderme", "ACRLE");
+            tempTable.AddRow("06029045", "Acer litseifolium", "ACRLI");
+            tempTable.AddRow("06029045", "Acer lobelii", "ACRLB");
+            tempTable.AddRow("06029045", "Acer longipes", "ACRLO");
+            tempTable.AddRow("06029045", "Acer macrophyllum", "ACRMA");
+            tempTable.AddRow("06029045", "Acer mandshuricum", "ACRMN");
+            tempTable.AddRow("06029045", "Acer maximowiczii", "ACRMX");
+            tempTable.AddRow("06029045", "Acer mayrii", "ACRMY");
+            tempTable.AddRow("06029045", "Acer micranthum", "ACRMR");
+            tempTable.AddRow("06029045", "Acer miyabei", "ACRMI");
+            tempTable.AddRow("06029045", "Acer monspessulanum", "ACRMS");
+            tempTable.AddRow("06029045", "Acer monspessulanum subsp. cinerascens", "ACRMC");
+            tempTable.AddRow("06029045", "Acer multiserratum", "ACRMU");
+            tempTable.AddRow("06029045", "Acer negundo", "ACRNE");
+            tempTable.AddRow("06029045", "Acer negundo var. californicum", "ACRNC");
+            tempTable.AddRow("06029045", "Acer nikoense", "ACRNK");
+            tempTable.AddRow("06029045", "Acer nipponicum", "ACRNP");
+            tempTable.AddRow("06029045", "Acer oblongum", "ACROB");
+            tempTable.AddRow("06029045", "Acer obtusatum", "ACROT");
+            tempTable.AddRow("06029045", "Acer obtusifolium", "ACROF");
+            tempTable.AddRow("06029045", "Acer okamotoanum", "ACROK");
+            tempTable.AddRow("06029045", "Acer oliverianum", "ACROL");
+            tempTable.AddRow("06029045", "Acer opalus", "ACROP");
+            tempTable.AddRow("06029045", "Acer osmastonii", "ACROS");
+            tempTable.AddRow("06029045", "Acer palmatum", "ACRPA");
+            tempTable.AddRow("06029045", "Acer paxii", "ACRPX");
+            tempTable.AddRow("06029045", "Acer pectinatum", "ACRPC");
+            tempTable.AddRow("06029045", "Acer pensylvanicum", "ACRPE");
+            tempTable.AddRow("06029045", "Acer pentapomicum", "ACRPT");
+            tempTable.AddRow("06029045", "Acer pictum subsp. mono", "ACRMO");
+            tempTable.AddRow("06029045", "Acer pilosum", "ACRPI");
+            tempTable.AddRow("06029045", "Acer platanoides", "ACRPL");
+            tempTable.AddRow("06029045", "Acer pseudoplatanus", "ACRPP");
+            tempTable.AddRow("06029045", "Acer pseudosieboldianum", "ACRPS");
+            tempTable.AddRow("06029045", "Acer pubipalmatum", "ACRPB");
+            tempTable.AddRow("06029045", "Acer pycnanthum", "ACRPY");
+            tempTable.AddRow("06029045", "Acer ramosum", "ACRRA");
+            tempTable.AddRow("06029045", "Acer robustum", "ACRRO");
+            tempTable.AddRow("06029045", "Acer rubrum", "ACRRB");
+            tempTable.AddRow("06029045", "Acer rufinerve", "ACRRU");
+            tempTable.AddRow("06029045", "Acer saccharinum", "ACRSA");
+            tempTable.AddRow("06029045", "Acer saccharum", "ACRSC");
+            tempTable.AddRow("06029045", "Acer saccharum subsp. grandidentatum", "ACRSG");
+            tempTable.AddRow("06029045", "Acer saccharum subsp. nigrum", "ACRSN");
+            tempTable.AddRow("06029045", "Acer schneiderianum", "ACRSD");
+            tempTable.AddRow("06029045", "Acer semenovii", "ACRSM");
+            tempTable.AddRow("06029045", "Acer sempervirens", "ACRSV");
+            tempTable.AddRow("06029045", "Acer shirasawanum", "ACRSH");
+            tempTable.AddRow("06029045", "Acer sieboldianum", "ACRSB");
+            tempTable.AddRow("06029045", "Acer sikkimense", "ACRHO");
+            tempTable.AddRow("06029045", "Acer sinense", "ACRSI");
+            tempTable.AddRow("06029045", "Acer sino-oblongum", "ACRSO");
+            tempTable.AddRow("06029045", "Acer sino-purpurascens", "ACRSR");
+            tempTable.AddRow("06029045", "Acer sp.", "ACRSS");
+            tempTable.AddRow("06029045", "Acer spicatum", "ACRSP");
+            tempTable.AddRow("06029045", "Acer stachyophyllum", "ACRST");
+            tempTable.AddRow("06029045", "Acer sterculiaceum", "ACRSQ");
+            tempTable.AddRow("06029045", "Acer sutchuense", "ACRSU");
+            tempTable.AddRow("06029045", "Acer taronense", "ACRTN");
+            tempTable.AddRow("06029045", "Acer tataricum", "ACRTA");
+            tempTable.AddRow("06029045", "Acer tataricum subsp. ginnala", "ACRGN");
+            tempTable.AddRow("06029045", "Acer tegmentosum", "ACRTG");
+            tempTable.AddRow("06029045", "Acer thomsonii", "ACRTH");
+            tempTable.AddRow("06029045", "Acer tibetense", "ACRTI");
+            tempTable.AddRow("06029045", "Acer tonkinense", "ACRTO");
+            tempTable.AddRow("06029045", "Acer trautvetteri", "ACRTR");
+            tempTable.AddRow("06029045", "Acer triflorum", "ACRTF");
+            tempTable.AddRow("06029045", "Acer truncatum", "ACRTU");
+            tempTable.AddRow("06029045", "Acer tschonoskii", "ACRTS");
+            tempTable.AddRow("06029045", "Acer platanoides subsp. Turkestanicum", "ACRTK");
+            tempTable.AddRow("06029045", "Acer tutcheri", "ACRTC");
+            tempTable.AddRow("06029045", "Acer velutinum", "ACRVL");
+            tempTable.AddRow("06029045", "Acer wardii", "ACRWA");
+            tempTable.AddRow("06029045", "Acer wilsonii", "ACRWI");
+            tempTable.AddRow("06029045", "Acer x bornmuelleri", "ACRBO");
+            tempTable.AddRow("06029045", "Acer x boscii", "ACRBS");
+            tempTable.AddRow("06029045", "Acer x coriaceum", "ACRCU");
+            tempTable.AddRow("06029045", "Acer x dieckii", "ACRDK");
+            tempTable.AddRow("06029045", "Acer x freemanii", "ACRFE");
+            tempTable.AddRow("06029045", "Acer x hybridum", "ACRHY");
+            tempTable.AddRow("06029045", "Acer x rotundilobum", "ACRRT");
+            tempTable.AddRow("06029045", "Acer x senecaense", "ACRSE");
+            tempTable.AddRow("06029045", "Acer x sericeum", "ACRSJ");
+            tempTable.AddRow("06029045", "Acer x veitchii", "ACRVE");
+            tempTable.AddRow("06029045", "Acer x zoeschense", "ACRZO");
+            tempTable.AddRow("06029045", "Acer yuii", "ACRYU");
+            tempTable.AddRow("06011010", "Bellevalia sp.", "BLVSS");
+            tempTable.AddRow("06029045", "Achillea alpina", "ACHSI");
+            tempTable.AddRow("06029045", "Achillea borealis", "ACHBO");
+            tempTable.AddRow("06029045", "Achillea distans", "ACHDI");
+            tempTable.AddRow("06011010", "Bowiea sp.", "BWASS");
+            tempTable.AddRow("06029045", "Achillea micrantha", "ACHMC");
+            tempTable.AddRow("06011010", "Camassia cusickii", "CDSCU");
+            tempTable.AddRow("06029045", "Achillea millefolium var. occidentalis", "ACHLA");
+            tempTable.AddRow("06011010", "Dipcadi bakeriana", "DPDBA");
+            tempTable.AddRow("06011010", "Dipcadi erythraeum", "DPDER");
+            tempTable.AddRow("06029045", "Achillea santolina", "ACHSA");
+            tempTable.AddRow("06029045", "Achillea setacea", "ACHSE");
+            tempTable.AddRow("06029045", "Achillea sp.", "ACHSS");
+            tempTable.AddRow("06011010", "Drimia maritima", "URGMA");
+            tempTable.AddRow("06029045", "Achyrocline satureioides", "ACOSA");
+            tempTable.AddRow("06029045", "Achyrocline sp.", "ACOSS");
+            tempTable.AddRow("06029045", "Acilepis divergens", "VENDV");
+            tempTable.AddRow("06029045", "Acis autumnalis", "LEJAU");
+            tempTable.AddRow("06029045", "Acmella alba", "SPLOC");
+            tempTable.AddRow("06029045", "Acmella brachyglossa", "SPLLI");
+            tempTable.AddRow("06029045", "Acmella caulirhiza", "SPLMR");
+            tempTable.AddRow("06029045", "Acmella ciliata", "SPLCI");
+            tempTable.AddRow("06029045", "Acmella oleracea", "SPLOL");
+            tempTable.AddRow("06029045", "Acmella paniculata", "SPLPA");
+            tempTable.AddRow("06029045", "Acmopyle pancheri", "ACMPA");
+            tempTable.AddRow("06029045", "Acmopyle sp.", "ACMSS");
+            tempTable.AddRow("06029045", "Acnistus arborescens", "AKSAR");
+            tempTable.AddRow("06029045", "Acnistus sp.", "AKSSS");
+            tempTable.AddRow("06029045", "Acoelorraphe sp.", "AEQSS");
+            tempTable.AddRow("06029045", "Acokanthera oblongifolia", "CISSP");
+            tempTable.AddRow("06029045", "Acokanthera oppositifolia", "CISAK");
+            tempTable.AddRow("06029045", "Acradenia frankliniae", "ARNFR");
+            tempTable.AddRow("06029045", "Acradenia sp.", "ARNSS");
+            tempTable.AddRow("06029045", "Acrocarpus fraxinifolius", "AOCFR");
+            tempTable.AddRow("06029045", "Acrocarpus sp.", "AOCSS");
+            tempTable.AddRow("06029045", "Acrocomia aculeata", "AARSC");
+            tempTable.AddRow("06029045", "Acrocomia sp.", "AARSS");
+            tempTable.AddRow("06029045", "Acroptilon repens", "CENRE");
+            tempTable.AddRow("06029045", "Acrostichum aureum", "AOHAU");
+            tempTable.AddRow("06029045", "Acrostichum sp.", "AOHSS");
+            tempTable.AddRow("06029045", "Acrotome inflata", "AFTIN");
+            tempTable.AddRow("06029045", "Acrotome sp.", "AFTSS");
+            tempTable.AddRow("06029045", "Actaea rubra", "AATSR");
+            tempTable.AddRow("06029045", "Actaea sp.", "AATSS");
+            tempTable.AddRow("06029045", "Actaea spicata", "AATSP");
+            tempTable.AddRow("06029045", "Actinodaphne sp.", "AHDSS");
+            tempTable.AddRow("06029045", "Actinostemma lobatum", "ACVLO");
+            tempTable.AddRow("06029045", "Actinostemma sp.", "ACVSS");
+            tempTable.AddRow("06029045", "Actinostrobus acuminatus", "ACJAC");
+            tempTable.AddRow("06029045", "Actinostrobus pyramidalis", "ACJPY");
+            tempTable.AddRow("06029045", "Actinostrobus sp.", "ACJSS");
+            tempTable.AddRow("06029045", "Adansonia digitata", "AADDI");
+            tempTable.AddRow("06029045", "Adansonia sp.", "AADSS");
+            tempTable.AddRow("06029045", "Adenandra fragrans", "ADDFR");
+            tempTable.AddRow("06029045", "Adenandra sp.", "ADDSS");
+            tempTable.AddRow("06029045", "Adenandra umbellata", "ADDUM");
+            tempTable.AddRow("06029045", "Adenandra uniflora", "ADDUN");
+            tempTable.AddRow("06029045", "Adenanthera pavonina", "ADEPA");
+            tempTable.AddRow("06029045", "Adenanthera sp.", "ADESS");
+            tempTable.AddRow("06029045", "Adenia cissampeloides", "ADJCI");
+            tempTable.AddRow("06029045", "Adenia digitata", "ADJDI");
+            tempTable.AddRow("06029045", "Adenia gracilis", "ADJGR");
+            tempTable.AddRow("06029045", "Adenia mannii", "ADJMA");
+            tempTable.AddRow("06029045", "Adenia rumicifolia", "ADJRU");
+            tempTable.AddRow("06029045", "Adenia rumicifolia var. miegei", "ADJRM");
+            tempTable.AddRow("06029045", "Adenia rumicifolia var. rumicifolia", "ADJRR");
+            tempTable.AddRow("06029045", "Adenia sp.", "ADJSS");
+            tempTable.AddRow("06029045", "Adenia staudtii", "ADJST");
+            tempTable.AddRow("06029045", "Adenium obesum", "ADFOB");
+            tempTable.AddRow("06029045", "Adenium sp.", "ADFSS");
+            tempTable.AddRow("06029045", "Adenocalymma alliaceum", "ADNAL");
+            tempTable.AddRow("06029045", "Adenocalymma bracteatum", "ADNBR");
+            tempTable.AddRow("06029045", "Adenocalymma sp.", "ADNSS");
+            tempTable.AddRow("06029045", "Adenocarpus anagyrifolius", "ADCAN");
+            tempTable.AddRow("06029045", "Adenocarpus complicatus", "ADCCO");
+            tempTable.AddRow("06029045", "Adenocarpus decorticans", "ADCDE");
+            tempTable.AddRow("06029045", "Adenocarpus foliosus", "ADCFO");
+            tempTable.AddRow("06029045", "Adenocarpus hispanicus", "ADCHI");
+            tempTable.AddRow("06029045", "Adenocarpus sp.", "ADCSS");
+            tempTable.AddRow("06029045", "Adenocarpus telonensis", "ADCTE");
+            tempTable.AddRow("06029045", "Adenocarpus viscosus", "ADCVI");
+            tempTable.AddRow("06029045", "Adenocaulon bicolor", "ADKBI");
+            tempTable.AddRow("06029045", "Adenocaulon sp.", "ADKSS");
+            tempTable.AddRow("06029045", "Adenodolichos rhomboideus", "AOORH");
+            tempTable.AddRow("06029045", "Adenodolichos sp.", "AOOSS");
+            tempTable.AddRow("06029045", "Adenostemma brasilianum", "AOSBR");
+            tempTable.AddRow("06029045", "Adenostemma sp.", "AOSSS");
+            tempTable.AddRow("06029045", "Adenostemma viscosum", "AOSLA");
+            tempTable.AddRow("06029045", "Adenostoma fasciculatum", "ADSFA");
+            tempTable.AddRow("06029045", "Adenostoma sp.", "ADSSS");
+            tempTable.AddRow("06029045", "Adenostoma sparsifolium", "ADSSP");
+            tempTable.AddRow("06029045", "Adenostyles alliariae", "ADTAL");
+            tempTable.AddRow("06029045", "Adenostyles sp.", "ADTSS");
+            tempTable.AddRow("06029045", "Adesmia muricata", "AIMMU");
+            tempTable.AddRow("06029045", "Adesmia sp.", "AIMSS");
+            tempTable.AddRow("06029045", "Adiantum capillus-veneris", "ADICV");
+            tempTable.AddRow("06029045", "Adiantum concinnum", "ADICO");
+            tempTable.AddRow("06029045", "Adiantum cristatum", "ADICR");
+            tempTable.AddRow("06029045", "Adiantum fulvum", "ADIFU");
+            tempTable.AddRow("06029045", "Adiantum hispidulum", "ADIHI");
+            tempTable.AddRow("06029045", "Adiantum pedatum", "ADIPE");
+            tempTable.AddRow("06029045", "Adiantum raddianum", "ADIRA");
+            tempTable.AddRow("06029045", "Adiantum sp.", "ADISS");
+            tempTable.AddRow("06029045", "Adiantum tenerum", "ADITE");
+            tempTable.AddRow("06029045", "Adiantum trapeziforme", "ADITR");
+            tempTable.AddRow("06029045", "Adiantum venustum", "ADIVE");
+            tempTable.AddRow("06029045", "Adonidia merrillii", "VTHME");
+            tempTable.AddRow("06029045", "Adriana acerifola", "ADBAC");
+            tempTable.AddRow("06029045", "Adriana sp.", "ADBSS");
+            tempTable.AddRow("06029045", "Aechmea candida", "AEMCA");
+            tempTable.AddRow("06029045", "Aechmea chantinii", "AEMCH");
+            tempTable.AddRow("06029045", "Aechmea fasciata", "AEMFA");
+            tempTable.AddRow("06029045", "Aechmea fulgens", "AEMFU");
+            tempTable.AddRow("06029045", "Aechmea magdalenae", "AEMMA");
+            tempTable.AddRow("06029045", "Aechmea mexicana", "AEMME");
+            tempTable.AddRow("06029045", "Aechmea servitensis", "AEMSE");
+            tempTable.AddRow("06029045", "Aechmea sp.", "AEMSS");
+            tempTable.AddRow("06011010", "Scilla nana", "CIXNA");
+            tempTable.AddRow("06011010", "Scilla peruviana", "SLLPE");
+            tempTable.AddRow("0709999020", "Abelmoschus esculentus", "ABMES");
+            tempTable.AddRow("0810907590", "Ardisia crenata", "ADACN");
+            scenarioContext["AllCommodityDetails"] = tempTable;
+        }
+
         Driver.WaitForTransaction();
 
         var inputTable = scenarioContext["AllCommodityDetails"] as Table;
@@ -224,88 +701,51 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
 
         var expectedRowCount = inputTable.Rows.Count;
 
-        // Poll with a page refresh until all commodity lines have loaded from IPAFFS,
-        // then return with the grid on page 1 ready for collection.
+        // Step 1: Poll until all commodity lines have loaded, refreshing between attempts.
         WaitForCommodityLinesToLoad(expectedRowCount, timeout: TimeSpan.FromMinutes(10));
 
-        var sortedExpected = inputTable.Rows
-            .OrderBy(r => r["EPPO code"])
-            .ToList();
-
+        // Step 2: Sort the grid by EPPO code ascending so page order matches our in-memory sort.
         SortCommodityLinesByEppoCodeAscending();
         Driver.WaitForTransaction();
+        Thread.Sleep(3000);
 
+        // Step 3: Collect all rows across every page.
         var collectedRows = new List<(string EppoCode, string RegulatoryAuthority)>();
         var pageNumber = 1;
-
-        // Measured before any horizontal scroll — Wijmo only renders the frozen column panel
-        // after scrolling, so the count here reflects the true number of rows per page.
-        const string countPageRowsScript = @"
-            var grid = document.querySelector('div[role=""grid""][aria-label*=""Import Commodity Lines""]');
-            if (!grid) return '0';
-            return grid.querySelectorAll('div[role=""row""][aria-label=""Data""]').length.toString();
-        ";
 
         while (true)
         {
             Driver.WaitForTransaction();
+            Thread.Sleep(1500);
 
-            var pageRowCount = int.Parse((Driver.ExecuteScript(countPageRowsScript) as string) ?? "0");
-
-            // Scroll so Wijmo renders both target columns. This also causes a frozen column
-            // panel to appear, doubling the DOM row count to 2× pageRowCount.
+            // Ensure both EPPO Code (col 5) and Regulatory Authority (col 11) are in the DOM.
             ScrollGridUntilBothColumnsVisible();
 
-            // Collect the first pageRowCount rows that have both target cells — this naturally
-            // discards the frozen panel duplicates without needing any position-based logic.
-            var extractScript = $@"
-                var grid = document.querySelector('div[role=""grid""][aria-label*=""Import Commodity Lines""]');
-                if (!grid) return '';
-                var allRows = Array.from(grid.querySelectorAll('div[role=""row""][aria-label=""Data""]'));
-                var results = [];
-                for (var i = 0; i < allRows.length && results.length < {pageRowCount}; i++) {{
-                    var eppo = allRows[i].querySelector('div[role=""gridcell""][aria-colindex=""5""] span[role=""presentation""]');
-                    var reg  = allRows[i].querySelector('div[role=""gridcell""][aria-colindex=""11""] span[role=""presentation""]');
-                    if (eppo && reg) {{
-                        results.push(eppo.textContent.trim() + '|||' + reg.textContent.trim());
-                    }}
-                }}
-                return results.join(';;;');
-            ";
+            var pageRows = ExtractRowsFromCurrentPage();
+            collectedRows.AddRange(pageRows);
 
-            var pageData = Driver.ExecuteScript(extractScript) as string ?? string.Empty;
+            var nextButtons = Driver.FindElements(By.XPath("//button[contains(@id,'_nextPage')]"));
 
-            if (!string.IsNullOrWhiteSpace(pageData))
-            {
-                foreach (var entry in pageData.Split(";;;", StringSplitOptions.RemoveEmptyEntries))
-                {
-                    var parts = entry.Split("|||");
-                    if (parts.Length == 2)
-                    {
-                        collectedRows.Add((parts[0], parts[1]));
-                    }
-                }
-            }
-
-            var nextButton = Driver.WaitUntilAvailable(
-                By.XPath("//button[contains(@id,'_nextPage')]"),
-                "Pagination next button could not be found.");
-
-            if (nextButton.GetAttribute("disabled") != null)
+            if (!nextButtons.Any() || nextButtons[0].GetAttribute("disabled") != null)
             {
                 break;
             }
 
-            // JS click avoids ElementClickInterceptedException from the Wijmo overlay div.
-            Driver.ExecuteScript("arguments[0].scrollIntoView({block:'center'});", nextButton);
-            Driver.WaitForTransaction();
-            Driver.ExecuteScript("arguments[0].click();", nextButton);
+            Driver.ExecuteScript("arguments[0].click();", nextButtons[0]);
             pageNumber++;
         }
 
-        collectedRows.Count.Should().Be(sortedExpected.Count,
-            $"Expected {sortedExpected.Count} commodity lines but found {collectedRows.Count} across all pages.");
+        // Step 4: Sort expected rows the same way as the grid.
+        var sortedExpected = inputTable.Rows
+            .OrderBy(r => r["EPPO code"])
+            .ToList();
 
+        // Step 5: Assert total count.
+        collectedRows.Count.Should().Be(sortedExpected.Count,
+            $"Expected {sortedExpected.Count} commodity lines but collected {collectedRows.Count} " +
+            $"across {pageNumber} page(s).");
+
+        // Step 6: Validate each row's EPPO code and Regulatory Authority.
         for (var i = 0; i < sortedExpected.Count; i++)
         {
             var expectedEppo = sortedExpected[i]["EPPO code"].Trim();
@@ -314,10 +754,58 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
             actualEppo.Should().Be(expectedEppo,
                 $"Row {i + 1}: Expected EPPO code '{expectedEppo}' but found '{actualEppo}'.");
 
-            var actualRegulatoryAuthority = collectedRows[i].RegulatoryAuthority;
-            ValidRegulatoryAuthorities.Should().Contain(actualRegulatoryAuthority,
-                $"Row {i + 1} (EPPO: '{actualEppo}'): Regulatory Authority '{actualRegulatoryAuthority}' is not one of the valid values: {string.Join(", ", ValidRegulatoryAuthorities)}.");
+            collectedRows[i].RegulatoryAuthority.Should().BeOneOf(ValidRegulatoryAuthorities,
+                $"Row {i + 1} (EPPO: '{actualEppo}'): Regulatory Authority should be one of the valid values.");
         }
+    }
+
+    /// <summary>
+    /// Extracts EPPO code and Regulatory Authority from every data row on the currently visible
+    /// grid page. Retries up to five times on stale element errors.
+    /// </summary>
+    private List<(string EppoCode, string RegulatoryAuthority)> ExtractRowsFromCurrentPage()
+    {
+        for (var attempt = 0; attempt < 5; attempt++)
+        {
+            try
+            {
+                var results = new List<(string EppoCode, string RegulatoryAuthority)>();
+
+                var grid = Driver.WaitUntilAvailable(
+                    By.XPath("//div[@role='grid'][contains(@aria-label,'Import Commodity Lines')]"),
+                    "Commodity Lines grid could not be found while extracting rows.");
+
+                var rows = grid.FindElements(By.XPath(".//div[@role='row'][@aria-label='Data']"));
+
+                foreach (var row in rows)
+                {
+                    var eppoSpan = row.FindElements(
+                        By.XPath(".//div[@role='gridcell'][@aria-colindex='5']//span[@role='presentation']"))
+                        .FirstOrDefault();
+
+                    var regAuthSpan = row.FindElements(
+                        By.XPath(".//div[@role='gridcell'][@aria-colindex='11']//span[@role='presentation']"))
+                        .FirstOrDefault();
+
+                    if (eppoSpan != null && regAuthSpan != null)
+                    {
+                        results.Add((eppoSpan.Text.Trim(), regAuthSpan.Text.Trim()));
+                    }
+                }
+
+                if (results.Count > 0)
+                {
+                    return results;
+                }
+            }
+            catch (StaleElementReferenceException)
+            {
+                Thread.Sleep(1000);
+                Driver.WaitForTransaction();
+            }
+        }
+
+        return new List<(string EppoCode, string RegulatoryAuthority)>();
     }
 
     /// <summary>

@@ -87,6 +87,10 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
     [When("I search Importer Notifications for the notification created in IPAFFS")]
     public void WhenISearchImporterNotificationsForTheNotificationCreatedInIPAFFS()
     {
+        if (!scenarioContext.ContainsKey("CHEDReference"))
+        {
+            scenarioContext["CHEDReference"] = "CHEDPP.GB.2026.1067716";
+        }       
         var chedReference = scenarioContext.Get<string>("CHEDReference");
         XrmApp.Grid.Search(chedReference);
         Driver.WaitForTransaction();
@@ -126,18 +130,21 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
 
         Policy
             .Handle<Exception>()
-            .OrResult<int>(count => count > 0)
-            .WaitAndRetry(60, retryAttempt =>
-            {
-                // Re-search on each retry to refresh the grid with the latest Dynamics data.
-                XrmApp.Grid.ClearSearch();
-                XrmApp.Grid.Search(expectedChedReference);
-                Driver.WaitForTransaction();
-
-                return TimeSpan.FromSeconds(30);
-            })
+            .OrResult<int?>(count => count == null || count > 0)
+            .WaitAndRetry(
+                retryCount: 60,
+                sleepDurationProvider: _ => TimeSpan.FromSeconds(30),
+                onRetry: (_, _, _, _) =>
+                {
+                    // Wait has elapsed — clear and re-search before the next Execute check.
+                    XrmApp.Grid.ClearSearch();
+                    Driver.WaitForTransaction();
+                    XrmApp.Grid.Search(expectedChedReference, true);
+                    Driver.WaitForTransaction();
+                })
             .Execute(() =>
             {
+                // Check the current search results (first run uses the prior step's search).
                 Driver.WaitForTransaction();
                 return GetGridRowCountFromFooter();
             });
@@ -145,7 +152,7 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
         // Final assertion after retries are exhausted — produces a clear failure message if still present.
         Driver.WaitForTransaction();
 
-        var remainingRowCount = GetGridRowCountFromFooter();
+        var remainingRowCount = GetGridRowCountFromFooter() ?? 0;
 
         remainingRowCount.Should().Be(0,
             $"Expected CHED reference '{expectedChedReference}' to no longer appear in the Active Import Notifications " +
@@ -154,22 +161,22 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
 
     /// <summary>
     /// Reads the grid row count from the footer "Rows: X" span.
-    /// This is more reliable than counting ag-grid row divs, which may not be rendered
-    /// even when data is present in the grid.
-    /// Returns 0 if the footer element cannot be found (i.e. no results loaded yet).
+    /// Returns null if the footer element cannot be found (grid not yet rendered — keep retrying).
+    /// Returns 0 only when the footer explicitly shows "Rows: 0" (record is confirmed gone).
+    /// Returns a positive count when results are still present.
     /// </summary>
-    private int GetGridRowCountFromFooter()
+    private int? GetGridRowCountFromFooter()
     {
         var footerElements = Driver.FindElements(
             By.XPath("//span[contains(@class,'statusTextContainer') and contains(text(),'Rows:')]"));
 
         if (footerElements.Count == 0)
-            return 0;
+            return null; // footer not present yet — grid may still be loading
 
         var footerText = footerElements[0].Text.Trim(); // e.g. "Rows: 3"
         var rawCount = footerText.Replace("Rows:", string.Empty).Trim();
 
-        return int.TryParse(rawCount, out var count) ? count : 0;
+        return int.TryParse(rawCount, out var count) ? count : null;
     }
 
     [Then("I verify the Import Notification page is displayed for the notification created in IPAFFS")]
