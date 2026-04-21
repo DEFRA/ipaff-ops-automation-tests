@@ -103,6 +103,9 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
 
         [JsonProperty("Ii300324CartonFranceFrPlantsIn")]
         public ChedSection CHEDPPPageII { get; set; }
+        
+        [JsonProperty("I34AIdentificationDetails")]
+        public ChedSection IdentificationDetails { get; set; }
 
         [JsonProperty("PartIIControls")]
         public ChedSection PartIIControls { get; set; }
