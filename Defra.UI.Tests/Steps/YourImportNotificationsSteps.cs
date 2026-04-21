@@ -205,7 +205,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         ValidateContains("ContactName", page.Sections.OperatorResponsible?.Name, ref allDataMatches, mismatches);
                         ValidateIfExists("ConsignmentContactAddress", page.Sections.OperatorResponsible?.Address, ref allDataMatches, mismatches);
                         ValidateIfExists("TransporterName", page.Sections.Transporter?.Name, ref allDataMatches, mismatches);
-                        ValidateIfExists("TransporterAddress", page.Sections.Transporter?.Address, ref allDataMatches, mismatches);
+                        ValidateContains("TransporterAddress", page.Sections.Transporter?.Address, ref allDataMatches, mismatches,true);
                         ValidateContains("TransporterCountry", page.Sections.Transporter?.Country, ref allDataMatches, mismatches, true);
                         ValidateIfExists("TransporterApprovalNumber", page.Sections.Transporter?.ApprovalNumber, ref allDataMatches, mismatches);
 
