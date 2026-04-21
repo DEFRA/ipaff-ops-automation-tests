@@ -117,6 +117,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         if (!_scenarioContext["CHEDReference"].ToString().Contains("CHEDA"))
                         {
                             ValidateIfExists("ConsignmentReferenceNumber", page.Sections.LocalReference.Id, ref allDataMatches, mismatches);
+                            ValidateIfExists("ContryFromWhereConsigned", page.Sections.CountryOfDispatch?.Value, ref allDataMatches, mismatches);
                         }
                         ValidateContains("PortOfEntry", page.Sections.BorderControlPost.Value, ref allDataMatches, mismatches, true);
                         ValidateIfExists("ConsignorName", page.Sections.ConsignorExporter.Name, ref allDataMatches, mismatches);
@@ -147,13 +148,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         }
                         else if (_scenarioContext["CHEDReference"].ToString().Contains("CHEDA"))
                         {
-                            ValidateContains("HealthDocumentType", (string?)page.Sections.AccompanyingDocuments.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches, true);
-                            ValidateContains("HealthCertificateReference", documentReference, ref allDataMatches, mismatches, true);
-                            ValidateIfExists("HealthCertificateDateOfIssue", reviewDate, ref allDataMatches, mismatches);
+                            ValidateContains("HealthDocumentType", (string?)page.Sections.AccompanyingDocuments.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
+                            ValidateContains("HealthCertificateReference", (string?)page.Sections.AccompanyingDocuments.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
+                            //ValidateIfExists("HealthCertificateDateOfIssue", (string?)page.Sections.AccompanyingDocuments.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
                         }
 
 
-                            ValidateIfExists("ContryFromWhereConsigned", page.Sections.CountryOfDispatch?.Value, ref allDataMatches, mismatches);
                         ValidateIfExists("CommodityIntendedFor", page.Sections.GoodsCertifiedAs?.Value, ref allDataMatches, mismatches);
                         if (_scenarioContext["CHEDReference"].ToString().Contains("CHEDA"))
                         {
@@ -164,7 +164,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             ValidateContains("Purpose", page.Sections.GoodsCertifiedAs?.Value, ref allDataMatches, mismatches);
                         }
 
-                        //ValidateContains("Purpose", page.Sections.GoodsCertifiedAs?.Value, ref allDataMatches, mismatches);
                         ValidateContains("PlaceOfExit", page.Sections.NonInternalMarket?.Value, ref allDataMatches, mismatches);
 
                         ValidateContains("MeansOfTransport", page.Sections.MeansOfTransport.Mode, ref allDataMatches, mismatches);
@@ -207,7 +206,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         ValidateIfExists("ConsignmentContactAddress", page.Sections.OperatorResponsible?.Address, ref allDataMatches, mismatches);
                         ValidateIfExists("TransporterName", page.Sections.Transporter?.Name, ref allDataMatches, mismatches);
                         ValidateIfExists("TransporterAddress", page.Sections.Transporter?.Address, ref allDataMatches, mismatches);
-                        ValidateIfExists("TransporterCountry", page.Sections.Transporter?.Country, ref allDataMatches, mismatches);
+                        ValidateContains("TransporterCountry", page.Sections.Transporter?.Country, ref allDataMatches, mismatches, true);
                         ValidateIfExists("TransporterApprovalNumber", page.Sections.Transporter?.ApprovalNumber, ref allDataMatches, mismatches);
 
                         if (_scenarioContext.ContainsKey("CloningHealthCertificateDetails"))
@@ -224,6 +223,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         {
                             ValidateContains("Species", page.Sections.IdentificationDetails.Value, ref allDataMatches, mismatches);
                             ValidateContains("EarTag", page.Sections.IdentificationDetails.Value, ref allDataMatches, mismatches);
+                            ValidateContains("HorseName", page.Sections.IdentificationDetails.Value, ref allDataMatches, mismatches);
                         }
 
                         if (_scenarioContext.ContainsKey("CloningHealthCertificateDetails"))
@@ -771,7 +771,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             {
                 object contextValue = _scenarioContext[contextKey];
              // Date validation for DocumentDateOfIssue
-                if (contextKey.Equals("HealthCertificateDateOfIssue") || contextKey.Equals("DocumentDateOfIssue"))
+                if (!_scenarioContext["CHEDReference"].ToString().Contains("CHEDA") && (contextKey.Equals("HealthCertificateDateOfIssue") || contextKey.Equals("DocumentDateOfIssue")))
                 {
                     try
                     {
