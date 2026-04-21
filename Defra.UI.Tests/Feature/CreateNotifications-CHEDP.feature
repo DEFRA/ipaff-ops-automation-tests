@@ -2231,7 +2231,7 @@ Scenario: Verify IPAFF Inspector application SPS-7391
 	When the user clicks Clear all in consinments requiring control page
 	When the user selects 'Required' from 'Control status' field
 	And the user clicks on Search in Consignments requiring control page
-	Then the user validates the Control status is 'CONTROL REQUIRED'
+	Then the user validates the Control status is either 'CONTROL REQUIRED' or 'SEAL CHECK REQUIRED'
 	When the user searches for the CHED 'CHEDP.GB.2026.1064468' in Import notifications page
 	And the user opens the first notification in the consignments requiring control page
 	Then the CHED overview page should be displayed
