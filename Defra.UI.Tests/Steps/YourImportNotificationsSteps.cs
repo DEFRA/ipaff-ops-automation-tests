@@ -286,7 +286,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     else if (pageNumber == 3)
                     {
                         ValidateIfExists("CHEDReference", page.Sections.II2ChedReference.Id, ref allDataMatches, mismatches);
-                        //ValidateIfExists("CustomsDeclarationReference", page.Sections.II25BcpReferenceNumber?.Value, ref allDataMatches, mismatches);
 
                         string? pdfDocCheckDecision = page.Sections.DocumentaryCheck 
                         switch
@@ -337,17 +336,19 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             _ => null
                         };
                         ValidateIfExists("LaboratoryTestsReason", pdfLaboratoryTests, ref allDataMatches, mismatches);
-
-                        /*string? pdfLaboratoryTestResult = page.Sections.LaboratoryTests
+                        
+                        string? welfareCheckDecision = page.Sections.WelfareCheck
                         switch
                         {
                             { Satisfactory: "true" } => "Satisfactory",
                             { NotSatisfactory: "true" } => "Not Satisfactory",
-                            { Pending: "true" } => "Pending",
                             _ => null
                         };
-                        ValidateIfExists("LaboratoryTestsReason", pdfLaboratoryTestResult, ref allDataMatches, mismatches);*/
-
+                        ValidateIfExists("WelfareCheckDecision", welfareCheckDecision, ref allDataMatches, mismatches);
+                        ValidateIfExists("NumberOfDeadAnimals", page.Sections.ImpactOnTransportAnimals.Value, ref allDataMatches, mismatches);
+                        ValidateIfExists("NumberOfUnfitAnimals", page.Sections.ImpactOnTransportAnimals.Value, ref allDataMatches, mismatches);
+                        ValidateIfExists("NumberOfBirthsOrAbortions", page.Sections.ImpactOnTransportAnimals.Value, ref allDataMatches, mismatches);
+                        
                         ValidateIfExists("LaboratoryTestName", (string?)page.Sections.LaboratoryTests.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches);                   
 
                         ValidateContains("IUUSubOption", page.Sections.CustomsDocumentReference.Value, ref allDataMatches, mismatches);
@@ -392,7 +393,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     {
                         ValidateIfExists("CHEDReference", (string?)page.Sections.References.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches);
                         ValidateContains("PortOfEntry", page.Sections.References.Name, ref allDataMatches, mismatches);
-                        //ValidateContains("EstablishmentListFirstName", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches);
                         ValidateContains("CountryOfOrigin", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches);
                         ValidateIfExists("ContryFromWhereConsigned", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.ElementAt(4).Value, ref allDataMatches, mismatches);
                         ValidateContains("PlaceOfDestinationDetails", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.ElementAt(3).Value, ref allDataMatches, mismatches, true);
@@ -400,7 +400,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         //ValidateContains("CommodityDescription", page.Sections.IdentificationOfTheSample.Commodity, ref allDataMatches, mismatches);
                         ValidateContains("Species", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
                         ValidateIfExists("LaboratoryTestsReason", (string?)page.Sections.RequestedAnalysis.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches);
-                        //ValidateIfExists("AnalysisType", (string?)page.Sections.LabResults.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches);
                         ValidateIfExists("LabTestName", (string?)page.Sections.LabResults.Name, ref allDataMatches, mismatches);
                         ValidateIfExists("LabSampleReference", (string?)page.Sections.LabResults.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches);
                         ValidateIfExists("NumberOfLabSamples", (string?)page.Sections.LabResults.AdditionalData.ElementAt(4).Value, ref allDataMatches, mismatches);
