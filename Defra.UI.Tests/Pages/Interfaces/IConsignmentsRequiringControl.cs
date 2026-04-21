@@ -9,7 +9,7 @@
         bool VerifyLink(string link);
         bool VerifyDropdownFieldValue(string field, string value);
         void SelectControlStatus(string field, string value);
-        bool VerifyTheControlStatus(string status);
+        bool VerifyTheControlStatus(string value);
         bool VerifyTheControlStatus(string controlRequired, string sealChkRequired);
         void ClickSearchButton();
         void EnterStartDate(string day, string month, string year);

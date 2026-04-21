@@ -82,7 +82,6 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool VerifyControlStatus(string controlStatus)
         {
-            var a = lblControlStatus.Text;
             return lblControlStatus.Text.Equals(controlStatus, StringComparison.OrdinalIgnoreCase);
         }
 
