@@ -76,11 +76,17 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
         
         [Then("the user validates the Control status is {string}")]
-        public void WhenTheUserValidatesControlStatus(String value)
+        public void WhenTheUserValidatesControlStatus(string value)
         {
             Assert.IsTrue(consignmentsRequiringControlPage?.VerifyTheControlStatus(value), "The control status is not found or not equal to " + value);
         }
-        
+
+        [Then("the user validates the Control status is either {string} or {string}")]
+        public void ThenTheUserValidatesTheControlStatusIsEitherOr(string controlRequired, string sealChkRequired)
+        {
+            Assert.IsTrue(consignmentsRequiringControlPage?.VerifyTheControlStatus(controlRequired, sealChkRequired), "The control status is not found or not equal to " + controlRequired + "or " + sealChkRequired);
+        }
+
         [Then("the user validates the result is within the date range")]
         public void WhenTheUserValidatesTheResultIsWithinTheDateRange()
         {

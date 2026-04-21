@@ -116,6 +116,14 @@ namespace Defra.UI.Tests.Pages.Classes
             return lblControlStatuses.Count > 0 && lblControlStatuses.All(e => e.Text.Trim().Equals(status, StringComparison.OrdinalIgnoreCase));
         }
 
+        public bool VerifyTheControlStatus(string controlRequired, string sealChkRequired)
+        {
+            return lblControlStatuses.Count > 0 &&
+                   lblControlStatuses.All(e =>
+                       e.Text.Trim().Equals(controlRequired, StringComparison.OrdinalIgnoreCase) ||
+                       e.Text.Trim().Equals(sealChkRequired, StringComparison.OrdinalIgnoreCase));
+        }
+
         public bool VerifySortByDropdown(string sortBy)
         {
             return new SelectElement(drpdownSortBy).SelectedOption.Text.Equals(sortBy);
