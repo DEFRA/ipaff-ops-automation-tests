@@ -94,8 +94,8 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             return new NotificationDetails
             {
-                CertificateReferenceNumber = "NZL2026/AGL18/1",
-                CertificateDateOfIssue = "15/01/2026",
+                CertificateReferenceNumber = "NZL2026/AGL18/3",
+                CertificateDateOfIssue = "20/04/2026",
                 CountryOfOriginOfCertificate = "New Zealand",
                 ConsignorConsigneeOrImporterName = "ALLIANCE GROUP (NZ) LTD",
                 PurposeOfTheConsignment = "Human Consumption",
