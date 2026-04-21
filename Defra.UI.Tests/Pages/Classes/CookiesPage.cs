@@ -13,7 +13,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects
         private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
-        private IWebElement lnkImportOfProducts => _driver.FindElement(By.Id("proposition-name")); 
+        private IWebElement lnkImportOfProducts => _driver.FindElement(By.ClassName("govuk-service-navigation__link")); 
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();

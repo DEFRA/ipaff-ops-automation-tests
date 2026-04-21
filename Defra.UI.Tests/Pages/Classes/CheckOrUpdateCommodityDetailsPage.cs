@@ -54,6 +54,13 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public string GetGrossVolume()=> txtGrossVolume.Text.Trim();
 
-        public string GetGrossVolumeUnit()=> new SelectElement(drpGrossVolumeUnit).SelectedOption.Text.Trim();
+        public string GetGrossVolumeUnit()
+        {
+            var selected = new SelectElement(drpGrossVolumeUnit).SelectedOption.Text.Trim();
+
+            return selected.Equals("Select Unit", StringComparison.OrdinalIgnoreCase)
+                ? string.Empty
+                : selected;
+        }
     }
 }

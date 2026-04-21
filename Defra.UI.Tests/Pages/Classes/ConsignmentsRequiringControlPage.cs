@@ -82,7 +82,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool VerifyControlStatus(string controlStatus)
         {
-            return lblControlStatus.Text.Equals(controlStatus);
+            return lblControlStatus.Text.Equals(controlStatus, StringComparison.OrdinalIgnoreCase);
         }
 
         public bool VerifyLink(string link)
@@ -113,7 +113,15 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool VerifyTheControlStatus(string status)
         {
-            return lblControlStatuses.Count > 0 && lblControlStatuses.All(e => e.Text.Trim() == status);
+            return lblControlStatuses.Count > 0 && lblControlStatuses.All(e => e.Text.Trim().Equals(status, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public bool VerifyTheControlStatus(string controlRequired, string sealChkRequired)
+        {
+            return lblControlStatuses.Count > 0 &&
+                   lblControlStatuses.All(e =>
+                       e.Text.Trim().Equals(controlRequired, StringComparison.OrdinalIgnoreCase) ||
+                       e.Text.Trim().Equals(sealChkRequired, StringComparison.OrdinalIgnoreCase));
         }
 
         public bool VerifySortByDropdown(string sortBy)

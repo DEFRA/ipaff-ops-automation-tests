@@ -72,20 +72,20 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             return new NotificationDetails
             {
-                CertificateReferenceNumber = "PHYTO.FR.2026.0000004",
-                CertificateDateOfIssue = "12/01/2026",
+                CertificateReferenceNumber = "PHYTO.FR.2026.0000064",
+                CertificateDateOfIssue = "15/04/2026",
                 CountryOfOriginOfCertificate = "France",
-                ConsignorConsigneeOrImporterName = "LIBONX28 WW",
-                PurposeOfTheConsignment= "For Import",
-                CommodityCode= "06011010",
-                Description= "Hyacinths",
-                GenusAndSpecies= "Bellevalia trifoliata",
-                NetWeightWithUnits = "1000.0 kgs/units",
-                NetWeight="1000",
-                Packages="10",
-                TypeOfPackage= "Box",
-                Quantity= "1000.0",
-                QuantityType= "Kilograms",
+                ConsignorConsigneeOrImporterName = "WorldUSIN74 Co",
+                PurposeOfTheConsignment = "For Import",
+                CommodityCode = "06011090",
+                Description = "Other",
+                GenusAndSpecies = "Ismene x deflexa",
+                NetWeightWithUnits = "1.0 kgs/units",
+                NetWeight = "1",
+                Packages = "1",
+                TypeOfPackage = "Bag",
+                Quantity = "1.0",
+                QuantityType = "Kilograms",
                 DocumentType = "Phytosanitary certificate"
             };
         }
@@ -94,8 +94,8 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             return new NotificationDetails
             {
-                CertificateReferenceNumber = "NZL2026/AGL18/1",
-                CertificateDateOfIssue = "15/01/2026",
+                CertificateReferenceNumber = "NZL2026/AGL18/3",
+                CertificateDateOfIssue = "20/04/2026",
                 CountryOfOriginOfCertificate = "New Zealand",
                 ConsignorConsigneeOrImporterName = "ALLIANCE GROUP (NZ) LTD",
                 PurposeOfTheConsignment = "Human Consumption",

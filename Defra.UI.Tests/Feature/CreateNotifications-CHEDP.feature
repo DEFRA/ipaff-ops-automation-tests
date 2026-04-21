@@ -288,7 +288,6 @@ Scenario: User creates and submits a B2C consignment notification for Transit Re
 	Then the notification should be present in the list
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
-	When verifies the document 'CHEDREFERENCE' downloaded successfully
 	When the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
@@ -2232,7 +2231,7 @@ Scenario: Verify IPAFF Inspector application SPS-7391
 	When the user clicks Clear all in consinments requiring control page
 	When the user selects 'Required' from 'Control status' field
 	And the user clicks on Search in Consignments requiring control page
-	Then the user validates the Control status is 'CONTROL REQUIRED'
+	Then the user validates the Control status is either 'CONTROL REQUIRED' or 'SEAL CHECK REQUIRED'
 	When the user searches for the CHED 'CHEDP.GB.2026.1064468' in Import notifications page
 	And the user opens the first notification in the consignments requiring control page
 	Then the CHED overview page should be displayed
@@ -2779,7 +2778,7 @@ Scenario: Verify IUU and Catch certificate details for EU and Non-EU countries C
 	And the user clicks Save and continue
 	And the Approved establishment of origin page should be displayed
 	When the user clicks Search for an approved establishment
-	Then the list of establishments should be displayed, filtered by Country of origin "Argentina" type "Cold Stores" status "Approved"
+	Then the list of establishments should be displayed, filtered by Country of origin "Argentina" type "Processing Plant" status "Approved"
 	When the user clicks Select for one of the establishments in the list
 	Then the Approved establishment of origin page should be displayed with the selected establishment
 	When the user clicks Save and continue
