@@ -113,7 +113,7 @@ Scenario: User creates and submits a B2C consignment notification - CHEDA Happy 
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
 	When the user downloads the PDF for validation
-	When the user checks that the data in the certificate matches the data entered into the notification
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 1
@@ -167,7 +167,7 @@ Scenario: User creates and submits a B2C consignment notification - CHEDA Happy 
 	When the user clicks View or print CHED
 	Then the certificate should be displayed in a new browser tab
 	When the user downloads the PDF for validation
-	When the user checks that the data in the certificate matches the data entered into the notification
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 2
