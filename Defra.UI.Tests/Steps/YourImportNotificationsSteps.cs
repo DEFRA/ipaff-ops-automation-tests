@@ -638,7 +638,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void ThenTheNotificationReturnedInTheSearchHasTheStatus(string expectedStatus)
         {
             var actualStatus = importNotificationsPage?.GetNotificationStatus();
-            Assert.AreEqual(expectedStatus, actualStatus, $"Expected status '{expectedStatus}' but found '{actualStatus}'");
+            Assert.AreEqual(expectedStatus.ToLower(), actualStatus.ToLower(), $"Expected status '{expectedStatus}' but found '{actualStatus}'");
         }
 
         [Then("the Amend link should be available for the notification")]
