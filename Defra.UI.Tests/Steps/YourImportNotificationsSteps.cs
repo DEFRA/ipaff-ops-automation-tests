@@ -66,14 +66,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserClicksShowNotification()
         {
             var chedReference = _scenarioContext.Get<string>("CHEDReference");
-            //var chedReference = "CHEDP.GB.2025.1056538";
             importNotificationsPage?.ClickShowNotification(chedReference);
         }
 
         [Then("the certificate should be displayed in a new browser tab")]
         public void ThenTheCertificateShouldBeDisplayedInANewBrowserTab()
         {
-            //var chedRef = "CHEDP.GB.2025.1056538";
             Assert.True(importNotificationsPage?.VerifyCertificateInNewTab(), "Certificate not displayed in new browser tab");
         }
 
@@ -345,9 +343,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             _ => null
                         };
                         ValidateIfExists("WelfareCheckDecision", welfareCheckDecision, ref allDataMatches, mismatches);
-                        ValidateIfExists("NumberOfDeadAnimals", page.Sections.ImpactOnTransportAnimals.Value, ref allDataMatches, mismatches);
-                        ValidateIfExists("NumberOfUnfitAnimals", page.Sections.ImpactOnTransportAnimals.Value, ref allDataMatches, mismatches);
-                        ValidateIfExists("NumberOfBirthsOrAbortions", page.Sections.ImpactOnTransportAnimals.Value, ref allDataMatches, mismatches);
+                        ValidateContains("NumberOfDeadAnimals", page.Sections.ImpactOnTransportAnimals.Value, ref allDataMatches, mismatches);
+                        ValidateContains("NumberOfUnfitAnimals", page.Sections.ImpactOnTransportAnimals.Value, ref allDataMatches, mismatches);
+                        ValidateContains("NumberOfBirthsOrAbortions", page.Sections.ImpactOnTransportAnimals.Value, ref allDataMatches, mismatches);
                         
                         ValidateIfExists("LaboratoryTestName", (string?)page.Sections.LaboratoryTests.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches);                   
 
@@ -393,8 +391,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     {
                         ValidateIfExists("CHEDReference", (string?)page.Sections.References.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches);
                         ValidateContains("PortOfEntry", page.Sections.References.Name, ref allDataMatches, mismatches);
+
+                        if (_scenarioContext["CHEDReference"].ToString().Contains("CHEDA"))
+                        {
+                            ValidateContains("ExitBCP", page.Sections.References.Name, ref allDataMatches, mismatches);
+                        }
                         ValidateContains("CountryOfOrigin", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches);
-                        ValidateIfExists("ContryFromWhereConsigned", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.ElementAt(4).Value, ref allDataMatches, mismatches);
+                        if (!_scenarioContext["CHEDReference"].ToString().Contains("CHEDA"))
+                        {
+                            ValidateIfExists("ContryFromWhereConsigned", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.ElementAt(4).Value, ref allDataMatches, mismatches);
+                        }
                         ValidateContains("PlaceOfDestinationDetails", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.ElementAt(3).Value, ref allDataMatches, mismatches, true);
                         ValidateContains("CommodityCode", page.Sections.IdentificationOfTheSample.Commodity, ref allDataMatches, mismatches);
                         //ValidateContains("CommodityDescription", page.Sections.IdentificationOfTheSample.Commodity, ref allDataMatches, mismatches);
