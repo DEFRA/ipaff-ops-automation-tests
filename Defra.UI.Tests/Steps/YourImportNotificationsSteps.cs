@@ -344,23 +344,22 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             _ => null
                         };
                         ValidateIfExists("WelfareCheckDecision", welfareCheckDecision, ref allDataMatches, mismatches);
-                        ValidateIfExists("NumberOfDeadAnimals", page.Sections.ImpactOnTransportAnimals.Value, ref allDataMatches, mismatches);
-                        ValidateIfExists("NumberOfUnfitAnimals", page.Sections.ImpactOnTransportAnimals.Value, ref allDataMatches, mismatches);
-                        ValidateIfExists("NumberOfBirthsOrAbortions", page.Sections.ImpactOnTransportAnimals.Value, ref allDataMatches, mismatches);
+                        ValidateContains("NumberOfDeadAnimals", page.Sections.ImpactOnTransportAnimals.Value, ref allDataMatches, mismatches);
+                        ValidateContains("NumberOfUnfitAnimals", page.Sections.ImpactOnTransportAnimals.Value, ref allDataMatches, mismatches);
+                        ValidateContains("NumberOfBirthsOrAbortions", page.Sections.ImpactOnTransportAnimals.Value, ref allDataMatches, mismatches);
                         
                         ValidateIfExists("LaboratoryTestName", (string?)page.Sections.LaboratoryTests.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches);                   
 
                         ValidateContains("IUUSubOption", page.Sections.CustomsDocumentReference.Value, ref allDataMatches, mismatches);
 
-                       // var c = (string?)page.Sections.IdentificationOfBcp.AdditionalData.ElementAt(2).Value;
-
-
-                        if (_scenarioContext["CHEDReference"].ToString().Contains("CHEDA"))
+                        
+                        if (_scenarioContext["PortOfEntry"].ToString().Contains("London Borough of Hillingdon Heathrow Airport Imported Food Office"))
                         {
-                            ValidateContains("PortOfEntry", (string?)page.Sections.IdentificationOfBcp?.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches, true);
+                            var combined = $"{page.Sections.IdentificationOfBcp?.AdditionalData.ElementAt(2).Value} {page.Sections.IdentificationOfBcp?.AdditionalData.ElementAt(1).Value}".Trim();
+                            ValidateContains("PortOfEntry", combined, ref allDataMatches, mismatches, true);
                         }
-
-                        ValidateContains("PortOfEntry", (string?)page.Sections.IdentificationOfBcp?.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches, true);
+                        else
+                            ValidateContains("PortOfEntry", (string?)page.Sections.IdentificationOfBcp?.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches, true);
 
                         if (page.Sections.AcceptableForTransit != null)
                         {
