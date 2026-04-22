@@ -349,15 +349,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
                         ValidateContains("IUUSubOption", page.Sections.CustomsDocumentReference.Value, ref allDataMatches, mismatches);
 
-                       // var c = (string?)page.Sections.IdentificationOfBcp.AdditionalData.ElementAt(2).Value;
-
-
-                        if (_scenarioContext["CHEDReference"].ToString().Contains("CHEDA"))
+                        
+                        if (_scenarioContext["PortOfEntry"].ToString().Contains("London Borough of Hillingdon Heathrow Airport Imported Food Office"))
                         {
-                            ValidateContains("PortOfEntry", (string?)page.Sections.IdentificationOfBcp?.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches, true);
+                            var combined = $"{page.Sections.IdentificationOfBcp?.AdditionalData.ElementAt(2).Value} {page.Sections.IdentificationOfBcp?.AdditionalData.ElementAt(1).Value}".Trim();
+                            ValidateContains("PortOfEntry", combined, ref allDataMatches, mismatches, true);
                         }
-
-                        ValidateContains("PortOfEntry", (string?)page.Sections.IdentificationOfBcp?.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches, true);
+                        else
+                            ValidateContains("PortOfEntry", (string?)page.Sections.IdentificationOfBcp?.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches, true);
 
                         if (page.Sections.AcceptableForTransit != null)
                         {
