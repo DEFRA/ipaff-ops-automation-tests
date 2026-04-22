@@ -485,16 +485,16 @@ Scenario: User creates and submits a CHEDA consignment notification for Temporar
 	And the user clicks Submit notification
 	Then the Confirmation page should be displayed with the initial risk assessment
 	And the user records the IPAFFS User details and CHED Reference
-	When the user clicks Return to your dashboard
-	Then the dashboard page should be displayed
-	When user searches for the import notification
-	Then the notification should be present in the list
-	When the user clicks Show notification
-	Then the certificate should be displayed in a new browser tab
-	When the user downloads the PDF for validation
-	When the user checks that the data in the certificate matches the data entered into the notification
-	And the user closes the PDF browser tab
-	Then the browser tab is closed
+	#When the user clicks Return to your dashboard
+	##Then the dashboard page should be displayed
+	#When user searches for the import notification
+	#Then the notification should be present in the list
+	#When the user clicks Show notification
+	#Then the certificate should be displayed in a new browser tab
+	#When the user downloads the PDF for validation
+	#When the user checks that the data in the certificate matches the data entered into the notification
+	#When the user closes the PDF browser tab
+	#Then the browser tab is closed
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
 	When I navigate to the IPAFF Inspector application

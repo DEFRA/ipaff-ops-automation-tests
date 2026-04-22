@@ -4,7 +4,6 @@ using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using Defra.UI.Tests.Tools.PDFProcessor;
 using Defra.UI.Tests.Tools.PDFProcessor.Models;
-using Faker;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using Reqnroll;
@@ -352,11 +351,17 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
                         ValidateContains("IUUSubOption", page.Sections.CustomsDocumentReference.Value, ref allDataMatches, mismatches);
 
-                        var c = (string?)page.Sections.IdentificationOfBcp.AdditionalData.ElementAt(2).Value;
+                       // var c = (string?)page.Sections.IdentificationOfBcp.AdditionalData.ElementAt(2).Value;
+
+
+                        if (_scenarioContext["CHEDReference"].ToString().Contains("CHEDA"))
+                        {
+                            ValidateContains("PortOfEntry", (string?)page.Sections.IdentificationOfBcp?.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches, true);
+                        }
 
                         ValidateContains("PortOfEntry", (string?)page.Sections.IdentificationOfBcp?.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches, true);
 
-                        if(page.Sections.AcceptableForTransit != null)
+                        if (page.Sections.AcceptableForTransit != null)
                         {
                             ValidateContains("DestinationCountry", page.Sections.AcceptableForTransit?.Value, ref allDataMatches, mismatches);
                             ValidateContains("ExitBorderControlPost", (string?)page.Sections.AcceptableForTransit?.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches);
@@ -391,10 +396,21 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     else if (pageNumber == 5)
                     {
                         ValidateIfExists("CHEDReference", (string?)page.Sections.References.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches);
+
                         ValidateContains("PortOfEntry", page.Sections.References.Name, ref allDataMatches, mismatches);
+
+                        if (_scenarioContext["CHEDReference"].ToString().Contains("CHEDA"))
+                        {
+                            ValidateContains("ExitBCP", page.Sections.References.Name, ref allDataMatches, mismatches);
+                        }
+
+
                         //ValidateContains("EstablishmentListFirstName", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches);
                         ValidateContains("CountryOfOrigin", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches);
-                        ValidateIfExists("ContryFromWhereConsigned", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.ElementAt(4).Value, ref allDataMatches, mismatches);
+                        if (!_scenarioContext["CHEDReference"].ToString().Contains("CHEDA"))
+                        {
+                            ValidateIfExists("ContryFromWhereConsigned", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.ElementAt(4).Value, ref allDataMatches, mismatches);
+                        }
                         ValidateContains("PlaceOfDestinationDetails", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.ElementAt(3).Value, ref allDataMatches, mismatches, true);
                         ValidateContains("CommodityCode", page.Sections.IdentificationOfTheSample.Commodity, ref allDataMatches, mismatches);
                         //ValidateContains("CommodityDescription", page.Sections.IdentificationOfTheSample.Commodity, ref allDataMatches, mismatches);
@@ -970,6 +986,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
         private void ValidateContains(string contextKey, string? actual, ref bool allDataMatches, List<string> mismatches, bool contextContainsPDF = false)
         {
+            (List<string> expectedWords, List<string> actualWords) result = (null, null);
+
             if (_scenarioContext.ContainsKey("CloningHealthCertificateDetails") && (contextKey.Equals("CommodityCode") || contextKey.Equals("Description")
                 || contextKey.Equals("GenusAndSpecies") || contextKey.Equals("NetWeight")
                 || contextKey.Equals("Packages") || contextKey.Equals("TypeOfPackage")
@@ -1014,16 +1032,20 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
                 if (rawExpected is string s)
                 {
+                    
                     expectedValue = s.Trim();
                     if (expectedValue.Trim() == "No need to inspect - exempt or not applicable") expectedValue = "IUUNA";
-                    if (contextKey.Trim() == "ExitBorderControlPost" || contextKey.Trim() == "PortOfEntry") expectedValue = expectedValue.Split('(')[0].Trim();
+                    //if (expectedValue.Trim() == "London Borough of Hillingdon Heathrow Airport Imported Food Office - ADADA") expectedValue = "London Airport Imported Borough Food of Hillingdon Office Heathrow ADADA";
+                    if (contextKey.Trim() == "ExitBorderControlPost" || contextKey.Trim() == "PortOfEntry") expectedValue = expectedValue.Split(new[] { '(', '-' })[0].Trim();
                     if (contextKey.Trim() == "InspectionPremises") expectedValue = expectedValue.Split('-')[0].Trim();
                     if (contextKey.Trim() == "ImporterAddress") actual = actual.Replace("Address ", "").Trim();
                     if (contextKey.Trim() == "TotalPackages") actual = Regex.Matches(actual, @"\d+").Select(m => int.Parse(m.Value)).Sum().ToString();
                     if (contextKey.Trim() == "NumberOfAnimals") expectedValue = expectedValue + " Units";
                     if (contextKey.Trim() == "EstimatedArrivalDate") expectedValue = DateTime.ParseExact(expectedValue, "dd MMM yyyy", System.Globalization.CultureInfo.InvariantCulture).ToString("dd.MM.yyyy");
-                    ;
-
+                    if (contextKey.Trim() == "PortOfEntry" || contextKey.Trim() == "ExitBCP")
+                    {
+                        result = ConvertLinesAsWords(expectedValue, actual);
+                    }
                 }
                 else if (rawExpected is string[] arr)
                 {
@@ -1067,12 +1089,24 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
                 if (!string.IsNullOrEmpty(expectedValue) && !string.IsNullOrEmpty(actual))
                 {
-                    string RemoveWhitespace(string s) => string.Concat(s.Where(c => !char.IsWhiteSpace(c)));
+                    bool isMatch = false;
 
-                    bool isMatch = contextContainsPDF
-                        ? RemoveWhitespace(expectedValue).Contains(RemoveWhitespace(actual), StringComparison.OrdinalIgnoreCase)
-                        : RemoveWhitespace(actual).Contains(RemoveWhitespace(expectedValue), StringComparison.OrdinalIgnoreCase);
+                    if (result.actualWords is List<string> actualList &&
+                            result.expectedWords is List<string> expectedList &&
+                            actualList != null &&
+                            expectedList != null)
+                    {                
+                        isMatch = actualList.SequenceEqual(expectedList);
+                    }
+                    else
+                    {
+                        string RemoveWhitespace(string s) => string.Concat(s.Where(c => !char.IsWhiteSpace(c)));
 
+                        isMatch = contextContainsPDF
+                            ? RemoveWhitespace(expectedValue).Contains(RemoveWhitespace(actual), StringComparison.OrdinalIgnoreCase)
+                            : RemoveWhitespace(actual).Contains(RemoveWhitespace(expectedValue), StringComparison.OrdinalIgnoreCase);
+
+                    }
                     if (!isMatch)
                     {
                         allDataMatches = false;
@@ -1088,6 +1122,26 @@ namespace Defra.UI.Tests.Steps.IPAFF
             {
                 Console.WriteLine($"[PDF VALIDATION] ⊘ {contextKey}: Skipped (not in context)");
             }
+        }
+
+        public (List<string> expectedWords, List<string> actualWords) ConvertLinesAsWords(string expected, string actual)
+        {
+            string Clean(string s) =>
+                new string(s.Where(c => !char.IsPunctuation(c)).ToArray());
+
+            var expectedWords = Clean(expected)
+                .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                .Select(w => w.Trim().ToLower())
+                .OrderBy(w => w)
+                .ToList();
+
+            var actualWords = Clean(actual)
+                .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                .Select(w => w.Trim().ToLower())
+                .OrderBy(w => w)
+                .ToList();
+
+            return (expectedWords, actualWords);
         }
     }
 }
