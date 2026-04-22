@@ -181,12 +181,6 @@ namespace Defra.UI.Tests.Pages.Classes
             return (checkTags.Count > 0 && nonMatching.Count == 0, checkTags.Count, nonMatching);
         }
 
-        /// <summary>
-        /// Clicks the Show CHED button to open the PDF certificate in a new browser tab.
-        /// Chrome's built-in PDF viewer is used because plugins.always_open_pdf_externally
-        /// is overridden to false in BrowserOptionsWithProfileSupport.ToChrome(), which prevents
-        /// the EasyRepro default from routing the PDF response to the download manager.
-        /// </summary>
         public void ClickShowChed()
         {
             btnShowCHED.Click();

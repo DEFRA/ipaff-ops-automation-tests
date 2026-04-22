@@ -9,23 +9,9 @@ using System;
 using System.Threading;
 
 /// <summary>
-/// Helper for dismissing the two Dynamics 365 MSAL sign-in prompts that can
-/// appear at any point during a test session:
-///
-///   1. "Please sign in again"  – appears immediately after credentials are
-///      submitted; must be clicked at once or the dialog gets stuck.
-///   2. "Sign in to continue"   – appears when an app component triggers a
-///      silent token refresh that requires interaction.
-///
-/// Both dialogs share the same <c>data-id="okButton"</c> attribute on their
-/// dismiss button and <c>data-uci-dialog="true"</c> on their root element.
-/// Multiple instances can be stacked simultaneously (Dynamics increments the
-/// numeric suffix: _2, _3, …), so every visible button is clicked each pass.
-///
-/// Stuck-dialog recovery: if clicking the Sign In button repeatedly fails to
-/// dismiss the dialog within <c>stuckThresholdSeconds</c>, the page is
-/// refreshed. After refresh the dialog either disappears or reappears in a
-/// dismissable state and the loop resumes.
+/// Helper for dismissing Dynamics 365 MSAL sign-in prompts that may appear during test sessions.
+/// Handles both "Please sign in again" and "Sign in to continue" dialogs, including stacked instances.
+/// If a dialog cannot be dismissed after repeated attempts, the page is refreshed to recover.
 /// </summary>
 public static class SignInPromptHelper
 {
@@ -43,36 +29,14 @@ public static class SignInPromptHelper
         "//button[@data-id='okButton']");
 
     /// <summary>
-    /// Dismisses all visible sign-in prompts and waits until none remain.
-    /// <para>
-    /// Uses a short <paramref name="gracePeriodMs"/> poll on first entry to catch
-    /// prompts that appear slightly after a navigation action triggers a token
-    /// refresh — avoiding the race condition where the prompt does not yet exist
-    /// when the method is first called but appears moments later.
-    /// </para>
-    /// <para>
-    /// Returns immediately after the grace period if no prompt appears at all,
-    /// so callers incur only a small fixed delay rather than a full timeout.
-    /// </para>
-    /// <para>
-    /// If the dialog becomes stuck (repeated clicks fail to dismiss it within
-    /// <paramref name="stuckThresholdSeconds"/>), the page is refreshed and the
-    /// dismiss loop resumes — matching the manual recovery of pressing F5.
-    /// </para>
+    /// Dismisses all visible sign-in prompts, waiting until none remain or until the timeout is reached.
+    /// Uses a short grace period to catch late-appearing prompts. If a dialog is stuck, refreshes the page.
     /// </summary>
-    /// <param name="driver">The Selenium WebDriver instance.</param>
+    /// <param name="driver">Selenium WebDriver instance.</param>
     /// <param name="callerContext">Optional label for trace logging.</param>
-    /// <param name="timeoutSeconds">
-    /// Total time budget for all prompts to clear once one is detected. Defaults to 90 seconds.
-    /// </param>
-    /// <param name="gracePeriodMs">
-    /// How long to poll waiting for a prompt to appear before giving up and
-    /// returning. Defaults to 3000 ms.
-    /// </param>
-    /// <param name="stuckThresholdSeconds">
-    /// How long to keep clicking before deciding the dialog is stuck and
-    /// triggering a browser refresh. Defaults to 15 seconds.
-    /// </param>
+    /// <param name="timeoutSeconds">Total time to wait for prompts to clear (default: 90s).</param>
+    /// <param name="gracePeriodMs">Time to poll for prompt appearance before returning (default: 3000ms).</param>
+    /// <param name="stuckThresholdSeconds">Time to keep clicking before refreshing the page (default: 15s).</param>
     public static void DismissSignInPrompts(
         IWebDriver driver,
         string callerContext = "",

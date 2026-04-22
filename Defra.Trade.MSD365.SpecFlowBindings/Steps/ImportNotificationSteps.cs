@@ -89,7 +89,7 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
     {
         if (!scenarioContext.ContainsKey("CHEDReference"))
         {
-            scenarioContext["CHEDReference"] = "CHEDPP.GB.2026.1067716";
+            scenarioContext["CHEDReference"] = "CHEDPP.GB.2026.1067816";
         }       
         var chedReference = scenarioContext.Get<string>("CHEDReference");
         XrmApp.Grid.Search(chedReference);
@@ -99,15 +99,34 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
     [Then("the notification created in IPAFFS should be returned")]
     public void ThenTheNotificationCreatedInIPAFFSShouldBeReturned()
     {
-        Driver.WaitForTransaction();
-
         var expectedChedReference = scenarioContext.Get<string>("CHEDReference");
 
-        var rows = Driver.FindElements(By.XPath("//div[@class='ag-center-cols-container']//div[@role='row']"));
+        // Retry to handle transient UI delays where the grid has not yet filtered
+        // down to the expected result — the footer row count is the most reliable
+        // indicator that the search has completed and the grid has refreshed.
+        Policy
+            .Handle<Exception>()
+            .OrResult<int?>(count => count == null || count != 1)
+            .WaitAndRetry(
+                retryCount: 10,
+                sleepDurationProvider: _ => TimeSpan.FromSeconds(3))
+            .Execute(() =>
+            {
+                Driver.WaitForTransaction();
+                return GetGridRowCountFromFooter();
+            });
 
-        rows.Should().HaveCount(1, $"Expected exactly 1 result for CHED reference '{expectedChedReference}' but found {rows.Count}.");
+        // Final assertion after retries — produces a clear failure message if still not exactly 1 row.
+        Driver.WaitForTransaction();
 
-        var chedReferenceCell = rows[0].FindElement(By.XPath(".//div[@col-id='trd_chedppreference']//a"));
+        var rowCount = GetGridRowCountFromFooter() ?? 0;
+
+        rowCount.Should().Be(1,
+            $"Expected exactly 1 result for CHED reference '{expectedChedReference}' but found {rowCount}.");
+
+        var chedReferenceCell = Driver.WaitUntilAvailable(
+            By.XPath("//div[@class='ag-center-cols-container']//div[@role='row'][1]//div[@col-id='trd_chedppreference']//a"),
+            $"CHED reference cell could not be found in the grid.");
 
         var actualChedReference = chedReferenceCell.Text.Trim();
 
@@ -139,7 +158,7 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
                     // Wait has elapsed — clear and re-search before the next Execute check.
                     XrmApp.Grid.ClearSearch();
                     Driver.WaitForTransaction();
-                    XrmApp.Grid.Search(expectedChedReference, true);
+                    XrmApp.Grid.Search(expectedChedReference);
                     Driver.WaitForTransaction();
                 })
             .Execute(() =>
@@ -258,9 +277,19 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
 
         var expectedChedReference = scenarioContext.Get<string>("CHEDReference");
 
-        var workOrderLink = Driver.WaitUntilAvailable(
-            By.XPath($"//div[@data-id='trd_workorderid.fieldControl-LookupResultsDropdown_trd_workorderid_selected_tag' and @aria-label='{expectedChedReference}']"),
-            $"Work Order field link for CHED reference '{expectedChedReference}' could not be found.");
+        IWebElement workOrderLink = null;
+
+        Policy
+            .Handle<Exception>()
+            .WaitAndRetry(
+                retryCount: 5,
+                sleepDurationProvider: _ => TimeSpan.FromSeconds(2))
+            .Execute(() =>
+            {
+                workOrderLink = Driver.WaitUntilAvailable(
+                    By.XPath($"//div[@data-id='trd_workorderid.fieldControl-LookupResultsDropdown_trd_workorderid_selected_tag' and @aria-label='{expectedChedReference}']"),
+                    $"Work Order field link for CHED reference '{expectedChedReference}' could not be found.");
+            });
 
         workOrderLink.Click();
 

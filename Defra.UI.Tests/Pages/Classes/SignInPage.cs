@@ -171,7 +171,7 @@ namespace Defra.UI.Tests.Pages.Classes
             }
             catch (NoSuchElementException)
             {
-
+                // "Please sign in again" dialog did not appear; proceed as SSO may have succeeded silently.
             }
         }
 

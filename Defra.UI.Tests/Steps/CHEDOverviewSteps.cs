@@ -12,9 +12,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
         private readonly ScenarioContext _scenarioContext;
 
         private ICHEDOverviewPage? chedOverviewPage => _objectContainer.IsRegistered<ICHEDOverviewPage>() ? _objectContainer.Resolve<ICHEDOverviewPage>() : null;
-
-        // Required to snapshot window handles before the PDF tab opens, so that
-        // VerifyCertificateInNewTab has an accurate baseline to detect the new handle.
         private IYourImportNotificationsPage? importNotificationsPage => _objectContainer.IsRegistered<IYourImportNotificationsPage>() ? _objectContainer.Resolve<IYourImportNotificationsPage>() : null;
 
         public CHEDOverviewSteps(ScenarioContext context, IObjectContainer container)
@@ -75,14 +72,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.IsTrue(chedOverviewPage?.VerifyShowChedButton(), "The Show CHED button is not present");
         }
 
-        /// <summary>
-        /// Snapshots window handles before opening the PDF so that VerifyCertificateInNewTab
-        /// can correctly identify the new tab even when multiple tabs are already open
-        /// (e.g. the Dynamics hand-off flow where Browser 2 already has 2 tabs).
-        /// window.open in ClickShowChed is synchronous — the tab exists in WindowHandles
-        /// before VerifyCertificateInNewTab runs — so the snapshot must be taken here,
-        /// before the call to ClickShowChed.
-        /// </summary>
         [When("the user clicks on the Show CHED button")]
         public void WhenTheUserClicksOnTheShowChedButton()
         {

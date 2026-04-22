@@ -208,7 +208,7 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
             By.XPath("//button[@data-id='trd_timerecording|NoRelationship|SubGridStandard|trd.trd_timerecording.AddMyTime.Button']"),
             "Add my time button could not be found in the Time Recording section.");
 
-        addMyTimeButton.Click();
+        Driver.ExecuteScript("arguments[0].click();", addMyTimeButton);
         Driver.WaitForTransaction();
     }
 

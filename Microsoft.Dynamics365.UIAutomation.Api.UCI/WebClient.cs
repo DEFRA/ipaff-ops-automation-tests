@@ -1617,9 +1617,24 @@ public class WebClient : BrowserPage, IDisposable
 
         return this.Execute(GetOptions($"Clear Search"), driver =>
         {
-            driver.WaitUntilClickable(By.XPath(AppElements.Xpath[AppReference.Grid.QuickFind]));
+            // Wait for the search box to be clickable
+            var searchBox = driver.WaitUntilClickable(By.XPath(AppElements.Xpath[AppReference.Grid.QuickFind]));
 
-            driver.FindElement(By.XPath(AppElements.Xpath[AppReference.Grid.QuickFind])).Clear();
+            // Try to find and click the clear button if it exists and is enabled
+            var clearButtonElements = driver.FindElements(By.XPath("//button[contains(@data-id,'quickFind_clear_button')]"));
+            if (clearButtonElements.Count > 0 && clearButtonElements[0].Enabled)
+            {
+                clearButtonElements[0].Click();
+            }
+            else
+            {
+                // Fallback: clear the input and send Enter
+                searchBox.Clear();
+                searchBox.SendKeys(Keys.Enter);
+            }
+
+            // Optionally, wait for the grid to refresh if you have a helper
+            // driver.WaitForTransaction();
 
             return true;
         });
