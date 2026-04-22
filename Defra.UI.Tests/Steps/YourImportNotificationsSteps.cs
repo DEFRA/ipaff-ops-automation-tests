@@ -261,21 +261,20 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         }
                         else
                         {
-                            var x = page.Sections.DescriptionOfTheGoods.ElementAt(0).Value;
-                            ValidateContains("CommodityCode", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("CommodityDescription", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("CommodityCodeFirstCommodity", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("CommodityDescFirstCommodity", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("Species", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("NumberOfAnimals", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("NetWeight", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("NumberOfPackages", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("PackageType", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("TypeOfCommodity", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("EstablishmentListFirstName", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("CountryOfOrigin", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("TotalNetWeight", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("TotalPackages", page.Sections.DescriptionOfTheGoods.ElementAt(0).PackageCount, ref allDataMatches, mismatches);
+                            ValidateContains("CommodityCode", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("CommodityDescription", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("CommodityCodeFirstCommodity", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("CommodityDescFirstCommodity", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("Species", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("NumberOfAnimals", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("NetWeight", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("NumberOfPackages", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("PackageType", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("TypeOfCommodity", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("EstablishmentListFirstName", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("CountryOfOrigin", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("TotalNetWeight", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("TotalPackages", page.Sections.DescriptionOfTheGoods?.ElementAt(0).PackageCount, ref allDataMatches, mismatches);
                             ValidateContains("TotalGrossWeight", page.Sections.TotalGrossWeight?.Value, ref allDataMatches, mismatches);
                         }
                     }
