@@ -197,5 +197,11 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
         
         [JsonProperty("IVFicheForSampling")]
         public ChedSection FicheForSampling { get; set; }
+        
+        [JsonProperty("II7WelfareCheck")]
+        public ChedSection WelfareCheck { get; set; }
+        
+        [JsonProperty("II8ImpactOnTransportAnimals")]
+        public ChedSection ImpactOnTransportAnimals { get; set; }
     }
 }
