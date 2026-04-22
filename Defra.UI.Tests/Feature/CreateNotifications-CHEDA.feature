@@ -486,7 +486,7 @@ Scenario: User creates and submits a CHEDA consignment notification for Temporar
 	Then the Confirmation page should be displayed with the initial risk assessment
 	And the user records the IPAFFS User details and CHED Reference
 	#When the user clicks Return to your dashboard
-	##Then the dashboard page should be displayed
+	#Then the dashboard page should be displayed
 	#When user searches for the import notification
 	#Then the notification should be present in the list
 	#When the user clicks Show notification

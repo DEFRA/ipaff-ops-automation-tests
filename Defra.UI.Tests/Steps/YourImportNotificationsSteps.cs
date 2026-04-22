@@ -148,6 +148,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             ValidateContains("HealthDocumentType", (string?)page.Sections.AccompanyingDocuments.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
                             ValidateContains("HealthCertificateReference", (string?)page.Sections.AccompanyingDocuments.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
                             //ValidateIfExists("HealthCertificateDateOfIssue", (string?)page.Sections.AccompanyingDocuments.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
+                            ValidateContains("DocumentType", (string?)page.Sections.AccompanyingDocuments.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
+                            ValidateContains("DocumentReference", (string?)page.Sections.AccompanyingDocuments.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
                         }
 
 
@@ -394,12 +396,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     {
                         ValidateIfExists("CHEDReference", (string?)page.Sections.References.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches);
 
-                        ValidateContains("PortOfEntry", page.Sections.References.Name, ref allDataMatches, mismatches);
-
                         if (_scenarioContext["CHEDReference"].ToString().Contains("CHEDA"))
                         {
                             ValidateContains("ExitBCP", page.Sections.References.Name, ref allDataMatches, mismatches);
                         }
+                        else
+                            ValidateContains("PortOfEntry", page.Sections.References.Name, ref allDataMatches, mismatches);
+
                         ValidateContains("CountryOfOrigin", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches);
                         if (!_scenarioContext["CHEDReference"].ToString().Contains("CHEDA"))
                         {
