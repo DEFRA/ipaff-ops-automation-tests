@@ -40,31 +40,48 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool WaitForUploadToCompleteAndVerifySuccessMessage(string successMessage)
         {
-            try
+            var timeout = TimeSpan.FromMinutes(10);
+            var pollInterval = TimeSpan.FromSeconds(2);
+            var start = DateTime.UtcNow;
+
+            while (DateTime.UtcNow - start < timeout)
             {
-                // Wait up to 5 minutes for the "Uploading CSV..." spinner to disappear.
-                // The spinner clearing does not mean the upload is complete — the server
-                // continues processing after the spinner is removed from the DOM.
-                var uploadingWait = new WebDriverWait(_driver, TimeSpan.FromMinutes(5));
-                uploadingWait.Until(d =>
+                // Check if spinner is still present
+                bool spinnerPresent = false;
+                try
                 {
-                    try { return !d.FindElement(lblUploading).Displayed; }
-                    catch (NoSuchElementException) { return true; }
-                });
+                    var spinner = _driver.FindElement(lblUploading);
+                    spinnerPresent = spinner.Displayed;
+                }
+                catch (NoSuchElementException)
+                {
+                    spinnerPresent = false;
+                }
 
-                // Wait up to a further 10 minutes for the success banner to appear.
-                // This is a separate budget from the spinner wait — the server-side CSV
-                // processing can continue well after the spinner clears, particularly for
-                // large uploads (500 commodity lines). Both phases each get their full budget.
-                var bannerWait = new WebDriverWait(_driver, TimeSpan.FromMinutes(10));
-                bannerWait.Until(ExpectedConditions.ElementIsVisible(lblSuccessBanner));
+                // If spinner is gone, check for success banner
+                if (!spinnerPresent)
+                {
+                    try
+                    {
+                        var banner = _driver.FindElement(lblSuccessBanner);
+                        if (banner.Text.Trim().Equals(successMessage, StringComparison.OrdinalIgnoreCase))
+                        {
+                            return true;
+                        }
+                    }
+                    catch (NoSuchElementException)
+                    {
+                        // Success banner not present yet
+                    }
+                }
 
-                return _driver.FindElement(lblSuccessBanner).Text.Equals(successMessage);
+                // Optionally, check for error/failure banner here
+
+                Thread.Sleep(pollInterval);
             }
-            catch
-            {
-                return false;
-            }
+
+            // Timeout
+            return false;
         }
 
         public bool IsUploadSuccessMsgDisplayed(string successMsg)

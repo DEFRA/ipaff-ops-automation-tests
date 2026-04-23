@@ -565,7 +565,7 @@ Scenario: Agent submits CHEDPP notification for Trader after being delegated aut
 	And the notification status should include 'TRADE PARTNER'
 
 @Dynamics	
-Scenario: SPS-9104
+Scenario: Trader creates CHEDPP notification via CSV upload and completes end-to-end workflow - SPS-9104
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
