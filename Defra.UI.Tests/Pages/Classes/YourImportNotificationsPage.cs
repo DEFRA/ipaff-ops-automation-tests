@@ -156,6 +156,25 @@ namespace Defra.UI.Tests.Pages.Classes
                 return false;
             }
 
+            _driver.SwitchTo().Window(newHandle);
+
+            var urlWait = new OpenQA.Selenium.Support.UI.WebDriverWait(_driver, TimeSpan.FromSeconds(15));
+            try
+            {
+                urlWait.Until(d =>
+                {
+                    var url = d.Url;
+                    return !string.IsNullOrEmpty(url) && url != "about:blank" && url != "data:,";
+                });
+            }
+            catch (OpenQA.Selenium.WebDriverTimeoutException)
+            {
+                // URL did not stabilise within timeout — proceed with current URL.
+            }
+
+            return _driver.Url.Contains("/certificate/pdf");
+        }
+
         public string getPDFUrl()
         {
             return _driver.Url;
@@ -215,6 +234,7 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickContactLink() => lnkContact.Click();
         public void ClickCopyAsNewLink() => lnkCopyAsNew.Click();
         public void ClickManageTradePartnersLink() => lnkManageTradePartners.Click();
+
 
         public bool IsSearchNotiByPanelDisplayed => searchNotificationsPanel != null && searchNotificationsPanel.Displayed;
         public bool AreAllSearchFieldsDisplayed()
