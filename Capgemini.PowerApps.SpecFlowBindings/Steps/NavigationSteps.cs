@@ -20,7 +20,9 @@ public class NavigationSteps : PowerAppsStepDefiner
     [Then("I open the sub area {string} under the {string} area")]
     public static void WhenIOpenTheSubAreaUnderTheArea(string subAreaName, string areaName)
     {
+        Driver.WaitForTransaction();
         XrmApp.Navigation.OpenSubArea(areaName, subAreaName);
+        Driver.WaitForTransaction();
     }
 
     /// <summary>

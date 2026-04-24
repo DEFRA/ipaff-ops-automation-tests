@@ -168,5 +168,6 @@
         string GetApprovedEstablishmentApprovalNum();
         string GetDestinationAddressTextOnly();
         string GetLatestHealthDocumentType();
+        void ClickCheckCommodityDetailsLink();
     }
 }

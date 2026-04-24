@@ -301,9 +301,28 @@ namespace Defra.UI.Tests.Tools
         #region Operator Details Generation
 
         /// <summary>
+        /// Locale codes that use non-Latin scripts (Arabic, Cyrillic, Chinese, Japanese, Korean, Greek, Georgian, Persian, Nepali).
+        /// Countries mapped to these locales are excluded from random selection.
+        /// </summary>
+        private static readonly HashSet<string> NonLatinLocales =
+        [
+            "ar",      // Arabic
+            "ru",      // Cyrillic (Russian)
+            "uk",      // Cyrillic (Ukrainian)
+            "zh_CN",   // Chinese (Simplified)
+            "zh_TW",   // Chinese (Traditional)
+            "ja",      // Japanese
+            "ko",      // Korean
+            "el",      // Greek
+            "ge",      // Georgian
+            "fa",      // Persian
+            "ne"       // Nepali
+        ];
+
+        /// <summary>
         /// Generates random operator details with realistic data using Bogus Faker library.
         /// Randomly selects a country from the available countries list.
-        /// Uses regionally authentic locales including non-Latin scripts (Arabic, Cyrillic, Chinese, Japanese, Korean, Greek, Georgian, Persian, Nepali).
+        /// Only selects countries that use Latin scripts.
         /// </summary>
         public static OperatorDetails GenerateOperatorDetails()
         {
@@ -313,14 +332,18 @@ namespace Defra.UI.Tests.Tools
         /// <summary>
         /// Generates random operator details with realistic data using Bogus Faker library.
         /// For Importer operator type, restricts country selection to Great Britain (England, Scotland, Wales, Northern Ireland).
-        /// For other types, randomly selects from all available countries.
-        /// Uses regionally authentic locales including non-Latin scripts (Arabic, Cyrillic, Chinese, Japanese, Korean, Greek, Georgian, Persian, Nepali).
+        /// For other types, randomly selects from all available countries that use Latin scripts.
         /// </summary>
-        /// <param name="operatorType">The type of operator (e.g., "Importer", "Exporter", "Transporter"). Pass null for random selection from all countries.</param>
+        /// <param name="operatorType">The type of operator (e.g., "Importer", "Exporter", "Transporter"). Pass null for random selection from all Latin-script countries.</param>
         public static OperatorDetails GenerateOperatorDetails(string? operatorType)
         {
             // List of all countries from IPAFFS dropdown with their best-match Bogus locales
-            var countryLocaleMap = GetCountryLocaleMapping();
+            // Exclude non-Latin script locales and countries whose names contain commas
+            // (commas break ExtractCountryFromAddressText which splits on comma delimiters)
+            var countryLocaleMap = GetCountryLocaleMapping()
+                .Where(kvp => !NonLatinLocales.Contains(kvp.Value))
+                .Where(kvp => !kvp.Key.Contains(','))
+                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
             // Great Britain countries
             var greatBritainCountries = new List<string> { "England", "Scotland", "Wales", "Northern Ireland" };
@@ -341,7 +364,7 @@ namespace Defra.UI.Tests.Tools
             }
             else
             {
-                // For other types, select from all available countries
+                // For other types, select from all available Latin-script countries
                 selectedCountry = countryLocaleMap.ElementAt(random.Next(countryLocaleMap.Count));
             }
 

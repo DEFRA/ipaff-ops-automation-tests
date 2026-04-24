@@ -45,6 +45,7 @@ namespace Defra.UI.Tests.Pages.Classes
             txtCHEDRefInput.Clear();
             txtCHEDRefInput.SendKeys(chedRef);
             btnSearch.Click();
+            _driver.WaitForAjax(); 
         }
 
         public void VerifyNotificationStatusAndClick(string chedRef, string status)

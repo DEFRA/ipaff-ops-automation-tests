@@ -30,6 +30,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(checksSubmittedPage?.IsViewOrPrintCHEDButtonDisplayed(), "View or print CHED button is not displayed");
         }
 
+        [Then("the Your checks have been submitted page is displayed")]
+        public void ThenTheYourChecksHaveBeenSubmittedPageIsDisplayed()
+        {
+            Assert.True(checksSubmittedPage?.IsPageLoaded(), "Yours checks have been submitted page not loaded");
+        }
+
         [When("the user clicks View or print CHED button")]
         public void WhenTheUserClicksViewOrPrintCHEDButton()
         {
@@ -79,5 +85,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.IsTrue(checksSubmittedPage?.VerifyOutcome(outcome), "The Decision outcome is not " + outcome);
         }
 
+        [When("the user clicks Return to Decision hub")]
+        public void WhenTheUserClicksReturnToDecisionHub()
+        {
+            checksSubmittedPage?.ClickReturnToDecisionHub();
+        }
     }
 }

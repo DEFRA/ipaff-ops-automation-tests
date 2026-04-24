@@ -56,6 +56,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserClicksShowNotification()
         {
             var chedReference = _scenarioContext.Get<string>("CHEDReference");
+            importNotificationsPage?.RecordHandlesBeforePdfOpen();
             importNotificationsPage?.ClickShowNotification(chedReference);
         }
 

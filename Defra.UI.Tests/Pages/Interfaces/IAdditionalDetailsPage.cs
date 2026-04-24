@@ -13,5 +13,9 @@
         bool AreAllCommIntendedForRadioOptionsDisplayed(List<string> commOptionsListExpected);
         string GetCommIntendedForRadioLabelText { get; }
         string GetTemperatureRadioLabelText { get; }
+        string GetGrossWeightValue();
+        string GetNetWeight();
+        string GetNumberOfPackages();
+        string GetGrossVolumeValue();
     }
 }

@@ -52,11 +52,247 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
         this.scenarioContext = scenarioContext;
     }
 
+    [Then(@"the '(.*)' view is displayed")]
+    public void ThenTheViewIsDisplayed(string expectedViewName)
+    {
+        Driver.WaitForTransaction();
+
+        var viewSelectorButton = Driver.WaitUntilAvailable(
+            By.XPath("//button[contains(@data-id,'ViewSelector') and not(contains(@data-id,'ViewSelector_1'))]"),
+            $"View selector button could not be found.");
+
+        var actualViewName = viewSelectorButton.GetAttribute("aria-label")?.Trim() ?? string.Empty;
+
+        actualViewName.Should().Be(expectedViewName,
+            $"Expected view to be '{expectedViewName}' but found '{actualViewName}'");
+    }
+
+    /// <summary>
+    /// Switches the Import Notifications grid to the specified view.
+    /// Uses XrmApp.Grid.SwitchView which clicks the ViewSelector button and selects
+    /// the matching view by name from the dropdown — consistent with GridSteps.WhenISwitchToTheViewInTheGrid.
+    /// </summary>
+    /// <param name="viewName">The name of the view to switch to e.g. 'Inactive Import Notifications'.</param>
+    [When(@"I change the Import Notifications view to '(.*)'")]
+    public void WhenIChangeTheImportNotificationsViewTo(string viewName)
+    {
+        Driver.WaitForTransaction();
+
+        XrmApp.Grid.SwitchView(viewName);
+
+        Driver.WaitForTransaction();
+    }
+
+    [When("I search Import Notifications for the notification created in IPAFFS")]
     [When("I search Importer Notifications for the notification created in IPAFFS")]
     public void WhenISearchImporterNotificationsForTheNotificationCreatedInIPAFFS()
     {
+        if (!scenarioContext.ContainsKey("CHEDReference"))
+        {
+            scenarioContext["CHEDReference"] = "CHEDPP.GB.2026.1067816";
+        }       
         var chedReference = scenarioContext.Get<string>("CHEDReference");
         XrmApp.Grid.Search(chedReference);
+        Driver.WaitForTransaction();
+    }
+
+    [Then("the notification created in IPAFFS should be returned")]
+    public void ThenTheNotificationCreatedInIPAFFSShouldBeReturned()
+    {
+        var expectedChedReference = scenarioContext.Get<string>("CHEDReference");
+
+        // Retry to handle transient UI delays where the grid has not yet filtered
+        // down to the expected result — the footer row count is the most reliable
+        // indicator that the search has completed and the grid has refreshed.
+        Policy
+            .Handle<Exception>()
+            .OrResult<int?>(count => count == null || count != 1)
+            .WaitAndRetry(
+                retryCount: 10,
+                sleepDurationProvider: _ => TimeSpan.FromSeconds(3))
+            .Execute(() =>
+            {
+                Driver.WaitForTransaction();
+                return GetGridRowCountFromFooter();
+            });
+
+        // Final assertion after retries — produces a clear failure message if still not exactly 1 row.
+        Driver.WaitForTransaction();
+
+        var rowCount = GetGridRowCountFromFooter() ?? 0;
+
+        rowCount.Should().Be(1,
+            $"Expected exactly 1 result for CHED reference '{expectedChedReference}' but found {rowCount}.");
+
+        var chedReferenceCell = Driver.WaitUntilAvailable(
+            By.XPath("//div[@class='ag-center-cols-container']//div[@role='row'][1]//div[@col-id='trd_chedppreference']//a"),
+            $"CHED reference cell could not be found in the grid.");
+
+        var actualChedReference = chedReferenceCell.Text.Trim();
+
+        actualChedReference.Should().Be(expectedChedReference,
+            $"Expected CHED reference '{expectedChedReference}' but found '{actualChedReference}'.");
+    }
+
+    /// <summary>
+    /// Verifies that the notification created in IPAFFS is no longer returned in the search results.
+    /// If the record is still present, repeats the search every 30 seconds for up to 30 minutes —
+    /// there is a processing delay in Dynamics after IPAFFS checks are completed before the record
+    /// is removed from the Active Import Notifications view.
+    /// Row count is read from the grid footer "Rows: X" span, which is the most reliable indicator
+    /// of actual grid row count — the ag-grid row divs may not be present even when data is shown.
+    /// </summary>
+    [Then("the notification created in IPAFFS should not be returned")]
+    public void ThenTheNotificationCreatedInIPAFFSShouldNotBeReturned()
+    {
+        var expectedChedReference = scenarioContext.Get<string>("CHEDReference");
+
+        Policy
+            .Handle<Exception>()
+            .OrResult<int?>(count => count == null || count > 0)
+            .WaitAndRetry(
+                retryCount: 60,
+                sleepDurationProvider: _ => TimeSpan.FromSeconds(30),
+                onRetry: (_, _, _, _) =>
+                {
+                    // Wait has elapsed — clear and re-search before the next Execute check.
+                    XrmApp.Grid.ClearSearch();
+                    Driver.WaitForTransaction();
+                    XrmApp.Grid.Search(expectedChedReference);
+                    Driver.WaitForTransaction();
+                })
+            .Execute(() =>
+            {
+                // Check the current search results (first run uses the prior step's search).
+                Driver.WaitForTransaction();
+                return GetGridRowCountFromFooter();
+            });
+
+        // Final assertion after retries are exhausted — produces a clear failure message if still present.
+        Driver.WaitForTransaction();
+
+        var remainingRowCount = GetGridRowCountFromFooter() ?? 0;
+
+        remainingRowCount.Should().Be(0,
+            $"Expected CHED reference '{expectedChedReference}' to no longer appear in the Active Import Notifications " +
+            $"view after waiting up to 30 minutes, but {remainingRowCount} row(s) were still returned.");
+    }
+
+    /// <summary>
+    /// Reads the grid row count from the footer "Rows: X" span.
+    /// Returns null if the footer element cannot be found (grid not yet rendered — keep retrying).
+    /// Returns 0 only when the footer explicitly shows "Rows: 0" (record is confirmed gone).
+    /// Returns a positive count when results are still present.
+    /// </summary>
+    private int? GetGridRowCountFromFooter()
+    {
+        var footerElements = Driver.FindElements(
+            By.XPath("//span[contains(@class,'statusTextContainer') and contains(text(),'Rows:')]"));
+
+        if (footerElements.Count == 0)
+            return null; // footer not present yet — grid may still be loading
+
+        var footerText = footerElements[0].Text.Trim(); // e.g. "Rows: 3"
+        var rawCount = footerText.Replace("Rows:", string.Empty).Trim();
+
+        return int.TryParse(rawCount, out var count) ? count : null;
+    }
+
+    [Then("I verify the Import Notification page is displayed for the notification created in IPAFFS")]
+    public void ThenIVerifyTheImportNotificationPageIsDisplayedForTheNotificationCreatedInIPAFFS()
+    {
+        Driver.WaitForTransaction();
+
+        var expectedChedReference = scenarioContext.Get<string>("CHEDReference");
+
+        var pageHeader = Driver.WaitUntilAvailable(
+            By.XPath("//span[@data-id='entity_name_span']"),
+            "Import Notification page header could not be found.");
+
+        var actualPageHeader = pageHeader.Text.Trim();
+        actualPageHeader.Should().Be("Import Notification",
+            $"Expected page header to be 'Import Notification' but found '{actualPageHeader}'.");
+
+        var chedReferenceHeader = Driver.WaitUntilAvailable(
+            By.XPath("//h1[@data-id='header_title']"),
+            $"CHED reference header could not be found on the Import Notification page.");
+
+        var actualChedReference = chedReferenceHeader.Text
+            .Replace("- Saved", string.Empty)
+            .Trim();
+
+        actualChedReference.Should().Be(expectedChedReference,
+            $"Expected CHED reference header to be '{expectedChedReference}' but found '{actualChedReference}'.");
+    }
+
+    /// <summary>
+    /// Verifies that the Import Notification Status header field displays the expected value.
+    /// Uses data-preview_orientation='column' as the stable anchor — CSS class names (pa-*) are
+    /// dynamically generated and must not be used as locators.
+    /// Structure: div[@data-preview_orientation='column'] → div[value] + div[label text only]
+    /// </summary>
+    /// <param name="expectedStatus">The expected status value e.g. 'Inactive'.</param>
+    [Then(@"the Import Notification Status is '(.*)'")]
+    public void ThenTheImportNotificationStatusIs(string expectedStatus)
+    {
+        Driver.WaitForTransaction();
+
+        // The label div is a direct child leaf div with text 'Status' (no child elements).
+        // The value div is the first sibling div and contains the actual status text as a leaf descendant.
+        var statusValue = Driver.WaitUntilAvailable(
+            By.XPath("//div[@data-preview_orientation='column']" +
+                     "[child::div[not(*) and normalize-space(text())='Status']]" +
+                     "/div[1]/descendant::div[not(*) and normalize-space(.)!=''][1]"),
+            "Import Notification Status value could not be found in the page header.");
+
+        statusValue.Text.Trim().Should().Be(expectedStatus,
+            $"Expected Import Notification Status to be '{expectedStatus}' but found '{statusValue.Text.Trim()}'.");
+    }
+
+    /// <summary>
+    /// Verifies that the Import Notification Status Reason header field displays the expected value.
+    /// Uses data-preview_orientation='column' as the stable anchor — CSS class names (pa-*) are
+    /// dynamically generated and must not be used as locators.
+    /// </summary>
+    /// <param name="expectedStatusReason">The expected status reason value e.g. 'Completed'.</param>
+    [Then(@"the Import Notification Status Reason is '(.*)'")]
+    public void ThenTheImportNotificationStatusReasonIs(string expectedStatusReason)
+    {
+        Driver.WaitForTransaction();
+
+        var statusReasonValue = Driver.WaitUntilAvailable(
+            By.XPath("//div[@data-preview_orientation='column']" +
+                     "[child::div[not(*) and normalize-space(text())='Status Reason']]" +
+                     "/div[1]/descendant::div[not(*) and normalize-space(.)!=''][1]"),
+            "Import Notification Status Reason value could not be found in the page header.");
+
+        statusReasonValue.Text.Trim().Should().Be(expectedStatusReason,
+            $"Expected Import Notification Status Reason to be '{expectedStatusReason}' but found '{statusReasonValue.Text.Trim()}'.");
+    }
+
+    [When("I click the reference number in the Work Order field for the notification created in IPAFFS")]
+    public void WhenIClickTheReferenceNumberInTheWorkOrderFieldForTheNotificationCreatedInIPAFFS()
+    {
+        Driver.WaitForTransaction();
+
+        var expectedChedReference = scenarioContext.Get<string>("CHEDReference");
+
+        IWebElement workOrderLink = null;
+
+        Policy
+            .Handle<Exception>()
+            .WaitAndRetry(
+                retryCount: 5,
+                sleepDurationProvider: _ => TimeSpan.FromSeconds(2))
+            .Execute(() =>
+            {
+                workOrderLink = Driver.WaitUntilAvailable(
+                    By.XPath($"//div[@data-id='trd_workorderid.fieldControl-LookupResultsDropdown_trd_workorderid_selected_tag' and @aria-label='{expectedChedReference}']"),
+                    $"Work Order field link for CHED reference '{expectedChedReference}' could not be found.");
+            });
+
+        workOrderLink.Click();
+
         Driver.WaitForTransaction();
     }
 

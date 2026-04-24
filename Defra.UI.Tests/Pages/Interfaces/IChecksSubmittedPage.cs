@@ -13,5 +13,6 @@
         bool VerifyNextStepsMessage(string message);
         void ClickCreateBorderNotiButton();
         bool VerifyOutcome(string outcome);
+        void ClickReturnToDecisionHub();
     }
 }

@@ -99,5 +99,69 @@ namespace Defra.UI.Tests.Steps.IPAFF
             else
                 WhenTheUserSelectsAnyRadioButtonOnTheAdditionalDetailsPage("Chilled");
         }
+
+        [Then("the additional details should be validated with the values given in the input")]
+        public void ThenTheAdditionalDetailsShouldBeValidatedWithTheValuesGivenInTheInput()
+        {
+            const string expectedNetWeight = "1500";
+            const string expectedNumberOfPackages = "500";
+
+            var allDataMatches = true;
+            var mismatches = new List<string>();
+
+            // Validate Total gross weight against scenario context
+            if (_scenarioContext.ContainsKey("TotalGrossWeight"))
+            {
+                var expectedGrossWeight = _scenarioContext.Get<string>("TotalGrossWeight");
+                var actualGrossWeight = additionalDetailsPage?.GetGrossWeightValue();
+                if (!string.Equals(expectedGrossWeight, actualGrossWeight, StringComparison.OrdinalIgnoreCase))
+                {
+                    allDataMatches = false;
+                    mismatches.Add($"TotalGrossWeight: Expected '{expectedGrossWeight}', Found '{actualGrossWeight}'");
+                }
+                else
+                {
+                    Console.WriteLine($"[ADDITIONAL DETAILS VALIDATION] ✓ TotalGrossWeight: '{expectedGrossWeight}' matches");
+                }
+            }
+
+            // Validate Net weight is fixed at 1500
+            var actualNetWeight = additionalDetailsPage?.GetNetWeight();
+            if (!string.Equals(expectedNetWeight, actualNetWeight, StringComparison.OrdinalIgnoreCase))
+            {
+                allDataMatches = false;
+                mismatches.Add($"NetWeight: Expected '{expectedNetWeight}', Found '{actualNetWeight}'");
+            }
+            else
+            {
+                Console.WriteLine($"[ADDITIONAL DETAILS VALIDATION] ✓ NetWeight: '{actualNetWeight}' matches");
+            }
+
+            // Validate Number of packages is fixed at 500
+            var actualNumberOfPackages = additionalDetailsPage?.GetNumberOfPackages();
+            if (!string.Equals(expectedNumberOfPackages, actualNumberOfPackages, StringComparison.OrdinalIgnoreCase))
+            {
+                allDataMatches = false;
+                mismatches.Add($"NumberOfPackages: Expected '{expectedNumberOfPackages}', Found '{actualNumberOfPackages}'");
+            }
+            else
+            {
+                Console.WriteLine($"[ADDITIONAL DETAILS VALIDATION] ✓ NumberOfPackages: '{actualNumberOfPackages}' matches");
+            }
+
+            // Validate Total gross volume is empty
+            var actualGrossVolume = additionalDetailsPage?.GetGrossVolumeValue();
+            if (!string.IsNullOrEmpty(actualGrossVolume))
+            {
+                allDataMatches = false;
+                mismatches.Add($"TotalGrossVolume: Expected empty but found '{actualGrossVolume}'");
+            }
+            else
+            {
+                Console.WriteLine($"[ADDITIONAL DETAILS VALIDATION] ✓ TotalGrossVolume is empty as expected");
+            }
+
+            Assert.True(allDataMatches, $"Additional details validation failed. Mismatches: {string.Join(", ", mismatches)}");
+        }
     }
 }

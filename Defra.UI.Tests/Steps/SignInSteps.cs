@@ -247,5 +247,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 _signInPage?.IsSignedOutFromIOC(),
                 "User was not successfully logged out of IPAFFS IOC");
         }
+
+        [When("I have provided the IPAFFS credentials and signin via Dynamics")]
+        public void WhenIHaveProvidedTheIPAFFSCredentialsAndSigninViaDynamics()
+        {
+            var userName = ConfigSetup.BaseConfiguration.IDCOMSInspector.User;
+            var credential = ConfigSetup.BaseConfiguration.IDCOMSInspector.Credential;
+
+            _signInPage?.IPAFFSSignInViaDynamics(userName, credential);
+        }
     }
 }

@@ -17,5 +17,6 @@
         void EnterPassword();
         void IPAFFSInternalInspectorSignIn(string userName, string credential);
         bool IsSignedOutFromIOC();
+        void IPAFFSSignInViaDynamics(string userName, string password);
     }
 }

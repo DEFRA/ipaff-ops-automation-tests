@@ -12,7 +12,6 @@ namespace Defra.Trade.MSD365.SpecFlowBindings.Hooks
     public class AfterStepHooks : PowerAppsStepDefiner
     {
         private readonly ScenarioContext _scenarioContext;
-        private static bool _isPimsActive = false;
 
         public AfterStepHooks(ScenarioContext scenarioContext)
         {
@@ -22,28 +21,24 @@ namespace Defra.Trade.MSD365.SpecFlowBindings.Hooks
         [BeforeScenario(Order = 200)]
         public void BeforeScenario()
         {
-            // Reset flags at start of each scenario
-            _isPimsActive = false;
-            _scenarioContext["IsPimsActive"] = false;
+            _scenarioContext["IsDynamicsActive"] = false;
         }
 
         [AfterStep(Order = 100)]
         public void AfterStep()
         {
-            // Client.BrowserInitiated checks if the browser has been launched WITHOUT creating it.
-            // Accessing Driver directly would lazily instantiate a new browser.
-            if (!_isPimsActive && Client.BrowserInitiated)
-            {
-                _isPimsActive = true;
-                _scenarioContext["IsPimsActive"] = true;
-            }
+            // Always read directly from ScenarioContext — the flag can be toggled
+            // mid-scenario (e.g. set false when handing off to the IPAFFS tab,
+            // restored to true when switching back to the Dynamics tab).
+            // A cached static field would miss those mid-scenario changes.
+            var isDynamicsActive = _scenarioContext.ContainsKey("IsDynamicsActive")
+                                   && _scenarioContext.Get<bool>("IsDynamicsActive");
 
-            if (!_isPimsActive)
+            if (!isDynamicsActive)
             {
                 return;
             }
 
-            // Only log to the Extent report for PIMS steps that have failed
             if (_scenarioContext.TestError != null)
             {
                 try
@@ -53,7 +48,7 @@ namespace Defra.Trade.MSD365.SpecFlowBindings.Hooks
                     {
                         var stepType = _scenarioContext.StepContext.StepInfo.StepDefinitionType.ToString();
                         var stepInfo = _scenarioContext.StepContext.StepInfo.Text;
-                        var screenshotPath = CaptureScreenshotForPIMS();
+                        var screenshotPath = CaptureScreenshotForDynamics();
                         var scenario = _scenarioContext.Get<ExtentTest>("ExtentScenario");
 
                         var stepNode = scenario.CreateNode(new GherkinKeyword(stepType), stepInfo)
@@ -71,7 +66,6 @@ namespace Defra.Trade.MSD365.SpecFlowBindings.Hooks
             }
             else
             {
-                // Log passing PIMS steps without a screenshot
                 try
                 {
                     var windowHandles = Driver.WindowHandles;
@@ -91,12 +85,21 @@ namespace Defra.Trade.MSD365.SpecFlowBindings.Hooks
 
         private string CreateLogForContextValues()
         {
+            var internalKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "ExtentScenario",
+                "IsDynamicsActive",
+                "DynamicsWindowHandle",
+                "IpaffsInDynamicsBrowserHandle",
+                "DynamicsIpaffsDriver"
+            };
+
             var log = new StringBuilder("<pre>");
             try
             {
                 foreach (var context in _scenarioContext)
                 {
-                    if (!context.Key.Equals("ExtentScenario") && !context.Key.Equals("IsPimsActive"))
+                    if (!internalKeys.Contains(context.Key))
                     {
                         log.AppendLine($"{context.Key} : <b>{FormatValue(context.Value)}</b><br>");
                     }
@@ -128,7 +131,7 @@ namespace Defra.Trade.MSD365.SpecFlowBindings.Hooks
             return value.ToString();
         }
 
-        private string CaptureScreenshotForPIMS()
+        private string CaptureScreenshotForDynamics()
         {
             var screenshotsDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Reports", "Screenshots");
 
@@ -153,7 +156,6 @@ namespace Defra.Trade.MSD365.SpecFlowBindings.Hooks
                     }
                 }
             }
-            // Silently handle window switch errors
             catch { }
 
             var screenshot = ((ITakesScreenshot)Driver).GetScreenshot();
@@ -161,7 +163,6 @@ namespace Defra.Trade.MSD365.SpecFlowBindings.Hooks
             var filePath = Path.Combine(screenshotsDir, uniqueFileName);
             screenshot.SaveAsFile(filePath);
 
-            // Return relative path so the Extent HTML report is portable when zipped
             return $"./Screenshots/{uniqueFileName}";
         }
     }

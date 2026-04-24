@@ -13,6 +13,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects
         private IWebElement primaryTitle => _driver.WaitForElement(By.XPath("//span[@id='page-primary-title' and text()='Decision Hub']"));
+        private IWebElement referenceNumber => _driver.WaitForElement(By.Id("reference-number"));
         private IWebElement lnkSaveAndSetAsInProgress => _driver.WaitForElement(By.Id("set-in-progress"));
         private IWebElement txtUpdatedStatus => _driver.WaitForElement(By.Id("Status-Label"));
         private IWebElement lnkLocalRefNum => _driver.WaitForElement(By.XPath("//a[normalize-space()='Local reference number']"));
@@ -26,6 +27,16 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement lnkChecks => _driver.FindElement(By.XPath("//a[normalize-space()='Checks']"));
         private IWebElement lnkViewNotification => _driver.WaitForElement(By.Id("view-notification"));
         private IWebElement btnAttachment => _driver.FindElement(By.Id("attachments-link"));
+        private IWebElement btnReturnToWorkOrder => _driver.FindElement(By.Id("button-return-work-order"));
+        private IReadOnlyCollection<IWebElement> btnRecordChecksLink(string linkText) =>
+            _driver.FindElements(By.XPath($"//button[contains(@class,'link-button') and normalize-space()='{linkText}']"));
+        private IWebElement btnRecordChecksLinkByName(string checkName) =>
+            _driver.FindElement(By.XPath($"//button[contains(@class,'link-button') and normalize-space()='{checkName}']"));
+        private IWebElement txtRecordChecksStatus(string checkName) =>
+            _driver.FindElement(By.XPath(
+                $"//td[normalize-space()='{checkName}' or " +
+                $".//button[contains(@class,'link-button') and normalize-space()='{checkName}']]" +
+                $"/following-sibling::td//strong[contains(@class,'govuk-tag')]"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -38,6 +49,12 @@ namespace Defra.UI.Tests.Pages.Classes
         public bool IsPageLoaded()
         {
             return primaryTitle.Text.Contains("Decision Hub");
+        }
+
+        public bool IsPageLoadedForChedReference(string expectedChedReference)
+        {
+            return primaryTitle.Text.Contains("Decision Hub") &&
+                   referenceNumber.Text.Trim().Equals(expectedChedReference, StringComparison.OrdinalIgnoreCase);
         }
 
         public void ClickSaveAndSetAsInProgress()
@@ -103,6 +120,31 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickAttachmentsButton()
         {
             btnAttachment.Click();
+        }
+
+        public bool VerifyRecordChecksLinksAreClickable(string firstLink, string secondLink)
+        {
+            var phsiButtons = btnRecordChecksLink(firstLink);
+            var hmiButtons = btnRecordChecksLink(secondLink);
+
+            return phsiButtons.Count > 0 && phsiButtons.First().Displayed &&
+                   hmiButtons.Count > 0 && hmiButtons.First().Displayed;
+        }
+
+        public void ClickReturnToWorkOrder()
+        {
+            btnReturnToWorkOrder.Click();
+        }
+
+        public bool VerifyRecordChecksStatus(string checkName, string expectedStatus)
+        {
+            return txtRecordChecksStatus(checkName).Text.Trim()
+                .Equals(expectedStatus, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public void ClickRecordChecksLink(string checkName)
+        {
+            btnRecordChecksLinkByName(checkName).Click();
         }
     }
 }

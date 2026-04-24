@@ -32,7 +32,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             var expectedCommodityCount = _scenarioContext.Get<int>("NumberOfCommodities");
 
-            Assert.True(checkUploadedCommodityPage?.IsUploadSuccessMsgDisplayed(successMsg), "CSV upload failed");
+            Assert.True(checkUploadedCommodityPage?.WaitForUploadToCompleteAndVerifySuccessMessage(successMsg), "CSV upload failed");
             Assert.True(checkUploadedCommodityPage?.IsCountOfCommodityMatchesWithInput(expectedCommodityCount), "Commodity count not matches with the number of commodities given in the input");
         }
 
@@ -60,6 +60,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserClicksConfirmAndContinueButton()
         {
             checkUploadedCommodityPage?.ClickConfirmAndContinueButton();
+        }
+
+        [Then("there is no banner stating Upload successful")]
+        public void ThenThereIsNoBannerStatingUploadSuccessful()
+        {
+            Assert.True(checkUploadedCommodityPage?.IsUploadSuccessBannerAbsent(), "Upload successful banner should not be displayed but was found");
         }
     }
 }

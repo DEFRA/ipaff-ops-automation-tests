@@ -2,6 +2,7 @@
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
 
 namespace Defra.UI.Tests.Pages.Classes
@@ -15,6 +16,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement signOut => _driver.WaitForElement(By.Id("sign-out-link"), true);
         private IWebElement btmsSignOut => _driver.WaitForElement(By.XPath("//a[normalize-space()='Sign out']"));
         private IWebElement logOutPageHeading => _driver.WaitForElement(By.XPath("//h1[@class='govuk-heading-xl']"), true);
+        private By lblInspectorSignOutHeadingBy => By.Id("login_workload_logo_text");
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -38,6 +40,40 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             return logOutPageHeading.Text.Contains("You have signed out")
                || logOutPageHeading.Text.Contains("Your Defra account");
+        }
+
+        public void CloseBrowser()
+        {
+            try
+            {
+                _driver.Quit();
+                _driver.Dispose();
+            }
+            catch { }
+        }
+
+        public bool VerifyInspectorSignedOutPage()
+        {
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(30));
+
+            try
+            {
+                return wait.Until(driver =>
+                {
+                    var element = driver.FindElement(lblInspectorSignOutHeadingBy);
+                    return element.Text.Trim()
+                        .Contains("You signed out of your account", StringComparison.OrdinalIgnoreCase);
+                });
+            }
+            catch (WebDriverTimeoutException)
+            {
+                return false;
+            }
+        }
+
+        public void CloseCurrentTab()
+        {
+            _driver.Close();
         }
     }
 }
