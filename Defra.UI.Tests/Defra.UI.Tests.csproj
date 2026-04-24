@@ -8,16 +8,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Data\Users\IPAFF\PRE\**" />
     <Compile Remove="Feature\Regression\**" />
+    <EmbeddedResource Remove="Data\Users\IPAFF\PRE\**" />
     <EmbeddedResource Remove="Feature\Regression\**" />
+    <None Remove="Data\Users\IPAFF\PRE\**" />
     <None Remove="Feature\Regression\**" />
+    <ReqnrollFeatureFiles Remove="Data\Users\IPAFF\PRE\**" />
+    <ReqnrollObsoleteCodeBehindFiles Remove="Data\Users\IPAFF\PRE\**" />
     <SpecFlowFeatureFiles Remove="Feature\Regression\**" />
     <SpecFlowObsoleteCodeBehindFiles Remove="Feature\Regression\**" />
   </ItemGroup>
 
   <ItemGroup>
     <None Remove="Data\Users\IPAFF\DEV\Users.json" />
-    <None Remove="Data\Users\IPAFF\PRE\Users.json" />
     <None Remove="Data\Users\IPAFF\TST\Users.json" />
   </ItemGroup>
 
@@ -32,9 +36,6 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Data\Users\IPAFF\DEV\Users.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Data\Users\IPAFF\PRE\Users.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Data\Users\IPAFF\TST\Users.json">

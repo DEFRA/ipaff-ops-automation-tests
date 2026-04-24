@@ -2063,6 +2063,8 @@ Scenario: User creates and submits a CHEDA notification with laboratory tests ch
 	Then the Your checks have been submitted page should be displayed
 	When the user clicks View or print CHED
 	Then the certificate should be displayed in a new browser tab
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 #Create step definitions below once PDF validation is implemented
 	#And the Would you like to record laboratory tests? 'No' should be displayed in the certificate
 	#And the Reasons for testing should be displayd with no boxes selected in the certificate

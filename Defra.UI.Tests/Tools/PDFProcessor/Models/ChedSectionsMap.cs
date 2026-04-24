@@ -59,6 +59,9 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
 
         [JsonProperty("I17ContainerNoSealNo")]
         public ChedSection ContainerNoSealNo { get; set; }
+        
+        [JsonProperty("I22ForDirectTransit")]
+        public ChedSection DirectTransit { get; set; }
 
         [JsonProperty("I18GoodsCertifiedAs")]
         public ChedSection GoodsCertifiedAs { get; set; }
