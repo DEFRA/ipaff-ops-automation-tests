@@ -132,7 +132,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Utils.AppendStringToScenarioContextArray(_scenarioContext, "LaboratoryTestName", test);
             laboratoryTestsPage?.SelectLaboratoryTest(test);
             // Capture system date and time AFTER clicking the Select link
-            var labTestSelectedDateTime = DateTime.Now;
+            var labTestSelectedDateTime = DateTime.UtcNow;
             _scenarioContext["LabTestSelectedDate"] = labTestSelectedDateTime.ToString("d MMMM yyyy");
             _scenarioContext["LabTestSelectedTime"] = labTestSelectedDateTime.ToString("HH:mm");
         }
@@ -176,7 +176,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             laboratoryTestsPage?.ClickSelectLaboratoryTest();
 
             // Capture system date and time AFTER clicking the Select link
-            var labTestSelectedDateTime = DateTime.Now;
+            var labTestSelectedDateTime = DateTime.UtcNow;
             _scenarioContext["LabTestSelectedDate"] = labTestSelectedDateTime.ToString("d MMMM yyyy");
             _scenarioContext["LabTestSelectedTime"] = labTestSelectedDateTime.ToString("HH:mm");
         }

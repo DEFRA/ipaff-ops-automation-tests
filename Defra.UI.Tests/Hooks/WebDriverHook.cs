@@ -45,6 +45,17 @@ namespace Defra.UI.Tests.Hooks
             _reqnrollOutputHelper = reqnrollOutputHelper;
         }
 
+        /// <summary>
+        /// Returns the currently active driver.
+        /// After the IPAFFS tab hand-off, BoDi's IWebDriver registration is swapped to Browser 2
+        /// by SignOutSteps.SwapDriver, so resolving from the container always returns the correct driver.
+        /// Before any hand-off, this returns the original Browser 1 driver.
+        /// </summary>
+        private IWebDriver ActiveDriver =>
+            _objectContainer.IsRegistered<IWebDriver>()
+                ? _objectContainer.Resolve<IWebDriver>()
+                : Driver;
+
         [BeforeTestRun]
         public static void BeforeTestRun()
         {
@@ -83,7 +94,7 @@ namespace Defra.UI.Tests.Hooks
 
             _scenario = _feature.CreateNode<AventStack.ExtentReports.Gherkin.Model.Scenario>(_scenarioContext.ScenarioInfo.Title);
 
-            // Store scenario in ScenarioContext so PIMS hook can access it
+            // Store scenario in ScenarioContext so Dynamics hook can access it
             _scenarioContext.Set(_scenario, "ExtentScenario");
 
             if (isRunOnce)
@@ -106,14 +117,11 @@ namespace Defra.UI.Tests.Hooks
             bool takeScreenShot = false;
             try
             {
-                // Log context values at the end of successful scenarios only
-                // (Failed scenarios already have context values attached to the failing step)
                 if (_scenarioContext.TestError == null)
                 {
                     var log = CreateLogForContextValues();
                     if (!string.IsNullOrWhiteSpace(log) && log != "<pre></pre>")
                     {
-                        // Create a summary node at the end of the scenario
                         _scenario.CreateNode(new GherkinKeyword("*"), "LOG: Captured Scenario Context Values")
                                 .Info(log);
                     }
@@ -134,7 +142,14 @@ namespace Defra.UI.Tests.Hooks
             {
                 if (takeScreenShot)
                 {
-                    AttachScreenShotToXmlReport();
+                    try
+                    {
+                        AttachScreenShotToXmlReport();
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Debug($"Screenshot skipped — driver unavailable during teardown: {ex.Message}");
+                    }
                 }
 
                 CloseBrowsers();
@@ -163,10 +178,16 @@ namespace Defra.UI.Tests.Hooks
             var fileTitle = _scenarioContext.ScenarioInfo.Title;
             var fileName = Path.Combine(filePath, $"{fileTitle}_TestFailures_{DateTime.Now:yyyyMMdd_hhss}" + ".png");
 
-            ((ITakesScreenshot)Driver).GetScreenshot().SaveAsFile(fileName);
-
-            _reqnrollOutputHelper.AddAttachment(fileName);
-            Logger.Debug($"SCREENSHOT {fileName} ");
+            try
+            {
+                ((ITakesScreenshot)ActiveDriver).GetScreenshot().SaveAsFile(fileName);
+                _reqnrollOutputHelper.AddAttachment(fileName);
+                Logger.Debug($"SCREENSHOT {fileName} ");
+            }
+            catch (Exception ex)
+            {
+                Logger.Debug($"Screenshot skipped — driver unavailable during teardown: {ex.Message}");
+            }
         }
 
         private DriverOptions GetDriverOptions()
@@ -199,9 +220,9 @@ namespace Defra.UI.Tests.Hooks
         [AfterStep]
         public void AfterStep()
         {
-            // AfterStepHooks (Order = 100) runs first and sets this flag for any PIMS step.
-            // Once active, all subsequent steps in the scenario are exclusively handled by AfterStepHooks.
-            if (_scenarioContext.ContainsKey("IsPimsActive") && _scenarioContext.Get<bool>("IsPimsActive"))
+            // AfterStepHooks (Order = 100) runs first and sets this flag for Dynamics steps.
+            // When true, Dynamics AfterStepHooks owns reporting — stand down here.
+            if (_scenarioContext.ContainsKey("IsDynamicsActive") && _scenarioContext.Get<bool>("IsDynamicsActive"))
             {
                 return;
             }
@@ -215,35 +236,57 @@ namespace Defra.UI.Tests.Hooks
             }
             else
             {
+                // Use ActiveDriver so the screenshot is taken on the correct browser
+                // (Browser 2 IPAFFS tab after hand-off, Browser 1 before)
                 var screenshotPath = CaptureScreenshotFullPage();
 
-                var stepNode = _scenario.CreateNode(new GherkinKeyword(stepType), stepInfo)
-                             .Fail(_scenarioContext.TestError.Message)
-                             .AddScreenCaptureFromPath(screenshotPath);
-
-                var log = CreateLogForContextValues();
-                if (!string.IsNullOrWhiteSpace(log) && log != "<pre></pre>")
+                if (!string.IsNullOrWhiteSpace(screenshotPath))
                 {
-                    stepNode.Info(log);
+                    var stepNode = _scenario.CreateNode(new GherkinKeyword(stepType), stepInfo)
+                                 .Fail(_scenarioContext.TestError.Message)
+                                 .AddScreenCaptureFromPath(screenshotPath);
+
+                    var log = CreateLogForContextValues();
+                    if (!string.IsNullOrWhiteSpace(log) && log != "<pre></pre>")
+                    {
+                        stepNode.Info(log);
+                    }
+                }
+                else
+                {
+                    // Screenshot not available — log failure and context without it
+                    var stepNode = _scenario.CreateNode(new GherkinKeyword(stepType), stepInfo)
+                                 .Fail(_scenarioContext.TestError.Message);
+
+                    var log = CreateLogForContextValues();
+                    if (!string.IsNullOrWhiteSpace(log) && log != "<pre></pre>")
+                    {
+                        stepNode.Info(log);
+                    }
                 }
             }
 
             Thread.Sleep(1000);
         }
 
-        /// <summary>
-        /// Automatically captures and logs all scenario context values.
-        /// For passing tests: Creates a summary node at scenario end.
-        /// For failing tests: Attaches context to the failing step.
-        /// </summary>
         private string CreateLogForContextValues()
         {
+            // Keys used internally for the browser hand-off mechanism — not useful test diagnostics
+            var internalKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "ExtentScenario",
+                "IsDynamicsActive",
+                "DynamicsWindowHandle",
+                "IpaffsInDynamicsBrowserHandle",
+                "DynamicsIpaffsDriver"
+            };
+
             var log = new StringBuilder("<pre>");
             try
             {
                 foreach (var context in _scenarioContext)
                 {
-                    if (!context.Key.Equals("ExtentScenario"))
+                    if (!internalKeys.Contains(context.Key))
                     {
                         log.AppendLine($"{context.Key} : <b>{FormatValue(context.Value)}</b><br>");
                     }
@@ -273,7 +316,7 @@ namespace Defra.UI.Tests.Hooks
                 return string.Join(", ", enumerable.Cast<object>());
 
             return value.ToString();
-        }        
+        }
 
         private void CloseBrowsers()
         {
@@ -287,8 +330,11 @@ namespace Defra.UI.Tests.Hooks
         }
 
         /// <summary>
-        /// Captures a full-page screenshot by scrolling through the entire page and stitching images together.
-        /// Falls back to viewport screenshot if full-page capture fails.
+        /// Captures a full-page screenshot using the currently active driver.
+        /// Uses ActiveDriver so that after the IPAFFS tab hand-off, screenshots are
+        /// taken on Browser 2's IPAFFS tab rather than the disposed Browser 1.
+        /// Falls back to a viewport screenshot, and returns an empty string if
+        /// the driver is unavailable — callers must guard against an empty return value.
         /// </summary>
         private string CaptureScreenshotFullPage()
         {
@@ -302,27 +348,35 @@ namespace Defra.UI.Tests.Hooks
             var uniqueFileName = $"{Guid.NewGuid()}.png";
             var filePath = Path.Combine(screenshotsDir, uniqueFileName);
 
+            var driver = ActiveDriver;
+
             try
             {
-                // Ensure we're on a valid window
-                SwitchToValidWindow();
+                SwitchToValidWindow(driver);
 
-                var js = (IJavaScriptExecutor)Driver;
+                // Guard against PDF tabs and other non-HTML contexts where document.body is null,
+                // which causes NullReferenceException inside Convert.ToInt32 before the outer
+                // catch can protect it.
+                var js = (IJavaScriptExecutor)driver;
 
-                // Get page dimensions
+                var bodyExists = js.ExecuteScript("return document.body !== null && document.body !== undefined");
+                if (bodyExists == null || !(bool)bodyExists)
+                {
+                    ((ITakesScreenshot)driver).GetScreenshot().SaveAsFile(filePath);
+                    return $"./Screenshots/{uniqueFileName}";
+                }
+
                 int totalHeight = Convert.ToInt32(js.ExecuteScript(
                     "return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight)"));
                 int viewportHeight = Convert.ToInt32(js.ExecuteScript("return window.innerHeight"));
                 int viewportWidth = Convert.ToInt32(js.ExecuteScript("return window.innerWidth"));
 
-                // If page fits in viewport, just take a simple screenshot
                 if (totalHeight <= viewportHeight)
                 {
-                    ((ITakesScreenshot)Driver).GetScreenshot().SaveAsFile(filePath);
+                    ((ITakesScreenshot)driver).GetScreenshot().SaveAsFile(filePath);
                     return $"./Screenshots/{uniqueFileName}";
                 }
 
-                // Scroll to top first
                 js.ExecuteScript("window.scrollTo(0, 0)");
                 Thread.Sleep(200);
 
@@ -331,20 +385,13 @@ namespace Defra.UI.Tests.Hooks
 
                 while (scrollPosition < totalHeight)
                 {
-                    // Scroll to position
                     js.ExecuteScript($"window.scrollTo(0, {scrollPosition})");
                     Thread.Sleep(200);
 
-                    // Capture current viewport
-                    var screenshotBytes = ((ITakesScreenshot)Driver).GetScreenshot().AsByteArray;
+                    var screenshotBytes = ((ITakesScreenshot)driver).GetScreenshot().AsByteArray;
                     using var ms = new MemoryStream(screenshotBytes);
                     var bmp = new Bitmap(ms);
 
-                    // Calculate how much of this screenshot to use
-                    int remainingHeight = totalHeight - scrollPosition;
-                    int usableHeight = Math.Min(bmp.Height, remainingHeight);
-
-                    // For the last screenshot, we may need to crop from the bottom
                     if (scrollPosition + viewportHeight > totalHeight && scrollPosition > 0)
                     {
                         int overlap = (scrollPosition + viewportHeight) - totalHeight;
@@ -360,7 +407,6 @@ namespace Defra.UI.Tests.Hooks
                     scrollPosition += viewportHeight;
                 }
 
-                // Stitch all screenshots together vertically
                 int finalHeight = screenshots.Sum(s => s.Height);
                 int finalWidth = screenshots.Max(s => s.Width);
 
@@ -379,13 +425,11 @@ namespace Defra.UI.Tests.Hooks
 
                 finalImage.Save(filePath, ImageFormat.Png);
 
-                // Dispose individual screenshots
                 foreach (var screenshot in screenshots)
                 {
                     screenshot.Dispose();
                 }
 
-                // Scroll back to top
                 js.ExecuteScript("window.scrollTo(0, 0)");
 
                 return $"./Screenshots/{uniqueFileName}";
@@ -394,35 +438,32 @@ namespace Defra.UI.Tests.Hooks
             {
                 Logger.Debug($"Full-page screenshot failed, using viewport screenshot: {ex.Message}");
 
-                // Fallback to simple viewport screenshot
                 try
                 {
-                    ((ITakesScreenshot)Driver).GetScreenshot().SaveAsFile(filePath);
+                    ((ITakesScreenshot)driver).GetScreenshot().SaveAsFile(filePath);
+                    return $"./Screenshots/{uniqueFileName}";
                 }
                 catch
                 {
-                    // If even fallback fails, return empty path
                     return string.Empty;
                 }
-
-                return $"./Screenshots/{uniqueFileName}";
             }
         }
 
         /// <summary>
-        /// Switches to a valid browser window handle.
+        /// Switches to a valid browser window handle on the given driver.
         /// </summary>
-        private void SwitchToValidWindow()
+        private static void SwitchToValidWindow(IWebDriver driver)
         {
             try
             {
-                var handles = Driver.WindowHandles;
+                var handles = driver.WindowHandles;
                 if (handles != null && handles.Count > 0)
                 {
-                    var currentHandle = Driver.CurrentWindowHandle;
+                    var currentHandle = driver.CurrentWindowHandle;
                     if (!handles.Contains(currentHandle))
                     {
-                        Driver.SwitchTo().Window(handles.Last());
+                        driver.SwitchTo().Window(handles.Last());
                     }
                 }
             }
@@ -433,7 +474,7 @@ namespace Defra.UI.Tests.Hooks
         }
 
         /// <summary>
-        /// Retained old CaptureScreenshot just for backwards compatability in case we need to revert to original method.
+        /// Retained for backwards compatibility in case revert to original method is needed.
         /// </summary>
         private string CaptureScreenshot()
         {
@@ -444,19 +485,21 @@ namespace Defra.UI.Tests.Hooks
                 Directory.CreateDirectory(screenshotsDir);
             }
 
+            var driver = ActiveDriver;
+
             try
             {
-                var handles = Driver.WindowHandles;
+                var handles = driver.WindowHandles;
                 if (handles != null && handles.Count > 0)
                 {
-                    var currentHandle = Driver.CurrentWindowHandle;
+                    var currentHandle = driver.CurrentWindowHandle;
                     if (handles.Contains(currentHandle))
                     {
-                        Driver.SwitchTo().Window(currentHandle);
+                        driver.SwitchTo().Window(currentHandle);
                     }
                     else
                     {
-                        Driver.SwitchTo().Window(handles.Last());
+                        driver.SwitchTo().Window(handles.Last());
                     }
                 }
             }
@@ -465,7 +508,7 @@ namespace Defra.UI.Tests.Hooks
                 // Silently handle window switch errors
             }
 
-            var screenshot = ((ITakesScreenshot)Driver).GetScreenshot();
+            var screenshot = ((ITakesScreenshot)driver).GetScreenshot();
             var uniqueFileName = $"{Guid.NewGuid()}.png";
             var filePath = Path.Combine(screenshotsDir, uniqueFileName);
 

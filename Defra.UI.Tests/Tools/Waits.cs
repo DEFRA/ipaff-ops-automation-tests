@@ -19,9 +19,19 @@ namespace Defra.UI.Tests.Tools
                 { Thread.Sleep(TimeSpan.FromSeconds(6)); }
 
                 WebDriverWait driverWait = new WebDriverWait(driver, TimeSpan.FromSeconds(GlobalWaits));
+                driverWait.IgnoreExceptionTypes(typeof(StaleElementReferenceException));
                 var element = driverWait.Until(ExpectedConditions.ElementIsVisible(elementBy));
 
-                element.ScrollToElement(driver);
+                try
+                {
+                    element.ScrollToElement(driver);
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Element became stale during scroll (e.g. DOM refreshed after search).
+                    // Re-fetch and return without scrolling.
+                    element = driver.FindElement(elementBy);
+                }
 
                 return element;
             }

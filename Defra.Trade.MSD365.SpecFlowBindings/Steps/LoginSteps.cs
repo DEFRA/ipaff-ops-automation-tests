@@ -2,12 +2,13 @@
 
 using Capgemini.PowerApps.SpecFlowBindings;
 using Capgemini.PowerApps.SpecFlowBindings.Extensions;
+using Defra.Trade.Plants.SpecFlowBindings.Helpers;
 using Microsoft.Dynamics365.UIAutomation.Api.UCI;
 using Microsoft.Dynamics365.UIAutomation.Browser;
 using OpenQA.Selenium;
+using Reqnroll;
 using System;
 using System.IO;
-using Reqnroll;
 
 /// <summary>
 /// Step bindings related to logging in.
@@ -15,6 +16,13 @@ using Reqnroll;
 [Binding]
 public class LoginSteps : PowerAppsStepDefiner
 {
+    private readonly ScenarioContext scenarioContext;
+
+    public LoginSteps(ScenarioContext scenarioContext)
+    {
+        this.scenarioContext = scenarioContext;
+    }
+
     /// <summary>
     /// Logs in to a given app as a given user.
     /// </summary>
@@ -27,6 +35,32 @@ public class LoginSteps : PowerAppsStepDefiner
     {
         SelectApplication(appName);
         GivenIAmLoggedInToTheAppAs1(appName, userAlias);
+
+        scenarioContext["IsDynamicsActive"] = true;
+    }
+
+    [Then("the Inspector is logged out of Dynamics successfully")]
+    public void ThenTheInspectorIsLoggedOutOfDynamicsSuccessfully()
+    {
+        var wait = new OpenQA.Selenium.Support.UI.WebDriverWait(Driver, TimeSpan.FromSeconds(30));
+
+        try
+        {
+            wait.Until(driver =>
+            {
+                var element = driver.FindElement(
+                    By.Id("login_workload_logo_text"));
+
+                return element.Text.Trim()
+                    .Contains("You signed out of your account", StringComparison.OrdinalIgnoreCase);
+            });
+        }
+        catch (OpenQA.Selenium.WebDriverTimeoutException)
+        {
+            throw new InvalidOperationException(
+                $"Expected to see 'You signed out of your account' after signing out of Dynamics but the page did not appear within 30 seconds. " +
+                $"Current URL: {Driver.Url}");
+        }
     }
 
     public static void GivenIAmLoggedInToTheAppAs1(string appName, string userAlias)
@@ -44,21 +78,11 @@ public class LoginSteps : PowerAppsStepDefiner
         else
             url = TestConfig.GetChargeUIUrl();
 
-        Console.WriteLine("Username logged in with = " + user.Username);
+        Console.WriteLine("Logging in with = " + user.Username);
 
         XrmApp.OnlineLogin.Login(url, user.Username.ToSecureString(), user.Password.ToSecureString());
 
-        Console.WriteLine("Logged-in success with the user =  " + user.Username);
-
-        try
-        {
-            Driver.WaitUntilAvailable(By.XPath("//h1[text() = 'Sign in to continue']"), 30.Seconds());
-            Driver.WaitUntilAvailable(By.XPath("//*[normalize-space(text()) ='Sign in']")).Click();
-        }
-        catch (NoSuchElementException e)
-        {
-            //no action
-        }
+        SignInPromptHelper.DismissSignInPrompts(Driver, "post-login");
 
         if (!url.Query.Contains("appid") && appName != "ChargeUI")
         {
@@ -66,7 +90,10 @@ public class LoginSteps : PowerAppsStepDefiner
         }
 
         CloseTeachingBubbles();
-    }
+
+        SignInPromptHelper.DismissSignInPrompts(Driver, "post-navigation");
+        Console.WriteLine("Logged-in successfully with the user =  " + user.Username);
+    }  
 
     private static void CloseTeachingBubbles()
     {

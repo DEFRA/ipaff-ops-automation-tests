@@ -164,6 +164,10 @@
     </SpecFlowFeatureFiles>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\Users\IPAFF\PRE\" />
+  </ItemGroup>
+
 
 
 </Project>

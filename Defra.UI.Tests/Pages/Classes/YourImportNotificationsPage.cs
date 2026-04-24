@@ -15,6 +15,15 @@ namespace Defra.UI.Tests.Pages.Classes
         private string Platform => ConfigSetup.BaseConfiguration.TestConfiguration.Platform;
         private IObjectContainer _objectContainer;
 
+        // Snapshot of window handles taken immediately before the PDF tab is opened.
+        // Must be set before any action that opens the PDF (either ClickShowNotification
+        // or an external page class via RecordHandlesBeforePdfOpen).
+        private IList<string> _handlesBeforePdfOpen = [];
+
+        // Snapshot of the tab count taken at the start of ClosePDFBrowserTab, used by
+        // VerifyBrowserTabClosed to assert exactly one tab was closed.
+        private int _handleCountBeforePdfClose;
+
         #region Page Objects
         private IWebElement PageHeading => _driver.WaitForElement(By.XPath("//h1[@id='page-primary-title']"), true);
         private IWebElement lnkCreateNotification => _driver.WaitForElement(By.LinkText("Create a new notification"));
@@ -28,17 +37,14 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement ddlNotificationType => _driver.FindElement(By.Id("certificate-type"));
         private IWebElement ddlMicroChipNum => _driver.FindElement(By.Id("microchip-number"));
         private IWebElement arrivalImportDateRangeBlock => _driver.FindElement(By.XPath("//legend[contains(text(),'Import date range')]/following-sibling::div"));
-
         private IWebElement txtStartDateDay => _driver.FindElement(By.Id("start-date-day"));
         private IWebElement txtStartDateMonth => _driver.FindElement(By.Id("start-date-month"));
         private IWebElement txtStartDateYear => _driver.FindElement(By.Id("start-date-year"));
         private IWebElement txtStartDateDatePicker => _driver.FindElement(By.XPath("//div[@id='start-date']//div[contains(@class,'defra-datepicker')]/button"));
-
         private IWebElement txtEndDateDay => _driver.FindElement(By.Id("end-date-day"));
         private IWebElement txtEndDateMonth => _driver.FindElement(By.Id("end-date-month"));
         private IWebElement txtEndDateYear => _driver.FindElement(By.Id("end-date-year"));
         private IWebElement txtEndDateDatePicker => _driver.FindElement(By.XPath("//div[@id='end-date']//div[contains(@class,'defra-datepicker')]/button"));
-
         private IWebElement notificationCount => _driver.FindElement(By.Id("notification-count"));
         private IWebElement GetNotificationReferenceInList(string chedRef) => _driver.FindElement(By.XPath($"//dd[@id='reference-number-0' and contains(text(), '{chedRef}')]"));
         private IWebElement GetShowNotificationLink(string chedRef) => _driver.FindElement(By.Id($"show-certificate-{chedRef}"));
@@ -96,25 +102,59 @@ namespace Defra.UI.Tests.Pages.Classes
             }
         }
 
+        /// <summary>
+        /// Snapshots window handles then clicks Show notification. The snapshot is taken
+        /// first so that VerifyCertificateInNewTab can detect the new tab even if the
+        /// browser opens it synchronously before the verify step runs.
+        /// </summary>
         public void ClickShowNotification(string chedReference)
         {
             GetShowNotificationLink(chedReference).Click();
         }
 
+        /// <summary>
+        /// Records the current window handles before a PDF tab is opened by an external
+        /// page class (e.g. CHEDOverviewPage.ClickShowChed). Must be called immediately
+        /// before the action that opens the new tab.
+        /// </summary>
+        public void RecordHandlesBeforePdfOpen()
+        {
+            _handlesBeforePdfOpen = _driver.WindowHandles.ToList();
+        }
+
+        /// <summary>
+        /// Switches to the PDF tab that was opened after the handles snapshot and verifies
+        /// the URL contains '/certificate/pdf'. Waits up to 10 seconds for the new tab to
+        /// appear. Works for both single-browser flows and the multi-tab Dynamics hand-off.
+        /// </summary>
         public bool VerifyCertificateInNewTab()
         {
-            var windowHandles = _driver.WindowHandles;
-            if (windowHandles.Count > 1)
+            if (_handlesBeforePdfOpen.Count == 0)
             {
-                _driver.SwitchTo().Window(windowHandles.Last());
-
-                // Optional Wait for PDF to load (helps with screenshot rendering) - can remove if not needed
-                Thread.Sleep(2000);
-
-                 return _driver.Url.Contains("/certificate/pdf");
+                _handlesBeforePdfOpen = [_driver.CurrentWindowHandle];
             }
-            return false;
-        }
+
+            var wait = new OpenQA.Selenium.Support.UI.WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+            IList<string> allHandles = _handlesBeforePdfOpen;
+
+            try
+            {
+                wait.Until(d =>
+                {
+                    allHandles = d.WindowHandles.ToList();
+                    return allHandles.Count > _handlesBeforePdfOpen.Count;
+                });
+            }
+            catch (OpenQA.Selenium.WebDriverTimeoutException)
+            {
+                return false;
+            }
+
+            var newHandle = allHandles.Except(_handlesBeforePdfOpen).FirstOrDefault();
+            if (newHandle == null)
+            {
+                return false;
+            }
 
         public string getPDFUrl()
         {
@@ -126,19 +166,38 @@ namespace Defra.UI.Tests.Pages.Classes
             return _driver.Url.Contains($"/{chedReference}/");
         }
 
+        /// <summary>
+        /// Closes the current PDF tab and returns focus to the previous tab.
+        /// Switches to the last remaining handle that is not the closed one, which
+        /// correctly returns to the IPAFFS tab in both single-browser and multi-tab flows
+        /// (rather than always switching to index [0] which may be the Dynamics tab).
+        /// </summary>
         public void ClosePDFBrowserTab()
         {
-            var windowHandles = _driver.WindowHandles;
-            if (windowHandles.Count > 1)
+            var currentHandle = _driver.CurrentWindowHandle;
+            var allHandles = _driver.WindowHandles.ToList();
+            _handleCountBeforePdfClose = allHandles.Count;
+
+            if (allHandles.Count > 1)
             {
                 _driver.Close();
-                _driver.SwitchTo().Window(windowHandles.First());
+
+                var remainingHandles = _driver.WindowHandles.ToList();
+                var previousHandle = remainingHandles
+                    .LastOrDefault(h => h != currentHandle)
+                    ?? remainingHandles.First();
+
+                _driver.SwitchTo().Window(previousHandle);
             }
         }
 
+        /// <summary>
+        /// Verifies that exactly one tab was closed. Works for single-browser (2→1)
+        /// and the Dynamics hand-off flow (3→2).
+        /// </summary>
         public bool VerifyBrowserTabClosed()
         {
-            return _driver.WindowHandles.Count == 1;
+            return _driver.WindowHandles.Count == _handleCountBeforePdfClose - 1;
         }
 
         public void ClickCookiesLink()
@@ -199,7 +258,6 @@ namespace Defra.UI.Tests.Pages.Classes
         private bool IsStartDateMonthDisplayed => txtStartDateMonth.Displayed;
         private bool IsStartDateYearDisplayed => txtStartDateYear.Displayed;
         private bool IsStartDateDatePickerDisplayed => txtStartDateDatePicker.Displayed;
-
         private bool IsEndDateDayDisplayed => txtEndDateDay.Displayed;
         private bool IsEndDateMonthDisplayed => txtEndDateMonth.Displayed;
         private bool IsEndDateYearDisplayed => txtEndDateYear.Displayed;

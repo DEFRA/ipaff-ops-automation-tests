@@ -27,6 +27,7 @@ public class EntitySteps : PowerAppsStepDefiner
         Driver.WaitUntilVisible(By.CssSelector($"li[title=\"{tabName}\"]"));
 
         XrmApp.Entity.SelectTab(tabName);
+        Driver.WaitForTransaction();
     }
 
     /// <summary>

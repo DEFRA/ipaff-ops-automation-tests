@@ -26,6 +26,10 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement btnSaveAndReview => _driver.FindElement(By.XPath("//button[text()='Save and review']"));
         private IWebElement commIntendedForSelectedRadioLabel => _driver.FindElement(By.XPath("//input[contains(@name,'commodity-intended-for') and @checked]/following-sibling::label"));
         private IWebElement temperatureSelectedRadioLabel => _driver.FindElement(By.XPath("//input[contains(@name,'temperature') and @checked]/following-sibling::label"));
+        private IWebElement txtGrossWeight => _driver.FindElement(By.Id("gross-weight"));
+        private IWebElement txtGrossVolume => _driver.FindElement(By.Id("gross-volume"));
+        private IWebElement tdNetWeight => _driver.FindElement(By.XPath("//th[normalize-space()='Net weight of the consignment (kg)']/following-sibling::td"));
+        private IWebElement tdNumberOfPackages => _driver.FindElement(By.XPath("//th[normalize-space()='Number of packages of the consignment']/following-sibling::td"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -111,5 +115,13 @@ namespace Defra.UI.Tests.Pages.Classes
         public string GetCommIntendedForRadioLabelText => commIntendedForSelectedRadioLabel.Text.Trim() ?? string.Empty;
         
         public string GetTemperatureRadioLabelText => temperatureSelectedRadioLabel.Text.Trim() ?? string.Empty;
+
+        public string GetGrossWeightValue() => txtGrossWeight.GetAttribute("value")?.Trim() ?? string.Empty;
+
+        public string GetNetWeight() => tdNetWeight.Text.Trim();
+
+        public string GetNumberOfPackages() => tdNumberOfPackages.Text.Trim();
+
+        public string GetGrossVolumeValue() => txtGrossVolume.GetAttribute("value")?.Trim() ?? string.Empty;
     }
 }

@@ -9,6 +9,7 @@
         void SearchForNotification(string notificationNumber);
         bool VerifyNotificationInList(string chedReference);
         void ClickShowNotification(string chedReference);
+        void RecordHandlesBeforePdfOpen();
         bool VerifyCertificateInNewTab();
         bool VerifyDataInCertificate(string chedReference);
         void ClosePDFBrowserTab();

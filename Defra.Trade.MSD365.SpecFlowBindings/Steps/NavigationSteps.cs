@@ -7,12 +7,13 @@ namespace Defra.Trade.Plants.SpecFlowBindings.Steps;
 using Capgemini.PowerApps.SpecFlowBindings;
 using Defra.Trade.Plants.Model;
 using Defra.Trade.Plants.SpecFlowBindings.Context;
+using Defra.Trade.Plants.SpecFlowBindings.Helpers;
 using FluentAssertions;
 using Microsoft.Dynamics365.UIAutomation.Browser;
 using Microsoft.Xrm.Sdk;
 using OpenQA.Selenium;
-using System;
 using Reqnroll;
+using System;
 
 /// <summary>
 /// Steps relating to navigation of the Dynamics app.
@@ -29,6 +30,15 @@ public class NavigationSteps : PowerAppsStepDefiner
     public NavigationSteps(SessionContext ctx)
     {
         this.ctx = ctx;
+    }
+
+    [When("I click on {string} under the {string} area")]
+    [Then("I click on {string} under the {string} area")]
+    public static void WhenIClickOnUnderTheArea(string subAreaName, string areaName)
+    {
+        Driver.WaitForTransaction();
+        XrmApp.Navigation.OpenSubArea(areaName, subAreaName);
+        Driver.WaitForTransaction();
     }
 
     /// <summary>

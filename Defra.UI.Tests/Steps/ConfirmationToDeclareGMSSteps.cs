@@ -22,6 +22,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
 
+        [Then("the Confirmation to declare GMS page should be displayed")]
         [Then("Confirmation to declare GMS page should be loaded")]
         public void ThenConfirmationToDeclareGMSPageShouldBeLoaded()
         {

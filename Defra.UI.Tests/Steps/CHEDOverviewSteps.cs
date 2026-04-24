@@ -12,13 +12,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
         private readonly ScenarioContext _scenarioContext;
 
         private ICHEDOverviewPage? chedOverviewPage => _objectContainer.IsRegistered<ICHEDOverviewPage>() ? _objectContainer.Resolve<ICHEDOverviewPage>() : null;
+        private IYourImportNotificationsPage? importNotificationsPage => _objectContainer.IsRegistered<IYourImportNotificationsPage>() ? _objectContainer.Resolve<IYourImportNotificationsPage>() : null;
 
         public CHEDOverviewSteps(ScenarioContext context, IObjectContainer container)
         {
             _objectContainer = container;
             _scenarioContext = context;
         }
-
 
         [Then("the CHED overview page should be displayed")]
         public void ThenTheCHEDOverviewPageShouldBeDisplayed()
@@ -59,7 +59,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             chedOverviewPage?.ClickReplacedByLink();
         }
-        
+
         [When("the user clicks Clear all in consinments requiring control page")]
         public void WhenTheUserClicksClearAll()
         {
@@ -69,7 +69,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("Show CHED button is displayed")]
         public void TheShowChedButtonIsDisplayed()
         {
-            Assert.IsTrue(chedOverviewPage?.VerifyShowChedButton() , "The Show CHED button is not present");
+            Assert.IsTrue(chedOverviewPage?.VerifyShowChedButton(), "The Show CHED button is not present");
+        }
+
+        [When("the user clicks on the Show CHED button")]
+        public void WhenTheUserClicksOnTheShowChedButton()
+        {
+            importNotificationsPage?.RecordHandlesBeforePdfOpen();
+            chedOverviewPage?.ClickShowChed();
         }
 
         [Then("the user verifies {string} tab in CHED Overview page")]
@@ -77,23 +84,23 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             Assert.IsTrue(chedOverviewPage?.VerifyTab(tabName), "The " + tabName + " is not present");
         }
-        
+
         [Then("the user verifies the value is present for {string}")]
         public void ThenTheUserVerifiesValueIsPresent(string fieldName)
         {
             Assert.IsTrue(chedOverviewPage?.IsFieldValuePresent(fieldName), "The field value for " + fieldName + " is not present");
         }
-        
+
         [Then("the user verifies the value is present for {string} under {string}")]
         public void ThenTheUserVerifiesValueIsPresent(string fieldName, string sectionName)
         {
-            Assert.IsTrue(chedOverviewPage?.IsFieldValuePresent(fieldName,sectionName), "The field value for " + fieldName + " is not present");
+            Assert.IsTrue(chedOverviewPage?.IsFieldValuePresent(fieldName, sectionName), "The field value for " + fieldName + " is not present");
         }
-        
+
         [Then("the user verifies the value is present for {string} in {string} column")]
         public void ThenTheUserVerifiesValueIsPresentInColumn(string fieldName, string column)
         {
-            Assert.IsTrue(chedOverviewPage?.IsFieldValuePresentInTable(fieldName, column), "The field value for " + fieldName + " is not present in "+column);
+            Assert.IsTrue(chedOverviewPage?.IsFieldValuePresentInTable(fieldName, column), "The field value for " + fieldName + " is not present in " + column);
         }
 
         [When("the user switches to {string} tab in CHED Overview page")]
@@ -136,6 +143,37 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserClicksRecordControlButton()
         {
             chedOverviewPage?.ClickRecordControl();
+        }
+
+        [Then("the notification status is {string} for the notification created in IPAFFS")]
+        public void ThenTheNotificationStatusIsForTheNotificationCreatedInIPAFFS(string expectedStatus)
+        {
+            var chedReference = _scenarioContext.ContainsKey("CHEDReference")
+                ? _scenarioContext.Get<string>("CHEDReference")
+                : null;
+
+            Assert.That(chedReference, Is.Not.Null.And.Not.Empty,
+                "CHEDReference was not found in scenario context — ensure the CHED reference was recorded earlier in the scenario.");
+
+            Assert.True(
+                chedOverviewPage?.VerifyNotificationStatus(expectedStatus, chedReference),
+                $"Expected CHED Overview status to be '{expectedStatus}' for reference '{chedReference}'.");
+        }
+
+        [Then("all the checks are {string} or {string} showing {int} of {int}")]
+        public void ThenAllTheChecksAreOrShowingCount(string expectedDecision, string alternateDecision, int shown, int total)
+        {
+            Assert.True(
+                chedOverviewPage?.VerifyChecksCount(shown, total),
+                $"Expected the checks count to show '{shown} of {total}' but a different count was displayed.");
+
+            var result = chedOverviewPage?.VerifyAllCheckDecisions(expectedDecision, alternateDecision);
+
+            Assert.True(
+                result?.AllMatch,
+                $"Expected all {result?.Total} check decision tags to be '{expectedDecision}' or '{alternateDecision}' " +
+                $"but {result?.NonMatchingValues.Count} were not. " +
+                $"Non-matching values: [{string.Join(", ", result?.NonMatchingValues.Select(v => $"'{v}'") ?? [])}].");
         }
     }
 }

@@ -147,11 +147,21 @@ public class PopupSteps : PowerAppsStepDefiner
     [When("I maximise the popup")]
     public static void WhenIMaximiseThePopup()
     {
-        var elements = Driver.FindElements(By.XPath($"//button[@title='Enter full screen mode']"));
-        if (elements.Any())
-        {
-            elements.Single().Click();
-        }
+        Policy
+            .Handle<Exception>()
+            .OrResult<bool>(maximised => !maximised)
+            .WaitAndRetry(3, retryAttempt => TimeSpan.FromSeconds(2))
+            .Execute(() =>
+            {
+                var maximiseButtons = Driver.FindElements(By.XPath("//button[@title='Enter full screen mode']"));
+                if (maximiseButtons.Any())
+                {
+                    maximiseButtons.Single().Click();
+                }
+
+                // Confirm the popup is now in full screen by checking the Exit full screen button is present.
+                return Driver.FindElements(By.XPath("//button[@title='Exit full screen mode']")).Any();
+            });
     }
 
     [When(@"I minimise the popup")]

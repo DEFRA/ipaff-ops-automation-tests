@@ -5,6 +5,7 @@ using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
+using SeleniumExtras.WaitHelpers;
 
 namespace Defra.UI.Tests.Pages.Classes
 {
@@ -19,6 +20,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtUploadSuccessBannerContent => _driver.FindElement(By.XPath("//*[@class='govuk-notification-banner__content']/p"));
         private IWebElement txtInfoMessageHeading => _driver.FindElement(By.XPath("//h2[@class='govuk-heading-s']"));
         private IWebElement txtInfoMessageContent => _driver.FindElement(By.XPath("//p[@class='govuk-body']"));
+        private By lblUploading => By.XPath("//h3[text()='Uploading CSV...']");
+        private By lblSuccessBanner => By.XPath("//h2[text()='Upload successful']");
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -32,6 +35,53 @@ namespace Defra.UI.Tests.Pages.Classes
         public bool IsPageLoaded()
         {
             return pageTitle.Text.Contains("Check uploaded commodity details");
+        }
+
+
+        public bool WaitForUploadToCompleteAndVerifySuccessMessage(string successMessage)
+        {
+            var timeout = TimeSpan.FromMinutes(10);
+            var pollInterval = TimeSpan.FromSeconds(2);
+            var start = DateTime.UtcNow;
+
+            while (DateTime.UtcNow - start < timeout)
+            {
+                // Check if spinner is still present
+                bool spinnerPresent = false;
+                try
+                {
+                    var spinner = _driver.FindElement(lblUploading);
+                    spinnerPresent = spinner.Displayed;
+                }
+                catch (NoSuchElementException)
+                {
+                    spinnerPresent = false;
+                }
+
+                // If spinner is gone, check for success banner
+                if (!spinnerPresent)
+                {
+                    try
+                    {
+                        var banner = _driver.FindElement(lblSuccessBanner);
+                        if (banner.Text.Trim().Equals(successMessage, StringComparison.OrdinalIgnoreCase))
+                        {
+                            return true;
+                        }
+                    }
+                    catch (NoSuchElementException)
+                    {
+                        // Success banner not present yet
+                    }
+                }
+
+                // Optionally, check for error/failure banner here
+
+                Thread.Sleep(pollInterval);
+            }
+
+            // Timeout
+            return false;
         }
 
         public bool IsUploadSuccessMsgDisplayed(string successMsg)
@@ -115,8 +165,6 @@ namespace Defra.UI.Tests.Pages.Classes
                     {
                         Console.WriteLine($"[ReadOnlyCheck] Row {rowIndex + 1}: ✔ Read‑only");
                     }
-
-
 
                     try
                     {
@@ -349,6 +397,11 @@ namespace Defra.UI.Tests.Pages.Classes
                        ".//div[contains(@class,'govuk-grid-row')][.//span[normalize-space()='Controlled atmosphere container']]//div[contains(@class,'govuk-grid-column-one-half')][2]/span"
                     ));
                     break;
+                case "Intended for final users (or commercial flower production)":
+                    cells = table.FindElements(By.XPath(
+                       ".//div[contains(@class,'govuk-grid-row')][.//span[contains(normalize-space(),'Intended for final users')]]//div[contains(@class,'govuk-grid-column-one-half')][2]/span"
+                    ));
+                    break;
 
                 default:
                     throw new ArgumentException($"Unknown column name: {columnName}");
@@ -480,6 +533,11 @@ namespace Defra.UI.Tests.Pages.Classes
 
             return txtInfoMessageHeading.Text.Trim().Contains(msgHeading)
                 && txtInfoMessageContent.Text.Trim().Contains(msgContent);
+        }
+
+        public bool IsUploadSuccessBannerAbsent()
+        {
+            return _driver.FindElements(lblSuccessBanner).Count == 0;
         }
     }
 }

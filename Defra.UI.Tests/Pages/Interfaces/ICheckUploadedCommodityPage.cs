@@ -10,5 +10,7 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void ValidateAllCommodityDetails(Table? inputAllCommodityData, ref bool allDataMatches, List<string> mismatches);
         void ClickConfirmAndContinueButton();
         bool IsPageLoaded();
+        bool WaitForUploadToCompleteAndVerifySuccessMessage(string successMsg);
+        bool IsUploadSuccessBannerAbsent();
     }
 }
