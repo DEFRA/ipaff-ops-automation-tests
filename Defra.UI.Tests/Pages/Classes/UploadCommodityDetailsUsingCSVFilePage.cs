@@ -198,6 +198,12 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void SelectCSVFile(string csvFilePath)
         {
+            // LocalFileDetector is required for RemoteWebDriver (Selenium Grid).
+            // Without it, SendKeys sends the raw path to the Grid node where the file
+            // does not exist, instead of uploading it from the agent machine.
+            var allowsDetection = (IAllowsFileDetection)_driver;
+            allowsDetection.FileDetector = new OpenQA.Selenium.Remote.LocalFileDetector();
+
             btnChooseFile.SendKeys(csvFilePath);
         }
 

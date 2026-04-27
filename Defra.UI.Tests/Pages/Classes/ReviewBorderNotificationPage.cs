@@ -90,8 +90,10 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void ClickDocumentLink()
         {
+            var fileName = lnkDocument.Text.Trim();
             lnkDocument.Click();
             Thread.Sleep(1000);
+            Utils.RetrieveFileFromGrid(_driver, fileName);
         }
 
         public void OpenDownloadsInNewTab()
@@ -108,8 +110,9 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void ClickAttachedDocumentLink()
         {
+            var fileName = lnkAttachedDocument.Text.Trim();
             lnkAttachedDocument.Click();
             Thread.Sleep(1000);
+            Utils.RetrieveFileFromGrid(_driver, fileName);
         }
     }
-}
