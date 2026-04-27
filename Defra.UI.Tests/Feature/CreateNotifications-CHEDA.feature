@@ -2055,7 +2055,7 @@ Scenario: User creates and submits a CHEDA notification with laboratory tests ch
 	When the user clicks Return to your dashboard link
 	Then the Import notifications dashboard page should be displayed
 
-@Dynamics
+#@Dynamics
 Scenario: User creates and submits a CHEDA consignment notification with EU country, multiple species and permanent addresses for animals - SPS-7363
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
