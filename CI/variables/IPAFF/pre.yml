@@ -1,7 +1,7 @@
 variables:
  Environment: 'pre'
  EnvLogin: 'TeZvzAsx8usMhsCVqGG203Iity63qjaT'
- FilterTestCategory : 'TestCategory=Regression' 
+ FilterTestCategory : 'TestCategory=Dynamics' 
  IDCOMSUrl: 'https://defra-trade-plants-preprod.crm4.dynamics.com/main.aspx?appid=337d4d96-492d-ee11-bdf4-000d3ab8960d'
  SecretsFilter: 'IPAFFIDCOMSAutomation'
  IsLiveUserAccount: false
