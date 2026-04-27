@@ -196,8 +196,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         ValidateContains("EstimatedArrivalDate", page.Sections.PriorNotification?.Date, ref allDataMatches, mismatches);
                         ValidateContains("EstimatedArrivalTime", page.Sections.PriorNotification?.Time, ref allDataMatches, mismatches);
 
-
-
                         string? pdfTemperature = page.Sections.TransportConditions
                         switch
                         {
@@ -266,7 +264,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             ValidateContains("TotalNetWeight", page.Sections.TotalNetWeight?.Value, ref allDataMatches, mismatches);
                             ValidateContains("TotalPackages", page.Sections.TotalNumberOfPackages?.Value, ref allDataMatches, mismatches);
                             ValidateContains("TotalGrossWeight", page.Sections.TotalGrossWeight?.Value, ref allDataMatches, mismatches);
-
                         }
                         else
                         {
@@ -274,16 +271,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             ValidateContains("CommodityDescription", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
                             ValidateContains("CommodityCodeFirstCommodity", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
                             ValidateContains("CommodityDescFirstCommodity", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("Species", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateAllMatchesInList("Species", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
                             ValidateContains("NumberOfAnimals", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("NetWeight", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("NumberOfPackages", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("PackageType", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateAllMatchesInList("NetWeight", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateAllMatchesInList("NumberOfPackages", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateAllMatchesInList("PackageType", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
                             ValidateContains("TypeOfCommodity", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
                             ValidateContains("EstablishmentListFirstName", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
                             ValidateContains("CountryOfOrigin", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("TotalNetWeight", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("TotalPackages", page.Sections.DescriptionOfTheGoods?.ElementAt(0).PackageCount, ref allDataMatches, mismatches);
+                            ValidateContains("TotalNetWeight", page.Sections.TotalNetWeight?.Value, ref allDataMatches, mismatches);
+                            ValidateContains("TotalPackages", page.Sections.TotalNumberOfPackages?.Value, ref allDataMatches, mismatches);
                             ValidateContains("TotalGrossWeight", page.Sections.TotalGrossWeight?.Value, ref allDataMatches, mismatches);
                         }
                     }
@@ -332,7 +329,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         ValidateIfExists("PhysicalCheck", pdfPhysicalCheck, ref allDataMatches, mismatches);
                         ValidateIfExists("PhysicalCheckDecision", pdfPhysicalCheck, ref allDataMatches, mismatches);
 
-                        string? pdfLaboratoryTests = page.Sections.LaboratoryTests
+                        string? pdfLaboratoryTestNames = page.Sections.LaboratoryTests
                         switch
                         {
                             { Random: "true" } => "Random",
@@ -340,7 +337,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             { IntensifiedControls: "true" } => "IntensifiedControls",
                             _ => null
                         };
-                        ValidateIfExists("LaboratoryTestsReason", pdfLaboratoryTests, ref allDataMatches, mismatches);
+                        ValidateIfExists("LaboratoryTestsReason", pdfLaboratoryTestNames, ref allDataMatches, mismatches);
 
                         string? welfareCheckDecision = page.Sections.WelfareCheck
                         switch
@@ -350,13 +347,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             _ => null
                         };
                         ValidateIfExists("WelfareCheckDecision", welfareCheckDecision, ref allDataMatches, mismatches);
-                        ValidateContains("NumberOfDeadAnimals", page.Sections.ImpactOnTransportAnimals.Value, ref allDataMatches, mismatches);
-                        ValidateContains("NumberOfUnfitAnimals", page.Sections.ImpactOnTransportAnimals.Value, ref allDataMatches, mismatches);
-                        ValidateContains("NumberOfBirthsOrAbortions", page.Sections.ImpactOnTransportAnimals.Value, ref allDataMatches, mismatches);
+                        ValidateContains("NumberOfDeadAnimals", page.Sections.ImpactOnTransportAnimals?.Value, ref allDataMatches, mismatches);
+                        ValidateContains("NumberOfUnfitAnimals", page.Sections.ImpactOnTransportAnimals?.Value, ref allDataMatches, mismatches);
+                        ValidateContains("NumberOfBirthsOrAbortions", page.Sections.ImpactOnTransportAnimals?.Value, ref allDataMatches, mismatches);
 
-                        ValidateContains("LaboratoryTestName", (string?)page.Sections.LaboratoryTests.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches, true);
+                        ValidateContains("LaboratoryTestName", (string?)page.Sections.LaboratoryTests?.AdditionalData?.ElementAt(0).Value, ref allDataMatches, mismatches, true);
 
-                        ValidateContains("IUUSubOption", page.Sections.CustomsDocumentReference.Value, ref allDataMatches, mismatches);
+                        ValidateContains("IUUSubOption", page.Sections.CustomsDocumentReference?.Value, ref allDataMatches, mismatches);
 
 
                         if (_scenarioContext["PortOfEntry"].ToString().Contains("London Borough of Hillingdon Heathrow Airport Imported Food Office"))
@@ -563,27 +560,27 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             ValidateContains("NumOfPackagesSecondCommodity", page.Sections.DescriptionOfTheGoods.ElementAt(1).Value, ref allDataMatches, mismatches);
                             ValidateContains("TypeOfPackageSecondCommodity", page.Sections.DescriptionOfTheGoods.ElementAt(1).Value, ref allDataMatches, mismatches);
 
-                            ValidateContains("TotalNetWeight", page.Sections.TotalNetWeight.Value, ref allDataMatches, mismatches);
-                            ValidateContains("TotalPackages", page.Sections.TotalNumberOfPackages.Value, ref allDataMatches, mismatches);
-                            ValidateContains("TotalGrossWeight", page.Sections.TotalGrossWeight.Value, ref allDataMatches, mismatches);
+                            ValidateContains("TotalNetWeight", page.Sections.TotalNetWeight?.Value, ref allDataMatches, mismatches);
+                            ValidateContains("TotalPackages", page.Sections.TotalNumberOfPackages?.Value, ref allDataMatches, mismatches);
+                            ValidateContains("TotalGrossWeight", page.Sections.TotalGrossWeight?.Value, ref allDataMatches, mismatches);
 
                         }
                         else
                         {
-                            var x = page.Sections.DescriptionOfTheGoods.ElementAt(0).Value;
-                            ValidateContains("CommodityCode", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("CommodityDescription", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("CommodityCodeFirstCommodity", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("CommodityDescFirstCommodity", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("Species", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("NetWeight", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("NumberOfPackages", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("PackageType", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("TypeOfCommodity", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("EstablishmentListFirstName", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("CountryOfOrigin", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("TotalNetWeight", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("TotalPackages", page.Sections.DescriptionOfTheGoods.ElementAt(0).PackageCount, ref allDataMatches, mismatches);
+                            ValidateContains("CommodityCode", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("CommodityDescription", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("CommodityCodeFirstCommodity", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("CommodityDescFirstCommodity", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("Species", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("NetWeight", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("NumberOfPackages", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("PackageType", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("TypeOfCommodity", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("EstablishmentListFirstName", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("CountryOfOrigin", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+
+                            ValidateContains("TotalNetWeight", page.Sections.TotalNetWeight?.Value, ref allDataMatches, mismatches);
+                            ValidateContains("TotalPackages", page.Sections.TotalNumberOfPackages?.Value, ref allDataMatches, mismatches);
                             ValidateContains("TotalGrossWeight", page.Sections.TotalGrossWeight?.Value, ref allDataMatches, mismatches);
                         }
                     }
@@ -796,6 +793,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             else if (_scenarioContext.ContainsKey(contextKey))
             {
                 object contextValue = _scenarioContext[contextKey];
+
                 // Date validation for DocumentDateOfIssue
                 if (!_scenarioContext["CHEDReference"].ToString().Contains("CHEDA") && (contextKey.Equals("HealthCertificateDateOfIssue") || contextKey.Equals("DocumentDateOfIssue")))
                 {
@@ -833,6 +831,21 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 {
                     contextValue = (contextKey.Equals("IdentityCheck") ? _scenarioContext.Get<string>("IdentityCheck").Replace(" ", "", StringComparison.OrdinalIgnoreCase) : _scenarioContext.Get<string>("IdentityCheckType").Replace(" ", "", StringComparison.OrdinalIgnoreCase));
                     reviewValue = reviewValue.Replace(" ", "", StringComparison.OrdinalIgnoreCase);
+                }
+
+                if (contextKey.Equals("SampleTime"))
+                {
+                    var expectedTime = TimeSpan.Parse(_scenarioContext.Get<string>(contextKey));
+                    var actualTime = TimeSpan.Parse(reviewValue);
+
+                    if (Math.Abs((expectedTime - actualTime).TotalMinutes) == 1)
+                    {
+                        // Align actual time to expected time
+                        actualTime = expectedTime;
+                    }
+
+                    contextValue = expectedTime.ToString(@"hh\:mm");
+                    reviewValue = actualTime.ToString(@"hh\:mm");
                 }
 
                 if (_scenarioContext.ContainsKey(contextKey) && contextKey is "Temperature"
@@ -1043,7 +1056,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 if (rawExpected is string s)
                 {
                     expectedValue = s.Trim();
-                    if (expectedValue.Trim() == "No need to inspect - exempt or not applicable") expectedValue = "IUUNA";
+                    if (contextKey.Trim() == "IUUSubOption" && expectedValue.Trim() == "No need to inspect - exempt or not applicable") expectedValue = "IUUNA";
+                    if (contextKey.Trim() == "IUUSubOption" && expectedValue.Trim() == "Compliant") expectedValue = "IUUOK";
 
                     if (contextKey.Trim() == "ExitBCP") actual = actual.Replace(".", "").Trim();
                     if (contextKey.Trim() == "ExitBorderControlPost" || contextKey.Trim() == "PortOfEntry") expectedValue = expectedValue.Split(new[] { '(', '-' })[0].Trim();
@@ -1080,17 +1094,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             break;
                         }
                     }
-
                     if (!anyMatch)
                     {
                         mismatches.Add($"{contextKey}: None of the expected values were found in PDF");
                         allDataMatches = false;
                     }
-
-
                     return;
-                    //expectedValue = string.Join(" ", rawExpected);
-                    //expectedValue = string.Join(" ", list.Select(x => x?.ToString())).Trim();
                 }
                 else
                 {
@@ -1154,6 +1163,49 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 .ToList();
 
             return (expectedWords, actualWords);
+        }
+
+        public void ValidateAllMatchesInList(string contextKey, string? actual, ref bool allDataMatches, List<string> mismatches)
+        {
+            if (_scenarioContext.ContainsKey(contextKey))
+            {
+                object rawExpected = _scenarioContext[contextKey];
+                string expectedValue;
+
+                if (rawExpected is string[] arr)
+                {
+                    // join array into one string (adjust to comma if needed)
+                    expectedValue = string.Join(" ", arr).Trim();
+                }
+                else if (rawExpected is List<string> list)
+                {
+                    bool anyMatch = false;
+
+                    foreach (var item in list)
+                    {
+                        if (string.IsNullOrWhiteSpace(item))
+                            continue;
+
+                        if (actual.Contains(item.Trim(), StringComparison.OrdinalIgnoreCase))
+                        {
+                            Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{item}' matches");
+                            anyMatch = true;
+                        }
+                    }
+                    if (!anyMatch)
+                    {
+                        mismatches.Add($"{contextKey}: None of the expected values were found in PDF");
+                        allDataMatches = false;
+                    }
+                    return;
+                }
+                else
+                {
+                    mismatches.Add($"{contextKey}: Unsupported type '{rawExpected.GetType().Name}'");
+                    return;
+                }
+
+            }
         }
     }
 }

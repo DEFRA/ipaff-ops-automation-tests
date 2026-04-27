@@ -172,7 +172,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user clicks select link of one of the Laboratory test")]
         public void WhenTheUserClicksSelectLinkOfOneOfTheLaboratoryTest()
         {
-            _scenarioContext["LaboratoryTestName"] = laboratoryTestsPage?.GetLaboratoryTestName();
+            //_scenarioContext["LaboratoryTestName"] = laboratoryTestsPage?.GetLaboratoryTestName();
+            Utils.AppendStringToScenarioContextArray(_scenarioContext, "LaboratoryTestName", laboratoryTestsPage?.GetLaboratoryTestName());
             laboratoryTestsPage?.ClickSelectLaboratoryTest();
 
             // Capture system date and time AFTER clicking the Select link
@@ -209,7 +210,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 var timeDifference = Math.Abs((actualTime - expectedTime).TotalMinutes);
 
                 // Allow up to 1 minutes tolerance for timing differences
-                Assert.That(timeDifference, Is.LessThanOrEqualTo(61),
+                Assert.That(timeDifference, Is.LessThanOrEqualTo(1),
                     $"Sample time is outside acceptable range. Expected: {expectedTimeStr}, Actual: {actualTimeStr}, Difference: {timeDifference:F1} minutes");
             }
             else
@@ -232,11 +233,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var commodityCode = _scenarioContext.Get<string>("SelectedCommoditySampledCode");
             var commodityDescription = _scenarioContext.Get<string>("SelectedCommoditySampledDescription");
             var commoditySpecies = _scenarioContext.Get<string>("SelectedCommoditySampledSpecies");
-            var labTestName = _scenarioContext.Get<string>("LaboratoryTestName");
+            var labTestName = _scenarioContext.Get<string[]>("LaboratoryTestName");
             var analysisType = _scenarioContext.Get<string>("AnalysisType");
             var result = laboratoryTestsPage?.GetLabTestResult(0);
 
-            Assert.True(laboratoryTestsPage?.VerifyLabTestsReviewPage(commodityCode, commodityDescription, commoditySpecies, labTestName));
+            Assert.True(laboratoryTestsPage?.VerifyLabTestsReviewPage(commodityCode, commodityDescription, commoditySpecies, labTestName[0]));
             Assert.True(laboratoryTestsPage?.IsAddAnotherTestLinkDisplayed(), "Add another test link is not displayed");
             Assert.That(result, Is.EqualTo("Pending"), $"Lab test result mismatch. Expected: Pending, Actual: {result}");
         }
