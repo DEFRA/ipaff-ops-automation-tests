@@ -60,7 +60,12 @@ namespace Defra.UI.Tests.Pages.Classes
             {
                 File.Delete(oldFile);
             }
+
             lnkCommDetailsCSVTemplate(linkName).Click();
+
+            // The file is downloaded inside the Selenium Grid node container.
+            // Retrieve it from the Grid's REST API and save it locally on the agent.
+            Utils.RetrieveFileFromGrid(_driver, Path.GetFileName(oldFile));
         }
 
         public void ClickDownloadedFile(string fileName)

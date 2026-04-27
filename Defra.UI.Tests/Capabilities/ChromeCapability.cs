@@ -1,5 +1,4 @@
-﻿
-using Defra.UI.Tests.Configuration;
+﻿using Defra.UI.Tests.Configuration;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using Reqnroll;
@@ -8,7 +7,6 @@ namespace Defra.UI.Tests.Capabilities
 {
     public class ChromeCapability : IDriverOptions
     {
-
         private static ScenarioContext _scenarioContext;
 
         public ChromeCapability(BaseConfiguration baseConfiguration, ScenarioContext context)
@@ -24,7 +22,6 @@ namespace Defra.UI.Tests.Capabilities
             chromeOptions.AddArgument("--no-sandbox");
             chromeOptions.AcceptInsecureCertificates = true;
 
-
             if (ConfigSetup.BaseConfiguration.TestConfiguration.Headless)
             {
                 chromeOptions.AddArgument("--headless");
@@ -38,7 +35,6 @@ namespace Defra.UI.Tests.Capabilities
                     {
                         chromeOptions.AddArgument(argument);
                     }
-
                 }
             }
 
@@ -50,8 +46,8 @@ namespace Defra.UI.Tests.Capabilities
             SetDownloadPathToUserProfile(chromeOptions);
 
             return chromeOptions;
-
         }
+
         private static void SetChromiumDevice(ChromeOptions chromeOptions)
         {
             chromeOptions.EnableMobileEmulation(ConfigSetup.BaseConfiguration.TestConfiguration.EmulateDeviceInfo);
@@ -60,9 +56,7 @@ namespace Defra.UI.Tests.Capabilities
         public DriverOptions GetDriverOptions(Dictionary<string, string> overrideCapDict = null)
         {
             var arguments = GetArgumentsFromOverrides(ref overrideCapDict);
-
             var driverOptions = GetChromeOptions(arguments);
-
             return driverOptions;
         }
 
@@ -74,21 +68,24 @@ namespace Defra.UI.Tests.Capabilities
             }
 
             List<string> args = [overrideCapDict[BrowserConfigurationValue.BrowserArguments]];
-
             overrideCapDict.Remove(BrowserConfigurationValue.BrowserArguments);
-
             return args;
         }
 
         private static void SetDownloadPathToUserProfile(ChromeOptions chromeOptions)
         {
-            var downloadDirectory = Path.Combine(Path.GetTempPath(), "automation-downloads"); 
+            var downloadDirectory = Path.Combine(Path.GetTempPath(), "automation-downloads");
             Directory.CreateDirectory(downloadDirectory);
 
             chromeOptions.AddUserProfilePreference("download.default_directory", downloadDirectory);
             chromeOptions.AddUserProfilePreference("download.prompt_for_download", false);
             chromeOptions.AddUserProfilePreference("download.directory_upgrade", true);
             chromeOptions.AddUserProfilePreference("safebrowsing.enabled", true);
+
+            // Required for Selenium Grid 4 to track and expose downloaded files via its REST API.
+            // Without this, files downloaded inside the Grid node container are inaccessible
+            // from the agent machine. Works for both headless and headed Chrome on Grid.
+            chromeOptions.AddAdditionalOption("se:downloadsEnabled", true);
         }
-    }    
+    }
 }
