@@ -82,10 +82,10 @@ namespace Defra.UI.Tests.Capabilities
             chromeOptions.AddUserProfilePreference("download.directory_upgrade", true);
             chromeOptions.AddUserProfilePreference("safebrowsing.enabled", true);
 
-            // Required for Selenium Grid 4 to track and expose downloaded files via its REST API.
-            // Without this, files downloaded inside the Grid node container are inaccessible
-            // from the agent machine. Works for both headless and headed Chrome on Grid.
-            chromeOptions.AddAdditionalOption("se:downloadsEnabled", true);
+            // Use the built-in property rather than AddAdditionalOption — the Selenium version
+            // in use already registers "se:downloadsEnabled" internally, so AddAdditionalOption
+            // throws ArgumentException for a duplicate capability name.
+            chromeOptions.EnableDownloads = true;
         }
     }
 }
