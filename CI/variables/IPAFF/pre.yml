@@ -2,7 +2,7 @@ variables:
  Environment: 'pre'
  EnvLogin: 'TeZvzAsx8usMhsCVqGG203Iity63qjaT'
  FilterTestCategory : 'TestCategory=Dynamics' 
- IDCOMSUrl: 'https://defra-trade-plants-preprod.crm4.dynamics.com/main.aspx?appid=337d4d96-492d-ee11-bdf4-000d3ab8960d'
+ IDCOMSUrl: 'https://defra-trade-plants-preprod.crm4.dynamics.com/main.aspx?appid=a74b5b2e-7214-eb11-a812-000d3a6548e2'
  SecretsFilter: 'IPAFFIDCOMSAutomation'
  IsLiveUserAccount: false
  IsAccessibilityEnabled: ${{ parameters.isAccessibilityEnabled }}
