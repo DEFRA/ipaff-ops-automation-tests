@@ -84,6 +84,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Utils.DownloadPDF(chedReferenceFileName, pdfUrl, UserObject, _scenarioContext.Get<string>("UserRole"));
         }
 
+        [When("verifies laboratory tests should be displayed as No and Reasons for testing with no boxes selected")]
+        [Then("the new Consignor, Consignee, Importer, Place of destination and Transporter should be displayed in the certificate")]
         [When("the user checks that the data in the certificate matches the data entered into the notification")]
         public void WhenTheUserChecksThatTheDataInTheCertificateMatchesTheDataEnteredIntoTheNotification()
         {
@@ -118,16 +120,19 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             ValidateIfExists("ContryFromWhereConsigned", page.Sections.CountryOfDispatch?.Value, ref allDataMatches, mismatches);
                         }
                         ValidateContains("PortOfEntry", page.Sections.BorderControlPost.Value, ref allDataMatches, mismatches, true);
-                        ValidateIfExists("ConsignorName", page.Sections.ConsignorExporter.Name, ref allDataMatches, mismatches);
-                        ValidateIfExists("ConsignorAddress", page.Sections.ConsignorExporter.Address, ref allDataMatches, mismatches);
-                        ValidateIfExists("ConsignorCountry", page.Sections.ConsignorExporter.Country, ref allDataMatches, mismatches);
-                        ValidateIfExists("ConsigneeName", page.Sections.ConsigneeImporter.Name, ref allDataMatches, mismatches);
-                        ValidateIfExists("ConsigneeAddress", page.Sections.ConsigneeImporter.Address, ref allDataMatches, mismatches);
-                        ValidateContains("ConsigneeCountry", page.Sections.ConsigneeImporter.Country, ref allDataMatches, mismatches, true);
-                        ValidateContains("PlaceOfDestinationDetails", page.Sections.PlaceOfDestination.Name, ref allDataMatches, mismatches, true);
-                        ValidateContains("PlaceOfDestinationDetails", page.Sections.PlaceOfDestination.Address, ref allDataMatches, mismatches, true);
-                        ValidateContains("PlaceOfDestinationDetails", page.Sections.PlaceOfDestination.Country, ref allDataMatches, mismatches, true);
-
+                        
+                        if (!_scenarioContext.ContainsKey("ExporterName") || string.IsNullOrEmpty(_scenarioContext["ExporterName"]?.ToString()))
+                        {
+                            ValidateIfExists("ConsignorName", page.Sections.ConsignorExporter.Name, ref allDataMatches, mismatches);
+                            ValidateIfExists("ConsignorAddress", page.Sections.ConsignorExporter.Address, ref allDataMatches, mismatches);
+                            ValidateIfExists("ConsignorCountry", page.Sections.ConsignorExporter.Country, ref allDataMatches, mismatches);
+                            ValidateIfExists("ConsigneeName", page.Sections.ConsigneeImporter.Name, ref allDataMatches, mismatches);
+                            ValidateIfExists("ConsigneeAddress", page.Sections.ConsigneeImporter.Address, ref allDataMatches, mismatches);
+                            ValidateContains("ConsigneeCountry", page.Sections.ConsigneeImporter.Country, ref allDataMatches, mismatches, true);
+                            ValidateContains("PlaceOfDestinationDetails", page.Sections.PlaceOfDestination.Name, ref allDataMatches, mismatches, true);
+                            ValidateContains("PlaceOfDestinationDetails", page.Sections.PlaceOfDestination.Address, ref allDataMatches, mismatches, true);
+                            ValidateContains("PlaceOfDestinationDetails", page.Sections.PlaceOfDestination.Country, ref allDataMatches, mismatches, true);
+                        }
                         var docRefEntry = page.Sections.AccompanyingDocuments.AdditionalData.FirstOrDefault(x => x.Key == "DocumentReference");
                         var documentReference = docRefEntry.Key == null ? null : docRefEntry.Value?.ToString();
                         var dateEntry = page.Sections.AccompanyingDocuments.AdditionalData.FirstOrDefault(x => x.Key == "DateOfIssue");
@@ -144,8 +149,18 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             ValidateContains("DocumentReference", documentReference, ref allDataMatches, mismatches, true);
                             ValidateIfExists("DocumentDateOfIssue", reviewDate, ref allDataMatches, mismatches);
                         }
-                        else if (_scenarioContext["CHEDReference"].ToString().Contains("CHEDA"))
+                        else if (_scenarioContext.ContainsKey("ExporterName") && _scenarioContext["CHEDReference"].ToString().Contains("CHEDA"))
                         {
+                            ValidateIfExists("ExporterName", page.Sections.ConsignorExporter.Name, ref allDataMatches, mismatches);
+                            ValidateIfExists("ExporterAddress", page.Sections.ConsignorExporter.Address, ref allDataMatches, mismatches);
+                            ValidateIfExists("ExporterCountry", page.Sections.ConsignorExporter.Country, ref allDataMatches, mismatches);
+                            ValidateIfExists("ImporterName", page.Sections.ConsigneeImporter.Name, ref allDataMatches, mismatches);
+                            ValidateIfExists("ImporterAddress", page.Sections.ConsigneeImporter.Address, ref allDataMatches, mismatches);
+                            ValidateContains("ImporterCountry", page.Sections.ConsigneeImporter.Country, ref allDataMatches, mismatches, true);
+                            ValidateContains("ImporterName", page.Sections.PlaceOfDestination.Name, ref allDataMatches, mismatches, true);
+                            ValidateContains("ImporterAddress", page.Sections.PlaceOfDestination.Address, ref allDataMatches, mismatches, true);
+                            ValidateContains("ImporterCountry", page.Sections.PlaceOfDestination.Country, ref allDataMatches, mismatches, true);
+
                             ValidateContains("HealthDocumentType", (string?)page.Sections.AccompanyingDocuments.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
                             ValidateContains("HealthCertificateReference", (string?)page.Sections.AccompanyingDocuments.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
                             //ValidateIfExists("HealthCertificateDateOfIssue", (string?)page.Sections.AccompanyingDocuments.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
@@ -192,7 +207,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         var traces = page.Sections.DirectTransit?.TracesUnitNo.ToString();
                         ValidateContains("ExitBCP", page.Sections.DirectTransit?.TracesUnitNo, ref allDataMatches, mismatches, true);
 
-
                         ValidateContains("EstimatedArrivalDate", page.Sections.PriorNotification?.Date, ref allDataMatches, mismatches);
                         ValidateContains("EstimatedArrivalTime", page.Sections.PriorNotification?.Time, ref allDataMatches, mismatches);
 
@@ -217,6 +231,22 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         {
                             ValidateIfExists("ConsignorConsigneeOrImporterName", page.Sections.ConsigneeImporter.Name, ref allDataMatches, mismatches);
                             ValidateIfExists("PurposeOfTheConsignment", page.Sections.GoodsCertifiedAs.Value, ref allDataMatches, mismatches);
+                        }
+
+                        if (page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value != null)
+                        {
+                            ValidateContains("CommodityCode", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("CommodityDescription", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("CommodityCodeFirstCommodity", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("CommodityDescFirstCommodity", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("Species", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("NumberOfAnimals", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("NetWeight", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("NumberOfPackages", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("PackageType", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("TypeOfCommodity", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("EstablishmentListFirstName", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("CountryOfOrigin", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
                         }
 
                     }
@@ -264,6 +294,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             ValidateContains("TotalNetWeight", page.Sections.TotalNetWeight?.Value, ref allDataMatches, mismatches);
                             ValidateContains("TotalPackages", page.Sections.TotalNumberOfPackages?.Value, ref allDataMatches, mismatches);
                             ValidateContains("TotalGrossWeight", page.Sections.TotalGrossWeight?.Value, ref allDataMatches, mismatches);
+                        }
+                        else if (page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value == null)
+                        { 
+                            ValidateContains("NumberOfPackages", page.Sections.TotalNumberOfPackages?.Value, ref allDataMatches, mismatches);
                         }
                         else
                         {
@@ -328,6 +362,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         };
                         ValidateIfExists("PhysicalCheck", pdfPhysicalCheck, ref allDataMatches, mismatches);
                         ValidateIfExists("PhysicalCheckDecision", pdfPhysicalCheck, ref allDataMatches, mismatches);
+
+                        string? pdfLaboratoryTestRequired = page.Sections.LaboratoryTests.No;
+                        if (pdfLaboratoryTestRequired.Equals("true"))
+                            pdfLaboratoryTestRequired = "Yes";
+                        pdfLaboratoryTestRequired = "No";
+                        ValidateIfExists("AreLaboratoryTestsRequired", pdfLaboratoryTestRequired, ref allDataMatches, mismatches);
 
                         string? pdfLaboratoryTestNames = page.Sections.LaboratoryTests
                         switch

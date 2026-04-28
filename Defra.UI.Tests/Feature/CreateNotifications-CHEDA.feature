@@ -485,16 +485,16 @@ Scenario: User creates and submits a CHEDA consignment notification for Temporar
 	And the user clicks Submit notification
 	Then the Confirmation page should be displayed with the initial risk assessment
 	And the user records the IPAFFS User details and CHED Reference
-	#When the user clicks Return to your dashboard
-	#Then the dashboard page should be displayed
-	#When user searches for the import notification
-	#Then the notification should be present in the list
-	#When the user clicks Show notification
-	#Then the certificate should be displayed in a new browser tab
-	#When the user downloads the PDF for validation
-	#When the user checks that the data in the certificate matches the data entered into the notification
-	#When the user closes the PDF browser tab
-	#Then the browser tab is closed
+	When the user clicks Return to your dashboard
+	Then the dashboard page should be displayed
+	When user searches for the import notification
+	Then the notification should be present in the list
+	When the user clicks Show notification
+	Then the certificate should be displayed in a new browser tab
+	When the user downloads the PDF for validation
+	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user closes the PDF browser tab
+	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
 	When I navigate to the IPAFF Inspector application
@@ -1255,18 +1255,17 @@ Scenario: User adds addresses to address book and amends a CHEDA notification to
 	When the user ticks the checkbox to declare that the information is true and correct
 	And the user clicks Submit notification
 	Then the Confirmation page should be displayed with the initial risk assessment
-#Create step definitions below once PDF validation is implemented
-	#When the user clicks View or print CHED
-	#Then the certificate should be displayed in a new browser tab
-	#And the new Consignor or exporter should be displayed in the certificate ''
-	#And the new Consignee should be displayed in the certificate ''
-	#And the new Importer should be displayed in the certificate ''
-	#And the new Place of destination should be displayed in the certificate ''
-	#And the new Transporter should be displayed in the certificate ''
-	#When the user closes the PDF browser tab
-	#Then the browser tab is closed
-	#When the user clicks Return to your dashboard
-	#Then the dashboard page should be displayed
+	When the user clicks Return to your dashboard
+	Then the dashboard page should be displayed
+	When user searches for the import notification
+	Then the notification should be present in the list
+	When the user clicks Show notification
+	Then the certificate should be displayed in a new browser tab
+	When the user downloads the PDF for validation
+	Then the new Consignor, Consignee, Importer, Place of destination and Transporter should be displayed in the certificate
+	When the user closes the PDF browser tab
+	Then the browser tab is closed
+	Then the dashboard page should be displayed
 	When the user clicks Address book link
 	Then the Address book page should be displayed
 	And the user deletes the newly added operator 'Importer'
@@ -2064,10 +2063,7 @@ Scenario: User creates and submits a CHEDA notification with laboratory tests ch
 	When the user clicks View or print CHED
 	Then the certificate should be displayed in a new browser tab
 	When the user downloads the PDF for validation
-	And the user checks that the data in the certificate matches the data entered into the notification
-#Create step definitions below once PDF validation is implemented
-	#And the Would you like to record laboratory tests? 'No' should be displayed in the certificate
-	#And the Reasons for testing should be displayd with no boxes selected in the certificate
+	And verifies laboratory tests should be displayed as No and Reasons for testing with no boxes selected 
 	When the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user clicks Return to your dashboard link
