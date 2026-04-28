@@ -8,7 +8,6 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;
-using System;
 using System.Text.RegularExpressions;
 
 namespace Defra.UI.Tests.Steps.IPAFF
@@ -50,7 +49,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenUserSearchesForTheImportNotification()
         {
             var chedReference = _scenarioContext.Get<string>("CHEDReference");
-            //var chedReference = "CHEDP.GB.2025.1056538";
             importNotificationsPage?.SearchForNotification(chedReference);
         }
 
@@ -373,7 +371,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             pdfLaboratoryTestRequired = "No";
                         }
                         else
+                        {
                             pdfLaboratoryTestRequired = "Yes";
+                        }
 
                         ValidateIfExists("AreLaboratoryTestsRequired", pdfLaboratoryTestRequired, ref allDataMatches, mismatches);
 
