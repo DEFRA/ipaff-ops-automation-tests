@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace Defra.UI.Tests.Steps.IPAFF
@@ -715,393 +716,377 @@ namespace Defra.UI.Tests.Steps.IPAFF
             importNotificationsPage?.ClickCloneButton();
         }
 
-        private void ValidateIfExists(string contextKey, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
+        private void ValidateIfExists(string contextKey, string? reviewValue, ref bool allDataMatches, List<string> mismatches) 
         {
-            if (_scenarioContext.ContainsKey("CloningHealthCertificateDetails") && (contextKey.Equals("ConsignorConsigneeOrImporterName") || contextKey.Equals("PurposeOfTheConsignment")))
+            if (IsCloningDetailsKey(contextKey))
             {
-                string expectedValue = null;
-                var details = _scenarioContext.Get<NotificationDetails>("CloningHealthCertificateDetails");
-                var property = typeof(NotificationDetails).GetProperty(contextKey);
-                expectedValue = property?.GetValue(details)?.ToString()?.Trim();
-
-                if (expectedValue != null && !string.IsNullOrEmpty(expectedValue.ToString()))
-                {
-                    var isMatch = expectedValue.Equals(reviewValue?.Trim(), StringComparison.OrdinalIgnoreCase);
-                    if (!isMatch)
-                    {
-                        allDataMatches = false;
-                        mismatches.Add($"{contextKey}: Expected '{expectedValue}', Found '{reviewValue?.Trim()}'");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
-                    }
-                }
-                else
-                {
-                    Console.WriteLine($"[PDF VALIDATION] ⊘ {contextKey}: Skipped (empty value in array)");
-                }
+                ValidateCloningDetails(contextKey, reviewValue, ref allDataMatches, mismatches);
+                return;
             }
-            else if (_scenarioContext.ContainsKey(contextKey))
+
+            if (!_scenarioContext.ContainsKey(contextKey))
             {
-                object contextValue = _scenarioContext[contextKey];
-
-                // Date validation for DocumentDateOfIssue
-                if (!_scenarioContext["CHEDReference"].ToString().Contains("CHEDA") && (contextKey.Equals("HealthCertificateDateOfIssue") || contextKey.Equals("DocumentDateOfIssue")))
-                {
-                    try
-                    {
-                        // reviewValue example: "12.03.2024 00:00:00"
-                        var reviewDateString = reviewValue?.Split(' ')[0]; // take only dd.MM.yyyy
-
-                        var reviewDate = DateTime.ParseExact(reviewDateString, "dd.MM.yyyy", null);
-                        var expectedDate = DateTime.ParseExact(_scenarioContext.Get<string>(contextKey), "dd MM yyyy", null);
-
-                        var reviewFormatted = reviewDate.ToString("ddMMyyyy");
-                        var expectedFormatted = expectedDate.ToString("ddMMyyyy");
-
-                        if (!reviewFormatted.Equals(expectedFormatted))
-                        {
-                            allDataMatches = false;
-                            mismatches.Add($"{contextKey}: Expected '{expectedFormatted}', Found '{reviewFormatted}'");
-                        }
-                        else
-                        {
-                            Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{expectedFormatted}' matches");
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        allDataMatches = false;
-                        mismatches.Add($"{contextKey}: Date parsing failed - {ex.Message}");
-                    }
-
-                    return;
-                }
-
-                if (_scenarioContext.ContainsKey(contextKey) && contextKey is "IdentityCheck" or "IdentityCheckType")
-                {
-                    contextValue = (contextKey.Equals("IdentityCheck") ? _scenarioContext.Get<string>("IdentityCheck").Replace(" ", "", StringComparison.OrdinalIgnoreCase) : _scenarioContext.Get<string>("IdentityCheckType").Replace(" ", "", StringComparison.OrdinalIgnoreCase));
-                    reviewValue = reviewValue.Replace(" ", "", StringComparison.OrdinalIgnoreCase);
-                }
-
-                if (contextKey.Equals("SampleTime"))
-                {
-                    var expectedTime = TimeSpan.Parse(_scenarioContext.Get<string>(contextKey));
-                    var actualTime = TimeSpan.Parse(reviewValue);
-
-                    if (Math.Abs((expectedTime - actualTime).TotalMinutes) == 1)
-                    {
-                        // Align actual time to expected time
-                        actualTime = expectedTime;
-                    }
-
-                    contextValue = expectedTime.ToString(@"hh\:mm");
-                    reviewValue = actualTime.ToString(@"hh\:mm");
-                }
-
-                if (_scenarioContext.ContainsKey(contextKey) && contextKey is "Temperature"
-                                                                 or "DocumentaryCheckDecision"
-                                                                 or "IdentityCheck"
-                                                                 or "PhysicalCheck"
-                                                                 or "LaboratoryTests")
-                {
-                    var expected = _scenarioContext.Get<string>(contextKey)?.Trim();
-                    var actual = reviewValue?.Trim();
-
-                    if (!string.Equals(expected, actual, StringComparison.OrdinalIgnoreCase))
-                    {
-                        allDataMatches = false;
-                        mismatches.Add($"{contextKey}: Expected '{expected}', Found '{actual}'");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{expected}' matches");
-                    }
-
-                    return;
-                }
-
-                if (_scenarioContext.ContainsKey(contextKey) && contextKey is "LaboratoryTestsReason")
-                {
-                    var expected = _scenarioContext.Get<string>(contextKey)?.Trim();
-                    string actual = reviewValue?.Trim();
-
-                    if (actual.Equals("Suspicious", StringComparison.OrdinalIgnoreCase))
-                    {
-                        actual = "Suspicion";
-                    }
-
-                    if (!string.Equals(expected, actual, StringComparison.OrdinalIgnoreCase))
-                    {
-                        allDataMatches = false;
-                        mismatches.Add($"{contextKey}: Expected '{expected}', Found '{actual}'");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{expected}' matches");
-                    }
-
-                    return;
-                }
-
-
-                // ConsignmentContactAddress special address-normalisation validation
-                if (contextKey == "ConsignmentContactAddress")
-                {
-                    var expectedRaw = _scenarioContext.Get<string>("ConsignmentContactAddress");
-                    var actualRaw = reviewValue;
-
-                    // Normalise expected
-                    var expectedFormatted = string.Join(
-                        " ",
-                        expectedRaw.Replace(",", " ")
-                                   .Split((char[])null, StringSplitOptions.RemoveEmptyEntries)
-                    ).ToLower();
-
-                    // Normalise actual value
-                    var actualFormatted = string.Join(
-                        " ",
-                        actualRaw?.Replace(",", " ")
-                                  .Split((char[])null, StringSplitOptions.RemoveEmptyEntries)
-                                  ?? Array.Empty<string>()
-                    ).ToLower();
-
-                    if (!expectedFormatted.Equals(actualFormatted))
-                    {
-                        allDataMatches = false;
-                        mismatches.Add(
-                            $"{contextKey}: Expected '{expectedFormatted}', Found '{actualFormatted}'"
-                        );
-                    }
-                    else
-                    {
-                        Console.WriteLine(
-                            $"[PDF VALIDATION] ✓ {contextKey}: '{expectedFormatted}' matches"
-                        );
-                    }
-
-                    return; // Stop further processing
-                }
-
-
-                // Handle List<string> (for multiple countries)
-                if (contextValue is List<string> countryList)
-                {
-                    // Join the list with line breaks to match the HTML format
-                    var expectedValue = string.Join("\n", countryList).Trim();
-
-                    // The review page displays countries with <br> which Selenium converts to \n
-                    var actualValue = reviewValue?.Trim().Replace("\r\n", "\n").Replace("\r", "\n");
-
-                    var isMatch = expectedValue.Equals(actualValue, StringComparison.OrdinalIgnoreCase);
-                    if (!isMatch)
-                    {
-                        allDataMatches = false;
-                        mismatches.Add($"{contextKey}: Expected '{expectedValue}', Found '{actualValue}'");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
-                    }
-                }
-                // Handle string[] (for documents)
-                else if (contextValue is string[] stringArray)
-                {
-                    var expectedValue = stringArray.FirstOrDefault();
-                    if (!string.IsNullOrEmpty(expectedValue))
-                    {
-                        var isMatch = expectedValue.Equals(reviewValue?.Trim(), StringComparison.OrdinalIgnoreCase);
-                        if (!isMatch)
-                        {
-                            allDataMatches = false;
-                            mismatches.Add($"{contextKey}: Expected '{expectedValue}', Found '{reviewValue?.Trim()}'");
-                        }
-                        else
-                        {
-                            Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine($"[PDF VALIDATION] ⊘ {contextKey}: Skipped (empty value in array)");
-                    }
-                }
-                // Handle single string value
-                else if (contextValue is string expectedValue)
-                {
-                    if (!string.IsNullOrEmpty(expectedValue))
-                    {
-                        var isMatch = expectedValue.Equals(reviewValue?.Trim(), StringComparison.OrdinalIgnoreCase);
-                        if (!isMatch)
-                        {
-                            allDataMatches = false;
-                            mismatches.Add($"{contextKey}: Expected '{expectedValue}', Found '{reviewValue?.Trim()}'");
-                        }
-                        else
-                        {
-                            Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine($"[PDF VALIDATION] ⊘ {contextKey}: Skipped (empty value in context)");
-                    }
-                }
-                else
-                {
-                    Console.WriteLine($"[PDF VALIDATION] ⊘ {contextKey}: Skipped (unsupported type: {contextValue.GetType().Name})");
-                }
+                LogSkip(contextKey, "not in context");
+                return;
             }
-            else
+
+            // Special cases first
+            if (IsDateField(contextKey))
             {
-                Console.WriteLine($"[PDF VALIDATION] ⊘ {contextKey}: Skipped (not in context)");
+                ValidateDate(contextKey, reviewValue, ref allDataMatches, mismatches);
+                return;
+            }
+
+            if (IsIdentityField(contextKey))
+            {
+                NormalizeIdentityValues(contextKey, ref reviewValue);
+            }
+
+            if (contextKey == "SampleTime")
+            {
+                NormalizeSampleTime(contextKey, ref reviewValue);
+            }
+
+            if (IsSimpleStringComparisonField(contextKey))
+            {
+                ValidateSimpleString(contextKey, reviewValue, ref allDataMatches, mismatches);
+                return;
+            }
+
+            if (contextKey == "LaboratoryTestsReason")
+            {
+                ValidateLabReason(contextKey, reviewValue, ref allDataMatches, mismatches);
+                return;
+            }
+
+            if (contextKey == "ConsignmentContactAddress")
+            {
+                ValidateAddress(contextKey, reviewValue, ref allDataMatches, mismatches);
+                return;
+            }
+
+            // Generic handlers
+            var contextValue = _scenarioContext[contextKey];
+
+            switch (contextValue)
+            {
+                case List<string> list:
+                    ValidateStringList(contextKey, list, reviewValue, ref allDataMatches, mismatches);
+                    break;
+
+                case string[] array:
+                    ValidateStringArray(contextKey, array, reviewValue, ref allDataMatches, mismatches);
+                    break;
+
+                case string str:
+                    ValidateString(contextKey, str, reviewValue, ref allDataMatches, mismatches);
+                    break;
+
+                default:
+                    LogSkip(contextKey, $"unsupported type: {contextValue.GetType().Name}");
+                    break;
             }
         }
 
-        private void ValidateContains(string contextKey, string? actual, ref bool allDataMatches, List<string> mismatches, bool contextContainsPDF = false)
+        private bool IsCloningDetailsKey(string key) => _scenarioContext.ContainsKey("CloningHealthCertificateDetails") && (key is "ConsignorConsigneeOrImporterName" or "PurposeOfTheConsignment");
+
+        private void ValidateCloningDetails(string key, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
+        {
+            var details = _scenarioContext.Get<NotificationDetails>("CloningHealthCertificateDetails");
+            var expected = typeof(NotificationDetails).GetProperty(key)?.GetValue(details)?.ToString()?.Trim();
+
+            ValidateString(key, expected, reviewValue, ref allDataMatches, mismatches);
+        }
+
+
+        private bool IsDateField(string key) => !_scenarioContext["CHEDReference"].ToString().Contains("CHEDA") && (key is "HealthCertificateDateOfIssue" or "DocumentDateOfIssue");
+
+        private void ValidateDate(string key, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
+        {
+            try
+            {
+                var reviewDate = DateTime.ParseExact(reviewValue?.Split(' ')[0], "dd.MM.yyyy", null);
+                var expectedDate = DateTime.ParseExact(_scenarioContext.Get<string>(key), "dd MM yyyy", null);
+
+                if (reviewDate.ToString("ddMMyyyy") != expectedDate.ToString("ddMMyyyy"))
+                    mismatches.Add($"{key}: Expected '{expectedDate:ddMMyyyy}', Found '{reviewDate:ddMMyyyy}'");
+                else
+                    LogMatch(key, expectedDate.ToString("ddMMyyyy"));
+            }
+            catch (Exception ex)
+            {
+                mismatches.Add($"{key}: Date parsing failed - {ex.Message}");
+            }
+        }
+
+
+        private bool IsIdentityField(string key) =>    key is "IdentityCheck" or "IdentityCheckType";
+
+        private void NormalizeIdentityValues(string key, ref string? reviewValue)
+        {
+            var expected = _scenarioContext.Get<string>(key).Replace(" ", "");
+            reviewValue = reviewValue?.Replace(" ", "");
+            _scenarioContext[key] = expected;
+        }
+
+
+        private void NormalizeSampleTime(string key, ref string? reviewValue)
+        {
+            var expected = TimeSpan.Parse(_scenarioContext.Get<string>(key));
+            var actual = TimeSpan.Parse(reviewValue);
+
+            if (Math.Abs((expected - actual).TotalMinutes) == 1)
+                actual = expected;
+
+            reviewValue = actual.ToString(@"hh\:mm");
+            _scenarioContext[key] = expected.ToString(@"hh\:mm");
+        }
+
+
+        private bool IsSimpleStringComparisonField(string key) => key is "Temperature" or "DocumentaryCheckDecision" or "IdentityCheck" or "PhysicalCheck" or "LaboratoryTests";
+
+        private void ValidateSimpleString(string key, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
+        {
+            ValidateString(key, _scenarioContext.Get<string>(key), reviewValue, ref allDataMatches, mismatches);
+        }
+
+
+        private void ValidateLabReason(string key, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
+        {
+            var expected = _scenarioContext.Get<string>(key);
+            var actual = reviewValue?.Equals("Suspicious", StringComparison.OrdinalIgnoreCase) == true
+                ? "Suspicion"
+                : reviewValue;
+
+            ValidateString(key, expected, actual, ref allDataMatches, mismatches);
+        }
+
+
+        private void ValidateAddress(string key, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
+        {
+            string Normalize(string s) =>
+                string.Join(" ", s.Replace(",", " ").Split((char[])null, StringSplitOptions.RemoveEmptyEntries)).ToLower();
+
+            var expected = Normalize(_scenarioContext.Get<string>(key));
+            var actual = Normalize(reviewValue ?? "");
+
+            ValidateString(key, expected, actual, ref allDataMatches, mismatches);
+        }
+
+
+        private void ValidateStringList(string key, List<string> list, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
+        {
+            var expected = string.Join("\n", list).Trim();
+            var actual = reviewValue?.Trim().Replace("\r", "").Replace("\n\n", "\n");
+
+            ValidateString(key, expected, actual, ref allDataMatches, mismatches);
+        }
+
+
+        private void ValidateStringArray(string key, string[] array, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
+        {
+            ValidateString(key, array.FirstOrDefault(), reviewValue, ref allDataMatches, mismatches);
+        }
+
+
+        private void ValidateString(string key, string? expected, string? actual, ref bool allDataMatches, List<string> mismatches)
+        {
+            if (string.IsNullOrWhiteSpace(expected))
+            {
+                LogSkip(key, "empty value");
+                return;
+            }
+
+            if (!string.Equals(expected.Trim(), actual?.Trim(), StringComparison.OrdinalIgnoreCase))
+            {
+                allDataMatches = false;
+                mismatches.Add($"{key}: Expected '{expected}', Found '{actual}'");
+            }
+            else
+            {
+                LogMatch(key, expected);
+            }
+        }
+
+
+        private void LogMatch(string key, string value) => Console.WriteLine($"[PDF VALIDATION] ✓ {key}: '{value}' matches");
+
+        private void LogSkip(string key, string reason) => Console.WriteLine($"[PDF VALIDATION] ⊘ {key}: Skipped ({reason})");
+
+
+        private void ValidateContains(
+    string contextKey,
+    string? actual,
+    ref bool allDataMatches,
+    List<string> mismatches,
+    bool contextContainsPDF = false)
         {
             (List<string> expectedWords, List<string> actualWords) result = (null, null);
 
-            if (_scenarioContext.ContainsKey("CloningHealthCertificateDetails") && (contextKey.Equals("CommodityCode") || contextKey.Equals("Description")
-                || contextKey.Equals("GenusAndSpecies") || contextKey.Equals("NetWeight")
-                || contextKey.Equals("Packages") || contextKey.Equals("TypeOfPackage")
-                || contextKey.Equals("CountryOfOriginOfCertificate") || contextKey.Equals("PurposeOfTheConsignment")
-                || contextKey.Equals("EstablishmentListFirstName")))
+            bool IsCloningKey =
+                _scenarioContext.ContainsKey("CloningHealthCertificateDetails") &&
+                contextKey is "CommodityCode" or "Description" or "GenusAndSpecies" or "NetWeight"
+                          or "Packages" or "TypeOfPackage" or "CountryOfOriginOfCertificate"
+                          or "PurposeOfTheConsignment" or "EstablishmentListFirstName";
+
+            if (IsCloningKey)
             {
-                string expectedValue = null;
-                var details = _scenarioContext.Get<NotificationDetails>("CloningHealthCertificateDetails");
-                var property = typeof(NotificationDetails).GetProperty(contextKey);
-                expectedValue = property?.GetValue(details)?.ToString()?.Trim();
-
-                if (contextKey.Equals("Packages") || contextKey.Equals("NetWeight"))
-                {
-                    var rawValue = property?.GetValue(details);
-                    double numericValue = Convert.ToDouble(rawValue);
-                    expectedValue = (numericValue * 2).ToString();
-                }
-
-                if (expectedValue != null && !string.IsNullOrEmpty(expectedValue.ToString()))
-                {
-                    string RemoveWhitespace(string s) => string.Concat(s.Where(c => !char.IsWhiteSpace(c)));
-
-                    bool isMatch = contextContainsPDF
-                        ? RemoveWhitespace(expectedValue).Contains(RemoveWhitespace(actual), StringComparison.OrdinalIgnoreCase)
-                        : RemoveWhitespace(actual).Contains(RemoveWhitespace(expectedValue), StringComparison.OrdinalIgnoreCase);
-
-                    if (!isMatch)
-                    {
-                        allDataMatches = false;
-                        mismatches.Add($"{contextKey}: Expected '{expectedValue}', Found '{actual.Trim()}'");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
-                    }
-                }
+                ValidateCloning(contextKey, actual, ref allDataMatches, mismatches, contextContainsPDF);
+                return;
             }
-            else if (_scenarioContext.ContainsKey(contextKey))
+
+            if (!_scenarioContext.ContainsKey(contextKey))
             {
-                object rawExpected = _scenarioContext[contextKey];
-                string expectedValue;
+                Console.WriteLine($"[PDF VALIDATION] ⊘ {contextKey}: Skipped (not in context)");
+                return;
+            }
 
-                if (rawExpected is string s)
-                {
-                    expectedValue = s.Trim();
-                    if (contextKey.Trim() == "IUUSubOption" && expectedValue.Trim() == "No need to inspect - exempt or not applicable") expectedValue = "IUUNA";
-                    if (contextKey.Trim() == "IUUSubOption" && expectedValue.Trim() == "Compliant") expectedValue = "IUUOK";
+            object rawExpected = _scenarioContext[contextKey];
 
-                    if (contextKey.Trim() == "ExitBCP") actual = actual.Replace(".", "").Trim();
-                    if (contextKey.Trim() == "ExitBorderControlPost" || contextKey.Trim() == "PortOfEntry") expectedValue = expectedValue.Split(new[] { '(', '-' })[0].Trim();
-                    if (contextKey.Trim() == "InspectionPremises") expectedValue = expectedValue.Split('-')[0].Trim();
-                    if (contextKey.Trim() == "ImporterAddress") actual = actual.Replace("Address ", "").Trim();
-                    if (contextKey.Trim() == "TotalPackages") actual = Regex.Matches(actual, @"\d+").Select(m => int.Parse(m.Value)).Sum().ToString();
-                    if (contextKey.Trim() == "NumberOfAnimals") expectedValue = expectedValue + " Units";
-                    if (contextKey.Trim() == "EstimatedArrivalDate") expectedValue = DateTime.ParseExact(expectedValue, "dd MMM yyyy", System.Globalization.CultureInfo.InvariantCulture).ToString("dd.MM.yyyy");
-                    if (expectedValue.Trim().Contains("London Borough of Hillingdon Heathrow Airport Imported Food Office"))
-                    {
-                        result = ConvertLinesAsWords(expectedValue, actual);
-                        result.actualWords.Remove("adada");
-                        result.expectedWords.Remove("adada");
-                    }
-                }
-                else if (rawExpected is string[] arr)
-                {
-                    // join array into one string (adjust to comma if needed)
-                    expectedValue = string.Join(" ", arr).Trim();
-                }
-                else if (rawExpected is List<string> list)
-                {
-                    bool anyMatch = false;
+            if (rawExpected is List<string> list)
+            {
+                ValidateList(contextKey, actual, list, ref allDataMatches, mismatches);
+                return;
+            }
 
-                    foreach (var item in list)
-                    {
-                        if (string.IsNullOrWhiteSpace(item))
-                            continue;
+            string expectedValue = ExtractExpectedValue(contextKey, rawExpected, ref actual, ref result);
 
-                        if (actual.Contains(item.Trim(), StringComparison.OrdinalIgnoreCase))
-                        {
-                            Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{item}' matches");
-                            anyMatch = true;
-                            if (contextKey.Equals("LaboratoryTestName") || contextKey.Equals("LabSampleStorageTemperature") || contextKey.Equals("NumberOfLabSamples") || contextKey.Equals("LabSampleReference"))
-                            {
-                                var valuesInList = _scenarioContext[contextKey] as List<string>;
-                                valuesInList.Remove(item);
-                                _scenarioContext[contextKey] = valuesInList;
-                            }
-                            break;
-                        }
-                    }
-                    if (!anyMatch)
-                    {
-                        mismatches.Add($"{contextKey}: None of the expected values were found in PDF");
-                        allDataMatches = false;
-                    }
-                    return;
-                }
-                else
-                {
-                    mismatches.Add($"{contextKey}: Unsupported type '{rawExpected.GetType().Name}'");
-                    return;
-                }
+            if (string.IsNullOrEmpty(expectedValue) || string.IsNullOrEmpty(actual))
+                return;
 
+            bool isMatch = CompareValues(expectedValue, actual, contextContainsPDF, result);
 
-                if (!string.IsNullOrEmpty(expectedValue) && !string.IsNullOrEmpty(actual))
-                {
-                    bool isMatch = false;
-
-                    if (result.actualWords is List<string> actualList &&
-                            result.expectedWords is List<string> expectedList &&
-                            actualList != null &&
-                            expectedList != null)
-                    {
-                        isMatch = actualList.SequenceEqual(expectedList);
-                    }
-                    else
-                    {
-                        string RemoveWhitespace(string s) => string.Concat(s.Where(c => !char.IsWhiteSpace(c)));
-
-                        isMatch = contextContainsPDF
-                            ? RemoveWhitespace(expectedValue).Contains(RemoveWhitespace(actual), StringComparison.OrdinalIgnoreCase)
-                            : RemoveWhitespace(actual).Contains(RemoveWhitespace(expectedValue), StringComparison.OrdinalIgnoreCase);
-
-                    }
-                    if (!isMatch)
-                    {
-                        allDataMatches = false;
-                        mismatches.Add($"{contextKey}: Expected '{expectedValue}', Found '{actual.Trim()}'");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
-                    }
-                }
+            if (!isMatch)
+            {
+                allDataMatches = false;
+                mismatches.Add($"{contextKey}: Expected '{expectedValue}', Found '{actual.Trim()}'");
             }
             else
             {
-                Console.WriteLine($"[PDF VALIDATION] ⊘ {contextKey}: Skipped (not in context)");
+                Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
             }
         }
+
+
+        private void ValidateCloning(
+    string contextKey,
+    string actual,
+    ref bool allDataMatches,
+    List<string> mismatches,
+    bool contextContainsPDF)
+        {
+            var details = _scenarioContext.Get<NotificationDetails>("CloningHealthCertificateDetails");
+            var property = typeof(NotificationDetails).GetProperty(contextKey);
+            string expectedValue = property?.GetValue(details)?.ToString()?.Trim();
+
+            if (contextKey is "Packages" or "NetWeight")
+            {
+                double numericValue = Convert.ToDouble(property?.GetValue(details));
+                expectedValue = (numericValue * 2).ToString();
+            }
+
+            if (string.IsNullOrEmpty(expectedValue))
+                return;
+
+            string RemoveWS(string s) => string.Concat(s.Where(c => !char.IsWhiteSpace(c)));
+
+            bool isMatch = contextContainsPDF
+                ? RemoveWS(expectedValue).Contains(RemoveWS(actual), StringComparison.OrdinalIgnoreCase)
+                : RemoveWS(actual).Contains(RemoveWS(expectedValue), StringComparison.OrdinalIgnoreCase);
+
+            if (!isMatch)
+            {
+                allDataMatches = false;
+                mismatches.Add($"{contextKey}: Expected '{expectedValue}', Found '{actual.Trim()}'");
+            }
+            else
+            {
+                Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
+            }
+        }
+
+
+        private string ExtractExpectedValue(
+    string contextKey,
+    object rawExpected,
+    ref string actual,
+    ref (List<string> expectedWords, List<string> actualWords) result)
+        {
+            string expectedValue = rawExpected switch
+            {
+                string s => s.Trim(),
+                string[] arr => string.Join(" ", arr).Trim(),
+                _ => null
+            };
+
+            if (expectedValue == null)
+                return null;
+
+            // All your special-case transformations preserved:
+            if (contextKey == "IUUSubOption")
+            {
+                if (expectedValue == "No need to inspect - exempt or not applicable") expectedValue = "IUUNA";
+                if (expectedValue == "Compliant") expectedValue = "IUUOK";
+            }
+
+            if (contextKey == "ExitBCP") actual = actual.Replace(".", "").Trim();
+            if (contextKey is "ExitBorderControlPost" or "PortOfEntry") expectedValue = expectedValue.Split(new[] { '(', '-' })[0].Trim();
+            if (contextKey == "InspectionPremises") expectedValue = expectedValue.Split('-')[0].Trim();
+            if (contextKey == "ImporterAddress") actual = actual.Replace("Address ", "").Trim();
+            if (contextKey == "TotalPackages") actual = Regex.Matches(actual, @"\d+").Select(m => int.Parse(m.Value)).Sum().ToString();
+            if (contextKey == "NumberOfAnimals") expectedValue += " Units";
+            if (contextKey == "EstimatedArrivalDate")
+                expectedValue = DateTime.ParseExact(expectedValue, "dd MMM yyyy", CultureInfo.InvariantCulture).ToString("dd.MM.yyyy");
+
+            if (expectedValue.Contains("London Borough of Hillingdon Heathrow Airport Imported Food Office"))
+            {
+                result = ConvertLinesAsWords(expectedValue, actual);
+                result.actualWords.Remove("adada");
+                result.expectedWords.Remove("adada");
+            }
+
+            return expectedValue;
+        }
+
+
+        private void ValidateList(string contextKey, string actual, List<string> list, ref bool allDataMatches, List<string> mismatches)
+        {
+            foreach (var item in list.Where(i => !string.IsNullOrWhiteSpace(i)))
+            {
+                if (actual.Contains(item.Trim(), StringComparison.OrdinalIgnoreCase))
+                {
+                    Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{item}' matches");
+
+                    if (contextKey is "LaboratoryTestName" or "LabSampleStorageTemperature" or "NumberOfLabSamples" or "LabSampleReference")
+                    {
+                        list.Remove(item);
+                        _scenarioContext[contextKey] = list;
+                    }
+                    return;
+                }
+            }
+
+            mismatches.Add($"{contextKey}: None of the expected values were found in PDF");
+            allDataMatches = false;
+        }
+
+
+        private bool CompareValues(
+    string expectedValue,
+    string actual,
+    bool contextContainsPDF,
+    (List<string> expectedWords, List<string> actualWords) result)
+        {
+            if (result.expectedWords != null && result.actualWords != null)
+                return result.expectedWords.SequenceEqual(result.actualWords);
+
+            string RemoveWS(string s) => string.Concat(s.Where(c => !char.IsWhiteSpace(c)));
+
+            return contextContainsPDF
+                ? RemoveWS(expectedValue).Contains(RemoveWS(actual), StringComparison.OrdinalIgnoreCase)
+                : RemoveWS(actual).Contains(RemoveWS(expectedValue), StringComparison.OrdinalIgnoreCase);
+        }
+
 
         public (List<string> expectedWords, List<string> actualWords) ConvertLinesAsWords(string expected, string actual)
         {
