@@ -56,6 +56,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
         public string Random { get; set; }
         public string Suspicion { get; set; }
         public string IntensifiedControls { get; set; }
+        public string EmergencyMeasures { get; set; }
         public string Pending { get; set; }
         public string LocalCompetentAuthority { get; set; }
         public string SecondEntryPoint { get; set; }

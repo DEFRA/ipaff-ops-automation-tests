@@ -3106,7 +3106,7 @@ Scenario: User creates and submits a notification with main reason as Re-entry, 
 	Then the Description of the goods/Commodity page should be displayed
 	When the user clicks the 'WOOL, FINE OR COARSE ANIMAL HAIR; HORSEHAIR YARN AND WOVEN FABRIC' in the parent commodity tree
 	And the sub commodity list expands
-	And the user clicks '5101' 'Wool, not carded or combed' under the parent commodity
+	And the user selects the '5101' 'Wool, not carded or combed' under the parent commodity
 	Then the Commodity page should be displayed
 	When the user selects "No" for Do you want to add another commodity?
 	And the user clicks Save and continue

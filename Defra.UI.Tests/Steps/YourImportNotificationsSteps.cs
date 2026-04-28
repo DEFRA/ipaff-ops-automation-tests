@@ -157,7 +157,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         ValidateIfExists("CommodityIntendedFor", page.Sections.GoodsCertifiedAs?.Value, ref allDataMatches, mismatches);
                         if (_scenarioContext["CHEDReference"].ToString().Contains("CHEDA"))
                         {
-                            ValidateContains("CertificationOption", page.Sections.GoodsCertifiedAs?.Value, ref allDataMatches, mismatches);
+                            ValidateContains("CertificationOption", page.Sections.GoodsCertifiedAs?.Value, ref allDataMatches, mismatches, true);
                         }
                         else
                         {
@@ -335,6 +335,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             { Random: "true" } => "Random",
                             { Suspicion: "true" } => "Suspicion",
                             { IntensifiedControls: "true" } => "IntensifiedControls",
+                            { EmergencyMeasures: "true" } => "EmergencyMeasures",
                             _ => null
                         };
                         ValidateIfExists("LaboratoryTestsReason", pdfLaboratoryTestNames, ref allDataMatches, mismatches);
@@ -405,28 +406,77 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     else if (pageNumber == 5)
                     {
                         ValidateIfExists("CHEDReference", (string?)page.Sections.References.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches);
-                        if (_scenarioContext["CHEDReference"].ToString().Contains("CHEDA"))
-                        {
-                            ValidateContains("PortOfEntry", page.Sections.References.Name, ref allDataMatches, mismatches);
-                        }
-                        else
-                            ValidateContains("PortOfEntry", page.Sections.References.Name, ref allDataMatches, mismatches);
+
+                        ValidateContains("PortOfEntry", page.Sections.References.Name, ref allDataMatches, mismatches);
 
                         ValidateContains("CountryOfOrigin", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches);
                         if (!_scenarioContext["CHEDReference"].ToString().Contains("CHEDA"))
                         {
-                            ValidateIfExists("ContryFromWhereConsigned", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.ElementAt(4).Value, ref allDataMatches, mismatches);
+                            ValidateIfExists("ContryFromWhereConsigned", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.FirstOrDefault(x => x.Key == "CountryOfDispatch").Value, ref allDataMatches, mismatches);
                         }
-                        var destination = page.Sections.IdentificationOfTheSample.AdditionalData.ElementAt(3).Value.ToString();
+                        var destination = page.Sections.IdentificationOfTheSample.AdditionalData.FirstOrDefault(x => x.Key == "PlaceOfDestination").Value.ToString();
 
                         ValidateContains("PlaceOfDestinationDetails", destination.Replace("Commodity", ""), ref allDataMatches, mismatches, true);
                         ValidateContains("CommodityCode", page.Sections.IdentificationOfTheSample.Commodity, ref allDataMatches, mismatches);
-                        //ValidateContains("CommodityDescription", page.Sections.IdentificationOfTheSample.Commodity, ref allDataMatches, mismatches);
                         ValidateContains("Species", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
                         ValidateIfExists("LaboratoryTestsReason", (string?)page.Sections.RequestedAnalysis.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches);
                         ValidateContains("LabTestName", (string?)page.Sections.LabResults.Name, ref allDataMatches, mismatches, true);
                         ValidateContains("LabSampleReference", (string?)page.Sections.LabResults.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches, true);
-                        ValidateIfExists("NumberOfLabSamples", (string?)page.Sections.LabResults.AdditionalData.ElementAt(4).Value, ref allDataMatches, mismatches);
+                        ValidateContains("NumberOfLabSamples", (string?)page.Sections.LabResults.AdditionalData.ElementAt(4).Value, ref allDataMatches, mismatches, true);
+                        ValidateIfExists("LabSampleType", (string?)page.Sections.LabResults.AdditionalData.ElementAt(3).Value, ref allDataMatches, mismatches);
+                        ValidateContains("LabSampleStorageTemperature", (string?)page.Sections.LabResults.AdditionalData.ElementAt(5).Value, ref allDataMatches, mismatches, true);
+                        ValidateIfExists("SampleDate", (string?)page.Sections.LabResults.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
+                        ValidateIfExists("SampleTime", (string?)page.Sections.LabResults.AdditionalData.ElementAt(11).Value, ref allDataMatches, mismatches);
+                        ValidateContains("LaboratoryTestName", (string?)page.Sections.LabResults.AdditionalData.ElementAt(6).Value, ref allDataMatches, mismatches, true);
+
+                    }
+                    else if (pageNumber == 6)
+                    {
+                        ValidateIfExists("CHEDReference", (string?)page.Sections.References.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches);
+
+                        ValidateContains("PortOfEntry", page.Sections.References.Name, ref allDataMatches, mismatches);
+
+                        ValidateContains("CountryOfOrigin", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches);
+                        if (!_scenarioContext["CHEDReference"].ToString().Contains("CHEDA"))
+                        {
+                            ValidateIfExists("ContryFromWhereConsigned", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.FirstOrDefault(x => x.Key == "CountryOfDispatch").Value, ref allDataMatches, mismatches);
+                        }
+                        var destination = page.Sections.IdentificationOfTheSample.AdditionalData.FirstOrDefault(x => x.Key == "PlaceOfDestination").Value.ToString();
+
+                        ValidateContains("PlaceOfDestinationDetails", destination.Replace("Commodity", ""), ref allDataMatches, mismatches, true);
+                        ValidateContains("CommodityCode", page.Sections.IdentificationOfTheSample.Commodity, ref allDataMatches, mismatches);
+                        ValidateContains("Species", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
+                        ValidateIfExists("LaboratoryTestsReason", (string?)page.Sections.RequestedAnalysis.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches);
+                        ValidateContains("LabTestName", (string?)page.Sections.LabResults.Name, ref allDataMatches, mismatches, true);
+                        ValidateContains("LabSampleReference", (string?)page.Sections.LabResults.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches, true);
+                        ValidateContains("NumberOfLabSamples", (string?)page.Sections.LabResults.AdditionalData.ElementAt(4).Value, ref allDataMatches, mismatches, true);
+                        ValidateIfExists("LabSampleType", (string?)page.Sections.LabResults.AdditionalData.ElementAt(3).Value, ref allDataMatches, mismatches);
+                        ValidateContains("LabSampleStorageTemperature", (string?)page.Sections.LabResults.AdditionalData.ElementAt(5).Value, ref allDataMatches, mismatches, true);
+                        ValidateIfExists("SampleDate", (string?)page.Sections.LabResults.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
+                        ValidateIfExists("SampleTime", (string?)page.Sections.LabResults.AdditionalData.ElementAt(11).Value, ref allDataMatches, mismatches);
+                        ValidateContains("LaboratoryTestName", (string?)page.Sections.LabResults.AdditionalData.ElementAt(6).Value, ref allDataMatches, mismatches, true);
+
+                    }
+                    else if (pageNumber == 7)
+                    {
+                        ValidateIfExists("CHEDReference", (string?)page.Sections.References.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches);
+
+                        ValidateContains("PortOfEntry", page.Sections.References.Name, ref allDataMatches, mismatches);
+
+                        ValidateContains("CountryOfOrigin", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches);
+                        if (!_scenarioContext["CHEDReference"].ToString().Contains("CHEDA"))
+                        {
+                            ValidateIfExists("ContryFromWhereConsigned", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.FirstOrDefault(x => x.Key == "CountryOfDispatch").Value, ref allDataMatches, mismatches);
+                        }
+                        var destination = page.Sections.IdentificationOfTheSample.AdditionalData.FirstOrDefault(x => x.Key == "PlaceOfDestination").Value.ToString();
+
+                        ValidateContains("PlaceOfDestinationDetails", destination.Replace("Commodity", ""), ref allDataMatches, mismatches, true);
+                        ValidateContains("CommodityCode", page.Sections.IdentificationOfTheSample.Commodity, ref allDataMatches, mismatches);
+                        ValidateContains("Species", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
+                        ValidateIfExists("LaboratoryTestsReason", (string?)page.Sections.RequestedAnalysis.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches);
+                        ValidateContains("LabTestName", (string?)page.Sections.LabResults.Name, ref allDataMatches, mismatches, true);
+                        ValidateContains("LabSampleReference", (string?)page.Sections.LabResults.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches, true);
+                        ValidateContains("NumberOfLabSamples", (string?)page.Sections.LabResults.AdditionalData.ElementAt(4).Value, ref allDataMatches, mismatches, true);
                         ValidateIfExists("LabSampleType", (string?)page.Sections.LabResults.AdditionalData.ElementAt(3).Value, ref allDataMatches, mismatches);
                         ValidateContains("LabSampleStorageTemperature", (string?)page.Sections.LabResults.AdditionalData.ElementAt(5).Value, ref allDataMatches, mismatches, true);
                         ValidateIfExists("SampleDate", (string?)page.Sections.LabResults.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
@@ -1066,7 +1116,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     if (contextKey.Trim() == "TotalPackages") actual = Regex.Matches(actual, @"\d+").Select(m => int.Parse(m.Value)).Sum().ToString();
                     if (contextKey.Trim() == "NumberOfAnimals") expectedValue = expectedValue + " Units";
                     if (contextKey.Trim() == "EstimatedArrivalDate") expectedValue = DateTime.ParseExact(expectedValue, "dd MMM yyyy", System.Globalization.CultureInfo.InvariantCulture).ToString("dd.MM.yyyy");
-                    if (contextKey.Trim() == "PortOfEntry")
+                    if (expectedValue.Trim().Contains("London Borough of Hillingdon Heathrow Airport Imported Food Office"))
                     {
                         result = ConvertLinesAsWords(expectedValue, actual);
                         result.actualWords.Remove("adada");
