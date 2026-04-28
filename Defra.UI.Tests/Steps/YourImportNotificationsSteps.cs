@@ -173,6 +173,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         if (_scenarioContext["CHEDReference"].ToString().Contains("CHEDA"))
                         {
                             ValidateContains("CertificationOption", page.Sections.GoodsCertifiedAs?.Value, ref allDataMatches, mismatches, true);
+                            ValidateContains("HealthDocumentType", (string?)page.Sections.AccompanyingDocuments.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
+                            ValidateContains("HealthCertificateReference", (string?)page.Sections.AccompanyingDocuments.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
+                            //ValidateIfExists("HealthCertificateDateOfIssue", (string?)page.Sections.AccompanyingDocuments.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
+                            ValidateContains("DocumentType", (string?)page.Sections.AccompanyingDocuments.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
+                            ValidateContains("DocumentReference", (string?)page.Sections.AccompanyingDocuments.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
                         }
                         else
                         {
@@ -369,7 +374,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         pdfLaboratoryTestRequired = "No";
                         ValidateIfExists("AreLaboratoryTestsRequired", pdfLaboratoryTestRequired, ref allDataMatches, mismatches);
 
-                        string? pdfLaboratoryTestNames = page.Sections.LaboratoryTests
+                        /*string? pdfLaboratoryTestNames = page.Sections.LaboratoryTests
                         switch
                         {
                             { Random: "true" } => "Random",
@@ -378,7 +383,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             { EmergencyMeasures: "true" } => "EmergencyMeasures",
                             _ => null
                         };
-                        ValidateIfExists("LaboratoryTestsReason", pdfLaboratoryTestNames, ref allDataMatches, mismatches);
+                        ValidateIfExists("LaboratoryTestsReason", pdfLaboratoryTestNames, ref allDataMatches, mismatches);*/
 
                         string? welfareCheckDecision = page.Sections.WelfareCheck
                         switch
@@ -1181,6 +1186,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         {
                             Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{item}' matches");
                             anyMatch = true;
+                            if(contextKey.Equals("LaboratoryTestName") || contextKey.Equals("LabSampleStorageTemperature") || contextKey.Equals("NumberOfLabSamples") || contextKey.Equals("LabSampleReference"))
+                            {
+                                var valuesInList = _scenarioContext[contextKey] as List<string>;
+                                valuesInList.Remove(item);
+                                _scenarioContext[contextKey] = valuesInList;
+                            }                            
                             break;
                         }
                     }

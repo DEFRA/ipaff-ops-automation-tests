@@ -166,8 +166,9 @@ namespace Defra.UI.Tests.Tools
 
             {
                 tempDriver.Navigate().GoToUrl(pdfUrl);
-
-                tempDriver.WaitForElement(By.Id("scp")).Click();
+                var elements = tempDriver.WaitForElements(By.CssSelector(".govuk-label.govuk-radios__label.break-word")).ToList();                      
+                elements[1].Click();
+                
                 tempDriver.FindElement(By.Id("continueReplacement")).Click();
 
                 var jsonData = UserObject?.GetUser("IPAFF", userRole);
