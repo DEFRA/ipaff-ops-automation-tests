@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;
+using System;
 using System.Text.RegularExpressions;
 
 namespace Defra.UI.Tests.Steps.IPAFF
@@ -160,19 +161,19 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             ValidateContains("ImporterName", page.Sections.PlaceOfDestination.Name, ref allDataMatches, mismatches, true);
                             ValidateContains("ImporterAddress", page.Sections.PlaceOfDestination.Address, ref allDataMatches, mismatches, true);
                             ValidateContains("ImporterCountry", page.Sections.PlaceOfDestination.Country, ref allDataMatches, mismatches, true);
+                        }
+
+                        ValidateIfExists("CommodityIntendedFor", page.Sections.GoodsCertifiedAs?.Value, ref allDataMatches, mismatches);
+                        
+                        if (_scenarioContext["CHEDReference"].ToString().Contains("CHEDA"))
+                        {
+                            ValidateContains("CertificationOption", page.Sections.GoodsCertifiedAs?.Value, ref allDataMatches, mismatches, true);
 
                             ValidateContains("HealthDocumentType", (string?)page.Sections.AccompanyingDocuments.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
                             ValidateContains("HealthCertificateReference", (string?)page.Sections.AccompanyingDocuments.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
                             //ValidateIfExists("HealthCertificateDateOfIssue", (string?)page.Sections.AccompanyingDocuments.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
                             ValidateContains("DocumentType", (string?)page.Sections.AccompanyingDocuments.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
                             ValidateContains("DocumentReference", (string?)page.Sections.AccompanyingDocuments.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
-                        }
-
-
-                        ValidateIfExists("CommodityIntendedFor", page.Sections.GoodsCertifiedAs?.Value, ref allDataMatches, mismatches);
-                        if (_scenarioContext["CHEDReference"].ToString().Contains("CHEDA"))
-                        {
-                            ValidateContains("CertificationOption", page.Sections.GoodsCertifiedAs?.Value, ref allDataMatches, mismatches, true);
                         }
                         else
                         {
@@ -364,9 +365,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         ValidateIfExists("PhysicalCheckDecision", pdfPhysicalCheck, ref allDataMatches, mismatches);
 
                         string? pdfLaboratoryTestRequired = page.Sections.LaboratoryTests.No;
-                        if (pdfLaboratoryTestRequired.Equals("true"))
+                        if (pdfLaboratoryTestRequired.Equals("true") && page.Sections.LaboratoryTests.Random.Equals("false")
+                            && page.Sections.LaboratoryTests.Suspicion.Equals("false"))
+                        //&& (page.Sections.LaboratoryTests.EmergencyMeasures.Equals("false")
+                        //|| page.Sections.LaboratoryTests.IntensifiedControls.Equals("false"))   ---- Need to verify once value is retrieved from pdf
+                        {
+                            pdfLaboratoryTestRequired = "No";
+                        }
+                        else
                             pdfLaboratoryTestRequired = "Yes";
-                        pdfLaboratoryTestRequired = "No";
+
                         ValidateIfExists("AreLaboratoryTestsRequired", pdfLaboratoryTestRequired, ref allDataMatches, mismatches);
 
                         string? pdfLaboratoryTestNames = page.Sections.LaboratoryTests
