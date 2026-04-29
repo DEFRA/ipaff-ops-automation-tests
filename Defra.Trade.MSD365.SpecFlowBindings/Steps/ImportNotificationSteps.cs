@@ -89,7 +89,7 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
     {
         if (!scenarioContext.ContainsKey("CHEDReference"))
         {
-            scenarioContext["CHEDReference"] = "CHEDPP.GB.2026.1067816";
+            scenarioContext["CHEDReference"] = "CHEDPP.GB.2026.1068062";
         }       
         var chedReference = scenarioContext.Get<string>("CHEDReference");
         XrmApp.Grid.Search(chedReference);

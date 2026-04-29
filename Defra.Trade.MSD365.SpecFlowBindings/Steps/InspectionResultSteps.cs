@@ -82,16 +82,10 @@ public class InspectionResultSteps : PowerAppsStepDefiner
 
         var ariaLabel = $"{checkName} Status";
 
-        // Derive the containing section from the check name prefix.
-        // PHSI checks live in 'PHSI Inspection Results'; everything else is HMI.
         var sectionName = checkName.StartsWith("PHSI", StringComparison.OrdinalIgnoreCase)
             ? "PHSI Inspection Results"
             : "HMI Inspection Results";
 
-        // Both PHSI and HMI sections live on the 'Inspection Results' tab.
-        // Dynamics lazily renders tab content — sections are only added to the DOM when
-        // the tab is first activated. If the section is not found, re-select the tab to
-        // trigger rendering before retrying.
         const string inspectionResultsTabName = "Inspection Results";
 
         string actualValue = null;
@@ -107,8 +101,6 @@ public class InspectionResultSteps : PowerAppsStepDefiner
                 sleepDurationProvider: _ => TimeSpan.FromSeconds(5),
                 onRetry: (outcome, delay, attempt, _) =>
                 {
-                    // If the section was not found, the tab panel has not rendered.
-                    // Re-select the Inspection Results tab to trigger lazy rendering.
                     if (debugSectionFound == "NOT FOUND")
                     {
                         Capgemini.PowerApps.SpecFlowBindings.Steps.EntitySteps.ISelectTab(inspectionResultsTabName);
@@ -119,7 +111,6 @@ public class InspectionResultSteps : PowerAppsStepDefiner
             {
                 Driver.WaitForTransaction();
 
-                // Re-find the section on every attempt — avoids stale element references.
                 var sections = Driver.FindElements(By.XPath($"//section[@aria-label='{sectionName}']"));
                 debugSectionFound = sections.Count > 0 ? $"found ({sections.Count})" : "NOT FOUND";
 
@@ -127,6 +118,14 @@ public class InspectionResultSteps : PowerAppsStepDefiner
                 {
                     return false;
                 }
+
+                // Scroll the section into view before querying its inputs.
+                // PCF controls inside Dynamics sections only render their inner DOM elements
+                // once the section is visible in the viewport. Without this scroll, the
+                // section may be present in the DOM but its child input elements not yet
+                // rendered — mirroring the fix applied to ThenTheSectionIsBlank.
+                Driver.ExecuteScript("arguments[0].scrollIntoView({block:'center'});", sections[0]);
+                Driver.WaitForTransaction();
 
                 var inputs = sections[0].FindElements(By.XPath($".//input[@aria-label='{ariaLabel}']"));
                 debugInputFound = inputs.Count > 0 ? $"found ({inputs.Count})" : "NOT FOUND";
@@ -167,12 +166,6 @@ public class InspectionResultSteps : PowerAppsStepDefiner
     {
         Driver.WaitForTransaction();
 
-        // Both 'PHSI Inspection Results' and 'HMI Inspection Results' live on the
-        // 'Inspection Results' tab. Dynamics lazily renders tab content — sections only
-        // appear in the DOM after the tab is activated. Never issue a full page Refresh
-        // here: it navigates back to the default tab and destroys the lazily-loaded
-        // section content, causing all subsequent FindElements calls to return NOT FOUND.
-        // Instead, re-select the Inspection Results tab on retry to re-trigger rendering.
         const string inspectionResultsTabName = "Inspection Results";
 
         string debugSectionFound = "not attempted";
@@ -194,7 +187,6 @@ public class InspectionResultSteps : PowerAppsStepDefiner
             {
                 Driver.WaitForTransaction();
 
-                // Re-find the section on every attempt to avoid stale element references.
                 var sections = Driver.FindElements(By.XPath($"//section[@aria-label='{sectionName}']"));
                 debugSectionFound = sections.Count > 0 ? $"found ({sections.Count})" : "NOT FOUND";
 
@@ -202,6 +194,14 @@ public class InspectionResultSteps : PowerAppsStepDefiner
                 {
                     return false;
                 }
+
+                // Scroll the section into view before querying its inputs.
+                // PCF controls inside Dynamics sections only render their inner DOM elements
+                // (including fui-Input__input fields) once the section is visible in the
+                // viewport. Without this scroll, the section is in the DOM but its child
+                // inputs are not yet rendered, causing inputs.Count to be 0 indefinitely.
+                Driver.ExecuteScript("arguments[0].scrollIntoView({block:'center'});", sections[0]);
+                Driver.WaitForTransaction();
 
                 var inputs = sections[0].FindElements(
                     By.XPath(".//input[contains(@class,'fui-Input__input')]"));
