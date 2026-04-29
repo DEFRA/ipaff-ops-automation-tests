@@ -949,6 +949,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 return;
             }
 
+            if (rawExpected is string[] arr)
+            {
+                ValidateArray(contextKey, actual, arr, ref allDataMatches, mismatches);
+                return;
+            }
+
             string expectedValue = ExtractExpectedValue(contextKey, rawExpected, ref actual, ref result);
 
             if (string.IsNullOrEmpty(expectedValue) || string.IsNullOrEmpty(actual))
@@ -1058,6 +1064,48 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             mismatches.Add($"{contextKey}: None of the expected values were found in PDF");
             allDataMatches = false;
+        }
+
+
+        private void ValidateArray(string contextKey, string actual, string[] arr, ref bool allDataMatches, List<string> mismatches)
+        {
+            foreach (var rawItem in arr.Where(i => !string.IsNullOrWhiteSpace(i)))
+            {
+                var item = rawItem.Trim();
+                if (actual.Contains(item, StringComparison.OrdinalIgnoreCase))
+                {
+                    Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{item}' matches");
+
+                    if (contextKey == "LabTestName"
+                        || contextKey == "LabSampleStorageTemperature"
+                        || contextKey == "NumberOfLabSamples"
+                        || contextKey == "LabSampleReference")
+                    {
+                        if (_scenarioContext[contextKey] is string[] valuesArr)
+                        {
+                            _scenarioContext[contextKey] = RemoveFirstOccurrence(valuesArr, item);
+                        }
+                    }
+
+                    return;
+                }
+            }
+
+            mismatches.Add($"{contextKey}: None of the expected values were found in PDF");
+            allDataMatches = false;
+        }
+
+        private static string[] RemoveFirstOccurrence(string[] source, string valueToRemove)
+        {
+            if (source == null || source.Length == 0) return source;
+
+            int idx = Array.FindIndex(source, s => string.Equals(s?.Trim(), valueToRemove, StringComparison.OrdinalIgnoreCase));
+            if (idx < 0) return source;
+
+            var result = new string[source.Length - 1];
+            if (idx > 0) Array.Copy(source, 0, result, 0, idx);
+            if (idx < source.Length - 1) Array.Copy(source, idx + 1, result, idx, source.Length - idx - 1);
+            return result;
         }
 
 
