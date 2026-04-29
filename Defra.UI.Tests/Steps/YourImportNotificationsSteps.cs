@@ -1006,11 +1006,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
 
-        private string ExtractExpectedValue(
-    string contextKey,
-    object rawExpected,
-    ref string actual,
-    ref (List<string> expectedWords, List<string> actualWords) result)
+        private string ExtractExpectedValue(string contextKey, object rawExpected, ref string actual, ref (List<string> expectedWords, List<string> actualWords) result)
         {
             string expectedValue = rawExpected switch
             {
@@ -1055,13 +1051,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             {
                 if (actual.Contains(item.Trim(), StringComparison.OrdinalIgnoreCase))
                 {
-                    Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{item}' matches");
-
-                    if (contextKey is "LaboratoryTestName" or "LabSampleStorageTemperature" or "NumberOfLabSamples" or "LabSampleReference")
-                    {
-                        list.Remove(item);
-                        _scenarioContext[contextKey] = list;
-                    }
+                    Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{item}' matches");                    
                     return;
                 }
             }
@@ -1071,11 +1061,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
 
-        private bool CompareValues(
-    string expectedValue,
-    string actual,
-    bool contextContainsPDF,
-    (List<string> expectedWords, List<string> actualWords) result)
+        private bool CompareValues(string expectedValue, string actual, bool contextContainsPDF, (List<string> expectedWords, List<string> actualWords) result)
         {
             if (result.expectedWords != null && result.actualWords != null)
                 return result.expectedWords.SequenceEqual(result.actualWords);
