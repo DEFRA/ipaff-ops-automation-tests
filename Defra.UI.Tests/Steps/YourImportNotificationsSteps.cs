@@ -1027,9 +1027,43 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 }
                 else if (rawExpected is string[] arr)
                 {
-                    // join array into one string (adjust to comma if needed)
-                    expectedValue = string.Join(" ", arr).Trim();
+                    bool anyMatch = false;
+
+                    foreach (var rawItem in arr)
+                    {
+                        if (string.IsNullOrWhiteSpace(rawItem))
+                            continue;
+
+                        var item = rawItem.Trim();
+                        if (actual.Contains(item, StringComparison.OrdinalIgnoreCase))
+                        {
+                            Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{item}' matches");
+                            anyMatch = true;
+
+                            if (contextKey.Equals("LabTestName") ||
+                                contextKey.Equals("LabSampleStorageTemperature") ||
+                                contextKey.Equals("NumberOfLabSamples") ||
+                                contextKey.Equals("LabSampleReference"))
+                            {
+                                if (_scenarioContext[contextKey] is string[] valuesInArray)
+                                {
+                                    _scenarioContext[contextKey] = RemoveFirstOccurrence(valuesInArray, item);
+                                }
+                            }
+
+                            break;
+                        }
+                    }
+
+                    if (!anyMatch)
+                    {
+                        mismatches.Add($"{contextKey}: None of the expected values were found in PDF");
+                        allDataMatches = false;
+                    }
+
+                    return;
                 }
+
                 else if (rawExpected is List<string> list)
                 {
                     bool anyMatch = false;
@@ -1043,12 +1077,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         {
                             Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{item}' matches");
                             anyMatch = true;
-                            if (contextKey.Equals("LaboratoryTestName") || contextKey.Equals("LabSampleStorageTemperature") || contextKey.Equals("NumberOfLabSamples") || contextKey.Equals("LabSampleReference"))
-                            {
-                                var valuesInList = _scenarioContext[contextKey] as List<string>;
-                                valuesInList.Remove(item);
-                                _scenarioContext[contextKey] = valuesInList;
-                            }
+                            
                             break;
                         }
                     }
@@ -1102,6 +1131,20 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 Console.WriteLine($"[PDF VALIDATION] ⊘ {contextKey}: Skipped (not in context)");
             }
         }
+
+        private static string[] RemoveFirstOccurrence(string[] source, string valueToRemove)
+        {
+            if (source == null || source.Length == 0) return source;
+
+            int idx = Array.FindIndex(source, s => string.Equals(s?.Trim(), valueToRemove, StringComparison.OrdinalIgnoreCase));
+            if (idx < 0) return source;
+
+            var result = new string[source.Length - 1];
+            if (idx > 0) Array.Copy(source, 0, result, 0, idx);
+            if (idx < source.Length - 1) Array.Copy(source, idx + 1, result, idx, source.Length - idx - 1);
+            return result;
+        }
+
 
         public (List<string> expectedWords, List<string> actualWords) ConvertLinesAsWords(string expected, string actual)
         {
