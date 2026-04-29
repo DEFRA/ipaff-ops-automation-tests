@@ -165,8 +165,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         {
                             ValidateContains("HealthDocumentType", (string?)page.Sections.AccompanyingDocuments.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
                             ValidateContains("HealthCertificateReference", (string?)page.Sections.AccompanyingDocuments.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
-                            ValidateContains("DocumentType", (string?)page.Sections.AccompanyingDocuments.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
-                            ValidateContains("DocumentReference", (string?)page.Sections.AccompanyingDocuments.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
+                            ValidateContains("DocumentType", (string?)page.Sections.AccompanyingDocuments.AdditionalData?.ElementAt(1).Value, ref allDataMatches, mismatches);
+                            ValidateContains("DocumentReference", (string?)page.Sections.AccompanyingDocuments.AdditionalData?.ElementAt(1).Value, ref allDataMatches, mismatches);
                         }
 
                         ValidateIfExists("CommodityIntendedFor", page.Sections.GoodsCertifiedAs?.Value, ref allDataMatches, mismatches);
@@ -212,8 +212,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         ValidateContains("DestinationCountry", page.Sections.DirectTransit?.Country, ref allDataMatches, mismatches);
                         //ValidateContains("ExitBCP", page.Sections.DirectTransit?.ExitBCP, ref allDataMatches, mismatches, true);
 
-                        var traces = page.Sections.DirectTransit?.TracesUnitNo.ToString();
-                        ValidateContains("ExitBCP", page.Sections.DirectTransit?.TracesUnitNo, ref allDataMatches, mismatches, true);
+                        //var traces = page.Sections.DirectTransit?.TracesUnitNo.ToString();
+                        ValidateContains("ExitBCP", (string?)page.Sections?.DirectTransit?.TracesUnitNo, ref allDataMatches, mismatches, true);
 
                         ValidateContains("EstimatedArrivalDate", page.Sections.PriorNotification?.Date, ref allDataMatches, mismatches);
                         ValidateContains("EstimatedArrivalTime", page.Sections.PriorNotification?.Time, ref allDataMatches, mismatches);
@@ -386,7 +386,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
                         ValidateIfExists("AreLaboratoryTestsRequired", pdfLaboratoryTestRequired, ref allDataMatches, mismatches);
 
-                        /*string? pdfLaboratoryTestNames = page.Sections.LaboratoryTests
+                        string? pdfLaboratoryTestNames = page.Sections.LaboratoryTests
                         switch
                         {
                             { Random: "true" } => "Random",
@@ -395,7 +395,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             { EmergencyMeasures: "true" } => "EmergencyMeasures",
                             _ => null
                         };
-                        ValidateIfExists("LaboratoryTestsReason", pdfLaboratoryTestNames, ref allDataMatches, mismatches);*/
+                        ValidateIfExists("LaboratoryTestsReason", pdfLaboratoryTestNames, ref allDataMatches, mismatches);
 
                         string? welfareCheckDecision = page.Sections.WelfareCheck
                         switch
@@ -1031,7 +1031,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 if (expectedValue == "Compliant") expectedValue = "IUUOK";
             }
 
-            if (contextKey == "ExitBCP") actual = actual.Replace(".", "").Trim();
+            if (contextKey == "ExitBCP" && actual!=null) actual = actual.Replace(".", "").Trim();
             if (contextKey is "ExitBorderControlPost" or "PortOfEntry") expectedValue = expectedValue.Split(new[] { '(', '-' })[0].Trim();
             if (contextKey == "InspectionPremises") expectedValue = expectedValue.Split('-')[0].Trim();
             if (contextKey == "ImporterAddress") actual = actual.Replace("Address ", "").Trim();
