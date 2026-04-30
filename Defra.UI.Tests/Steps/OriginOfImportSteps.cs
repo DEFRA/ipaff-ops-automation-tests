@@ -159,5 +159,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 originOfImportPage?.IsHeaderBannerDisplayed(expectedStatus, expectedChedType),
                 $"Expected '{expectedStatus}' and '{expectedChedType}' to be displayed at the top of the screen");
         }
+
+        [When("the user records the pre-populated Country from where consigned")]
+        public void WhenTheUserRecordsThePre_PopulatedCountryFromWhereConsigned()
+        {
+            var countryFromWhereConsigned = originOfImportPage?.GetConsignedCountryText;
+            if (!string.IsNullOrEmpty(countryFromWhereConsigned) || !countryFromWhereConsigned.Contains("Select"))
+                _scenarioContext["ContryFromWhereConsigned"] = countryFromWhereConsigned;
+        }
     }
 }
