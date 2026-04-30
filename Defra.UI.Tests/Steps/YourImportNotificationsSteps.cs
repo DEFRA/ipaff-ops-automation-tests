@@ -295,6 +295,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             ValidateContains("CommodityCodeSecondCommodity", page.Sections.DescriptionOfTheGoods?.ElementAt(1).Value, ref allDataMatches, mismatches);
                             ValidateContains("CommodityDescSecondCommodity", page.Sections.DescriptionOfTheGoods?.ElementAt(1).Value, ref allDataMatches, mismatches);
                             ValidateContains("Species", page.Sections.DescriptionOfTheGoods?.ElementAt(1).Value, ref allDataMatches, mismatches);
+                            ValidateContains("TypeOfCommodity", page.Sections.DescriptionOfTheGoods?.ElementAt(1).Value, ref allDataMatches, mismatches);
                             ValidateContains("NetWeightSecondCommodity", page.Sections.DescriptionOfTheGoods?.ElementAt(1).Value, ref allDataMatches, mismatches);
                             ValidateContains("NumOfPackagesSecondCommodity", page.Sections.DescriptionOfTheGoods?.ElementAt(1).Value, ref allDataMatches, mismatches);
                             ValidateContains("TypeOfPackageSecondCommodity", page.Sections.DescriptionOfTheGoods?.ElementAt(1).Value, ref allDataMatches, mismatches);
@@ -431,7 +432,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         else if (page.Sections.AcceptableForTransit != null && !_scenarioContext["CHEDReference"].ToString().Contains("CHEDA"))
                         {
                             ValidateContains("DestinationCountry", page.Sections.AcceptableForTransit?.Value, ref allDataMatches, mismatches);
-                            ValidateContains("ExitBorderControlPost", (string?)page.Sections.AcceptableForTransit?.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches);
+                            ValidateContains("ExitBorderControlPost", (string?)page.Sections.AcceptableForTransit?.Value, ref allDataMatches, mismatches);
                         }
                         if (page.Sections.AcceptableForTranshipment != null)
                         {

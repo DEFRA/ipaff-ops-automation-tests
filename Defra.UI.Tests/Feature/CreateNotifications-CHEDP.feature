@@ -1095,7 +1095,7 @@ Scenario: User creates a B2C consignment notification, updates it from the revie
 	When the user clicks Amend
 	Then the Notification Hub page should be displayed
 	When the user clicks on 'Origin of the import' link
-	And the user chooses "Finland" from the dropdown for Country of origin
+	And the user chooses "Finland" from the dropdown for Country of origin and records the country from where consigned
 	And the user clicks on Save and return to hub
 	And the user clicks on 'Addresses' link
 	Then the Addresses page should be displayed
@@ -1987,7 +1987,6 @@ Scenario: Create and Submit B2C Consignment with Two Commodities and Catch Certi
 	Then the Addresses page should be displayed
 	When the user clicks Add a consignor or exporter
 	Then the Search for an existing consignor or exporter page should be displayed
-	#When the user selects one of the displayed consignors or exporters "ABC"
 	When the user selects a consignor or exporter "ABC"
 	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
 	When the user clicks Add a consignee

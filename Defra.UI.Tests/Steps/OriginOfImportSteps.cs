@@ -36,7 +36,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     $"Country of origin dropdown is not pre-populated with '{country}'");
             });
 
-            _scenarioContext["ContryFromWhereConsigned"] = country;
         }
 
         [When("the user chooses {string} for Does your consignment require a region code?")]
