@@ -301,9 +301,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
             WhenTheUserPopulatesNumberOfPackagesAsForFirstCommodity("1");
             WhenTheUserSelectsTypeOfPackageAsForTheCommodityForFirstCommodity("Case", "12024200");
 
-            WhenTheUserPopulatesNetWeightAsForTheAdditionalCommodity("18000", "100610");
-            WhenTheUserPopulatesNumberOfPackagesAsForTheAdditionalCommodity("1", "100610");
-            WhenTheUserSelectsTypeOfPackageAsForTheAdditionalCommodity("Box", "100610");
+            WhenTheUserPopulatesNetWeightAsForTheAdditionalCommodity("18000", "10064000");
+            WhenTheUserPopulatesNumberOfPackagesAsForTheAdditionalCommodity("1", "10064000");
+            WhenTheUserSelectsTypeOfPackageAsForTheAdditionalCommodity("Box", "10064000");
 
             WhenTheUserClicksTheUpdateTotalButtonAfterAddingAllTheCommodities();
             ThenTheTotalGrossWeightShouldBeGreaterThanTheNetWeight("40000");

@@ -906,13 +906,13 @@ Scenario: User creates and submits a notification, Copy the notification and sub
 	And the sub commodity list expands
 	And the user clicks '1006' 'Rice' under the parent commodity
 	And the sub commodity list expands
-	And the user selects the second commodity '100610' 'Rice in the husk (paddy or rough)' under the parent commodity
+	And the user selects the second commodity '10064000' 'Broken rice' under the parent commodity
 	Then the Commodity page should be displayed
 	When the user selects "No" for Do you want to add another commodity?
 	And the user clicks Save and continue
-	When the user populates Net weight as '18000' for the second commodity '100610'
-	And the user populates Number of packages as '1' for the second commodity '100610'
-	And the user selects type of package as 'Box' for the second commodity '100610'
+	When the user populates Net weight as '18000' for the second commodity '10064000'
+	And the user populates Number of packages as '1' for the second commodity '10064000'
+	And the user selects type of package as 'Box' for the second commodity '10064000'
 	When the user clicks the Update total button after adding all the commodities
 	Then the total gross weight should be greater than the net weight '40000'
 	When the user clicks Save and continue in commodity page
@@ -1114,7 +1114,7 @@ Scenario: User creates and submits a notification, Copy the notification and sub
 	When the user searches for the CHED created earlier
 	Then the BTMS search result screen should be displayed
 	And the user validates the commodity code "12024200", description "Shelled, whether or not broken", quantity "19000", authority "FNAO" and decision "Acceptable for Internal Market" for commodity "1" after the decision is given
-	And the user validates the commodity code "100610", description "Rice in the husk (paddy or rough)", quantity "18000", authority "FNAO" and decision "Acceptable for Internal Market" for commodity "2" after the decision is given	
+	And the user validates the commodity code "10064000", description "Broken rice", quantity "18000", authority "FNAO" and decision "Acceptable for Internal Market" for commodity "2" after the decision is given	
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
 
