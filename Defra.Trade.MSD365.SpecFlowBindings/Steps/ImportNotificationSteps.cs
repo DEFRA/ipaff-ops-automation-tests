@@ -57,6 +57,8 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
     {
         Driver.WaitForTransaction();
 
+        SignInPromptHelper.DismissSignInPrompts(Driver, "post-navigation");
+
         var viewSelectorButton = Driver.WaitUntilAvailable(
             By.XPath("//button[contains(@data-id,'ViewSelector') and not(contains(@data-id,'ViewSelector_1'))]"),
             $"View selector button could not be found.");
@@ -89,7 +91,7 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
     {
         if (!scenarioContext.ContainsKey("CHEDReference"))
         {
-            scenarioContext["CHEDReference"] = "CHEDPP.GB.2026.1068062";
+            scenarioContext["CHEDReference"] = "CHEDPP.GB.2026.1068172";
         }       
         var chedReference = scenarioContext.Get<string>("CHEDReference");
         XrmApp.Grid.Search(chedReference);
@@ -203,6 +205,8 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
     {
         Driver.WaitForTransaction();
 
+        SignInPromptHelper.DismissSignInPrompts(Driver, "post-navigation");
+
         var expectedChedReference = scenarioContext.Get<string>("CHEDReference");
 
         var pageHeader = Driver.WaitUntilAvailable(
@@ -294,6 +298,8 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
         workOrderLink.Click();
 
         Driver.WaitForTransaction();
+
+        SignInPromptHelper.DismissSignInPrompts(Driver, "post-navigation");
     }
 
     [Then("I verify the Importer Notification Details reflect the information from the EU Import Notification")]

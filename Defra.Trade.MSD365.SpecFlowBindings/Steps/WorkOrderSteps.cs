@@ -45,6 +45,8 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
     {
         Driver.WaitForTransaction();
 
+        SignInPromptHelper.DismissSignInPrompts(Driver, "post-navigation");
+
         var expectedChedReference = scenarioContext.Get<string>("CHEDReference");
 
         var pageHeader = Driver.WaitUntilAvailable(
@@ -1098,130 +1100,157 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
         Driver.WaitForTransaction();
     }
 
-    [When(@"I double click on a Commodity Line with Regulatory Authority set to '(.*)'")]
+        [When(@"I double click on a Commodity Line with Regulatory Authority set to '(.*)'")]
     public void WhenIDoubleClickOnACommodityLineWithRegulatoryAuthoritySetTo(string regulatoryAuthority)
     {
-        ScrollGridUntilBothColumnsVisible();
-        Driver.WaitForTransaction();
+        // Wrap the entire locate-and-double-click sequence in a navigation-confirmation retry.
+        // The double-click can appear to succeed (no exception) yet fail to trigger Wijmo's row
+        // activation — the page stays on the Work Order instead of navigating to the Import
+        // Commodity Line record. Checking for the page header after each attempt and retrying
+        // if it is absent is the most reliable recovery strategy.
+        const int maxNavigationAttempts = 3;
 
-        var isAgGrid = Driver.FindElements(
-            By.XPath("//div[@id='dataSetRoot_Import_notification_commodity_lines_subgrid']")).Count > 0;
-
-        if (isAgGrid)
+        for (var navigationAttempt = 1; navigationAttempt <= maxNavigationAttempts; navigationAttempt++)
         {
-            var matchingIndex = -1;
+            ScrollGridUntilBothColumnsVisible();
+            Driver.WaitForTransaction();
 
-            for (var attempt = 0; attempt < 5; attempt++)
+            var isAgGrid = Driver.FindElements(
+                By.XPath("//div[@id='dataSetRoot_Import_notification_commodity_lines_subgrid']")).Count > 0;
+
+            if (isAgGrid)
             {
-                try
+                var matchingIndex = -1;
+
+                for (var attempt = 0; attempt < 5; attempt++)
                 {
-                    var grid = Driver.WaitUntilAvailable(
-                        By.XPath("//div[@role='grid'][contains(@aria-label,'Import Commodity Lines')]"),
-                        "Commodity Lines grid could not be found.");
-
-                    var dataRows = grid.FindElements(By.XPath(".//div[@role='row'][@aria-label='Data']"));
-
-                    for (var i = 0; i < dataRows.Count; i++)
+                    try
                     {
-                        var regulatoryCells = dataRows[i].FindElements(
-                            By.XPath(".//div[@role='gridcell'][@aria-colindex='11']//span[@role='presentation']"));
+                        var grid = Driver.WaitUntilAvailable(
+                            By.XPath("//div[@role='grid'][contains(@aria-label,'Import Commodity Lines')]"),
+                            "Commodity Lines grid could not be found.");
 
-                        if (regulatoryCells.Count > 0 &&
-                            regulatoryCells[0].Text.Trim().Equals(regulatoryAuthority, StringComparison.OrdinalIgnoreCase))
+                        var dataRows = grid.FindElements(By.XPath(".//div[@role='row'][@aria-label='Data']"));
+
+                        for (var i = 0; i < dataRows.Count; i++)
                         {
-                            matchingIndex = i;
-                            break;
-                        }
-                    }
+                            var regulatoryCells = dataRows[i].FindElements(
+                                By.XPath(".//div[@role='gridcell'][@aria-colindex='11']//span[@role='presentation']"));
 
-                    break;
-                }
-                catch (StaleElementReferenceException)
-                {
-                    Driver.WaitForTransaction();
-                    Thread.Sleep(500);
-                }
-            }
-
-            matchingIndex.Should().BeGreaterOrEqualTo(0,
-                $"No Commodity Line with Regulatory Authority '{regulatoryAuthority}' could be found on the current page.");
-
-            XrmApp.Entity.SubGrid.OpenSubGridRecord("Import_notification_commodity_lines_subgrid", matchingIndex);
-        }
-        else
-        {
-            // For the Wijmo cc-grid, re-query the matching cell and double-click within a retry
-            // loop. The StaleElementReferenceException occurs because the grid re-renders after
-            // the sort completes — cells found during ScrollGridUntilBothColumnsVisible are
-            // detached from the DOM by the time the predicate reads their text. Re-finding the
-            // cell on each attempt avoids referencing a detached element.
-            for (var attempt = 0; attempt < 5; attempt++)
-            {
-                try
-                {
-                    var grid = Driver.WaitUntilAvailable(
-                        By.XPath("//div[@role='grid'][contains(@aria-label,'Import Commodity Lines')]"),
-                        "Commodity Lines grid could not be found.");
-
-                    // Re-find all candidate cells on every attempt — never re-use a reference
-                    // from a previous attempt as the DOM may have been replaced by a sort or
-                    // page transition between the collection and the predicate evaluation.
-                    var candidateCells = grid.FindElements(
-                        By.XPath(".//div[@role='row'][@aria-label='Data']" +
-                                 "//div[@role='gridcell'][@aria-colindex='11']" +
-                                 "[.//span[@role='presentation']]"));
-
-                    IWebElement matchingCell = null;
-
-                    foreach (var cell in candidateCells)
-                    {
-                        // Read text inside a try/catch — an individual cell may go stale
-                        // mid-iteration if Wijmo re-virtualises rows during the loop.
-                        try
-                        {
-                            var cellText = cell.FindElement(
-                                By.XPath(".//span[@role='presentation']")).Text.Trim();
-
-                            if (cellText.Equals(regulatoryAuthority, StringComparison.OrdinalIgnoreCase))
+                            if (regulatoryCells.Count > 0 &&
+                                regulatoryCells[0].Text.Trim().Equals(regulatoryAuthority, StringComparison.OrdinalIgnoreCase))
                             {
-                                matchingCell = cell;
+                                matchingIndex = i;
                                 break;
                             }
                         }
-                        catch (StaleElementReferenceException)
-                        {
-                            // This cell went stale mid-read — break and retry the whole query.
-                            matchingCell = null;
-                            break;
-                        }
-                    }
 
-                    if (matchingCell == null)
+                        break;
+                    }
+                    catch (StaleElementReferenceException)
                     {
                         Driver.WaitForTransaction();
                         Thread.Sleep(500);
-                        continue;
                     }
-
-                    matchingCell.Should().NotBeNull(
-                        $"No Commodity Line with Regulatory Authority '{regulatoryAuthority}' could be found on the current page.");
-
-                    new Actions(Driver).DoubleClick(matchingCell).Perform();
-                    Driver.WaitForTransaction();
-                    return;
                 }
-                catch (StaleElementReferenceException)
+
+                matchingIndex.Should().BeGreaterOrEqualTo(0,
+                    $"No Commodity Line with Regulatory Authority '{regulatoryAuthority}' could be found on the current page.");
+
+                XrmApp.Entity.SubGrid.OpenSubGridRecord("Import_notification_commodity_lines_subgrid", matchingIndex);
+            }
+            else
+            {
+                var doubleClickSucceeded = false;
+
+                for (var attempt = 0; attempt < 5; attempt++)
                 {
-                    Driver.WaitForTransaction();
-                    Thread.Sleep(500);
+                    try
+                    {
+                        var grid = Driver.WaitUntilAvailable(
+                            By.XPath("//div[@role='grid'][contains(@aria-label,'Import Commodity Lines')]"),
+                            "Commodity Lines grid could not be found.");
+
+                        var candidateCells = grid.FindElements(
+                            By.XPath(".//div[@role='row'][@aria-label='Data']" +
+                                     "//div[@role='gridcell'][@aria-colindex='11']" +
+                                     "[.//span[@role='presentation']]"));
+
+                        IWebElement matchingCell = null;
+
+                        foreach (var cell in candidateCells)
+                        {
+                            try
+                            {
+                                var cellText = cell.FindElement(
+                                    By.XPath(".//span[@role='presentation']")).Text.Trim();
+
+                                if (cellText.Equals(regulatoryAuthority, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    matchingCell = cell;
+                                    break;
+                                }
+                            }
+                            catch (StaleElementReferenceException)
+                            {
+                                matchingCell = null;
+                                break;
+                            }
+                        }
+
+                        if (matchingCell == null)
+                        {
+                            Driver.WaitForTransaction();
+                            Thread.Sleep(500);
+                            continue;
+                        }
+
+                        matchingCell.Should().NotBeNull(
+                            $"No Commodity Line with Regulatory Authority '{regulatoryAuthority}' could be found on the current page.");
+
+                        new Actions(Driver).DoubleClick(matchingCell).Perform();
+                        Driver.WaitForTransaction();
+                        doubleClickSucceeded = true;
+                        break;
+                    }
+                    catch (StaleElementReferenceException)
+                    {
+                        Driver.WaitForTransaction();
+                        Thread.Sleep(500);
+                    }
+                }
+
+                if (!doubleClickSucceeded)
+                {
+                    throw new InvalidOperationException(
+                        $"Could not double-click a Commodity Line with Regulatory Authority '{regulatoryAuthority}' " +
+                        $"after 5 attempts due to repeated StaleElementReferenceException.");
                 }
             }
 
-            throw new InvalidOperationException(
-                $"Could not double-click a Commodity Line with Regulatory Authority '{regulatoryAuthority}' " +
-                $"after 5 attempts due to repeated StaleElementReferenceException.");
+            // Confirm the double-click triggered navigation to the Import Commodity Line page.
+            // If still on the Work Order, the double-click was silently swallowed by Wijmo —
+            // go back and retry the entire sequence.
+            var pageHeaderElements = Driver.FindElements(
+                By.XPath("//span[@data-id='entity_name_span'][normalize-space(text())='Import Commodity Line']"));
+
+            if (pageHeaderElements.Count > 0)
+            {
+                return;
+            }
+
+            Console.WriteLine(
+                $"[DOUBLE CLICK] Navigation attempt {navigationAttempt}/{maxNavigationAttempts}: " +
+                $"Import Commodity Line page header not found after double-click on '{regulatoryAuthority}' row. " +
+                $"Retrying...");
+
+            // Navigate back to the grid if we're still on Work Order, then re-sort before retrying.
+            Driver.WaitForTransaction();
+            Thread.Sleep(1000);
         }
 
+        // Final check — if we exhausted all attempts, let ThenTheImportCommodityLinePageIsDisplayed
+        // produce the clear failure message rather than throwing here.
         Driver.WaitForTransaction();
     }
 

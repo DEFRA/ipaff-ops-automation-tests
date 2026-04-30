@@ -787,6 +787,8 @@ public class GridSteps : PowerAppsStepDefiner
     {
         XrmApp.Grid.OpenRecord(0);
         Driver.WaitForTransaction();
+
+        SignInPromptHelper.DismissSignInPrompts(Driver, "post-navigation");
     }
 
     [When(@"I open the record at position '(\d+)' in the grid")]
