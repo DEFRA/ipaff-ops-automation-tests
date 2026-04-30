@@ -109,8 +109,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user clicks on the name of the test")]
         public void WhenTheUserClicksOnTheNameOfTheTest()
         {
-            var testName = _scenarioContext.Get<string>("LaboratoryTestName");
-            laboratoryTestsPage?.SelectTest(testName);
+            var testName = _scenarioContext.Get<string[]>("LaboratoryTestName");
+            laboratoryTestsPage?.SelectTest(testName[0]);
         }
 
         [When("the user selects {string} in Laboratory test category")]
@@ -248,11 +248,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var commodityCode = _scenarioContext.Get<string>("SelectedCommoditySampledCode");
             var commodityDescription = _scenarioContext.Get<string>("SelectedCommoditySampledDescription");
             var commoditySpecies = _scenarioContext.Get<string>("SelectedCommoditySampledSpecies");
-            var labTestName = _scenarioContext.Get<string>("LaboratoryTestName");
+            var labTestName = _scenarioContext.Get<string[]>("LaboratoryTestName");
             var analysisType = _scenarioContext.Get<string>("AnalysisType");
             var result = laboratoryTestsPage?.GetLabTestResult(0);
 
-            Assert.True(laboratoryTestsPage?.VerifyLabTestsReviewPage(commodityCode, commodityDescription, commoditySpecies, labTestName, conclusion));
+            Assert.True(laboratoryTestsPage?.VerifyLabTestsReviewPage(commodityCode, commodityDescription, commoditySpecies, labTestName[0], conclusion));
             Assert.True(laboratoryTestsPage?.IsAddAnotherTestLinkDisplayed(), "Add another test link is not displayed");
             Assert.That(result, Is.EqualTo(conclusion), $"Lab test result mismatch. Expected: {conclusion}, Actual: {result}");
         }

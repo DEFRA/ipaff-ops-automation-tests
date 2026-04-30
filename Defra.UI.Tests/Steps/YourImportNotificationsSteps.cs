@@ -473,15 +473,20 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         }
                         var destination = page.Sections.IdentificationOfTheSample.AdditionalData.FirstOrDefault(x => x.Key == "PlaceOfDestination").Value.ToString();
 
+                        _scenarioContext["LabTestNameCopy"] = _scenarioContext["LabTestName"];
+                        _scenarioContext["LabSampleReferenceCopy"] = _scenarioContext["LabSampleReference"];
+                        _scenarioContext["NumberOfLabSamplesCopy"] = _scenarioContext["NumberOfLabSamples"];
+                        _scenarioContext["LabSampleStorageTemperatureCopy"] = _scenarioContext["LabSampleStorageTemperature"];
+
                         ValidateContains("PlaceOfDestinationDetails", destination.Replace("Commodity", ""), ref allDataMatches, mismatches, true);
                         ValidateContains("CommodityCode", page.Sections.IdentificationOfTheSample.Commodity, ref allDataMatches, mismatches);
                         ValidateContains("Species", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
                         ValidateIfExists("LaboratoryTestsReason", (string?)page.Sections.RequestedAnalysis.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches);
-                        ValidateContains("LabTestName", (string?)page.Sections.LabResults.Name, ref allDataMatches, mismatches, true);
-                        ValidateContains("LabSampleReference", (string?)page.Sections.LabResults.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches, true);
-                        ValidateContains("NumberOfLabSamples", (string?)page.Sections.LabResults.AdditionalData.ElementAt(4).Value, ref allDataMatches, mismatches, true);
+                        ValidateContains("LabTestNameCopy", (string?)page.Sections.LabResults.Name, ref allDataMatches, mismatches, true);
+                        ValidateContains("LabSampleReferenceCopy", (string?)page.Sections.LabResults.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches, true);
+                        ValidateContains("NumberOfLabSamplesCopy", (string?)page.Sections.LabResults.AdditionalData.ElementAt(4).Value, ref allDataMatches, mismatches, true);
                         ValidateIfExists("LabSampleType", (string?)page.Sections.LabResults.AdditionalData.ElementAt(3).Value, ref allDataMatches, mismatches);
-                        ValidateContains("LabSampleStorageTemperature", (string?)page.Sections.LabResults.AdditionalData.ElementAt(5).Value, ref allDataMatches, mismatches, true);
+                        ValidateContains("LabSampleStorageTemperatureCopy", (string?)page.Sections.LabResults.AdditionalData.ElementAt(5).Value, ref allDataMatches, mismatches, true);
                         ValidateIfExists("SampleDate", (string?)page.Sections.LabResults.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
                         ValidateIfExists("SampleTime", (string?)page.Sections.LabResults.AdditionalData.ElementAt(11).Value, ref allDataMatches, mismatches);
                         ValidateContains("LaboratoryTestName", (string?)page.Sections.LabResults.AdditionalData.ElementAt(6).Value, ref allDataMatches, mismatches, true);
@@ -504,11 +509,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         ValidateContains("CommodityCode", page.Sections.IdentificationOfTheSample.Commodity, ref allDataMatches, mismatches);
                         ValidateContains("Species", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
                         ValidateIfExists("LaboratoryTestsReason", (string?)page.Sections.RequestedAnalysis.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches);
-                        ValidateContains("LabTestName", (string?)page.Sections.LabResults.Name, ref allDataMatches, mismatches, true);
-                        ValidateContains("LabSampleReference", (string?)page.Sections.LabResults.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches, true);
-                        ValidateContains("NumberOfLabSamples", (string?)page.Sections.LabResults.AdditionalData.ElementAt(4).Value, ref allDataMatches, mismatches, true);
+                        ValidateContains("LabTestNameCopy", (string?)page.Sections.LabResults.Name, ref allDataMatches, mismatches, true);
+                        ValidateContains("LabSampleReferenceCopy", (string?)page.Sections.LabResults.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches, true);
+                        ValidateContains("NumberOfLabSamplesCopy", (string?)page.Sections.LabResults.AdditionalData.ElementAt(4).Value, ref allDataMatches, mismatches, true);
                         ValidateIfExists("LabSampleType", (string?)page.Sections.LabResults.AdditionalData.ElementAt(3).Value, ref allDataMatches, mismatches);
-                        ValidateContains("LabSampleStorageTemperature", (string?)page.Sections.LabResults.AdditionalData.ElementAt(5).Value, ref allDataMatches, mismatches, true);
+                        ValidateContains("LabSampleStorageTemperatureCopy", (string?)page.Sections.LabResults.AdditionalData.ElementAt(5).Value, ref allDataMatches, mismatches, true);
                         ValidateIfExists("SampleDate", (string?)page.Sections.LabResults.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
                         ValidateIfExists("SampleTime", (string?)page.Sections.LabResults.AdditionalData.ElementAt(11).Value, ref allDataMatches, mismatches);
                         ValidateContains("LaboratoryTestName", (string?)page.Sections.LabResults.AdditionalData.ElementAt(6).Value, ref allDataMatches, mismatches, true);
@@ -531,11 +536,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         ValidateContains("CommodityCode", page.Sections.IdentificationOfTheSample.Commodity, ref allDataMatches, mismatches);
                         ValidateContains("Species", (string?)page.Sections.IdentificationOfTheSample.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
                         ValidateIfExists("LaboratoryTestsReason", (string?)page.Sections.RequestedAnalysis.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches);
-                        ValidateContains("LabTestName", (string?)page.Sections.LabResults.Name, ref allDataMatches, mismatches, true);
-                        ValidateContains("LabSampleReference", (string?)page.Sections.LabResults.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches, true);
-                        ValidateContains("NumberOfLabSamples", (string?)page.Sections.LabResults.AdditionalData.ElementAt(4).Value, ref allDataMatches, mismatches, true);
+                        ValidateContains("LabTestNameCopy", (string?)page.Sections.LabResults.Name, ref allDataMatches, mismatches, true);
+                        ValidateContains("LabSampleReferenceCopy", (string?)page.Sections.LabResults.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches, true);
+                        ValidateContains("NumberOfLabSamplesCopy", (string?)page.Sections.LabResults.AdditionalData.ElementAt(4).Value, ref allDataMatches, mismatches, true);
                         ValidateIfExists("LabSampleType", (string?)page.Sections.LabResults.AdditionalData.ElementAt(3).Value, ref allDataMatches, mismatches);
-                        ValidateContains("LabSampleStorageTemperature", (string?)page.Sections.LabResults.AdditionalData.ElementAt(5).Value, ref allDataMatches, mismatches, true);
+                        ValidateContains("LabSampleStorageTemperatureCopy", (string?)page.Sections.LabResults.AdditionalData.ElementAt(5).Value, ref allDataMatches, mismatches, true);
                         ValidateIfExists("SampleDate", (string?)page.Sections.LabResults.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
                         ValidateIfExists("SampleTime", (string?)page.Sections.LabResults.AdditionalData.ElementAt(11).Value, ref allDataMatches, mismatches);
                         ValidateContains("LaboratoryTestName", (string?)page.Sections.LabResults.AdditionalData.ElementAt(6).Value, ref allDataMatches, mismatches, true);
@@ -1076,10 +1081,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 {
                     Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{item}' matches");
 
-                    if (contextKey == "LabTestName"
-                        || contextKey == "LabSampleStorageTemperature"
-                        || contextKey == "NumberOfLabSamples"
-                        || contextKey == "LabSampleReference")
+                    if (contextKey == "LabTestNameCopy"
+                        || contextKey == "LabSampleStorageTemperatureCopy"
+                        || contextKey == "NumberOfLabSamplesCopy"
+                        || contextKey == "LabSampleReferenceCopy")
                     {
                         if (_scenarioContext[contextKey] is string[] valuesArr)
                         {
