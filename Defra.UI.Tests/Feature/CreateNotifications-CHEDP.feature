@@ -940,6 +940,7 @@ Scenario: User creates a B2C consignment notification, updates it from the revie
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "France" as the Country of origin and Country from where consigned
 	When the user chooses "No" for Does your consignment require a region code?
+	And the user records the pre-populated Country from where consigned
 	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
 	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
 	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
