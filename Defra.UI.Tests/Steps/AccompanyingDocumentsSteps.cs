@@ -41,6 +41,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
             accompanyingDocumentsPage?.SelectDocumentType(type);
             Utils.AppendStringToScenarioContextArray(_scenarioContext, "DocumentType", type);
         }
+        
+        [When("the user selects Document type {string} in record decision")]
+        public void WhenTheUserSelectsDocumentTypeInRecordDecision(string type)
+        {
+            accompanyingDocumentsPage?.SelectDocumentType(type);            
+        }
 
         [When("the user selects Document type {string} for creating border notification")]
         public void WhenTheUserSelectsDocumentTypeForCreatingBorderNotification(string type)
@@ -78,6 +84,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             accompanyingDocumentsPage?.EnterDocumentReference(reference);
             Utils.AppendStringToScenarioContextArray(_scenarioContext, "DocumentReference", reference);
+        }
+        
+        [When("the user enters Document reference {string} in record decision")]
+        public void WhenTheUserEntersDocumentReferenceInRecordDecision(string reference)
+        {
+            accompanyingDocumentsPage?.EnterDocumentReference(reference);
         }
 
         [When("the user enters Document reference {string} for creating border notification")]

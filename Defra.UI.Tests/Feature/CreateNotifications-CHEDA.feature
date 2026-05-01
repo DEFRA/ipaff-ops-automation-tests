@@ -1020,8 +1020,8 @@ Scenario: User creates and submits a CHEDA consignment notification with inspect
 	Then the Documents page should be displayed
 	And the Add another document link is displayed
 	And the user verifies there are no documents in the Inspector section
-	When the user selects Document type 'Commercial invoice'
-	And the user enters Document reference 'INSP12345'
+	When the user selects Document type 'Commercial invoice' in record decision
+	And the user enters Document reference 'INSP12345' in record decision
 	And the user enters date of issue '05''12''2025'
 	And the user clicks on Add attachment link
 	And the user uploads the document 'IPAFFS Inspector Document' in the format '.docx'
