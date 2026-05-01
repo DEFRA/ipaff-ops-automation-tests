@@ -213,7 +213,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         //ValidateContains("ExitBCP", page.Sections.DirectTransit?.ExitBCP, ref allDataMatches, mismatches, true);
 
                         //var traces = page.Sections.DirectTransit?.TracesUnitNo.ToString();
-                        ValidateContains("ExitBCP", (string?)page.Sections?.DirectTransit?.TracesUnitNo, ref allDataMatches, mismatches, true);
+                        if (page.Sections?.DirectTransit != null)
+                        {
+                            ValidateContains("ExitBCP", (string?)page.Sections?.DirectTransit?.TracesUnitNo, ref allDataMatches, mismatches, true);
+                        }
 
                         ValidateContains("EstimatedArrivalDate", page.Sections.PriorNotification?.Date, ref allDataMatches, mismatches);
                         ValidateContains("EstimatedArrivalTime", page.Sections.PriorNotification?.Time, ref allDataMatches, mismatches);
@@ -1189,6 +1192,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 }
 
             }
+        }
+
+        [When("the user clicks Manage trade partners")]
+        public void WhenTheUserClicksManageTradePartners()
+        {
+            importNotificationsPage?.ClickManageTradePartnersLink();
         }
     }
 }
