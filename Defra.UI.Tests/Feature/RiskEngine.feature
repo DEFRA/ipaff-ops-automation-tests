@@ -130,15 +130,15 @@ Scenario: SPS-9414 - Bulk Upload CHED-PP - Initial Load - Iteration 1
 	Then the Nominated contacts page should be displayed
 	When the user clicks Save and continue
 	Then the Accompanying documents page should be displayed
-	When the user selects Document type 'Commercial invoice'
-	And the user enters Document reference 'INV12345'
+	When the user selects Document type 'Phytosanitary certificate'
+	And the user enters Document reference 'PHYTOCERT123'
 	And the user enters date of issue from last week
 	And the user clicks on Add attachment link
 	And the user uploads the document 'IPAFFS Test Document' in the format '.docx'
 	Then the document 'IPAFFS Test Document' '.docx' is uploaded successfully
 	When the user clicks Save and continue
 	Then Importer, Packer, Delivery address and Consignor page should be displayed
-	When the user verifies Importer details 'IPAFF Automation' is pre-filled
+	When the user verifies Importer details 'IPAFFS IDM Test' is pre-filled
 	And the user clicks Add a delivery address link
 	Then Search for an existing delivery address page should be displayed
 	When the user selects one of the displayed delivery address "DEFRA"

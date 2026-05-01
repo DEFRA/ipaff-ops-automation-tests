@@ -35,24 +35,25 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool VerifyInitialAssessmentPage()
         {
+            Console.WriteLine("[NOTIFICATION SUBMITTED] Initial Assessment: " + initialAssessmentTitle.Text.Trim());
             return initialAssessmentTitle.Text.Trim().Contains("Initial risk assessment");
         }
 
         public string GetCHEDReference()
         {
-            Console.WriteLine("CHED Reference: " + chedReference.Text.Trim());
+            Console.WriteLine("[NOTIFICATION SUBMITTED] CHED Reference: " + chedReference.Text.Trim());
             return chedReference.Text.Trim();
         }
 
         public string GetCustomsDeclarationReference()
         {
-            Console.WriteLine("customsDeclarationReference: " + customsDeclarationReference.Text.Trim());
+            Console.WriteLine("[NOTIFICATION SUBMITTED] Customs Declaration Reference: " + customsDeclarationReference.Text.Trim());
             return customsDeclarationReference.Text.Trim();
         }
 
         public string GetCustomsDocumentCode()
         {
-            Console.WriteLine("customsDocumentCode: " + customsDocumentCode.Text.Trim());
+            Console.WriteLine("[NOTIFICATION SUBMITTED] Customs Document Code: " + customsDocumentCode.Text.Trim());
             return customsDocumentCode.Text.Trim();
         }
 

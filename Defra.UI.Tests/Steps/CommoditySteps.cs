@@ -331,7 +331,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             commodityPage?.ClickCommodityCodeSearchTab();
         }
 
-        [Then("the CHED PP commodity details should be populated {string} {string}")]
         [Then("the CHED PP commodity details should be populated {string} {string} for first commodity")]
         public void ThenTheCHEDPPCommodityDetailsShouldBePopulatedForFirstCommodity(string code, string description)
         {
@@ -339,6 +338,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             _scenarioContext["CommodityCodeFirstCommodity"] = code;
             _scenarioContext["CommodityDescFirstCommodity"] = description;
+        }
+
+        [Then("the CHED PP commodity details should be populated {string} {string}")]
+        public void ThenTheCHEDPPCommodityDetailsShouldBePopulated(string code, string description)
+        {
+            var commodityDescriptions = _scenarioContext.GetFromContext<List<string>>("CommodityDescription", []);
+            commodityDescriptions.Add(description);
+
+            _scenarioContext["CommodityDescription"] = commodityDescriptions;
+            Assert.True(commodityPage?.VerifyCHEDPPCommodityDetails(code, description));
         }
 
         [When("the user searchs for EPPO code {string} and clicks add link")]
@@ -477,11 +486,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 $"Commodity '{commodityName}' was not displayed with the expected details: " +
                 $"code='{commodityCode}', genus='{genus}', EPPO='{eppoCode}', variety='{variety}', class='{commodityClass}'");
 
-            _scenarioContext["CommodityCodeFirstCommodity"] = commodityCode;
             _scenarioContext["GenusFirstCommodity"] = genus;
             _scenarioContext["EPPOCodeFirstCommodity"] = eppoCode;
-            _scenarioContext["CommodityVariety"] = variety;
-            _scenarioContext["CommodityClass"] = commodityClass;
         }
 
         [When("the user selects the check box for the commodity code {string}")]

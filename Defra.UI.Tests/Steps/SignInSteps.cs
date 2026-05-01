@@ -263,7 +263,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var userName = ConfigSetup.BaseConfiguration.RiskEngineAdmin.User;
             var credential = ConfigSetup.BaseConfiguration.RiskEngineAdmin.Credential;
 
-            _signInPage?.IPAFFSSignInViaDynamics(userName, credential);
+            _signInPage?.IPAFFSInternalInspectorSignIn(userName, credential);
         }
     }
 }
