@@ -29,6 +29,7 @@ namespace Defra.UI.Tests.Hooks
 
         private void BindAllPages()
         {
+            // IPAFFS pages
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<UserObject, IUserObject>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<UrlBuilder, IUrlBuilder>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SignInPage, ISignInPage>());
@@ -154,6 +155,14 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<RecordHmiChecksPage, IRecordHmiChecksPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SelectChecksToRecordPage, ISelectChecksToRecordPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<RecordPhsiChecksPage, IRecordPhsiChecksPage>());
+
+            // Risk Engine pages
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<RiskEngineHomePage, IRiskEngineHomePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ReportsPage, IReportsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDPPReportsPage, ICHEDPPReportsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDPPImportsAndExportsPage, ICHEDPPImportsAndExportsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ViewAllPHSIImportCommodityRulesPage, IViewAllPHSIImportCommodityRulesPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<RiskDecisionReportPage, IRiskDecisionReportPage>());
 
             //Read Email
             _objectContainer.RegisterInstanceAs(GetBaseWithScenarioContext<FetchCodeFromEmail, IFetchCodeFromEmail>());

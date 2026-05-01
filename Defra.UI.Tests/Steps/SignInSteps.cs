@@ -256,5 +256,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             _signInPage?.IPAFFSSignInViaDynamics(userName, credential);
         }
+
+        [When("I have provided the Risk Engine admin credentials and signed in")]
+        public void WhenIHaveProvidedTheRiskEngineAdminCredentialsAndSignedIn()
+        {
+            var userName = ConfigSetup.BaseConfiguration.RiskEngineAdmin.User;
+            var credential = ConfigSetup.BaseConfiguration.RiskEngineAdmin.Credential;
+
+            _signInPage?.IPAFFSSignInViaDynamics(userName, credential);
+        }
     }
 }

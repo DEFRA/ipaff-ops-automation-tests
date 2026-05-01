@@ -58,6 +58,10 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement drpClass(string eppoCode) => _driver.FindElement(By.Id($"add-class-{eppoCode}"));
         private IWebElement txtSelectedCommodity(string commodity) => _driver.FindElement(By.XPath($"//h2[normalize-space()='{commodity}']"));
         private IWebElement txtSelectedCommodityDetails(string commodity) => _driver.FindElement(By.XPath($"//h2[normalize-space()='{commodity}']/following-sibling::div[1]"));
+        private IWebElement commoditySummaryTable(string commodityCode) =>
+            _driver.FindElement(By.Id($"commodity-summary-table-{commodityCode}"));
+        private IWebElement commoditySummaryTableCell(string commodityCode, int columnIndex) =>
+            _driver.FindElement(By.XPath($"//table[@id='commodity-summary-table-{commodityCode}']/tbody/tr/td[{columnIndex}]"));
         private IWebElement chkBoxCommodity(string commodity) => _driver.FindElement(By.XPath($"//td[normalize-space()='{commodity}']/../td[1]//input"));
         private IWebElement txtCHEDPPNetWeight => _driver.FindElement(By.Id("bulk-net-weight"));
         private IWebElement txtCHEDPPNumOfPackages => _driver.FindElement(By.Id("bulk-num-packages"));
@@ -383,10 +387,25 @@ namespace Defra.UI.Tests.Pages.Classes
                 && txtSelectedCommodityDetails(secondComm).Text.Contains(secondGenus);
         }
 
+        public bool VerifySingleCommodityDisplayed(string commodityCode, string genus, string eppoCode, string variety, string commodityClass)
+        {
+            _driver.Wait(1);
+            return commoditySummaryTableCell(commodityCode, 1).Text.Trim().Equals(commodityCode)
+                && commoditySummaryTableCell(commodityCode, 2).Text.Trim().Equals(genus)
+                && commoditySummaryTableCell(commodityCode, 3).Text.Trim().Equals(eppoCode)
+                && commoditySummaryTableCell(commodityCode, 4).Text.Trim().Equals(variety)
+                && commoditySummaryTableCell(commodityCode, 5).Text.Trim().Equals(commodityClass);
+        }
+
         public void SelectCommodities(string firstCommCode, string secondCommCode)
         {
             chkBoxCommodity(firstCommCode).Click();
             chkBoxCommodity(secondCommCode).Click();
+        }
+
+        public void SelectCommodity(string commCode)
+        {
+            chkBoxCommodity(commCode).Click();
         }
 
         public void EnterCHEDPPNetWeight(string weight)
