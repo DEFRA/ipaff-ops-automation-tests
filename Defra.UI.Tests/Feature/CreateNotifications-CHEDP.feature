@@ -20,6 +20,7 @@ Scenario: User creates and submits a B2C consignment notification - CHEDP Happy 
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "France" as the Country of origin and Country from where consigned
 	When the user chooses "No" for Does your consignment require a region code?
+	And the user records the pre-populated Country from where consigned
 	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
 	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
 	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
@@ -187,6 +188,7 @@ Scenario: User creates and submits a B2C consignment notification for Transit Re
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "France" as the Country of origin and Country from where consigned
 	When the user chooses "No" for Does your consignment require a region code?
+	And the user records the pre-populated Country from where consigned
 	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
 	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
 	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
@@ -373,6 +375,7 @@ Scenario: User creates and submits a B2C consignment notification for Transhipme
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "France" as the Country of origin and Country from where consigned
 	When the user chooses "No" for Does your consignment require a region code?
+	And the user records the pre-populated Country from where consigned
 	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
 	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
 	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
@@ -544,6 +547,7 @@ Scenario: User creates and submits 2 B2C consignment notification with existing 
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "France" as the Country of origin and Country from where consigned
 	When the user chooses "No" for Does your consignment require a region code?
+	And the user records the pre-populated Country from where consigned
 	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
 	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
 	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
@@ -761,6 +765,7 @@ Scenario: Admin submits a notification and records decision and validate cookies
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "Italy" as the Country of origin and Country from where consigned
 	When the user chooses "No" for Does your consignment require a region code?
+	And the user records the pre-populated Country from where consigned
 	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
 	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
 	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
@@ -1219,6 +1224,7 @@ Scenario: User creates and submits a notification, override the risk decision an
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "France" as the Country of origin and Country from where consigned
 	When the user chooses "No" for Does your consignment require a region code?
+	And the user records the pre-populated Country from where consigned
 	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
 	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
 	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
@@ -1451,6 +1457,7 @@ Scenario: User submits a notification as no inspection required, override the ri
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "Italy" as the Country of origin and Country from where consigned
 	When the user chooses "No" for Does your consignment require a region code?
+	And the user records the pre-populated Country from where consigned
 	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
 	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
 	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
@@ -1604,6 +1611,7 @@ Scenario: User submits a notification, inspector copy it as replacement, update 
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "China" as the Country of origin and Country from where consigned
 	When the user chooses "No" for Does your consignment require a region code?
+	And the user records the pre-populated Country from where consigned
 	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
 	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
 	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
@@ -2338,6 +2346,7 @@ Scenario: Create and submits a B2C consignment notification - SPS-6937 CHEDP
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "France" as the Country of origin and Country from where consigned
 	When the user chooses "No" for Does your consignment require a region code?
+	And the user records the pre-populated Country from where consigned
 	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
 	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
 	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
@@ -2562,6 +2571,7 @@ Scenario: Verify IUU and Catch certificate details for EU and Non-EU countries C
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "Sweden" as the Country of origin and Country from where consigned
 	When the user chooses "No" for Does your consignment require a region code?
+	And the user records the pre-populated Country from where consigned
 	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
 	When the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
 	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
