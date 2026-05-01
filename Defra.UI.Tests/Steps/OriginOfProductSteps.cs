@@ -35,7 +35,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             originOfProductPage?.SelectCountryOfOrigin(country);
             _scenarioContext["CountryOfOrigin"] = country;
-            //_scenarioContext["ContryFromWhereConsigned"] = country;
+            _scenarioContext["ContryFromWhereConsigned"] = country;
         }
 
         [When("the user chooses {string} from the dropdown for Country of origin and records the country from where consigned")]
