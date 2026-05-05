@@ -80,6 +80,11 @@ public class InspectionResultSteps : PowerAppsStepDefiner
     {
         Driver.WaitForTransaction();
 
+        // Scroll the Dynamics form container to the bottom to trigger lazy loading of all
+        // PCF controls before attempting to locate any section or input element.
+        ScrollFormToBottom();
+        Driver.WaitForTransaction();
+
         var ariaLabel = $"{checkName} Status";
 
         var sectionName = checkName.StartsWith("PHSI", StringComparison.OrdinalIgnoreCase)
@@ -119,11 +124,6 @@ public class InspectionResultSteps : PowerAppsStepDefiner
                     return false;
                 }
 
-                // Scroll the section into view before querying its inputs.
-                // PCF controls inside Dynamics sections only render their inner DOM elements
-                // once the section is visible in the viewport. Without this scroll, the
-                // section may be present in the DOM but its child input elements not yet
-                // rendered — mirroring the fix applied to ThenTheSectionIsBlank.
                 Driver.ExecuteScript("arguments[0].scrollIntoView({block:'center'});", sections[0]);
                 Driver.WaitForTransaction();
 
@@ -166,6 +166,11 @@ public class InspectionResultSteps : PowerAppsStepDefiner
     {
         Driver.WaitForTransaction();
 
+        // Scroll the Dynamics form container to the bottom to trigger lazy loading of all
+        // PCF controls before attempting to locate any section or input element.
+        ScrollFormToBottom();
+        Driver.WaitForTransaction();
+
         const string inspectionResultsTabName = "Inspection Results";
 
         string debugSectionFound = "not attempted";
@@ -195,11 +200,6 @@ public class InspectionResultSteps : PowerAppsStepDefiner
                     return false;
                 }
 
-                // Scroll the section into view before querying its inputs.
-                // PCF controls inside Dynamics sections only render their inner DOM elements
-                // (including fui-Input__input fields) once the section is visible in the
-                // viewport. Without this scroll, the section is in the DOM but its child
-                // inputs are not yet rendered, causing inputs.Count to be 0 indefinitely.
                 Driver.ExecuteScript("arguments[0].scrollIntoView({block:'center'});", sections[0]);
                 Driver.WaitForTransaction();
 
@@ -230,5 +230,27 @@ public class InspectionResultSteps : PowerAppsStepDefiner
         nonEmptyInputs.Should().BeEmpty(
             $"Expected all fields in the '{sectionName}' section to be blank " +
             $"but the following contained values: [{string.Join(", ", nonEmptyInputs)}].");
+    }
+
+    private static void ScrollFormToBottom()
+    {
+        // Dynamics 365 renders form content inside a scrollable child container, not on
+        // document.body. Scrolling body has no effect because its scrollHeight equals its
+        // clientHeight. We scroll the first ancestor container that actually has overflow,
+        // which forces lazy-loaded PCF controls below the fold to render into the DOM.
+        Driver.ExecuteScript(@"
+            var candidates = [
+                document.querySelector('[data-id=""editFormRoot""]'),
+                document.querySelector('.entityFormContainer'),
+                document.querySelector('[data-id=""form-view""]'),
+                document.documentElement
+            ];
+            for (var i = 0; i < candidates.length; i++) {
+                var el = candidates[i];
+                if (el && el.scrollHeight > el.clientHeight) {
+                    el.scrollTop = el.scrollHeight;
+                    return;
+                }
+            }");
     }
 }

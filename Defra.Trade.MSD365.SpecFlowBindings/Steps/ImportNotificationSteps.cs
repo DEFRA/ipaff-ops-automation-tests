@@ -286,10 +286,33 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
         Policy
             .Handle<Exception>()
             .WaitAndRetry(
-                retryCount: 5,
-                sleepDurationProvider: _ => TimeSpan.FromSeconds(2))
+                retryCount: 10,
+                sleepDurationProvider: _ => TimeSpan.FromSeconds(3))
             .Execute(() =>
             {
+                // Dynamics 365 renders form content inside a scrollable container div, not on
+                // document.body. Scrolling body has no effect because its own scrollHeight equals
+                // its clientHeight. We must scroll the innermost form content container that
+                // actually has overflow — identified by data-id='editFormRoot' or the closest
+                // ancestor with a non-zero scrollable height — to force lazy-loaded fields
+                // (such as the Work Order lookup) to enter the viewport and render into the DOM.
+                Driver.ExecuteScript(@"
+                    var candidates = [
+                        document.querySelector('[data-id=""editFormRoot""]'),
+                        document.querySelector('.entityFormContainer'),
+                        document.querySelector('[data-id=""form-view""]'),
+                        document.documentElement
+                    ];
+                    for (var i = 0; i < candidates.length; i++) {
+                        var el = candidates[i];
+                        if (el && el.scrollHeight > el.clientHeight) {
+                            el.scrollTop = el.scrollHeight;
+                            return;
+                        }
+                    }");
+
+                Driver.WaitForTransaction();
+
                 workOrderLink = Driver.WaitUntilAvailable(
                     By.XPath($"//div[@data-id='trd_workorderid.fieldControl-LookupResultsDropdown_trd_workorderid_selected_tag' and @aria-label='{expectedChedReference}']"),
                     $"Work Order field link for CHED reference '{expectedChedReference}' could not be found.");
