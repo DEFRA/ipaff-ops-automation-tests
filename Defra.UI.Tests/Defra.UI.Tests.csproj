@@ -8,14 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Data\Users\IPAFF\PRE\**" />
     <Compile Remove="Feature\Regression\**" />
-    <EmbeddedResource Remove="Data\Users\IPAFF\PRE\**" />
     <EmbeddedResource Remove="Feature\Regression\**" />
-    <None Remove="Data\Users\IPAFF\PRE\**" />
     <None Remove="Feature\Regression\**" />
-    <ReqnrollFeatureFiles Remove="Data\Users\IPAFF\PRE\**" />
-    <ReqnrollObsoleteCodeBehindFiles Remove="Data\Users\IPAFF\PRE\**" />
     <SpecFlowFeatureFiles Remove="Feature\Regression\**" />
     <SpecFlowObsoleteCodeBehindFiles Remove="Feature\Regression\**" />
   </ItemGroup>
