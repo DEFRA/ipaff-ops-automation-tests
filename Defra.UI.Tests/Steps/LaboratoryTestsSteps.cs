@@ -128,7 +128,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user selects {string} from the list of Laboratory tests")]
         public void WhenTheUserSelectsFromTheListOfLaboratoryTests(string test)
         {
-            //_scenarioContext["LaboratoryTestName"] = test;
             Utils.AppendStringToScenarioContextArray(_scenarioContext, "LaboratoryTestName", test);
             laboratoryTestsPage?.SelectLaboratoryTest(test);
             // Capture system date and time AFTER clicking the Select link
@@ -160,19 +159,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Utils.AppendStringToScenarioContextArray(_scenarioContext, "LabSampleType", sampleType);
             Utils.AppendStringToScenarioContextArray(_scenarioContext, "LabSampleStorageTemperature", storageTemperature);
             _scenarioContext["SampleDate"] = laboratoryTestsPage?.GetSampleDate();
-            _scenarioContext["SampleTime"] = laboratoryTestsPage?.GetSampleTime();
-            /*            _scenarioContext["LabTestName"] = labTest;
-                        _scenarioContext["LabSampleReference"] = sampleReference;
-                        _scenarioContext["NumberOfLabSamples"] = numberOfSamples;
-                        _scenarioContext["LabSampleType"] = sampleType;
-                        _scenarioContext["LabSampleStorageTemperature"] = storageTemperature;*/
+            _scenarioContext["SampleTime"] = laboratoryTestsPage?.GetSampleTime();            
         }
 
         [When("the user selects any Laboratory test from the displayed list")]
         [When("the user clicks select link of one of the Laboratory test")]
         public void WhenTheUserClicksSelectLinkOfOneOfTheLaboratoryTest()
         {
-            //_scenarioContext["LaboratoryTestName"] = laboratoryTestsPage?.GetLaboratoryTestName();
             Utils.AppendStringToScenarioContextArray(_scenarioContext, "LaboratoryTestName", laboratoryTestsPage?.GetLaboratoryTestName());
             laboratoryTestsPage?.ClickSelectLaboratoryTest();
 

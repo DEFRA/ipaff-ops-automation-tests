@@ -261,7 +261,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user clicks {string} {string} under the parent commodity")]
         public void WhenTheUserClicksUnderTheParentCommodity(string additionalCommCode, string additionalcommDescription)
         {
-            commodityPage?.SelectCommodityInTheCommTree(additionalcommDescription);           
+            commodityPage?.SelectCommodityInTheCommTree(additionalcommDescription);
         }
 
         [When("the user selects the second commodity {string} {string} under the parent commodity")]
@@ -278,7 +278,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var commodityCodes = _scenarioContext.GetFromContext<List<string>>("CommodityCode", []);
             commodityCodes.Add(commCode);
             _scenarioContext["CommodityCode"] = commodityCodes;
-            //_scenarioContext["CommodityDescription"] = commDescription;
             commodityPage?.SelectCommodityInTheCommTree(commDescription);
 
             var commodityDescriptions = _scenarioContext.GetFromContext<List<string>>("CommodityDescription", []);

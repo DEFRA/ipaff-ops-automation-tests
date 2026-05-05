@@ -537,7 +537,7 @@ Scenario: User creates and submits a CHEDA consignment notification for Temporar
 	Then the Laboratory tests Commodity to be tested page should be displayed
 	When the user selects '.AMINOGLYCOSIDE/AMINOSIDE' from the list of Laboratory tests
 	Then the Laboratory tests Commodity sampled page should be displayed
-	#And the Sample date and time is todays date with the time the lab test was selected
+	And the Sample date and time is todays date with the time the lab test was selected
 	When the user populates the commodity sample details 'Initial analysis' 'Campden BRI' '12345' '3' 'Blood' 'Chilled'
 	And the user clicks Save and continue
 	Then the Laboratory tests Review page should be displayed

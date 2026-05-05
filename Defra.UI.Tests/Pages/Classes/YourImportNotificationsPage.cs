@@ -2,11 +2,7 @@
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Interactions;
-using Reqnroll;
 using Reqnroll.BoDi;
-using System.Net;
-using System.Net.Http;
 
 namespace Defra.UI.Tests.Pages.Classes
 {
@@ -232,7 +228,6 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickContactLink() => lnkContact.Click();
         public void ClickCopyAsNewLink() => lnkCopyAsNew.Click();
         public void ClickManageTradePartnersLink() => lnkManageTradePartners.Click();
-
 
         public bool IsSearchNotiByPanelDisplayed => searchNotificationsPanel != null && searchNotificationsPanel.Displayed;
         public bool AreAllSearchFieldsDisplayed()

@@ -210,9 +210,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         ValidateContains("ContainerNumber", page.Sections.ContainerNoSealNo?.Value, ref allDataMatches, mismatches);
 
                         ValidateContains("DestinationCountry", page.Sections.DirectTransit?.Country, ref allDataMatches, mismatches);
-                        //ValidateContains("ExitBCP", page.Sections.DirectTransit?.ExitBCP, ref allDataMatches, mismatches, true);
 
-                        //var traces = page.Sections.DirectTransit?.TracesUnitNo.ToString();
                         if (page.Sections?.DirectTransit != null)
                         {
                             ValidateContains("ExitBCP", (string?)page.Sections?.DirectTransit?.TracesUnitNo, ref allDataMatches, mismatches, true);
@@ -923,12 +921,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         private void LogSkip(string key, string reason) => Console.WriteLine($"[PDF VALIDATION] ⊘ {key}: Skipped ({reason})");
 
 
-        private void ValidateContains(
-    string contextKey,
-    string? actual,
-    ref bool allDataMatches,
-    List<string> mismatches,
-    bool contextContainsPDF = false)
+        private void ValidateContains(string contextKey, string? actual, ref bool allDataMatches, List<string> mismatches, bool contextContainsPDF = false)
         {
             (List<string> expectedWords, List<string> actualWords) result = (null, null);
 
@@ -983,12 +976,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
 
-        private void ValidateCloning(
-    string contextKey,
-    string actual,
-    ref bool allDataMatches,
-    List<string> mismatches,
-    bool contextContainsPDF)
+        private void ValidateCloning(string contextKey, string actual, ref bool allDataMatches, List<string> mismatches, bool contextContainsPDF)
         {
             var details = _scenarioContext.Get<NotificationDetails>("CloningHealthCertificateDetails");
             var property = typeof(NotificationDetails).GetProperty(contextKey);
