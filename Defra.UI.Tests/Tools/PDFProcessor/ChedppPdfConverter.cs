@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
+using Defra.UI.Tests.Tools.PDFProcessor.Extractors;
+using Defra.UI.Tests.Tools.PDFProcessor.Models;
 using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 using UglyToad.PdfPig;
-using PdfExtraction.Models;
 
 namespace PdfExtraction
 {
@@ -97,7 +94,7 @@ namespace PdfExtraction
                 Sections = new Dictionary<string, object>()
             };
 
-            var checkboxExtractor = new PdfExtraction.Extractors.CheckboxExtractor();
+            var checkboxExtractor = new CheckboxExtractor();
             var checkboxes = checkboxExtractor.ExtractCheckboxes(page, document);
             
             // Page 3 of this PDF encodes checkboxes purely as raster background image (no vector paths, no AcroForms).
