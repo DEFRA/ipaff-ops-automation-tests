@@ -13,7 +13,12 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
         public string Country { get; set; }
         public string IsoCode { get; set; }
         public string ApprovalNumber { get; set; }
-        
+
+        //Direct Transit
+        public string ExitBCP { get; set; }
+        public string TracesUnitNo { get; set; }
+
+
         // Transport & Goods
         public string Mode { get; set; }
         public string InternationalTransportDocument { get; set; }
@@ -51,6 +56,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
         public string Random { get; set; }
         public string Suspicion { get; set; }
         public string IntensifiedControls { get; set; }
+        public string EmergencyMeasures { get; set; }
         public string Pending { get; set; }
         public string LocalCompetentAuthority { get; set; }
         public string SecondEntryPoint { get; set; }

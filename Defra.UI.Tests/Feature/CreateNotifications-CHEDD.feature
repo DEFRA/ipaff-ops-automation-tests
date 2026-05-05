@@ -44,14 +44,14 @@ Scenario: User creates and submits a B2C consignment notification - CHEDD Happy 
 	And the sub commodity list expands
 	And the user clicks '1006' 'Rice' under the parent commodity
 	And the sub commodity list expands
-	And the user selects the second commodity '100610' 'Rice in the husk (paddy or rough)' under the parent commodity
+	And the user selects the second commodity '10064000' 'Broken rice' under the parent commodity
 	Then the Commodity page should be displayed
 	When the user selects "No" for Do you want to add another commodity?
 	And the user clicks Save and continue
 	Then the Commodity page should be displayed
-	When the user populates Net weight as '18000' for the second commodity '100610'
-	And the user populates Number of packages as '1' for the second commodity '100610'
-	And the user selects type of package as 'Box' for the second commodity '100610'
+	When the user populates Net weight as '18000' for the second commodity '10064000'
+	And the user populates Number of packages as '1' for the second commodity '10064000'
+	And the user selects type of package as 'Box' for the second commodity '10064000'
 	When the user clicks the Update total button after adding all the commodities
 	Then the total gross weight should be greater than the net weight '40000'
 	When the user clicks Save and continue in commodity page
@@ -75,7 +75,7 @@ Scenario: User creates and submits a B2C consignment notification - CHEDD Happy 
 	Then the Addresses page should be displayed
 	When the user clicks Add a consignor or exporter
 	Then the Search for an existing consignor or exporter page should be displayed
-	When the user selects one of the displayed consignors or exporters "ABC"
+	When the user selects a consignor or exporter "ABC"
 	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
 	When the user clicks Add a consignee
 	Then the Search for an existing consignee page should be displayed
@@ -119,10 +119,10 @@ Scenario: User creates and submits a B2C consignment notification - CHEDD Happy 
 	When I have provided the IPAFF Gateway Inspector credentials and signin
 	Then the user should be logged into Import notifications page
 	When the user searches for the newly created notification on the Import notifications page
-	Then the user clicks the notification found with status "NEW"
+	Then the user clicks the notification found with status "New"
 	Then the Decision Hub page should be displayed
 	When the user clicks Save and set as in progress
-	Then the notification status should change from "NEW" to "IN PROGRESS"
+	Then the notification status should change from "New" to "In Progress"
 	When the user clicks Local reference number link in Record checks
 	Then Local reference number page should be displayed
 	When the user clicks Save and continue without entering the local reference number data
@@ -150,7 +150,8 @@ Scenario: User creates and submits a B2C consignment notification - CHEDD Happy 
 	Then the Your checks have been submitted page should be displayed
 	When the user clicks View or print CHED
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 2
@@ -169,7 +170,7 @@ Scenario: User creates and submits a B2C consignment notification - CHEDD Happy 
 	When the user searches for the CHED created earlier
 	Then the BTMS search result screen should be displayed
 	And the user validates the commodity code "12024200", description "Shelled, whether or not broken", quantity "19000", authority "FNAO" and decision "Acceptable for Internal Market" for commodity "1" after the decision is given
-	And the user validates the commodity code "100610", description "Rice in the husk (paddy or rough)", quantity "18000", authority "FNAO" and decision "Acceptable for Internal Market" for commodity "2" after the decision is given	
+	And the user validates the commodity code "10064000", description "Broken rice", quantity "18000", authority "FNAO" and decision "Acceptable for Internal Market" for commodity "2" after the decision is given	
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
 
@@ -272,6 +273,7 @@ Scenario: User creates and submits a notification, override the risk decision, r
 	Then the notification should be present in the list
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
+	When the user downloads the PDF for validation
 	When the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
@@ -301,10 +303,10 @@ Scenario: User creates and submits a notification, override the risk decision, r
 	When I have provided the IPAFF Gateway Inspector credentials and signin
 	Then the user should be logged into Import notifications page
 	When the user searches for the newly created notification on the Import notifications page
-	Then the user clicks the notification found with status "NEW"
+	Then the user clicks the notification found with status "New"
 	Then the Decision Hub page should be displayed
 	When the user clicks Save and set as in progress
-	Then the notification status should change from "NEW" to "IN PROGRESS"
+	Then the notification status should change from "New" to "In Proress"
 	When the user clicks Local reference number link in Record checks
 	Then Local reference number page should be displayed
 	When the user enters a local reference number and clicks Save and continue
@@ -371,7 +373,7 @@ Scenario: User creates and submits a notification, override the risk decision, r
 	And the user clicks Return to dashboard button
 	Then Border notifications dashboard page should be displayed
 	When the user searches for the newly created border notification
-	Then the border notification found with status "NEW"
+	Then the border notification found with status "New"
 	When the user logs out of Border notifications in IPAFFS Part 2 
 	Then the user should be logged out successfully
 	When I navigate to the IPAFF Inspector application
@@ -385,6 +387,7 @@ Scenario: User creates and submits a notification, override the risk decision, r
 	Then the notification is displayed on the inspector dashboard
 	When the user clicks View CHED link
 	Then the certificate should be displayed in a new browser tab
+	When the user downloads the PDF for validation
 	When the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
@@ -446,7 +449,7 @@ Scenario: User verifies Address book page search, submits notification for 'Non-
 	And the sub commodity list expands
 	And the user clicks '1006' 'Rice' under the parent commodity
 	And the sub commodity list expands
-	And the user selects the second commodity '100610' 'Rice in the husk (paddy or rough)' under the parent commodity
+	And the user selects the '10064000' 'Broken rice' under the parent commodity
 	Then the Commodity page should be displayed
 	When the user selects "No" for Do you want to add another commodity?
 	And the user clicks Save and continue
@@ -535,7 +538,7 @@ Scenario: User verifies Address book page search, submits notification for 'Non-
 	Then the BTMS search screen should be displayed
 	When the user searches for the CHED created earlier
 	Then the BTMS search result screen should be displayed
-	And the user validates the commodity code "100610", description "Rice in the husk (paddy or rough)", quantity "1000", authority "FNAO" and decision "Decision not given" for commodity "1" after the decision is given
+	And the user validates the commodity code "10064000", description "Broken rice", quantity "1000", authority "FNAO" and decision "Decision not given" for commodity "1" after the decision is given
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
 	When I navigate to the IPAFF Inspector application
@@ -623,6 +626,7 @@ Scenario: User verifies Address book page search, submits notification for 'Non-
 	Then the notification is displayed on the inspector dashboard
 	When the user clicks View CHED link
 	Then the certificate should be displayed in a new browser tab
+	When the user downloads the PDF for validation
 	When the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
@@ -641,7 +645,7 @@ Scenario: User verifies Address book page search, submits notification for 'Non-
 	Then the BTMS search screen should be displayed
 	When the user searches for the CHED created earlier
 	Then the BTMS search result screen should be displayed
-	And the user validates the commodity code "100610", description "Rice in the husk (paddy or rough)", quantity "1000", authority "FNAO" and decision "Non Acceptable" for commodity "1" after the decision is given
+	And the user validates the commodity code "10064000", description "Broken rice", quantity "1000", authority "FNAO" and decision "Non Acceptable" for commodity "1" after the decision is given
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
 
@@ -695,7 +699,7 @@ Scenario: User submits B2C consignment notification, inspector rejects and creat
 	Then the Addresses page should be displayed
 	When the user clicks Add a consignor or exporter
 	Then the Search for an existing consignor or exporter page should be displayed
-	When the user selects one of the displayed consignors or exporters "ABC"
+	When the user selects a consignor or exporter "ABC"
 	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
 	When the user clicks Add a consignee
 	Then the Search for an existing consignee page should be displayed
@@ -838,7 +842,8 @@ Scenario: User submits B2C consignment notification, inspector rejects and creat
 	Then the notification should be present in the list of part 2 dashboard
 	When the user clicks View CHED link
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	Then the user clicks the notification found with status "REJECTED"
@@ -901,13 +906,13 @@ Scenario: User creates and submits a notification, Copy the notification and sub
 	And the sub commodity list expands
 	And the user clicks '1006' 'Rice' under the parent commodity
 	And the sub commodity list expands
-	And the user selects the second commodity '100610' 'Rice in the husk (paddy or rough)' under the parent commodity
+	And the user selects the second commodity '10064000' 'Broken rice' under the parent commodity
 	Then the Commodity page should be displayed
 	When the user selects "No" for Do you want to add another commodity?
 	And the user clicks Save and continue
-	When the user populates Net weight as '18000' for the second commodity '100610'
-	And the user populates Number of packages as '1' for the second commodity '100610'
-	And the user selects type of package as 'Box' for the second commodity '100610'
+	When the user populates Net weight as '18000' for the second commodity '10064000'
+	And the user populates Number of packages as '1' for the second commodity '10064000'
+	And the user selects type of package as 'Box' for the second commodity '10064000'
 	When the user clicks the Update total button after adding all the commodities
 	Then the total gross weight should be greater than the net weight '40000'
 	When the user clicks Save and continue in commodity page
@@ -931,7 +936,7 @@ Scenario: User creates and submits a notification, Copy the notification and sub
 	Then the Addresses page should be displayed
 	When the user clicks Add a consignor or exporter
 	Then the Search for an existing consignor or exporter page should be displayed
-	When the user selects one of the displayed consignors or exporters "ABC"
+	When the user selects a consignor or exporter "ABC"
 	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
 	When the user clicks Add a consignee
 	Then the Search for an existing consignee page should be displayed
@@ -987,7 +992,8 @@ Scenario: User creates and submits a notification, Copy the notification and sub
 	Then the notification should be present in the list
 	When the user clicks the Show notification link
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	And the dashboard page should be displayed
@@ -1043,7 +1049,8 @@ Scenario: User creates and submits a notification, Copy the notification and sub
 	Then the notification should be present in the list
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 1
@@ -1087,7 +1094,8 @@ Scenario: User creates and submits a notification, Copy the notification and sub
 	Then the Your checks have been submitted page should be displayed
 	When the user clicks View or print CHED
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 2
@@ -1106,7 +1114,7 @@ Scenario: User creates and submits a notification, Copy the notification and sub
 	When the user searches for the CHED created earlier
 	Then the BTMS search result screen should be displayed
 	And the user validates the commodity code "12024200", description "Shelled, whether or not broken", quantity "19000", authority "FNAO" and decision "Acceptable for Internal Market" for commodity "1" after the decision is given
-	And the user validates the commodity code "100610", description "Rice in the husk (paddy or rough)", quantity "18000", authority "FNAO" and decision "Acceptable for Internal Market" for commodity "2" after the decision is given	
+	And the user validates the commodity code "10064000", description "Broken rice", quantity "18000", authority "FNAO" and decision "Acceptable for Internal Market" for commodity "2" after the decision is given	
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
 
@@ -1164,7 +1172,7 @@ Scenario: User submits B2C consignment notification, reason for refusal and crea
 	Then the Addresses page should be displayed
 	When the user clicks Add a consignor or exporter
 	Then the Search for an existing consignor or exporter page should be displayed
-	When the user selects one of the displayed consignors or exporters "ABC"
+	When the user selects a consignor or exporter "ABC"
 	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
 	When the user clicks Add a consignee
 	Then the Search for an existing consignee page should be displayed
@@ -1204,7 +1212,8 @@ Scenario: User submits B2C consignment notification, reason for refusal and crea
 	Then the notification should be present in the list
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 1
@@ -1286,6 +1295,7 @@ Scenario: User submits B2C consignment notification, reason for refusal and crea
 	Then Border notifications dashboard page should be displayed
 	When the user logs out of Border notifications in IPAFFS Part 1
 	Then the user should be logged out successfully
+	When the user deletes all the stored values
 	When I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
@@ -1335,7 +1345,7 @@ Scenario: User submits B2C consignment notification, reason for refusal and crea
 	Then the Addresses page should be displayed
 	When the user clicks Add a consignor or exporter
 	Then the Search for an existing consignor or exporter page should be displayed
-	When the user selects one of the displayed consignors or exporters "ABC"
+	When the user selects a consignor or exporter "ABC"
 	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
 	When the user clicks Add a consignee
 	Then the Search for an existing consignee page should be displayed
@@ -1375,7 +1385,8 @@ Scenario: User submits B2C consignment notification, reason for refusal and crea
 	Then the notification should be present in the list
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 1
@@ -1509,7 +1520,7 @@ Scenario: User submits consignment notification, inspector overrides the risk de
 	Then the Addresses page should be displayed
 	When the user clicks Add a consignor or exporter
 	Then the Search for an existing consignor or exporter page should be displayed
-	When the user selects one of the displayed consignors or exporters "ABC"
+	When the user selects a consignor or exporter "ABC"
 	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
 	When the user clicks Add a consignee
 	Then the Search for an existing consignee page should be displayed
@@ -1550,7 +1561,8 @@ Scenario: User submits consignment notification, inspector overrides the risk de
 	Then the notification should be present in the list
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 1
@@ -1635,7 +1647,7 @@ Scenario: User creates a notification and the inspector revises the decision thr
 	And the sub commodity list expands
 	And the user clicks '1006' 'Rice' under the parent commodity
 	And the sub commodity list expands
-	And the user selects the '100610' 'Rice in the husk (paddy or rough)' under the parent commodity
+	And the user selects the '10064000' 'Broken rice' under the parent commodity
 	Then the Commodity page should be displayed
 	When the user selects "No" for Do you want to add another commodity?
 	And the user clicks Save and continue
@@ -1666,7 +1678,7 @@ Scenario: User creates a notification and the inspector revises the decision thr
 	Then the Addresses page should be displayed
 	When the user clicks Add a consignor or exporter
 	Then the Search for an existing consignor or exporter page should be displayed
-	When the user selects one of the displayed consignors or exporters "ABC"
+	When the user selects a consignor or exporter "ABC"
 	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
 	When the user clicks Add a consignee
 	Then the Search for an existing consignee page should be displayed
@@ -1706,7 +1718,8 @@ Scenario: User creates a notification and the inspector revises the decision thr
 	Then the notification should be present in the list
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 1
@@ -1819,7 +1832,8 @@ Scenario: User creates a notification and the inspector revises the decision thr
 	And the user verfies the decision outcome as 'Not Acceptable'
 	When the user clicks View or print CHED
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user clicks Record control in Dashboard page

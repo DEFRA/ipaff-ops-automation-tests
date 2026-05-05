@@ -41,6 +41,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
             accompanyingDocumentsPage?.SelectDocumentType(type);
             Utils.AppendStringToScenarioContextArray(_scenarioContext, "DocumentType", type);
         }
+        
+        [When("the user selects Document type {string} in record decision")]
+        public void WhenTheUserSelectsDocumentTypeInRecordDecision(string type)
+        {
+            accompanyingDocumentsPage?.SelectDocumentType(type); 
+            Utils.AppendStringToScenarioContextArray(_scenarioContext, "DocumentType1", type);
+        }
 
         [When("the user selects Document type {string} for creating border notification")]
         public void WhenTheUserSelectsDocumentTypeForCreatingBorderNotification(string type)
@@ -78,6 +85,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             accompanyingDocumentsPage?.EnterDocumentReference(reference);
             Utils.AppendStringToScenarioContextArray(_scenarioContext, "DocumentReference", reference);
+        }
+        
+        [When("the user enters Document reference {string} in record decision")]
+        public void WhenTheUserEntersDocumentReferenceInRecordDecision(string reference)
+        {
+            accompanyingDocumentsPage?.EnterDocumentReference(reference);
+            Utils.AppendStringToScenarioContextArray(_scenarioContext, "DocumentReference1", reference);
         }
 
         [When("the user enters Document reference {string} for creating border notification")]
@@ -216,6 +230,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
             accompanyingDocumentsPage?.EnterDateOfIssue(day, month, year);
             var dateofIssue = day + " " + month + " " + year;
             _scenarioContext["DocumentDateOfIssue"] = dateofIssue;
+        }
+        
+        [When("the user enters date of issue {string}{string}{string} in record decision")]
+        public void WhenTheUserEntersDateOfIssueInRecordDecision(string day, string month, string year)
+        {
+            accompanyingDocumentsPage?.EnterDateOfIssue(day, month, year);
+            var dateofIssue = day + " " + month + " " + year;
+            _scenarioContext["DocumentDateOfIssue1"] = dateofIssue;
         }
 
         [When("the user enters date of issue from last week")]

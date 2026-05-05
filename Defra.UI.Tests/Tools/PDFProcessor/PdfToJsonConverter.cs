@@ -406,6 +406,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
             {
                 sectionHeader = "I.25 For-reentry";
             }
+
             if (sectionHeader.Contains("II.25", StringComparison.OrdinalIgnoreCase) && sectionHeader.Contains("BCP Reference Number", StringComparison.OrdinalIgnoreCase))
             {
                 var ii25Match = Regex.Match(

@@ -112,7 +112,8 @@ Scenario: User creates and submits a B2C consignment notification - CHEDA Happy 
 	Then the notification should be present in the list
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 1
@@ -165,7 +166,8 @@ Scenario: User creates and submits a B2C consignment notification - CHEDA Happy 
 	Then the Your checks have been submitted page should be displayed
 	When the user clicks View or print CHED
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 2
@@ -278,6 +280,7 @@ Scenario: User creates and submits a CHEDA consignment notification with multipl
 	Then the notification should be present in the list
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
+	When the user downloads the PDF for validation
 	When the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
@@ -368,6 +371,7 @@ Scenario: User creates and submits a CHEDA consignment notification with multipl
 	Then the Your checks have been submitted page should be displayed
 	When the user clicks View or print CHED
 	Then the certificate should be displayed in a new browser tab
+	When the user downloads the PDF for validation
 	When the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
@@ -487,8 +491,9 @@ Scenario: User creates and submits a CHEDA consignment notification for Temporar
 	Then the notification should be present in the list
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
+	When the user downloads the PDF for validation
 	When the user checks that the data in the certificate matches the data entered into the notification
-	And the user closes the PDF browser tab
+	When the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
@@ -571,6 +576,7 @@ Scenario: User creates and submits a CHEDA consignment notification for Temporar
 	Then the Your checks have been submitted page should be displayed
 	When the user clicks View or print CHED
 	Then the certificate should be displayed in a new browser tab
+	When the user downloads the PDF for validation
 	When the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
@@ -701,6 +707,7 @@ Scenario: User creates and submits a CHEDA consignment notification with Transit
 	Then the notification should be present in the list
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
+	When the user downloads the PDF for validation
 	When the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
@@ -764,6 +771,7 @@ Scenario: User creates and submits a CHEDA consignment notification with Transit
 	Then the Your checks have been submitted page should be displayed
 	When the user clicks View or print CHED
 	Then the certificate should be displayed in a new browser tab
+	When the user downloads the PDF for validation
 	When the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
@@ -864,6 +872,7 @@ Scenario: User creates and submits a CHEDA consignment notification with inspect
 	Then the notification should be present in the list
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
+	When the user downloads the PDF for validation
 	When the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
@@ -1011,9 +1020,9 @@ Scenario: User creates and submits a CHEDA consignment notification with inspect
 	Then the Documents page should be displayed
 	And the Add another document link is displayed
 	And the user verifies there are no documents in the Inspector section
-	When the user selects Document type 'Commercial invoice'
-	And the user enters Document reference 'INSP12345'
-	And the user enters date of issue '05''12''2025'
+	When the user selects Document type 'Commercial invoice' in record decision
+	And the user enters Document reference 'INSP12345' in record decision
+	And the user enters date of issue '05''12''2025' in record decision
 	And the user clicks on Add attachment link
 	And the user uploads the document 'IPAFFS Inspector Document' in the format '.docx'
 	Then the document 'IPAFFS Inspector Document' '.docx' is uploaded successfully
@@ -1026,6 +1035,7 @@ Scenario: User creates and submits a CHEDA consignment notification with inspect
 	Then the Your checks have been submitted page should be displayed
 	When the user clicks View or print CHED
 	Then the certificate should be displayed in a new browser tab
+	When the user downloads the PDF for validation
 	When the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
@@ -1245,18 +1255,17 @@ Scenario: User adds addresses to address book and amends a CHEDA notification to
 	When the user ticks the checkbox to declare that the information is true and correct
 	And the user clicks Submit notification
 	Then the Confirmation page should be displayed with the initial risk assessment
-#Create step definitions below once PDF validation is implemented
-	#When the user clicks View or print CHED
-	#Then the certificate should be displayed in a new browser tab
-	#And the new Consignor or exporter should be displayed in the certificate ''
-	#And the new Consignee should be displayed in the certificate ''
-	#And the new Importer should be displayed in the certificate ''
-	#And the new Place of destination should be displayed in the certificate ''
-	#And the new Transporter should be displayed in the certificate ''
-	#When the user closes the PDF browser tab
-	#Then the browser tab is closed
-	#When the user clicks Return to your dashboard
-	#Then the dashboard page should be displayed
+	When the user clicks Return to your dashboard
+	Then the dashboard page should be displayed
+	When user searches for the import notification
+	Then the notification should be present in the list
+	When the user clicks Show notification
+	Then the certificate should be displayed in a new browser tab
+	When the user downloads the PDF for validation
+	Then the new Consignor, Consignee, Importer, Place of destination and Transporter should be displayed in the certificate
+	When the user closes the PDF browser tab
+	Then the browser tab is closed
+	Then the dashboard page should be displayed
 	When the user clicks Address book link
 	Then the Address book page should be displayed
 	And the user deletes the newly added operator 'Importer'
@@ -1369,6 +1378,7 @@ Scenario: User creates and amends a CHEDA notification, inspector requests amend
 	And the notification returned in the search has the status 'New'
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
+	When the user downloads the PDF for validation
 	When the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
@@ -1442,6 +1452,7 @@ Scenario: User creates and amends a CHEDA notification, inspector requests amend
 	Then the dashboard page should be displayed
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
+	When the user downloads the PDF for validation
 	When the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
@@ -1617,6 +1628,7 @@ Scenario: User creates and amends a CHEDA notification, inspector requests amend
 	Then the Your checks have been submitted page should be displayed
 	When the user clicks View or print CHED
 	Then the certificate should be displayed in a new browser tab
+	When the user downloads the PDF for validation
 	When the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
@@ -1733,7 +1745,8 @@ Scenario: User creates and submits a CHEDA notification, copies it as new and ve
 	Then the notification should be present in the list
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user clicks the Copy as new link for the notification
@@ -1841,7 +1854,8 @@ Scenario: User creates and submits a CHEDA notification, copies it as new and ve
 	Then the notification should be present in the list
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 
@@ -1953,7 +1967,8 @@ Scenario: User creates and submits a CHEDA notification with laboratory tests ch
 	Then the notification should be present in the list
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 1
@@ -2047,9 +2062,8 @@ Scenario: User creates and submits a CHEDA notification with laboratory tests ch
 	Then the Your checks have been submitted page should be displayed
 	When the user clicks View or print CHED
 	Then the certificate should be displayed in a new browser tab
-#Create step definitions below once PDF validation is implemented
-	#And the Would you like to record laboratory tests? 'No' should be displayed in the certificate
-	#And the Reasons for testing should be displayd with no boxes selected in the certificate
+	When the user downloads the PDF for validation
+	And verifies laboratory tests should be displayed as No and Reasons for testing with no boxes selected 
 	When the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user clicks Return to your dashboard link
@@ -2332,7 +2346,8 @@ Scenario: User creates and submits a notification, override the risk decision, r
 	And the notification returned in the search has the status 'New'
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 1
@@ -2422,7 +2437,8 @@ Scenario: User creates and submits a notification, override the risk decision, r
 	Then the Your checks have been submitted page should be displayed
 	When the user clicks View or print CHED
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user clicks Record control in Dashboard page
@@ -2447,7 +2463,8 @@ Scenario: User creates and submits a notification, override the risk decision, r
 	And the outcome is recorded as 'Consignment has left the UK'
 	When the user clicks View or print CHED button on Control recorded page
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 2
