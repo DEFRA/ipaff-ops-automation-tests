@@ -102,8 +102,9 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Extractors
                 "Not Done", "Satisfactory Following Official Intervention",
                 "Seal Check Only", "Full Identity Check",
                 "Random", "Suspicion", "Intensified Controls", "Pending",
-                "Human consumption", "Human Consumption",
-                "Local competent authority", "Second entry point", "Arrival of consignment", "I.25. For re-entry"
+                "Human consumption", "Human Consumption", "Feedingstuff", "Technical use", "Other",
+                "Local competent authority", "Second entry point", "Arrival of consignment", "I.25. For re-entry",
+                "For internal market", "For transfer to", "For re-export to", "For transhipment to", "Domestic use"
             };
             var words = page.GetWords().ToList();
             var paths = page.ExperimentalAccess.Paths.ToList();
@@ -322,7 +323,10 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Extractors
                 })
                 .FirstOrDefault();
 
-            if (box == null) return "false";
+            if (box == null) 
+            {
+                return "false";
+            }
 
             var boxBounds = box.GetBoundingRectangle()!.Value;
             if (claimedBoxes != null)
@@ -336,7 +340,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Extractors
             if (tickPositions.Contains((txRounded, tyRounded)))
                 return "true";
 
-            // Fallback: look for a mark text character (X, checkmark) inside the box
+            // Fallback 1: look for a mark text character (X, checkmark) inside the box
             var boxExpanded = new PdfRectangle(
                 boxBounds.Left - 2, boxBounds.Bottom - 2,
                 boxBounds.Right + 2, boxBounds.Top + 2);
@@ -346,8 +350,18 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Extractors
                 return (t == "X" || t == "x" || t == "✓" || t == "✔") &&
                        Intersects(boxExpanded, w.BoundingBox);
             });
+            if (markAsText) return "true";
 
-            return markAsText ? "true" : "false";
+            // Fallback 2: look for vector paths (marks) inside the box
+            var marksInside = paths.Any(p =>
+            {
+                if (p.GetBoundingRectangle() is not PdfRectangle pb) return false;
+                // A mark is usually smaller than the box and inside it
+                return pb.Width < boxBounds.Width && pb.Height < boxBounds.Height &&
+                       Intersects(boxBounds, pb);
+            });
+
+            return marksInside ? "true" : "false";
         }
 
         private PdfRectangle? FindLabelBounds(List<Word> words, string label)
