@@ -2092,8 +2092,8 @@ Scenario: Create and Submit B2C Consignment with Two Commodities and Catch Certi
 	Then the BTMS search screen should be displayed
 	When the user searches for the CHED created earlier
 	Then the BTMS search result screen should be displayed
-	And the user checks commodity code "03061792", description "Penaeus spp.", quantity "13300", authority "POAO IUU" and decision "Acceptable for Internal Market Decision not given" after the decision given
-	And the user checks commodity code "16052190", description "Astacoidae", quantity "3240", authority "POAO IUU" and decision "Acceptable for Internal Market Decision not given" after the decision given
+	And the user checks commodity code "03061792", description "Penaeus spp.", quantity "13300", authority "POAO,IUU" and decision "Acceptable for Internal Market,Decision not given" after the decision given
+	And the user checks commodity code "16052190", description "Astacoidae", quantity "3240", authority "POAO,IUU" and decision "Acceptable for Internal Market,Decision not given" after the decision given
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
 
