@@ -6,6 +6,7 @@ using Defra.UI.Tests.Tools.PDFProcessor;
 using Defra.UI.Tests.Tools.PDFProcessor.Models;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using PdfExtraction;
 using Reqnroll;
 using Reqnroll.BoDi;
 using System.Globalization;
@@ -582,7 +583,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var chedReferenceFileName = "\\" + chedReference + "-certificate";
             var downloadDirectory = Path.Combine(Path.GetTempPath(), "automation-downloads");
             string pdfPath = downloadDirectory + chedReferenceFileName + ".pdf";
-            var converter = new PdfToJsonConverter();
+            var converter = new ChedppPdfConverter();
             var jsonOutput = converter.ConvertToJson(pdfPath);
 
             var chedDocumentPages = JsonConvert.DeserializeObject<ChedRootObject>(jsonOutput);
