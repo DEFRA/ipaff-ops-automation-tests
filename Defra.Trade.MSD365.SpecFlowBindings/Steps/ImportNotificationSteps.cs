@@ -91,7 +91,7 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
     {
         if (!scenarioContext.ContainsKey("CHEDReference"))
         {
-            scenarioContext["CHEDReference"] = "CHEDPP.GB.2026.1068172";
+            scenarioContext["CHEDReference"] = "CHEDPP.GB.2026.1068578";
         }       
         var chedReference = scenarioContext.Get<string>("CHEDReference");
         XrmApp.Grid.Search(chedReference);
@@ -281,42 +281,46 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
 
         var expectedChedReference = scenarioContext.Get<string>("CHEDReference");
 
+        // The Work Order lookup renders as an empty lazy-load placeholder (class 'pa-lb') in the
+        // Summary tab DOM until its div is scrolled into the viewport. The scrollable container is
+        // the active tab panel — div[role="tabpanel"][aria-label="Summary"] — not document.body or
+        // editFormRoot, which have no scrollable overflow in this context.
+        //
+        // We scroll the tab panel incrementally and check for the element after each step.
+        // This avoids a fixed sleep and handles variable form heights reliably on both local
+        // and CI (Docker remote Selenium Grid) environments.
+        const int maxScrollAttempts = 20;
+        const int scrollIncrementPx = 300;
+
         IWebElement workOrderLink = null;
 
-        Policy
-            .Handle<Exception>()
-            .WaitAndRetry(
-                retryCount: 10,
-                sleepDurationProvider: _ => TimeSpan.FromSeconds(3))
-            .Execute(() =>
+        for (var attempt = 0; attempt < maxScrollAttempts; attempt++)
+        {
+            Driver.ExecuteScript(
+                @"var panel = document.querySelector('[role=""tabpanel""][aria-label=""Summary""]')
+                           || document.querySelector('[role=""tabpanel""]');
+                  if (panel) { panel.scrollTop += arguments[0]; }",
+                scrollIncrementPx);
+
+            Driver.WaitForTransaction();
+
+            var candidates = Driver.FindElements(
+                By.XPath($"//div[@data-id='trd_workorderid.fieldControl-LookupResultsDropdown_trd_workorderid_selected_tag'" +
+                         $" and @aria-label='{expectedChedReference}']"));
+
+            if (candidates.Count > 0)
             {
-                // Dynamics 365 renders form content inside a scrollable container div, not on
-                // document.body. Scrolling body has no effect because its own scrollHeight equals
-                // its clientHeight. We must scroll the innermost form content container that
-                // actually has overflow — identified by data-id='editFormRoot' or the closest
-                // ancestor with a non-zero scrollable height — to force lazy-loaded fields
-                // (such as the Work Order lookup) to enter the viewport and render into the DOM.
-                Driver.ExecuteScript(@"
-                    var candidates = [
-                        document.querySelector('[data-id=""editFormRoot""]'),
-                        document.querySelector('.entityFormContainer'),
-                        document.querySelector('[data-id=""form-view""]'),
-                        document.documentElement
-                    ];
-                    for (var i = 0; i < candidates.length; i++) {
-                        var el = candidates[i];
-                        if (el && el.scrollHeight > el.clientHeight) {
-                            el.scrollTop = el.scrollHeight;
-                            return;
-                        }
-                    }");
+                workOrderLink = candidates[0];
+                break;
+            }
+        }
 
-                Driver.WaitForTransaction();
-
-                workOrderLink = Driver.WaitUntilAvailable(
-                    By.XPath($"//div[@data-id='trd_workorderid.fieldControl-LookupResultsDropdown_trd_workorderid_selected_tag' and @aria-label='{expectedChedReference}']"),
-                    $"Work Order field link for CHED reference '{expectedChedReference}' could not be found.");
-            });
+        workOrderLink.Should().NotBeNull(
+            $"Work Order field link for CHED reference '{expectedChedReference}' could not be found " +
+            $"after scrolling the Summary tab panel {maxScrollAttempts} times " +
+            $"({maxScrollAttempts * scrollIncrementPx}px total). " +
+            $"The lazy-load placeholder may not have rendered — check that the Summary tab is active " +
+            $"and that the Work Order lookup field is populated on the form.");
 
         workOrderLink.Click();
 
