@@ -125,10 +125,11 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Extractors
                 checkboxes[label] = DetectCheckboxState(labelBounds.Value, paths, words, tickPositions);
             }
 
-            // Scoped extraction for Sections II.3, II.4, II.5
+            // Scoped extraction for Sections II.3, II.4, II.5, II.7
             ExtractIi3ScopedCheckboxes(words, paths, tickPositions, checkboxes);
             ExtractIi4ScopedCheckboxes(words, paths, tickPositions, checkboxes);
             ExtractIi5ScopedCheckboxes(words, paths, tickPositions, checkboxes);
+            ExtractIi7ScopedCheckboxes(words, paths, tickPositions, checkboxes);
 
             ExtractIi6ScopedCheckboxes(words, paths, tickPositions, checkboxes);
             ExtractIi16ScopedCheckboxes(words, paths, tickPositions, checkboxes);
@@ -157,7 +158,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Extractors
 
         private void ExtractIi5ScopedCheckboxes(List<Word> words, List<UglyToad.PdfPig.Graphics.PdfPath> paths, HashSet<(double, double)> tickPositions, Dictionary<string, string> checkboxes)
         {
-            var anchor = words.FirstOrDefault(w => w.Text.Equals("II.5", StringComparison.OrdinalIgnoreCase)) ?? 
+            var anchor = words.FirstOrDefault(w => w.Text.Equals("II.5", StringComparison.OrdinalIgnoreCase)) ??
                          words.FirstOrDefault(w => w.Text.Contains("II.5"));
             if (anchor == null) return;
 
@@ -165,18 +166,42 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Extractors
             ExtractSectionScopedCheckboxes("II.5", anchor, labels, words, paths, tickPositions, checkboxes);
         }
 
+        private void ExtractIi7ScopedCheckboxes(List<Word> words, List<UglyToad.PdfPig.Graphics.PdfPath> paths, HashSet<(double, double)> tickPositions, Dictionary<string, string> checkboxes)
+        {
+            var anchor = words.FirstOrDefault(w => w.Text.Equals("II.7", StringComparison.OrdinalIgnoreCase)) ??
+                         words.FirstOrDefault(w => w.Text.Contains("II.7"));
+            if (anchor == null) return;
+
+            var labels = new[] { "Yes", "No", "Satisfactory", "Not Satisfactory" };
+            ExtractSectionScopedCheckboxes("II.7", anchor, labels, words, paths, tickPositions, checkboxes);
+        }
+
         private void ExtractSectionScopedCheckboxes(string prefix, Word anchor, string[] labels, List<Word> words, List<UglyToad.PdfPig.Graphics.PdfPath> paths, HashSet<(double, double)> tickPositions, Dictionary<string, string> checkboxes)
         {
             var anchorX = anchor.BoundingBox.Left;
             var anchorY = anchor.BoundingBox.Bottom;
-            var claimedBoxes = new HashSet<PdfRectangle>();
 
             foreach (var label in labels)
             {
+                var key = $"{prefix}::{label}";
+                if (checkboxes.ContainsKey(key)) continue;
+
                 var bounds = FindLabelBoundsNearestTo(words, label, anchorX, anchorY, maxDistance: 250, belowAnchorOnly: true);
                 if (bounds == null) continue;
-                checkboxes[$"{prefix}::{label}"] = DetectCheckboxState(bounds.Value, paths, words, tickPositions, claimedBoxes);
+                checkboxes[key] = CheckTickNearBounds(bounds.Value, tickPositions);
             }
+        }
+
+        private static string CheckTickNearBounds(PdfRectangle labelBounds, HashSet<(double, double)> tickPositions)
+        {
+            var searchLeft   = labelBounds.Left  - 10;
+            var searchRight  = labelBounds.Right + 30;
+            var searchBottom = labelBounds.Bottom - 5;
+            var searchTop    = labelBounds.Top    + 5;
+            return tickPositions.Any(t =>
+                t.Item1 >= searchLeft  && t.Item1 <= searchRight &&
+                t.Item2 >= searchBottom && t.Item2 <= searchTop)
+                ? "true" : "false";
         }
 
         private void ExtractIi6ScopedCheckboxes(List<Word> words, List<UglyToad.PdfPig.Graphics.PdfPath> paths, HashSet<(double, double)> tickPositions, Dictionary<string, string> checkboxes)
@@ -186,18 +211,139 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Extractors
 
             var anchorX = labWord.BoundingBox.Left;
             var anchorY = labWord.BoundingBox.Bottom;
-            var ii6Labels = new[]
-            {
-                "Yes", "No", "Satisfactory", "Not Satisfactory",
-                "Random", "Suspicion", "Intensified Controls", "Pending"
-            };
 
-            var claimedBoxes = new HashSet<PdfRectangle>();
-            foreach (var label in ii6Labels)
+            // Section-level Yes / No
+            var sectionClaimedBoxes = new HashSet<PdfRectangle>();
+            foreach (var label in new[] { "Yes", "No" })
             {
                 var bounds = FindLabelBoundsNearestTo(words, label, anchorX, anchorY, maxDistance: 200, belowAnchorOnly: true);
                 if (bounds == null) continue;
-                checkboxes[$"II.6::{label}"] = DetectCheckboxState(bounds.Value, paths, words, tickPositions, claimedBoxes);
+                checkboxes[$"II.6::{label}"] = DetectCheckboxState(bounds.Value, paths, words, tickPositions, sectionClaimedBoxes);
+            }
+
+            // Find test-name dot-words (e.g. ".AMINOGLYCOSIDE") below anchor, top-down order
+            var testDotWords = words
+                .Where(w => w.Text.Length > 1 && w.Text[0] == '.' && char.IsUpper(w.Text[1])
+                            && w.BoundingBox.Bottom < anchorY)
+                .OrderByDescending(w => w.BoundingBox.Bottom)
+                .ToList();
+
+            if (testDotWords.Count == 0) return;
+
+            var wordsBelow = words.Where(w => w.BoundingBox.Bottom < anchorY).ToList();
+
+            // Find first occurrence of a (possibly multi-word) label within a Y band
+            PdfRectangle? FindLabelInBand(string label, double bandTop, double bandBottom)
+            {
+                var parts = label.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                var lines = wordsBelow
+                    .Where(w => w.BoundingBox.Bottom <= bandTop && w.BoundingBox.Bottom >= bandBottom)
+                    .GroupBy(w => Math.Round(w.BoundingBox.Bottom, 0))
+                    .Select(g => g.OrderBy(w => w.BoundingBox.Left).ToList())
+                    .ToList();
+                foreach (var line in lines)
+                {
+                    for (int i = 0; i <= line.Count - parts.Length; i++)
+                    {
+                        bool match = true;
+                        for (int j = 0; j < parts.Length; j++)
+                        {
+                            if (!line[i + j].Text.Equals(parts[j], StringComparison.OrdinalIgnoreCase))
+                            { match = false; break; }
+                        }
+                        if (match)
+                        {
+                            var s = line[i].BoundingBox;
+                            var e = line[i + parts.Length - 1].BoundingBox;
+                            return new PdfRectangle(s.Left, s.Bottom, e.Right, e.Top);
+                        }
+                    }
+                }
+                return null;
+            }
+
+            // Find "Satisfactory" not preceded by "Not" within a Y band
+            // Prefer the occurrence on the same line as "Pending" / "Results" (right-side result row)
+            PdfRectangle? FindStandaloneSatInBand(double bandTop, double bandBottom)
+            {
+                var lines = wordsBelow
+                    .Where(w => w.BoundingBox.Bottom <= bandTop && w.BoundingBox.Bottom >= bandBottom)
+                    .GroupBy(w => Math.Round(w.BoundingBox.Bottom, 0))
+                    .Select(g => g.OrderBy(w => w.BoundingBox.Left).ToList())
+                    .OrderBy(g => g.First().BoundingBox.Bottom) // ascending Y → right-side result row first
+                    .ToList();
+                foreach (var line in lines)
+                {
+                    for (int si = 0; si < line.Count; si++)
+                    {
+                        if (!line[si].Text.Equals("Satisfactory", StringComparison.OrdinalIgnoreCase)) continue;
+                        bool precededByNot = si > 0 && line[si - 1].Text.Equals("Not", StringComparison.OrdinalIgnoreCase);
+                        if (!precededByNot) return line[si].BoundingBox;
+                    }
+                }
+                return null;
+            }
+
+            // Unchecked checkboxes in this form have no box paths; only checked ones carry a
+            // tick-mark XObject. Use tight X proximity so adjacent-column ticks are not captured.
+            string CheckTickNearLabel(PdfRectangle labelBounds)
+            {
+                var searchLeft   = labelBounds.Left  - 10;
+                var searchRight  = labelBounds.Right + 30;
+                var searchBottom = labelBounds.Bottom - 10;
+                var searchTop    = labelBounds.Top    + 10;
+                return tickPositions.Any(t =>
+                    t.Item1 >= searchLeft  && t.Item1 <= searchRight &&
+                    t.Item2 >= searchBottom && t.Item2 <= searchTop)
+                    ? "true" : "false";
+            }
+
+            for (int i = 0; i < testDotWords.Count; i++)
+            {
+                var testWord = testDotWords[i];
+                var bandTop = testWord.BoundingBox.Bottom;
+                var bandBottom = (i + 1 < testDotWords.Count)
+                    ? testDotWords[i + 1].BoundingBox.Bottom
+                    : bandTop - 60;
+
+                // Build full test name: dot-word plus consecutive uppercase words on same line
+                var sameLine = words
+                    .Where(w => Math.Abs(w.BoundingBox.Bottom - testWord.BoundingBox.Bottom) < 3)
+                    .OrderBy(w => w.BoundingBox.Left)
+                    .ToList();
+                var dotIdx = sameLine.FindIndex(w => w.Text == testWord.Text);
+                var nameParts = new List<string>();
+                if (dotIdx >= 0)
+                {
+                    for (int k = dotIdx; k < sameLine.Count; k++)
+                    {
+                        var txt = sameLine[k].Text;
+                        if (txt.Length > 0 && (txt[0] == '.' || char.IsUpper(txt[0])))
+                            nameParts.Add(txt);
+                        else
+                            break;
+                    }
+                }
+                var testName = string.Join(" ", nameParts).Trim();
+                if (string.IsNullOrWhiteSpace(testName)) continue;
+
+                var prefix = $"II.6::row{i}";
+                checkboxes[$"{prefix}::TestName"] = testName;
+
+                foreach (var (lbl, key) in new[] { ("Random", "Random"), ("Suspicion", "Suspicion"), ("Pending", "Pending") })
+                {
+                    var b = FindLabelInBand(lbl, bandTop, bandBottom);
+                    checkboxes[$"{prefix}::{key}"] = b.HasValue ? CheckTickNearLabel(b.Value) : "false";
+                }
+
+                var notSatBounds = FindLabelInBand("Not Satisfactory", bandTop, bandBottom);
+                checkboxes[$"{prefix}::NotSatisfactory"] = notSatBounds.HasValue ? CheckTickNearLabel(notSatBounds.Value) : "false";
+
+                var satBounds = FindStandaloneSatInBand(bandTop, bandBottom);
+                checkboxes[$"{prefix}::Satisfactory"] = satBounds.HasValue ? CheckTickNearLabel(satBounds.Value) : "false";
+
+                var emBounds = FindLabelInBand("Emergency measures", bandTop, bandBottom);
+                checkboxes[$"{prefix}::EmergencyMeasures"] = emBounds.HasValue ? CheckTickNearLabel(emBounds.Value) : "false";
             }
         }
 
@@ -286,10 +432,10 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Extractors
         private static string DetectCheckboxState(PdfRectangle labelBounds, List<UglyToad.PdfPig.Graphics.PdfPath> paths, List<Word> words, HashSet<(double, double)> tickPositions, HashSet<PdfRectangle> claimedBoxes = null)
         {
             var searchRect = new PdfRectangle(
-                labelBounds.Left - 25,
-                labelBounds.Bottom - 5,
-                labelBounds.Right + 25,
-                labelBounds.Top + 5);
+                labelBounds.Left - 50,
+                labelBounds.Bottom - 15,
+                labelBounds.Right + 300,
+                labelBounds.Top + 15);
 
             // Find the checkbox box path near this label
             var box = paths
