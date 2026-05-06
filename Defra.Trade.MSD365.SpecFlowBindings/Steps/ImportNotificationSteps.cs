@@ -281,46 +281,70 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
 
         var expectedChedReference = scenarioContext.Get<string>("CHEDReference");
 
-        // The Work Order lookup renders as an empty lazy-load placeholder (class 'pa-lb') in the
-        // Summary tab DOM until its div is scrolled into the viewport. The scrollable container is
-        // the active tab panel — div[role="tabpanel"][aria-label="Summary"] — not document.body or
-        // editFormRoot, which have no scrollable overflow in this context.
+        // Two distinct problems must be handled:
         //
-        // We scroll the tab panel incrementally and check for the element after each step.
-        // This avoids a fixed sleep and handles variable form heights reliably on both local
-        // and CI (Docker remote Selenium Grid) environments.
+        // 1. LAZY-LOAD: The Work Order field inner content (the selected tag anchor) is only
+        //    injected into the DOM once its container div is scrolled into the viewport.
+        //    Scrolling incrementally through the Summary tab panel triggers this render.
+        //
+        // 2. ASYNC DATA RACE: On a cold first run, Dynamics may not have completed its async
+        //    server fetch for the Work Order lookup value by the time this step executes.
+        //    Even after scrolling the container into view, there is nothing to render yet
+        //    because the data has not arrived. The outer retry loop handles this by resetting
+        //    the scroll position and sweeping again after a wait, giving Dynamics time to
+        //    complete the fetch between attempts.
         const int maxScrollAttempts = 20;
         const int scrollIncrementPx = 300;
+        const int maxOuterRetries = 5;
+        const int outerRetryWaitSeconds = 10;
 
         IWebElement workOrderLink = null;
 
-        for (var attempt = 0; attempt < maxScrollAttempts; attempt++)
+        for (var outerAttempt = 0; outerAttempt < maxOuterRetries && workOrderLink == null; outerAttempt++)
         {
-            Driver.ExecuteScript(
-                @"var panel = document.querySelector('[role=""tabpanel""][aria-label=""Summary""]')
-                           || document.querySelector('[role=""tabpanel""]');
-                  if (panel) { panel.scrollTop += arguments[0]; }",
-                scrollIncrementPx);
-
-            Driver.WaitForTransaction();
-
-            var candidates = Driver.FindElements(
-                By.XPath($"//div[@data-id='trd_workorderid.fieldControl-LookupResultsDropdown_trd_workorderid_selected_tag'" +
-                         $" and @aria-label='{expectedChedReference}']"));
-
-            if (candidates.Count > 0)
+            if (outerAttempt > 0)
             {
-                workOrderLink = candidates[0];
-                break;
+                // Data was not yet loaded on the previous sweep — wait for Dynamics to complete
+                // its async fetch, then reset scroll to top before sweeping again.
+                System.Threading.Thread.Sleep(TimeSpan.FromSeconds(outerRetryWaitSeconds));
+
+                Driver.ExecuteScript(
+                    @"var panel = document.querySelector('[role=""tabpanel""][aria-label=""Summary""]')
+                               || document.querySelector('[role=""tabpanel""]');
+                      if (panel) { panel.scrollTop = 0; }");
+
+                Driver.WaitForTransaction();
+            }
+
+            for (var scrollAttempt = 0; scrollAttempt < maxScrollAttempts; scrollAttempt++)
+            {
+                Driver.ExecuteScript(
+                    @"var panel = document.querySelector('[role=""tabpanel""][aria-label=""Summary""]')
+                               || document.querySelector('[role=""tabpanel""]');
+                      if (panel) { panel.scrollTop += arguments[0]; }",
+                    scrollIncrementPx);
+
+                Driver.WaitForTransaction();
+
+                var candidates = Driver.FindElements(
+                    By.XPath($"//div[@data-id='trd_workorderid.fieldControl-LookupResultsDropdown_trd_workorderid_selected_tag'" +
+                             $" and @aria-label='{expectedChedReference}']"));
+
+                if (candidates.Count > 0)
+                {
+                    workOrderLink = candidates[0];
+                    break;
+                }
             }
         }
 
         workOrderLink.Should().NotBeNull(
             $"Work Order field link for CHED reference '{expectedChedReference}' could not be found " +
-            $"after scrolling the Summary tab panel {maxScrollAttempts} times " +
-            $"({maxScrollAttempts * scrollIncrementPx}px total). " +
-            $"The lazy-load placeholder may not have rendered — check that the Summary tab is active " +
-            $"and that the Work Order lookup field is populated on the form.");
+            $"after {maxOuterRetries} full scroll sweeps of the Summary tab panel " +
+            $"({maxOuterRetries * maxScrollAttempts * scrollIncrementPx / 1000}m total scroll distance, " +
+            $"{maxOuterRetries * outerRetryWaitSeconds}s total wait). " +
+            $"The lazy-load placeholder may not have rendered, or the Work Order lookup field " +
+            $"may not be populated on the form.");
 
         workOrderLink.Click();
 
