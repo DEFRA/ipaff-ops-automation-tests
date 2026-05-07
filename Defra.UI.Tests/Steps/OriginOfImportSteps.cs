@@ -36,7 +36,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     $"Country of origin dropdown is not pre-populated with '{country}'");
             });
 
-            _scenarioContext["ContryFromWhereConsigned"] = country;
         }
 
         [When("the user chooses {string} for Does your consignment require a region code?")]
@@ -159,6 +158,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(
                 originOfImportPage?.IsHeaderBannerDisplayed(expectedStatus, expectedChedType),
                 $"Expected '{expectedStatus}' and '{expectedChedType}' to be displayed at the top of the screen");
+        }
+
+        [When("the user records the pre-populated Country from where consigned")]
+        public void WhenTheUserRecordsThePre_PopulatedCountryFromWhereConsigned()
+        {
+            var countryFromWhereConsigned = originOfImportPage?.GetConsignedCountryText;
+            if (!string.IsNullOrEmpty(countryFromWhereConsigned) || !countryFromWhereConsigned.Contains("Select"))
+                _scenarioContext["ContryFromWhereConsigned"] = countryFromWhereConsigned;
         }
     }
 }

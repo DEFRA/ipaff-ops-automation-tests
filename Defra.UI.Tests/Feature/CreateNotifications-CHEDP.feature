@@ -20,6 +20,7 @@ Scenario: User creates and submits a B2C consignment notification - CHEDP Happy 
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "France" as the Country of origin and Country from where consigned
 	When the user chooses "No" for Does your consignment require a region code?
+	And the user records the pre-populated Country from where consigned
 	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
 	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
 	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
@@ -187,6 +188,7 @@ Scenario: User creates and submits a B2C consignment notification for Transit Re
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "France" as the Country of origin and Country from where consigned
 	When the user chooses "No" for Does your consignment require a region code?
+	And the user records the pre-populated Country from where consigned
 	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
 	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
 	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
@@ -288,7 +290,8 @@ Scenario: User creates and submits a B2C consignment notification for Transit Re
 	Then the notification should be present in the list
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 1
@@ -337,7 +340,8 @@ Scenario: User creates and submits a B2C consignment notification for Transit Re
 	Then the Your checks have been submitted page should be displayed
 	When the user clicks View or print CHED button
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 2
@@ -371,6 +375,7 @@ Scenario: User creates and submits a B2C consignment notification for Transhipme
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "France" as the Country of origin and Country from where consigned
 	When the user chooses "No" for Does your consignment require a region code?
+	And the user records the pre-populated Country from where consigned
 	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
 	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
 	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
@@ -427,7 +432,7 @@ Scenario: User creates and submits a B2C consignment notification for Transhipme
 	Then the Addresses page should be displayed
 	When the user clicks Add a consignor or exporter
 	Then the Search for an existing consignor or exporter page should be displayed
-	When the user selects one of the displayed consignors or exporters "ABC"
+	When the user selects a consignor or exporter "ABC"
 	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
 	When the user clicks Add a consignee
 	Then the Search for an existing consignee page should be displayed
@@ -465,7 +470,8 @@ Scenario: User creates and submits a B2C consignment notification for Transhipme
 	Then the notification should be present in the list
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 1
@@ -512,7 +518,8 @@ Scenario: User creates and submits a B2C consignment notification for Transhipme
 	Then the notification should be present in the list of part 2 dashboard
 	When the user clicks View CHED link
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user clicks Record control in Dashboard page
@@ -540,6 +547,7 @@ Scenario: User creates and submits 2 B2C consignment notification with existing 
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "France" as the Country of origin and Country from where consigned
 	When the user chooses "No" for Does your consignment require a region code?
+	And the user records the pre-populated Country from where consigned
 	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
 	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
 	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
@@ -757,6 +765,7 @@ Scenario: Admin submits a notification and records decision and validate cookies
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "Italy" as the Country of origin and Country from where consigned
 	When the user chooses "No" for Does your consignment require a region code?
+	And the user records the pre-populated Country from where consigned
 	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
 	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
 	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
@@ -815,7 +824,7 @@ Scenario: Admin submits a notification and records decision and validate cookies
 	Then the Addresses page should be displayed
 	When the user clicks Add a consignor or exporter
 	Then the Search for an existing consignor or exporter page should be displayed
-	When the user selects one of the displayed consignors or exporters "abc"
+	When the user selects a consignor or exporter "abc"
 	Then the chosen consignor or exporter "abc" should be displayed on the Addresses page
 	When the user clicks Add a consignee
 	Then the Search for an existing consignee page should be displayed
@@ -899,6 +908,7 @@ Scenario: Admin submits a notification and records decision and validate cookies
 	Then the Your checks have been submitted page should be displayed
 	When the user clicks View or print CHED button
 	Then the certificate should be displayed in a new browser tab
+	When the user downloads the PDF for validation
 	When the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
@@ -935,6 +945,7 @@ Scenario: User creates a B2C consignment notification, updates it from the revie
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "France" as the Country of origin and Country from where consigned
 	When the user chooses "No" for Does your consignment require a region code?
+	And the user records the pre-populated Country from where consigned
 	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
 	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
 	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
@@ -984,7 +995,7 @@ Scenario: User creates a B2C consignment notification, updates it from the revie
 	Then the Addresses page should be displayed
 	When the user clicks Add a consignor or exporter
 	Then the Search for an existing consignor or exporter page should be displayed
-	When the user selects one of the displayed consignors or exporters "ABC"
+	When the user selects a consignor or exporter "ABC"
 	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
 	When the user clicks Add a consignee
 	Then the Search for an existing consignee page should be displayed
@@ -1050,7 +1061,7 @@ Scenario: User creates a B2C consignment notification, updates it from the revie
 	Then the Addresses page should be displayed
 	When the user clicks on Change link under 'Consignor or exporter'
 	Then the Search for an existing consignor or exporter page should be displayed
-	When the user selects one of the displayed consignors or exporters "ABC"
+	When the user selects a consignor or exporter "ABC"
 	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
 	When the user clicks on Change link under 'Consignee'
 	Then the Search for an existing consignee page should be displayed
@@ -1082,20 +1093,21 @@ Scenario: User creates a B2C consignment notification, updates it from the revie
 	Then the notification should be present in the list
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	And user searches for the import notification
 	Then the notification should be present in the list
 	When the user clicks Amend
 	Then the Notification Hub page should be displayed
 	When the user clicks on 'Origin of the import' link
-	And the user chooses "Finland" from the dropdown for Country of origin
+	And the user chooses "Finland" from the dropdown for Country of origin and records the country from where consigned
 	And the user clicks on Save and return to hub
 	And the user clicks on 'Addresses' link
 	Then the Addresses page should be displayed
 	When the user clicks on Change link under 'Consignor or exporter'
 	Then the Search for an existing consignor or exporter page should be displayed
-	When the user selects one of the displayed consignors or exporters "ABC"
+	When the user selects a consignor or exporter "ABC"
 	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
 	When the user clicks on Change link under 'Consignee'
 	Then the Search for an existing consignee page should be displayed
@@ -1119,7 +1131,8 @@ Scenario: User creates a B2C consignment notification, updates it from the revie
 	When the user clicks Return to your dashboard
 	And the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 1
@@ -1187,7 +1200,8 @@ Scenario: User creates a B2C consignment notification, updates it from the revie
 	Then the Your checks have been submitted page should be displayed
 	When the user clicks View or print CHED button
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 2
@@ -1210,6 +1224,7 @@ Scenario: User creates and submits a notification, override the risk decision an
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "France" as the Country of origin and Country from where consigned
 	When the user chooses "No" for Does your consignment require a region code?
+	And the user records the pre-populated Country from where consigned
 	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
 	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
 	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
@@ -1442,6 +1457,7 @@ Scenario: User submits a notification as no inspection required, override the ri
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "Italy" as the Country of origin and Country from where consigned
 	When the user chooses "No" for Does your consignment require a region code?
+	And the user records the pre-populated Country from where consigned
 	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
 	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
 	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
@@ -1595,6 +1611,7 @@ Scenario: User submits a notification, inspector copy it as replacement, update 
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "China" as the Country of origin and Country from where consigned
 	When the user chooses "No" for Does your consignment require a region code?
+	And the user records the pre-populated Country from where consigned
 	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
 	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
 	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
@@ -1884,7 +1901,7 @@ Scenario: Create and Submit B2C Consignment with Two Commodities and Catch Certi
 	And the user searches '16052190' commodity code
 	Then the commodity details should be populated '16052190' 'Other' for second commodity
 	When the user selects the type of commodity 'Composite products'
-	And the user selects species of commodity 'Penaeus (Litopenaeus) vannamei'
+	And the user selects species of commodity 'Astacoidae'
 	And the user selects "No" for Do you want to add another commodity?
 	And the user clicks Save and continue
 	Then What is the main reason for importing the consignment? page should be displayed with radio buttons
@@ -1937,7 +1954,7 @@ Scenario: Create and Submit B2C Consignment with Two Commodities and Catch Certi
 	And 'Select all' is displayed in Add catch certificate page
 	And 'Save and return to manage catch certificates' is displayed in Add catch certificate page
 	And 'Save and return to hub' is displayed in Add catch certificate page
-	When the user selects the 'Penaeus spp.,Penaeus (Litopenaeus) vannamei' species under Select species being imported under this catch certificate
+	When the user selects the 'Penaeus spp.,Astacoidae' species under Select species being imported under this catch certificate
 	And the user clicks Save and continue
 	Then Add catch certificate details page should be displayed
 	And 'Number of catch certificates in this attachment' is displayed in Add catch certificate page
@@ -1950,7 +1967,7 @@ Scenario: Create and Submit B2C Consignment with Two Commodities and Catch Certi
 	And 'Select all' is displayed in Add catch certificate page
 	And 'Save and return to manage catch certificates' is displayed in Add catch certificate page
 	And 'Save and return to hub' is displayed in Add catch certificate page
-	When the user selects the 'Penaeus spp.,Penaeus (Litopenaeus) vannamei' species under Select species being imported under this catch certificate
+	When the user selects the 'Penaeus spp.,Astacoidae' species under Select species being imported under this catch certificate
 	And the user clicks Save and continue
 	Then Manage catch certificates page is displayed
 	When the user selects the 'No' option for Do you need to upload more catch certificates?
@@ -1979,7 +1996,7 @@ Scenario: Create and Submit B2C Consignment with Two Commodities and Catch Certi
 	Then the Addresses page should be displayed
 	When the user clicks Add a consignor or exporter
 	Then the Search for an existing consignor or exporter page should be displayed
-	When the user selects one of the displayed consignors or exporters "ABC"
+	When the user selects a consignor or exporter "ABC"
 	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
 	When the user clicks Add a consignee
 	Then the Search for an existing consignee page should be displayed
@@ -2056,7 +2073,8 @@ Scenario: Create and Submit B2C Consignment with Two Commodities and Catch Certi
 	Then the Your checks have been submitted page should be displayed
 	When the user clicks View or print CHED button
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 2
@@ -2074,8 +2092,8 @@ Scenario: Create and Submit B2C Consignment with Two Commodities and Catch Certi
 	Then the BTMS search screen should be displayed
 	When the user searches for the CHED created earlier
 	Then the BTMS search result screen should be displayed
-	And the user checks commodity code "03061792", description "Penaeus spp.", quantity "13300", authority "POAO IUU" and decision "Acceptable for Internal Market Decision not given" after the decision given
-	And the user checks commodity code "16052190", description "Penaeus (Litopenaeus) vannamei", quantity "3240", authority "POAO IUU" and decision "Acceptable for Internal Market Decision not given" after the decision given
+	And the user checks commodity code "03061792", description "Penaeus spp.", quantity "13300", authority "POAO,IUU" and decision "Acceptable for Internal Market,Decision not given" after the decision given
+	And the user checks commodity code "16052190", description "Astacoidae", quantity "3240", authority "POAO,IUU" and decision "Acceptable for Internal Market,Decision not given" after the decision given
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
 
@@ -2328,6 +2346,7 @@ Scenario: Create and submits a B2C consignment notification - SPS-6937 CHEDP
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "France" as the Country of origin and Country from where consigned
 	When the user chooses "No" for Does your consignment require a region code?
+	And the user records the pre-populated Country from where consigned
 	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
 	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
 	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
@@ -2528,7 +2547,8 @@ Scenario: Create and submits a B2C consignment notification - SPS-6937 CHEDP
 	Then the Your checks have been submitted page should be displayed
 	When the user clicks View or print CHED
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 2
@@ -2551,6 +2571,7 @@ Scenario: Verify IUU and Catch certificate details for EU and Non-EU countries C
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "Sweden" as the Country of origin and Country from where consigned
 	When the user chooses "No" for Does your consignment require a region code?
+	And the user records the pre-populated Country from where consigned
 	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
 	When the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
 	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
@@ -2608,7 +2629,7 @@ Scenario: Verify IUU and Catch certificate details for EU and Non-EU countries C
 	Then the Addresses page should be displayed
 	When the user clicks Add a consignor or exporter
 	Then the Search for an existing consignor or exporter page should be displayed
-	When the user selects one of the displayed consignors or exporters "ABC"
+	When the user selects a consignor or exporter "ABC"
 	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
 	When the user clicks Add a consignee
 	Then the Search for an existing consignee page should be displayed
@@ -2708,7 +2729,8 @@ Scenario: Verify IUU and Catch certificate details for EU and Non-EU countries C
 	And the user verfies the decision outcome as 'Acceptable for Internal Market'
 	When the user clicks View or print CHED
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	Then the Your checks have been submitted page should be displayed
@@ -2785,7 +2807,7 @@ Scenario: Verify IUU and Catch certificate details for EU and Non-EU countries C
 	Then the Addresses page should be displayed
 	When the user clicks Add a consignor or exporter
 	Then the Search for an existing consignor or exporter page should be displayed
-	When the user selects one of the displayed consignors or exporters "ABC"
+	When the user selects a consignor or exporter "ABC"
 	Then the chosen consignor or exporter "ABC" should be displayed on the Addresses page
 	When the user clicks Add a consignee
 	Then the Search for an existing consignee page should be displayed
@@ -2859,7 +2881,8 @@ Scenario: Verify IUU and Catch certificate details for EU and Non-EU countries C
 	And the user verfies the decision outcome as 'Acceptable for Internal Market'
 	When the user clicks View or print CHED
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	Then the Your checks have been submitted page should be displayed
@@ -3093,7 +3116,7 @@ Scenario: User creates and submits a notification with main reason as Re-entry, 
 	Then the Description of the goods/Commodity page should be displayed
 	When the user clicks the 'WOOL, FINE OR COARSE ANIMAL HAIR; HORSEHAIR YARN AND WOVEN FABRIC' in the parent commodity tree
 	And the sub commodity list expands
-	And the user clicks '5101' 'Wool, not carded or combed' under the parent commodity
+	And the user selects the '5101' 'Wool, not carded or combed' under the parent commodity
 	Then the Commodity page should be displayed
 	When the user selects "No" for Do you want to add another commodity?
 	And the user clicks Save and continue
@@ -3191,7 +3214,8 @@ Scenario: User creates and submits a notification with main reason as Re-entry, 
 	Then the notification should be present in the list
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user logs out of IPAFFS Part 1
@@ -3252,7 +3276,8 @@ Scenario: User creates and submits a notification with main reason as Re-entry, 
 	And a border notification banner displaying the reason for refusal 'Refused for other border notification' under the title 'The result of this decision requires a border notification to be created' is displayed
 	When the user clicks View or print CHED
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user clicks Record control in Dashboard page
@@ -3277,7 +3302,8 @@ Scenario: User creates and submits a notification with main reason as Re-entry, 
 	And the outcome is recorded as 'Consignment has left the UK'
 	When the user clicks View or print CHED button on Control recorded page
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user clicks Return to Your Dashboard link in Record control recorded page
@@ -3369,7 +3395,8 @@ Scenario: Create a notification through clone a health or phytosanitary certific
 	Then the notification should be present in the list
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
-	When the user checks that the data in the certificate matches the data entered into the notification
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	And the dashboard page should be displayed
@@ -3401,6 +3428,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "China" as the Country of origin and Country from where consigned
 	When the user chooses "No" for Does your consignment require a region code?
+	And the user records the pre-populated Country from where consigned
 	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
 	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
 	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
@@ -3553,6 +3581,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "China" as the Country of origin and Country from where consigned
 	When the user chooses "No" for Does your consignment require a region code?
+	And the user records the pre-populated Country from where consigned
 	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
 	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
 	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
@@ -3657,6 +3686,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "China" as the Country of origin and Country from where consigned
 	When the user chooses "No" for Does your consignment require a region code?
+	And the user records the pre-populated Country from where consigned
 	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
 	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
 	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
@@ -3761,6 +3791,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "China" as the Country of origin and Country from where consigned
 	When the user chooses "No" for Does your consignment require a region code?
+	And the user records the pre-populated Country from where consigned
 	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
 	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
 	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
@@ -3865,6 +3896,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "China" as the Country of origin and Country from where consigned
 	When the user chooses "No" for Does your consignment require a region code?
+	And the user records the pre-populated Country from where consigned
 	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
 	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
 	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
@@ -3969,6 +4001,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "China" as the Country of origin and Country from where consigned
 	When the user chooses "No" for Does your consignment require a region code?
+	And the user records the pre-populated Country from where consigned
 	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
 	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
 	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
@@ -4073,6 +4106,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "China" as the Country of origin and Country from where consigned
 	When the user chooses "No" for Does your consignment require a region code?
+	And the user records the pre-populated Country from where consigned
 	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
 	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
 	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
@@ -4177,6 +4211,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "China" as the Country of origin and Country from where consigned
 	When the user chooses "No" for Does your consignment require a region code?
+	And the user records the pre-populated Country from where consigned
 	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
 	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
 	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field
@@ -4281,6 +4316,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	And the user clicks Save and continue
 	Then the Origin of the import page should be displayed, showing "China" as the Country of origin and Country from where consigned
 	When the user chooses "No" for Does your consignment require a region code?
+	And the user records the pre-populated Country from where consigned
 	And the user chooses "Yes" for Does this consignment conform to regulatory regulations?
 	And the user chooses "No" for Will the consignment change vehicles or means of transport after the Border Control Post (BCP)?
 	And the user enters a reference number "12345" in the Add a reference number for this consignment (optional) field

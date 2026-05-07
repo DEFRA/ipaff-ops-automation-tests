@@ -26,7 +26,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
 
         [JsonProperty("I6ConsigneeImporter")]
         public ChedSection ConsigneeImporter { get; set; }
-
+                       
         [JsonProperty("I7PlaceOfDestination")]
         public ChedSection PlaceOfDestination { get; set; }
 
@@ -59,12 +59,18 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
 
         [JsonProperty("I17ContainerNoSealNo")]
         public ChedSection ContainerNoSealNo { get; set; }
+        
+        [JsonProperty("I22ForDirectTransit")]
+        public ChedSection DirectTransit { get; set; }
 
         [JsonProperty("I18GoodsCertifiedAs")]
         public ChedSection GoodsCertifiedAs { get; set; }
 
         [JsonProperty("I19ConformityOfTheGoods")]
         public ChedSection ConformityOfTheGoods { get; set; }
+        
+        [JsonProperty("I22Market")]
+        public ChedSection NonInternalMarket { get; set; }
 
         [JsonProperty("I23ForInternalMarket")]
         public ChedSection ForInternalMarket { get; set; }
@@ -92,8 +98,18 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
 
         [JsonProperty("I35Declaration")]
         public ChedSection Declaration { get; set; }
+        
+        [JsonProperty("I20ForTranshipmentOnwardTravel")]
+        public ChedSection TranshipmentOnwardTravel { get; set; }
 
         // Part II
+
+        [JsonProperty("Ii300324CartonFranceFrPlantsIn")]
+        public ChedSection CHEDPPPageII { get; set; }
+        
+        [JsonProperty("I34AIdentificationDetails")]
+        public ChedSection IdentificationDetails { get; set; }
+
         [JsonProperty("PartIIControls")]
         public ChedSection PartIIControls { get; set; }
 
@@ -157,5 +173,38 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
 
         [JsonProperty("III6OfficialInspector")]
         public ChedSection OfficialInspector { get; set; }
+
+        [JsonProperty("II11AcceptableForTransit")]
+        public ChedSection AcceptableForTransit { get; set; }
+
+        [JsonProperty("II9AcceptableForTranshipment")]
+        public ChedSection AcceptableForTranshipment { get; set; }
+
+        [JsonProperty("II16NotAcceptable")]
+        public ChedSection NotAcceptable { get; set; }
+        
+        [JsonProperty("II17ReasonForRefusal")]
+        public ChedSection ReasonForRefusal { get; set; }
+        
+        [JsonProperty("IVResults")]
+        public ChedSection LabResults { get; set; } 
+        
+        [JsonProperty("IVRequested analysis")]
+        public ChedSection RequestedAnalysis { get; set; }
+        
+        [JsonProperty("IVIdentificationOfTheSample")]
+        public ChedSection IdentificationOfTheSample { get; set; }
+        
+        [JsonProperty("IVReferences")]
+        public ChedSection References { get; set; }
+        
+        [JsonProperty("IVFicheForSampling")]
+        public ChedSection FicheForSampling { get; set; }
+        
+        [JsonProperty("II7WelfareCheck")]
+        public ChedSection WelfareCheck { get; set; }
+        
+        [JsonProperty("II8ImpactOnTransportAnimals")]
+        public ChedSection ImpactOnTransportAnimals { get; set; }
     }
 }
