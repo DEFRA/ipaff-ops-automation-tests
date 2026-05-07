@@ -33,11 +33,6 @@ public sealed class ImportCommoditySteps : PowerAppsStepDefiner
 
         pageHeader.Text.Trim().Should().Be("Import Commodity Line",
             $"Expected page header to be 'Import Commodity Line' but found '{pageHeader.Text.Trim()}'.");
-
-        //var element = Driver.WaitUntilAvailable(
-        //    By.XPath("//div[@data-id='trd_msdyn_workorder.fieldControl-LookupResultsDropdown_trd_msdyn_workorder_selected_tag']"),
-        //    TimeSpan.FromSeconds(90),
-        //    "Work Order lookup value did not appear on the Import Commodity Line page after 90s");
     }
 
     [Then(@"the settings are displayed as HMI Inspection Required '(.*)', PHSI Inspection Required '(.*)' and Inspection Classification '(.*)'")]
