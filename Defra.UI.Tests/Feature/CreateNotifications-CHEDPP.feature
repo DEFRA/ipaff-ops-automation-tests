@@ -351,7 +351,7 @@ Scenario: Create a new import notification through clone a health or phytosanita
 	When the user clicks View CHED grey button
 	Then the certificate should be displayed in a new browser tab
 	When the user downloads the PDF for validation
-	And the user checks that the data in the certificate matches the data entered into the notification
+	And the user checks that the data in the certificate matches the data entered into the CHED PP notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user clicks on the Dashboard link
