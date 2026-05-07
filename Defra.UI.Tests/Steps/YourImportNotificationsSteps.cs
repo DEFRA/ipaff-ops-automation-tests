@@ -6,9 +6,14 @@ using Defra.UI.Tests.Tools.PDFProcessor;
 using Defra.UI.Tests.Tools.PDFProcessor.Models;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using PdfExtraction;
 using Reqnroll;
 using Reqnroll.BoDi;
 using System.Globalization;
+
+using System.Text.Json;
+using System.Linq;
+
 using System.Text.RegularExpressions;
 
 namespace Defra.UI.Tests.Steps.IPAFF
@@ -375,9 +380,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
                         string? pdfLaboratoryTestRequired = page.Sections.LaboratoryTests.No;
                         if (pdfLaboratoryTestRequired.Equals("true") && page.Sections.LaboratoryTests.Random.Equals("false")
-                            && page.Sections.LaboratoryTests.Suspicion.Equals("false"))
-                        //&& (page.Sections.LaboratoryTests.EmergencyMeasures.Equals("false")
-                        //|| page.Sections.LaboratoryTests.IntensifiedControls.Equals("false"))   ---- Need to verify once value is retrieved from pdf
+                            && page.Sections.LaboratoryTests.Suspicion.Equals("false")
+                        && (page.Sections.LaboratoryTests.EmergencyMeasures.Equals("false")
+                        || page.Sections.LaboratoryTests.IntensifiedControls.Equals("false")))  //---- Need to verify once value is retrieved from pdf
                         {
                             pdfLaboratoryTestRequired = "No";
                         }
@@ -388,17 +393,53 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
                         ValidateIfExists("AreLaboratoryTestsRequired", pdfLaboratoryTestRequired, ref allDataMatches, mismatches);
 
-                        string? pdfLaboratoryTestNames = page.Sections.LaboratoryTests
-                        switch
+                        if (page.Sections.LaboratoryTests.AdditionalData != null)
                         {
-                            { Random: "true" } => "Random",
-                            { Suspicion: "true" } => "Suspicion",
-                            { IntensifiedControls: "true" } => "IntensifiedControls",
-                            { EmergencyMeasures: "true" } => "EmergencyMeasures",
-                            _ => null
-                        };
-                        ValidateIfExists("LaboratoryTestsReason", pdfLaboratoryTestNames, ref allDataMatches, mismatches);
+                            var jsonLabTest = page.Sections.LaboratoryTests.AdditionalData.ElementAt(0).Value.ToString();
+                            using var doc = JsonDocument.Parse(jsonLabTest);
 
+
+                            string[] labTestsReasons = doc.RootElement
+                                .EnumerateArray()              // ✅ Step 1: array
+                                .SelectMany(e => e             // ✅ Step 2: object inside array
+                                    .EnumerateObject()
+                                    .Where(p => p.Value.GetString() == "true" && p.Name != "Satisfactory" && p.Name != "NotSatisfactory")
+                                    .Select(p => p.Name))
+                                .ToArray();
+
+
+                            foreach (string labTestReason in labTestsReasons)
+                            {
+                                ValidateIfExists("LaboratoryTestsReason", labTestReason, ref allDataMatches, mismatches);
+                            }
+
+                            string[] LabTestNames = doc.RootElement
+                            .EnumerateArray()
+                            .Where(e => e.TryGetProperty("Test", out _))
+                            .Select(e => e.GetProperty("Test").GetString())
+                            .Where(t => !string.IsNullOrEmpty(t))
+                            .ToArray();
+
+
+                            foreach (string labTest in LabTestNames)
+                            {
+                                ValidateIfExists("LaboratoryTestName", labTest, ref allDataMatches, mismatches);
+                            }
+                        }
+                        else
+                        {
+                            string? pdfLaboratoryTestNames1 = page.Sections.LaboratoryTests
+                        switch
+                            {
+                                { Random: "true" } => "Random",
+                                { Suspicion: "true" } => "Suspicion",
+                                { IntensifiedControls: "true" } => "IntensifiedControls",
+                                { EmergencyMeasures: "true" } => "EmergencyMeasures",
+                                _ => null
+                            };
+                            ValidateIfExists("LaboratoryTestsReason", pdfLaboratoryTestNames1, ref allDataMatches, mismatches);
+                            ValidateContains("LaboratoryTestName", (string?)page.Sections.LaboratoryTests?.AdditionalData?.ElementAt(0).Value, ref allDataMatches, mismatches, true);
+                        }
                         string? welfareCheckDecision = page.Sections.WelfareCheck
                         switch
                         {
@@ -411,7 +452,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         ValidateContains("NumberOfUnfitAnimals", page.Sections.ImpactOnTransportAnimals?.Value, ref allDataMatches, mismatches);
                         ValidateContains("NumberOfBirthsOrAbortions", page.Sections.ImpactOnTransportAnimals?.Value, ref allDataMatches, mismatches);
 
-                        ValidateContains("LaboratoryTestName", (string?)page.Sections.LaboratoryTests?.AdditionalData?.ElementAt(0).Value, ref allDataMatches, mismatches, true);
+                        //ValidateContains("LaboratoryTestName", (string?)page.Sections.LaboratoryTests?.AdditionalData?.ElementAt(0).Value, ref allDataMatches, mismatches, true);
 
                         ValidateContains("IUUSubOption", page.Sections.CustomsDocumentReference?.Value, ref allDataMatches, mismatches);
 
@@ -582,7 +623,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var chedReferenceFileName = "\\" + chedReference + "-certificate";
             var downloadDirectory = Path.Combine(Path.GetTempPath(), "automation-downloads");
             string pdfPath = downloadDirectory + chedReferenceFileName + ".pdf";
-            var converter = new PdfToJsonConverter();
+            var converter = new ChedppPdfConverter();
             var jsonOutput = converter.ConvertToJson(pdfPath);
 
             var chedDocumentPages = JsonConvert.DeserializeObject<ChedRootObject>(jsonOutput);
@@ -1014,7 +1055,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
         private void ValidateLabReason(string key, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
         {
-            var expected = _scenarioContext.Get<string>(key);
+            var expected = _scenarioContext.Get<string>(key).Replace(" ", "");
             var actual = reviewValue?.Equals("Suspicious", StringComparison.OrdinalIgnoreCase) == true
                 ? "Suspicion"
                 : reviewValue;
@@ -1046,7 +1087,34 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
         private void ValidateStringArray(string key, string[] array, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
         {
-            ValidateString(key, array.FirstOrDefault(), reviewValue, ref allDataMatches, mismatches);
+            //ValidateString(key, array.FirstOrDefault(), reviewValue, ref allDataMatches, mismatches);
+            if (array == null || array.Length == 0)
+            {
+                LogSkip(key, "empty array");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(reviewValue))
+            {
+                allDataMatches = false;
+                mismatches.Add($"{key}: Actual value is empty");
+                return;
+            }
+
+            bool matchFound = array.Any(expected =>
+                string.Equals(expected?.Trim(), reviewValue.Trim(), StringComparison.OrdinalIgnoreCase));
+
+            if (!matchFound)
+            {
+                allDataMatches = false;
+                mismatches.Add(
+                    $"{key}: Expected any of [{string.Join(", ", array)}], Found '{reviewValue}'");
+            }
+            else
+            {
+                LogMatch(key, reviewValue);
+            }
+
         }
 
 

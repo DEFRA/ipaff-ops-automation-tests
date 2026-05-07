@@ -71,7 +71,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user select {string} reason radio button on the Laboratory tests page")]
         public void WhenISelectReasonRadioButtonOnTheLaboratoryTestsPage(string labTestsReason)
         {
-            _scenarioContext["LaboratoryTestsReason"] = labTestsReason;
+            //_scenarioContext["LaboratoryTestsReason"] = labTestsReason;
+            Utils.AppendStringToScenarioContextArray(_scenarioContext, "LaboratoryTestsReason", labTestsReason);
             laboratoryTestsPage?.SelectLabTestsReason(labTestsReason);
         }
 
@@ -80,7 +81,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenIsPre_SelectedForReasonForTesting(string labTestsReasonOption)
         {
             Assert.True(laboratoryTestsPage?.IsReasonForTestingRadioSelected(labTestsReasonOption), $"Unweaned animals radio is not pre-selected with {labTestsReasonOption} option");
-            _scenarioContext["LaboratoryTestsReason"] = labTestsReasonOption;
+            //_scenarioContext["LaboratoryTestsReason"] = labTestsReasonOption;
+            Utils.AppendStringToScenarioContextArray(_scenarioContext, "LaboratoryTestsReason", labTestsReasonOption);
         }
 
         [Then("the user verifies {string} {string} and {string} radio buttons are displayed")]
