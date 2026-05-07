@@ -274,6 +274,16 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
             $"Expected Import Notification Status Reason to be '{expectedStatusReason}' but found '{statusReasonValue.Text.Trim()}'.");
     }
 
+    /// <summary>
+    /// Clicks the Work Order reference link in the <c>trd_workorderid</c> lookup field on the Summary tab.
+    /// Handles two compounding issues: (1) the Dynamics plugin/flow that creates and links the Work Order
+    /// runs asynchronously after the Import Notification is received from IPAFFS — on a cold first run the
+    /// field may be genuinely empty; (2) the field's inner anchor is only rendered into the DOM once its
+    /// container is scrolled into the viewport (lazy-load). The outer retry loop refreshes the record via
+    /// the Dynamics command bar between attempts to pull the latest server state, while the inner scroll
+    /// loop incrementally scrolls the Summary tab panel to trigger the lazy-load render.
+    /// Waits up to 5 minutes total for the Work Order to be linked before failing.
+    /// </summary>
     [When("I click the reference number in the Work Order field for the notification created in IPAFFS")]
     public void WhenIClickTheReferenceNumberInTheWorkOrderFieldForTheNotificationCreatedInIPAFFS()
     {
@@ -281,22 +291,10 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
 
         var expectedChedReference = scenarioContext.Get<string>("CHEDReference");
 
-        // Two distinct problems must be handled:
-        //
-        // 1. LAZY-LOAD: The Work Order field inner content (the selected tag anchor) is only
-        //    injected into the DOM once its container div is scrolled into the viewport.
-        //    Scrolling incrementally through the Summary tab panel triggers this render.
-        //
-        // 2. ASYNC DATA RACE: On a cold first run, Dynamics may not have completed its async
-        //    server fetch for the Work Order lookup value by the time this step executes.
-        //    Even after scrolling the container into view, there is nothing to render yet
-        //    because the data has not arrived. The outer retry loop handles this by resetting
-        //    the scroll position and sweeping again after a wait, giving Dynamics time to
-        //    complete the fetch between attempts.
         const int maxScrollAttempts = 20;
         const int scrollIncrementPx = 300;
-        const int maxOuterRetries = 5;
-        const int outerRetryWaitSeconds = 10;
+        const int maxOuterRetries = 10;
+        const int outerRetryWaitSeconds = 30;
 
         IWebElement workOrderLink = null;
 
@@ -304,16 +302,12 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
         {
             if (outerAttempt > 0)
             {
-                // Data was not yet loaded on the previous sweep — wait for Dynamics to complete
-                // its async fetch, then reset scroll to top before sweeping again.
                 System.Threading.Thread.Sleep(TimeSpan.FromSeconds(outerRetryWaitSeconds));
 
-                Driver.ExecuteScript(
-                    @"var panel = document.querySelector('[role=""tabpanel""][aria-label=""Summary""]')
-                               || document.querySelector('[role=""tabpanel""]');
-                      if (panel) { panel.scrollTop = 0; }");
-
+                CommandSteps.WhenISelectTheCommand("Refresh");
                 Driver.WaitForTransaction();
+
+                SignInPromptHelper.DismissSignInPrompts(Driver, "post-refresh");
             }
 
             for (var scrollAttempt = 0; scrollAttempt < maxScrollAttempts; scrollAttempt++)
@@ -338,13 +332,14 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
             }
         }
 
+        var totalWaitMinutes = (maxOuterRetries - 1) * outerRetryWaitSeconds / 60;
+
         workOrderLink.Should().NotBeNull(
             $"Work Order field link for CHED reference '{expectedChedReference}' could not be found " +
-            $"after {maxOuterRetries} full scroll sweeps of the Summary tab panel " +
-            $"({maxOuterRetries * maxScrollAttempts * scrollIncrementPx / 1000}m total scroll distance, " +
-            $"{maxOuterRetries * outerRetryWaitSeconds}s total wait). " +
-            $"The lazy-load placeholder may not have rendered, or the Work Order lookup field " +
-            $"may not be populated on the form.");
+            $"after {maxOuterRetries} attempts over {totalWaitMinutes} minutes. " +
+            $"The Dynamics plugin/flow that creates and links the Work Order to this Import Notification " +
+            $"may not have completed. Verify that the Work Order creation flow is active and that " +
+            $"the trd_workorderid lookup is populated on the record in Dynamics.");
 
         workOrderLink.Click();
 
