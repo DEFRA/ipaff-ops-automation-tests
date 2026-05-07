@@ -7,5 +7,7 @@
         void SelectBulkUploadFile(string fileName);
         bool IsSelectedFileNameDisplayed(string fileName);
         void ClickUploadButton();
+        void UpdateCsvIdForCommodityCode(string fileName, string commodityCode, string newId);
+        string GetCsvIdForCommodityCode(string fileName, string commodityCode);
     }
 }

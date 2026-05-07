@@ -54,5 +54,24 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             uploadCommodityRulesCsvPage?.ClickUploadButton();
         }
+
+        [When("the user updates the bulk update CSV {string} setting the Id for commodity code {string} to the recorded {string}")]
+        public void WhenTheUserUpdatesTheBulkUpdateCsvSettingTheIdForCommodityCodeToTheRecorded(
+            string fileName, string commodityCode, string contextKey)
+        {
+            var newId = _scenarioContext.Get<string>(contextKey);
+            uploadCommodityRulesCsvPage?.UpdateCsvIdForCommodityCode(fileName, commodityCode, newId);
+        }
+
+        [Then("the bulk update CSV row for commodity code {string} should contain the recorded {string}")]
+        public void ThenTheBulkUpdateCsvRowForCommodityCodeShouldContainTheRecorded(
+            string commodityCode, string contextKey)
+        {
+            var expectedId = _scenarioContext.Get<string>(contextKey);
+            var fileName = "SPS-8834_CHED-PP_BulkUploadRules_UpdatedRules.csv";
+            var actualId = uploadCommodityRulesCsvPage!.GetCsvIdForCommodityCode(fileName, commodityCode);
+            Assert.AreEqual(expectedId, actualId,
+                $"Expected Id '{expectedId}' for commodity code '{commodityCode}' but found '{actualId}' in the bulk update CSV");
+        }
     }
 }
