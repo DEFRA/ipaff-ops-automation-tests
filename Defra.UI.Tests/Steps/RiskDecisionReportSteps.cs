@@ -1,4 +1,6 @@
-﻿using Defra.UI.Tests.Pages.Interfaces;
+﻿using System.Linq;
+using System.Text.Json;
+using Defra.UI.Tests.Pages.Interfaces;
 using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;
@@ -11,7 +13,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         private readonly IObjectContainer _objectContainer;
         private readonly ScenarioContext _scenarioContext;
 
-        private IRiskDecisionReportPage? page =>
+        private IRiskDecisionReportPage? riskDecisionReportPage =>
             _objectContainer.IsRegistered<IRiskDecisionReportPage>()
                 ? _objectContainer.Resolve<IRiskDecisionReportPage>()
                 : null;
@@ -25,64 +27,88 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the Risk decision report page should be displayed")]
         public void ThenTheRiskDecisionReportPageShouldBeDisplayed()
         {
-            Assert.True(page?.IsPageLoaded(), "Risk decision report page is not displayed");
+            Assert.True(riskDecisionReportPage?.IsPageLoaded(), "Risk decision report page is not displayed");
         }
 
         [When("the user enters the recorded CHED Reference in the Risk decision search box and clicks Search")]
         public void WhenTheUserEntersTheRecordedCHEDReferenceInTheRiskDecisionSearchBoxAndClicksSearch()
         {
             var chedRef = _scenarioContext.Get<string>("CHEDReference");
-            page?.Search(chedRef);
+            riskDecisionReportPage?.Search(chedRef);
         }
 
         [Then("the Risk decision report returns one matching record")]
         public void ThenTheRiskDecisionReportReturnsOneMatchingRecord()
         {
-            Assert.AreEqual(1, page?.GetRecordCount(), "Expected exactly one record");
+            Assert.AreEqual(1, riskDecisionReportPage?.GetRecordCount(), "Expected exactly one record");
         }
 
         [When("the user clicks the Expand button for the CHED Reference")]
         public void WhenTheUserClicksTheExpandButtonForTheCHEDReference()
         {
             var chedRef = _scenarioContext.Get<string>("CHEDReference");
-            page?.ClickExpandForCHED(chedRef);
+            riskDecisionReportPage?.ClickExpandForCHED(chedRef);
         }
 
         [When("the user clicks the Requests details link")]
-        public void WhenTheUserClicksTheRequestsDetailsLink() => page?.ClickRequestsDetails();
+        public void WhenTheUserClicksTheRequestsDetailsLink() => riskDecisionReportPage?.ClickRequestsDetails();
 
         [Then("the Requests section is expanded with details from IPAFFS")]
         public void ThenTheRequestsSectionIsExpandedWithDetailsFromIPAFFS()
         {
-            // Visual smoke check — the click above succeeded.
-            Assert.IsTrue(page?.IsPageLoaded());
+            var requestsJson = riskDecisionReportPage!.GetRequestsJson();
+            Assert.IsNotEmpty(requestsJson, "Requests JSON content is empty");
+            _scenarioContext["RiskDecisionRequestsJson"] = requestsJson;
         }
 
         [When("the user clicks the Decision details link")]
-        public void WhenTheUserClicksTheDecisionDetailsLink() => page?.ClickDecisionDetails();
+        public void WhenTheUserClicksTheDecisionDetailsLink() => riskDecisionReportPage?.ClickDecisionDetails();
 
         [Then("the Decision section contains a DecisionRule matching the recorded {string} with the following values")]
         public void ThenTheDecisionSectionContainsADecisionRuleMatchingTheRecordedWithTheFollowingValues(
             string ruleIdKey, Table table)
         {
             var ruleId = _scenarioContext.Get<string>(ruleIdKey);
-            var decisionJson = page!.GetDecisionJson();
+            var decisionJson = riskDecisionReportPage!.GetDecisionJson();
+            _scenarioContext["RiskDecisionJson"] = decisionJson;
 
-            StringAssert.Contains($"\"RuleId\":\"{ruleId}\"", decisionJson,
-                $"DecisionRules does not contain RuleId '{ruleId}'");
+            // Parse JSON and locate the specific DecisionRule by RuleId
+            using var doc = JsonDocument.Parse(decisionJson);
+            var commodities = doc.RootElement.GetProperty("Commodities");
+
+            JsonElement? matchedRule = null;
+            foreach (var commodity in commodities.EnumerateArray())
+            {
+                var rules = commodity.GetProperty("DecisionRules");
+                foreach (var rule in rules.EnumerateArray())
+                {
+                    if (rule.GetProperty("RuleId").GetString() == ruleId)
+                    {
+                        matchedRule = rule;
+                        break;
+                    }
+                }
+                if (matchedRule.HasValue) break;
+            }
+
+            Assert.IsNotNull(matchedRule, $"DecisionRules does not contain RuleId '{ruleId}' in the Decision JSON");
 
             foreach (var row in table.Rows)
             {
                 var field = row["Field"];
                 var expected = row["Value"];
-                string expectedFragment = field switch
+                var property = matchedRule.Value.GetProperty(field);
+
+                var actual = property.ValueKind switch
                 {
-                    "IsTriggered" => $"\"IsTriggered\":{expected.ToLower()}",
-                    "RuleType" or "RegulatorType" => $"\"{field}\":\"{expected}\"",
-                    _ => $"\"{field}\":{expected}"
+                    JsonValueKind.String => property.GetString(),
+                    JsonValueKind.True => "true",
+                    JsonValueKind.False => "false",
+                    _ => property.GetRawText()
                 };
-                StringAssert.Contains(expectedFragment, decisionJson,
-                    $"Decision JSON missing fragment '{expectedFragment}'");
+
+                Assert.AreEqual(expected, actual,
+                    $"DecisionRule field '{field}' mismatch for RuleId '{ruleId}': expected '{expected}' but got '{actual}'");
             }
         }
     }

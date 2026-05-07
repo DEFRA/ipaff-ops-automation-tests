@@ -8,6 +8,7 @@
         void ClickExpandForCHED(string chedReference);
         void ClickRequestsDetails();
         void ClickDecisionDetails();
+        string GetRequestsJson();
         string GetDecisionJson();
     }
 }

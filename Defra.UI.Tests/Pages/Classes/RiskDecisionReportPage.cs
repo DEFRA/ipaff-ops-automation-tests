@@ -24,7 +24,8 @@ namespace Defra.UI.Tests.Pages.Classes
             _driver.WaitForElement(By.XPath("//details//span[normalize-space()='Requests']/ancestor::summary"));
         private IWebElement summaryDecision =>
             _driver.WaitForElement(By.XPath("//details//span[normalize-space()='Decision']/ancestor::summary"));
-        private IWebElement preDecisionJson => _driver.WaitForElement(By.XPath("//pre[contains(@class,'decision')]"));
+        private IWebElement preRequestsJson => _driver.WaitForElement(By.XPath("//details[.//span[normalize-space()='Requests']]//pre"));
+        private IWebElement preDecisionJson => _driver.WaitForElement(By.XPath("//details[.//span[normalize-space()='Decision']]//pre[contains(@class,'decision')]"));
         #endregion
 
         public RiskDecisionReportPage(IObjectContainer container)
@@ -58,6 +59,8 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickRequestsDetails() => summaryRequests.Click();
 
         public void ClickDecisionDetails() => summaryDecision.Click();
+
+        public string GetRequestsJson() => preRequestsJson.Text.Trim();
 
         public string GetDecisionJson() => preDecisionJson.Text.Trim();
     }

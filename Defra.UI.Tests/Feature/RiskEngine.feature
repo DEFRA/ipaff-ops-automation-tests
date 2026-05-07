@@ -1,11 +1,11 @@
-@Regression
+@RiskEngine
 Feature: Risk Engine
 
 Bulk upload PHSI commodity rules and end-to-end validation via IPAFFS notification
 
 Scenario: SPS-9414 - Bulk Upload CHED-PP - Initial Load - Iteration 1
 	# ---------- Iteration 1: Start ----------
-	# Lines 1-7 (implemented)
+	# Upload the rules
 	Given that I navigate to the Risk Engine application
 	When I have provided the Risk Engine admin credentials and signed in
 	Then the Risk Engine Home page should be displayed
@@ -14,15 +14,13 @@ Scenario: SPS-9414 - Bulk Upload CHED-PP - Initial Load - Iteration 1
 	When the user clicks the CHED-PP reports link
 	Then the CHED-PP reports page should be displayed
 	When the user clicks the PHSI imports commodity rules report link
-	Then the View all PHSI Import Commodity Rules report page should be displayed
+	Then the View all PHSI (Import) Commodity Rules report page should be displayed
 	When the user scrolls to the bottom of the PHSI rules report page
 	Then the count of rules is recorded as 'InitialRuleCount'
 	When the user clicks the 'CHED-PP' link from the Risk Engine header menu
 	Then the CHED-PP imports and exports page should be displayed
 	When the user clicks the Bulk upload commodity rules link
 	Then the Upload multiple commodity rules using a CSV file page should be displayed
-
-	# ---------- Lines 8-18: BDD only, NOT implemented ----------
 	When the user clicks the Choose file button
 	And the user navigates to and selects the bulk upload file 'SPS-8806_CHED-PP_BulkUploadRules.csv'
 	Then the selected file name is displayed next to the Choose file button
@@ -41,17 +39,17 @@ Scenario: SPS-9414 - Bulk Upload CHED-PP - Initial Load - Iteration 1
 		| Incoming rules to be added     | 5        |
 	When the user selects the 'Yes, submit changes to the risk engine' radio option
 	And the user clicks the Submit button on the rule changes page
-	Then the 'Uploading rule changes to the risk engine' page should be displayed
+	Then the Uploading rule changes to the risk engine page should be displayed
 	When the user clicks the Check file status link
 	Then the Submit multiple commodity rules using a CSV file page is displayed with the first record status 'Completed'
 	When the user clicks the View summary link for the first record in the list
 	Then the CSV file details and status page should be displayed with 5 incoming rules added
+	And the CSV file details and status page should be displayed with the count of Total rules 5 more than 'InitialRuleCount'
 	When the user clicks the PHSI reporting link at the bottom of the summary page
 	Then the View all PHSI (Import) Commodity Rules report page should be displayed in a new browser tab
-
-	# ---------- Lines 19-29: Implemented ----------
 	When the user scrolls to the bottom of the PHSI rules report page
 	Then the count of rules should be 5 more than 'InitialRuleCount'
+	And the count of rules is recorded as 'FinalRuleCount'
 	When the user enters '07020099' in the PHSI rules search field
 	And the user sorts the PHSI rules table by Id descending
 	Then the top PHSI rule row should match the following details
@@ -68,7 +66,6 @@ Scenario: SPS-9414 - Bulk Upload CHED-PP - Initial Load - Iteration 1
 		| Document check aligned | No                                            |
 		| Reason                 | Reason 1                                      |
 	And the user records the Id of the top PHSI rule row as 'NewRuleId'
-
 	# Submit a matching CHED-PP notification in IPAFFS (Djibouti / 0702009907)
 	When I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -155,7 +152,7 @@ Scenario: SPS-9414 - Bulk Upload CHED-PP - Initial Load - Iteration 1
 	When the user ticks the checkbox to declare that the information is true and correct
 	And the user clicks Submit notification
 	Then the Confirmation page should be displayed with the initial risk assessment
-	When the user records the IPAFFS User details and CHED Reference
+	And the user records the IPAFFS User details and CHED Reference
 	# Validate via Risk Decision Report
 	When I navigate to the Risk Engine application
 	Then the Risk Engine Home page should be displayed	
@@ -179,7 +176,6 @@ Scenario: SPS-9414 - Bulk Upload CHED-PP - Initial Load - Iteration 1
 		| Total          | 1             |
 		| Triggered      | 1             |
 		| IsTriggered    | true          |
-
 	# Update bulk-update CSV with the new rule Id for commodity '07020099
 	When the user updates the bulk update CSV 'SPS-8834_CHED-PP_BulkUploadRules_UpdatedRules.csv' setting the Id for commodity code '07020099' to the recorded 'NewRuleId'
 	Then the bulk update CSV row for commodity code '07020099' should contain the recorded 'NewRuleId'

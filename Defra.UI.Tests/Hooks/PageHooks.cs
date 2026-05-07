@@ -163,11 +163,16 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDPPImportsAndExportsPage, ICHEDPPImportsAndExportsPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ViewAllPHSIImportCommodityRulesPage, IViewAllPHSIImportCommodityRulesPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<RiskDecisionReportPage, IRiskDecisionReportPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<UploadCommodityRulesCsvPage, IUploadCommodityRulesCsvPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CheckFileProcessingStatusPage, ICheckFileProcessingStatusPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SubmitCommodityRulesCsvPage, ISubmitCommodityRulesCsvPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<AreCommodityRuleChangesCorrectPage, IAreCommodityRuleChangesCorrectPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<UploadingRuleChangesPage, IUploadingRuleChangesPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CsvFileDetailsAndStatusPage, ICsvFileDetailsAndStatusPage>());
 
             //Read Email
             _objectContainer.RegisterInstanceAs(GetBaseWithScenarioContext<FetchCodeFromEmail, IFetchCodeFromEmail>());
         }
-
 
         private TU GetBaseWithContainer<T, TU>() where T : TU => (TU)Activator.CreateInstance(typeof(T), _objectContainer);
         private TU GetBaseWithContainerScenarioContext<T, TU>() where T : TU => (TU)Activator.CreateInstance(typeof(T), _objectContainer, _scenarioContext);
