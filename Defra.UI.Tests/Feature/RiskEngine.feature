@@ -3,7 +3,7 @@ Feature: Risk Engine
 
 Bulk upload PHSI commodity rules and end-to-end validation via IPAFFS notification
 
-Scenario: SPS-9414 - Bulk Upload CHED-PP - Initial Load - Iteration 1
+Scenario: Commodity 1
 	# ---------- Iteration 1: Start ----------
 	# Upload the rules
 	Given that I navigate to the Risk Engine application
@@ -152,7 +152,7 @@ Scenario: SPS-9414 - Bulk Upload CHED-PP - Initial Load - Iteration 1
 	When the user ticks the checkbox to declare that the information is true and correct
 	And the user clicks Submit notification
 	Then the Confirmation page should be displayed with the initial risk assessment
-	And the user records the IPAFFS User details and CHED Reference
+	And the user records the IPAFFS User details and CHED Reference for notification 1
 	# Validate via Risk Decision Report
 	When I navigate to the Risk Engine application
 	Then the Risk Engine Home page should be displayed	
@@ -180,3 +180,410 @@ Scenario: SPS-9414 - Bulk Upload CHED-PP - Initial Load - Iteration 1
 	When the user updates the bulk update CSV 'SPS-8834_CHED-PP_BulkUploadRules_UpdatedRules.csv' setting the Id for commodity code '07020099' to the recorded 'NewRuleId'
 	Then the bulk update CSV row for commodity code '07020099' should contain the recorded 'NewRuleId'
 	# ---------- Iteration 1: Complete ----------
+
+Scenario: Commodity 2
+	When I navigate to the IPAFF application
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF Trader credentials and signin
+	Then the user should be logged into Notification page
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Plants, plant products and other objects' option
+	And the user clicks Save and continue
+	Then the Origin of the plants plant product or other objects page should be displayed
+	When the user chooses "Italy" from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing "Italy" as the Country of origin and Country from where consigned
+	When the user clicks Save and continue
+	Then Description of the goods How do you want to add your commodity details page should be displayed
+	When the user selects 'Manual entry' option to add commodity details
+	And the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user clicks Commodity code search tab
+	And the user searches for the commodity code '12099130'
+	Then the CHED PP commodity details should be populated '12099130' 'Salad beet seed or beetroot seed (Beta vulgaris var. conditiva)'
+	When the user selects EPPO code 'BEASS' checkbox
+	And the user clicks Save and continue
+	Then What is the main reason for importing the consignment? page should be displayed
+	When The user selects 'Internal market' radio option
+	And the user clicks Save and continue
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Description of the goods/Commodity page should be displayed
+	When the user selects the check box for the commodity code '12099130'
+	And the user populates Number of packages as '10' for CHED PP commodity
+	And the user selects type of package as 'Box' for CHED PP commodity
+	And the user populates Quantity as '10' for CHED PP commodity
+	And the user selects Quantity type as 'Kilograms' for CHED PP commodity
+	And the user populates Net weight as '100' for CHED PP commodity
+	And the user clicks Apply Button
+	And the user clicks Save and continue
+	Then the Additional details page should be displayed
+	When the user enters the total gross weight '110'
+	And the user clicks Save and continue
+	Then Transport to the Border Control Post (BCP) page should be dislayed
+	When the user populates the transport to the BCP details 'Heathrow Airport - GBLHR4PP' 'Eurobip' 'Road vehicle' 'YY10 KTP' 'No' 'Doc23456'
+	And the user clicks Save and continue
+	Then the Goods movement services page should be displayed
+	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user clicks Save and continue
+	Then the Contact details page should be displayed, pre-populated with the user's details
+	When the user clicks Save and continue
+	Then the Nominated contacts page should be displayed
+	When the user clicks Save and continue
+	Then the Accompanying documents page should be displayed
+	When the user selects Document type 'Phytosanitary certificate'
+	And the user enters Document reference 'PHYTOCERT123'
+	And the user enters date of issue from last week
+	And the user clicks on Add attachment link
+	And the user uploads the document 'IPAFFS Test Document' in the format '.docx'
+	Then the document 'IPAFFS Test Document' '.docx' is uploaded successfully
+	When the user clicks Save and continue
+	Then Importer, Packer, Delivery address and Consignor page should be displayed
+	When the user verifies Importer details 'IPAFFS IDM Test' is pre-filled
+	And the user clicks Add a delivery address link
+	Then Search for an existing delivery address page should be displayed
+	When the user selects one of the displayed delivery address "DEFRA"
+	Then the chosen delivery address "DEFRA" should be displayed on the Traders page
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter "DEFRA"
+	Then the chosen consignor or exporter should be displayed
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	And the data presented for review matches the data entered into the notification for CHED PP
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user ticks the checkbox to declare that the information is true and correct
+	And the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the IPAFFS User details and CHED Reference for notification 2
+	When the user clicks Return to your dashboard
+	Then the Your import notifications page is displayed
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Plants, plant products and other objects' option
+	And the user clicks Save and continue
+	Then the Origin of the plants plant product or other objects page should be displayed
+	When the user chooses "Italy" from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing "Italy" as the Country of origin and Country from where consigned
+	When the user clicks Save and continue
+	Then Description of the goods How do you want to add your commodity details page should be displayed
+	When the user selects 'Manual entry' option to add commodity details
+	And the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user clicks Commodity code search tab
+	And the user searches for the commodity code '12099130'
+	Then the CHED PP commodity details should be populated '12099130' 'Salad beet seed or beetroot seed (Beta vulgaris var. conditiva)'
+	When the user selects EPPO code 'BEASS' checkbox
+	And the user clicks Save and continue
+	Then What is the main reason for importing the consignment? page should be displayed
+	When The user selects 'Internal market' radio option
+	And the user clicks Save and continue
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Description of the goods/Commodity page should be displayed
+	When the user selects the check box for the commodity code '12099130'
+	And the user populates Number of packages as '10' for CHED PP commodity
+	And the user selects type of package as 'Box' for CHED PP commodity
+	And the user populates Quantity as '10' for CHED PP commodity
+	And the user selects Quantity type as 'Kilograms' for CHED PP commodity
+	And the user populates Net weight as '100' for CHED PP commodity
+	And the user clicks Apply Button
+	And the user clicks Save and continue
+	Then the Additional details page should be displayed
+	When the user enters the total gross weight '110'
+	And the user clicks Save and continue
+	Then Transport to the Border Control Post (BCP) page should be dislayed
+	When the user populates the transport to the BCP details 'Heathrow Airport - GBLHR4PP' 'Eurobip' 'Road vehicle' 'YY10 KTP' 'No' 'Doc23456'
+	And the user clicks Save and continue
+	Then the Goods movement services page should be displayed
+	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user clicks Save and continue
+	Then the Contact details page should be displayed, pre-populated with the user's details
+	When the user clicks Save and continue
+	Then the Nominated contacts page should be displayed
+	When the user clicks Save and continue
+	Then the Accompanying documents page should be displayed
+	When the user selects Document type 'Phytosanitary certificate'
+	And the user enters Document reference 'PHYTOCERT123'
+	And the user enters date of issue from last week
+	And the user clicks on Add attachment link
+	And the user uploads the document 'IPAFFS Test Document' in the format '.docx'
+	Then the document 'IPAFFS Test Document' '.docx' is uploaded successfully
+	When the user clicks Save and continue
+	Then Importer, Packer, Delivery address and Consignor page should be displayed
+	When the user verifies Importer details 'IPAFFS IDM Test' is pre-filled
+	And the user clicks Add a delivery address link
+	Then Search for an existing delivery address page should be displayed
+	When the user selects one of the displayed delivery address "DEFRA"
+	Then the chosen delivery address "DEFRA" should be displayed on the Traders page
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter "DEFRA"
+	Then the chosen consignor or exporter should be displayed
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	And the data presented for review matches the data entered into the notification for CHED PP
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user ticks the checkbox to declare that the information is true and correct
+	And the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the IPAFFS User details and CHED Reference for notification 3
+
+
+Scenario: Commodity 3
+	When I navigate to the IPAFF application
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF Trader credentials and signin
+	Then the user should be logged into Notification page
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Plants, plant products and other objects' option
+	And the user clicks Save and continue
+	Then the Origin of the plants plant product or other objects page should be displayed
+	When the user chooses "Monaco" from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing "Monaco" as the Country of origin and Country from where consigned
+	When the user clicks Save and continue
+	Then Description of the goods How do you want to add your commodity details page should be displayed
+	When the user selects 'Manual entry' option to add commodity details
+	And the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user clicks Commodity code search tab
+	And the user searches for the commodity code '06012010'
+	Then the CHED PP commodity details should be populated '06012010' 'Chicory plants and roots'
+	When the user searchs for EPPO code 'CICCA' and clicks add link
+	Then Genus (and Species) 'Cichorium calvum' and EPPO code 'CICCA' should be populated in commodity page
+	When the user clicks Save and continue
+	Then What is the main reason for importing the consignment? page should be displayed
+	When The user selects 'Internal market' radio option
+	And the user clicks Save and continue
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Description of the goods/Commodity page should be displayed
+	When the user selects the check box for the commodity code '06012010'
+	And the user populates Number of packages as '10' for CHED PP commodity
+	And the user selects type of package as 'Box' for CHED PP commodity
+	And the user populates Quantity as '10' for CHED PP commodity
+	And the user selects Quantity type as 'Kilograms' for CHED PP commodity
+	And the user populates Net weight as '100' for CHED PP commodity
+	And the user clicks Apply Button
+	And the user selects Intended for final users as 'Yes' for CHED PP commodity '06012010'
+	And the user clicks Save and continue
+	Then the Additional details page should be displayed
+	When the user enters the total gross weight '110'
+	And the user clicks Save and continue
+	Then Transport to the Border Control Post (BCP) page should be dislayed
+	When the user populates the transport to the BCP details 'Heathrow Airport - GBLHR4PP' 'Eurobip' 'Road vehicle' 'YY10 KTP' 'No' 'Doc23456'
+	And the user clicks Save and continue
+	Then the Goods movement services page should be displayed
+	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user clicks Save and continue
+	Then the Contact details page should be displayed, pre-populated with the user's details
+	When the user clicks Save and continue
+	Then the Nominated contacts page should be displayed
+	When the user clicks Save and continue
+	Then the Accompanying documents page should be displayed
+	When the user selects Document type 'Phytosanitary certificate'
+	And the user enters Document reference 'PHYTOCERT123'
+	And the user enters date of issue from last week
+	And the user clicks on Add attachment link
+	And the user uploads the document 'IPAFFS Test Document' in the format '.docx'
+	Then the document 'IPAFFS Test Document' '.docx' is uploaded successfully
+	When the user clicks Save and continue
+	Then Importer, Packer, Delivery address and Consignor page should be displayed
+	When the user verifies Importer details 'IPAFFS IDM Test' is pre-filled
+	And the user clicks Add a delivery address link
+	Then Search for an existing delivery address page should be displayed
+	When the user selects one of the displayed delivery address "DEFRA"
+	Then the chosen delivery address "DEFRA" should be displayed on the Traders page
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter "DEFRA"
+	Then the chosen consignor or exporter should be displayed
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	And the data presented for review matches the data entered into the notification for CHED PP
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user ticks the checkbox to declare that the information is true and correct
+	And the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the IPAFFS User details and CHED Reference for notification 4
+
+Scenario: Commodity 4
+	When I navigate to the IPAFF application
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF Trader credentials and signin
+	Then the user should be logged into Notification page
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Plants, plant products and other objects' option
+	And the user clicks Save and continue
+	Then the Origin of the plants plant product or other objects page should be displayed
+	When the user chooses "Montserrat" from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing "Montserrat" as the Country of origin and Country from where consigned
+	When the user clicks Save and continue
+	Then Description of the goods How do you want to add your commodity details page should be displayed
+	When the user selects 'Manual entry' option to add commodity details
+	And the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user clicks Commodity code search tab
+	And the user searches for the commodity code '08094090'
+	Then the CHED PP commodity details should be populated '08094090' 'Sloes'
+	When the user searchs for EPPO code 'PRNAF' and clicks add link
+	Then Genus (and Species) 'Prunus africana' and EPPO code 'PRNAF' should be populated in commodity page
+	When the user clicks Save and continue
+	Then What is the main reason for importing the consignment? page should be displayed
+	When The user selects 'Internal market' radio option
+	And the user clicks Save and continue
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Description of the goods/Commodity page should be displayed
+	When the user selects the check box for the commodity code '08094090'
+	And the user populates Number of packages as '10' for CHED PP commodity
+	And the user selects type of package as 'Box' for CHED PP commodity
+	And the user populates Quantity as '10' for CHED PP commodity
+	And the user selects Quantity type as 'Kilograms' for CHED PP commodity
+	And the user populates Net weight as '100' for CHED PP commodity
+	And the user clicks Apply Button
+	And the user clicks Save and continue
+	Then the Additional details page should be displayed
+	When the user enters the total gross weight '110'
+	And the user clicks Save and continue
+	Then Transport to the Border Control Post (BCP) page should be dislayed
+	When the user populates the transport to the BCP details 'Heathrow Airport - GBLHR4PP' 'Eurobip' 'Road vehicle' 'YY10 KTP' 'No' 'Doc23456'
+	And the user clicks Save and continue
+	Then the Goods movement services page should be displayed
+	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user clicks Save and continue
+	Then the Contact details page should be displayed, pre-populated with the user's details
+	When the user clicks Save and continue
+	Then the Nominated contacts page should be displayed
+	When the user clicks Save and continue
+	Then the Accompanying documents page should be displayed
+	When the user selects Document type 'Phytosanitary certificate'
+	And the user enters Document reference 'PHYTOCERT123'
+	And the user enters date of issue from last week
+	And the user clicks on Add attachment link
+	And the user uploads the document 'IPAFFS Test Document' in the format '.docx'
+	Then the document 'IPAFFS Test Document' '.docx' is uploaded successfully
+	When the user clicks Save and continue
+	Then Importer, Packer, Delivery address and Consignor page should be displayed
+	When the user verifies Importer details 'IPAFFS IDM Test' is pre-filled
+	And the user clicks Add a delivery address link
+	Then Search for an existing delivery address page should be displayed
+	When the user selects one of the displayed delivery address "DEFRA"
+	Then the chosen delivery address "DEFRA" should be displayed on the Traders page
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter "DEFRA"
+	Then the chosen consignor or exporter should be displayed
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	And the data presented for review matches the data entered into the notification for CHED PP
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user ticks the checkbox to declare that the information is true and correct
+	And the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the IPAFFS User details and CHED Reference for notification 5
+
+Scenario: Commodity 5
+When I navigate to the IPAFF application
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF Trader credentials and signin
+	Then the user should be logged into Notification page
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Plants, plant products and other objects' option
+	And the user clicks Save and continue
+	Then the Origin of the plants plant product or other objects page should be displayed
+	When the user chooses "Togo" from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing "Togo" as the Country of origin and Country from where consigned
+	When the user clicks Save and continue
+	Then Description of the goods How do you want to add your commodity details page should be displayed
+	When the user selects 'Manual entry' option to add commodity details
+	And the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user clicks Commodity code search tab
+	And the user searches for the commodity code '12040010'
+	Then the CHED PP commodity details should be populated '12040010' 'For sowing'
+	When the user selects EPPO code 'LIUUT' checkbox
+	And the user clicks Save and continue
+	Then What is the main reason for importing the consignment? page should be displayed
+	When The user selects 'Internal market' radio option
+	And the user clicks Save and continue
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Description of the goods/Commodity page should be displayed
+	When the user selects the check box for the commodity code '12040010'
+	And the user populates Number of packages as '10' for CHED PP commodity
+	And the user selects type of package as 'Box' for CHED PP commodity
+	And the user populates Quantity as '10' for CHED PP commodity
+	And the user selects Quantity type as 'Kilograms' for CHED PP commodity
+	And the user populates Net weight as '100' for CHED PP commodity
+	And the user clicks Apply Button
+	And the user clicks Save and continue
+	Then the Additional details page should be displayed
+	When the user enters the total gross weight '110'
+	And the user clicks Save and continue
+	Then Transport to the Border Control Post (BCP) page should be dislayed
+	When the user populates the transport to the BCP details 'Heathrow Airport - GBLHR4PP' 'Eurobip' 'Road vehicle' 'YY10 KTP' 'No' 'Doc23456'
+	And the user clicks Save and continue
+	Then the Goods movement services page should be displayed
+	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user clicks Save and continue
+	Then the Contact details page should be displayed, pre-populated with the user's details
+	When the user clicks Save and continue
+	Then the Nominated contacts page should be displayed
+	When the user clicks Save and continue
+	Then the Accompanying documents page should be displayed
+	When the user selects Document type 'Phytosanitary certificate'
+	And the user enters Document reference 'PHYTOCERT123'
+	And the user enters date of issue from last week
+	And the user clicks on Add attachment link
+	And the user uploads the document 'IPAFFS Test Document' in the format '.docx'
+	Then the document 'IPAFFS Test Document' '.docx' is uploaded successfully
+	When the user clicks Save and continue
+	Then Importer, Packer, Delivery address and Consignor page should be displayed
+	When the user verifies Importer details 'IPAFFS IDM Test' is pre-filled
+	And the user clicks Add a delivery address link
+	Then Search for an existing delivery address page should be displayed
+	When the user selects one of the displayed delivery address "DEFRA"
+	Then the chosen delivery address "DEFRA" should be displayed on the Traders page
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter "DEFRA"
+	Then the chosen consignor or exporter should be displayed
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	And the data presented for review matches the data entered into the notification for CHED PP
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user ticks the checkbox to declare that the information is true and correct
+	And the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the IPAFFS User details and CHED Reference for notification 6

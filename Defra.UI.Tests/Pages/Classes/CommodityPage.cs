@@ -78,6 +78,11 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement speciesNetWeightInput(string commodityCode) => _driver.FindElement(By.XPath($"//input[starts-with(@id, '{commodityCode}') and contains(@id, '.net-weight-desktop')]"));
         private IWebElement speciesNumPackagesInput(string commodityCode) => _driver.FindElement(By.XPath($"//input[starts-with(@id, '{commodityCode}') and contains(@id, '.num-packages-desktop')]"));
         private By speciesPackageTypeSelectBy(string commodityCode) => By.XPath($"//select[starts-with(@id, '{commodityCode}-') and contains(@id, '.package-type-desktop')]");
+        private IWebElement drpIntendedForFinalUsers(string commodityCode) =>
+            _driver.FindElement(By.XPath(
+                $"//div[contains(@class,'commodity-details-commodity-wrapper')]" +
+                $"[.//h2[normalize-space()='{commodityCode}']]" +
+                $"//select[contains(@id,'finished-or-propagated')]"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -439,6 +444,12 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickApplyButton()
         {
             btnApply.Click();
+        }        
+
+        public void SelectIntendedForFinalUsers(string commodityCode, string value)
+        {
+            var optionValue = value.Trim().Equals("Yes", StringComparison.OrdinalIgnoreCase) ? "Finished" : "Propagated";
+            new SelectElement(drpIntendedForFinalUsers(commodityCode)).SelectByValue(optionValue);
         }
     }
 }

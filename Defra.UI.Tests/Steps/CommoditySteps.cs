@@ -495,5 +495,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             commodityPage?.SelectCommodity(commCode);
         }
+
+        [When("the user selects Intended for final users as {string} for CHED PP commodity {string}")]
+        public void WhenTheUserSelectsIntendedForFinalUsersForCHEDPPCommodity(string value, string commodityCode)
+        {
+            commodityPage?.SelectIntendedForFinalUsers(commodityCode, value);
+            _scenarioContext[$"IntendedForFinalUsers"] = value;
+        }
     }
 }

@@ -59,5 +59,6 @@
         string GetCHEDPPTotalNetWeight();
         string GetCHEDPPTotalPackages();
         void ClickCancelLink();
+        void SelectIntendedForFinalUsers(string commodityCode, string value);
     }
 }
