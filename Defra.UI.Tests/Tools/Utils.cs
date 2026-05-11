@@ -777,6 +777,83 @@ namespace Defra.UI.Tests.Tools
         }
 
         #endregion
+
+        /// <summary>
+        /// Retrieves a file downloaded inside a Selenium Grid node container and saves it
+        /// to the local automation-downloads directory on the agent machine.
+        ///
+        /// When running against a remote Selenium Grid, Chrome downloads land on the node's
+        /// filesystem — not the agent's. This method uses the Grid 4 file download REST API
+        /// (POST /session/{id}/se/files) to transfer the file as a base64-encoded zip,
+        /// then extracts it locally.
+        ///
+        /// Falls back silently when the driver is not a RemoteWebDriver (e.g. local runs).
+        /// </summary>
+        /// <param name="driver">The active WebDriver session.</param>
+        /// <param name="fileName">The exact file name to retrieve (e.g. "file.xlsx").</param>
+        /// <param name="gridUrl">The Selenium Grid hub URL. Defaults to http://localhost:4444.</param>
+        public static void RetrieveFileFromGrid(IWebDriver driver, string fileName, string gridUrl = "http://localhost:4444")
+        {
+            if (driver is not OpenQA.Selenium.Remote.RemoteWebDriver remoteDriver)
+            {
+                return;
+            }
+
+            var downloadDir = Path.Combine(Path.GetTempPath(), "automation-downloads");
+            Directory.CreateDirectory(downloadDir);
+
+            var sessionId = remoteDriver.SessionId.ToString();
+            var endpoint = $"{gridUrl}/session/{sessionId}/se/files";
+            var timeout = TimeSpan.FromSeconds(30);
+            var stopwatch = Stopwatch.StartNew();
+
+            while (stopwatch.Elapsed < timeout)
+            {
+                try
+                {
+                    using var client = new HttpClient();
+                    var payload = System.Text.Json.JsonSerializer.Serialize(new { name = fileName });
+                    var requestContent = new StringContent(payload, System.Text.Encoding.UTF8, "application/json");
+
+                    var response = client.PostAsync(endpoint, requestContent).Result;
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var body = response.Content.ReadAsStringAsync().Result;
+                        using var doc = System.Text.Json.JsonDocument.Parse(body);
+
+                        if (!doc.RootElement.TryGetProperty("value", out var value)) break;
+                        if (!value.TryGetProperty("contents", out var contentsElement)) break;
+
+                        var base64Contents = contentsElement.GetString();
+                        if (string.IsNullOrEmpty(base64Contents)) break;
+
+                        // Grid wraps the downloaded file in a zip archive
+                        using var zipStream = new MemoryStream(Convert.FromBase64String(base64Contents));
+                        using var zip = new System.IO.Compression.ZipArchive(zipStream, System.IO.Compression.ZipArchiveMode.Read);
+
+                        foreach (var entry in zip.Entries)
+                        {
+                            var localPath = Path.Combine(downloadDir, entry.Name);
+                            using var entryStream = entry.Open();
+                            using var fileStream = File.Create(localPath);
+                            entryStream.CopyTo(fileStream);
+                            Console.WriteLine($"[GRID DOWNLOAD] Retrieved '{entry.Name}' from Grid node → '{localPath}'");
+                        }
+
+                        return;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[GRID DOWNLOAD] Waiting for '{fileName}' on Grid: {ex.Message}");
+                }
+
+                Thread.Sleep(1000);
+            }
+
+            Console.WriteLine($"[GRID DOWNLOAD] Timed out waiting for '{fileName}' from Grid node at {endpoint}");
+        }
     }
 
     #region Operator Details Model
