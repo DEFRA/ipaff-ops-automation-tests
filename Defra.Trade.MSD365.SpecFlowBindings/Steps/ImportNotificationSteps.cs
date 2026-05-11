@@ -57,6 +57,8 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
     {
         Driver.WaitForTransaction();
 
+        SignInPromptHelper.DismissSignInPrompts(Driver, "post-navigation");
+
         var viewSelectorButton = Driver.WaitUntilAvailable(
             By.XPath("//button[contains(@data-id,'ViewSelector') and not(contains(@data-id,'ViewSelector_1'))]"),
             $"View selector button could not be found.");
@@ -86,11 +88,7 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
     [When("I search Import Notifications for the notification created in IPAFFS")]
     [When("I search Importer Notifications for the notification created in IPAFFS")]
     public void WhenISearchImporterNotificationsForTheNotificationCreatedInIPAFFS()
-    {
-        if (!scenarioContext.ContainsKey("CHEDReference"))
-        {
-            scenarioContext["CHEDReference"] = "CHEDPP.GB.2026.1067816";
-        }       
+    {              
         var chedReference = scenarioContext.Get<string>("CHEDReference");
         XrmApp.Grid.Search(chedReference);
         Driver.WaitForTransaction();
@@ -203,6 +201,8 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
     {
         Driver.WaitForTransaction();
 
+        SignInPromptHelper.DismissSignInPrompts(Driver, "post-navigation");
+
         var expectedChedReference = scenarioContext.Get<string>("CHEDReference");
 
         var pageHeader = Driver.WaitUntilAvailable(
@@ -270,6 +270,16 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
             $"Expected Import Notification Status Reason to be '{expectedStatusReason}' but found '{statusReasonValue.Text.Trim()}'.");
     }
 
+    /// <summary>
+    /// Clicks the Work Order reference link in the <c>trd_workorderid</c> lookup field on the Summary tab.
+    /// Handles two compounding issues: (1) the Dynamics plugin/flow that creates and links the Work Order
+    /// runs asynchronously after the Import Notification is received from IPAFFS — on a cold first run the
+    /// field may be genuinely empty; (2) the field's inner anchor is only rendered into the DOM once its
+    /// container is scrolled into the viewport (lazy-load). The outer retry loop refreshes the record via
+    /// the Dynamics command bar between attempts to pull the latest server state, while the inner scroll
+    /// loop incrementally scrolls the Summary tab panel to trigger the lazy-load render.
+    /// Waits up to 5 minutes total for the Work Order to be linked before failing.
+    /// </summary>
     [When("I click the reference number in the Work Order field for the notification created in IPAFFS")]
     public void WhenIClickTheReferenceNumberInTheWorkOrderFieldForTheNotificationCreatedInIPAFFS()
     {
@@ -277,23 +287,61 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
 
         var expectedChedReference = scenarioContext.Get<string>("CHEDReference");
 
+        const int maxScrollAttempts = 20;
+        const int scrollIncrementPx = 300;
+        const int maxOuterRetries = 10;
+        const int outerRetryWaitSeconds = 30;
+
         IWebElement workOrderLink = null;
 
-        Policy
-            .Handle<Exception>()
-            .WaitAndRetry(
-                retryCount: 5,
-                sleepDurationProvider: _ => TimeSpan.FromSeconds(2))
-            .Execute(() =>
+        for (var outerAttempt = 0; outerAttempt < maxOuterRetries && workOrderLink == null; outerAttempt++)
+        {
+            if (outerAttempt > 0)
             {
-                workOrderLink = Driver.WaitUntilAvailable(
-                    By.XPath($"//div[@data-id='trd_workorderid.fieldControl-LookupResultsDropdown_trd_workorderid_selected_tag' and @aria-label='{expectedChedReference}']"),
-                    $"Work Order field link for CHED reference '{expectedChedReference}' could not be found.");
-            });
+                System.Threading.Thread.Sleep(TimeSpan.FromSeconds(outerRetryWaitSeconds));
+
+                CommandSteps.WhenISelectTheCommand("Refresh");
+                Driver.WaitForTransaction();
+
+                SignInPromptHelper.DismissSignInPrompts(Driver, "post-refresh");
+            }
+
+            for (var scrollAttempt = 0; scrollAttempt < maxScrollAttempts; scrollAttempt++)
+            {
+                Driver.ExecuteScript(
+                    @"var panel = document.querySelector('[role=""tabpanel""][aria-label=""Summary""]')
+                               || document.querySelector('[role=""tabpanel""]');
+                      if (panel) { panel.scrollTop += arguments[0]; }",
+                    scrollIncrementPx);
+
+                Driver.WaitForTransaction();
+
+                var candidates = Driver.FindElements(
+                    By.XPath($"//div[@data-id='trd_workorderid.fieldControl-LookupResultsDropdown_trd_workorderid_selected_tag'" +
+                             $" and @aria-label='{expectedChedReference}']"));
+
+                if (candidates.Count > 0)
+                {
+                    workOrderLink = candidates[0];
+                    break;
+                }
+            }
+        }
+
+        var totalWaitMinutes = (maxOuterRetries - 1) * outerRetryWaitSeconds / 60;
+
+        workOrderLink.Should().NotBeNull(
+            $"Work Order field link for CHED reference '{expectedChedReference}' could not be found " +
+            $"after {maxOuterRetries} attempts over {totalWaitMinutes} minutes. " +
+            $"The Dynamics plugin/flow that creates and links the Work Order to this Import Notification " +
+            $"may not have completed. Verify that the Work Order creation flow is active and that " +
+            $"the trd_workorderid lookup is populated on the record in Dynamics.");
 
         workOrderLink.Click();
 
         Driver.WaitForTransaction();
+
+        SignInPromptHelper.DismissSignInPrompts(Driver, "post-navigation");
     }
 
     [Then("I verify the Importer Notification Details reflect the information from the EU Import Notification")]

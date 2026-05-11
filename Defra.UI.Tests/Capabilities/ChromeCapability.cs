@@ -7,7 +7,6 @@ namespace Defra.UI.Tests.Capabilities
 {
     public class ChromeCapability : IDriverOptions
     {
-
         private static ScenarioContext _scenarioContext;
 
         public ChromeCapability(BaseConfiguration baseConfiguration, ScenarioContext context)
@@ -23,7 +22,6 @@ namespace Defra.UI.Tests.Capabilities
             chromeOptions.AddArgument("--no-sandbox");
             chromeOptions.AcceptInsecureCertificates = true;
 
-
             if (ConfigSetup.BaseConfiguration.TestConfiguration.Headless)
             {
                 chromeOptions.AddArgument("--headless");
@@ -37,7 +35,6 @@ namespace Defra.UI.Tests.Capabilities
                     {
                         chromeOptions.AddArgument(argument);
                     }
-
                 }
             }
 
@@ -49,8 +46,8 @@ namespace Defra.UI.Tests.Capabilities
             SetDownloadPathToUserProfile(chromeOptions);
 
             return chromeOptions;
-
         }
+
         private static void SetChromiumDevice(ChromeOptions chromeOptions)
         {
             chromeOptions.EnableMobileEmulation(ConfigSetup.BaseConfiguration.TestConfiguration.EmulateDeviceInfo);
@@ -59,9 +56,7 @@ namespace Defra.UI.Tests.Capabilities
         public DriverOptions GetDriverOptions(Dictionary<string, string> overrideCapDict = null)
         {
             var arguments = GetArgumentsFromOverrides(ref overrideCapDict);
-
             var driverOptions = GetChromeOptions(arguments);
-
             return driverOptions;
         }
 
@@ -73,21 +68,24 @@ namespace Defra.UI.Tests.Capabilities
             }
 
             List<string> args = [overrideCapDict[BrowserConfigurationValue.BrowserArguments]];
-
             overrideCapDict.Remove(BrowserConfigurationValue.BrowserArguments);
-
             return args;
         }
 
         private static void SetDownloadPathToUserProfile(ChromeOptions chromeOptions)
         {
-            var downloadDirectory = Path.Combine(Path.GetTempPath(), "automation-downloads"); 
+            var downloadDirectory = Path.Combine(Path.GetTempPath(), "automation-downloads");
             Directory.CreateDirectory(downloadDirectory);
 
             chromeOptions.AddUserProfilePreference("download.default_directory", downloadDirectory);
             chromeOptions.AddUserProfilePreference("download.prompt_for_download", false);
             chromeOptions.AddUserProfilePreference("download.directory_upgrade", true);
             chromeOptions.AddUserProfilePreference("safebrowsing.enabled", true);
+
+            // Use the built-in property rather than AddAdditionalOption — the Selenium version
+            // in use already registers "se:downloadsEnabled" internally, so AddAdditionalOption
+            // throws ArgumentException for a duplicate capability name.
+            chromeOptions.EnableDownloads = true;
         }
-    }    
+    }
 }

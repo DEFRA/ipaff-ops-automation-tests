@@ -83,10 +83,12 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             lnkDownloadUrl.Click();
         }
-        
+
         public void ClickDownloadLinkInCatchCertificate()
         {
+            var fileName = lnkDownloadLink.GetAttribute("download") ?? lnkDownloadLink.Text.Trim();
             lnkDownloadLink.Click();
+            Utils.RetrieveFileFromGrid(_driver, fileName);
         }
 
         public bool IsSingleCertificagteDownloaded(string chedReference)

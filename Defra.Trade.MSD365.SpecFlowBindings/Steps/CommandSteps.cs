@@ -100,6 +100,8 @@ public class CommandSteps : PowerAppsStepDefiner
     {
         Driver.WaitUntilAvailable(By.Id("navigateBackButtontab-id-0")).Click();
         Driver.WaitForTransaction();
+
+        SignInPromptHelper.DismissSignInPrompts(Driver, "post-navigation");
     }
 
     [Scope(Tag = "Trade")]

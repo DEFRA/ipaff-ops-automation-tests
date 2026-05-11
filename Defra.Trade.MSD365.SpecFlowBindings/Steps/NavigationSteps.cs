@@ -39,6 +39,8 @@ public class NavigationSteps : PowerAppsStepDefiner
         Driver.WaitForTransaction();
         XrmApp.Navigation.OpenSubArea(areaName, subAreaName);
         Driver.WaitForTransaction();
+
+        SignInPromptHelper.DismissSignInPrompts(Driver, "post-navigation");
     }
 
     /// <summary>
