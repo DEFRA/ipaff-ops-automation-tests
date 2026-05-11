@@ -1,9 +1,9 @@
 @RiskEngine
-Feature: Risk Engine
+Feature: Risk Engine CHEDPP
 
-Bulk upload PHSI commodity rules and end-to-end validation via IPAFFS notification
+Bulk upload, Update and Test rules with end-to-end validation for a CHEDPP notification
 
-Scenario: Commodity 1
+Scenario: Bulk upload of new rules for CHEDPP - SPS-9414
 	# ---------- Iteration 1: Start ----------
 	# Upload the rules
 	Given that I navigate to the Risk Engine application
@@ -53,19 +53,19 @@ Scenario: Commodity 1
 	When the user enters '07020099' in the PHSI rules search field
 	And the user sorts the PHSI rules table by Id descending
 	Then the top PHSI rule row should match the following details
-		| Field                  | Value                                         |
-		| Commodity code         | 07020099                                      |
-		| Intended Use           | None                                          |
-		| Type                   | None                                          |
-		| Rate %                 | 25                                            |
-		| Previous rate %        | 0                                             |
-		| Permanent              | Yes                                           |
-		| Countries              | Djibouti                                      |
-		| Country groups         | None                                          |
-		| Country exceptions     | None                                          |
-		| Document check aligned | No                                            |
-		| Reason                 | Reason 1                                      |
-	And the user records the Id of the top PHSI rule row as 'NewRuleId'
+		| Field                  | Value    |
+		| Commodity code         | 07020099 |
+		| Intended Use           | None     |
+		| Type                   | None     |
+		| Rate %                 | 25       |
+		| Previous rate %        | 0        |
+		| Permanent              | Yes      |
+		| Countries              | Djibouti |
+		| Country groups         | None     |
+		| Country exceptions     | None     |
+		| Document check aligned | No       |
+		| Reason                 | Reason 1 |
+	And the user records the Id of the top PHSI rule row as 'Iteration_1_RuleId'
 	# Submit a matching CHED-PP notification in IPAFFS (Djibouti / 0702009907)
 	When I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -146,7 +146,6 @@ Scenario: Commodity 1
 	Then the chosen consignor or exporter should be displayed
 	When the user clicks Save and continue
 	Then the Review your notification page should be displayed
-	And the data presented for review matches the data entered into the notification for CHED PP
 	When the user clicks Save and continue
 	Then the Declaration page should be displayed
 	When the user ticks the checkbox to declare that the information is true and correct
@@ -155,20 +154,20 @@ Scenario: Commodity 1
 	And the user records the IPAFFS User details and CHED Reference for notification 1
 	# Validate via Risk Decision Report
 	When I navigate to the Risk Engine application
-	Then the Risk Engine Home page should be displayed	
+	Then the Risk Engine Home page should be displayed
 	When the user clicks the 'Reports' link from the Risk Engine header menu
 	Then the Risk Engine Reports page should be displayed
 	When the user clicks the CHED-PP reports link
 	Then the CHED-PP reports page should be displayed
 	When the user clicks the Risk decision report link
 	Then the Risk decision report page should be displayed
-	When the user enters the recorded CHED Reference in the Risk decision search box and clicks Search
+	When the user enters the recorded CHED Reference for notification 1 in the Risk decision search box and clicks Search
 	Then the Risk decision report returns one matching record
-	When the user clicks the Expand button for the CHED Reference
+	When the user clicks the Expand button for the CHED Reference of notification 1
 	And the user clicks the Requests details link
 	Then the Requests section is expanded with details from IPAFFS
 	When the user clicks the Decision details link
-	Then the Decision section contains a DecisionRule matching the recorded 'NewRuleId' with the following values
+	Then the Decision section contains a DecisionRule matching the recorded 'Iteration_1_RuleId' with the following values
 		| Field          | Value         |
 		| RuleType       | CommodityRule |
 		| RegulatorType  | PHSIImport    |
@@ -176,12 +175,38 @@ Scenario: Commodity 1
 		| Total          | 1             |
 		| Triggered      | 1             |
 		| IsTriggered    | true          |
-	# Update bulk-update CSV with the new rule Id for commodity '07020099
-	When the user updates the bulk update CSV 'SPS-8834_CHED-PP_BulkUploadRules_UpdatedRules.csv' setting the Id for commodity code '07020099' to the recorded 'NewRuleId'
-	Then the bulk update CSV row for commodity code '07020099' should contain the recorded 'NewRuleId'
+	# Update bulk-update CSV with the new rule Id for commodity 07020099
+	When the user updates the bulk update CSV 'SPS-8834_CHED-PP_BulkUploadRules_UpdatedRules.csv' setting the Id for commodity code '07020099' to the recorded 'Iteration_1_RuleId'
+	Then the bulk update CSV row for commodity code '07020099' should contain the recorded 'Iteration_1_RuleId'
+	And 'Iteration_1' is complete
 	# ---------- Iteration 1: Complete ----------
-
-Scenario: Commodity 2
+	# ---------- Iteration 2: Start ----------
+	# Locate and record the new rule for commodity 12099130
+	When the user clicks the 'Reports' link from the Risk Engine header menu
+	Then the Risk Engine Reports page should be displayed
+	When the user clicks the CHED-PP reports link
+	Then the CHED-PP reports page should be displayed
+	When the user clicks the PHSI imports commodity rules report link
+	Then the View all PHSI (Import) Commodity Rules report page should be displayed
+	When the user enters '12099130' in the PHSI rules search field
+	And the user sorts the PHSI rules table by Id descending
+	Then the top PHSI rule row should match the following details
+		| Field                  | Value            |
+		| Commodity code         | 12099130         |
+		| Name                   | Beta sp.         |
+		| Eppo                   | BEASS            |
+		| Intended Use           | Not Test/Trial   |
+		| Type                   | Seed             |
+		| Rate %                 | 1                |
+		| Previous rate %        | 0                |
+		| Permanent              | No               |
+		| End date               | 01/01/2027       |
+		| Countries              | None             |
+		| Country groups         | EU Member States |
+		| Country exceptions     | None             |
+		| Document check aligned | Yes              |
+	And the user records the Id of the top PHSI rule row as 'Iteration_2_RuleId'
+	# Submit TWO matching CHED-PP notifications in IPAFFS (Italy / 12099130)
 	When I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
@@ -189,6 +214,7 @@ Scenario: Commodity 2
 	Then I should redirected to the IPAFF Sign in using Government Gateway page
 	When I have provided the IPAFF Trader credentials and signin
 	Then the user should be logged into Notification page
+	# --- APP-A (notification 2) ---
 	When the user clicks Create a new notification
 	Then the About the consignment/What are you importing? page should be displayed with radio buttons
 	When the user chooses 'Plants, plant products and other objects' option
@@ -255,13 +281,13 @@ Scenario: Commodity 2
 	Then the chosen consignor or exporter should be displayed
 	When the user clicks Save and continue
 	Then the Review your notification page should be displayed
-	And the data presented for review matches the data entered into the notification for CHED PP
 	When the user clicks Save and continue
 	Then the Declaration page should be displayed
 	When the user ticks the checkbox to declare that the information is true and correct
 	And the user clicks Submit notification
 	Then the Confirmation page should be displayed with the initial risk assessment
 	And the user records the IPAFFS User details and CHED Reference for notification 2
+	# --- APP-B (notification 3) ---
 	When the user clicks Return to your dashboard
 	Then the Your import notifications page is displayed
 	When the user clicks Create a new notification
@@ -330,16 +356,82 @@ Scenario: Commodity 2
 	Then the chosen consignor or exporter should be displayed
 	When the user clicks Save and continue
 	Then the Review your notification page should be displayed
-	And the data presented for review matches the data entered into the notification for CHED PP
 	When the user clicks Save and continue
 	Then the Declaration page should be displayed
 	When the user ticks the checkbox to declare that the information is true and correct
 	And the user clicks Submit notification
 	Then the Confirmation page should be displayed with the initial risk assessment
 	And the user records the IPAFFS User details and CHED Reference for notification 3
-
-
-Scenario: Commodity 3
+	# Validate via Risk Decision Report - APP-A first (Total=1, Triggered=0)
+	When I navigate to the Risk Engine application
+	Then the Risk Engine Home page should be displayed
+	When the user clicks the 'Reports' link from the Risk Engine header menu
+	Then the Risk Engine Reports page should be displayed
+	When the user clicks the CHED-PP reports link
+	Then the CHED-PP reports page should be displayed
+	When the user clicks the Risk decision report link
+	Then the Risk decision report page should be displayed
+	When the user enters the recorded CHED Reference for notification 2 in the Risk decision search box and clicks Search
+	Then the Risk decision report returns one matching record
+	When the user clicks the Expand button for the CHED Reference of notification 2
+	And the user clicks the Requests details link
+	Then the Requests section is expanded with details from IPAFFS
+	When the user clicks the Decision details link
+	Then the Decision section contains a DecisionRule matching the recorded 'Iteration_2_RuleId' with the following values
+		| Field          | Value         |
+		| RuleType       | CommodityRule |
+		| RegulatorType  | PHSIImport    |
+		| Rate           | 1             |
+		| Total          | 1             |
+		| Triggered      | 0             |
+		| IsTriggered    | false         |
+	# Validate via Risk Decision Report - APP-B (Total=2, Triggered=1)
+	When the user enters the recorded CHED Reference for notification 3 in the Risk decision search box and clicks Search
+	Then the Risk decision report returns one matching record
+	When the user clicks the Expand button for the CHED Reference of notification 3
+	And the user clicks the Requests details link
+	Then the Requests section is expanded with details from IPAFFS
+	When the user clicks the Decision details link
+	Then the Decision section contains a DecisionRule matching the recorded 'Iteration_2_RuleId' with the following values
+		| Field          | Value         |
+		| RuleType       | CommodityRule |
+		| RegulatorType  | PHSIImport    |
+		| Rate           | 1             |
+		| Total          | 2             |
+		| Triggered      | 1             |
+		| IsTriggered    | true          |
+	# Update bulk-update CSV with the new rule Id for commodity 12099130
+	When the user updates the bulk update CSV 'SPS-8834_CHED-PP_BulkUploadRules_UpdatedRules.csv' setting the Id for commodity code '12099130' to the recorded 'Iteration_2_RuleId'
+	Then the bulk update CSV row for commodity code '12099130' should contain the recorded 'Iteration_2_RuleId'
+	And 'Iteration_2' is complete
+	# ---------- Iteration 2: Complete ----------
+	# ---------- Iteration 3: Start ----------
+	# Locate and record the new rule for commodity 060120
+	When the user clicks the 'Reports' link from the Risk Engine header menu
+	Then the Risk Engine Reports page should be displayed
+	When the user clicks the CHED-PP reports link
+	Then the CHED-PP reports page should be displayed
+	When the user clicks the PHSI imports commodity rules report link
+	Then the View all PHSI (Import) Commodity Rules report page should be displayed
+	When the user enters '060120' in the PHSI rules search field
+	And the user sorts the PHSI rules table by Id descending
+	Then the top PHSI rule row should match the following details
+		| Field                  | Value                                                              |
+		| Commodity code         | 060120                                                             |
+		| Intended Use           | Intended for final users                                           |
+		| Type                   | Plant                                                              |
+		| Woody/Non-woody?       | Non-woody                                                          |
+		| Indoor use/Outdoor use?| Outdoor use                                                        |
+		| Rate %                 | 30                                                                 |
+		| Previous rate %        | 0                                                                  |
+		| Permanent              | Yes                                                                |
+		| Countries              | None                                                               |
+		| Country groups         | European Countries, Euro-Mediterranean Area, Third Countries       |
+		| Country exceptions     | None                                                               |
+		| Document check aligned | No                                                                 |
+		| Reason                 | Reason 3                                                           |
+	And the user records the Id of the top PHSI rule row as 'Iteration_3_RuleId'
+	# Submit a matching CHED-PP notification in IPAFFS (Monaco / 06012010 / Intended for final users)
 	When I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
@@ -415,15 +507,64 @@ Scenario: Commodity 3
 	Then the chosen consignor or exporter should be displayed
 	When the user clicks Save and continue
 	Then the Review your notification page should be displayed
-	And the data presented for review matches the data entered into the notification for CHED PP
 	When the user clicks Save and continue
 	Then the Declaration page should be displayed
 	When the user ticks the checkbox to declare that the information is true and correct
 	And the user clicks Submit notification
 	Then the Confirmation page should be displayed with the initial risk assessment
 	And the user records the IPAFFS User details and CHED Reference for notification 4
-
-Scenario: Commodity 4
+	# Validate via Risk Decision Report
+	When I navigate to the Risk Engine application
+	Then the Risk Engine Home page should be displayed
+	When the user clicks the 'Reports' link from the Risk Engine header menu
+	Then the Risk Engine Reports page should be displayed
+	When the user clicks the CHED-PP reports link
+	Then the CHED-PP reports page should be displayed
+	When the user clicks the Risk decision report link
+	Then the Risk decision report page should be displayed
+	When the user enters the recorded CHED Reference for notification 4 in the Risk decision search box and clicks Search
+	Then the Risk decision report returns one matching record
+	When the user clicks the Expand button for the CHED Reference of notification 4
+	And the user clicks the Requests details link
+	Then the Requests section is expanded with details from IPAFFS
+	When the user clicks the Decision details link
+	Then the Decision section contains a DecisionRule matching the recorded 'Iteration_3_RuleId' with the following values
+		| Field          | Value         |
+		| RuleType       | CommodityRule |
+		| RegulatorType  | PHSIImport    |
+		| Rate           | 30            |
+		| Total          | 1             |
+		| Triggered      | 1             |
+		| IsTriggered    | true          |
+	# Update bulk-update CSV with the new rule Id for commodity 060120
+	When the user updates the bulk update CSV 'SPS-8834_CHED-PP_BulkUploadRules_UpdatedRules.csv' setting the Id for commodity code '060120' to the recorded 'Iteration_3_RuleId'
+	Then the bulk update CSV row for commodity code '060120' should contain the recorded 'Iteration_3_RuleId'
+	And 'Iteration_3' is complete
+	# ---------- Iteration 3: Complete ----------
+	# ---------- Iteration 4: Start ----------
+	# Locate and record the new rule for commodity 08094090
+	When the user clicks the 'Reports' link from the Risk Engine header menu
+	Then the Risk Engine Reports page should be displayed
+	When the user clicks the CHED-PP reports link
+	Then the CHED-PP reports page should be displayed
+	When the user clicks the PHSI imports commodity rules report link
+	Then the View all PHSI (Import) Commodity Rules report page should be displayed
+	When the user enters '08094090' in the PHSI rules search field
+	And the user sorts the PHSI rules table by Id descending
+	Then the top PHSI rule row should match the following details
+		| Field                  | Value             |
+		| Commodity code         | 08094090          |
+		| Intended Use           | None              |
+		| Type                   | None              |
+		| Rate %                 | 5                 |
+		| Previous rate %        | 0                 |
+		| Permanent              | Yes               |
+		| Countries              | Montserrat        |
+		| Country groups         | EU Member States  |
+		| Country exceptions     | France, Germany   |
+		| Document check aligned | Yes               |
+	And the user records the Id of the top PHSI rule row as 'Iteration_4_RuleId'
+	# Submit a matching CHED-PP notification in IPAFFS (Montserrat / 08094090)
 	When I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
@@ -498,16 +639,67 @@ Scenario: Commodity 4
 	Then the chosen consignor or exporter should be displayed
 	When the user clicks Save and continue
 	Then the Review your notification page should be displayed
-	And the data presented for review matches the data entered into the notification for CHED PP
 	When the user clicks Save and continue
 	Then the Declaration page should be displayed
 	When the user ticks the checkbox to declare that the information is true and correct
 	And the user clicks Submit notification
 	Then the Confirmation page should be displayed with the initial risk assessment
 	And the user records the IPAFFS User details and CHED Reference for notification 5
-
-Scenario: Commodity 5
-When I navigate to the IPAFF application
+	# Validate via Risk Decision Report
+	When I navigate to the Risk Engine application
+	Then the Risk Engine Home page should be displayed
+	When the user clicks the 'Reports' link from the Risk Engine header menu
+	Then the Risk Engine Reports page should be displayed
+	When the user clicks the CHED-PP reports link
+	Then the CHED-PP reports page should be displayed
+	When the user clicks the Risk decision report link
+	Then the Risk decision report page should be displayed
+	When the user enters the recorded CHED Reference for notification 5 in the Risk decision search box and clicks Search
+	Then the Risk decision report returns one matching record
+	When the user clicks the Expand button for the CHED Reference of notification 5
+	And the user clicks the Requests details link
+	Then the Requests section is expanded with details from IPAFFS
+	When the user clicks the Decision details link
+	Then the Decision section contains a DecisionRule matching the recorded 'Iteration_4_RuleId' with the following values
+		| Field          | Value         |
+		| RuleType       | CommodityRule |
+		| RegulatorType  | PHSIImport    |
+		| Rate           | 5             |
+		| Total          | 1             |
+		| Triggered      | 1             |
+		| IsTriggered    | true          |
+	# Update bulk-update CSV with the new rule Id for commodity 08094090
+	When the user updates the bulk update CSV 'SPS-8834_CHED-PP_BulkUploadRules_UpdatedRules.csv' setting the Id for commodity code '08094090' to the recorded 'Iteration_4_RuleId'
+	Then the bulk update CSV row for commodity code '08094090' should contain the recorded 'Iteration_4_RuleId'
+	And 'Iteration_4' is complete
+	# ---------- Iteration 4: Complete ----------
+	# ---------- Iteration 5: Start ----------
+	# Locate and record the new rule for commodity 12040010
+	When the user clicks the 'Reports' link from the Risk Engine header menu
+	Then the Risk Engine Reports page should be displayed
+	When the user clicks the CHED-PP reports link
+	Then the CHED-PP reports page should be displayed
+	When the user clicks the PHSI imports commodity rules report link
+	Then the View all PHSI (Import) Commodity Rules report page should be displayed
+	When the user enters '12040010' in the PHSI rules search field
+	And the user sorts the PHSI rules table by Id descending
+	Then the top PHSI rule row should match the following details
+		| Field                  | Value               |
+		| Commodity code         | 12040010            |
+		| Name                   | Linum usitatissimum |
+		| Eppo                   | LIUUT               |
+		| Intended Use           | Not Test/Trial      |
+		| Type                   | Seed                |
+		| Rate %                 | 10                  |
+		| Previous rate %        | 0                   |
+		| Permanent              | Yes                 |
+		| Countries              | Togo                |
+		| Country groups         | None                |
+		| Country exceptions     | None                |
+		| Document check aligned | No                  |
+	And the user records the Id of the top PHSI rule row as 'Iteration_5_RuleId'
+	# Submit a matching CHED-PP notification in IPAFFS (Togo / 12040010 / LIUUT)
+	When I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
 	When I click Continue button from How do you want to sign in page
@@ -580,10 +772,37 @@ When I navigate to the IPAFF application
 	Then the chosen consignor or exporter should be displayed
 	When the user clicks Save and continue
 	Then the Review your notification page should be displayed
-	And the data presented for review matches the data entered into the notification for CHED PP
 	When the user clicks Save and continue
 	Then the Declaration page should be displayed
 	When the user ticks the checkbox to declare that the information is true and correct
 	And the user clicks Submit notification
 	Then the Confirmation page should be displayed with the initial risk assessment
 	And the user records the IPAFFS User details and CHED Reference for notification 6
+	# Validate via Risk Decision Report
+	When I navigate to the Risk Engine application
+	Then the Risk Engine Home page should be displayed
+	When the user clicks the 'Reports' link from the Risk Engine header menu
+	Then the Risk Engine Reports page should be displayed
+	When the user clicks the CHED-PP reports link
+	Then the CHED-PP reports page should be displayed
+	When the user clicks the Risk decision report link
+	Then the Risk decision report page should be displayed
+	When the user enters the recorded CHED Reference for notification 6 in the Risk decision search box and clicks Search
+	Then the Risk decision report returns one matching record
+	When the user clicks the Expand button for the CHED Reference of notification 6
+	And the user clicks the Requests details link
+	Then the Requests section is expanded with details from IPAFFS
+	When the user clicks the Decision details link
+	Then the Decision section contains a DecisionRule matching the recorded 'Iteration_5_RuleId' with the following values
+		| Field          | Value         |
+		| RuleType       | CommodityRule |
+		| RegulatorType  | PHSIImport    |
+		| Rate           | 10            |
+		| Total          | 1             |
+		| Triggered      | 1             |
+		| IsTriggered    | true          |
+	# Update bulk-update CSV with the new rule Id for commodity 12040010
+	When the user updates the bulk update CSV 'SPS-8834_CHED-PP_BulkUploadRules_UpdatedRules.csv' setting the Id for commodity code '12040010' to the recorded 'Iteration_5_RuleId'
+	Then the bulk update CSV row for commodity code '12040010' should contain the recorded 'Iteration_5_RuleId'
+	And 'Iteration_5' is complete
+	# ---------- Iteration 5: Complete ----------

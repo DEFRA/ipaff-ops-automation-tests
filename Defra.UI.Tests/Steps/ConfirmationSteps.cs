@@ -3,6 +3,7 @@ using NUnit.Framework;
 using OpenQA.Selenium;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
+using Defra.UI.Tests.Tools;
 
 
 namespace Defra.UI.Tests.Steps.IPAFF
@@ -16,6 +17,119 @@ namespace Defra.UI.Tests.Steps.IPAFF
         private IWebDriver? _driver => _objectContainer.IsRegistered<IWebDriver>() ? _objectContainer.Resolve<IWebDriver>() : null;
         private IConfirmationPage? confirmationPage => _objectContainer.IsRegistered<IConfirmationPage>() ? _objectContainer.Resolve<IConfirmationPage>() : null;
 
+        /// <summary>
+        /// IPAFFS notification-specific context keys that are set during each iteration.
+        /// These are archived with an iteration prefix and then removed before the next iteration.
+        /// </summary>
+        private static readonly string[] IpaffsIterationKeys =
+        [
+            "ImportType",
+            "CountryOfOrigin",
+            "ContryFromWhereConsigned",
+            "CommodityCode",
+            "CommodityDescription",
+            "CommodityCodeFirstCommodity",
+            "CommodityDescFirstCommodity",
+            "CommodityCodeSecondCommodity",
+            "CommodityDescSecondCommodity",
+            "GenusFirstCommodity",
+            "GenusSecondCommodity",
+            "EPPOCodeFirstCommodity",
+            "EPPOCodeSecondCommodity",
+            "CommodityVariety",
+            "CommodityClass",
+            "MainReasonForImport",
+            "Purpose",
+            "ConsignmentReferenceNumber",
+            "NumberOfAnimals",
+            "NumberOfPackages",
+            "PackageType",
+            "Quantity",
+            "QuantityType",
+            "NetWeight",
+            "NetWeightFirstCommodity",
+            "NumberOfPackagesFirstCommodity",
+            "TypeOfPackageFirstCommodity",
+            "NetWeightSecondCommodity",
+            "NumOfPackagesSecondCommodity",
+            "TypeOfPackageSecondCommodity",
+            "SubtotalNetWeight",
+            "SubtotalPackages",
+            "TotalNetWeight",
+            "TotalPackages",
+            "TotalGrossWeight",
+            "IntendedForFinalUsers",
+            "ControlledAtmosphereContainer",
+            "GrossVolume",
+            "GrossVolumetUnit",
+            "Temperature",
+            "ConfirmationToDeclareGMS",
+            "BorderControlPost",
+            "PortOfEntry",
+            "InspectionPremises",
+            "MeansOfTransport",
+            "TransportId",
+            "AreContainers",
+            "ContainerNumber",
+            "SealNumber",
+            "OfficialSealAffixed",
+            "EnterTransportDocRef",
+            "EstimatedArrivalDate",
+            "EstimatedArrivalTime",
+            "EstimatedJourneyTime",
+            "IsCTC",
+            "IsGVMS",
+            "MovementReferenceNumber",
+            "MeansOfTransportAfterBCP",
+            "TransportIdentificationAfterBCP",
+            "TransportDocumentReferenceAfterBCP",
+            "DepartureDateFromBCP",
+            "DepartureTimeFromBCP",
+            "TransporterName",
+            "TransporterAddress",
+            "TransporterCountry",
+            "TransporterApprovalNumber",
+            "TransporterType",
+            "CountriesConsignmentWillTravelThrough",
+            "ShouldNotifyTransportContacts",
+            "ContactName",
+            "ContactEmail",
+            "ContactTelephone",
+            "ConsignmentContactAddress",
+            "DocumentType",
+            "DocumentReference",
+            "DocumentDateOfIssue",
+            "DocumentName",
+            "HealthDocumentType",
+            "HealthCertificateReference",
+            "HealthCertificateDateOfIssue",
+            "HealthCertificateFileName",
+            "CompanyName",
+            "ImporterAddress",
+            "ConsignorName",
+            "ConsignorAddress",
+            "ConsignorCountry",
+            "ConsignorDetails",
+            "ConsigneeName",
+            "ConsigneeAddress",
+            "ConsigneeDetails",
+            "ImporterDetails",
+            "DeliveryAddressName",
+            "DeliveryAddress",
+            "DeliveryCountry",
+            "DeliveryAddressDetails",
+            "PlaceOfDestinationName",
+            "PlaceOfDestinationAddress",
+            "PlaceOfDestinationAddressTextOnly",
+            "PlaceOfDestinationDetails",
+            "CHEDReference",
+            "CustomsDeclarationReference",
+            "CustomsDocumentCode",
+            "BulkUploadFileName",
+            "RiskDecisionRequestsJson",
+            "RiskDecisionJson",
+            "NewRuleId",
+        ];
 
         public ConfirmationSteps(ScenarioContext context, IObjectContainer container)
         {
@@ -71,6 +185,28 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserClicksReturnToYourDashboardLink()
         {
             confirmationPage?.ClickReturnToDashboardLink();
+        }
+
+        [Then("{string} is complete")]
+        [When("{string} is complete")]
+        public void ThenIterationIsComplete(string iterationName)
+        {
+            Console.WriteLine($"[ITERATION] Archiving context keys for '{iterationName}'");
+
+            // 1. Archive each IPAFFS key with the iteration prefix
+            foreach (var key in IpaffsIterationKeys)
+            {
+                if (_scenarioContext.ContainsKey(key))
+                {
+                    var archivedKey = $"{iterationName}_{key}";
+                    _scenarioContext[archivedKey] = _scenarioContext[key];
+                    Console.WriteLine($"[ITERATION] Archived '{key}' → '{archivedKey}'");
+                }
+            }
+
+            // 2. Remove the prefix-free keys so the next iteration starts clean
+            _scenarioContext.RemoveContextKeys(IpaffsIterationKeys);
+            Console.WriteLine($"[ITERATION] Cleared {IpaffsIterationKeys.Length} IPAFFS keys. '{iterationName}' complete.");
         }
     }
 }
