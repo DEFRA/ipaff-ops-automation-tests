@@ -125,7 +125,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             "CHEDReference",
             "CustomsDeclarationReference",
             "CustomsDocumentCode",
-            "BulkUploadFileName",
             "RiskDecisionRequestsJson",
             "RiskDecisionJson",
             "NewRuleId",

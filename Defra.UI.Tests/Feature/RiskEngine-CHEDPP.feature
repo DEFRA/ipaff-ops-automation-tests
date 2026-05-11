@@ -208,12 +208,7 @@ Scenario: Bulk upload of new rules for CHEDPP - SPS-9414
 	And the user records the Id of the top PHSI rule row as 'Iteration_2_RuleId'
 	# Submit TWO matching CHED-PP notifications in IPAFFS (Italy / 12099130)
 	When I navigate to the IPAFF application
-	Then I should see type of Gateway login page
-	And I have selected "Sign in with Government Gateway" as login type
-	When I click Continue button from How do you want to sign in page
-	Then I should redirected to the IPAFF Sign in using Government Gateway page
-	When I have provided the IPAFF Trader credentials and signin
-	Then the user should be logged into Notification page
+	Then the Your import notifications page is displayed
 	# --- APP-A (notification 2) ---
 	When the user clicks Create a new notification
 	Then the About the consignment/What are you importing? page should be displayed with radio buttons
@@ -433,12 +428,7 @@ Scenario: Bulk upload of new rules for CHEDPP - SPS-9414
 	And the user records the Id of the top PHSI rule row as 'Iteration_3_RuleId'
 	# Submit a matching CHED-PP notification in IPAFFS (Monaco / 06012010 / Intended for final users)
 	When I navigate to the IPAFF application
-	Then I should see type of Gateway login page
-	And I have selected "Sign in with Government Gateway" as login type
-	When I click Continue button from How do you want to sign in page
-	Then I should redirected to the IPAFF Sign in using Government Gateway page
-	When I have provided the IPAFF Trader credentials and signin
-	Then the user should be logged into Notification page
+	Then the Your import notifications page is displayed
 	When the user clicks Create a new notification
 	Then the About the consignment/What are you importing? page should be displayed with radio buttons
 	When the user chooses 'Plants, plant products and other objects' option
@@ -566,12 +556,7 @@ Scenario: Bulk upload of new rules for CHEDPP - SPS-9414
 	And the user records the Id of the top PHSI rule row as 'Iteration_4_RuleId'
 	# Submit a matching CHED-PP notification in IPAFFS (Montserrat / 08094090)
 	When I navigate to the IPAFF application
-	Then I should see type of Gateway login page
-	And I have selected "Sign in with Government Gateway" as login type
-	When I click Continue button from How do you want to sign in page
-	Then I should redirected to the IPAFF Sign in using Government Gateway page
-	When I have provided the IPAFF Trader credentials and signin
-	Then the user should be logged into Notification page
+	Then the Your import notifications page is displayed
 	When the user clicks Create a new notification
 	Then the About the consignment/What are you importing? page should be displayed with radio buttons
 	When the user chooses 'Plants, plant products and other objects' option
@@ -700,12 +685,7 @@ Scenario: Bulk upload of new rules for CHEDPP - SPS-9414
 	And the user records the Id of the top PHSI rule row as 'Iteration_5_RuleId'
 	# Submit a matching CHED-PP notification in IPAFFS (Togo / 12040010 / LIUUT)
 	When I navigate to the IPAFF application
-	Then I should see type of Gateway login page
-	And I have selected "Sign in with Government Gateway" as login type
-	When I click Continue button from How do you want to sign in page
-	Then I should redirected to the IPAFF Sign in using Government Gateway page
-	When I have provided the IPAFF Trader credentials and signin
-	Then the user should be logged into Notification page
+	Then the Your import notifications page is displayed
 	When the user clicks Create a new notification
 	Then the About the consignment/What are you importing? page should be displayed with radio buttons
 	When the user chooses 'Plants, plant products and other objects' option
