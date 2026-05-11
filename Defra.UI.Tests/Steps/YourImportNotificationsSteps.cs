@@ -403,7 +403,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                                 .EnumerateArray()              // ✅ Step 1: array
                                 .SelectMany(e => e             // ✅ Step 2: object inside array
                                     .EnumerateObject()
-                                    .Where(p => p.Value.GetString() == "true" && p.Name != "Satisfactory" && p.Name != "NotSatisfactory")
+                                    .Where(p => p.Value.GetString() == "true" && p.Name != "Satisfactory" && p.Name != "NotSatisfactory" && p.Name != "Pending")
                                     .Select(p => p.Name))
                                 .ToArray();
 
@@ -1073,12 +1073,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
         private void ValidateLabReason(string key, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
         {
-            var expected = _scenarioContext.Get<string>(key).Replace(" ", "");
+            var expected = _scenarioContext.Get<string[]>(key);
             var actual = reviewValue?.Equals("Suspicious", StringComparison.OrdinalIgnoreCase) == true
                 ? "Suspicion"
                 : reviewValue;
 
-            ValidateString(key, expected, actual, ref allDataMatches, mismatches);
+            ValidateStringArray(key, expected, actual, ref allDataMatches, mismatches);
         }
 
 
@@ -1120,7 +1120,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             }
 
             bool matchFound = array.Any(expected =>
-                string.Equals(expected?.Trim(), reviewValue.Trim(), StringComparison.OrdinalIgnoreCase));
+                string.Equals(expected?.Trim().Replace(" ",""), reviewValue.Trim().Replace(" ", ""), StringComparison.OrdinalIgnoreCase));
 
             if (!matchFound)
             {
