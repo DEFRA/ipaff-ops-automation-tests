@@ -87,7 +87,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Console.WriteLine("PDF URL ------------------ " +pdfUrl);
             var chedReferenceFileName = _scenarioContext.Get<string>("CHEDReference") + "-certificate";
             Console.WriteLine("chedReferenceFileName ------------------ " + chedReferenceFileName);
-            Utils.DownloadPDF(chedReferenceFileName, pdfUrl, UserObject, _scenarioContext.Get<string>("UserRole"));
+            _scenarioContext["PDFDownloadedDirectory"] = Utils.DownloadPDF(chedReferenceFileName, pdfUrl, UserObject, _scenarioContext.Get<string>("UserRole"));
         }
 
         [When("verifies laboratory tests should be displayed as No and Reasons for testing with no boxes selected")]
@@ -101,7 +101,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var json = JsonConvert.SerializeObject(_scenarioContext.ToDictionary(kvp => kvp.Key, kvp => kvp.Value), Formatting.Indented);
             var chedReferenceFileName = "\\" + chedReference + "-certificate";
             //var downloadDirectory = Path.Combine(Path.GetTempPath(), "automation-downloads");
-            string downloadDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            string downloadDirectory = _scenarioContext.Get<string>("PDFDownloadedDirectory");
             string pdfPath = downloadDirectory + chedReferenceFileName + ".pdf";
             var converter = new PdfToJsonConverter();
             var jsonOutput = converter.ConvertToJson(pdfPath);
@@ -604,15 +604,22 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             Assert.True(allDataMatches, $"PDF data validation failed. Mismatches: {string.Join(", ", mismatches)}");
 
-            if (File.Exists(pdfPath))
+
+            if (Directory.Exists(downloadDirectory))
             {
-                File.Delete(pdfPath);
-                Console.WriteLine("File deleted successfully.");
+                if (File.Exists(pdfPath))
+                {
+                    File.Delete(pdfPath);
+                    Console.WriteLine("File deleted successfully.");
+                }
+                else
+                {
+                    Console.WriteLine("File not found to delete.");
+                }
+                Directory.Delete(downloadDirectory, true);
+                Console.WriteLine("Deleted directory: " + downloadDirectory);
             }
-            else
-            {
-                Console.WriteLine("File not found to delete.");
-            }
+            
         }
 
         [When("the user checks that the data in the certificate matches the data entered into the CHED PP notification")]

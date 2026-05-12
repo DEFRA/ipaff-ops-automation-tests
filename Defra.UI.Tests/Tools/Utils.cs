@@ -149,13 +149,13 @@ namespace Defra.UI.Tests.Tools
             return actual.OrderBy(x => x).SequenceEqual(expected.OrderBy(x => x));
         }
 
-        public static void DownloadPDF(string fileName, string pdfUrl, IUserObject UserObject, string userRole)
+        public static string DownloadPDF(string fileName, string pdfUrl, IUserObject UserObject, string userRole)
         {
             var chromeOptions = new ChromeOptions();
 
             // ✅ Unique download directory
             var downloadDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            Directory.CreateDirectory(downloadDirectory);
+            Directory.CreateDirectory(downloadDirectory);           
 
             Console.WriteLine("downloadDirectory: " + downloadDirectory);
 
@@ -205,6 +205,7 @@ namespace Defra.UI.Tests.Tools
                 tempDriver.Quit();
                 tempDriver.Dispose();
             }
+            return downloadDirectory;
         }
 
        
