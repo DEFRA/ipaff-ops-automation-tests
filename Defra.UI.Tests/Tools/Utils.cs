@@ -7,6 +7,7 @@ using OpenQA.Selenium.Support.UI;
 using Reqnroll;
 using System.Diagnostics;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using static UglyToad.PdfPig.DocumentLayoutAnalysis.TextExtractor.ContentOrderTextExtractor;
 
 namespace Defra.UI.Tests.Tools
@@ -173,14 +174,22 @@ namespace Defra.UI.Tests.Tools
 
             chromeOptions.EnableDownloads = true;
 
-            var service = ChromeDriverService.CreateDefaultService("/usr/bin/");
+            ChromeDriverService service;
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                // Pipeline (Linux agent) – chromedriver installed under /usr/bin
+                service = ChromeDriverService.CreateDefaultService("/usr/bin/");
+            }
+            else
+            {
+                // Local (Windows/macOS) – use default resolution (PATH / local folder)
+                service = ChromeDriverService.CreateDefaultService();
+            }
 
             Console.WriteLine("Starting ChromeDriver...");
 
             using (var tempDriver = new ChromeDriver(service, chromeOptions))
             {
-                Console.WriteLine("***********Inside Chome driver block*************");
-
                 tempDriver.Navigate().GoToUrl(pdfUrl);
                 var elements = tempDriver.WaitForElements(By.CssSelector(".govuk-label.govuk-radios__label.break-word")).ToList();                      
                 elements[1].Click();
@@ -206,9 +215,7 @@ namespace Defra.UI.Tests.Tools
                 tempDriver.Dispose();
             }
             return downloadDirectory;
-        }
-
-       
+        }     
 
 
 
