@@ -45,6 +45,8 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
     {
         Driver.WaitForTransaction();
 
+        SignInPromptHelper.DismissSignInPrompts(Driver, "post-navigation");
+
         var expectedChedReference = scenarioContext.Get<string>("CHEDReference");
 
         var pageHeader = Driver.WaitUntilAvailable(
@@ -709,30 +711,59 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
         Driver.WaitForTransaction();
         Thread.Sleep(3000);
 
-        // Step 3: Collect all rows across every page.
-        var collectedRows = new List<(string EppoCode, string RegulatoryAuthority)>();
+        // Step 3: Collect all rows across every page, retrying the entire collection if the
+        // total falls short. Wijmo virtualises both columns AND rows — a single page may return
+        // fewer rows than expected even after ExtractRowsFromCurrentPage retries, because the
+        // DOM row count itself can be reduced by vertical virtualisation when the grid is
+        // scrolled horizontally. Retrying the full collection from page 1 is the only reliable
+        // way to recover from this, since each retry starts fresh after a sort reset.
+        List<(string EppoCode, string RegulatoryAuthority)> collectedRows = null;
         var pageNumber = 1;
+        const int maxCollectionAttempts = 3;
 
-        while (true)
+        for (var collectionAttempt = 1; collectionAttempt <= maxCollectionAttempts; collectionAttempt++)
         {
-            Driver.WaitForTransaction();
-            Thread.Sleep(1500);
+            collectedRows = new List<(string EppoCode, string RegulatoryAuthority)>();
+            pageNumber = 1;
 
-            // Ensure both EPPO Code (col 5) and Regulatory Authority (col 11) are in the DOM.
-            ScrollGridUntilBothColumnsVisible();
+            while (true)
+            {
+                Driver.WaitForTransaction();
+                Thread.Sleep(1500);
 
-            var pageRows = ExtractRowsFromCurrentPage();
-            collectedRows.AddRange(pageRows);
+                // Ensure both EPPO Code (col 5) and Regulatory Authority (col 11) are in the DOM.
+                ScrollGridUntilBothColumnsVisible();
 
-            var nextButtons = Driver.FindElements(By.XPath("//button[contains(@id,'_nextPage')]"));
+                var pageRows = ExtractRowsFromCurrentPage();
+                collectedRows.AddRange(pageRows);
 
-            if (!nextButtons.Any() || nextButtons[0].GetAttribute("disabled") != null)
+                var nextButtons = Driver.FindElements(By.XPath("//button[contains(@id,'_nextPage')]"));
+
+                if (!nextButtons.Any() || nextButtons[0].GetAttribute("disabled") != null)
+                {
+                    break;
+                }
+
+                Driver.ExecuteScript("arguments[0].click();", nextButtons[0]);
+                pageNumber++;
+            }
+
+            if (collectedRows.Count >= expectedRowCount)
             {
                 break;
             }
 
-            Driver.ExecuteScript("arguments[0].click();", nextButtons[0]);
-            pageNumber++;
+            Console.WriteLine(
+                $"[COLLECT ROWS] Attempt {collectionAttempt}/{maxCollectionAttempts}: " +
+                $"collected {collectedRows.Count} of {expectedRowCount} rows across {pageNumber} page(s). " +
+                $"Refreshing and retrying from page 1.");
+
+            // Refresh to reset pagination back to page 1, then re-sort before the next attempt.
+            CommandSteps.WhenISelectTheCommand("Refresh");
+            Driver.WaitForTransaction();
+            SortCommodityLinesByEppoCodeAscending();
+            Driver.WaitForTransaction();
+            Thread.Sleep(3000);
         }
 
         // Step 4: Sort expected rows the same way as the grid.
@@ -743,7 +774,7 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
         // Step 5: Assert total count.
         collectedRows.Count.Should().Be(sortedExpected.Count,
             $"Expected {sortedExpected.Count} commodity lines but collected {collectedRows.Count} " +
-            $"across {pageNumber} page(s).");
+            $"across {pageNumber} page(s) after {maxCollectionAttempts} collection attempt(s).");
 
         // Step 6: Validate each row's EPPO code and Regulatory Authority.
         for (var i = 0; i < sortedExpected.Count; i++)
@@ -761,7 +792,9 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
 
     /// <summary>
     /// Extracts EPPO code and Regulatory Authority from every data row on the currently visible
-    /// grid page. Retries up to five times on stale element errors.
+    /// grid page. Uses the pagination label as the expected row count where available, falling
+    /// back to the DOM row count. Resets vertical scroll to 0 on each retry to counteract
+    /// Wijmo row virtualisation caused by a non-zero scrollTop.
     /// </summary>
     private List<(string EppoCode, string RegulatoryAuthority)> ExtractRowsFromCurrentPage()
     {
@@ -769,13 +802,26 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
         {
             try
             {
-                var results = new List<(string EppoCode, string RegulatoryAuthority)>();
-
                 var grid = Driver.WaitUntilAvailable(
                     By.XPath("//div[@role='grid'][contains(@aria-label,'Import Commodity Lines')]"),
                     "Commodity Lines grid could not be found while extracting rows.");
 
                 var rows = grid.FindElements(By.XPath(".//div[@role='row'][@aria-label='Data']"));
+                var domRowCount = rows.Count;
+
+                if (domRowCount == 0)
+                {
+                    Thread.Sleep(1000);
+                    Driver.WaitForTransaction();
+                    continue;
+                }
+
+                // Prefer the pagination label count as ground truth over the DOM row count.
+                // The DOM count can be reduced by vertical virtualisation; the label always
+                // reflects the true page size regardless of what Wijmo has rendered.
+                var expectedOnPage = TryReadExpectedRowsOnCurrentPage() ?? domRowCount;
+
+                var results = new List<(string EppoCode, string RegulatoryAuthority)>();
 
                 foreach (var row in rows)
                 {
@@ -793,10 +839,20 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
                     }
                 }
 
-                if (results.Count > 0)
+                if (results.Count < expectedOnPage)
                 {
-                    return results;
+                    Console.WriteLine(
+                        $"[EXTRACT ROWS] Attempt {attempt + 1}: collected {results.Count} of " +
+                        $"{expectedOnPage} expected rows (DOM count: {domRowCount}). " +
+                        $"Re-scrolling and resetting vertical scroll before retrying.");
+
+                    ScrollGridUntilBothColumnsVisible();
+                    Driver.WaitForTransaction();
+                    Thread.Sleep(500);
+                    continue;
                 }
+
+                return results;
             }
             catch (StaleElementReferenceException)
             {
@@ -929,16 +985,20 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
             var scrollRoot = grid.closest('[wj-part=""root""]') || grid.parentElement;
             if (scrollRoot) { scrollRoot.scrollLeft += 300; }";
 
-        // Two separate limits:
-        //   - gridReadyAttempts: how many times to wait for the grid/scroll-root to appear before giving up.
-        //   - maxScrollAttempts: how many incremental scrolls to try once the grid IS present.
-        // Separating them gives a clear failure message for each distinct failure mode.
+        // After achieving horizontal visibility, reset vertical scroll to 0 so Wijmo renders
+        // rows from the top of the page. Without this reset, a non-zero scrollTop (caused by
+        // prior horizontal scrolling or page navigation) clips the bottom row out of the
+        // viewport — Wijmo de-virtualises it, reducing DOM row count from 50 to 49 on every
+        // attempt, including outer collection retries.
+        const string resetVerticalScrollScript = @"
+            var grid = document.querySelector('div[role=""grid""][aria-label*=""Import Commodity Lines""]');
+            if (!grid) return;
+            var scrollRoot = grid.closest('[wj-part=""root""]') || grid.parentElement;
+            if (scrollRoot) { scrollRoot.scrollTop = 0; }";
+
         const int gridReadyAttempts = 20;
         const int maxScrollAttempts = 40;
 
-        // Phase 1: Wait for the grid and its scroll container to be present in the DOM.
-        // The Wijmo grid renders asynchronously after the tab activates, so the scroll root
-        // may not exist immediately when this method is called.
         string resultJson = null;
         for (var waitAttempt = 0; waitAttempt < gridReadyAttempts; waitAttempt++)
         {
@@ -959,8 +1019,6 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
                 $"{gridReadyAttempts} attempts. The grid may not have finished rendering.");
         }
 
-        // Phase 2: Scroll horizontally until both col 5 (EPPO Code) and col 11 (Regulatory Authority)
-        // are simultaneously present in the DOM. Wijmo virtualises columns outside the viewport.
         for (var scrollAttempt = 0; scrollAttempt < maxScrollAttempts; scrollAttempt++)
         {
             var eppoVisible = resultJson.Contains(@"""eppoVisible"":true");
@@ -968,13 +1026,17 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
 
             if (eppoVisible && regAuthVisible)
             {
+                // Both columns are in the DOM. Reset vertical scroll to 0 so Wijmo renders
+                // rows starting from the top of the page — prevents the bottom row being
+                // clipped by a non-zero scrollTop accumulated during horizontal scrolling.
+                Driver.ExecuteScript(resetVerticalScrollScript);
+                Driver.WaitForTransaction();
                 return;
             }
 
             Driver.ExecuteScript(scrollIncrementScript);
             Driver.WaitForTransaction();
 
-            // Re-read after each scroll — the grid may now expose different columns.
             resultJson = Driver.ExecuteScript(findScrollRootAndCheckScript) as string
                 ?? throw new InvalidOperationException(
                     "The Import Commodity Lines grid scroll container disappeared during scrolling.");
@@ -984,6 +1046,37 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
             $"Could not scroll the Commodity Lines grid to show both EPPO Code (col 5) and " +
             $"Regulatory Authority (col 11) simultaneously after {maxScrollAttempts} scroll attempts. " +
             $"Consider reviewing the column layout or increasing the max attempts.");
+    }
+
+    /// <summary>
+    /// Reads the expected number of data rows on the current grid page from the pagination
+    /// label (e.g. "1 - 50 of 500"). Returns null if the label cannot be parsed, in which
+    /// case callers should fall back to the DOM row count.
+    /// </summary>
+    private int? TryReadExpectedRowsOnCurrentPage()
+    {
+        // Dynamics renders the pagination range as a label like "1 - 50 of 500".
+        // The containing element varies by grid type; search broadly by text pattern.
+        var paginationLabels = Driver.FindElements(
+            By.XPath("//*[contains(@aria-label,'of') and contains(@aria-label,' - ')]"));
+
+        foreach (var label in paginationLabels)
+        {
+            var text = (label.GetAttribute("aria-label") ?? label.Text ?? string.Empty).Trim();
+
+            // Expected format: "X - Y of Z"
+            var match = System.Text.RegularExpressions.Regex.Match(
+                text, @"(\d+)\s*-\s*(\d+)\s+of\s+(\d+)");
+
+            if (match.Success &&
+                int.TryParse(match.Groups[1].Value, out var from) &&
+                int.TryParse(match.Groups[2].Value, out var to))
+            {
+                return to - from + 1;
+            }
+        }
+
+        return null;
     }
 
     [When(@"I sort Commodity Lines by Regulatory Authority")]
@@ -1005,73 +1098,253 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
 
         sortAtoZMenuItem.Click();
         Driver.WaitForTransaction();
+
+        Thread.Sleep(3000);
     }
 
     [When(@"I double click on a Commodity Line with Regulatory Authority set to '(.*)'")]
     public void WhenIDoubleClickOnACommodityLineWithRegulatoryAuthoritySetTo(string regulatoryAuthority)
     {
-        ScrollGridUntilBothColumnsVisible();
-        Driver.WaitForTransaction();
+        // The same Gherkin step targets two physically different Wijmo grids:
+        //   1. Work Order page  -> aria-label "Import Commodity Lines"          (12 cols)
+        //   2. Commodity Lines tab on the Import Notification -> aria-label
+        //      "Active Import Commodity Lines"                                  (18 cols)
+        //
+        // Both virtualise columns AND rows, so neither row index nor a fixed
+        // aria-colindex can be assumed. The Regulatory Authority column is
+        // identified by its header data-id ("trd_regulatoryauthoritycode"),
+        // and the corresponding data cell is located by matching style.left
+        // (Wijmo positions cells to align with their header).
+        //
+        // Row activation is performed with three layered strategies because
+        // Selenium Actions.DoubleClick is unreliable on remote Selenium Grid
+        // (Docker-based CI agents) — synthesised MouseEvents are dispatched
+        // as a fallback, with Enter-key activation as a last resort.
+        const int maxNavigationAttempts = 3;
 
-        // EasyRepro's OpenSubGridRecord uses contains(@data-lp-id,...) which only matches the
-        // AgGrid (Import tab). The Wijmo cc-grid (Commodity Lines tab) renders cells without
-        // data-lp-id, so OpenSubGridRecord fails there with NoSuchElementException.
-        var isAgGrid = Driver.FindElements(
-            By.XPath("//div[@id='dataSetRoot_Import_notification_commodity_lines_subgrid']")).Count > 0;
-
-        if (isAgGrid)
+        for (var navigationAttempt = 1; navigationAttempt <= maxNavigationAttempts; navigationAttempt++)
         {
-            // For AgGrid, find the index of the matching row via Selenium and use EasyRepro.
-            var grid = Driver.WaitUntilAvailable(
-                By.XPath("//div[@role='grid'][contains(@aria-label,'Import Commodity Lines')]"),
-                "Commodity Lines grid could not be found.");
+            Driver.WaitForTransaction();
 
-            var dataRows = grid.FindElements(By.XPath(".//div[@role='row'][@aria-label='Data']"));
-            var matchingIndex = -1;
+            // Ensure the Regulatory Authority column header is rendered into the DOM.
+            ScrollCommodityLinesGridUntilColumnVisible(RegulatoryAuthorityColumnDataId);
 
-            for (var i = 0; i < dataRows.Count; i++)
+            if (TryActivateCommodityLineByColumnValue(
+                    columnDataId: RegulatoryAuthorityColumnDataId,
+                    expectedValue: regulatoryAuthority))
             {
-                var regulatoryCells = dataRows[i].FindElements(
-                    By.XPath(".//div[@role='gridcell'][@aria-colindex='11']//span[@role='presentation']"));
-
-                if (regulatoryCells.Count > 0 &&
-                    regulatoryCells[0].Text.Trim().Equals(regulatoryAuthority, StringComparison.OrdinalIgnoreCase))
-                {
-                    matchingIndex = i;
-                    break;
-                }
+                return;
             }
 
-            matchingIndex.Should().BeGreaterOrEqualTo(0,
-                $"No Commodity Line with Regulatory Authority '{regulatoryAuthority}' could be found on the current page.");
+            Console.WriteLine(
+                $"[DOUBLE CLICK] Navigation attempt {navigationAttempt}/{maxNavigationAttempts}: " +
+                $"Import Commodity Line page header not found after activating row for " +
+                $"Regulatory Authority '{regulatoryAuthority}'. Retrying...");
 
-            XrmApp.Entity.SubGrid.OpenSubGridRecord("Import_notification_commodity_lines_subgrid", matchingIndex);
-        }
-        else
-        {
-            // For the Wijmo cc-grid, use Selenium's Actions to perform a genuine double-click
-            // on the matching regulatory authority cell. This avoids all synthetic event
-            // coordinate issues and lets the browser handle the interaction natively.
-            var grid = Driver.WaitUntilAvailable(
-                By.XPath("//div[@role='grid'][contains(@aria-label,'Import Commodity Lines')]"),
-                "Commodity Lines grid could not be found.");
-
-            var matchingCell = grid.FindElements(
-                By.XPath(".//div[@role='row'][@aria-label='Data']" +
-                         $"//div[@role='gridcell'][@aria-colindex='11']" +
-                         $"[.//span[@role='presentation']]"))
-                .FirstOrDefault(cell =>
-                    cell.FindElement(By.XPath(".//span[@role='presentation']"))
-                        .Text.Trim()
-                        .Equals(regulatoryAuthority, StringComparison.OrdinalIgnoreCase));
-
-            matchingCell.Should().NotBeNull(
-                $"No Commodity Line with Regulatory Authority '{regulatoryAuthority}' could be found on the current page.");
-
-            new Actions(Driver).DoubleClick(matchingCell).Perform();
+            Driver.WaitForTransaction();
+            Thread.Sleep(1500);
         }
 
+        // Let downstream assertions (e.g. the page header check) produce the failure message.
         Driver.WaitForTransaction();
+    }
+
+    /// <summary>
+    /// Scrolls the Commodity Lines Wijmo grid horizontally until the header with the given
+    /// <paramref name="columnDataId"/> is rendered into the DOM, then resets vertical scroll
+    /// to 0 so row virtualisation does not clip the bottom row.
+    /// Works for both the Work Order subgrid and the Commodity Lines tab grid.
+    /// </summary>
+    private void ScrollCommodityLinesGridUntilColumnVisible(string columnDataId)
+    {
+        const string findGridScript = @"
+            return document.querySelector('div[role=""grid""][aria-label*=""Import Commodity Lines""]') !== null;";
+
+        const string isHeaderRenderedScript = @"
+            var dataId = arguments[0];
+            return document.querySelector(
+                '[wj-part=""ch""] [wj-part=""chcells""] .wj-cell.wj-header[data-id=""' + dataId + '""]') !== null;";
+
+        const string scrollRightScript = @"
+            var grid = document.querySelector('div[role=""grid""][aria-label*=""Import Commodity Lines""]');
+            if (!grid) { return; }
+            var scrollRoot = grid.closest('[wj-part=""root""]') || grid.parentElement;
+            if (scrollRoot) { scrollRoot.scrollLeft += 300; }";
+
+        const string resetVerticalScrollScript = @"
+            var grid = document.querySelector('div[role=""grid""][aria-label*=""Import Commodity Lines""]');
+            if (!grid) { return; }
+            var scrollRoot = grid.closest('[wj-part=""root""]') || grid.parentElement;
+            if (scrollRoot) { scrollRoot.scrollTop = 0; }";
+
+        const int gridReadyAttempts = 20;
+        const int maxScrollAttempts = 60;
+
+        for (var i = 0; i < gridReadyAttempts; i++)
+        {
+            if ((bool)Driver.ExecuteScript(findGridScript))
+            {
+                break;
+            }
+
+            Driver.WaitForTransaction();
+        }
+
+        for (var attempt = 0; attempt < maxScrollAttempts; attempt++)
+        {
+            if ((bool)Driver.ExecuteScript(isHeaderRenderedScript, columnDataId))
+            {
+                Driver.ExecuteScript(resetVerticalScrollScript);
+                Driver.WaitForTransaction();
+                return;
+            }
+
+            Driver.ExecuteScript(scrollRightScript);
+            Driver.WaitForTransaction();
+        }
+
+        throw new InvalidOperationException(
+            $"Could not scroll the Commodity Lines grid to render the column with data-id " +
+            $"'{columnDataId}' after {maxScrollAttempts} scroll attempts.");
+    }
+
+    /// <summary>
+    /// Finds the data row whose cell under the column identified by <paramref name="columnDataId"/>
+    /// equals <paramref name="expectedValue"/>, then attempts to activate (open) that row.
+    /// Returns true once navigation to the Import Commodity Line page is confirmed.
+    /// </summary>
+    private bool TryActivateCommodityLineByColumnValue(string columnDataId, string expectedValue)
+    {
+        const int maxLocateAttempts = 5;
+
+        for (var attempt = 0; attempt < maxLocateAttempts; attempt++)
+        {
+            try
+            {
+                var matchingCell = Driver.ExecuteScript(
+                    @"
+                    var dataId = arguments[0];
+                    var target = (arguments[1] || '').toString().trim().toLowerCase();
+
+                    var grid = document.querySelector('div[role=""grid""][aria-label*=""Import Commodity Lines""]');
+                    if (!grid) { return null; }
+
+                    var header = document.querySelector(
+                        '[wj-part=""ch""] [wj-part=""chcells""] .wj-cell.wj-header[data-id=""' + dataId + '""]');
+                    if (!header) { return null; }
+
+                    // Wijmo aligns each data cell to its header by style.left.
+                    var headerLeft = header.style.left;
+
+                    var rows = grid.querySelectorAll('div[role=""row""][aria-label=""Data""]');
+                    for (var i = 0; i < rows.length; i++) {
+                        var cells = rows[i].querySelectorAll('div[role=""gridcell""]');
+                        for (var j = 0; j < cells.length; j++) {
+                            if (cells[j].style.left !== headerLeft) { continue; }
+
+                            // Title is set by Wijmo even when the inner span is virtualised away.
+                            var title = (cells[j].getAttribute('title') || '').trim();
+                            var span = cells[j].querySelector('span[role=""presentation""]');
+                            var spanText = span ? span.textContent.trim() : '';
+                            var value = (title.length > 0 ? title : spanText).toLowerCase();
+
+                            if (value === target) {
+                                return cells[j];
+                            }
+                            break;
+                        }
+                    }
+                    return null;",
+                    columnDataId,
+                    expectedValue) as IWebElement;
+
+                if (matchingCell == null)
+                {
+                    Driver.WaitForTransaction();
+                    Thread.Sleep(500);
+                    continue;
+                }
+
+                Driver.ExecuteScript(
+                    "arguments[0].scrollIntoView({block:'center', inline:'center'});",
+                    matchingCell);
+                Driver.WaitForTransaction();
+
+                // Strategy 1: native OS-level double-click via Selenium Actions.
+                try
+                {
+                    new Actions(Driver).MoveToElement(matchingCell).DoubleClick().Perform();
+                    Driver.WaitForTransaction();
+                }
+                catch (Exception)
+                {
+                    // Suppressed — fallbacks below will compensate.
+                }
+
+                if (IsImportCommodityLinePageDisplayed())
+                {
+                    return true;
+                }
+
+                // Strategy 2: synthesised MouseEvents. Reliable on remote Selenium Grid
+                // (Docker) where Actions.DoubleClick is sometimes silently dropped.
+                Driver.ExecuteScript(
+                    @"
+                    var cell = arguments[0];
+                    if (!cell || !cell.getBoundingClientRect) { return; }
+                    var rect = cell.getBoundingClientRect();
+                    var cx = rect.left + rect.width / 2;
+                    var cy = rect.top + rect.height / 2;
+                    function fire(type, detail) {
+                        cell.dispatchEvent(new MouseEvent(type, {
+                            bubbles: true, cancelable: true, view: window,
+                            clientX: cx, clientY: cy, button: 0, detail: detail
+                        }));
+                    }
+                    fire('mousedown', 1); fire('mouseup', 1); fire('click', 1);
+                    fire('mousedown', 2); fire('mouseup', 2); fire('click', 2);
+                    fire('dblclick', 2);",
+                    matchingCell);
+                Driver.WaitForTransaction();
+
+                if (IsImportCommodityLinePageDisplayed())
+                {
+                    return true;
+                }
+
+                // Strategy 3: keyboard activation — focus the row and press Enter.
+                try
+                {
+                    Driver.ExecuteScript(
+                        @"var row = arguments[0].closest('div[role=""row""]');
+                          if (row) { row.setAttribute('tabindex','-1'); row.focus(); }",
+                        matchingCell);
+                    new Actions(Driver).MoveToElement(matchingCell).Click().SendKeys(Keys.Enter).Perform();
+                    Driver.WaitForTransaction();
+                }
+                catch (Exception)
+                {
+                    // Suppressed — caller will retry the whole flow.
+                }
+
+                return IsImportCommodityLinePageDisplayed();
+            }
+            catch (StaleElementReferenceException)
+            {
+                Driver.WaitForTransaction();
+                Thread.Sleep(500);
+            }
+        }
+
+        return false;
+    }
+
+    private bool IsImportCommodityLinePageDisplayed()
+    {
+        return Driver
+            .FindElements(By.XPath(
+                "//span[@data-id='entity_name_span'][normalize-space(text())='Import Commodity Line']"))
+            .Count > 0;
     }
 
     /// <summary>

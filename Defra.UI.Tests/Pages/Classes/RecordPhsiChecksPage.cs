@@ -194,8 +194,6 @@ namespace Defra.UI.Tests.Pages.Classes
             var bannerText = _driver.WaitForElement(successBannerMessageBy).Text.Trim();
             Assert.That(bannerText, Does.Contain("decisions have been recorded"),
                 $"Unexpected success banner message: '{bannerText}'.");
-
-            Console.WriteLine($"[RecordPhsiChecks] Success banner: {bannerText}");
         }
 
         private void ValidateAllDecisionCellsOnPage(string expectedDecision)

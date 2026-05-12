@@ -16,9 +16,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement btnSaveAndContinue => _driver.FindElement(By.Id("button-save-and-continue"));
         private IWebElement btnAddAnotherDocument => _driver.FindElement(By.Id("button-add-additional-document"));
         private By inspectorDocumentRowsBy => By.XPath("//div[@id='inspector-documents-table']//div[contains(@class, 'additional-document-info')]");
-        private IWebElement GetInspectorDocumentType(int index) => _driver.FindElement(By.Id($"additional-document-type-value-{index}"));
-        private IWebElement GetInspectorDocumentReference(int index) => _driver.FindElement(By.Id($"additional-document-reference-value-{index}"));
-        private IWebElement GetInspectorDocumentDateOfIssue(int index) => _driver.FindElement(By.Id($"additional-document-date-value-{index}"));
+        private IWebElement GetInspectorDocumentType(int index) => _driver.FindElement(By.XPath($"//div[@id='inspector-documents-table']//div[@id='additional-document-type-value-{index}']"));
+        private IWebElement GetInspectorDocumentReference(int index) => _driver.FindElement(By.XPath($"//div[@id='inspector-documents-table']//div[@id='additional-document-reference-value-{index}']"));
+        private IWebElement GetInspectorDocumentDateOfIssue(int index) => _driver.FindElement(By.XPath($"//div[@id='inspector-documents-table']//div[@id='additional-document-date-value-{index}']"));    
         private IWebElement lnkDownloadAllDocuments=> _driver.FindElement(By.Id("download-all"));
         private IWebElement lnkDownloadUrl => _driver.FindElement(By.Id("download-url"));
         private IWebElement lnkDownloadLink => _driver.FindElement(By.XPath("(//a[normalize-space(text())='Download'])[1]"));
@@ -83,10 +83,12 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             lnkDownloadUrl.Click();
         }
-        
+
         public void ClickDownloadLinkInCatchCertificate()
         {
+            var fileName = lnkDownloadLink.GetAttribute("download") ?? lnkDownloadLink.Text.Trim();
             lnkDownloadLink.Click();
+            Utils.RetrieveFileFromGrid(_driver, fileName);
         }
 
         public bool IsSingleCertificagteDownloaded(string chedReference)

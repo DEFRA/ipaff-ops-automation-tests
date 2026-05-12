@@ -1,4 +1,4 @@
-﻿@Regression
+﻿@Regression @CHEDP
 Feature: Create Notification CHEDP
 
 Create a notification for CHEDP type
@@ -3165,13 +3165,7 @@ Scenario: User creates and submits a notification with main reason as Re-entry, 
 	Then the Search for an existing consignor or exporter page should be displayed
 	When the user clicks on Create a new consignor or exporter link
 	Then Add consignee page should be displayed
-	When the user enters Consignee name as 'Brook'
-	And the user enters Consignee address as 'Covent garden'
-	And the user enters Consignee City as 'Abingdon'
-	And the user enters the Consignee Postcode as 'OX1 1AD'
-	And the user enters the Consignee Telephone number as '07348764455'
-	And the user enters the Consignee Country as 'England'
-	And the user enters the Consignee Email as 'Brook@CG.com'
+	When the user adds the operator 'Importer' details
 	And the user clicks Save and continue
 	Then The consignee has been created page is displayed
 	When the user clicks Add to notification button
@@ -3218,6 +3212,9 @@ Scenario: User creates and submits a notification with main reason as Re-entry, 
 	And the user checks that the data in the certificate matches the data entered into the notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
+	When the user clicks Address book link
+	Then the Address book page should be displayed
+	And the user deletes the newly added operator 'Importer'
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
 	When I navigate to the IPAFF Inspector application

@@ -1,4 +1,4 @@
-﻿@Regression
+﻿@Regression @CHEDD
 Feature: CreateNotification CHEDD
 
 Create a notification for CHEDD type
@@ -786,9 +786,9 @@ Scenario: User submits B2C consignment notification, inspector rejects and creat
 	Then the Review outcome decision page should be displayed
 	When the user Clicks the change link under 'Additional documents'
 	Then the Documents page should be displayed
-	When the user selects Document type "Commercial invoice"
-	And the user enters Document reference "INV54322"
-	And the user enters date of issue "04/12/2025"
+	When the user selects Document type "Commercial invoice" in record decision
+	And the user enters Document reference "INV54322" in record decision
+	And the user enters date of issue '04''12''2025' in record decision
 	And the user clicks on Add attachment link
 	And the user uploads the document 'IPAFFS Inspector Document' in the format '.docx'
 	Then the document 'IPAFFS Inspector Document' '.docx' is uploaded successfully
