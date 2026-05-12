@@ -153,53 +153,32 @@ namespace Defra.UI.Tests.Tools
         {
             var chromeOptions = new ChromeOptions();
 
-            //var downloadDirectory = Path.Combine(Path.GetTempPath(), "automation-downloads");
-
+            // ✅ Unique download directory
             var downloadDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             Directory.CreateDirectory(downloadDirectory);
-            Console.WriteLine("***********-1*************");
 
-            //chromeOptions.AddArgument($"--user-data-dir={Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString())}");
-            Console.WriteLine("downloadDirectory----------------------" + downloadDirectory);
+            Console.WriteLine("downloadDirectory: " + downloadDirectory);
 
-            Console.WriteLine("***********0*************");
+            // ✅ Required for pipeline (Linux)
+            chromeOptions.AddArgument("--headless=new");
+            chromeOptions.AddArgument("--no-sandbox");
+            chromeOptions.AddArgument("--disable-dev-shm-usage");
 
-
-            /*if (Directory.Exists(downloadDirectory))
-            {
-                Directory.Delete(downloadDirectory, true);
-            }*/
-            Directory.CreateDirectory(downloadDirectory);
-
-            //Directory.CreateDirectory(downloadDirectory);
-
-            Console.WriteLine("***********1*************");
-
+            // ✅ Download settings
             chromeOptions.AddUserProfilePreference("download.default_directory", downloadDirectory);
             chromeOptions.AddUserProfilePreference("download.prompt_for_download", false);
             chromeOptions.AddUserProfilePreference("download.directory_upgrade", true);
             chromeOptions.AddUserProfilePreference("safebrowsing.enabled", true);
             chromeOptions.AddUserProfilePreference("plugins.always_open_pdf_externally", true);
-            Console.WriteLine("***********2*************");
 
             chromeOptions.EnableDownloads = true;
-            Console.WriteLine("***********3*************");
-
-
-            //var options = new ChromeOptions();
-            //options.BinaryLocation = "/usr/bin/google-chrome"; // optional
 
             var service = ChromeDriverService.CreateDefaultService("/usr/bin/");
-            //var driver = new ChromeDriver(service, options);
-            Console.WriteLine("***********4*************");
-
 
             Console.WriteLine("Starting ChromeDriver...");
 
-            using (var tempDriver = new ChromeDriver(service,chromeOptions))
-
+            using (var tempDriver = new ChromeDriver(service, chromeOptions))
             {
-
                 Console.WriteLine("***********Inside Chome driver block*************");
 
                 tempDriver.Navigate().GoToUrl(pdfUrl);
