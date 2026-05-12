@@ -156,13 +156,17 @@ namespace Defra.UI.Tests.Tools
 
             Console.WriteLine("downloadDirectory----------------------" + downloadDirectory);
             Directory.CreateDirectory(downloadDirectory);
+            Console.WriteLine("***********1*************");
 
             chromeOptions.AddUserProfilePreference("download.default_directory", downloadDirectory);
             chromeOptions.AddUserProfilePreference("download.prompt_for_download", false);
             chromeOptions.AddUserProfilePreference("download.directory_upgrade", true);
             chromeOptions.AddUserProfilePreference("safebrowsing.enabled", true);
             chromeOptions.AddUserProfilePreference("plugins.always_open_pdf_externally", true);
+            Console.WriteLine("***********2*************");
 
+            chromeOptions.EnableDownloads = true;
+            Console.WriteLine("***********3*************");
 
 
             //var options = new ChromeOptions();
@@ -170,6 +174,7 @@ namespace Defra.UI.Tests.Tools
 
             var service = ChromeDriverService.CreateDefaultService("/usr/bin/");
             //var driver = new ChromeDriver(service, options);
+            Console.WriteLine("***********4*************");
 
 
             using (var tempDriver = new ChromeDriver(service,chromeOptions))
