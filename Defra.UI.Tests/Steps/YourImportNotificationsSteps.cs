@@ -100,8 +100,19 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             var json = JsonConvert.SerializeObject(_scenarioContext.ToDictionary(kvp => kvp.Key, kvp => kvp.Value), Formatting.Indented);
             var chedReferenceFileName = "\\" + chedReference + "-certificate";
+
             //var downloadDirectory = Path.Combine(Path.GetTempPath(), "automation-downloads");
             string downloadDirectory = _scenarioContext.Get<string>("PDFDownloadedDirectory");
+
+
+            var files = Directory.GetFiles(downloadDirectory);
+
+            foreach (var file in files)
+            {
+                Console.WriteLine("File:------------ " + file);
+            }
+
+
             string pdfPath = downloadDirectory + chedReferenceFileName + ".pdf";
             var converter = new PdfToJsonConverter();
             var jsonOutput = converter.ConvertToJson(pdfPath);
