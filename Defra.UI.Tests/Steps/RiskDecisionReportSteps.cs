@@ -30,10 +30,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(riskDecisionReportPage?.IsPageLoaded(), "Risk decision report page is not displayed");
         }
 
-        [When("the user enters the recorded CHED Reference for notification {int} in the Risk decision search box and clicks Search")]
-        public void WhenTheUserEntersTheRecordedCHEDReferenceForNotificationInTheRiskDecisionSearchBoxAndClicksSearch(int notificationNumber)
+        [When("the user enters the recorded CHED Reference for {string} in the Risk decision search box and clicks Search")]
+        public void WhenTheUserEntersTheRecordedCHEDReferenceForIterationInTheRiskDecisionSearchBoxAndClicksSearch(string iterationName)
         {
-            var chedRef = _scenarioContext.Get<string>($"Notification_{notificationNumber}_CHEDReference");
+            var chedRef = _scenarioContext.Get<string>($"{iterationName}_CHEDReference");
             riskDecisionReportPage?.Search(chedRef);
         }
 
@@ -43,10 +43,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.AreEqual(1, riskDecisionReportPage?.GetRecordCount(), "Expected exactly one record");
         }
 
-        [When("the user clicks the Expand button for the CHED Reference of notification {int}")]
-        public void WhenTheUserClicksTheExpandButtonForTheCHEDReferenceOfNotification(int notificationNumber)
+        [When("the user clicks the Expand button for the CHED Reference of {string}")]
+        public void WhenTheUserClicksTheExpandButtonForTheCHEDReferenceOfIteration(string iterationName)
         {
-            var chedRef = _scenarioContext.Get<string>($"Notification_{notificationNumber}_CHEDReference");
+            var chedRef = _scenarioContext.Get<string>($"{iterationName}_CHEDReference");
             riskDecisionReportPage?.ClickExpandForCHED(chedRef);
         }
 

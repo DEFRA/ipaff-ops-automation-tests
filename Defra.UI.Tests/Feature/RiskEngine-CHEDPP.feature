@@ -151,7 +151,7 @@ Scenario: Bulk upload of new rules for CHEDPP - SPS-9414
 	When the user ticks the checkbox to declare that the information is true and correct
 	And the user clicks Submit notification
 	Then the Confirmation page should be displayed with the initial risk assessment
-	And the user records the IPAFFS User details and CHED Reference for notification 1
+	And the user records the CHED Reference for 'Iteration_1'
 	# Validate via Risk Decision Report
 	When I navigate to the Risk Engine application
 	Then the Risk Engine Home page should be displayed
@@ -161,9 +161,9 @@ Scenario: Bulk upload of new rules for CHEDPP - SPS-9414
 	Then the CHED-PP reports page should be displayed
 	When the user clicks the Risk decision report link
 	Then the Risk decision report page should be displayed
-	When the user enters the recorded CHED Reference for notification 1 in the Risk decision search box and clicks Search
+	When the user enters the recorded CHED Reference for 'Iteration_1' in the Risk decision search box and clicks Search
 	Then the Risk decision report returns one matching record
-	When the user clicks the Expand button for the CHED Reference of notification 1
+	When the user clicks the Expand button for the CHED Reference of 'Iteration_1'
 	And the user clicks the Requests details link
 	Then the Requests section is expanded with details from IPAFFS
 	When the user clicks the Decision details link
@@ -209,7 +209,7 @@ Scenario: Bulk upload of new rules for CHEDPP - SPS-9414
 	# Submit TWO matching CHED-PP notifications in IPAFFS (Italy / 12099130)
 	When I navigate to the IPAFF application
 	Then the Your import notifications page is displayed
-	# --- APP-A (notification 2) ---
+	# --- APP-A ---
 	When the user clicks Create a new notification
 	Then the About the consignment/What are you importing? page should be displayed with radio buttons
 	When the user chooses 'Plants, plant products and other objects' option
@@ -281,8 +281,8 @@ Scenario: Bulk upload of new rules for CHEDPP - SPS-9414
 	When the user ticks the checkbox to declare that the information is true and correct
 	And the user clicks Submit notification
 	Then the Confirmation page should be displayed with the initial risk assessment
-	And the user records the IPAFFS User details and CHED Reference for notification 2
-	# --- APP-B (notification 3) ---
+	And the user records the CHED Reference for 'Iteration_2A'
+	# --- APP-B ---
 	When the user clicks Return to your dashboard
 	Then the Your import notifications page is displayed
 	When the user clicks Create a new notification
@@ -356,7 +356,7 @@ Scenario: Bulk upload of new rules for CHEDPP - SPS-9414
 	When the user ticks the checkbox to declare that the information is true and correct
 	And the user clicks Submit notification
 	Then the Confirmation page should be displayed with the initial risk assessment
-	And the user records the IPAFFS User details and CHED Reference for notification 3
+	And the user records the CHED Reference for 'Iteration_2B'
 	# Validate via Risk Decision Report - APP-A first (Total=1, Triggered=0)
 	When I navigate to the Risk Engine application
 	Then the Risk Engine Home page should be displayed
@@ -366,9 +366,9 @@ Scenario: Bulk upload of new rules for CHEDPP - SPS-9414
 	Then the CHED-PP reports page should be displayed
 	When the user clicks the Risk decision report link
 	Then the Risk decision report page should be displayed
-	When the user enters the recorded CHED Reference for notification 2 in the Risk decision search box and clicks Search
+	When the user enters the recorded CHED Reference for 'Iteration_2A' in the Risk decision search box and clicks Search
 	Then the Risk decision report returns one matching record
-	When the user clicks the Expand button for the CHED Reference of notification 2
+	When the user clicks the Expand button for the CHED Reference of 'Iteration_2A'
 	And the user clicks the Requests details link
 	Then the Requests section is expanded with details from IPAFFS
 	When the user clicks the Decision details link
@@ -381,9 +381,9 @@ Scenario: Bulk upload of new rules for CHEDPP - SPS-9414
 		| Triggered      | 0             |
 		| IsTriggered    | false         |
 	# Validate via Risk Decision Report - APP-B (Total=2, Triggered=1)
-	When the user enters the recorded CHED Reference for notification 3 in the Risk decision search box and clicks Search
+	When the user enters the recorded CHED Reference for 'Iteration_2B' in the Risk decision search box and clicks Search
 	Then the Risk decision report returns one matching record
-	When the user clicks the Expand button for the CHED Reference of notification 3
+	When the user clicks the Expand button for the CHED Reference of 'Iteration_2B'
 	And the user clicks the Requests details link
 	Then the Requests section is expanded with details from IPAFFS
 	When the user clicks the Decision details link
@@ -502,7 +502,7 @@ Scenario: Bulk upload of new rules for CHEDPP - SPS-9414
 	When the user ticks the checkbox to declare that the information is true and correct
 	And the user clicks Submit notification
 	Then the Confirmation page should be displayed with the initial risk assessment
-	And the user records the IPAFFS User details and CHED Reference for notification 4
+	And the user records the CHED Reference for 'Iteration_3'
 	# Validate via Risk Decision Report
 	When I navigate to the Risk Engine application
 	Then the Risk Engine Home page should be displayed
@@ -512,9 +512,9 @@ Scenario: Bulk upload of new rules for CHEDPP - SPS-9414
 	Then the CHED-PP reports page should be displayed
 	When the user clicks the Risk decision report link
 	Then the Risk decision report page should be displayed
-	When the user enters the recorded CHED Reference for notification 4 in the Risk decision search box and clicks Search
+	When the user enters the recorded CHED Reference for 'Iteration_3' in the Risk decision search box and clicks Search
 	Then the Risk decision report returns one matching record
-	When the user clicks the Expand button for the CHED Reference of notification 4
+	When the user clicks the Expand button for the CHED Reference of 'Iteration_3'
 	And the user clicks the Requests details link
 	Then the Requests section is expanded with details from IPAFFS
 	When the user clicks the Decision details link
@@ -629,7 +629,7 @@ Scenario: Bulk upload of new rules for CHEDPP - SPS-9414
 	When the user ticks the checkbox to declare that the information is true and correct
 	And the user clicks Submit notification
 	Then the Confirmation page should be displayed with the initial risk assessment
-	And the user records the IPAFFS User details and CHED Reference for notification 5
+	And the user records the CHED Reference for 'Iteration_4'
 	# Validate via Risk Decision Report
 	When I navigate to the Risk Engine application
 	Then the Risk Engine Home page should be displayed
@@ -639,9 +639,9 @@ Scenario: Bulk upload of new rules for CHEDPP - SPS-9414
 	Then the CHED-PP reports page should be displayed
 	When the user clicks the Risk decision report link
 	Then the Risk decision report page should be displayed
-	When the user enters the recorded CHED Reference for notification 5 in the Risk decision search box and clicks Search
+	When the user enters the recorded CHED Reference for 'Iteration_4' in the Risk decision search box and clicks Search
 	Then the Risk decision report returns one matching record
-	When the user clicks the Expand button for the CHED Reference of notification 5
+	When the user clicks the Expand button for the CHED Reference of 'Iteration_4'
 	And the user clicks the Requests details link
 	Then the Requests section is expanded with details from IPAFFS
 	When the user clicks the Decision details link
@@ -757,7 +757,7 @@ Scenario: Bulk upload of new rules for CHEDPP - SPS-9414
 	When the user ticks the checkbox to declare that the information is true and correct
 	And the user clicks Submit notification
 	Then the Confirmation page should be displayed with the initial risk assessment
-	And the user records the IPAFFS User details and CHED Reference for notification 6
+	And the user records the CHED Reference for 'Iteration_5'
 	# Validate via Risk Decision Report
 	When I navigate to the Risk Engine application
 	Then the Risk Engine Home page should be displayed
@@ -767,9 +767,9 @@ Scenario: Bulk upload of new rules for CHEDPP - SPS-9414
 	Then the CHED-PP reports page should be displayed
 	When the user clicks the Risk decision report link
 	Then the Risk decision report page should be displayed
-	When the user enters the recorded CHED Reference for notification 6 in the Risk decision search box and clicks Search
+	When the user enters the recorded CHED Reference for 'Iteration_5' in the Risk decision search box and clicks Search
 	Then the Risk decision report returns one matching record
-	When the user clicks the Expand button for the CHED Reference of notification 6
+	When the user clicks the Expand button for the CHED Reference of 'Iteration_5'
 	And the user clicks the Requests details link
 	Then the Requests section is expanded with details from IPAFFS
 	When the user clicks the Decision details link
@@ -784,5 +784,6 @@ Scenario: Bulk upload of new rules for CHEDPP - SPS-9414
 	# Update bulk-update CSV with the new rule Id for commodity 12040010
 	When the user updates the bulk update CSV 'SPS-8834_CHED-PP_BulkUploadRules_UpdatedRules.csv' setting the Id for commodity code '12040010' to the recorded 'Iteration_5_RuleId'
 	Then the bulk update CSV row for commodity code '12040010' should contain the recorded 'Iteration_5_RuleId'
+	And the user copies the updated bulk update CSV back to the source data directory
 	And 'Iteration_5' is complete
 	# ---------- Iteration 5: Complete ----------

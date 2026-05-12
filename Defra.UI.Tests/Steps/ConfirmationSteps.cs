@@ -122,12 +122,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
             "PlaceOfDestinationAddress",
             "PlaceOfDestinationAddressTextOnly",
             "PlaceOfDestinationDetails",
-            "CHEDReference",
-            "CustomsDeclarationReference",
-            "CustomsDocumentCode",
             "RiskDecisionRequestsJson",
             "RiskDecisionJson",
-            "NewRuleId",
         ];
 
         public ConfirmationSteps(ScenarioContext context, IObjectContainer container)
@@ -161,6 +157,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext[$"{prefix}CustomsDocumentCode"] = confirmationPage.GetCustomsDocumentCode();
         }
 
+        [When("the user records the CHED Reference for {string}")]
+        [Then("the user records the CHED Reference for {string}")]
+        public void WhenTheUserRecordsTheCHEDReferenceFor(string iterationName)
+        {
+            _scenarioContext[$"{iterationName}_CHEDReference"] = confirmationPage.GetCHEDReference();
+        }
+
         [When("the user clicks Return to your dashboard")]
         [When("the user clicks return to your dashboard link")]
         public void WhenTheUserClicksReturnToYourDashboard()
@@ -190,22 +193,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("{string} is complete")]
         public void ThenIterationIsComplete(string iterationName)
         {
-            Console.WriteLine($"[ITERATION] Archiving context keys for '{iterationName}'");
-
-            // 1. Archive each IPAFFS key with the iteration prefix
-            foreach (var key in IpaffsIterationKeys)
+            // Archive only the Risk Decision JSON payloads for traceability, then clear all IPAFFS iteration keys
+            foreach (var key in new[] { "RiskDecisionRequestsJson", "RiskDecisionJson" })
             {
                 if (_scenarioContext.ContainsKey(key))
-                {
-                    var archivedKey = $"{iterationName}_{key}";
-                    _scenarioContext[archivedKey] = _scenarioContext[key];
-                    Console.WriteLine($"[ITERATION] Archived '{key}' → '{archivedKey}'");
-                }
+                    _scenarioContext[$"{iterationName}_{key}"] = _scenarioContext[key];
             }
 
-            // 2. Remove the prefix-free keys so the next iteration starts clean
             _scenarioContext.RemoveContextKeys(IpaffsIterationKeys);
-            Console.WriteLine($"[ITERATION] Cleared {IpaffsIterationKeys.Length} IPAFFS keys. '{iterationName}' complete.");
         }
     }
 }

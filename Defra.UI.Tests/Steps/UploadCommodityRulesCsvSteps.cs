@@ -74,5 +74,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.AreEqual(expectedId, actualId,
                 $"Expected Id '{expectedId}' for commodity code '{commodityCode}' but found '{actualId}' in the bulk update CSV");
         }
+
+        [When("the user copies the updated bulk update CSV back to the source data directory")]
+        [Then("the user copies the updated bulk update CSV back to the source data directory")]
+        public void ThenTheUserCopiesTheUpdatedBulkUpdateCsvBackToTheSourceDataDirectory()
+        {
+            var fileName = (string)_scenarioContext["BulkUpdateFileName"];
+            uploadCommodityRulesCsvPage?.CopyUpdatedCsvToSourceDirectory(fileName);
+        }
     }
 }

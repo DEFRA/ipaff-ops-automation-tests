@@ -9,5 +9,6 @@
         void ClickUploadButton();
         void UpdateCsvIdForCommodityCode(string fileName, string commodityCode, string newId);
         string GetCsvIdForCommodityCode(string fileName, string commodityCode);
+        void CopyUpdatedCsvToSourceDirectory(string fileName);
     }
 }

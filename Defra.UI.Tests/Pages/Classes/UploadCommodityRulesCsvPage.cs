@@ -103,6 +103,21 @@ namespace Defra.UI.Tests.Pages.Classes
                 $"No row found in '{fileName}' with Commodity code '{commodityCodeWithPrefix}'");
         }
 
+        /// <summary>
+        /// Copies the updated CSV from the build output directory back to the source
+        /// Data/Rules directory so it survives a rebuild before the next scenario runs.
+        /// </summary>
+        public void CopyUpdatedCsvToSourceDirectory(string fileName)
+        {
+            var outputPath = ResolveFilePath(fileName);
+
+            var assemblyDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
+            var sourceDir = Path.GetFullPath(Path.Combine(assemblyDir, "..", "..", "..", "Data", "Rules"));
+            var sourcePath = Path.Combine(sourceDir, fileName);
+
+            File.Copy(outputPath, sourcePath, overwrite: true);
+        }
+
         private static string ResolveFilePath(string fileName)
         {
             var dirPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
