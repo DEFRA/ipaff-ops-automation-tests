@@ -153,6 +153,8 @@ namespace Defra.UI.Tests.Tools
             var chromeOptions = new ChromeOptions();
 
             var downloadDirectory = Path.Combine(Path.GetTempPath(), "automation-downloads");
+
+            Console.WriteLine("downloadDirectory----------------------" + downloadDirectory);
             Directory.CreateDirectory(downloadDirectory);
 
             chromeOptions.AddUserProfilePreference("download.default_directory", downloadDirectory);
@@ -165,6 +167,9 @@ namespace Defra.UI.Tests.Tools
             using (var tempDriver = new ChromeDriver(chromeOptions))
 
             {
+
+                Console.WriteLine("***********Inside Chome driver block*************");
+
                 tempDriver.Navigate().GoToUrl(pdfUrl);
                 var elements = tempDriver.WaitForElements(By.CssSelector(".govuk-label.govuk-radios__label.break-word")).ToList();                      
                 elements[1].Click();

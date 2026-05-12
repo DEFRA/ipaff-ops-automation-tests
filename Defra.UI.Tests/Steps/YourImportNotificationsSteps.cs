@@ -84,8 +84,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserDownloadsThePDFForValidation()
         {
             string pdfUrl = importNotificationsPage?.getPDFUrl();
+            Console.WriteLine("PDF URL ------------------ " +pdfUrl);
             var chedReferenceFileName = _scenarioContext.Get<string>("CHEDReference") + "-certificate";
-
+            Console.WriteLine("chedReferenceFileName ------------------ " + chedReferenceFileName);
             Utils.DownloadPDF(chedReferenceFileName, pdfUrl, UserObject, _scenarioContext.Get<string>("UserRole"));
         }
 

@@ -1,4 +1,4 @@
-﻿@Regression @CHEDP
+﻿@Regression 
 Feature: Create Notification CHEDP
 
 Create a notification for CHEDP type
@@ -358,6 +358,7 @@ Scenario: User creates and submits a B2C consignment notification for Transit Re
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
 
+@CHEDP
 Scenario: User creates and submits a B2C consignment notification for Transhipment or onward travel Reason - CHEDP 7370
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
