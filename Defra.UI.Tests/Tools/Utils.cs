@@ -159,16 +159,16 @@ namespace Defra.UI.Tests.Tools
             Directory.CreateDirectory(downloadDirectory);
             Console.WriteLine("***********-1*************");
 
-            chromeOptions.AddArgument($"--user-data-dir={Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString())}");
+            //chromeOptions.AddArgument($"--user-data-dir={Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString())}");
             Console.WriteLine("downloadDirectory----------------------" + downloadDirectory);
 
             Console.WriteLine("***********0*************");
 
 
-            if (Directory.Exists(downloadDirectory))
+            /*if (Directory.Exists(downloadDirectory))
             {
                 Directory.Delete(downloadDirectory, true);
-            }
+            }*/
             Directory.CreateDirectory(downloadDirectory);
 
             //Directory.CreateDirectory(downloadDirectory);
@@ -193,6 +193,8 @@ namespace Defra.UI.Tests.Tools
             //var driver = new ChromeDriver(service, options);
             Console.WriteLine("***********4*************");
 
+
+            Console.WriteLine("Starting ChromeDriver...");
 
             using (var tempDriver = new ChromeDriver(service,chromeOptions))
 
