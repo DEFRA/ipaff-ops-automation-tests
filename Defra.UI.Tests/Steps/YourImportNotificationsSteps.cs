@@ -2,7 +2,6 @@
 using Defra.UI.Tests.Data.Users;
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
-using Defra.UI.Tests.Tools.PDFProcessor;
 using Defra.UI.Tests.Tools.PDFProcessor.Models;
 using Newtonsoft.Json;
 using NUnit.Framework;
@@ -10,10 +9,7 @@ using PdfExtraction;
 using Reqnroll;
 using Reqnroll.BoDi;
 using System.Globalization;
-
 using System.Text.Json;
-using System.Linq;
-
 using System.Text.RegularExpressions;
 
 namespace Defra.UI.Tests.Steps.IPAFF
@@ -84,9 +80,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserDownloadsThePDFForValidation()
         {
             string pdfUrl = importNotificationsPage?.getPDFUrl();
-            Console.WriteLine("PDF URL ------------------ " +pdfUrl);
             var chedReferenceFileName = _scenarioContext.Get<string>("CHEDReference") + "-certificate";
-            Console.WriteLine("chedReferenceFileName ------------------ " + chedReferenceFileName);
             _scenarioContext["PDFDownloadedDirectory"] = Utils.DownloadPDF(chedReferenceFileName, pdfUrl, UserObject, _scenarioContext.Get<string>("UserRole"));
         }
 
@@ -101,9 +95,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var json = JsonConvert.SerializeObject(_scenarioContext.ToDictionary(kvp => kvp.Key, kvp => kvp.Value), Formatting.Indented);
             var chedReferenceFileName = "//" + chedReference + "-certificate";
 
-            //var downloadDirectory = Path.Combine(Path.GetTempPath(), "automation-downloads");
             string downloadDirectory = _scenarioContext.Get<string>("PDFDownloadedDirectory");
-
 
             var files = Directory.GetFiles(downloadDirectory);
 
