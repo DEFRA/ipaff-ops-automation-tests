@@ -104,6 +104,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
             //var downloadDirectory = Path.Combine(Path.GetTempPath(), "automation-downloads");
             string downloadDirectory = _scenarioContext.Get<string>("PDFDownloadedDirectory");
 
+
+            var files = Directory.GetFiles(downloadDirectory);
+
+            foreach (var file in files)
+            {
+                Console.WriteLine("File:------------ " + file);
+            }
+
+
             string pdfPath = downloadDirectory + chedReferenceFileName + ".pdf";
             var converter = new PdfToJsonConverter();
             var jsonOutput = converter.ConvertToJson(pdfPath);
