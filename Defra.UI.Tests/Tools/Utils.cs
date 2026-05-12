@@ -7,6 +7,7 @@ using OpenQA.Selenium.Support.UI;
 using Reqnroll;
 using System.Diagnostics;
 using System.Globalization;
+using static UglyToad.PdfPig.DocumentLayoutAnalysis.TextExtractor.ContentOrderTextExtractor;
 
 namespace Defra.UI.Tests.Tools
 {
@@ -152,10 +153,26 @@ namespace Defra.UI.Tests.Tools
         {
             var chromeOptions = new ChromeOptions();
 
-            var downloadDirectory = Path.Combine(Path.GetTempPath(), "automation-downloads");
+            //var downloadDirectory = Path.Combine(Path.GetTempPath(), "automation-downloads");
 
-            Console.WriteLine("downloadDirectory----------------------" + downloadDirectory);
+            var downloadDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             Directory.CreateDirectory(downloadDirectory);
+            Console.WriteLine("***********-1*************");
+
+            chromeOptions.AddArgument($"--user-data-dir={Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString())}");
+            Console.WriteLine("downloadDirectory----------------------" + downloadDirectory);
+
+            Console.WriteLine("***********0*************");
+
+
+            if (Directory.Exists(downloadDirectory))
+            {
+                Directory.Delete(downloadDirectory, true);
+            }
+            Directory.CreateDirectory(downloadDirectory);
+
+            //Directory.CreateDirectory(downloadDirectory);
+
             Console.WriteLine("***********1*************");
 
             chromeOptions.AddUserProfilePreference("download.default_directory", downloadDirectory);
@@ -203,6 +220,9 @@ namespace Defra.UI.Tests.Tools
                 Thread.Sleep(1000);
 
                 IsDownloaded(fileName, "pdf");
+
+                tempDriver.Quit();
+                tempDriver.Dispose();
             }
         }
 
