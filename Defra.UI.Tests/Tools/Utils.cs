@@ -164,7 +164,15 @@ namespace Defra.UI.Tests.Tools
             chromeOptions.AddUserProfilePreference("plugins.always_open_pdf_externally", true);
 
 
-            using (var tempDriver = new ChromeDriver(chromeOptions))
+
+            //var options = new ChromeOptions();
+            //options.BinaryLocation = "/usr/bin/google-chrome"; // optional
+
+            var service = ChromeDriverService.CreateDefaultService("/usr/bin/");
+            //var driver = new ChromeDriver(service, options);
+
+
+            using (var tempDriver = new ChromeDriver(service,chromeOptions))
 
             {
 
