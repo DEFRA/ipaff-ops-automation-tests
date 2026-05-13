@@ -140,29 +140,28 @@ namespace Defra.UI.Tests.Tools
         public static bool IsDownloaded1(string fileName, string extension, string directory, int timeoutSeconds = 60)
         {
 
+            Console.WriteLine("Waiting for download...");
+
+            var expectedFile = Path.Combine(directory, $"{fileName}.{extension}");
+            var tempFile = expectedFile + ".crdownload";
+
+            var endTime = DateTime.Now.AddSeconds(timeoutSeconds);
+
+            while (DateTime.Now < endTime)
             {
-                Console.WriteLine("Waiting for download...");
-
-                var expectedFile = Path.Combine(directory, $"{fileName}.{extension}");
-                var tempFile = expectedFile + ".crdownload";
-
-                var endTime = DateTime.Now.AddSeconds(timeoutSeconds);
-
-                while (DateTime.Now < endTime)
+                // ✅ File exists AND Chrome temp file is gone
+                if (File.Exists(expectedFile) && !File.Exists(tempFile))
                 {
-                    // ✅ File exists AND Chrome temp file is gone
-                    if (File.Exists(expectedFile) && !File.Exists(tempFile))
-                    {
-                        Console.WriteLine("Download complete: " + expectedFile);
-                        return true;
-                    }
-
-                    Thread.Sleep(1000);
+                    Console.WriteLine("Download complete: " + expectedFile);
+                    return true;
                 }
 
-                Console.WriteLine("Download timed out");
-                return false;
+                Thread.Sleep(1000);
             }
+
+            Console.WriteLine("Download timed out");
+            return false;
+
 
         }
 
@@ -284,7 +283,7 @@ namespace Defra.UI.Tests.Tools
                 tempDriver.FindElement(By.Id("password")).SendKeys(userObject.Credential);
                 //Thread.Sleep(1000);
                 tempDriver.WaitForElement(By.Id("continue")).Click();
-                Thread.Sleep(5000);
+                Thread.Sleep(10000);
 
                 Assert.IsTrue(IsDownloaded1(fileName, "pdf", downloadDirectory), "Failed in Is Downloaded check!!");
 
