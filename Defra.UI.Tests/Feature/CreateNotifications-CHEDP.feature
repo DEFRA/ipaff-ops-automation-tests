@@ -1,4 +1,4 @@
-﻿@Regression @CHEDP
+﻿@Regression
 Feature: Create Notification CHEDP
 
 Create a notification for CHEDP type
