@@ -7,6 +7,7 @@ using OpenQA.Selenium.Support.UI;
 using Reqnroll;
 using System.Diagnostics;
 using System.Globalization;
+using System.Runtime.InteropServices;
 
 namespace Defra.UI.Tests.Tools
 {
@@ -148,7 +149,7 @@ namespace Defra.UI.Tests.Tools
             return actual.OrderBy(x => x).SequenceEqual(expected.OrderBy(x => x));
         }
 
-        public static void DownloadPDF(string fileName, string pdfUrl, IUserObject UserObject, string userRole)
+        /*public static void DownloadPDF(string fileName, string pdfUrl, IUserObject UserObject, string userRole)
         {
             var chromeOptions = new ChromeOptions();
 
@@ -186,9 +187,83 @@ namespace Defra.UI.Tests.Tools
 
                 IsDownloaded(fileName, "pdf");
             }
+        }*/
+
+        public static string DownloadPDF(string fileName, string pdfUrl, IUserObject UserObject, string userRole)
+        {
+            var chromeOptions = new ChromeOptions();
+
+            // ✅ Unique download directory
+            var downloadDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            Directory.CreateDirectory(downloadDirectory);
+
+            Console.WriteLine("downloadDirectory: " + downloadDirectory);
+
+            // ✅ Required for pipeline (Linux)
+            chromeOptions.AddArgument("--headless=new");
+            chromeOptions.AddArgument("--no-sandbox");
+            chromeOptions.AddArgument("--disable-dev-shm-usage");
+
+            // ✅ Download settings
+            chromeOptions.AddUserProfilePreference("download.default_directory", downloadDirectory);
+            chromeOptions.AddUserProfilePreference("download.prompt_for_download", false);
+            chromeOptions.AddUserProfilePreference("download.directory_upgrade", true);
+            chromeOptions.AddUserProfilePreference("safebrowsing.enabled", true);
+            chromeOptions.AddUserProfilePreference("plugins.always_open_pdf_externally", true);
+
+            chromeOptions.EnableDownloads = true;
+
+            ChromeDriverService service;
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                // Pipeline (Linux agent) – chromedriver installed under /usr/bin
+                service = ChromeDriverService.CreateDefaultService("/usr/bin/");
+            }
+            else
+            {
+                // Local (Windows/macOS) – use default resolution (PATH / local folder)
+                service = ChromeDriverService.CreateDefaultService();
+            }
+
+            Console.WriteLine("Starting ChromeDriver...");
+
+            using (var tempDriver = new ChromeDriver(service, chromeOptions))
+            {
+                tempDriver.Navigate().GoToUrl(pdfUrl);
+                var elements = tempDriver.WaitForElements(By.CssSelector(".govuk-label.govuk-radios__label.break-word")).ToList();
+                elements[1].Click();
+
+                tempDriver.FindElement(By.Id("continueReplacement")).Click();
+
+                var jsonData = UserObject?.GetUser("IPAFF", userRole);
+                var userObject = new User
+                {
+                    UserName = jsonData.UserName,
+                    Credential = jsonData.Credential
+                };
+
+                tempDriver.WaitForElement(By.Id("user_id")).SendKeys(userObject.UserName);
+                tempDriver.FindElement(By.Id("password")).SendKeys(userObject.Credential);
+                Thread.Sleep(1000);
+                tempDriver.WaitForElement(By.Id("continue")).Click();
+                Thread.Sleep(1000);
+
+                IsDownloaded(fileName, "pdf");
+
+                var files = Directory.GetFiles(downloadDirectory);
+
+                foreach (var file in files)
+                {
+                    Console.WriteLine("File from downloads:------------ " + file);
+                }
+
+                tempDriver.Quit();
+                tempDriver.Dispose();
+            }
+            return downloadDirectory;
         }
 
-       
+
 
 
 

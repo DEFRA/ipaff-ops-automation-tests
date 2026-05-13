@@ -80,8 +80,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             string pdfUrl = importNotificationsPage?.getPDFUrl();
             var chedReferenceFileName = _scenarioContext.Get<string>("CHEDReference") + "-certificate";
-
-            Utils.DownloadPDF(chedReferenceFileName, pdfUrl, UserObject, _scenarioContext.Get<string>("UserRole"));
+            _scenarioContext["PDFDownloadedDirectory"] = Utils.DownloadPDF(chedReferenceFileName, pdfUrl, UserObject, _scenarioContext.Get<string>("UserRole"));
         }
 
         [When("verifies laboratory tests should be displayed as No and Reasons for testing with no boxes selected")]
@@ -89,12 +88,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user checks that the data in the certificate matches the data entered into the notification")]
         public void WhenTheUserChecksThatTheDataInTheCertificateMatchesTheDataEnteredIntoTheNotification()
         {
+
             var chedReference = _scenarioContext.Get<string>("CHEDReference");
             Assert.True(importNotificationsPage?.VerifyDataInCertificate(chedReference), "Certificate data verification failed");
 
             var json = JsonConvert.SerializeObject(_scenarioContext.ToDictionary(kvp => kvp.Key, kvp => kvp.Value), Formatting.Indented);
-            var chedReferenceFileName = "\\" + chedReference + "-certificate";
-            var downloadDirectory = Path.Combine(Path.GetTempPath(), "automation-downloads");
+            var chedReferenceFileName = "//" + chedReference + "-certificate";
+
+            string downloadDirectory = _scenarioContext.Get<string>("PDFDownloadedDirectory");
+
             string pdfPath = downloadDirectory + chedReferenceFileName + ".pdf";
             var converter = new PdfToJsonConverter();
             var jsonOutput = converter.ConvertToJson(pdfPath);
@@ -561,15 +563,23 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             Assert.True(allDataMatches, $"PDF data validation failed. Mismatches: {string.Join(", ", mismatches)}");
 
-            if (File.Exists(pdfPath))
+
+            if (Directory.Exists(downloadDirectory))
             {
-                File.Delete(pdfPath);
-                Console.WriteLine("File deleted successfully.");
+                if (File.Exists(pdfPath))
+                {
+                    File.Delete(pdfPath);
+                    Console.WriteLine("File deleted successfully.");
+                }
+                else
+                {
+                    Console.WriteLine("File not found to delete.");
+                }
+
+                Directory.Delete(downloadDirectory, true);
+                Console.WriteLine("Deleted directory: " + downloadDirectory);
             }
-            else
-            {
-                Console.WriteLine("File not found to delete.");
-            }
+
         }
 
 
