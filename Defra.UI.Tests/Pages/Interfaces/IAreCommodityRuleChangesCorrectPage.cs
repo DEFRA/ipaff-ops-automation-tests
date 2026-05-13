@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Defra.UI.Tests.Pages.Interfaces
+﻿namespace Defra.UI.Tests.Pages.Interfaces
 {
     public interface IAreCommodityRuleChangesCorrectPage
     {

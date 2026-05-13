@@ -12,8 +12,8 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='CHED-PP reports']"), true);
-        private IWebElement lnkPhsiImportsCommodityRulesReport => _driver.WaitForElement(By.XPath("//a[normalize-space()='PHSI imports commodity rules report']"));
-        private IWebElement lnkRiskDecisionReport => _driver.WaitForElement(By.XPath("//a[normalize-space()='Risk decision report']"));
+        private IWebElement lnkPhsiImportsCommodityRulesReport => _driver.FindElement(By.XPath("//a[normalize-space()='PHSI imports commodity rules report']"));
+        private IWebElement lnkRiskDecisionReport => _driver.FindElement(By.XPath("//a[normalize-space()='Risk decision report']"));
         #endregion
 
         public CHEDPPReportsPage(IObjectContainer container)

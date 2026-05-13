@@ -28,7 +28,12 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement idHeader => _driver.WaitForElement(By.XPath("//table[@id='commodity-rules-table']//thead//th[normalize-space()='Id']"));
         private IWebElement infoLabel => _driver.FindElement(By.XPath("//div[contains(@id,'commodity-rules-table_info') or contains(@class,'dataTables_info')]"));
         private IWebElement firstRow => _driver.FindElement(By.XPath("//table[@id='commodity-rules-table']/tbody/tr[1]"));
-        private By firstRowCells => By.XPath("./td");
+        private By firstRowCellsBy => By.XPath("./td");
+        private IWebElement selectedCountText => _driver.WaitForElement(By.Id("selected-count-text"));
+        private IWebElement deleteRulesButton => _driver.WaitForElement(By.Id("remove-selected-rules"));
+        private IWebElement confirmDeleteButton => _driver.WaitForElement(By.Id("confirm-delete"));
+        private By confirmationModalBy => By.Id("confirmation-modal");
+        private IWebElement ruleCountSpan => _driver.WaitForElement(By.Id("rule-count"));
         #endregion
 
         public ViewAllPHSIImportCommodityRulesPage(IObjectContainer container)
@@ -36,7 +41,18 @@ namespace Defra.UI.Tests.Pages.Classes
             _objectContainer = container;
         }
 
-        public bool IsPageLoaded() => pageTitle.Text.Trim().Equals("View all PHSI (Import) Commodity Rules");
+        public bool IsPageLoaded()
+        {
+            try
+            {
+                return pageTitle.Text.Trim().Equals("View all PHSI (Import) Commodity Rules")
+                    && searchInput.Displayed;
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
+        }
 
         public void ScrollToBottom() =>
             ((IJavaScriptExecutor)_driver).ExecuteScript("window.scrollTo(0, document.body.scrollHeight);");
@@ -65,7 +81,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public IDictionary<string, string> GetTopRowDetails()
         {
-            var cells = firstRow.FindElements(firstRowCells).Select(c => c.Text.Trim()).ToList();
+            var cells = firstRow.FindElements(firstRowCellsBy).Select(c => c.Text.Trim()).ToList();
             var dict = new Dictionary<string, string>();
             for (int i = 0; i < Columns.Length && i < cells.Count; i++)
             {
@@ -85,6 +101,48 @@ namespace Defra.UI.Tests.Pages.Classes
                 return true;
             }
             return false;
+        }
+
+        public void TickSelectToDeleteCheckboxForRuleId(string ruleId)
+        {
+            var checkbox = _driver.FindElement(By.Id($"rule-{ruleId}"));
+            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView({block: 'center'});", checkbox);
+            Thread.Sleep(300); // allow scroll to settle before click
+            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", checkbox);
+        }
+
+        public string GetSelectedRulesInfoText() => selectedCountText.Text.Trim();
+
+        public void ClickDeleteRulesButton() => deleteRulesButton.Click();
+
+        public bool IsConfirmDeletionDialogDisplayed()
+        {
+            var modals = _driver.FindElements(confirmationModalBy);
+            return modals.Count > 0 && modals[0].Displayed;
+        }
+
+        public int GetConfirmDeletionDialogRuleCount() => int.Parse(ruleCountSpan.Text.Trim());
+
+        public void ClickConfirmDeleteButton() => confirmDeleteButton.Click();
+
+        public bool IsConfirmDeletionDialogClosed()
+        {
+            var modals = _driver.FindElements(confirmationModalBy);
+            return modals.Count == 0 || !modals[0].Displayed;
+        }
+
+        public bool IsRuleIdPresent(string ruleId)
+        {
+            var elements = _driver.FindElements(By.Id($"rule-{ruleId}"));
+            return elements.Count > 0;
+        }
+
+        public string GetSearchInputText() => searchInput.GetAttribute("value") ?? string.Empty;
+
+        public bool IsIdColumnSorted()
+        {
+            var ariaSort = idHeader.GetAttribute("aria-sort");
+            return !string.IsNullOrEmpty(ariaSort);
         }
     }
 }

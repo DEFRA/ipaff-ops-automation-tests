@@ -3,7 +3,7 @@ Feature: Risk Engine CHEDPP
 
 Bulk upload, Update and Test rules with end-to-end validation for a CHEDPP notification
 
-Scenario: Bulk upload of new rules for CHEDPP - SPS-9414
+Scenario: Bulk upload initial load for CHEDPP - SPS-9414
 	# ---------- Iteration 1: Start ----------
 	# Upload the rules
 	Given that I navigate to the Risk Engine application
@@ -787,3 +787,32 @@ Scenario: Bulk upload of new rules for CHEDPP - SPS-9414
 	And the user copies the updated bulk update CSV back to the source data directory
 	And 'Iteration_5' is complete
 	# ---------- Iteration 5: Complete ----------
+	# Delete the 5 rules created by the initial bulk upload
+	When the user clicks the 'Reports' link from the Risk Engine header menu
+	Then the Risk Engine Reports page should be displayed
+	When the user clicks the CHED-PP reports link
+	Then the CHED-PP reports page should be displayed
+	When the user clicks the PHSI imports commodity rules report link
+	Then the View all PHSI (Import) Commodity Rules report page should be displayed
+	When the user sorts the PHSI rules table by Id descending
+	And the user ticks the Select to Delete checkbox for rule Id recorded as 'Iteration_1_RuleId'
+	And the user ticks the Select to Delete checkbox for rule Id recorded as 'Iteration_2_RuleId'
+	And the user ticks the Select to Delete checkbox for rule Id recorded as 'Iteration_3_RuleId'
+	And the user ticks the Select to Delete checkbox for rule Id recorded as 'Iteration_4_RuleId'
+	And the user ticks the Select to Delete checkbox for rule Id recorded as 'Iteration_5_RuleId'
+	Then the selected rules info banner should display '5 rules selected across all pages'
+	When the user clicks the Delete Rules button
+	Then the Confirm rule deletion dialog should be displayed with 5 rules selected for deletion
+	When the user clicks the Delete rules button on the confirmation dialog
+	Then the Confirm rule deletion dialog should be closed
+	And the rule Id recorded as 'Iteration_1_RuleId' should no longer be present in the rules table
+	And the rule Id recorded as 'Iteration_2_RuleId' should no longer be present in the rules table
+	And the rule Id recorded as 'Iteration_3_RuleId' should no longer be present in the rules table
+	And the rule Id recorded as 'Iteration_4_RuleId' should no longer be present in the rules table
+	And the rule Id recorded as 'Iteration_5_RuleId' should no longer be present in the rules table
+	And the PHSI rules search field should be empty
+	And the PHSI rules table Id column should have no sort applied
+	When the user scrolls to the bottom of the PHSI rules report page
+	Then the count of rules should equal the recorded 'InitialRuleCount'
+
+Scenario: Bulk upload update existing rules for CHEDPP - SPS-9415
