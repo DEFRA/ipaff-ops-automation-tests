@@ -258,6 +258,15 @@ namespace Defra.UI.Tests.Tools
 
             using (var tempDriver = new ChromeDriver(service, chromeOptions))
             {
+
+                tempDriver.ExecuteCdpCommand(
+                        "Page.setDownloadBehavior",
+                        new Dictionary<string, object>
+                        {
+                            ["behavior"] = "allow",
+                            ["downloadPath"] = downloadDirectory
+                        });
+
                 tempDriver.Navigate().GoToUrl(pdfUrl);
                 var elements = tempDriver.WaitForElements(By.CssSelector(".govuk-label.govuk-radios__label.break-word")).ToList();
                 elements[1].Click();
