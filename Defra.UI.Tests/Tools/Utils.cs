@@ -137,6 +137,40 @@ namespace Defra.UI.Tests.Tools
             return false;
         }
 
+        public static bool IsDownloaded1(string fileName, string extension, string directory)
+        {
+
+            Console.WriteLine("Inside ISDownloaded");
+
+            var downloadedFilePath = Path.Combine(directory, $"{fileName}.{extension}");
+
+            Console.WriteLine("File Path " + downloadedFilePath);
+
+
+            var timeout = TimeSpan.FromSeconds(40);
+
+            var stopwatch = Stopwatch.StartNew();
+
+
+            var files = Directory.GetFiles(directory);
+
+            foreach (var file in files)
+            {
+                Console.WriteLine("File Isdownload1:------------ " + file);
+            }
+
+            while (stopwatch.Elapsed < timeout)
+            {
+                if (File.Exists(downloadedFilePath))
+                {                    
+                    return true;
+                }
+
+                Thread.Sleep(500);
+            }
+            return false;
+        }
+
         public static bool Equals(this string expected, string actual)
         {
             return expected.Equals(actual, StringComparison.OrdinalIgnoreCase);
@@ -248,7 +282,7 @@ namespace Defra.UI.Tests.Tools
                 tempDriver.WaitForElement(By.Id("continue")).Click();
                 Thread.Sleep(1000);
 
-                IsDownloaded(fileName, "pdf");
+                IsDownloaded1(fileName, "pdf", downloadDirectory);
 
                 var files = Directory.GetFiles(downloadDirectory);
 
