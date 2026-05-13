@@ -211,6 +211,13 @@ namespace Defra.UI.Tests.Tools
 
                 IsDownloaded(fileName, "pdf");
 
+                var files = Directory.GetFiles(downloadDirectory);
+
+                foreach (var file in files)
+                {
+                    Console.WriteLine("File from downloads:------------ " + file);
+                }
+
                 tempDriver.Quit();
                 tempDriver.Dispose();
             }
