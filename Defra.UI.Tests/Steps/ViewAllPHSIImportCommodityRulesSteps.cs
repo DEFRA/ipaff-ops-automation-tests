@@ -60,6 +60,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 $"Expected rule count to be {initial + delta} (initial '{key}'={initial} + {delta}) but was {actual}");
         }
 
+        [Then("the count of rules should be {int} less than {string}")]
+        public void ThenTheCountOfRulesShouldBeLessThan(int delta, string key)
+        {
+            var initial = (int)_scenarioContext[key];
+            var actual = viewAllPHSIImportCommodityRulesPage!.GetTotalRuleCount();
+            Assert.AreEqual(initial - delta, actual,
+                $"Expected rule count to be {initial - delta} (initial '{key}'={initial} - {delta}) but was {actual}");
+        }
+
         [Then("the count of rules should equal the recorded {string}")]
         public void ThenTheCountOfRulesShouldEqualTheRecorded(string key)
         {

@@ -38,6 +38,26 @@ namespace Defra.UI.Tests.Steps.IPAFF
             }
         }
 
+        [Then("the 'Are the commodity rule changes correct?' page should show Existing rules equal to {string}")]
+        public void ThenConfirmChangesPageShowsExistingRulesEqualTo(string contextKey)
+        {
+            var actual = areCommodityRuleChangesCorrectPage!.GetSummaryDetails();
+            var expected = (int)_scenarioContext[contextKey];
+            var existingRules = int.Parse(actual["Existing rules"]);
+            Assert.AreEqual(expected, existingRules,
+                $"'Existing rules' mismatch: expected '{expected}' ('{contextKey}') but got '{existingRules}'");
+        }
+
+        [Then("the 'Are the commodity rule changes correct?' page should show Total rules {int} more than {string}")]
+        public void ThenConfirmChangesPageShowsTotalRulesMoreThan(int delta, string contextKey)
+        {
+            var actual = areCommodityRuleChangesCorrectPage!.GetSummaryDetails();
+            var initial = (int)_scenarioContext[contextKey];
+            var totalRules = int.Parse(actual["Total rules"]);
+            Assert.AreEqual(initial + delta, totalRules,
+                $"'Total rules' mismatch: expected '{initial + delta}' ('{contextKey}'={initial} + {delta}) but got '{totalRules}'");
+        }
+
         [When("the user selects the {string} radio option")]
         public void WhenTheUserSelectsTheRadioOption(string optionLabel)
         {

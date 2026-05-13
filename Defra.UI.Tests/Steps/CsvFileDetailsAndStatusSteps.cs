@@ -22,15 +22,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext = context;
         }
 
-        [Then("the CSV file details and status page should be displayed with {int} incoming rules added")]
-        public void ThenCsvFileDetailsPageShowsIncomingRulesAdded(int expected)
-        {
-            Assert.True(csvFileDetailsAndStatusPage?.IsPageLoaded(), "CSV file details and status page is not displayed");
-            var actual = csvFileDetailsAndStatusPage!.GetSummaryFieldAsInt("Incoming rules to be added");
-            Assert.AreEqual(expected, actual,
-                $"Expected 'Incoming rules to be added' to be {expected} but was {actual}");
-        }
-
+        [Then("the CSV file details and status page should show Total rules {int} more than {string}")]
         [Then("the CSV file details and status page should be displayed with the count of Total rules {int} more than {string}")]
         public void ThenCsvFileDetailsPageShowsTotalRulesIncreased(int delta, string contextKey)
         {
@@ -39,6 +31,32 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var actual = csvFileDetailsAndStatusPage!.GetSummaryFieldAsInt("Total rules");
             Assert.AreEqual(initial + delta, actual,
                 $"Expected 'Total rules' to be {initial + delta} (initial '{contextKey}'={initial} + {delta}) but was {actual}");
+        }
+
+        [Then("the CSV file details and status page should show Existing rules equal to {string}")]
+        public void ThenCsvFileDetailsPageShowsExistingRulesEqualTo(string contextKey)
+        {
+            Assert.True(csvFileDetailsAndStatusPage?.IsPageLoaded(), "CSV file details and status page is not displayed");
+            var expected = (int)_scenarioContext[contextKey];
+            var actual = csvFileDetailsAndStatusPage!.GetSummaryFieldAsInt("Existing rules");
+            Assert.AreEqual(expected, actual,
+                $"'Existing rules' mismatch: expected '{expected}' ('{contextKey}') but got '{actual}'");
+        }
+
+        [Then("the CSV file details and status page is displayed with the following upload details")]
+        public void ThenCsvFileDetailsPageShowsUploadDetails(Table table)
+        {
+            Assert.True(csvFileDetailsAndStatusPage?.IsPageLoaded(), "CSV file details and status page is not displayed");
+            var actual = csvFileDetailsAndStatusPage!.GetSummaryDetails();
+
+            foreach (var row in table.Rows)
+            {
+                var field = row["Field"];
+                var expected = row["Value"];
+                Assert.True(actual.ContainsKey(field), $"Field '{field}' not found on CSV file details and status page");
+                Assert.AreEqual(expected, actual[field],
+                    $"Field '{field}' mismatch: expected '{expected}' but got '{actual[field]}'");
+            }
         }
 
         [When("the user clicks the PHSI reporting link at the bottom of the summary page")]

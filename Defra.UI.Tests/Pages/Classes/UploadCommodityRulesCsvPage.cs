@@ -113,8 +113,15 @@ namespace Defra.UI.Tests.Pages.Classes
 
             var assemblyDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
             var sourceDir = Path.GetFullPath(Path.Combine(assemblyDir, "..", "..", "..", "Data", "Rules"));
-            var sourcePath = Path.Combine(sourceDir, fileName);
 
+            if (!Directory.Exists(sourceDir))
+            {
+                // Running in CI pipeline — source directory doesn't exist.
+                // The updated file in the output directory is sufficient for subsequent scenarios.
+                return;
+            }
+
+            var sourcePath = Path.Combine(sourceDir, fileName);
             File.Copy(outputPath, sourcePath, overwrite: true);
         }
 
