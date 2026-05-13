@@ -137,38 +137,33 @@ namespace Defra.UI.Tests.Tools
             return false;
         }
 
-        public static bool IsDownloaded1(string fileName, string extension, string directory)
+        public static bool IsDownloaded1(string fileName, string extension, string directory, int timeoutSeconds = 60)
         {
 
-            Console.WriteLine("Inside ISDownloaded");
-
-            var downloadedFilePath = Path.Combine(directory, $"{fileName}.{extension}");
-
-            Console.WriteLine("File Path " + downloadedFilePath);
-
-
-            var timeout = TimeSpan.FromSeconds(40);
-
-            var stopwatch = Stopwatch.StartNew();
-
-
-            var files = Directory.GetFiles(directory);
-
-            foreach (var file in files)
             {
-                Console.WriteLine("File Isdownload1:------------ " + file);
-            }
+                Console.WriteLine("Waiting for download...");
 
-            while (stopwatch.Elapsed < timeout)
-            {
-                if (File.Exists(downloadedFilePath))
-                {                    
-                    return true;
+                var expectedFile = Path.Combine(directory, $"{fileName}.{extension}");
+                var tempFile = expectedFile + ".crdownload";
+
+                var endTime = DateTime.Now.AddSeconds(timeoutSeconds);
+
+                while (DateTime.Now < endTime)
+                {
+                    // ✅ File exists AND Chrome temp file is gone
+                    if (File.Exists(expectedFile) && !File.Exists(tempFile))
+                    {
+                        Console.WriteLine("Download complete: " + expectedFile);
+                        return true;
+                    }
+
+                    Thread.Sleep(1000);
                 }
 
-                Thread.Sleep(500);
+                Console.WriteLine("Download timed out");
+                return false;
             }
-            return false;
+
         }
 
         public static bool Equals(this string expected, string actual)
