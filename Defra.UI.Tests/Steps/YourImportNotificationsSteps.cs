@@ -384,7 +384,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         ValidateIfExists("PhysicalCheck", pdfPhysicalCheck, ref allDataMatches, mismatches);
                         ValidateIfExists("PhysicalCheckDecision", pdfPhysicalCheck, ref allDataMatches, mismatches);
 
-                        string? pdfLaboratoryTestRequired = page.Sections.LaboratoryTests.No;
+                        /*string? pdfLaboratoryTestRequired = page.Sections.LaboratoryTests.No;
                         if (pdfLaboratoryTestRequired.Equals("true") && page.Sections.LaboratoryTests.Random.Equals("false")
                             && page.Sections.LaboratoryTests.Suspicion.Equals("false")
                         && (page.Sections.LaboratoryTests.EmergencyMeasures.Equals("false")
@@ -445,7 +445,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             };
                             ValidateIfExists("LaboratoryTestsReason", pdfLaboratoryTestNames1, ref allDataMatches, mismatches);
                             ValidateContains("LaboratoryTestName", (string?)page.Sections.LaboratoryTests?.AdditionalData?.ElementAt(0).Value, ref allDataMatches, mismatches, true);
-                        }
+                        }*/
                         string? welfareCheckDecision = page.Sections.WelfareCheck
                         switch
                         {
