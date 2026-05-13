@@ -278,9 +278,9 @@ namespace Defra.UI.Tests.Tools
 
                 tempDriver.WaitForElement(By.Id("user_id")).SendKeys(userObject.UserName);
                 tempDriver.FindElement(By.Id("password")).SendKeys(userObject.Credential);
-                Thread.Sleep(1000);
+                //Thread.Sleep(1000);
                 tempDriver.WaitForElement(By.Id("continue")).Click();
-                Thread.Sleep(1000);
+                Thread.Sleep(3000);
 
                 IsDownloaded1(fileName, "pdf", downloadDirectory);
 
