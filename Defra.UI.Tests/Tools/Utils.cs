@@ -282,7 +282,7 @@ namespace Defra.UI.Tests.Tools
                 tempDriver.WaitForElement(By.Id("continue")).Click();
                 Thread.Sleep(5000);
 
-                IsDownloaded1(fileName, "pdf", downloadDirectory);
+                Assert.IsTrue(IsDownloaded1(fileName, "pdf", downloadDirectory), "Failed in Is Downloaded check!!");
 
                 var files = Directory.GetFiles(downloadDirectory);
 
