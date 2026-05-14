@@ -16,5 +16,7 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void EnterIdentificationForSpecies(string species, int animalIndex, string fieldType, string value);
         void ClickAddAnotherForSpecies(string species);
         List<string> GetSpeciesSectionIds();
+        void EnterEggMark(string eggMark);
+        void EnterCollectionDate(string date);
     }
 }

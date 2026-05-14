@@ -101,7 +101,13 @@
     <None Update="Data\Documents\IPAFFS Test Document.docx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Data\Rules\SPS-8800_CHED-A_BulkUploadRules.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Data\Rules\SPS-8806_CHED-PP_BulkUploadRules.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\Rules\SPS-8807_CHED-A_BulkUploadRules_UpdatedRules.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Data\Rules\SPS-8834_CHED-PP_BulkUploadRules_UpdatedRules.csv">

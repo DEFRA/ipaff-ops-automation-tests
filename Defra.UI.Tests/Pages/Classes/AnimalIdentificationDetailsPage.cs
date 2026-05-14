@@ -25,6 +25,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtMicrochipNumber => _driver.FindElement(By.XPath("//input[contains(@id, 'microchip')]"));
         private IWebElement txtPassportNumber => _driver.FindElement(By.XPath("//input[contains(@id, 'passport')]"));
         private IWebElement txtEarTag => _driver.FindElement(By.XPath("//input[contains(@id, 'ear_tag')]"));
+        private IWebElement txtEggMark => _driver.FindElement(By.XPath("//input[contains(@id, 'egg_mark')]"));
+        private IWebElement txtCollectionDate => _driver.FindElement(By.XPath("//input[contains(@id, 'collection_date')]"));
         private IWebElement lblNumberOfAnimals => _driver.FindElement(By.XPath("//table[@id='commodities-overview']//th[text()='Number of animals']/parent::tr/parent::thead/following-sibling::tbody//td[4]"));
         private IReadOnlyCollection<IWebElement> identifiersTables => _driver.FindElements(By.XPath("//table[contains(@class, 'identifiers-table')]"));
         private IWebElement identifierInput(string sectionId, int animalIndex, string fieldType) =>
@@ -86,6 +88,18 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public string GetEarTag => txtEarTag.GetAttribute("value")?.Trim() ?? string.Empty;
 
+        public void EnterEggMark(string eggMark)
+        {
+            txtEggMark.Clear();
+            txtEggMark.SendKeys(eggMark);
+        }
+
+        public void EnterCollectionDate(string date)
+        {
+            txtCollectionDate.Clear();
+            txtCollectionDate.SendKeys(date);
+        }
+
         public string GetNumberOfAnimals() => lblNumberOfAnimals.Text.Trim();
 
         public List<string> GetSpeciesSectionIds() =>
@@ -108,7 +122,7 @@ namespace Defra.UI.Tests.Pages.Classes
             var sectionId = FindSectionIdForSpecies(species);
             var button = addAnotherButton(sectionId, speciesInputRows(sectionId).Count);
             button.Click();
-        }        
+        }
 
         /// <summary>
         /// Finds the section ID (e.g. "1-568113") for a given species name.

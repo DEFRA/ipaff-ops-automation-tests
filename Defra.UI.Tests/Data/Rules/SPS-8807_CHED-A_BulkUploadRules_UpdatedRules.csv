@@ -1,0 +1,6 @@
+Id,Description,Commodity code,Rate %,Previous rate %,Permanent,Start date,End date,Countries,Country groups,Country exceptions,Certified For,Purpose,Border Control Post,Reason
+,,*,70,,Yes,,,Djibouti,None,None,Approved bodies,All,"GBMNC4, GBSTN4A",Reason 1b
+,,03074290,100,,Yes,,,"Djibouti, Germany, Italy",European Countries,None,All,All internal markets,All,Reason 2
+,,'0101,0,,Yes,,,,Third Countries,Montserrat,"Fattening, Registered, Pets","Breeding, Slaughter, Transit, Re-entry","GBLHR022, GBLHR067, GBLHR4A",
+,,05119190,50,,Yes,,,"Togo, Djibouti, Germany",None,None,All,All,All,
+,,'950810,100,,No,,01/01/2030,All,None,None,"Breeding or production, Circus or exhibition","All internal markets, Transhipment or onward travel",All,
