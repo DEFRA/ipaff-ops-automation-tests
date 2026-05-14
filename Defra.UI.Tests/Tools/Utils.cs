@@ -311,6 +311,8 @@ namespace Defra.UI.Tests.Tools
             chromeOptions.AddArgument("--headless=new");
             chromeOptions.AddArgument("--no-sandbox");
             chromeOptions.AddArgument("--disable-dev-shm-usage");
+            chromeOptions.AddArgument("--disable-gpu");
+            chromeOptions.AddArgument("--window-size=1920,1080");
 
             // ✅ Download settings
             chromeOptions.AddUserProfilePreference("download.default_directory", downloadDirectory);
@@ -337,6 +339,13 @@ namespace Defra.UI.Tests.Tools
 
             using (var tempDriver = new ChromeDriver(service, chromeOptions))
             {
+                tempDriver.ExecuteCdpCommand(
+                         "Page.setDownloadBehavior",
+                         new Dictionary<string, object>
+                         {
+                             ["behavior"] = "allow",
+                             ["downloadPath"] = downloadDirectory
+                         });
                 tempDriver.Navigate().GoToUrl(pdfUrl);
                 var elements = tempDriver.WaitForElements(By.CssSelector(".govuk-label.govuk-radios__label.break-word")).ToList();
                 elements[1].Click();
@@ -357,7 +366,6 @@ namespace Defra.UI.Tests.Tools
                 Thread.Sleep(1000);
 
                 Assert.IsTrue(IsDownloaded1(fileName, "pdf", downloadDirectory), "Failed in Is Downloaded check!!");
-
 
                 var files = Directory.GetFiles(downloadDirectory);
 
