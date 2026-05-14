@@ -228,9 +228,9 @@ namespace Defra.UI.Tests.Tools
             Console.WriteLine("downloadDirectory: " + downloadDirectory);
 
             // ✅ Required for pipeline (Linux)
-            chromeOptions.AddArgument("--headless=new");
-            chromeOptions.AddArgument("--no-sandbox");
-            chromeOptions.AddArgument("--disable-dev-shm-usage");
+            //chromeOptions.AddArgument("--headless=new");
+            //chromeOptions.AddArgument("--no-sandbox");
+            //chromeOptions.AddArgument("--disable-dev-shm-usage");
 
             // ✅ Download settings
             chromeOptions.AddUserProfilePreference("download.default_directory", downloadDirectory);
@@ -257,7 +257,6 @@ namespace Defra.UI.Tests.Tools
 
             using (var tempDriver = new ChromeDriver(service, chromeOptions))
             {
-
                 tempDriver.ExecuteCdpCommand(
                         "Page.setDownloadBehavior",
                         new Dictionary<string, object>
