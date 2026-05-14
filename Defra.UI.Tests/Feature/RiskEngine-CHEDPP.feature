@@ -64,12 +64,19 @@ Scenario: Bulk upload initial load for CHEDPP - SPS-9414
 	And the user sorts the PHSI rules table by Id descending
 	Then the top PHSI rule row should match the following details
 		| Field                  | Value    |
+		| Description            | Other    |
 		| Commodity code         | 07020099 |
+		| Name                   |          |
+		| Eppo                   |          |
 		| Intended Use           | None     |
 		| Type                   | None     |
+		| Woody/Non-woody?       | None     |
+		| Indoor use/Outdoor use?| None     |
 		| Rate %                 | 25       |
 		| Previous rate %        | 0        |
 		| Permanent              | Yes      |
+		| Start date             |          |
+		| End date               |          |
 		| Countries              | Djibouti |
 		| Country groups         | None     |
 		| Country exceptions     | None     |
@@ -201,20 +208,25 @@ Scenario: Bulk upload initial load for CHEDPP - SPS-9414
 	When the user enters '12099130' in the PHSI rules search field
 	And the user sorts the PHSI rules table by Id descending
 	Then the top PHSI rule row should match the following details
-		| Field                  | Value            |
-		| Commodity code         | 12099130         |
-		| Name                   | Beta sp.         |
-		| Eppo                   | BEASS            |
-		| Intended Use           | Not Test/Trial   |
-		| Type                   | Seed             |
-		| Rate %                 | 1                |
-		| Previous rate %        | 0                |
-		| Permanent              | No               |
-		| End date               | 01/01/2027       |
-		| Countries              | None             |
-		| Country groups         | EU Member States |
-		| Country exceptions     | None             |
-		| Document check aligned | Yes              |
+		| Field                  | Value                                                           |
+		| Description            | Salad beet seed or beetroot seed (Beta vulgaris var. conditiva) |
+		| Commodity code         | 12099130                                                        |
+		| Name                   | Beta sp.                                                        |
+		| Eppo                   | BEASS                                                           |
+		| Intended Use           | Not Test/Trial                                                  |
+		| Type                   | Seed                                                            |
+		| Woody/Non-woody?       | None                                                            |
+		| Indoor use/Outdoor use?| None                                                            |
+		| Rate %                 | 1                                                               |
+		| Previous rate %        | 0                                                               |
+		| Permanent              | No                                                              |
+		| Start date             |                                                                 |
+		| End date               | 01/01/2027                                                      |
+		| Countries              | None                                                            |
+		| Country groups         | EU Member States                                                |
+		| Country exceptions     | None                                                            |
+		| Document check aligned | Yes                                                             |
+		| Reason                 |                                                                 |
 	And the user records the Id of the top PHSI rule row as 'Iteration_2_RuleId'
 	# Submit TWO matching CHED-PP notifications in IPAFFS (Italy / 12099130)
 	When I navigate to the IPAFF application
@@ -421,20 +433,25 @@ Scenario: Bulk upload initial load for CHEDPP - SPS-9414
 	When the user enters '060120' in the PHSI rules search field
 	And the user sorts the PHSI rules table by Id descending
 	Then the top PHSI rule row should match the following details
-		| Field                  | Value                                                              |
-		| Commodity code         | 060120                                                             |
-		| Intended Use           | Intended for final users                                           |
-		| Type                   | Plant                                                              |
-		| Woody/Non-woody?       | Non-woody                                                          |
-		| Indoor use/Outdoor use?| Outdoor use                                                        |
-		| Rate %                 | 30                                                                 |
-		| Previous rate %        | 0                                                                  |
-		| Permanent              | Yes                                                                |
-		| Countries              | None                                                               |
-		| Country groups         | European Countries, Euro-Mediterranean Area, Third Countries       |
-		| Country exceptions     | None                                                               |
-		| Document check aligned | No                                                                 |
-		| Reason                 | Reason 3                                                           |
+		| Field                  | Value                                                                                                       |
+		| Description            | Bulbs, tubers, tuberous roots, corms, crowns and rhizomes, in growth or in flower; chicory plants and roots |
+		| Commodity code         | 060120                                                                                                      |
+		| Name                   |                                                                                                             |
+		| Eppo                   |                                                                                                             |
+		| Intended Use           | Intended for final users                                                                                    |
+		| Type                   | Plant                                                                                                       |
+		| Woody/Non-woody?       | Non-woody                                                                                                   |
+		| Indoor use/Outdoor use?| Outdoor use                                                                                                 |
+		| Rate %                 | 30                                                                                                          |
+		| Previous rate %        | 0                                                                                                           |
+		| Permanent              | Yes                                                                                                         |
+		| Start date             |                                                                                                             |
+		| End date               |                                                                                                             |
+		| Countries              | None                                                                                                        |
+		| Country groups         | European Countries, Euro-Mediterranean Area, Third Countries                                                |
+		| Country exceptions     | None                                                                                                        |
+		| Document check aligned | No                                                                                                          |
+		| Reason                 | Reason 3                                                                                                    |
 	And the user records the Id of the top PHSI rule row as 'Iteration_3_RuleId'
 	# Submit a matching CHED-PP notification in IPAFFS (Monaco / 06012010 / Intended for final users)
 	When I navigate to the IPAFF application
@@ -552,17 +569,25 @@ Scenario: Bulk upload initial load for CHEDPP - SPS-9414
 	When the user enters '08094090' in the PHSI rules search field
 	And the user sorts the PHSI rules table by Id descending
 	Then the top PHSI rule row should match the following details
-		| Field                  | Value             |
-		| Commodity code         | 08094090          |
-		| Intended Use           | None              |
-		| Type                   | None              |
-		| Rate %                 | 5                 |
-		| Previous rate %        | 0                 |
-		| Permanent              | Yes               |
-		| Countries              | Montserrat        |
-		| Country groups         | EU Member States  |
-		| Country exceptions     | France, Germany   |
-		| Document check aligned | Yes               |
+		| Field                  | Value            |
+		| Description            | Sloes            |
+		| Commodity code         | 08094090         |
+		| Name                   |                  |
+		| Eppo                   |                  |
+		| Intended Use           | None             |
+		| Type                   | None             |
+		| Woody/Non-woody?       | None             |
+		| Indoor use/Outdoor use?| None             |
+		| Rate %                 | 5                |
+		| Previous rate %        | 0                |
+		| Permanent              | Yes              |
+		| Start date             |                  |
+		| End date               |                  |
+		| Countries              | Montserrat       |
+		| Country groups         | EU Member States |
+		| Country exceptions     | France, Germany  |
+		| Document check aligned | Yes              |
+		| Reason                 |                  |
 	And the user records the Id of the top PHSI rule row as 'Iteration_4_RuleId'
 	# Submit a matching CHED-PP notification in IPAFFS (Montserrat / 08094090)
 	When I navigate to the IPAFF application
@@ -680,18 +705,24 @@ Scenario: Bulk upload initial load for CHEDPP - SPS-9414
 	And the user sorts the PHSI rules table by Id descending
 	Then the top PHSI rule row should match the following details
 		| Field                  | Value               |
+		| Description            | For sowing          |
 		| Commodity code         | 12040010            |
 		| Name                   | Linum usitatissimum |
 		| Eppo                   | LIUUT               |
 		| Intended Use           | Not Test/Trial      |
 		| Type                   | Seed                |
+		| Woody/Non-woody?       | None                |
+		| Indoor use/Outdoor use?| None                |
 		| Rate %                 | 10                  |
 		| Previous rate %        | 0                   |
 		| Permanent              | Yes                 |
+		| Start date             |                     |
+		| End date               |                     |
 		| Countries              | Togo                |
 		| Country groups         | None                |
 		| Country exceptions     | None                |
 		| Document check aligned | No                  |
+		| Reason                 |                     |
 	And the user records the Id of the top PHSI rule row as 'Iteration_5_RuleId'
 	# Submit a matching CHED-PP notification in IPAFFS (Togo / 12040010 / LIUUT)
 	When I navigate to the IPAFF application
@@ -859,12 +890,19 @@ Scenario: Bulk upload update existing rules for CHEDPP - SPS-9415
 	And the user sorts the PHSI rules table by Id descending
 	Then the top PHSI rule row should match the following details
 		| Field                  | Value     |
+		| Description            | Other     |
 		| Commodity code         | 07020099  |
+		| Name                   |           |
+		| Eppo                   |           |
 		| Intended Use           | None      |
 		| Type                   | None      |
+		| Woody/Non-woody?       | None      |
+		| Indoor use/Outdoor use?| None      |
 		| Rate %                 | 100       |
 		| Previous rate %        | 25        |
 		| Permanent              | Yes       |
+		| Start date             |           |
+		| End date               |           |
 		| Countries              | Djibouti  |
 		| Country groups         | None      |
 		| Country exceptions     | None      |
@@ -993,20 +1031,25 @@ Scenario: Bulk upload update existing rules for CHEDPP - SPS-9415
 	When the user enters '12099130' in the PHSI rules search field
 	And the user sorts the PHSI rules table by Id descending
 	Then the top PHSI rule row should match the following details
-		| Field                  | Value            |
-		| Commodity code         | 12099130         |
-		| Name                   | Beta sp.         |
-		| Eppo                   | BEASS            |
-		| Intended Use           | Not Test/Trial   |
-		| Type                   | Seed             |
-		| Rate %                 | 1                |
-		| Previous rate %        | 0                |
-		| Permanent              | Yes              |
-		| Countries              | None             |
-		| Country groups         | EU Member States |
-		| Country exceptions     | None             |
-		| Document check aligned | Yes              |
-		| Reason                 | Reason 2         |
+		| Field                  | Value                                                           |
+		| Description            | Salad beet seed or beetroot seed (Beta vulgaris var. conditiva) |
+		| Commodity code         | 12099130                                                        |
+		| Name                   | Beta sp.                                                        |
+		| Eppo                   | BEASS                                                           |
+		| Intended Use           | Not Test/Trial                                                  |
+		| Type                   | Seed                                                            |
+		| Woody/Non-woody?       | None                                                            |
+		| Indoor use/Outdoor use?| None                                                            |
+		| Rate %                 | 1                                                               |
+		| Previous rate %        | 0                                                               |
+		| Permanent              | Yes                                                             |
+		| Start date             |                                                                 |
+		| End date               |                                                                 |
+		| Countries              | None                                                            |
+		| Country groups         | EU Member States                                                |
+		| Country exceptions     | None                                                            |
+		| Document check aligned | Yes                                                             |
+		| Reason                 | Reason 2                                                        |
 	And the user records the Id of the top PHSI rule row as 'Iteration_2_RuleId'
 	# Submit TWO matching CHED-PP notifications in IPAFFS (Spain then Italy / 12099130)
 	When I navigate to the IPAFF application
@@ -1210,20 +1253,25 @@ Scenario: Bulk upload update existing rules for CHEDPP - SPS-9415
 	When the user enters '060120' in the PHSI rules search field
 	And the user sorts the PHSI rules table by Id descending
 	Then the top PHSI rule row should match the following details
-		| Field                  | Value                                                              |
-		| Commodity code         | 060120                                                             |
-		| Intended Use           | Intended for final users                                           |
-		| Type                   | Plant                                                              |
-		| Woody/Non-woody?       | Non-woody                                                          |
-		| Indoor use/Outdoor use?| Outdoor use                                                        |
-		| Rate %                 | 30                                                                 |
-		| Previous rate %        | 0                                                                  |
-		| Permanent              | Yes                                                                |
-		| Countries              | None                                                               |
-		| Country groups         | European Countries, Euro-Mediterranean Area, Third Countries       |
-		| Country exceptions     | Djibouti                                                           |
-		| Document check aligned | No                                                                 |
-		| Reason                 | Reason 3                                                           |
+		| Field                  | Value                                                                                                       |
+		| Description            | Bulbs, tubers, tuberous roots, corms, crowns and rhizomes, in growth or in flower; chicory plants and roots |
+		| Commodity code         | 060120                                                                                                      |
+		| Name                   |                                                                                                             |
+		| Eppo                   |                                                                                                             |
+		| Intended Use           | Intended for final users                                                                                    |
+		| Type                   | Plant                                                                                                       |
+		| Woody/Non-woody?       | Non-woody                                                                                                   |
+		| Indoor use/Outdoor use?| Outdoor use                                                                                                 |
+		| Rate %                 | 30                                                                                                          |
+		| Previous rate %        | 0                                                                                                           |
+		| Permanent              | Yes                                                                                                         |
+		| Start date             |                                                                                                             |
+		| End date               |                                                                                                             |
+		| Countries              | None                                                                                                        |
+		| Country groups         | European Countries, Euro-Mediterranean Area, Third Countries                                                |
+		| Country exceptions     | Djibouti                                                                                                    |
+		| Document check aligned | No                                                                                                          |
+		| Reason                 |                                                                                                             |
 	And the user records the Id of the top PHSI rule row as 'Iteration_3_RuleId'
 	# Submit a matching CHED-PP notification in IPAFFS (Monaco / 06012010 / Intended for final users)
 	When I navigate to the IPAFF application
@@ -1338,17 +1386,25 @@ Scenario: Bulk upload update existing rules for CHEDPP - SPS-9415
 	When the user enters '08094090' in the PHSI rules search field
 	And the user sorts the PHSI rules table by Id descending
 	Then the top PHSI rule row should match the following details
-		| Field                  | Value             |
-		| Commodity code         | 08094090          |
-		| Intended Use           | None              |
-		| Type                   | None              |
-		| Rate %                 | 5                 |
-		| Previous rate %        | 0                 |
-		| Permanent              | Yes               |
-		| Countries              | Montserrat        |
-		| Country groups         | EU Member States  |
-		| Country exceptions     | France, Germany   |
-		| Document check aligned | Yes               |
+		| Field                  | Value            |
+		| Description            | Sloes            |
+		| Commodity code         | 08094090         |
+		| Name                   |                  |
+		| Eppo                   |                  |
+		| Intended Use           | None             |
+		| Type                   | None             |
+		| Woody/Non-woody?       | None             |
+		| Indoor use/Outdoor use?| None             |
+		| Rate %                 | 5                |
+		| Previous rate %        | 0                |
+		| Permanent              | Yes              |
+		| Start date             |                  |
+		| End date               |                  |
+		| Countries              | Montserrat       |
+		| Country groups         | EU Member States |
+		| Country exceptions     | France, Germany  |
+		| Document check aligned | Yes              |
+		| Reason                 |                  |
 	And the user records the Id of the top PHSI rule row as 'Iteration_4_RuleId'
 	# Submit a matching CHED-PP notification in IPAFFS (Spain / 08094090)
 	When I navigate to the IPAFF application
@@ -1463,18 +1519,24 @@ Scenario: Bulk upload update existing rules for CHEDPP - SPS-9415
 	And the user sorts the PHSI rules table by Id descending
 	Then the top PHSI rule row should match the following details
 		| Field                  | Value               |
+		| Description            | For sowing          |
 		| Commodity code         | 12040010            |
 		| Name                   | Linum usitatissimum |
 		| Eppo                   | LIUUT               |
 		| Intended Use           | Not Test/Trial      |
 		| Type                   | Seed                |
+		| Woody/Non-woody?       | None                |
+		| Indoor use/Outdoor use?| None                |
 		| Rate %                 | 0                   |
 		| Previous rate %        | 10                  |
 		| Permanent              | Yes                 |
+		| Start date             |                     |
+		| End date               |                     |
 		| Countries              | Togo                |
 		| Country groups         | None                |
 		| Country exceptions     | None                |
 		| Document check aligned | No                  |
+		| Reason                 |                     |
 	And the user records the Id of the top PHSI rule row as 'Iteration_5_RuleId'
 	# Submit a matching CHED-PP notification in IPAFFS (Togo / 12040010 / LIUUT)
 	When I navigate to the IPAFF application
