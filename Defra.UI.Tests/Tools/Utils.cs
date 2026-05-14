@@ -155,6 +155,10 @@ namespace Defra.UI.Tests.Tools
                     Console.WriteLine("Download complete: " + expectedFile);
                     return true;
                 }
+                else
+                {
+                    Console.WriteLine("Download Pending");
+                }
 
                 Thread.Sleep(1000);
             }
@@ -363,9 +367,7 @@ namespace Defra.UI.Tests.Tools
                 tempDriver.FindElement(By.Id("password")).SendKeys(userObject.Credential);
                 Thread.Sleep(1000);
                 tempDriver.WaitForElement(By.Id("continue")).Click();
-                Thread.Sleep(1000);
-
-                Assert.IsTrue(IsDownloaded1(fileName, "pdf", downloadDirectory), "Failed in Is Downloaded check!!");
+                Thread.Sleep(5000);
 
                 var files = Directory.GetFiles(downloadDirectory);
 
@@ -374,6 +376,9 @@ namespace Defra.UI.Tests.Tools
                     Console.WriteLine("File from downloads:------------ " + file);
                 }
 
+
+                Assert.IsTrue(IsDownloaded1(fileName, "pdf", downloadDirectory), "Failed in Is Downloaded check!!");
+                
                 tempDriver.Quit();
                 tempDriver.Dispose();
             }
