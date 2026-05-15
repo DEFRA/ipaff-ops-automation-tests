@@ -317,6 +317,7 @@ namespace Defra.UI.Tests.Tools
             chromeOptions.AddArgument("--disable-dev-shm-usage");
             chromeOptions.AddArgument("--disable-gpu");
             chromeOptions.AddArgument("--window-size=1920,1080");
+            chromeOptions.AddArgument($"--user-data-dir={Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString())}");
 
             // ✅ Download settings
             chromeOptions.AddUserProfilePreference("download.default_directory", downloadDirectory);
@@ -379,8 +380,8 @@ namespace Defra.UI.Tests.Tools
 
                 Assert.IsTrue(IsDownloaded1(fileName, "pdf", downloadDirectory), "Failed in Is Downloaded check!!");
                 
-                tempDriver.Quit();
-                tempDriver.Dispose();
+                //tempDriver.Quit();
+                //tempDriver.Dispose();
             }
             return downloadDirectory;
         }
