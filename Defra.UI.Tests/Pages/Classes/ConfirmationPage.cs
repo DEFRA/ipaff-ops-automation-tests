@@ -35,7 +35,6 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool VerifyInitialAssessmentPage()
         {
-            Console.WriteLine("[NOTIFICATION SUBMITTED] Initial Assessment: " + initialAssessmentTitle.Text.Trim());
             return initialAssessmentTitle.Text.Trim().Contains("Initial risk assessment");
         }
 

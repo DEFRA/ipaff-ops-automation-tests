@@ -14,6 +14,7 @@ namespace Defra.UI.Tests.Pages.Classes
     {
         private string Platform => ConfigSetup.BaseConfiguration.TestConfiguration.Platform;
         private IObjectContainer _objectContainer;
+        private readonly Random _random = new();
 
         #region Page Objects
         private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
@@ -58,6 +59,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement transitDestinationCountry => _driver.WaitForElement(By.Id("third-country-transit"));
         private IReadOnlyCollection<IWebElement> internalMarketSubOptions => internalMarketConditional.FindElements(By.CssSelector("input[type='radio'][name='internal-market']"));
         private IWebElement selectedReasonForImportRadioLabel => _driver.FindElement(By.XPath("//input[contains(@class,'govuk-radios__input') and @checked]/following-sibling::label"));
+        private IReadOnlyCollection<IWebElement> purposeRadioLabels => _driver.FindElements(By.XPath("//div[@id='purpose']/div[contains(@class,'govuk-radios__item')]//label[contains(@class,'govuk-radios__label') and contains(@class,'govuk-!-font-weight-bold')]"));
+        private IReadOnlyCollection<IWebElement> internalMarketSubOptionLabels => _driver.FindElements(By.XPath("//div[contains(@id,'internalmarket-conditional')]//label[contains(@class, 'govuk-radios__label')]"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -227,7 +230,8 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             _driver.WaitForElementCondition(ExpectedConditions.ElementIsVisible(txtPointOfExitBy));
             txtPointOfExit.SendKeys(placeOfExit);
-        }      
+        }
+        
         public void EnterExitDate(int daysFromToday)
         {
             var exitDate = DateTime.Now.AddDays(daysFromToday);
@@ -380,6 +384,87 @@ namespace Defra.UI.Tests.Pages.Classes
                 return transitSubOptionTexts.All(el => subOptions.Contains(el));
             }
             return false;
+        }
+
+        public List<string> GetAvailablePurposeOptions()
+        {
+            return purposeRadioLabels
+                .Select(l => l.Text.Trim())
+                .Where(t => !string.IsNullOrEmpty(t))
+                .ToList();
+        }
+
+        public List<string> GetAvailableInternalMarketSubOptions()
+        {
+            return internalMarketSubOptionLabels
+                .Select(l => l.Text.Trim())
+                .Where(t => !string.IsNullOrEmpty(t))
+                .ToList();
+        }
+
+        public void SelectPurposeAndFillSubOptionData(string mainOption, List<string>? constrainedSubOptions)
+        {
+            SelectReasonForImport(mainOption);
+
+            switch (mainOption)
+            {
+                case "Internal market":
+                    SelectRandomInternalMarketSubOption(constrainedSubOptions);
+                    break;
+
+                case "Transhipment or onward travel":
+                    SelectRandomDropdownOption(txtTranshipmentDestination);
+                    break;
+
+                case "Transit":
+                    SelectRandomDropdownOption(transitExitBCP);
+                    SelectRandomDropdownOption(txtDestinationCountry);
+                    break;
+
+                case "Temporary admission horses":
+                    EnterExitDate(_random.Next(1, 91));
+                    SelectRandomDropdownOption(ddlExitBCP);
+                    break;
+
+                case "Re-entry":
+                    break;
+            }
+        }
+
+        private void SelectRandomInternalMarketSubOption(List<string>? constrainedSubOptions)
+        {
+            var availableSubOptions = GetAvailableInternalMarketSubOptions();
+
+            List<string> candidates;
+            if (constrainedSubOptions is { Count: > 0 })
+            {
+                candidates = availableSubOptions
+                    .Where(a => constrainedSubOptions.Any(c => a.Equals(c, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+
+                if (candidates.Count == 0)
+                    throw new InvalidOperationException(
+                        $"None of the constrained sub-options [{string.Join(", ", constrainedSubOptions)}] " +
+                        $"were found on the page. Available: [{string.Join(", ", availableSubOptions)}]");
+            }
+            else
+            {
+                candidates = availableSubOptions;
+            }
+
+            var chosen = candidates[_random.Next(candidates.Count)];
+            SelectReasonForImportSubOption(chosen);
+        }
+
+        private void SelectRandomDropdownOption(IWebElement selectElement)
+        {
+            var select = new SelectElement(selectElement);
+            var options = select.Options
+                .Where(o => !string.IsNullOrWhiteSpace(o.GetAttribute("value")))
+                .ToList();
+
+            var chosen = options[_random.Next(options.Count)];
+            select.SelectByValue(chosen.GetAttribute("value"));
         }
     }
 }

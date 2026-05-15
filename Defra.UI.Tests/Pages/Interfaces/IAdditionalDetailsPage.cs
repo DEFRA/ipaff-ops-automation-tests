@@ -17,5 +17,7 @@
         string GetNetWeight();
         string GetNumberOfPackages();
         string GetGrossVolumeValue();
+        List<string> GetAvailableCertificationOptions();
+        void SelectRandomCertification(List<string>? constrainedOptions);
     }
 }

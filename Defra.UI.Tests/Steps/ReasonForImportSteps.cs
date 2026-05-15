@@ -11,6 +11,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
     {
         private readonly IObjectContainer _objectContainer;
         private readonly ScenarioContext _scenarioContext;
+        private static readonly Random _random = new();
 
         private IReasonForImportPage? reasonForImportPage => _objectContainer.IsRegistered<IReasonForImportPage>() ? _objectContainer.Resolve<IReasonForImportPage>() : null;
 
@@ -46,7 +47,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserSelectsRadioOption(string reasonForImport)
         {
             reasonForImportPage?.SelectReasonForImport(reasonForImport);
-            _scenarioContext["MainReasonForImport"]= reasonForImport;
+            _scenarioContext["MainReasonForImport"] = reasonForImport;
         }
 
         [When("the user changes the main reason for importing to {string} and the sub-option {string}")]
@@ -203,6 +204,49 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void ThenTheUserVerifiesRadioButtonWithSuboption(String mainOption, String subOptions)
         {
             Assert.IsTrue(reasonForImportPage?.VerifySubOption(mainOption, subOptions), "The " + subOptions + " are not present under " + mainOption);
+        }
+
+        /// <summary>
+        /// Randomly selects a purpose (and any required sub-options/data) from a specification string.
+        /// 
+        /// Format examples:
+        ///   "Any"                                                          — any top-level option, random sub-option if applicable
+        ///   "Internal market"                                              — Internal market with any random sub-option
+        ///   "Internal market: Breeding, Slaughter | Transit | Re-entry"    — pick one of the pipe-delimited choices; 
+        ///                                                                     if Internal market is chosen, pick from the listed sub-options
+        ///   "Internal market | Transhipment or onward travel"              — pick one of the pipe-delimited top-level options
+        /// </summary>
+        [When("the user randomly selects a purpose from {string}")]
+        public void WhenTheUserRandomlySelectsAPurposeFrom(string purposeSpec)
+        {
+            var choices = purposeSpec.Split('|').Select(c => c.Trim()).ToList();
+
+            if (choices.Count == 1 && choices[0].Equals("Any", StringComparison.OrdinalIgnoreCase))
+            {
+                choices = reasonForImportPage!.GetAvailablePurposeOptions();
+
+                if (choices.Count == 0)
+                    throw new InvalidOperationException(
+                        "No purpose options were found on the page. Verify the page is loaded and the locator for 'purposeRadioLabels' matches the current HTML structure.");
+            }
+
+            var selected = choices[_random.Next(choices.Count)];
+
+            string mainOption;
+            List<string>? constrainedSubOptions = null;
+
+            if (selected.Contains(':'))
+            {
+                var parts = selected.Split(':', 2);
+                mainOption = parts[0].Trim();
+                constrainedSubOptions = parts[1].Split(',').Select(s => s.Trim()).ToList();
+            }
+            else
+            {
+                mainOption = selected;
+            }
+
+            reasonForImportPage!.SelectPurposeAndFillSubOptionData(mainOption, constrainedSubOptions);
         }
     }
 }

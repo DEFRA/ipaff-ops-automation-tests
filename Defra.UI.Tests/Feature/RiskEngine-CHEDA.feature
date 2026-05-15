@@ -4,6 +4,7 @@ Feature: Risk Engine CHEDA
 Bulk upload, Update and Test rules with end-to-end validation for a CHEDA notification
 
 Scenario: Bulk upload initial load for CHEDA - SPS-9427 - Iteration 1
+(Djibouti / Any commodity code / Any Purpose / Certified for Approved Bodies / GBMNC4)
 	When I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected 'Sign in with Government Gateway' as login type
@@ -26,7 +27,8 @@ Scenario: Bulk upload initial load for CHEDA - SPS-9427 - Iteration 1
 	When the user selects species of commodity 'Gallus gallus'
 	And the user clicks Save and continue
 	Then What is the main reason for importing the animals? page should be displayed with radio buttons
-	When the user chooses 'Internal market' and the sub-option 'Approved premises or body'
+	#When the user chooses 'Internal market' and the sub-option 'Approved premises or body'
+	When the user randomly selects a purpose from 'Any'
 	And the user clicks Save and continue
 	Then the Notification Hub page should be displayed
 	When the user clicks the Commodity hyperlink
@@ -58,6 +60,8 @@ Scenario: Bulk upload initial load for CHEDA - SPS-9427 - Iteration 1
 	Then the importer should be populated with the same details as the consignee
 	When the user clicks Same as consignee for Place of destination
 	Then the place of destination should be populated with the same details as the consignee
+	When the user clicks Save and continue
+	Then the Add the County Parish Holding number (CPH) page should be displayed
 	When the user clicks Save and continue
 	Then the Transport to the BCP or Port of entry page should be displayed
 	When the user enters BCP or Port of entry 'Manchester Airport (animals) - GBMNC4'
@@ -98,7 +102,7 @@ Scenario: Bulk upload initial load for CHEDA - SPS-9427 - Iteration 1
 	And 'Iteration_1' is complete
 
 Scenario: Bulk upload initial load for CHEDA - SPS-9427 - Iteration 2
-Used Research instead of Technical Use, but the rule is still triggered
+(European Countries / 03074290 / Any purpose under Internal Markets / Certified for anything / Any BCP)
 	When I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected 'Sign in with Government Gateway' as login type
@@ -121,7 +125,8 @@ Used Research instead of Technical Use, but the rule is still triggered
 	When the user selects species of commodity 'Afrololigo spp.'
 	And the user clicks Save and continue
 	Then What is the main reason for importing the animals? page should be displayed with radio buttons
-	When the user chooses 'Internal market' and the sub-option 'Research'
+	#When the user chooses 'Internal market' and the sub-option 'Research'
+	When the user randomly selects a purpose from 'Internal market'
 	And the user clicks Save and continue
 	Then the Notification Hub page should be displayed
 	When the user clicks the Commodity hyperlink
@@ -134,7 +139,8 @@ Used Research instead of Technical Use, but the rule is still triggered
 	And the user populates the Description as 'Other'
 	And the user clicks Save and continue
 	Then the Additional animal details page should be displayed
-	When the user selects 'Other' for What are the animals certified for?
+	#When the user selects 'Other' for What are the animals certified for?
+	When the user randomly selects a certification from 'Any'
 	And the user clicks Save and continue
 	Then the Latest Health Certificate page should be displayed
 	When the user clicks Save and continue
@@ -193,6 +199,7 @@ Used Research instead of Technical Use, but the rule is still triggered
 	And 'Iteration_2' is complete
 
 Scenario: Bulk upload initial load for CHEDA - SPS-9427 - Iteration 3
+(Any Third Country excluding Montserrat / 0101 / Breeding or Slaughter under Internal Markets OR Transit OR Re-entry / Certified for Fattening, Registered, Pets, Slaughter / GBLHR4A)
 	When I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected 'Sign in with Government Gateway' as login type
@@ -215,7 +222,8 @@ Scenario: Bulk upload initial load for CHEDA - SPS-9427 - Iteration 3
 	When the user selects species of commodity 'Equus asinus'
 	And the user clicks Save and continue
 	Then What is the main reason for importing the animals? page should be displayed with radio buttons
-	When the user chooses 'Internal market' and the sub-option 'Slaughter'
+	#When the user chooses 'Internal market' and the sub-option 'Slaughter'
+	When the user randomly selects a purpose from 'Internal market: Breeding, Slaughter | Transit | Re-entry'
 	And the user clicks Save and continue
 	Then the Notification Hub page should be displayed
 	When the user clicks the Commodity hyperlink
@@ -228,7 +236,8 @@ Scenario: Bulk upload initial load for CHEDA - SPS-9427 - Iteration 3
 	And the user populates the Passport number as '5678'
 	And the user clicks Save and continue
 	Then the Additional animal details page should be displayed
-	When the user selects 'Slaughter' for What are the animals certified for?
+	#When the user selects 'Slaughter' for What are the animals certified for?
+	When the user randomly selects a certification from 'Fattening, Registered, Pets, Slaughter'
 	And the user clicks Save and continue
 	Then the Latest Health Certificate page should be displayed
 	When the user clicks Save and continue
@@ -287,8 +296,7 @@ Scenario: Bulk upload initial load for CHEDA - SPS-9427 - Iteration 3
 	And 'Iteration_3' is complete
 
 Scenario: Bulk upload initial load for CHEDA - SPS-9427 - Iteration 4
-Certified for: Other, isn't available but the rule is still triggered
-
+(Togo, Djibouti, Germany / 05119190 / Any purpose / Certified for Approved bodies, Slaughter, Other / Any BCP)
 	When I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected 'Sign in with Government Gateway' as login type
@@ -311,8 +319,9 @@ Certified for: Other, isn't available but the rule is still triggered
 	When the user selects species of commodity 'Acipenser spp.'
 	And the user clicks Save and continue
 	Then What is the main reason for importing the animals? page should be displayed with radio buttons
-	When the user chooses 'Transhipment or onward travel' and the sub-option ''
-	And the user chooses destination country 'Togo'
+	#When the user chooses 'Transhipment or onward travel' and the sub-option ''
+	#And the user chooses destination country 'Togo'
+	When the user randomly selects a purpose from 'Any'
 	And the user clicks Save and continue
 	Then the Notification Hub page should be displayed
 	When the user clicks the Commodity hyperlink
@@ -325,7 +334,8 @@ Certified for: Other, isn't available but the rule is still triggered
 	And the user populates the Description as 'Other'
 	And the user clicks Save and continue
 	Then the Additional animal details page should be displayed
-	When the user selects 'Approved bodies' for What are the animals certified for?
+	#When the user selects 'Approved bodies' for What are the animals certified for?
+	When the user randomly selects a certification from 'Approved bodies, Slaughter, Other'
 	And the user clicks Save and continue
 	Then the Latest Health Certificate page should be displayed
 	When the user clicks Save and continue
@@ -384,6 +394,7 @@ Certified for: Other, isn't available but the rule is still triggered
 	And 'Iteration_4' is complete
 
 Scenario: Bulk upload initial load for CHEDA - SPS-9427 - Iteration 5
+(Any Country / 950810 / Any purpose under Internal markets OR Transhipment or onward travel / Certified for Breeding or production, Circus or exhibition / Any BCP)
 	When I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected 'Sign in with Government Gateway' as login type
@@ -406,7 +417,8 @@ Scenario: Bulk upload initial load for CHEDA - SPS-9427 - Iteration 5
 	When the user selects species of commodity 'Antilocapridae'
 	And the user clicks Save and continue
 	Then What is the main reason for importing the animals? page should be displayed with radio buttons
-	When the user chooses 'Internal market' and the sub-option 'Production'
+	#When the user chooses 'Internal market' and the sub-option 'Production'
+	When the user randomly selects a purpose from 'Internal market | Transhipment or onward travel'
 	And the user clicks Save and continue
 	Then the Notification Hub page should be displayed
 	When the user clicks the Commodity hyperlink
@@ -419,7 +431,8 @@ Scenario: Bulk upload initial load for CHEDA - SPS-9427 - Iteration 5
 	And the user populates the Description as 'Other'
 	And the user clicks Save and continue
 	Then the Additional animal details page should be displayed
-	When the user selects 'Circus/exhibition' for What are the animals certified for?
+	#When the user selects 'Circus/exhibition' for What are the animals certified for?
+	When the user randomly selects a certification from 'Breeding and/or production, Circus/exhibition'
 	And the user clicks Save and continue
 	Then the Latest Health Certificate page should be displayed
 	When the user clicks Save and continue
