@@ -326,6 +326,7 @@ namespace Defra.UI.Tests.Tools
             chromeOptions.AddUserProfilePreference("safebrowsing.enabled", true);
             chromeOptions.AddUserProfilePreference("plugins.always_open_pdf_externally", true);
             chromeOptions.AddUserProfilePreference("profile.default_content_setting_values.automatic_downloads", 1);
+            chromeOptions.AddUserProfilePreference("profile.content_settings.exceptions.automatic_downloads.*.setting", 1);
 
             chromeOptions.EnableDownloads = true;
 
@@ -342,6 +343,7 @@ namespace Defra.UI.Tests.Tools
             }
 
             Console.WriteLine("Starting ChromeDriver...");
+            Thread.Sleep(2000);
 
             using (var tempDriver = new ChromeDriver(service, chromeOptions))
             {
@@ -352,15 +354,19 @@ namespace Defra.UI.Tests.Tools
                              ["behavior"] = "allow",
                              ["downloadPath"] = downloadDirectory
                          });
+
+
                 tempDriver.Navigate().GoToUrl(pdfUrl);
                 Console.WriteLine("Navigate to url - " + pdfUrl);
 
-                var elements = tempDriver.WaitForElements(By.CssSelector(".govuk-label.govuk-radios__label.break-word")).ToList();
-                elements[1].Click();
+                //var elements = tempDriver.WaitForElements(By.CssSelector(".govuk-label.govuk-radios__label.break-word")).ToList();
+                //elements[1].Click();
+
+                tempDriver.WaitForElements(By.ClassName("govuk-radios__label")).ElementAt(1)?.Click();
 
                 tempDriver.FindElement(By.Id("continueReplacement")).Click();
 
-                Console.WriteLine("click radio  - " + elements);
+                Console.WriteLine("click radio  -" );
 
                 var jsonData = UserObject?.GetUser("IPAFF", userRole);
                 var userObject = new User
@@ -404,6 +410,8 @@ namespace Defra.UI.Tests.Tools
 
 
                 Assert.IsTrue(IsDownloaded1(fileName, "pdf", downloadDirectory), "Failed in Is Downloaded check!!");
+
+                tempDriver.Manage().Cookies.DeleteAllCookies();
                 tempDriver.Dispose();
             }
             return downloadDirectory;
