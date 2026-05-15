@@ -1118,6 +1118,7 @@ Scenario: User creates and submits a notification, Copy the notification and sub
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
 
+@CHEDP
 Scenario: User submits B2C consignment notification, reason for refusal and creates border notification - CHED D SPS-7381
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page

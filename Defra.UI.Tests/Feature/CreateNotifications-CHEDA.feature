@@ -1272,6 +1272,7 @@ Scenario: User adds addresses to address book and amends a CHEDA notification to
 	And the user deletes the newly added operator 'Exporter'
 	And the user deletes the newly added operator 'Transporter'
 
+@CHEDP
 Scenario: User creates and amends a CHEDA notification, inspector requests amendment, and processes with multiple emergency lab tests - SPS-7388
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page

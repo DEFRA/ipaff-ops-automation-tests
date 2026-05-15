@@ -359,7 +359,7 @@ Scenario: User creates and submits a B2C consignment notification for Transit Re
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
 
-
+@CHEDP
 Scenario: User creates and submits a B2C consignment notification for Transhipment or onward travel Reason - CHEDP 7370
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -749,6 +749,7 @@ Scenario: User creates and submits 2 B2C consignment notification with existing 
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
 
+@CHEDP
 Scenario: Admin submits a notification and records decision and validate cookies page as normal user - CHEDP 7368
 	Given that I navigate to the IPAFF Inspector application
 	Then I should see type of Gateway login page
