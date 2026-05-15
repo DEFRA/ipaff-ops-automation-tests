@@ -353,10 +353,14 @@ namespace Defra.UI.Tests.Tools
                              ["downloadPath"] = downloadDirectory
                          });
                 tempDriver.Navigate().GoToUrl(pdfUrl);
+                Console.WriteLine("Navigate to url - " + pdfUrl);
+
                 var elements = tempDriver.WaitForElements(By.CssSelector(".govuk-label.govuk-radios__label.break-word")).ToList();
                 elements[1].Click();
 
                 tempDriver.FindElement(By.Id("continueReplacement")).Click();
+
+                Console.WriteLine("click radio  - " + elements);
 
                 var jsonData = UserObject?.GetUser("IPAFF", userRole);
                 var userObject = new User
@@ -366,17 +370,37 @@ namespace Defra.UI.Tests.Tools
                 };
 
                 tempDriver.WaitForElement(By.Id("user_id")).SendKeys(userObject.UserName);
+                Console.WriteLine("use name  entered");
+
                 tempDriver.FindElement(By.Id("password")).SendKeys(userObject.Credential);
+
+                Console.WriteLine("password  entered");
+
                 Thread.Sleep(1000);
                 tempDriver.WaitForElement(By.Id("continue")).Click();
+
+                Console.WriteLine("clicked continue/login button");
+
                 Thread.Sleep(5000);
+
+                Console.WriteLine("Logged in............");
+
 
                 var files = Directory.GetFiles(downloadDirectory);
 
-                foreach (var file in files)
+                if (files.Length > 0)
                 {
-                    Console.WriteLine("File from downloads:------------ " + file);
+                    foreach (var file in files)
+                    {
+                        Console.WriteLine("File from downloads:------------ " + file);
+                    }
                 }
+                else
+                {
+                    Console.WriteLine("no file in directory " + downloadDirectory);
+
+                }
+
 
 
                 Assert.IsTrue(IsDownloaded1(fileName, "pdf", downloadDirectory), "Failed in Is Downloaded check!!");
