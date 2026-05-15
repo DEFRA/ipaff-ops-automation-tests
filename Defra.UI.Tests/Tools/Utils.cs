@@ -436,14 +436,6 @@ namespace Defra.UI.Tests.Tools
             if (downloadDriver == null)
             {
                 downloadDriver = new ChromeDriver(service, chromeOptions);
-
-                downloadDriver.ExecuteCdpCommand(
-                    "Browser.setDownloadBehavior",
-                    new Dictionary<string, object>
-                    {
-                        ["behavior"] = "allow"
-                        // ✅ DO NOT set path here — we change it per call
-                    });
             }
 
             // ✅ Set download path per call
