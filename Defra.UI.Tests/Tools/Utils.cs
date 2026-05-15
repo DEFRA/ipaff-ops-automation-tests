@@ -345,7 +345,7 @@ namespace Defra.UI.Tests.Tools
             using (var tempDriver = new ChromeDriver(service, chromeOptions))
             {
                 tempDriver.ExecuteCdpCommand(
-                         "Page.setDownloadBehavior",
+                         "Browser.setDownloadBehavior",
                          new Dictionary<string, object>
                          {
                              ["behavior"] = "allow",
