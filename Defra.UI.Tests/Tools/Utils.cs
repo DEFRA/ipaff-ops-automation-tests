@@ -221,8 +221,8 @@ namespace Defra.UI.Tests.Tools
             }
         }*/
 
-        //public static string DownloadPDF(string fileName, string pdfUrl, IUserObject UserObject, string userRole)
-        //{
+        public static string DownloadPDF(string fileName, string pdfUrl, IUserObject UserObject, string userRole)
+        {
             /* var chromeOptions = new ChromeOptions();
 
              // ✅ Unique download directory
@@ -303,7 +303,7 @@ namespace Defra.UI.Tests.Tools
              return downloadDirectory;*/
 
 
-           /* var chromeOptions = new ChromeOptions();
+            var chromeOptions = new ChromeOptions();
 
             // ✅ Unique download directory
             var downloadDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
@@ -317,7 +317,7 @@ namespace Defra.UI.Tests.Tools
             chromeOptions.AddArgument("--disable-dev-shm-usage");
             chromeOptions.AddArgument("--disable-gpu");
             chromeOptions.AddArgument("--window-size=1920,1080");
-            chromeOptions.AddArgument($"--user-data-dir={Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString())}");
+            chromeOptions.AddArgument($"--user-data-dir={downloadDirectory}");
 
             // ✅ Download settings
             chromeOptions.AddUserProfilePreference("download.default_directory", downloadDirectory);
@@ -385,118 +385,7 @@ namespace Defra.UI.Tests.Tools
                 //tempDriver.Dispose();
             }
             return downloadDirectory;
-        }*/
-
-
-
-        private static ChromeDriver downloadDriver;
-
-        public static string DownloadPDF(string fileName, string pdfUrl, IUserObject UserObject, string userRole)
-        {
-            var chromeOptions = new ChromeOptions();
-
-            // ✅ Unique download directory per call
-            var downloadDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            Directory.CreateDirectory(downloadDirectory);
-
-            Console.WriteLine("downloadDirectory: " + downloadDirectory);
-
-            // ✅ Required for pipeline (Linux)
-            chromeOptions.AddArgument("--headless=new");
-            chromeOptions.AddArgument("--no-sandbox");
-            chromeOptions.AddArgument("--disable-dev-shm-usage");
-            chromeOptions.AddArgument("--disable-gpu");
-            chromeOptions.AddArgument("--window-size=1920,1080");
-
-            // ✅ Allow multiple downloads (CRITICAL)
-            chromeOptions.AddUserProfilePreference("profile.default_content_setting_values.automatic_downloads", 1);
-
-            // ✅ Download settings
-            chromeOptions.AddUserProfilePreference("download.default_directory", downloadDirectory);
-            chromeOptions.AddUserProfilePreference("download.prompt_for_download", false);
-            chromeOptions.AddUserProfilePreference("download.directory_upgrade", true);
-            chromeOptions.AddUserProfilePreference("safebrowsing.enabled", true);
-            chromeOptions.AddUserProfilePreference("plugins.always_open_pdf_externally", true);
-
-            chromeOptions.EnableDownloads = true;
-
-            ChromeDriverService service;
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                service = ChromeDriverService.CreateDefaultService("/usr/bin/");
-            }
-            else
-            {
-                service = ChromeDriverService.CreateDefaultService();
-            }
-
-            Console.WriteLine("Starting ChromeDriver...");
-
-            // ✅ Create driver ONLY once
-            if (downloadDriver == null)
-            {
-                downloadDriver = new ChromeDriver(service, chromeOptions);
-            }
-
-            // ✅ Set download path per call
-            downloadDriver.ExecuteCdpCommand(
-                "Browser.setDownloadBehavior",
-                new Dictionary<string, object>
-                {
-                    ["behavior"] = "allow",
-                    ["downloadPath"] = downloadDirectory
-                });
-
-            // ✅ Navigation + actions
-            downloadDriver.Navigate().GoToUrl(pdfUrl);
-
-            var elements = downloadDriver
-                .WaitForElements(By.CssSelector(".govuk-label.govuk-radios__label.break-word"))
-                .ToList();
-
-            elements[1].Click();
-
-            downloadDriver.FindElement(By.Id("continueReplacement")).Click();
-
-            var jsonData = UserObject?.GetUser("IPAFF", userRole);
-
-            var userObject = new User
-            {
-                UserName = jsonData.UserName,
-                Credential = jsonData.Credential
-            };
-
-            downloadDriver.WaitForElement(By.Id("user_id")).SendKeys(userObject.UserName);
-            downloadDriver.FindElement(By.Id("password")).SendKeys(userObject.Credential);
-
-            Thread.Sleep(1000);
-
-            downloadDriver.WaitForElement(By.Id("continue")).Click();
-
-            // ✅ Give Chrome time in pipeline
-            Thread.Sleep(5000);
-
-            // ✅ Stabilization wait (important for CI)
-            Thread.Sleep(3000);
-
-            var files = Directory.GetFiles(downloadDirectory);
-
-            foreach (var file in files)
-            {
-                Console.WriteLine("File from downloads:------------ " + file);
-            }
-
-            Assert.IsTrue(
-                IsDownloaded1(fileName, "pdf", downloadDirectory),
-                "Failed in Is Downloaded check!!"
-            );
-
-            // ✅ Reset page (prevents session issues)
-            downloadDriver.Navigate().GoToUrl("about:blank");
-
-            return downloadDirectory;
-        }
-
+        }   
 
 
 

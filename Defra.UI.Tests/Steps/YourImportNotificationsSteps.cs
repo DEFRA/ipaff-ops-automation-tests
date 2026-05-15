@@ -93,7 +93,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(importNotificationsPage?.VerifyDataInCertificate(chedReference), "Certificate data verification failed");
 
             var json = JsonConvert.SerializeObject(_scenarioContext.ToDictionary(kvp => kvp.Key, kvp => kvp.Value), Formatting.Indented);
-            var chedReferenceFileName = "//" + chedReference + "-certificate";
+            var chedReferenceFileName = "\\" + chedReference + "-certificate";
 
             string downloadDirectory = _scenarioContext.Get<string>("PDFDownloadedDirectory");
 
