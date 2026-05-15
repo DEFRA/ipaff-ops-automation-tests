@@ -358,6 +358,7 @@ namespace Defra.UI.Tests.Tools
 
                 tempDriver.Navigate().GoToUrl(pdfUrl);
                 Console.WriteLine("Navigate to url - " + pdfUrl);
+                Thread.Sleep(1000);
 
                 //var elements = tempDriver.WaitForElements(By.CssSelector(".govuk-label.govuk-radios__label.break-word")).ToList();
                 //elements[1].Click();
@@ -365,8 +366,9 @@ namespace Defra.UI.Tests.Tools
                 tempDriver.WaitForElements(By.ClassName("govuk-radios__label")).ElementAt(1)?.Click();
 
                 tempDriver.FindElement(By.Id("continueReplacement")).Click();
+                Thread.Sleep(1000);
 
-                Console.WriteLine("click radio  -" );
+                Console.WriteLine("clicked radio  -" );
 
                 var jsonData = UserObject?.GetUser("IPAFF", userRole);
                 var userObject = new User
@@ -377,6 +379,7 @@ namespace Defra.UI.Tests.Tools
 
                 tempDriver.WaitForElement(By.Id("user_id")).SendKeys(userObject.UserName);
                 Console.WriteLine("use name  entered");
+                Thread.Sleep(1000);
 
                 tempDriver.FindElement(By.Id("password")).SendKeys(userObject.Credential);
 
