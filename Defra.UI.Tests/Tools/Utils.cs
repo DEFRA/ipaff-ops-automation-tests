@@ -325,6 +325,7 @@ namespace Defra.UI.Tests.Tools
             chromeOptions.AddUserProfilePreference("download.directory_upgrade", true);
             chromeOptions.AddUserProfilePreference("safebrowsing.enabled", true);
             chromeOptions.AddUserProfilePreference("plugins.always_open_pdf_externally", true);
+            chromeOptions.AddUserProfilePreference("profile.default_content_setting_values.automatic_downloads", 1);
 
             chromeOptions.EnableDownloads = true;
 
