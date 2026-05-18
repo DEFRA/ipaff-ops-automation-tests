@@ -137,7 +137,7 @@ namespace Defra.UI.Tests.Tools
             return false;
         }
 
-        public static bool IsDownloaded1(string fileName, string extension, string directory, int timeoutSeconds = 60)
+        public static bool IsDownloaded1(string fileName, string extension, string directory, int timeoutSeconds = 15)
         {
 
             Console.WriteLine("Waiting for download...");
@@ -300,7 +300,7 @@ namespace Defra.UI.Tests.Tools
              tempDriver.Dispose();
          }
          return downloadDirectory;*/
-        public static string DownloadPDF(string fileName, string pdfUrl, IUserObject UserObject, string userRole)
+        /*public static string DownloadPDF(string fileName, string pdfUrl, IUserObject UserObject, string userRole)
         {
 
             var chromeOptions = new ChromeOptions();
@@ -406,6 +406,7 @@ namespace Defra.UI.Tests.Tools
                 }
                 else
                 {
+
                     Console.WriteLine("no file in directory " + downloadDirectory);
 
                 }
@@ -418,8 +419,121 @@ namespace Defra.UI.Tests.Tools
                 tempDriver.Dispose();
             }
             return downloadDirectory;
-        }   
+        }
+        */
 
+
+
+        public static string DownloadPDF(string fileName, string pdfUrl, IUserObject UserObject, string userRole)
+        {
+            const int maxRetries = 3;
+            int attempt = 0;
+
+            while (true)
+            {
+                attempt++;
+                Console.WriteLine($"🔁 Attempt {attempt} of {maxRetries}");
+
+                try
+                {
+                    var downloadDirectory = RunPdfDownloadAttempt(fileName, pdfUrl, UserObject, userRole);
+
+                    // Validate download
+                    if (IsDownloaded1(fileName, "pdf", downloadDirectory))
+                    {
+                        Console.WriteLine("✅ PDF successfully downloaded.");
+                        return downloadDirectory;
+                    }
+
+                    Console.WriteLine("❌ PDF not found after attempt " + attempt);
+                    if (attempt >= maxRetries)
+                        throw new Exception("PDF failed to download after all retry attempts.");
+
+                    // Exponential backoff
+                    int delay = attempt * 2000;
+                    Console.WriteLine($"⏳ Waiting {delay}ms before retry...");
+                    Thread.Sleep(delay);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"⚠️ Attempt {attempt} failed: {ex.Message}");
+
+                    if (attempt >= maxRetries)
+                        throw;
+
+                    int delay = attempt * 2000;
+                    Console.WriteLine($"⏳ Retrying in {delay}ms...");
+                    Thread.Sleep(delay);
+                }
+            }
+        }
+
+        private static string RunPdfDownloadAttempt(string fileName, string pdfUrl, IUserObject UserObject, string userRole)
+        {
+            var chromeOptions = new ChromeOptions();
+
+            var downloadDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            Directory.CreateDirectory(downloadDirectory);
+
+            chromeOptions.AddArgument("--headless=new");
+            chromeOptions.AddArgument("--no-sandbox");
+            chromeOptions.AddArgument("--disable-dev-shm-usage");
+            chromeOptions.AddArgument("--disable-gpu");
+            chromeOptions.AddArgument("--window-size=1920,1080");
+
+            chromeOptions.AddUserProfilePreference("download.default_directory", downloadDirectory);
+            chromeOptions.AddUserProfilePreference("download.prompt_for_download", false);
+            chromeOptions.AddUserProfilePreference("download.directory_upgrade", true);
+            chromeOptions.AddUserProfilePreference("safebrowsing.enabled", true);
+            chromeOptions.AddUserProfilePreference("plugins.always_open_pdf_externally", true);
+            chromeOptions.AddUserProfilePreference("profile.default_content_setting_values.automatic_downloads", 1);
+            chromeOptions.AddUserProfilePreference("profile.content_settings.exceptions.automatic_downloads.*.setting", 1);
+
+            chromeOptions.EnableDownloads = true;
+
+            ChromeDriverService service =
+                RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
+                    ? ChromeDriverService.CreateDefaultService("/usr/bin/")
+                    : ChromeDriverService.CreateDefaultService();
+
+            using (var tempDriver = new ChromeDriver(service, chromeOptions))
+            {
+                tempDriver.ExecuteCdpCommand(
+                    "Page.setDownloadBehavior",
+                    new Dictionary<string, object>
+                    {
+                        ["behavior"] = "allow",
+                        ["downloadPath"] = downloadDirectory
+                    });
+
+                tempDriver.Navigate().GoToUrl(pdfUrl);
+                Thread.Sleep(1000);
+
+                tempDriver.WaitForElements(By.ClassName("govuk-radios__label"))
+                          .ElementAt(1)?.Click();
+
+                tempDriver.FindElement(By.Id("continueReplacement")).Click();
+                Thread.Sleep(1000);
+
+                var jsonData = UserObject?.GetUser("IPAFF", userRole);
+                var userObject = new User
+                {
+                    UserName = jsonData.UserName,
+                    Credential = jsonData.Credential
+                };
+
+                tempDriver.WaitForElement(By.Id("user_id")).SendKeys(userObject.UserName);
+                Thread.Sleep(1000);
+
+                tempDriver.FindElement(By.Id("password")).SendKeys(userObject.Credential);
+                Thread.Sleep(1000);
+
+                tempDriver.WaitForElement(By.Id("continue")).Click();
+                Thread.Sleep(5000);
+
+                return downloadDirectory;
+            }
+        }
 
 
 
