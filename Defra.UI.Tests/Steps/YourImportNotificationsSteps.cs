@@ -715,14 +715,18 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             //Clone scenario
                             ValidateContains("CommodityCode", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                             ValidateContains("Description", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("GenusAndSpecies", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("GenusFirstCommodity", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                             ValidateContains("NetWeight", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                             ValidateContains("Packages", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("TypeOfPackage", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("PackageType", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("CountryOfOrigin", page.Sections.DescriptionOfTheGoods.ElementAt(0).CountryOfOrigin, ref allDataMatches, mismatches);
 
                             ValidateContains("TotalNetWeight", page.Sections.TotalNetWeight?.Value, ref allDataMatches, mismatches);
                             ValidateContains("TotalPackages", page.Sections.TotalNumberOfPackages?.Value, ref allDataMatches, mismatches);
                             ValidateContains("TotalGrossWeight", page.Sections.TotalGrossWeight?.Value, ref allDataMatches, mismatches);
+
+                            ValidateContains("ContactEmail", (string)page.Sections.Transporter.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches);
+                            ValidateContains("ContactTelephone", (string)page.Sections.Transporter.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
                         }
                         else if (page.Sections.DescriptionOfTheGoods?.Count > 1)
                         {
@@ -1293,8 +1297,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
             if (contextKey == "ExitBCP" && actual!=null) actual = actual.Replace(".", "").Trim();
             if (contextKey is "ExitBorderControlPost" or "PortOfEntry") expectedValue = expectedValue.Split(new[] { '(', '-' })[0].Trim();
             if (contextKey == "InspectionPremises") expectedValue = expectedValue.Split('-')[0].Trim();
-            if (contextKey == "BorderControlPost" && _scenarioContext["CHEDReference"].ToString().Contains("CHEDPP"))
-                    expectedValue = expectedValue.Split('-')[0].Trim();
+            /*if (contextKey == "BorderControlPost" && _scenarioContext["CHEDReference"].ToString().Contains("CHEDPP"))
+                    expectedValue = expectedValue.Split('-')[0].Trim();*/
             if (contextKey == "ImporterAddress") actual = actual.Replace("Address ", "").Trim();
             if (contextKey == "TotalPackages") actual = Regex.Matches(actual, @"\d+").Select(m => int.Parse(m.Value)).Sum().ToString();
             if (contextKey == "NumberOfAnimals") expectedValue += " Units";
