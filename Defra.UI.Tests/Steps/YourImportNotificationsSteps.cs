@@ -89,24 +89,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user checks that the data in the certificate matches the data entered into the notification")]
         public void WhenTheUserChecksThatTheDataInTheCertificateMatchesTheDataEnteredIntoTheNotification()
         {
+
             var chedReference = _scenarioContext.Get<string>("CHEDReference");
             Assert.True(importNotificationsPage?.VerifyDataInCertificate(chedReference), "Certificate data verification failed");
 
             var json = JsonConvert.SerializeObject(_scenarioContext.ToDictionary(kvp => kvp.Key, kvp => kvp.Value), Formatting.Indented);
-            var chedReferenceFileName = "//" + chedReference + "-certificate";
+            var chedReferenceFileName =  chedReference + "-certificate.pdf";
 
             string downloadDirectory = _scenarioContext.Get<string>("PDFDownloadedDirectory");
-
-
-            var files = Directory.GetFiles(downloadDirectory);
-
-            foreach (var file in files)
-            {
-                Console.WriteLine("File:------------ " + file);
-            }
-
-
-            string pdfPath = downloadDirectory + chedReferenceFileName + ".pdf";
+            string pdfPath = Path.Combine(downloadDirectory, chedReferenceFileName);
+            //string pdfPath = downloadDirectory + chedReferenceFileName + ".pdf";
             var converter = new PdfToJsonConverter();
             var jsonOutput = converter.ConvertToJson(pdfPath);
 
@@ -620,10 +612,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 {
                     Console.WriteLine("File not found to delete.");
                 }
+
                 Directory.Delete(downloadDirectory, true);
                 Console.WriteLine("Deleted directory: " + downloadDirectory);
             }
-            
+
         }
 
         [When("the user checks that the data in the certificate matches the data entered into the CHED PP notification")]
@@ -633,9 +626,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(importNotificationsPage?.VerifyDataInCertificate(chedReference), "Certificate data verification failed");
 
             var json = JsonConvert.SerializeObject(_scenarioContext.ToDictionary(kvp => kvp.Key, kvp => kvp.Value), Formatting.Indented);
-            var chedReferenceFileName = "\\" + chedReference + "-certificate";
-            var downloadDirectory = Path.Combine(Path.GetTempPath(), "automation-downloads");
-            string pdfPath = downloadDirectory + chedReferenceFileName + ".pdf";
+            //var chedReferenceFileName = "\\" + chedReference + "-certificate";
+            //var downloadDirectory = Path.Combine(Path.GetTempPath(), "automation-downloads");
+
+            var chedReferenceFileName = chedReference + "-certificate.pdf";
+            string downloadDirectory = _scenarioContext.Get<string>("PDFDownloadedDirectory");
+            string pdfPath = Path.Combine(downloadDirectory, chedReferenceFileName);
+
+
+            //string pdfPath = downloadDirectory + chedReferenceFileName + ".pdf";
             var converter = new ChedppPdfConverter();
             var jsonOutput = converter.ConvertToJson(pdfPath);
 

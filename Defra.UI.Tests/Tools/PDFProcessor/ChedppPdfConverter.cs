@@ -77,7 +77,7 @@ namespace PdfExtraction
                     pages.Add(pageData);
                     
                     // DEBUG: Log page numbers
-                    System.IO.File.AppendAllText(@"C:\Dev\pdftojson\debug_pages.txt", $"Processed page {page.Number}\n");
+                    //System.IO.File.AppendAllText(@"C:\Dev\pdftojson\debug_pages.txt", $"Processed page {page.Number}\n");
                 }
             }
 
@@ -604,7 +604,7 @@ namespace PdfExtraction
             else if (page.Number >= 3)
             {
                 // DEBUG: Check what page we're on and save page text
-                System.IO.File.WriteAllText($@"C:\Dev\pdftojson\debug_page{page.Number}_text.txt", $"Page {page.Number} text:\n\n{text}");
+                //System.IO.File.WriteAllText($@"C:\Dev\pdftojson\debug_page{page.Number}_text.txt", $"Page {page.Number} text:\n\n{text}");
 
                 // Check if this page or any subsequent page contains PHSI Checks (may appear as "Checks PHSI" due to OCR order)
                 var phsiMatch = Regex.Match(text, @"(?:PHSI|Checks)\s*(?:Checks|PHSI)(.*?)(?=Identification|BCP|Certifying|$)", RegexOptions.Singleline | RegexOptions.IgnoreCase);
@@ -696,7 +696,7 @@ namespace PdfExtraction
                     var ii6Match = Regex.Match(text, @"(?:Laboratory\s*tests?|II\.?6)(.*?)(?=II\.|Physical Check|II\.?5|$)", RegexOptions.Singleline | RegexOptions.IgnoreCase);
                     if (ii6Match.Success)
                     {
-                        System.IO.File.WriteAllText(@"C:\Dev\pdftojson\debug_ii6_text.txt", $"II.6 Laboratory Tests section:\n\n{ii6Match.Groups[1].Value}");
+                        //System.IO.File.WriteAllText(@"C:\Dev\pdftojson\debug_ii6_text.txt", $"II.6 Laboratory Tests section:\n\n{ii6Match.Groups[1].Value}");
                     }
 
                     var ii6 = TextSection(
