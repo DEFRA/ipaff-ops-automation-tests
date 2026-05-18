@@ -446,6 +446,11 @@ namespace Defra.UI.Tests.Tools
                     }
 
                     Console.WriteLine("❌ PDF not found after attempt " + attempt);
+
+                    // Cleanup before retry
+                    SafeDeleteDirectory(downloadDirectory);
+
+
                     if (attempt >= maxRetries)
                         throw new Exception("PDF failed to download after all retry attempts.");
 
@@ -467,6 +472,26 @@ namespace Defra.UI.Tests.Tools
                 }
             }
         }
+
+        private static void SafeDeleteDirectory(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+                return;
+
+            try
+            {
+                if (Directory.Exists(path))
+                {
+                    Directory.Delete(path, true);
+                    Console.WriteLine("🧹 Deleted directory: " + path);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("⚠️ Failed to delete directory: " + ex.Message);
+            }
+        }
+
 
         private static string RunPdfDownloadAttempt(string fileName, string pdfUrl, IUserObject UserObject, string userRole)
         {
