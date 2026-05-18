@@ -91,7 +91,7 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
             // Wait for the popup's own Assign button to be present and visible before clicking.
             // Scope to the popup container to avoid matching the Work Order command bar.
             var popupAssignButton = Driver.WaitUntilAvailable(
-                By.XPath("//section[contains(@id,'popupContainer')]//button[@aria-label='Assign' or @title='Assign']"),
+                By.XPath("//section[contains(@id,'popupContainer')]//button[contains(@data-id,'Assign') or contains(@aria-label,'Assign')]"),
                 TimeSpan.FromSeconds(30),
                 "Assign button could not be found in the popup command bar within 30 seconds.");
 
