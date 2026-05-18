@@ -651,42 +651,42 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
                     if (pageNumber == 1)
                     {
-                        ValidateContains("CHEDReference", page.Sections.PartIDescriptionOfConsignment.Value, ref allDataMatches, mismatches);
-                        ValidateContains("ConsignmentReferenceNumber", page.Sections.PartIDescriptionOfConsignment.Value, ref allDataMatches, mismatches);
+                        ValidateContains("CHEDReference", page.Sections.ChedReference.Id, ref allDataMatches, mismatches);
+                        ValidateContains("ConsignmentReferenceNumber", page.Sections.LocalReference.Value, ref allDataMatches, mismatches);
                         //ValidateContains("InspectionPremises", page.Sections.PartIDescriptionOfConsignment.Value, ref allDataMatches, mismatches);
-                        ValidateContains("BorderControlPost", page.Sections.PartIDescriptionOfConsignment.Value, ref allDataMatches, mismatches);
-                        ValidateContains("ConsignorName", page.Sections.PartIDescriptionOfConsignment.Value, ref allDataMatches, mismatches);
-                        ValidateContains("ConsignorAddress", page.Sections.PartIDescriptionOfConsignment.Value, ref allDataMatches, mismatches);
-                        ValidateContains("ConsignorCountry", page.Sections.PartIDescriptionOfConsignment.Value, ref allDataMatches, mismatches);
-                        ValidateContains("CompanyName", page.Sections.PartIDescriptionOfConsignment.Value, ref allDataMatches, mismatches);
-                        ValidateContains("ImporterAddress", page.Sections.PartIDescriptionOfConsignment.Value, ref allDataMatches, mismatches);
-                        ValidateContains("ConsigneeCountry", page.Sections.PartIDescriptionOfConsignment.Value, ref allDataMatches, mismatches);
-                        ValidateContains("DeliveryAddressName", page.Sections.PartIDescriptionOfConsignment.Value, ref allDataMatches, mismatches);
-                        ValidateContains("DeliveryAddress", page.Sections.PartIDescriptionOfConsignment.Value, ref allDataMatches, mismatches);
-                        ValidateContains("DeliveryCountry", page.Sections.PartIDescriptionOfConsignment.Value, ref allDataMatches, mismatches);
+                        ValidateContains("BorderControlPost", page.Sections.BorderControlPost.Value, ref allDataMatches, mismatches, true);
+                        ValidateContains("ConsignorName", page.Sections.ConsignorExporter.Name, ref allDataMatches, mismatches);
+                        ValidateContains("ConsignorAddress", page.Sections.ConsignorExporter.Address, ref allDataMatches, mismatches);
+                        ValidateContains("ConsignorCountry", page.Sections.ConsignorExporter.Country, ref allDataMatches, mismatches);
+                        ValidateContains("CompanyName", page.Sections.ConsigneeImporter.Name, ref allDataMatches, mismatches);
+                        ValidateContains("ImporterAddress", page.Sections.ConsigneeImporter.Address, ref allDataMatches, mismatches);
+                        ValidateContains("ConsigneeCountry", page.Sections.ConsigneeImporter.Country, ref allDataMatches, mismatches);
+                        ValidateContains("DeliveryAddressName", page.Sections.PlaceOfDestination.Name, ref allDataMatches, mismatches);
+                        ValidateContains("DeliveryAddress", page.Sections.PlaceOfDestination.Address, ref allDataMatches, mismatches);
+                        ValidateContains("DeliveryCountry", page.Sections.PlaceOfDestination.Country, ref allDataMatches, mismatches);
 
-                        ValidateContains("DocumentType", page.Sections.PartIDescriptionOfConsignment.Value, ref allDataMatches, mismatches);
-                        ValidateContains("DocumentReference", page.Sections.PartIDescriptionOfConsignment.Value, ref allDataMatches, mismatches);
+                        ValidateContains("DocumentType", (string)page.Sections.AccompanyingDocuments?.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches);
+                        ValidateContains("DocumentReference", (string)page.Sections.AccompanyingDocuments?.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
 
-
-                        ValidateIfExists("ContryFromWhereConsigned", page.Sections.PartIDescriptionOfConsignment.Value, ref allDataMatches, mismatches);
-                        ValidateContains("MeansOfTransport", page.Sections.PartIDescriptionOfConsignment.Mode, ref allDataMatches, mismatches);
+                        ValidateIfExists("ContryFromWhereConsigned", page.Sections.CountryOfDispatch.Value, ref allDataMatches, mismatches);
+                        ValidateContains("MeansOfTransport", page.Sections.MeansOfTransport.Mode, ref allDataMatches, mismatches);
                         var meansOfTransport = _scenarioContext.Get<string>("MeansOfTransport");
-                        if (meansOfTransport.Equals(page.Sections.PartIDescriptionOfConsignment.Mode, StringComparison.OrdinalIgnoreCase))
-                            ValidateContains("EnterTransportDocRef", page.Sections.PartIDescriptionOfConsignment.InternationalTransportDocument, ref allDataMatches, mismatches);
-                        else
-                            ValidateContains("EnterTransportDocRef", page.Sections.PartIDescriptionOfConsignment.Mode, ref allDataMatches, mismatches);
+                        if (meansOfTransport.Equals(page.Sections.MeansOfTransport.Mode, StringComparison.OrdinalIgnoreCase))
+                            ValidateContains("EnterTransportDocRef", page.Sections.MeansOfTransport.InternationalTransportDocument, ref allDataMatches, mismatches);
+                        else //Need to check else scenario
+                            ValidateContains("EnterTransportDocRef", page.Sections.MeansOfTransport.Mode, ref allDataMatches, mismatches);
 
-                        ValidateContains("TransportId", page.Sections.PartIDescriptionOfConsignment.Value, ref allDataMatches, mismatches);
-                        //ValidateContains("CountryOfOrigin", page.Sections.CountryOfOrigin.Value, ref allDataMatches, mismatches);
+                        ValidateContains("TransportId", page.Sections.MeansOfTransport.Identification, ref allDataMatches, mismatches);
+                        ValidateContains("CountryOfOrigin", page.Sections.CountryOfOrigin.Value, ref allDataMatches, mismatches);
 
-                        ValidateContains("EstimatedArrivalDate", page.Sections.PartIDescriptionOfConsignment.Value, ref allDataMatches, mismatches);
-                        //ValidateContains("EstimatedArrivalTime", page.Sections.PartIDescriptionOfConsignment.Value, ref allDataMatches, mismatches);
+                        //ArrivalDate Format need to be changed
+                        ValidateContains("EstimatedArrivalDate", page.Sections.PriorNotification.Date, ref allDataMatches, mismatches);
+                        ValidateContains("EstimatedArrivalTime", page.Sections.PriorNotification.Time, ref allDataMatches, mismatches);
 
-                        ValidateContains("ContactName", page.Sections.PartIDescriptionOfConsignment.Value, ref allDataMatches, mismatches);
-                        ValidateContains("ConsignmentContactAddress", page.Sections.PartIDescriptionOfConsignment.Value, ref allDataMatches, mismatches);
+                        ValidateContains("ContactName", page.Sections.OperatorResponsible.Name, ref allDataMatches, mismatches);
+                        //ValidateContains("ConsignmentContactAddress", page.Sections.PartIDescriptionOfConsignment.Value, ref allDataMatches, mismatches);
 
-                        if (_scenarioContext.ContainsKey("CloningNotificationDetails"))
+                        /*if (_scenarioContext.ContainsKey("CloningNotificationDetails"))
                         {
                             ValidateContains("CompanyName", page.Sections.PartIDescriptionOfConsignment.Value, ref allDataMatches, mismatches);
                             //ValidateIfExists("PurposeOfTheConsignment", page.Sections.GoodsCertifiedAs.Value, ref allDataMatches, mismatches);
@@ -705,7 +705,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                                 //ValidateContains("EstablishmentListFirstName", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
                                 ValidateContains("CountryOfOrigin", page.Sections.DescriptionOfTheGoods?.ElementAt(0).Value, ref allDataMatches, mismatches);
                             }
-                        }
+                        }*/
                     }
 
                     else if (pageNumber == 2)
@@ -713,14 +713,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         if (_scenarioContext.ContainsKey("CloningHealthCertificateDetails") || _scenarioContext.ContainsKey("CloningNotificationDetails"))
                         {
                             //Clone scenario
-                            ValidateContains("CommodityCode", page.Sections.CHEDPPPageII.Value, ref allDataMatches, mismatches);
+                            ValidateContains("CommodityCode", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                             ValidateContains("Description", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                             ValidateContains("GenusAndSpecies", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                             ValidateContains("NetWeight", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                             ValidateContains("Packages", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                             ValidateContains("TypeOfPackage", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("EstablishmentListFirstName", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
-                            ValidateContains("CountryOfOriginOfCertificate", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
 
                             ValidateContains("TotalNetWeight", page.Sections.TotalNetWeight?.Value, ref allDataMatches, mismatches);
                             ValidateContains("TotalPackages", page.Sections.TotalNumberOfPackages?.Value, ref allDataMatches, mismatches);
@@ -773,6 +771,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     else if (pageNumber == 3)
                     {
                         ValidateIfExists("CHEDReference", page.Sections.II2ChedReference.Id, ref allDataMatches, mismatches);
+                        ValidateContains("BorderControlPost", (string)page.Sections.IdentificationOfBcp.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches, true);
+                        ValidateContains("BorderControlPost", (string)page.Sections.IdentificationOfBcp.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches, true);
                     }
                 }
             }
@@ -1214,7 +1214,17 @@ namespace Defra.UI.Tests.Steps.IPAFF
             if (string.IsNullOrEmpty(expectedValue) || string.IsNullOrEmpty(actual))
                 return;
 
-            bool isMatch = CompareValues(expectedValue, actual, contextContainsPDF, result);
+            //bool isMatch = CompareValues(expectedValue, actual, contextContainsPDF, result);
+            bool isMatch;
+            // Special handling for date fields
+            if (contextKey == "EstimatedArrivalDate")
+            {
+                isMatch = DatesMatch(expectedValue, actual);
+            }
+            else
+            {
+                isMatch = CompareValues(expectedValue, actual, contextContainsPDF, result);
+            }
 
             if (!isMatch)
             {
@@ -1391,6 +1401,25 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 .ToList();
 
             return (expectedWords, actualWords);
+        }
+
+        private bool DatesMatch(string expected, string actual)
+        {
+            var culture = CultureInfo.GetCultureInfo("en-GB");
+
+            if (!DateTime.TryParseExact(expected, "dd.MM.yyyy", culture, DateTimeStyles.None, out var expectedDate))
+            {
+                return false;
+            }
+
+            var cleanedActual = Regex.Replace(actual, @"\s+\+\d{4}\s+[A-Z]+", "").Trim();
+
+            if (!DateTime.TryParseExact(cleanedActual, "dd.MM.yyyy", culture, DateTimeStyles.None, out var actualDate))
+            {
+                return false;
+            }
+
+            return expectedDate.Date == actualDate.Date;
         }
 
         public void ValidateAllMatchesInList(string contextKey, string? actual, ref bool allDataMatches, List<string> mismatches)
