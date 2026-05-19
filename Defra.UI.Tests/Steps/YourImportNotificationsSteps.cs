@@ -378,11 +378,17 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         ValidateIfExists("PhysicalCheck", pdfPhysicalCheck, ref allDataMatches, mismatches);
                         ValidateIfExists("PhysicalCheckDecision", pdfPhysicalCheck, ref allDataMatches, mismatches);
 
-                        /*string? pdfLaboratoryTestRequired = page.Sections.LaboratoryTests.No;
-                        if (pdfLaboratoryTestRequired.Equals("true") && page.Sections.LaboratoryTests.Random.Equals("false")
-                            && page.Sections.LaboratoryTests.Suspicion.Equals("false")
-                        && (page.Sections.LaboratoryTests.EmergencyMeasures.Equals("false")
-                        || page.Sections.LaboratoryTests.IntensifiedControls.Equals("false")))  //---- Need to verify once value is retrieved from pdf
+                        string? pdfLaboratoryTestRequired = page.Sections.LaboratoryTests.No;
+                        string? pdfLaboratoryTestNames = page.Sections.LaboratoryTests
+                        switch
+                        {
+                            { Random: "true" } => "Random",
+                            { Suspicion: "true" } => "Suspicion",
+                            { IntensifiedControls: "true" } => "IntensifiedControls",
+                            { EmergencyMeasures: "true" } => "EmergencyMeasures",
+                            _ => null
+                        };
+                        if (pdfLaboratoryTestNames == null)  
                         {
                             pdfLaboratoryTestRequired = "No";
                         }
@@ -439,7 +445,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             };
                             ValidateIfExists("LaboratoryTestsReason", pdfLaboratoryTestNames1, ref allDataMatches, mismatches);
                             ValidateContains("LaboratoryTestName", (string?)page.Sections.LaboratoryTests?.AdditionalData?.ElementAt(0).Value, ref allDataMatches, mismatches, true);
-                        }*/
+                        }
                         string? welfareCheckDecision = page.Sections.WelfareCheck
                         switch
                         {
@@ -716,6 +722,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                                 }
                                 ValidateContains("Commodity_Commodity code", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
                                 ValidateContains("Commodity_Genus and Species", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
+                                //ValidateContains("Commodity_Eppo", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
                                 //ValidateContains("Commodity_Variety", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
                                 //ValidateContains("Commodity_Class", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
                                 ValidateContains("Commodity_Number of packages", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
