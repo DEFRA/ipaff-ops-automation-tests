@@ -139,9 +139,7 @@ namespace Defra.UI.Tests.Tools
 
         public static bool IsDownloaded1(string fileName, string extension, string directory, int timeoutSeconds = 60)
         {
-
             Console.WriteLine("Waiting for download...");
-
             var expectedFile = Path.Combine(directory, $"{fileName}.{extension}");
             var tempFile = expectedFile + ".crdownload";
 
@@ -159,14 +157,10 @@ namespace Defra.UI.Tests.Tools
                 {
                     Console.WriteLine("Download Pending");
                 }
-
                 Thread.Sleep(1000);
             }
-
             Console.WriteLine("Download timed out");
             return false;
-
-
         }
 
         public static bool Equals(this string expected, string actual)
@@ -180,159 +174,6 @@ namespace Defra.UI.Tests.Tools
         {
             return actual.OrderBy(x => x).SequenceEqual(expected.OrderBy(x => x));
         }
-
-        /*public static void DownloadPDF(string fileName, string pdfUrl, IUserObject UserObject, string userRole)
-        {
-            var chromeOptions = new ChromeOptions();
-
-            // ✅ Unique download directory
-            var downloadDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            Directory.CreateDirectory(downloadDirectory);           
-
-            Console.WriteLine("downloadDirectory: " + downloadDirectory);
-
-            // ✅ Required for pipeline (Linux)
-            chromeOptions.AddArgument("--headless=new");
-            chromeOptions.AddArgument("--no-sandbox");
-            chromeOptions.AddArgument("--disable-dev-shm-usage");
-
-            // ✅ Download settings
-            chromeOptions.AddUserProfilePreference("download.default_directory", downloadDirectory);
-            chromeOptions.AddUserProfilePreference("download.prompt_for_download", false);
-            chromeOptions.AddUserProfilePreference("download.directory_upgrade", true);
-            chromeOptions.AddUserProfilePreference("safebrowsing.enabled", true);
-            chromeOptions.AddUserProfilePreference("plugins.always_open_pdf_externally", true);
-
-            chromeOptions.EnableDownloads = true;
-
-            ChromeDriverService service;
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                // Pipeline (Linux agent) – chromedriver installed under /usr/bin
-                service = ChromeDriverService.CreateDefaultService("/usr/bin/");
-            }
-            else
-            {
-                // Local (Windows/macOS) – use default resolution (PATH / local folder)
-                service = ChromeDriverService.CreateDefaultService();
-            }
-
-            Console.WriteLine("Starting ChromeDriver...");
-
-            using (var tempDriver = new ChromeDriver(service, chromeOptions))
-            {
-                tempDriver.Navigate().GoToUrl(pdfUrl);
-                var elements = tempDriver.WaitForElements(By.CssSelector(".govuk-label.govuk-radios__label.break-word")).ToList();                      
-                elements[1].Click();
-                
-                tempDriver.FindElement(By.Id("continueReplacement")).Click();
-
-                var jsonData = UserObject?.GetUser("IPAFF", userRole);
-                var userObject = new User
-                {
-                    UserName = jsonData.UserName,
-                    Credential = jsonData.Credential
-                };
-                
-                tempDriver.WaitForElement(By.Id("user_id")).SendKeys(userObject.UserName);
-                tempDriver.FindElement(By.Id("password")).SendKeys(userObject.Credential);
-                Thread.Sleep(1000);
-                tempDriver.WaitForElement(By.Id("continue")).Click();
-                Thread.Sleep(1000);
-
-                IsDownloaded(fileName, "pdf");
-
-                var files = Directory.GetFiles(downloadDirectory);
-
-                foreach (var file in files)
-                {
-                    Console.WriteLine("File from downloads:------------ " + file);
-                }
-
-                tempDriver.Quit();
-                tempDriver.Dispose();
-            }
-        }*/
-
-
-        /* var chromeOptions = new ChromeOptions();
-
-         // ✅ Unique download directory
-         var downloadDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-         Directory.CreateDirectory(downloadDirectory);
-
-         Console.WriteLine("downloadDirectory: " + downloadDirectory);
-
-         // ✅ Required for pipeline (Linux)
-         //chromeOptions.AddArgument("--headless=new");
-         //chromeOptions.AddArgument("--no-sandbox");
-         //chromeOptions.AddArgument("--disable-dev-shm-usage");
-
-         // ✅ Download settings
-         chromeOptions.AddUserProfilePreference("download.default_directory", downloadDirectory);
-         chromeOptions.AddUserProfilePreference("download.prompt_for_download", false);
-         chromeOptions.AddUserProfilePreference("download.directory_upgrade", true);
-         chromeOptions.AddUserProfilePreference("safebrowsing.enabled", true);
-         chromeOptions.AddUserProfilePreference("plugins.always_open_pdf_externally", true);
-
-         chromeOptions.EnableDownloads = true;
-
-         ChromeDriverService service;
-         if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-         {
-             // Pipeline (Linux agent) – chromedriver installed under /usr/bin
-             service = ChromeDriverService.CreateDefaultService("/usr/bin/");
-         }
-         else
-         {
-             // Local (Windows/macOS) – use default resolution (PATH / local folder)
-             service = ChromeDriverService.CreateDefaultService();
-         }
-
-         Console.WriteLine("Starting ChromeDriver...");
-
-         using (var tempDriver = new ChromeDriver(service, chromeOptions))
-         {
-             tempDriver.ExecuteCdpCommand(
-                     "Page.setDownloadBehavior",
-                     new Dictionary<string, object>
-                     {
-                         ["behavior"] = "allow",
-                         ["downloadPath"] = downloadDirectory
-                     });
-
-             tempDriver.Navigate().GoToUrl(pdfUrl);
-             var elements = tempDriver.WaitForElements(By.CssSelector(".govuk-label.govuk-radios__label.break-word")).ToList();
-             elements[1].Click();
-
-             tempDriver.FindElement(By.Id("continueReplacement")).Click();
-
-             var jsonData = UserObject?.GetUser("IPAFF", userRole);
-             var userObject = new User
-             {
-                 UserName = jsonData.UserName,
-                 Credential = jsonData.Credential
-             };
-
-             tempDriver.WaitForElement(By.Id("user_id")).SendKeys(userObject.UserName);
-             tempDriver.FindElement(By.Id("password")).SendKeys(userObject.Credential);
-             //Thread.Sleep(1000);
-             tempDriver.WaitForElement(By.Id("continue")).Click();
-             Thread.Sleep(10000);
-
-             Assert.IsTrue(IsDownloaded1(fileName, "pdf", downloadDirectory), "Failed in Is Downloaded check!!");
-
-             var files = Directory.GetFiles(downloadDirectory);
-
-             foreach (var file in files)
-             {
-                 Console.WriteLine("File from downloads:------------ " + file);
-             }
-
-             tempDriver.Quit();
-             tempDriver.Dispose();
-         }
-         return downloadDirectory;*/
         public static string DownloadPDF(string fileName, string pdfUrl, IUserObject UserObject, string userRole)
         {
 
@@ -393,9 +234,6 @@ namespace Defra.UI.Tests.Tools
                 Console.WriteLine("Navigate to url - " + pdfUrl);
                 Thread.Sleep(1000);
 
-                //var elements = tempDriver.WaitForElements(By.CssSelector(".govuk-label.govuk-radios__label.break-word")).ToList();
-                //elements[1].Click();
-
                 tempDriver.WaitForElements(By.ClassName("govuk-radios__label")).ElementAt(1)?.Click();
 
                 tempDriver.FindElement(By.Id("continueReplacement")).Click();
@@ -442,9 +280,6 @@ namespace Defra.UI.Tests.Tools
                     Console.WriteLine("no file in directory " + downloadDirectory);
 
                 }
-
-
-
                 Assert.IsTrue(IsDownloaded1(fileName, "pdf", downloadDirectory), "Failed in Is Downloaded check!!");
 
                 tempDriver.Manage().Cookies.DeleteAllCookies();
