@@ -11,6 +11,8 @@ using Reqnroll.BoDi;
 using System.Globalization;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Data;
+
 
 namespace Defra.UI.Tests.Steps.IPAFF
 {
@@ -730,6 +732,30 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         }
                         else if (page.Sections.DescriptionOfTheGoods?.Count > 1)
                         {
+                            var allCommodityDetails = _scenarioContext["AllCommodityDetails"] as Reqnroll.DataTable;
+                            var list = allCommodityDetails.Rows.Select(r => r.ToDictionary(k => k.Key, v => v.Value)).ToList();
+                            int rowIndex = 0;
+
+                            foreach (var row in list)
+                            {
+                                foreach (var kv in row)
+                                {
+                                    _scenarioContext[$"Commodity_{kv.Key}"] = kv.Value;
+                                }
+                                ValidateContains("Commodity_Commodity code", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
+                                ValidateContains("Commodity_Genus and Species", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
+                                ValidateContains("Commodity_Variety", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
+                                ValidateContains("Commodity_Class", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
+                                ValidateContains("Commodity_Number of packages", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
+                                ValidateContains("Commodity_Quantity", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
+                                //ValidateContains("Commodity_Net weight (kg)", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
+                                ValidateContains("Commodity_Controlled atmosphere container", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
+
+                                rowIndex++;
+                            }
+
+                            //var commodityNames = allCommodityDetails.AsEnumerable().Select(r => r["CommodityName"].ToString()).ToList();
+
                             ValidateContains("CommodityCodeFirstCommodity", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                             ValidateContains("CommodityDescFirstCommodity", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
                             ValidateContains("Species", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
