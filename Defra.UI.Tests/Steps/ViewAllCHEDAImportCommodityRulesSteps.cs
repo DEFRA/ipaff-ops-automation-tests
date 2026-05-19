@@ -79,6 +79,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
             }
         }
 
+        [Then("the top CHED-A rule row should have Start date as today's date")]
+        public void ThenTheTopCHEDARuleRowShouldHaveStartDateAsTodaysDate()
+        {
+            var actual = page!.GetTopRowDetails();
+            Assert.True(actual.ContainsKey("Start date"), "Field 'Start date' not found in top row");
+            var expected = DateTime.Now.ToString("dd/MM/yyyy");
+            Assert.AreEqual(expected, actual["Start date"],
+                $"Field 'Start date' mismatch: expected '{expected}' but got '{actual["Start date"]}'");
+        }
+
         [Then("the user records the Id of the top CHED-A rule row as {string}")]
         public void ThenTheUserRecordsTheIdOfTheTopCHEDARuleRowAs(string key)
         {
