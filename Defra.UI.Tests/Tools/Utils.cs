@@ -137,7 +137,7 @@ namespace Defra.UI.Tests.Tools
             return false;
         }
 
-        public static bool IsDownloaded1(string fileName, string extension, string directory, int timeoutSeconds = 60)
+        public static bool IsDownloaded1(string fileName, string extension, string directory, int timeoutSeconds = 15)
         {
             Console.WriteLine("Waiting for download...");
             var expectedFile = Path.Combine(directory, $"{fileName}.{extension}");
@@ -174,26 +174,89 @@ namespace Defra.UI.Tests.Tools
         {
             return actual.OrderBy(x => x).SequenceEqual(expected.OrderBy(x => x));
         }
+
         public static string DownloadPDF(string fileName, string pdfUrl, IUserObject UserObject, string userRole)
         {
+            const int maxRetries = 3;
+            int attempt = 0;
 
+            while (true)
+            {
+                attempt++;
+                Console.WriteLine($"🔁 Attempt {attempt} of {maxRetries}");
+
+                try
+                {
+                    var downloadDirectory = RunPdfDownloadAttempt(fileName, pdfUrl, UserObject, userRole);
+
+                    // Validate download
+                    if (IsDownloaded1(fileName, "pdf", downloadDirectory))
+                    {
+                        Console.WriteLine("✅ PDF successfully downloaded.");
+                        return downloadDirectory;
+                    }
+
+                    Console.WriteLine("❌ PDF not found after attempt " + attempt);
+
+                    // Cleanup before retry
+                    SafeDeleteDirectory(downloadDirectory);
+
+
+                    if (attempt >= maxRetries)
+                        throw new Exception("PDF failed to download after all retry attempts.");
+
+                    // Exponential backoff
+                    int delay = attempt * 2000;
+                    Console.WriteLine($"⏳ Waiting {delay}ms before retry...");
+                    Thread.Sleep(delay);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"⚠️ Attempt {attempt} failed: {ex.Message}");
+
+                    if (attempt >= maxRetries)
+                        throw;
+
+                    int delay = attempt * 2000;
+                    Console.WriteLine($"⏳ Retrying in {delay}ms...");
+                    Thread.Sleep(delay);
+                }
+            }
+        }
+
+        private static void SafeDeleteDirectory(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+                return;
+
+            try
+            {
+                if (Directory.Exists(path))
+                {
+                    Directory.Delete(path, true);
+                    Console.WriteLine("🧹 Deleted directory: " + path);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("⚠️ Failed to delete directory: " + ex.Message);
+            }
+        }
+
+
+        private static string RunPdfDownloadAttempt(string fileName, string pdfUrl, IUserObject UserObject, string userRole)
+        {
             var chromeOptions = new ChromeOptions();
 
-            // ✅ Unique download directory
             var downloadDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             Directory.CreateDirectory(downloadDirectory);
 
-            Console.WriteLine("downloadDirectory: " + downloadDirectory);
-
-            // ✅ Required for pipeline (Linux)
             chromeOptions.AddArgument("--headless=new");
             chromeOptions.AddArgument("--no-sandbox");
             chromeOptions.AddArgument("--disable-dev-shm-usage");
             chromeOptions.AddArgument("--disable-gpu");
             chromeOptions.AddArgument("--window-size=1920,1080");
-            //chromeOptions.AddArgument($"--user-data-dir={downloadDirectory}");
 
-            // ✅ Download settings
             chromeOptions.AddUserProfilePreference("download.default_directory", downloadDirectory);
             chromeOptions.AddUserProfilePreference("download.prompt_for_download", false);
             chromeOptions.AddUserProfilePreference("download.directory_upgrade", true);
@@ -204,42 +267,29 @@ namespace Defra.UI.Tests.Tools
 
             chromeOptions.EnableDownloads = true;
 
-            ChromeDriverService service;
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                // Pipeline (Linux agent) – chromedriver installed under /usr/bin
-                service = ChromeDriverService.CreateDefaultService("/usr/bin/");
-            }
-            else
-            {
-                // Local (Windows/macOS) – use default resolution (PATH / local folder)
-                service = ChromeDriverService.CreateDefaultService();
-            }
-
-            Console.WriteLine("Starting ChromeDriver...");
-            Thread.Sleep(2000);
+            ChromeDriverService service =
+                RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
+                    ? ChromeDriverService.CreateDefaultService("/usr/bin/")
+                    : ChromeDriverService.CreateDefaultService();
 
             using (var tempDriver = new ChromeDriver(service, chromeOptions))
             {
                 tempDriver.ExecuteCdpCommand(
-                         "Page.setDownloadBehavior",
-                         new Dictionary<string, object>
-                         {
-                             ["behavior"] = "allow",
-                             ["downloadPath"] = downloadDirectory
-                         });
-
+                    "Page.setDownloadBehavior",
+                    new Dictionary<string, object>
+                    {
+                        ["behavior"] = "allow",
+                        ["downloadPath"] = downloadDirectory
+                    });
 
                 tempDriver.Navigate().GoToUrl(pdfUrl);
-                Console.WriteLine("Navigate to url - " + pdfUrl);
                 Thread.Sleep(1000);
 
-                tempDriver.WaitForElements(By.ClassName("govuk-radios__label")).ElementAt(1)?.Click();
+                tempDriver.WaitForElements(By.ClassName("govuk-radios__label"))
+                          .ElementAt(1)?.Click();
 
                 tempDriver.FindElement(By.Id("continueReplacement")).Click();
                 Thread.Sleep(1000);
-
-                Console.WriteLine("clicked radio  -" );
 
                 var jsonData = UserObject?.GetUser("IPAFF", userRole);
                 var userObject = new User
@@ -249,45 +299,17 @@ namespace Defra.UI.Tests.Tools
                 };
 
                 tempDriver.WaitForElement(By.Id("user_id")).SendKeys(userObject.UserName);
-                Console.WriteLine("use name  entered");
                 Thread.Sleep(1000);
 
                 tempDriver.FindElement(By.Id("password")).SendKeys(userObject.Credential);
-
-                Console.WriteLine("password  entered");
-
                 Thread.Sleep(1000);
+
                 tempDriver.WaitForElement(By.Id("continue")).Click();
-
-                Console.WriteLine("clicked continue/login button");
-
                 Thread.Sleep(5000);
 
-                Console.WriteLine("Logged in............");
-
-
-                var files = Directory.GetFiles(downloadDirectory);
-
-                if (files.Length > 0)
-                {
-                    foreach (var file in files)
-                    {
-                        Console.WriteLine("File from downloads:------------ " + file);
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("no file in directory " + downloadDirectory);
-
-                }
-                Assert.IsTrue(IsDownloaded1(fileName, "pdf", downloadDirectory), "Failed in Is Downloaded check!!");
-
-                tempDriver.Manage().Cookies.DeleteAllCookies();
-                tempDriver.Dispose();
+                return downloadDirectory;
             }
-            return downloadDirectory;
-        }   
-
+        }
 
 
         #region WebDriver Extension Methods for Element Safety
