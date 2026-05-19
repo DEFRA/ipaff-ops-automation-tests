@@ -13,9 +13,14 @@ namespace Defra.UI.Tests.Pages.Classes
         private readonly IObjectContainer _objectContainer;
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
 
+        #region Page Objects
         private IWebElement pageHeading => _driver.WaitForElement(By.XPath("//h1[normalize-space()='CSV file details and status']"), true);
         private IWebElement summaryList => _driver.WaitForElement(By.Id("commodity-information"));
         private IWebElement phsiReportingLink => _driver.WaitForElement(By.XPath("//a[normalize-space()='PHSI reporting']"));
+        private By summaryRowsBy => By.XPath(".//div[contains(@class,'govuk-summary-list__row')]");
+        private By summaryKeyBy => By.XPath("./dt");
+        private By summaryValueBy => By.XPath("./dd");
+        #endregion
 
         public CsvFileDetailsAndStatusPage(IObjectContainer container) => _objectContainer = container;
 
@@ -23,10 +28,10 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public IDictionary<string, string> GetSummaryDetails()
         {
-            var rows = summaryList.FindElements(By.XPath(".//div[contains(@class,'govuk-summary-list__row')]"));
+            var rows = summaryList.FindElements(summaryRowsBy);
             return rows.ToDictionary(
-                r => r.FindElement(By.XPath("./dt")).Text.Trim(),
-                r => r.FindElement(By.XPath("./dd")).Text.Trim());
+                r => r.FindElement(summaryKeyBy).Text.Trim(),
+                r => r.FindElement(summaryValueBy).Text.Trim());
         }
 
         public int GetSummaryFieldAsInt(string field)
