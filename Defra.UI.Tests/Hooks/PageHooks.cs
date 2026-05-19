@@ -169,6 +169,13 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<AreCommodityRuleChangesCorrectPage, IAreCommodityRuleChangesCorrectPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<UploadingRuleChangesPage, IUploadingRuleChangesPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CsvFileDetailsAndStatusPage, ICsvFileDetailsAndStatusPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDAReportsPage, ICHEDAReportsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDAImportsPage, ICHEDAImportsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ViewAllCHEDAImportCommodityRulesPage, IViewAllCHEDAImportCommodityRulesPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<BulkUploadCommodityRulesForCHEDAPage, IBulkUploadCommodityRulesForCHEDAPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CommodityRulesForCHEDAPage, ICommodityRulesForCHEDAPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CheckAndSubmitCommodityRulesForCHEDAPage, ICheckAndSubmitCommodityRulesForCHEDAPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CommodityRulesStatusForCHEDAPage, ICommodityRulesStatusForCHEDAPage>());
 
             //Read Email
             _objectContainer.RegisterInstanceAs(GetBaseWithScenarioContext<FetchCodeFromEmail, IFetchCodeFromEmail>());

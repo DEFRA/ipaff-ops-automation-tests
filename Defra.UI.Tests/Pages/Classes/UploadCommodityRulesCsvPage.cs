@@ -65,12 +65,15 @@ namespace Defra.UI.Tests.Pages.Classes
             for (int i = 1; i < lines.Count; i++) // skip header row
             {
                 var columns = ParseCsvLine(lines[i]);
-                // Commodity code is the 3rd column (index 2)
-                if (columns.Count > 2 && columns[2].Trim() == commodityCodeWithPrefix)
+                if (columns.Count > 2)
                 {
-                    columns[0] = newId;
-                    lines[i] = BuildCsvLine(columns);
-                    break;
+                    var stored = columns[2].Trim();
+                    if (stored == commodityCodeWithPrefix || stored == commodityCode)
+                    {
+                        columns[0] = newId;
+                        lines[i] = BuildCsvLine(columns);
+                        break;
+                    }
                 }
             }
 
@@ -93,14 +96,18 @@ namespace Defra.UI.Tests.Pages.Classes
             for (int i = 1; i < lines.Length; i++)
             {
                 var columns = ParseCsvLine(lines[i]);
-                if (columns.Count > 2 && columns[2].Trim() == commodityCodeWithPrefix)
+                if (columns.Count > 2)
                 {
-                    return columns[0].Trim();
+                    var stored = columns[2].Trim();
+                    if (stored == commodityCodeWithPrefix || stored == commodityCode)
+                    {
+                        return columns[0].Trim();
+                    }
                 }
             }
 
             throw new InvalidOperationException(
-                $"No row found in '{fileName}' with Commodity code '{commodityCodeWithPrefix}'");
+                $"No row found in '{fileName}' with Commodity code '{commodityCode}'");
         }
 
         /// <summary>

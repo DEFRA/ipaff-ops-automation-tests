@@ -31,5 +31,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             reportsPage?.ClickChedPPReportsLink();
         }
+
+        [When("the user clicks the CHED-A reports link")]
+        public void WhenTheUserClicksTheCHEDAReportsLink()
+        {
+            reportsPage?.ClickChedAReportsLink();
+        }
     }
 }

@@ -4,5 +4,6 @@
     {
         bool IsPageLoaded();
         void ClickChedPPReportsLink();
+        void ClickChedAReportsLink();
     }
 }
