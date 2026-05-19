@@ -88,7 +88,7 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
     [When("I search Import Notifications for the notification created in IPAFFS")]
     [When("I search Importer Notifications for the notification created in IPAFFS")]
     public void WhenISearchImporterNotificationsForTheNotificationCreatedInIPAFFS()
-    {              
+    {
         var chedReference = scenarioContext.Get<string>("CHEDReference");
         XrmApp.Grid.Search(chedReference);
         Driver.WaitForTransaction();
@@ -287,10 +287,9 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
 
         var expectedChedReference = scenarioContext.Get<string>("CHEDReference");
 
-        const int maxScrollAttempts = 20;
-        const int scrollIncrementPx = 300;
         const int maxOuterRetries = 10;
         const int outerRetryWaitSeconds = 30;
+        const int pollIntervalSeconds = 2;
 
         IWebElement workOrderLink = null;
 
@@ -298,7 +297,7 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
         {
             if (outerAttempt > 0)
             {
-                System.Threading.Thread.Sleep(TimeSpan.FromSeconds(outerRetryWaitSeconds));
+                Thread.Sleep(TimeSpan.FromSeconds(outerRetryWaitSeconds));
 
                 CommandSteps.WhenISelectTheCommand("Refresh");
                 Driver.WaitForTransaction();
@@ -306,18 +305,37 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
                 SignInPromptHelper.DismissSignInPrompts(Driver, "post-refresh");
             }
 
-            for (var scrollAttempt = 0; scrollAttempt < maxScrollAttempts; scrollAttempt++)
+            // Locate the Work Order field's outer container div and scroll it into view.
+            // This div exists in the DOM even before the lookup value renders inside it.
+            // Using scrollIntoView (same pattern as InspectionResultSteps) ensures the
+            // lazy-load trigger fires reliably, unlike scrollTop on the form container.
+            var fieldContainers = Driver.FindElements(
+                By.XPath("//div[@data-id='trd_workorderid']"));
+
+            if (fieldContainers.Count > 0)
             {
-                Driver.ExecuteScript(
-                    @"var panel = document.querySelector('[role=""tabpanel""][aria-label=""Summary""]')
-                               || document.querySelector('[role=""tabpanel""]');
-                      if (panel) { panel.scrollTop += arguments[0]; }",
-                    scrollIncrementPx);
+                Driver.ExecuteScript("arguments[0].scrollIntoView({block:'center'});", fieldContainers[0]);
+            }
+            else
+            {
+                // Fallback: scroll the form to the bottom if the field container isn't found
+                Driver.ExecuteScript(@"
+                    var el = document.querySelector('[data-id=""editFormRoot""]');
+                    if (el && el.scrollHeight > el.clientHeight) { el.scrollTop = el.scrollHeight; return; }
+                    el = document.querySelector('.webkitScroll');
+                    if (el && el.scrollHeight > el.clientHeight) { el.scrollTop = el.scrollHeight; return; }
+                    document.documentElement.scrollTop = document.documentElement.scrollHeight;");
+            }
 
-                Driver.WaitForTransaction();
+            Driver.WaitForTransaction();
 
+            // Poll for the populated lookup tag to appear inside the field container.
+            var pollDeadline = DateTime.UtcNow.AddSeconds(outerRetryWaitSeconds);
+
+            while (DateTime.UtcNow < pollDeadline && workOrderLink == null)
+            {
                 var candidates = Driver.FindElements(
-                    By.XPath($"//div[@data-id='trd_workorderid.fieldControl-LookupResultsDropdown_trd_workorderid_selected_tag'" +
+                    By.XPath($"//div[contains(@data-id,'LookupResultsDropdown_trd_workorderid_selected_tag')" +
                              $" and @aria-label='{expectedChedReference}']"));
 
                 if (candidates.Count > 0)
@@ -325,6 +343,9 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
                     workOrderLink = candidates[0];
                     break;
                 }
+
+                Thread.Sleep(TimeSpan.FromSeconds(pollIntervalSeconds));
+                Driver.WaitForTransaction();
             }
         }
 
