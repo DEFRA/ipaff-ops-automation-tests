@@ -74,7 +74,7 @@ stages:
     
     - template: run-test-template.yml
       parameters:
-        jobName: IPAFF_OPS_E2E
+        jobName: IPAFF_CHEDA
         environment: ${{ parameters.environment}}
         branchName: $(Build.SourceBranch)
         seleniumGrid: ${{parameters.seleniumGrid}}  
@@ -88,4 +88,58 @@ stages:
         isAccessibilityEnabled: ${{ parameters.isAccessibilityEnabled }}
         application: 'IPAFF'
         dependsOn: ''
-        filterTestCases: 'TestCategory=${{ parameters.testCategory }}'
+        filterTestCases: 'TestCategory=CHEDA'
+
+    - template: run-test-template.yml
+      parameters:
+        jobName: IPAFF_CHEDP
+        environment: ${{ parameters.environment}}
+        branchName: $(Build.SourceBranch)
+        seleniumGrid: ${{parameters.seleniumGrid}}  
+        deviceName: ${{parameters.deviceName}}
+        bsOSVersion: ${{parameters.bsOSVersion}}
+        workers:  ${{parameters.workers}}
+        bsBrowserVersion: 'latest'
+        target: ${{parameters.target}}
+        isEmulationEnabled: ${{parameters.isEmulationEnabled}}
+        emulateDeviceInfo: ${{parameters.emulateDeviceInfo}}
+        isAccessibilityEnabled: ${{ parameters.isAccessibilityEnabled }}
+        application: 'IPAFF'
+        dependsOn: ''
+        filterTestCases: 'TestCategory=CHEDP'
+
+    - template: run-test-template.yml
+      parameters:
+        jobName: IPAFF_CHEDPP
+        environment: ${{ parameters.environment}}
+        branchName: $(Build.SourceBranch)
+        seleniumGrid: ${{parameters.seleniumGrid}}  
+        deviceName: ${{parameters.deviceName}}
+        bsOSVersion: ${{parameters.bsOSVersion}}
+        workers:  ${{parameters.workers}}
+        bsBrowserVersion: 'latest'
+        target: ${{parameters.target}}
+        isEmulationEnabled: ${{parameters.isEmulationEnabled}}
+        emulateDeviceInfo: ${{parameters.emulateDeviceInfo}}
+        isAccessibilityEnabled: ${{ parameters.isAccessibilityEnabled }}
+        application: 'IPAFF'
+        dependsOn: ''
+        filterTestCases: 'TestCategory=CHEDPP'
+    
+    - template: run-test-template.yml
+      parameters:
+        jobName: IPAFF_CHEDD
+        environment: ${{ parameters.environment}}
+        branchName: $(Build.SourceBranch)
+        seleniumGrid: ${{parameters.seleniumGrid}}  
+        deviceName: ${{parameters.deviceName}}
+        bsOSVersion: ${{parameters.bsOSVersion}}
+        workers:  ${{parameters.workers}}
+        bsBrowserVersion: 'latest'
+        target: ${{parameters.target}}
+        isEmulationEnabled: ${{parameters.isEmulationEnabled}}
+        emulateDeviceInfo: ${{parameters.emulateDeviceInfo}}
+        isAccessibilityEnabled: ${{ parameters.isAccessibilityEnabled }}
+        application: 'IPAFF'
+        dependsOn: ''
+        filterTestCases: 'TestCategory=CHEDD'
