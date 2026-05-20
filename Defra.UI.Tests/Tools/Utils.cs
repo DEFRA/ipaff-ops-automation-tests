@@ -206,7 +206,7 @@ namespace Defra.UI.Tests.Tools
                         throw new Exception("PDF failed to download after all retry attempts.");
 
                     // Exponential backoff
-                    int delay = attempt * 2000;
+                    int delay = attempt * 1000;
                     Console.WriteLine($"⏳ Waiting {delay}ms before retry...");
                     Thread.Sleep(delay);
                 }
@@ -217,7 +217,7 @@ namespace Defra.UI.Tests.Tools
                     if (attempt >= maxRetries)
                         throw;
 
-                    int delay = attempt * 2000;
+                    int delay = attempt * 1000;
                     Console.WriteLine($"⏳ Retrying in {delay}ms...");
                     Thread.Sleep(delay);
                 }
@@ -283,14 +283,10 @@ namespace Defra.UI.Tests.Tools
                     });
 
                 tempDriver.Navigate().GoToUrl(pdfUrl);
-                Thread.Sleep(1000);
-
                 tempDriver.WaitForElements(By.ClassName("govuk-radios__label"))
                           .ElementAt(1)?.Click();
 
                 tempDriver.FindElement(By.Id("continueReplacement")).Click();
-                Thread.Sleep(1000);
-
                 var jsonData = UserObject?.GetUser("IPAFF", userRole);
                 var userObject = new User
                 {
@@ -299,13 +295,10 @@ namespace Defra.UI.Tests.Tools
                 };
 
                 tempDriver.WaitForElement(By.Id("user_id")).SendKeys(userObject.UserName);
-                Thread.Sleep(1000);
-
                 tempDriver.FindElement(By.Id("password")).SendKeys(userObject.Credential);
-                Thread.Sleep(1000);
 
                 tempDriver.WaitForElement(By.Id("continue")).Click();
-                Thread.Sleep(5000);
+                Thread.Sleep(3000);
 
                 return downloadDirectory;
             }
