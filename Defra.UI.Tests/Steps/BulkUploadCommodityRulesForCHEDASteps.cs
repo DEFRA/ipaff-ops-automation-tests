@@ -11,7 +11,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         private readonly IObjectContainer _objectContainer;
         private readonly ScenarioContext _scenarioContext;
 
-        private IBulkUploadCommodityRulesForCHEDAPage? page =>
+        private IBulkUploadCommodityRulesForCHEDAPage? bulkUploadCommodityRulesForCHEDAPage =>
             _objectContainer.IsRegistered<IBulkUploadCommodityRulesForCHEDAPage>()
                 ? _objectContainer.Resolve<IBulkUploadCommodityRulesForCHEDAPage>()
                 : null;
@@ -25,19 +25,19 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the Bulk upload commodity rules for CHED-A page should be displayed")]
         public void ThenTheBulkUploadCommodityRulesForCHEDAPageShouldBeDisplayed()
         {
-            Assert.True(page?.IsPageLoaded(), "Bulk upload commodity rules for CHED-A page is not displayed");
+            Assert.True(bulkUploadCommodityRulesForCHEDAPage.IsPageLoaded(), "Bulk upload commodity rules for CHED-A page is not displayed");
         }
 
         [When("the user clicks the Choose file button on the CHED-A bulk upload page")]
         public void WhenTheUserClicksTheChooseFileButtonOnTheCHEDABulkUploadPage()
         {
-            page?.ClickChooseFileButton();
+            bulkUploadCommodityRulesForCHEDAPage.ClickChooseFileButton();
         }
 
         [When("the user navigates to and selects the CHED-A bulk upload file {string}")]
         public void WhenTheUserNavigatesToAndSelectsTheCHEDABulkUploadFile(string fileName)
         {
-            page?.SelectBulkUploadFile(fileName);
+            bulkUploadCommodityRulesForCHEDAPage.SelectBulkUploadFile(fileName);
             _scenarioContext["BulkUploadFileName"] = fileName;
         }
 
@@ -45,14 +45,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void ThenTheSelectedFileNameIsDisplayedWithinTheFileAddedBox()
         {
             var fileName = (string)_scenarioContext["BulkUploadFileName"];
-            Assert.True(page?.IsSelectedFileNameDisplayed(fileName),
+            Assert.True(bulkUploadCommodityRulesForCHEDAPage.IsSelectedFileNameDisplayed(fileName),
                 $"Selected file name '{fileName}' was not displayed within the File added box");
         }
 
         [When("the user clicks the Continue button on the CHED-A bulk upload page")]
         public void WhenTheUserClicksTheContinueButtonOnTheCHEDABulkUploadPage()
         {
-            page?.ClickContinueButton();
+            bulkUploadCommodityRulesForCHEDAPage.ClickContinueButton();
         }
     }
 }

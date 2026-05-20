@@ -11,7 +11,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         private readonly IObjectContainer _objectContainer;
         private readonly ScenarioContext _scenarioContext;
 
-        private IViewAllCHEDAImportCommodityRulesPage? page =>
+        private IViewAllCHEDAImportCommodityRulesPage? viewAllCHEDAImportCommodityRulesPage =>
             _objectContainer.IsRegistered<IViewAllCHEDAImportCommodityRulesPage>()
                 ? _objectContainer.Resolve<IViewAllCHEDAImportCommodityRulesPage>()
                 : null;
@@ -26,26 +26,26 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the View all CHED-A Import Commodity Rules report page should be displayed")]
         public void ThenTheViewAllCHEDAImportCommodityRulesReportPageShouldBeDisplayed()
         {
-            Assert.True(page?.IsPageLoaded(), "View all CHED-A (Import) Commodity Rules report page is not displayed");
+            Assert.True(viewAllCHEDAImportCommodityRulesPage.IsPageLoaded(), "View all CHED-A (Import) Commodity Rules report page is not displayed");
         }
 
         [Then("the View all CHED-A \\(Import\\) Commodity Rules report page should be displayed in a new browser tab")]
         public void ThenTheViewAllCHEDAImportCommodityRulesReportPageShouldBeDisplayedInANewBrowserTab()
         {
-            Assert.True(page?.SwitchToNewlyOpenedTab(), "No new browser tab found");
-            Assert.True(page?.IsPageLoaded(), "View all CHED-A (Import) Commodity Rules report page is not displayed in new tab");
+            Assert.True(viewAllCHEDAImportCommodityRulesPage.SwitchToNewlyOpenedTab(), "No new browser tab found");
+            Assert.True(viewAllCHEDAImportCommodityRulesPage.IsPageLoaded(), "View all CHED-A (Import) Commodity Rules report page is not displayed in new tab");
         }
 
         [When("the user scrolls to the bottom of the CHED-A rules report page")]
         public void WhenTheUserScrollsToTheBottomOfTheCHEDARulesReportPage()
         {
-            page?.ScrollToBottom();
+            viewAllCHEDAImportCommodityRulesPage.ScrollToBottom();
         }
 
         [Then("the count of CHED-A rules is recorded as {string}")]
         public void ThenTheCountOfCHEDARulesIsRecordedAs(string key)
         {
-            var count = page!.GetTotalRuleCount();
+            var count = viewAllCHEDAImportCommodityRulesPage!.GetTotalRuleCount();
             _scenarioContext[key] = count;
             Assert.Greater(count, 0, $"Recorded rule count for '{key}' is 0");
         }
@@ -54,7 +54,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void ThenTheCountOfCHEDARulesShouldBeMoreThan(int delta, string key)
         {
             var initial = (int)_scenarioContext[key];
-            var actual = page!.GetTotalRuleCount();
+            var actual = viewAllCHEDAImportCommodityRulesPage!.GetTotalRuleCount();
             Assert.AreEqual(initial + delta, actual,
                 $"Expected rule count to be {initial + delta} (initial '{key}'={initial} + {delta}) but was {actual}");
         }
@@ -62,13 +62,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user enters {string} in the CHED-A rules search field")]
         public void WhenTheUserEntersInTheCHEDARulesSearchField(string text)
         {
-            page?.EnterSearchText(text);
+            viewAllCHEDAImportCommodityRulesPage.EnterSearchText(text);
         }
 
         [Then("the top CHED-A rule row should match the following details")]
         public void ThenTheTopCHEDARuleRowShouldMatchTheFollowingDetails(Table table)
         {
-            var actual = page!.GetTopRowDetails();
+            var actual = viewAllCHEDAImportCommodityRulesPage!.GetTopRowDetails();
             foreach (var row in table.Rows)
             {
                 var field = row["Field"];
@@ -82,7 +82,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the top CHED-A rule row should have Start date as today's date")]
         public void ThenTheTopCHEDARuleRowShouldHaveStartDateAsTodaysDate()
         {
-            var actual = page!.GetTopRowDetails();
+            var actual = viewAllCHEDAImportCommodityRulesPage!.GetTopRowDetails();
             Assert.True(actual.ContainsKey("Start date"), "Field 'Start date' not found in top row");
             var expected = DateTime.Now.ToString("dd/MM/yyyy");
             Assert.AreEqual(expected, actual["Start date"],
@@ -92,7 +92,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the user records the Id of the top CHED-A rule row as {string}")]
         public void ThenTheUserRecordsTheIdOfTheTopCHEDARuleRowAs(string key)
         {
-            var id = page!.GetTopRowId();
+            var id = viewAllCHEDAImportCommodityRulesPage!.GetTopRowId();
             Assert.IsNotEmpty(id, "Top row Id is empty");
             _scenarioContext[key] = id;
         }

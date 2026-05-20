@@ -11,7 +11,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         private readonly IObjectContainer _objectContainer;
         private readonly ScenarioContext _scenarioContext;
 
-        private ICheckAndSubmitCommodityRulesForCHEDAPage? page =>
+        private ICheckAndSubmitCommodityRulesForCHEDAPage? checkAndSubmitCommodityRulesForCHEDAPage =>
             _objectContainer.IsRegistered<ICheckAndSubmitCommodityRulesForCHEDAPage>()
                 ? _objectContainer.Resolve<ICheckAndSubmitCommodityRulesForCHEDAPage>()
                 : null;
@@ -25,8 +25,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the Check and submit commodity rules for CHED-A page is displayed with the following upload details")]
         public void ThenTheCheckAndSubmitCommodityRulesForCHEDAPageIsDisplayedWithTheFollowingUploadDetails(Table table)
         {
-            Assert.True(page?.IsPageLoaded(), "Check and submit commodity rules for CHED-A page is not displayed");
-            var actual = page!.GetSummaryDetails();
+            Assert.True(checkAndSubmitCommodityRulesForCHEDAPage.IsPageLoaded(), "Check and submit commodity rules for CHED-A page is not displayed");
+            var actual = checkAndSubmitCommodityRulesForCHEDAPage!.GetSummaryDetails();
             foreach (var row in table.Rows)
             {
                 var field = row["Field"];
@@ -41,7 +41,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void ThenTheCheckAndSubmitCommodityRulesForCHEDAPageShouldShowExistingRulesEqualTo(string key)
         {
             var expected = (int)_scenarioContext[key];
-            var actual = page!.GetSummaryFieldAsInt("Existing rules");
+            var actual = checkAndSubmitCommodityRulesForCHEDAPage!.GetSummaryFieldAsInt("Existing rules");
             Assert.AreEqual(expected, actual,
                 $"Expected Existing rules to equal '{key}'={expected} but was {actual}");
         }
@@ -49,7 +49,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user clicks the Confirm and submit rules button on the CHED-A page")]
         public void WhenTheUserClicksTheConfirmAndSubmitRulesButtonOnTheCHEDAPage()
         {
-            page?.ClickConfirmAndSubmitRulesButton();
+            checkAndSubmitCommodityRulesForCHEDAPage.ClickConfirmAndSubmitRulesButton();
         }
     }
 }

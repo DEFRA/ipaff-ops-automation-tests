@@ -11,7 +11,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         private readonly IObjectContainer _objectContainer;
         private readonly ScenarioContext _scenarioContext;
 
-        private ICommodityRulesStatusForCHEDAPage? page =>
+        private ICommodityRulesStatusForCHEDAPage? commodityRulesStatusForCHEDAPage =>
             _objectContainer.IsRegistered<ICommodityRulesStatusForCHEDAPage>()
                 ? _objectContainer.Resolve<ICommodityRulesStatusForCHEDAPage>()
                 : null;
@@ -25,8 +25,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the Commodity rules status for CHED-A page is displayed with the following upload details")]
         public void ThenTheCommodityRulesStatusForCHEDAPageIsDisplayedWithTheFollowingUploadDetails(Table table)
         {
-            Assert.True(page?.IsPageLoaded(), "Commodity rules status for CHED-A page is not displayed");
-            var actual = page!.GetSummaryDetails();
+            Assert.True(commodityRulesStatusForCHEDAPage.IsPageLoaded(), "Commodity rules status for CHED-A page is not displayed");
+            var actual = commodityRulesStatusForCHEDAPage.GetSummaryDetails();
             foreach (var row in table.Rows)
             {
                 var field = row["Field"];
@@ -41,7 +41,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void ThenTheCommodityRulesStatusForCHEDAPageShouldShowExistingRulesEqualTo(string key)
         {
             var expected = (int)_scenarioContext[key];
-            var actual = page!.GetSummaryFieldAsInt("Existing rules");
+            var actual = commodityRulesStatusForCHEDAPage.GetSummaryFieldAsInt("Existing rules");
             Assert.AreEqual(expected, actual,
                 $"Expected Existing rules to equal '{key}'={expected} but was {actual}");
         }
@@ -49,7 +49,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user clicks the View all CHED-A imports commodity rules link")]
         public void WhenTheUserClicksTheViewAllCHEDAImportsCommodityRulesLink()
         {
-            page?.ClickViewAllCHEDAImportsCommodityRulesLink();
+            commodityRulesStatusForCHEDAPage.ClickViewAllCHEDAImportsCommodityRulesLink();
         }
     }
 }
