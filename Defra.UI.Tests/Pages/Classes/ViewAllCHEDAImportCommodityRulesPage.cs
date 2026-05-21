@@ -25,6 +25,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement infoLabel => _driver.FindElement(By.XPath("//div[contains(@class,'dataTables_info')]"));
         private IWebElement firstRow => _driver.FindElement(By.XPath("//table[contains(@class,'dt-instance-required')]/tbody/tr[1]"));
         private By firstRowCellsBy => By.XPath("./td[contains(@class,'govuk-table__cell')]");
+        private IWebElement RemoveRuleLink(string ruleId) => _driver.WaitForElement(By.XPath($"//a[contains(@href,'/Rules/Commodity/CHEDA/Remove?ruleId={ruleId}')]"));
+        private By RemoveRuleLinkBy(string ruleId) => By.XPath($"//a[contains(@href,'/Rules/Commodity/CHEDA/Remove?ruleId={ruleId}')]");
         #endregion
 
         public ViewAllCHEDAImportCommodityRulesPage(IObjectContainer container)
@@ -82,6 +84,21 @@ namespace Defra.UI.Tests.Pages.Classes
                 return true;
             }
             return false;
+        }
+
+        public void ClickRemoveRuleLinkForRuleId(string ruleId)
+        {
+            var removeLink = RemoveRuleLink(ruleId);
+            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView({block: 'center'});", removeLink);
+            Thread.Sleep(300); // allow scroll to settle before click
+            removeLink.Click();
+            Thread.Sleep(2000); // allow page to reload after removal
+        }
+
+        public bool IsRuleIdPresent(string ruleId)
+        {
+            var elements = _driver.FindElements(RemoveRuleLinkBy(ruleId));
+            return elements.Count > 0;
         }
     }
 }

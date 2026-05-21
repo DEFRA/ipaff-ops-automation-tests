@@ -59,6 +59,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 $"Expected rule count to be {initial + delta} (initial '{key}'={initial} + {delta}) but was {actual}");
         }
 
+        [Then("the count of CHED-A rules should be {int} less than {string}")]
+        public void ThenTheCountOfCHEDARulesShouldBeLessThan(int delta, string key)
+        {
+            var initial = (int)_scenarioContext[key];
+            var actual = viewAllCHEDAImportCommodityRulesPage!.GetTotalRuleCount();
+            Assert.AreEqual(initial - delta, actual,
+                $"Expected rule count to be {initial - delta} (initial '{key}'={initial} - {delta}) but was {actual}");
+        }
+
         [When("the user enters {string} in the CHED-A rules search field")]
         public void WhenTheUserEntersInTheCHEDARulesSearchField(string text)
         {
@@ -95,6 +104,23 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var id = viewAllCHEDAImportCommodityRulesPage!.GetTopRowId();
             Assert.IsNotEmpty(id, "Top row Id is empty");
             _scenarioContext[key] = id;
+        }
+
+        [When("the user clicks the Remove rule link for CHED-A rule Id recorded as {string}")]
+        public void WhenTheUserClicksTheRemoveRuleLinkForCHEDARuleIdRecordedAs(string contextKey)
+        {
+            var ruleId = _scenarioContext.Get<string>(contextKey);
+            viewAllCHEDAImportCommodityRulesPage?.ClickRemoveRuleLinkForRuleId(ruleId);
+        }
+
+        [Then("the CHED-A rule Id recorded as {string} should no longer be present in the rules table")]
+        public void ThenTheCHEDARuleIdRecordedAsShouldNoLongerBePresentInTheRulesTable(string contextKey)
+        {
+            Assert.True(viewAllCHEDAImportCommodityRulesPage?.IsPageLoaded(),
+                "CHED-A rules page has not fully loaded after removal");
+            var ruleId = _scenarioContext.Get<string>(contextKey);
+            Assert.False(viewAllCHEDAImportCommodityRulesPage!.IsRuleIdPresent(ruleId),
+                $"Rule Id '{ruleId}' (from '{contextKey}') is still present in the rules table after removal");
         }
     }
 }

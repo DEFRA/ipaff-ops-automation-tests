@@ -741,3 +741,24 @@ Scenario: Bulk upload initial load for CHEDA - SPS-9427
 	And the user copies the updated bulk update CSV back to the source data directory
 	And 'Iteration_5' is complete
 	# ---------- Iteration 5: Complete ----------
+
+Scenario: Bulk upload update existing rules for CHEDA - SPS-9428
+	# Delete the 5 rules created by the initial bulk upload
+	When the user clicks the 'Reports' link from the Risk Engine header menu
+	Then the Risk Engine Reports page should be displayed
+	When the user clicks the CHED-A reports link
+	Then the CHED-A reports page should be displayed
+	When the user clicks the Imports commodity rules report link
+	Then the View all CHED-A (Import) Commodity Rules report page should be displayed
+	When the user clicks the Remove rule link for CHED-A rule Id recorded as 'Iteration_1_RuleId'
+	Then the CHED-A rule Id recorded as 'Iteration_1_RuleId' should no longer be present in the rules table
+	When the user clicks the Remove rule link for CHED-A rule Id recorded as 'Iteration_2_RuleId'
+	Then the CHED-A rule Id recorded as 'Iteration_2_RuleId' should no longer be present in the rules table
+	When the user clicks the Remove rule link for CHED-A rule Id recorded as 'Iteration_3_RuleId'
+	Then the CHED-A rule Id recorded as 'Iteration_3_RuleId' should no longer be present in the rules table
+	When the user clicks the Remove rule link for CHED-A rule Id recorded as 'Iteration_4_RuleId'
+	Then the CHED-A rule Id recorded as 'Iteration_4_RuleId' should no longer be present in the rules table
+	When the user clicks the Remove rule link for CHED-A rule Id recorded as 'Iteration_5_RuleId'
+	Then the CHED-A rule Id recorded as 'Iteration_5_RuleId' should no longer be present in the rules table
+	When the user scrolls to the bottom of the CHED-A rules report page
+	Then the count of CHED-A rules should be 5 less than 'InitialRuleCount'

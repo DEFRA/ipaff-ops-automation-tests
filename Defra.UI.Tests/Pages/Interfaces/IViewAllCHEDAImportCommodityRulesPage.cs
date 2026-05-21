@@ -9,5 +9,7 @@
         IDictionary<string, string> GetTopRowDetails();
         string GetTopRowId();
         bool SwitchToNewlyOpenedTab();
+        void ClickRemoveRuleLinkForRuleId(string ruleId);
+        bool IsRuleIdPresent(string ruleId);
     }
 }
