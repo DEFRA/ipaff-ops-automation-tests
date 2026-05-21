@@ -1068,20 +1068,20 @@ Scenario: Bulk upload update existing rules for CHEDA - SPS-9428
 	Then the View all CHED-A (Import) Commodity Rules report page should be displayed
 	When the user enters '0101' in the CHED-A rules search field
 	Then the top CHED-A rule row should match the following details
-		| Field               | Value                                                                                                                                    |
-		| Description         | Live horses, asses, mules and hinnies                                                                                                    |
-		| Commodity code      | 0101                                                                                                                                     |
-		| Rate %              | 0                                                                                                                                        |
-		| Previous rate %     | 0                                                                                                                                        |
-		| Permanent           | Yes                                                                                                                                      |
-		| End date            |                                                                                                                                          |
-		| Countries           | None                                                                                                                                     |
-		| Country groups      | Third Countries                                                                                                                          |
-		| Country exceptions  | Montserrat                                                                                                                               |
-		| Certified For       | Fattening, Registered, Pets                                                                                                              |
-		| Purpose             | Breeding, Slaughter, Transit, Re-entry                                                                                                   |
+		| Field               | Value                                                                                                                                                            |
+		| Description         | Live horses, asses, mules and hinnies                                                                                                                            |
+		| Commodity code      | 0101                                                                                                                                                             |
+		| Rate %              | 0                                                                                                                                                                |
+		| Previous rate %     | 0                                                                                                                                                                |
+		| Permanent           | Yes                                                                                                                                                              |
+		| End date            |                                                                                                                                                                  |
+		| Countries           | None                                                                                                                                                             |
+		| Country groups      | Third Countries                                                                                                                                                  |
+		| Country exceptions  | Montserrat                                                                                                                                                       |
+		| Certified For       | Fattening, Registered, Pets                                                                                                                                      |
+		| Purpose             | Breeding, Slaughter, Transit, Re-entry                                                                                                                           |
 		| Border Control Post | Heathrow Airport - Airpets Limited (animals) - GBLHR022, Heathrow Airport - Animal Aircare Ltd (animals) - GBLHR067, Heathrow Airport - HARC (animals) - GBLHR4A |
-		| Reason              |                                                                                                                                          |
+		| Reason              |                                                                                                                                                                  |
 	And the top CHED-A rule row should have Start date as today's date
 	And the user records the Id of the top CHED-A rule row as 'Iteration_3_RuleId'
 	# Submit a matching CHED-A notification in IPAFFS (Australia / 0101 / Slaughter / GBLHR4A)
@@ -1212,7 +1212,7 @@ Scenario: Bulk upload update existing rules for CHEDA - SPS-9428
 		| Previous rate %     | 99                         |
 		| Permanent           | Yes                        |
 		| End date            |                            |
-		| Countries           | Togo, Djibouti, Germany    |
+		| Countries           | Djibouti, Germany, Togo    |
 		| Country groups      | None                       |
 		| Country exceptions  | None                       |
 		| Certified For       | All                        |

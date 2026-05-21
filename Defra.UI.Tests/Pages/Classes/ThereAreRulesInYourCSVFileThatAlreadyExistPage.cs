@@ -11,7 +11,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
 
         #region Page Objects
-        private IWebElement notificationBannerHeading => _driver.WaitForElement(By.XPath("//div[contains(@class,'govuk-notification-banner')]//h2[contains(@class,'govuk-notification-banner__heading')]"), true);
+        private IWebElement notificationBannerHeading => _driver.WaitForElement(By.XPath("//div[contains(@class,'govuk-notification-banner')]//h2[contains(@class,'govuk-notification-banner__heading') and normalize-space()='There are rules in your CSV file that already exist']"), true);
         private IWebElement yesRadioButton => _driver.WaitForElement(By.Id("replacerules"));
         private IWebElement continueButton => _driver.WaitForElement(By.XPath("//button[@type='submit' and normalize-space()='Continue']"));
         #endregion
