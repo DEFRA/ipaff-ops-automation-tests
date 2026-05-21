@@ -298,7 +298,7 @@ namespace Defra.UI.Tests.Tools
                 tempDriver.FindElement(By.Id("password")).SendKeys(userObject.Credential);
 
                 tempDriver.WaitForElement(By.Id("continue")).Click();
-                Thread.Sleep(3000);
+                Thread.Sleep(5000);
 
                 return downloadDirectory;
             }
