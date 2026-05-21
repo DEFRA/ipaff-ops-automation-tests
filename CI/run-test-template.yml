@@ -163,7 +163,7 @@ jobs:
     - powershell: |
          
             $projectDllPath = "$(System.DefaultWorkingDirectory)/Defra.UI.Tests/Defra.UI.Tests.dll"
-            $maxRetries = 3
+            $maxRetries = 0
   
             $resultsDir = "TestResults"
             $attempt = 0
