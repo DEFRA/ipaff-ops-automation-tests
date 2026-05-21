@@ -68,6 +68,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 $"Expected rule count to be {initial - delta} (initial '{key}'={initial} - {delta}) but was {actual}");
         }
 
+        [Then("the count of CHED-A rules should equal the recorded {string}")]
+        public void ThenTheCountOfCHEDARulesShouldEqualTheRecorded(string key)
+        {
+            var expected = (int)_scenarioContext[key];
+            var actual = viewAllCHEDAImportCommodityRulesPage!.GetTotalRuleCount();
+            Assert.AreEqual(expected, actual,
+                $"Expected rule count to equal '{key}'={expected} but was {actual}");
+        }
+
         [When("the user enters {string} in the CHED-A rules search field")]
         public void WhenTheUserEntersInTheCHEDARulesSearchField(string text)
         {

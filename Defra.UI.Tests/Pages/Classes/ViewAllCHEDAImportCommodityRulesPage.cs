@@ -36,14 +36,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool IsPageLoaded()
         {
-            try
-            {
-                return pageTitle.Text.Trim().Equals("View all CHED-A (Import) Commodity Rules");
-            }
-            catch (NoSuchElementException)
-            {
-                return false;
-            }
+            return pageTitle.Text.Trim().Equals("View all CHED-A (Import) Commodity Rules");
         }
 
         public void ScrollToBottom() =>

@@ -43,15 +43,8 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool IsPageLoaded()
         {
-            try
-            {
-                return pageTitle.Text.Trim().Equals("View all PHSI (Import) Commodity Rules")
-                    && searchInput.Displayed;
-            }
-            catch (NoSuchElementException)
-            {
-                return false;
-            }
+            return pageTitle.Text.Trim().Equals("View all PHSI (Import) Commodity Rules")
+                && searchInput.Displayed;
         }
 
         public void ScrollToBottom() =>
