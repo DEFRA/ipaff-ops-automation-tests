@@ -782,7 +782,7 @@ Scenario: Bulk upload update existing rules for CHEDA - SPS-9428
 		| Add new rules          | 0     |
 	And the Commodity rules status for CHED-A page should show Existing rules equal to 'InitialRuleCount'
 	When the user clicks the View all CHED-A imports commodity rules link
-	Then the View all CHED-A (Import) Commodity Rules report page should be displayed in a new browser tab
+	Then the View all CHED-A (Import) Commodity Rules report page should be displayed
 	When the user scrolls to the bottom of the CHED-A rules report page
 	Then the count of CHED-A rules should equal the recorded 'InitialRuleCount'
 	When the user enters '*' in the CHED-A rules search field
@@ -1078,8 +1078,8 @@ Scenario: Bulk upload update existing rules for CHEDA - SPS-9428
 		| Countries           | None                                                                                                                                                             |
 		| Country groups      | Third Countries                                                                                                                                                  |
 		| Country exceptions  | Montserrat                                                                                                                                                       |
-		| Certified For       | Fattening, Registered, Pets                                                                                                                                      |
-		| Purpose             | Breeding, Slaughter, Transit, Re-entry                                                                                                                           |
+		| Certified For       | Pets, Fattening, Registered                                                                                                                                      |
+		| Purpose             | Breeding, Re-entry, Transit, Slaughter                                                                                                                           |
 		| Border Control Post | Heathrow Airport - Airpets Limited (animals) - GBLHR022, Heathrow Airport - Animal Aircare Ltd (animals) - GBLHR067, Heathrow Airport - HARC (animals) - GBLHR4A |
 		| Reason              |                                                                                                                                                                  |
 	And the top CHED-A rule row should have Start date as today's date
