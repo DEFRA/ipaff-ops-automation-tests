@@ -1,6 +1,6 @@
-using UglyToad.PdfPig;
-using UglyToad.PdfPig.Content;
-using UglyToad.PdfPig.Core;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Defra.UI.Tests.Tools.PDFProcessor.Extractors
 {
@@ -133,6 +133,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Extractors
 
             ExtractIi6ScopedCheckboxes(words, paths, tickPositions, checkboxes);
             ExtractIi16ScopedCheckboxes(words, paths, tickPositions, checkboxes);
+            ExtractI16ScopedCheckboxes(words, paths, tickPositions, checkboxes);
             ExtractIii5ScopedCheckboxes(words, paths, tickPositions, checkboxes);
         }
 
@@ -212,35 +213,91 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Extractors
             var anchorX = labWord.BoundingBox.Left;
             var anchorY = labWord.BoundingBox.Bottom;
 
+            var rowTicks = tickPositions
+                .Where(t => Math.Abs(t.Item2 - anchorY) <= 10 && t.Item1 > anchorX - 40)
+                .OrderBy(t => t.Item1)
+                .ToList();
+
+
             // Section-level Yes / No
             var sectionClaimedBoxes = new HashSet<PdfRectangle>();
+            PdfRectangle? yesBounds = null;
+            PdfRectangle? noBounds = null;
             foreach (var label in new[] { "Yes", "No" })
             {
-                var bounds = FindLabelBoundsNearestTo(words, label, anchorX, anchorY, maxDistance: 200, belowAnchorOnly: true);
+                var bounds = words
+                    .Where(w => w.Text.Equals(label, StringComparison.OrdinalIgnoreCase) &&
+                                w.BoundingBox.Left > anchorX + 40 &&
+                                Math.Abs(w.BoundingBox.Bottom - anchorY) <= 8)
+                    .OrderBy(w => Math.Abs(w.BoundingBox.Left - anchorX))
+                    .Select(w => (PdfRectangle?)w.BoundingBox)
+                    .FirstOrDefault();
+
+                bounds ??= FindLabelBoundsNearestTo(words, label, anchorX + 80, anchorY, maxDistance: 160, belowAnchorOnly: true);
                 if (bounds == null) continue;
-                checkboxes[$"II.6::{label}"] = DetectCheckboxState(bounds.Value, paths, words, tickPositions, sectionClaimedBoxes);
+
+                if (label.Equals("Yes", StringComparison.OrdinalIgnoreCase)) yesBounds = bounds.Value;
+                if (label.Equals("No", StringComparison.OrdinalIgnoreCase)) noBounds = bounds.Value;
+
+                var state = DetectSquareCheckboxStateNearLabel(bounds.Value, paths, words, tickPositions, sectionClaimedBoxes);
+                checkboxes[$"II.6::{label}"] = state;
             }
 
-            // Find test-name dot-words (e.g. ".AMINOGLYCOSIDE") below anchor, top-down order
+            if (checkboxes.TryGetValue("II.6::Yes", out var ii6YesState) &&
+                checkboxes.TryGetValue("II.6::No", out var ii6NoState) &&
+                ii6YesState == "true" && ii6NoState == "true")
+            {
+                if (yesBounds.HasValue && noBounds.HasValue)
+                {
+                    var yesTight = CheckTickNearBoundsTight(yesBounds.Value, tickPositions);
+                    var noTight = CheckTickNearBoundsTight(noBounds.Value, tickPositions);
+                    if (yesTight == "true" && noTight == "false")
+                    {
+                        checkboxes["II.6::No"] = "false";
+                    }
+                    else if (yesTight == "false" && noTight == "true")
+                    {
+                        checkboxes["II.6::Yes"] = "false";
+                    }
+                    else if (rowTicks.Count == 1)
+                    {
+                        checkboxes["II.6::Yes"] = "true";
+                        checkboxes["II.6::No"] = "false";
+                    }
+                }
+                else if (rowTicks.Count == 1)
+                {
+                    checkboxes["II.6::Yes"] = "true";
+                    checkboxes["II.6::No"] = "false";
+                }
+            }
+
+            // Find test-name dot-words below II.6 and above II.12.
+            var ii12Anchor = words.FirstOrDefault(w => w.Text.StartsWith("II.12", StringComparison.OrdinalIgnoreCase));
+            var lowerLimitY = ii12Anchor != null ? ii12Anchor.BoundingBox.Bottom + 3 : double.MinValue;
+
             var testDotWords = words
-                .Where(w => w.Text.Length > 1 && w.Text[0] == '.' && char.IsUpper(w.Text[1])
-                            && w.BoundingBox.Bottom < anchorY)
+                .Where(w => w.Text.Length > 1 && w.Text[0] == '.' && char.IsUpper(w.Text[1]) &&
+                            w.BoundingBox.Bottom < anchorY &&
+                            w.BoundingBox.Bottom > lowerLimitY)
                 .OrderByDescending(w => w.BoundingBox.Bottom)
                 .ToList();
 
             if (testDotWords.Count == 0) return;
 
-            var wordsBelow = words.Where(w => w.BoundingBox.Bottom < anchorY).ToList();
+            var wordsBelow = words
+                .Where(w => w.BoundingBox.Bottom < anchorY && w.BoundingBox.Bottom > lowerLimitY)
+                .ToList();
 
-            // Find first occurrence of a (possibly multi-word) label within a Y band
             PdfRectangle? FindLabelInBand(string label, double bandTop, double bandBottom)
             {
                 var parts = label.Split(' ', StringSplitOptions.RemoveEmptyEntries);
                 var lines = wordsBelow
-                    .Where(w => w.BoundingBox.Bottom <= bandTop && w.BoundingBox.Bottom >= bandBottom)
+                    .Where(w => w.BoundingBox.Bottom <= bandTop && w.BoundingBox.Bottom >= bandBottom && w.BoundingBox.Left > anchorX + 15)
                     .GroupBy(w => Math.Round(w.BoundingBox.Bottom, 0))
                     .Select(g => g.OrderBy(w => w.BoundingBox.Left).ToList())
                     .ToList();
+
                 foreach (var line in lines)
                 {
                     for (int i = 0; i <= line.Count - parts.Length; i++)
@@ -249,8 +306,12 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Extractors
                         for (int j = 0; j < parts.Length; j++)
                         {
                             if (!line[i + j].Text.Equals(parts[j], StringComparison.OrdinalIgnoreCase))
-                            { match = false; break; }
+                            {
+                                match = false;
+                                break;
+                            }
                         }
+
                         if (match)
                         {
                             var s = line[i].BoundingBox;
@@ -259,58 +320,44 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Extractors
                         }
                     }
                 }
+
                 return null;
             }
 
-            // Find "Satisfactory" not preceded by "Not" within a Y band
-            // Prefer the occurrence on the same line as "Pending" / "Results" (right-side result row)
             PdfRectangle? FindStandaloneSatInBand(double bandTop, double bandBottom)
             {
                 var lines = wordsBelow
-                    .Where(w => w.BoundingBox.Bottom <= bandTop && w.BoundingBox.Bottom >= bandBottom)
+                    .Where(w => w.BoundingBox.Bottom <= bandTop && w.BoundingBox.Bottom >= bandBottom && w.BoundingBox.Left > anchorX + 15)
                     .GroupBy(w => Math.Round(w.BoundingBox.Bottom, 0))
                     .Select(g => g.OrderBy(w => w.BoundingBox.Left).ToList())
-                    .OrderBy(g => g.First().BoundingBox.Bottom) // ascending Y → right-side result row first
                     .ToList();
+
                 foreach (var line in lines)
                 {
-                    for (int si = 0; si < line.Count; si++)
+                    for (int i = 0; i < line.Count; i++)
                     {
-                        if (!line[si].Text.Equals("Satisfactory", StringComparison.OrdinalIgnoreCase)) continue;
-                        bool precededByNot = si > 0 && line[si - 1].Text.Equals("Not", StringComparison.OrdinalIgnoreCase);
-                        if (!precededByNot) return line[si].BoundingBox;
+                        if (!line[i].Text.Equals("Satisfactory", StringComparison.OrdinalIgnoreCase)) continue;
+                        bool precededByNot = i > 0 && line[i - 1].Text.Equals("Not", StringComparison.OrdinalIgnoreCase);
+                        if (!precededByNot) return line[i].BoundingBox;
                     }
                 }
-                return null;
-            }
 
-            // Unchecked checkboxes in this form have no box paths; only checked ones carry a
-            // tick-mark XObject. Use tight X proximity so adjacent-column ticks are not captured.
-            string CheckTickNearLabel(PdfRectangle labelBounds)
-            {
-                var searchLeft   = labelBounds.Left  - 10;
-                var searchRight  = labelBounds.Right + 30;
-                var searchBottom = labelBounds.Bottom - 10;
-                var searchTop    = labelBounds.Top    + 10;
-                return tickPositions.Any(t =>
-                    t.Item1 >= searchLeft  && t.Item1 <= searchRight &&
-                    t.Item2 >= searchBottom && t.Item2 <= searchTop)
-                    ? "true" : "false";
+                return null;
             }
 
             for (int i = 0; i < testDotWords.Count; i++)
             {
                 var testWord = testDotWords[i];
-                var bandTop = testWord.BoundingBox.Bottom;
+                var bandTop = testWord.BoundingBox.Bottom + 2;
                 var bandBottom = (i + 1 < testDotWords.Count)
-                    ? testDotWords[i + 1].BoundingBox.Bottom
-                    : bandTop - 60;
+                    ? testDotWords[i + 1].BoundingBox.Bottom + 2
+                    : lowerLimitY;
 
-                // Build full test name: dot-word plus consecutive uppercase words on same line
                 var sameLine = words
                     .Where(w => Math.Abs(w.BoundingBox.Bottom - testWord.BoundingBox.Bottom) < 3)
                     .OrderBy(w => w.BoundingBox.Left)
                     .ToList();
+
                 var dotIdx = sameLine.FindIndex(w => w.Text == testWord.Text);
                 var nameParts = new List<string>();
                 if (dotIdx >= 0)
@@ -324,26 +371,129 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Extractors
                             break;
                     }
                 }
+
                 var testName = string.Join(" ", nameParts).Trim();
                 if (string.IsNullOrWhiteSpace(testName)) continue;
 
                 var prefix = $"II.6::row{i}";
                 checkboxes[$"{prefix}::TestName"] = testName;
 
-                foreach (var (lbl, key) in new[] { ("Random", "Random"), ("Suspicion", "Suspicion"), ("Pending", "Pending") })
+                var rowStates = new Dictionary<string, string>
                 {
-                    var b = FindLabelInBand(lbl, bandTop, bandBottom);
-                    checkboxes[$"{prefix}::{key}"] = b.HasValue ? CheckTickNearLabel(b.Value) : "false";
+                    ["Random"] = "false",
+                    ["Suspicion"] = "false",
+                    ["Emergency measures"] = "false",
+                    ["Results"] = "false",
+                    ["Pending"] = "false",
+                    ["Satisfactory"] = "false",
+                    ["Not Satisfactory"] = "false"
+                };
+
+                var randomBounds = FindLabelInBand("Random", bandTop, bandBottom);
+                var suspicionBounds = FindLabelInBand("Suspicion", bandTop, bandBottom);
+                var emergencyBounds = FindLabelInBand("Emergency measures", bandTop, bandBottom);
+                var resultsBounds = FindLabelInBand("Results", bandTop, bandBottom);
+                var pendingBounds = FindLabelInBand("Pending", bandTop, bandBottom);
+                var satBounds = FindStandaloneSatInBand(bandTop, bandBottom);
+                var notSatBounds = FindLabelInBand("Not Satisfactory", bandTop, bandBottom);
+
+                // 1) Geometric checkbox detection from square boxes near labels.
+                var rowClaimedBoxes = new HashSet<PdfRectangle>();
+
+                if (randomBounds.HasValue)
+                    rowStates["Random"] = DetectSquareCheckboxStateNearLabel(randomBounds.Value, paths, words, tickPositions, rowClaimedBoxes);
+                if (suspicionBounds.HasValue)
+                    rowStates["Suspicion"] = DetectSquareCheckboxStateNearLabel(suspicionBounds.Value, paths, words, tickPositions, rowClaimedBoxes);
+                if (emergencyBounds.HasValue)
+                    rowStates["Emergency measures"] = DetectSquareCheckboxStateNearLabel(emergencyBounds.Value, paths, words, tickPositions, rowClaimedBoxes);
+                if (resultsBounds.HasValue)
+                    rowStates["Results"] = DetectSquareCheckboxStateNearLabel(resultsBounds.Value, paths, words, tickPositions, rowClaimedBoxes);
+                if (pendingBounds.HasValue)
+                    rowStates["Pending"] = DetectSquareCheckboxStateNearLabel(pendingBounds.Value, paths, words, tickPositions, rowClaimedBoxes);
+                if (satBounds.HasValue)
+                    rowStates["Satisfactory"] = DetectSquareCheckboxStateNearLabel(satBounds.Value, paths, words, tickPositions, rowClaimedBoxes);
+                if (notSatBounds.HasValue)
+                    rowStates["Not Satisfactory"] = DetectSquareCheckboxStateNearLabel(notSatBounds.Value, paths, words, tickPositions, rowClaimedBoxes);
+
+                // 2) Fallback: per-line nearest-tick mapping when no box path is exposed for this template.
+                var row1Columns = new List<(string key, PdfRectangle rect)>();
+                if (randomBounds.HasValue) row1Columns.Add(("Random", randomBounds.Value));
+                if (suspicionBounds.HasValue) row1Columns.Add(("Suspicion", suspicionBounds.Value));
+                if (emergencyBounds.HasValue) row1Columns.Add(("Emergency measures", emergencyBounds.Value));
+
+                var row2Columns = new List<(string key, PdfRectangle rect)>();
+                if (resultsBounds.HasValue) row2Columns.Add(("Results", resultsBounds.Value));
+                if (pendingBounds.HasValue) row2Columns.Add(("Pending", pendingBounds.Value));
+                if (satBounds.HasValue) row2Columns.Add(("Satisfactory", satBounds.Value));
+                if (notSatBounds.HasValue) row2Columns.Add(("Not Satisfactory", notSatBounds.Value));
+
+                void MarkNearestForLine(List<(string key, PdfRectangle rect)> columns)
+                {
+                    if (columns.Count == 0) return;
+                    var lineY = columns.Average(c => (c.rect.Bottom + c.rect.Top) / 2.0);
+                    var lineTicks = tickPositions
+                        .Where(t => t.Item2 >= lineY - 8 && t.Item2 <= lineY + 8 && t.Item1 > anchorX + 20)
+                        .ToList();
+
+                    var remaining = new List<(string key, PdfRectangle rect)>(columns);
+                    foreach (var t in lineTicks)
+                    {
+                        if (remaining.Count == 0) break;
+                        var nearest = remaining
+                            .OrderBy(c => Math.Abs(t.Item1 - ((c.rect.Left + c.rect.Right) / 2.0)))
+                            .First();
+                        rowStates[nearest.key] = "true";
+                        remaining.Remove(nearest);
+                    }
                 }
 
-                var notSatBounds = FindLabelInBand("Not Satisfactory", bandTop, bandBottom);
-                checkboxes[$"{prefix}::NotSatisfactory"] = notSatBounds.HasValue ? CheckTickNearLabel(notSatBounds.Value) : "false";
+                bool row1AllFalse = rowStates["Random"] != "true" &&
+                                    rowStates["Suspicion"] != "true" &&
+                                    rowStates["Emergency measures"] != "true";
+                if (row1AllFalse)
+                {
+                    MarkNearestForLine(row1Columns);
+                }
 
-                var satBounds = FindStandaloneSatInBand(bandTop, bandBottom);
-                checkboxes[$"{prefix}::Satisfactory"] = satBounds.HasValue ? CheckTickNearLabel(satBounds.Value) : "false";
+                bool row2AllFalse = rowStates["Results"] != "true" &&
+                                    rowStates["Pending"] != "true" &&
+                                    rowStates["Satisfactory"] != "true" &&
+                                    rowStates["Not Satisfactory"] != "true";
+                if (row2AllFalse)
+                {
+                    MarkNearestForLine(row2Columns);
+                }
 
-                var emBounds = FindLabelInBand("Emergency measures", bandTop, bandBottom);
-                checkboxes[$"{prefix}::EmergencyMeasures"] = emBounds.HasValue ? CheckTickNearLabel(emBounds.Value) : "false";
+                // 3) If both result states are on, keep the geometrically closer one.
+                if (rowStates["Satisfactory"] == "true" && rowStates["Not Satisfactory"] == "true" &&
+                    satBounds.HasValue && notSatBounds.HasValue)
+                {
+                    var row2LineY = row2Columns.Average(c => (c.rect.Bottom + c.rect.Top) / 2.0);
+                    var row2Ticks = tickPositions
+                        .Where(t => t.Item2 >= row2LineY - 8 && t.Item2 <= row2LineY + 8 && t.Item1 > anchorX + 20)
+                        .ToList();
+
+                    if (row2Ticks.Count > 0)
+                    {
+                        var satCenter = (satBounds.Value.Left + satBounds.Value.Right) / 2.0;
+                        var notSatCenter = (notSatBounds.Value.Left + notSatBounds.Value.Right) / 2.0;
+                        var satMin = row2Ticks.Min(t => Math.Abs(t.Item1 - satCenter));
+                        var notSatMin = row2Ticks.Min(t => Math.Abs(t.Item1 - notSatCenter));
+
+                        if (satMin <= notSatMin)
+                            rowStates["Not Satisfactory"] = "false";
+                        else
+                            rowStates["Satisfactory"] = "false";
+                    }
+                }
+
+                checkboxes[$"{prefix}::Random"] = rowStates["Random"];
+                checkboxes[$"{prefix}::Suspicion"] = rowStates["Suspicion"];
+                checkboxes[$"{prefix}::EmergencyMeasures"] = rowStates["Emergency measures"];
+                checkboxes[$"{prefix}::Results"] = rowStates["Results"];
+                checkboxes[$"{prefix}::Pending"] = rowStates["Pending"];
+                checkboxes[$"{prefix}::Satisfactory"] = rowStates["Satisfactory"];
+                checkboxes[$"{prefix}::NotSatisfactory"] = rowStates["Not Satisfactory"];
             }
         }
 
@@ -378,6 +528,129 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Extractors
                     var state = DetectCheckboxState(wideBounds, paths, words, tickPositions, claimedBoxes);
                     checkboxes[$"II.16::{label}"] = state;
                     break;
+                }
+            }
+        }
+
+        private void ExtractI16ScopedCheckboxes(List<Word> words, List<UglyToad.PdfPig.Graphics.PdfPath> paths, HashSet<(double, double)> tickPositions, Dictionary<string, string> checkboxes)
+        {
+            // I.16 Transport conditions: Ambient / Chilled / Frozen.
+            // Use section-anchored label matching and detect the square checkbox nearest each label.
+            var i16Anchor = words.FirstOrDefault(w => w.Text.Equals("I.16", StringComparison.OrdinalIgnoreCase))
+                         ?? words.FirstOrDefault(w => w.Text.StartsWith("I.16", StringComparison.OrdinalIgnoreCase));
+            if (i16Anchor == null)
+            {
+                return;
+            }
+
+            var anchorX = i16Anchor.BoundingBox.Left;
+            var anchorY = i16Anchor.BoundingBox.Bottom;
+            var labels = new[] { "Ambient", "Chilled", "Frozen" };
+            var claimedBoxes = new HashSet<PdfRectangle>();
+            var matchedLabelBounds = new List<(string label, PdfRectangle bounds)>();
+
+            string DetectI16LabelState(PdfRectangle labelBounds)
+            {
+                // I.16 checkboxes are immediately RIGHT of each label on this template.
+                var searchRect = new PdfRectangle(
+                    labelBounds.Right + 2,
+                    labelBounds.Bottom - 8,
+                    labelBounds.Right + 24,
+                    labelBounds.Top + 8);
+
+                var box = paths
+                    .Where(p =>
+                    {
+                        if (p.GetBoundingRectangle() is not PdfRectangle b) return false;
+
+                        foreach (var claimed in claimedBoxes)
+                        {
+                            if ((Math.Abs(b.Centroid.X - claimed.Centroid.X) < 6 && Math.Abs(b.Centroid.Y - claimed.Centroid.Y) < 6) ||
+                                Intersects(b, claimed))
+                                return false;
+                        }
+
+                        var c = b.Centroid;
+                        if (c.X < searchRect.Left || c.X > searchRect.Right ||
+                            c.Y < searchRect.Bottom || c.Y > searchRect.Top) return false;
+
+                        // For I.16, boxes can be either solid rectangles or thin line segments forming a box
+                        // Accept either: (1) solid box 6-20px, or (2) thin lines (0.5-2px width/height)
+                        var ratio = b.Width / b.Height;
+                        var isSolidBox = b.Width >= 6 && b.Width <= 20 &&
+                                        b.Height >= 6 && b.Height <= 20 &&
+                                        ratio >= 0.6 && ratio <= 1.6;
+                        var isThinLine = (b.Width < 2 && b.Height >= 8 && b.Height <= 20) ||  // vertical line
+                                        (b.Height < 2 && b.Width >= 8 && b.Width <= 20);      // horizontal line
+                        return isSolidBox || isThinLine;
+                    })
+                    .OrderBy(p =>
+                    {
+                        var b = p.GetBoundingRectangle()!.Value;
+                        var dx = b.Centroid.X - labelBounds.Right;
+                        var dy = b.Centroid.Y - (labelBounds.Bottom + labelBounds.Top) / 2.0;
+                        return dx * dx + dy * dy;
+                    })
+                    .FirstOrDefault();
+
+                if (box == null)
+                {
+                    return "false";
+                }
+
+                var boxBounds = box.GetBoundingRectangle()!.Value;
+                claimedBoxes.Add(boxBounds);
+
+                var checkedByTick = tickPositions.Any(t =>
+                    Math.Abs(t.Item1 - boxBounds.Left) <= 1.5 &&
+                    Math.Abs(t.Item2 - boxBounds.Bottom) <= 1.5);
+                return checkedByTick ? "true" : "false";
+            }
+
+            foreach (var label in labels)
+            {
+                var bounds = FindLabelBoundsNearestTo(words, label, anchorX, anchorY, maxDistance: 300, belowAnchorOnly: true);
+                var key = $"I16::{label}";
+
+                if (bounds == null)
+                {
+                    checkboxes[key] = "false";
+                    continue;
+                }
+
+                matchedLabelBounds.Add((label, bounds.Value));
+                var state = DetectI16LabelState(bounds.Value);
+                checkboxes[key] = state;
+            }
+
+            // In this template these three are mutually exclusive. If multiple are true,
+            // keep the one whose label column is geometrically closest to a tick on the same line.
+            var trueLabels = labels.Where(l => checkboxes.TryGetValue($"I16::{l}", out var v) && v == "true").ToList();
+            if (trueLabels.Count > 1)
+            {
+                var labelMap = matchedLabelBounds.ToDictionary(x => x.label, x => x.bounds);
+                var bestLabel = trueLabels[0];
+                var bestScore = double.MaxValue;
+
+                foreach (var label in trueLabels)
+                {
+                    if (!labelMap.TryGetValue(label, out var b)) continue;
+                    var centerY = (b.Bottom + b.Top) / 2.0;
+                    var centerX = b.Left - 12; // expected checkbox center is slightly left of label text
+                    var lineTicks = tickPositions.Where(t => Math.Abs(t.Item2 - centerY) <= 8).ToList();
+                    var score = lineTicks.Count > 0
+                        ? lineTicks.Min(t => Math.Abs(t.Item1 - centerX))
+                        : tickPositions.Min(t => Math.Abs(t.Item1 - centerX) + Math.Abs(t.Item2 - centerY));
+                    if (score < bestScore)
+                    {
+                        bestScore = score;
+                        bestLabel = label;
+                    }
+                }
+
+                foreach (var label in trueLabels)
+                {
+                    checkboxes[$"I16::{label}"] = label == bestLabel ? "true" : "false";
                 }
             }
         }
@@ -429,7 +702,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Extractors
             }
         }
 
-        private static string DetectCheckboxState(PdfRectangle labelBounds, List<UglyToad.PdfPig.Graphics.PdfPath> paths, List<Word> words, HashSet<(double, double)> tickPositions, HashSet<PdfRectangle> claimedBoxes = null)
+        private static string DetectCheckboxState(PdfRectangle labelBounds, List<UglyToad.PdfPig.Graphics.PdfPath> paths, List<Word> words, HashSet<(double, double)> tickPositions, HashSet<PdfRectangle>? claimedBoxes = null)
         {
             var searchRect = new PdfRectangle(
                 labelBounds.Left - 50,
@@ -508,6 +781,100 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Extractors
             });
 
             return marksInside ? "true" : "false";
+        }
+
+        private static string DetectSquareCheckboxStateNearLabel(PdfRectangle labelBounds, List<UglyToad.PdfPig.Graphics.PdfPath> paths, List<Word> words, HashSet<(double, double)> tickPositions, HashSet<PdfRectangle>? claimedBoxes = null)
+        {
+            // For Yes/No labels, the square checkbox is typically just to the left of the label.
+            var searchRect = new PdfRectangle(
+                labelBounds.Left - 40,
+                labelBounds.Bottom - 8,
+                labelBounds.Left + 10,
+                labelBounds.Top + 8);
+
+            var box = paths
+                .Where(p =>
+                {
+                    if (p.GetBoundingRectangle() is not PdfRectangle b) return false;
+
+                    if (claimedBoxes != null)
+                    {
+                        foreach (var claimed in claimedBoxes)
+                        {
+                            if (Math.Abs(b.Centroid.X - claimed.Centroid.X) < 2 && Math.Abs(b.Centroid.Y - claimed.Centroid.Y) < 2)
+                                return false;
+                        }
+                    }
+
+                    var c = b.Centroid;
+                    if (c.X < searchRect.Left || c.X > searchRect.Right ||
+                        c.Y < searchRect.Bottom || c.Y > searchRect.Top) return false;
+
+                    var ratio = b.Width / b.Height;
+                    return b.Width >= 6 && b.Width <= 20 &&
+                           b.Height >= 6 && b.Height <= 20 &&
+                           ratio >= 0.6 && ratio <= 1.6;
+                })
+                .OrderBy(p =>
+                {
+                    var b = p.GetBoundingRectangle()!.Value;
+                    var dx = b.Centroid.X - labelBounds.Left;
+                    var dy = b.Centroid.Y - (labelBounds.Bottom + labelBounds.Top) / 2.0;
+                    return dx * dx + dy * dy;
+                })
+                .FirstOrDefault();
+
+            if (box == null)
+            {
+                // Some templates place tick XObjects but do not expose a clean square vector path.
+                // In that case, use a tighter tick-position window to avoid Yes/No cross-attribution.
+                return CheckTickNearBoundsTight(labelBounds, tickPositions);
+            }
+
+            var boxBounds = box.GetBoundingRectangle()!.Value;
+            if (claimedBoxes != null)
+            {
+                claimedBoxes.Add(boxBounds);
+            }
+
+            var checkedByTick = tickPositions.Any(t =>
+                Math.Abs(t.Item1 - boxBounds.Left) <= 1.5 &&
+                Math.Abs(t.Item2 - boxBounds.Bottom) <= 1.5);
+            if (checkedByTick)
+                return "true";
+
+            var boxExpanded = new PdfRectangle(
+                boxBounds.Left - 2, boxBounds.Bottom - 2,
+                boxBounds.Right + 2, boxBounds.Top + 2);
+            var markAsText = words.Any(w =>
+            {
+                var t = w.Text.Trim();
+                return (t == "X" || t == "x" || t == "✓" || t == "✔") &&
+                       Intersects(boxExpanded, w.BoundingBox);
+            });
+            if (markAsText) return "true";
+
+            var marksInside = paths.Any(p =>
+            {
+                if (p.GetBoundingRectangle() is not PdfRectangle pb) return false;
+                return pb.Width < boxBounds.Width && pb.Height < boxBounds.Height &&
+                       Intersects(boxBounds, pb);
+            });
+
+            return marksInside ? "true" : "false";
+        }
+
+        private static string CheckTickNearBoundsTight(PdfRectangle labelBounds, HashSet<(double, double)> tickPositions)
+        {
+            var searchLeft = labelBounds.Left - 6;
+            var searchRight = labelBounds.Right + 12;
+            var searchBottom = labelBounds.Bottom - 5;
+            var searchTop = labelBounds.Top + 5;
+
+            return tickPositions.Any(t =>
+                t.Item1 >= searchLeft && t.Item1 <= searchRight &&
+                t.Item2 >= searchBottom && t.Item2 <= searchTop)
+                ? "true" : "false";
         }
 
         private PdfRectangle? FindLabelBounds(List<Word> words, string label)

@@ -1,13 +1,9 @@
 using System.Text.RegularExpressions;
 using System.Text;
-using Newtonsoft.Json;
-using UglyToad.PdfPig;
-using UglyToad.PdfPig.Content;
-using Defra.UI.Tests.Tools.PDFProcessor.Extractors;
 using Defra.UI.Tests.Tools.PDFProcessor.Models;
-using Defra.UI.Tests.Tools.PDFProcessor;
+using Defra.UI.Tests.Tools.PDFProcessor.Extractors;
 
-namespace PdfExtraction
+namespace Defra.UI.Tests.Tools.PDFProcessor
 {
     public partial class PdfToJsonConverter
     {
@@ -407,7 +403,6 @@ namespace PdfExtraction
             {
                 sectionHeader = "I.25 For-reentry";
             }
-
             if (sectionHeader.Contains("II.25", StringComparison.OrdinalIgnoreCase) && sectionHeader.Contains("BCP Reference Number", StringComparison.OrdinalIgnoreCase))
             {
                 var ii25Match = Regex.Match(
@@ -1297,6 +1292,19 @@ namespace PdfExtraction
                 }
             }
 
+            // I.16 Transport conditions: use scoped checkbox keys only (no fallback, allow multi-value)
+            if (sectionName.Contains("I.16", StringComparison.OrdinalIgnoreCase) ||
+                sectionName.Contains("I16", StringComparison.OrdinalIgnoreCase))
+            {
+                var ambient = checkboxes.TryGetValue("I16::Ambient", out var i16Ambient) ? i16Ambient : "false";
+                var chilled = checkboxes.TryGetValue("I16::Chilled", out var i16Chilled) ? i16Chilled : "false";
+                var frozen = checkboxes.TryGetValue("I16::Frozen", out var i16Frozen) ? i16Frozen : "false";
+
+                sectionData["Ambient"] = ambient;
+                sectionData["Chilled"] = chilled;
+                sectionData["Frozen"] = frozen;
+            }
+
             // I.27 Means of transport after BCP/storage: Specific Cleanup
             if (sectionName.Contains("I.27", StringComparison.OrdinalIgnoreCase))
             {
@@ -1572,15 +1580,21 @@ namespace PdfExtraction
                     var testName = GetVal("TestName");
                     if (string.IsNullOrWhiteSpace(testName)) continue;
 
+                    var satisfactory = GetVal("Satisfactory");
+                    var notSatisfactory = checkboxes.TryGetValue($"{rowPrefix}::NotSatisfactory", out var ns)
+                        ? ns
+                        : GetVal("NotSatisfactory");
+
                     testsList.Add(new Dictionary<string, object>
                     {
                         ["Test"] = testName,
-                        ["Satisfactory"] = GetVal("Satisfactory"),
                         ["Random"] = GetVal("Random"),
                         ["Suspicion"] = GetVal("Suspicion"),
                         ["EmergencyMeasures"] = GetVal("EmergencyMeasures"),
+                        ["Results"] = GetVal("Results"),
                         ["Pending"] = GetVal("Pending"),
-                        ["NotSatisfactory"] = GetVal("NotSatisfactory")
+                        ["Satisfactory"] = satisfactory,
+                        ["NotSatisfactory"] = notSatisfactory
                     });
                 }
 
