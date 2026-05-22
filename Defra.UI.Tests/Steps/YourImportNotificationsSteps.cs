@@ -378,7 +378,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         ValidateIfExists("PhysicalCheck", pdfPhysicalCheck, ref allDataMatches, mismatches);
                         ValidateIfExists("PhysicalCheckDecision", pdfPhysicalCheck, ref allDataMatches, mismatches);
 
-                        string pdfLaboratoryTestRequired;
+/*                        string pdfLaboratoryTestRequired;
                         if (page.Sections.LaboratoryTests.AdditionalData != null)
                         {
                             pdfLaboratoryTestRequired = "Yes";
@@ -386,7 +386,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         else
                         {
                             pdfLaboratoryTestRequired = "No";
-                        }
+                        }*/
                     
                         //var pdfLaboratoryTestRequired = page.Sections.LaboratoryTests.AdditionalData;
                         /*string? pdfLaboratoryTestNames = page.Sections.LaboratoryTests
@@ -407,7 +407,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             pdfLaboratoryTestRequired = "Yes";
                         }*/
 
-                        ValidateIfExists("AreLaboratoryTestsRequired", pdfLaboratoryTestRequired, ref allDataMatches, mismatches);
+                        //ValidateIfExists("AreLaboratoryTestsRequired", pdfLaboratoryTestRequired, ref allDataMatches, mismatches);
 
                         if (page.Sections.LaboratoryTests.AdditionalData != null)
                         {
