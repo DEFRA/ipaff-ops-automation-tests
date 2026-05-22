@@ -387,25 +387,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         {
                             pdfLaboratoryTestRequired = "No";
                         }*/
-                    
-                        //var pdfLaboratoryTestRequired = page.Sections.LaboratoryTests.AdditionalData;
-                        /*string? pdfLaboratoryTestNames = page.Sections.LaboratoryTests
-                        switch
-                        {
-                            { Random: "true" } => "Random",
-                            { Suspicion: "true" } => "Suspicion",
-                            { IntensifiedControls: "true" } => "IntensifiedControls",
-                            { EmergencyMeasures: "true" } => "EmergencyMeasures",
-                            _ => null
-                        };
-                        if (pdfLaboratoryTestNames == null)  
-                        {
-                            pdfLaboratoryTestRequired = "No";
-                        }
-                        else
-                        {
-                            pdfLaboratoryTestRequired = "Yes";
-                        }*/
 
                         //ValidateIfExists("AreLaboratoryTestsRequired", pdfLaboratoryTestRequired, ref allDataMatches, mismatches);
 
@@ -467,8 +448,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         ValidateContains("NumberOfDeadAnimals", page.Sections.ImpactOnTransportAnimals?.Value, ref allDataMatches, mismatches);
                         ValidateContains("NumberOfUnfitAnimals", page.Sections.ImpactOnTransportAnimals?.Value, ref allDataMatches, mismatches);
                         ValidateContains("NumberOfBirthsOrAbortions", page.Sections.ImpactOnTransportAnimals?.Value, ref allDataMatches, mismatches);
-
-                        //ValidateContains("LaboratoryTestName", (string?)page.Sections.LaboratoryTests?.AdditionalData?.ElementAt(0).Value, ref allDataMatches, mismatches, true);
 
                         ValidateContains("IUUSubOption", page.Sections.CustomsDocumentReference?.Value, ref allDataMatches, mismatches);
 
