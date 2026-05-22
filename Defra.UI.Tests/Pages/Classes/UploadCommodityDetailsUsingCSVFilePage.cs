@@ -60,7 +60,12 @@ namespace Defra.UI.Tests.Pages.Classes
             {
                 File.Delete(oldFile);
             }
+
             lnkCommDetailsCSVTemplate(linkName).Click();
+
+            // The file is downloaded inside the Selenium Grid node container.
+            // Retrieve it from the Grid's REST API and save it locally on the agent.
+            Utils.RetrieveFileFromGrid(_driver, Path.GetFileName(oldFile));
         }
 
         public void ClickDownloadedFile(string fileName)
@@ -193,6 +198,12 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void SelectCSVFile(string csvFilePath)
         {
+            // LocalFileDetector is required for RemoteWebDriver (Selenium Grid).
+            // Without it, SendKeys sends the raw path to the Grid node where the file
+            // does not exist, instead of uploading it from the agent machine.
+            var allowsDetection = (IAllowsFileDetection)_driver;
+            allowsDetection.FileDetector = new OpenQA.Selenium.Remote.LocalFileDetector();
+
             btnChooseFile.SendKeys(csvFilePath);
         }
 

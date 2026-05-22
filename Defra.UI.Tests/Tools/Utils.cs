@@ -1,4 +1,9 @@
-﻿using OpenQA.Selenium;
+﻿using Defra.UI.Framework.Driver;
+using Defra.UI.Tests.Data.Users;
+using NUnit.Framework;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 using Reqnroll;
 using System.Diagnostics;
 using System.Globalization;
@@ -142,6 +147,49 @@ namespace Defra.UI.Tests.Tools
         {
             return actual.OrderBy(x => x).SequenceEqual(expected.OrderBy(x => x));
         }
+
+        public static void DownloadPDF(string fileName, string pdfUrl, IUserObject UserObject, string userRole)
+        {
+            var chromeOptions = new ChromeOptions();
+
+            var downloadDirectory = Path.Combine(Path.GetTempPath(), "automation-downloads");
+            Directory.CreateDirectory(downloadDirectory);
+
+            chromeOptions.AddUserProfilePreference("download.default_directory", downloadDirectory);
+            chromeOptions.AddUserProfilePreference("download.prompt_for_download", false);
+            chromeOptions.AddUserProfilePreference("download.directory_upgrade", true);
+            chromeOptions.AddUserProfilePreference("safebrowsing.enabled", true);
+            chromeOptions.AddUserProfilePreference("plugins.always_open_pdf_externally", true);
+
+
+            using (var tempDriver = new ChromeDriver(chromeOptions))
+
+            {
+                tempDriver.Navigate().GoToUrl(pdfUrl);
+                var elements = tempDriver.WaitForElements(By.CssSelector(".govuk-label.govuk-radios__label.break-word")).ToList();                      
+                elements[1].Click();
+                
+                tempDriver.FindElement(By.Id("continueReplacement")).Click();
+
+                var jsonData = UserObject?.GetUser("IPAFF", userRole);
+                var userObject = new User
+                {
+                    UserName = jsonData.UserName,
+                    Credential = jsonData.Credential
+                };
+                
+                tempDriver.WaitForElement(By.Id("user_id")).SendKeys(userObject.UserName);
+                tempDriver.FindElement(By.Id("password")).SendKeys(userObject.Credential);
+                Thread.Sleep(1000);
+                tempDriver.WaitForElement(By.Id("continue")).Click();
+                Thread.Sleep(1000);
+
+                IsDownloaded(fileName, "pdf");
+            }
+        }
+
+       
+
 
 
         #region WebDriver Extension Methods for Element Safety
@@ -729,6 +777,83 @@ namespace Defra.UI.Tests.Tools
         }
 
         #endregion
+
+        /// <summary>
+        /// Retrieves a file downloaded inside a Selenium Grid node container and saves it
+        /// to the local automation-downloads directory on the agent machine.
+        ///
+        /// When running against a remote Selenium Grid, Chrome downloads land on the node's
+        /// filesystem — not the agent's. This method uses the Grid 4 file download REST API
+        /// (POST /session/{id}/se/files) to transfer the file as a base64-encoded zip,
+        /// then extracts it locally.
+        ///
+        /// Falls back silently when the driver is not a RemoteWebDriver (e.g. local runs).
+        /// </summary>
+        /// <param name="driver">The active WebDriver session.</param>
+        /// <param name="fileName">The exact file name to retrieve (e.g. "file.xlsx").</param>
+        /// <param name="gridUrl">The Selenium Grid hub URL. Defaults to http://localhost:4444.</param>
+        public static void RetrieveFileFromGrid(IWebDriver driver, string fileName, string gridUrl = "http://localhost:4444")
+        {
+            if (driver is not OpenQA.Selenium.Remote.RemoteWebDriver remoteDriver)
+            {
+                return;
+            }
+
+            var downloadDir = Path.Combine(Path.GetTempPath(), "automation-downloads");
+            Directory.CreateDirectory(downloadDir);
+
+            var sessionId = remoteDriver.SessionId.ToString();
+            var endpoint = $"{gridUrl}/session/{sessionId}/se/files";
+            var timeout = TimeSpan.FromSeconds(30);
+            var stopwatch = Stopwatch.StartNew();
+
+            while (stopwatch.Elapsed < timeout)
+            {
+                try
+                {
+                    using var client = new HttpClient();
+                    var payload = System.Text.Json.JsonSerializer.Serialize(new { name = fileName });
+                    var requestContent = new StringContent(payload, System.Text.Encoding.UTF8, "application/json");
+
+                    var response = client.PostAsync(endpoint, requestContent).Result;
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var body = response.Content.ReadAsStringAsync().Result;
+                        using var doc = System.Text.Json.JsonDocument.Parse(body);
+
+                        if (!doc.RootElement.TryGetProperty("value", out var value)) break;
+                        if (!value.TryGetProperty("contents", out var contentsElement)) break;
+
+                        var base64Contents = contentsElement.GetString();
+                        if (string.IsNullOrEmpty(base64Contents)) break;
+
+                        // Grid wraps the downloaded file in a zip archive
+                        using var zipStream = new MemoryStream(Convert.FromBase64String(base64Contents));
+                        using var zip = new System.IO.Compression.ZipArchive(zipStream, System.IO.Compression.ZipArchiveMode.Read);
+
+                        foreach (var entry in zip.Entries)
+                        {
+                            var localPath = Path.Combine(downloadDir, entry.Name);
+                            using var entryStream = entry.Open();
+                            using var fileStream = File.Create(localPath);
+                            entryStream.CopyTo(fileStream);
+                            Console.WriteLine($"[GRID DOWNLOAD] Retrieved '{entry.Name}' from Grid node → '{localPath}'");
+                        }
+
+                        return;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[GRID DOWNLOAD] Waiting for '{fileName}' on Grid: {ex.Message}");
+                }
+
+                Thread.Sleep(1000);
+            }
+
+            Console.WriteLine($"[GRID DOWNLOAD] Timed out waiting for '{fileName}' from Grid node at {endpoint}");
+        }
     }
 
     #region Operator Details Model

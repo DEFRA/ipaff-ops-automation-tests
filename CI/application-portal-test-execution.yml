@@ -41,6 +41,18 @@ parameters:
     displayName: Is Accessibility Run Enabled
     type: boolean
     default: false
+  - name: testCategory
+    displayName: Test Category
+    type: string
+    default: 'Regression'
+    values:
+      - Regression
+      - Dynamics
+      - CHEDA
+      - CHEDD
+      - CHEDP
+      - CHEDPP
+      - RiskEngine
 
 resources:
   repositories:
@@ -76,6 +88,4 @@ stages:
         isAccessibilityEnabled: ${{ parameters.isAccessibilityEnabled }}
         application: 'IPAFF'
         dependsOn: ''
-
-
-
+        filterTestCases: 'TestCategory=${{ parameters.testCategory }}'

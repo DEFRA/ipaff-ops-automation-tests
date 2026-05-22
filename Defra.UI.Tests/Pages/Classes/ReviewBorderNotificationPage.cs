@@ -37,7 +37,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         //Last updated Date and Time
         private IWebElement lastUpdatedDate => _driver.FindElement(By.Id("last-updated-date"));
-        private IWebElement lastUpdatedTime => _driver.FindElement(By.Id("last-updated-time"));    
+        private IWebElement lastUpdatedTime => _driver.FindElement(By.Id("last-updated-time"));
         private IWebElement btnSubmit => _driver.FindElement(By.Id("submit-button"));
         private IWebElement lnkAttachedDocument => _driver.FindElement(By.Id("attachment-name-0"));
         private IWebElement lnkDocument => _driver.FindElement(By.XPath("//a[contains(@id,'download-attachment') or contains(@id,'attachment-download')]"));
@@ -78,11 +78,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public string GetAccompanyingDocumentType => accompanyingDocumentType?.Text?.Trim() ?? string.Empty;
         public string GetAccompanyingDocumentRef => accompanyingDocumentRef?.Text?.Trim() ?? string.Empty;
         public string GetAccompanyingDocumentFileName => accompanyingDocumentFileName?.Text?.Trim() ?? string.Empty;
-        
+
         //Last updated Date and Time details
         public string GetLastUpdatedDate => lastUpdatedDate?.Text?.Trim() ?? string.Empty;
         public string GetLastUpdatedTime => lastUpdatedTime?.Text?.Trim() ?? string.Empty;
-        
+
         public void ClickSubmitButton()
         {
             btnSubmit.Click();
@@ -90,8 +90,10 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void ClickDocumentLink()
         {
+            var fileName = lnkDocument.Text.Trim();
             lnkDocument.Click();
             Thread.Sleep(1000);
+            Utils.RetrieveFileFromGrid(_driver, fileName);
         }
 
         public void OpenDownloadsInNewTab()
@@ -108,8 +110,10 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void ClickAttachedDocumentLink()
         {
+            var fileName = lnkAttachedDocument.Text.Trim();
             lnkAttachedDocument.Click();
             Thread.Sleep(1000);
+            Utils.RetrieveFileFromGrid(_driver, fileName);
         }
     }
 }

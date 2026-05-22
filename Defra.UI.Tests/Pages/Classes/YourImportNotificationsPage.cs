@@ -151,7 +151,6 @@ namespace Defra.UI.Tests.Pages.Classes
             {
                 return false;
             }
-
             _driver.SwitchTo().Window(newHandle);
 
             var urlWait = new OpenQA.Selenium.Support.UI.WebDriverWait(_driver, TimeSpan.FromSeconds(15));
@@ -169,6 +168,10 @@ namespace Defra.UI.Tests.Pages.Classes
             }
 
             return _driver.Url.Contains("/certificate/pdf");
+        }
+        public string getPDFUrl()
+        {
+            return _driver.Url;
         }
 
         public bool VerifyDataInCertificate(string chedReference)

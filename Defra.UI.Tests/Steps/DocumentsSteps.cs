@@ -43,11 +43,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             // Get the document details from the scenario context
             // DocumentType and DocumentReference are stored as string[] arrays
-            var expectedDocumentType = _scenarioContext.Get<string[]>("DocumentType")[0];
-            var expectedDocumentReference = _scenarioContext.Get<string[]>("DocumentReference")[0];
+            var expectedDocumentType = _scenarioContext.Get<string[]>("DocumentType1")[0];
+            var expectedDocumentReference = _scenarioContext.Get<string[]>("DocumentReference1")[0];
 
             // DocumentDateOfIssue is stored as a single string
-            var expectedDateOfIssue = _scenarioContext.Get<string>("DocumentDateOfIssue");
+            var expectedDateOfIssue = _scenarioContext.Get<string>("DocumentDateOfIssue1");
 
             // Convert the date format from "dd MM yyyy" to "d MMMM yyyy" (e.g., "05 12 2025" to "5 December 2025")
             var actualDateOfIssue = ConvertDateFormat(expectedDateOfIssue);

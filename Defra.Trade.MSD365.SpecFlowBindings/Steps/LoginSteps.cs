@@ -33,10 +33,9 @@ public class LoginSteps : PowerAppsStepDefiner
     [When("I am logged in to the {string} app as {string}")]
     public void GivenIAmLoggedInToTheAppAs(string appName, string userAlias)
     {
-        SelectApplication(appName);
-        GivenIAmLoggedInToTheAppAs1(appName, userAlias);
-
         scenarioContext["IsDynamicsActive"] = true;
+        SelectApplication(appName);
+        GivenIAmLoggedInToTheAppAs1(appName, userAlias);        
     }
 
     [Then("the Inspector is logged out of Dynamics successfully")]

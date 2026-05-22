@@ -80,18 +80,17 @@ public class InspectionResultSteps : PowerAppsStepDefiner
     {
         Driver.WaitForTransaction();
 
+        // Scroll the Dynamics form container to the bottom to trigger lazy loading of all
+        // PCF controls before attempting to locate any section or input element.
+        ScrollFormToBottom();
+        Driver.WaitForTransaction();
+
         var ariaLabel = $"{checkName} Status";
 
-        // Derive the containing section from the check name prefix.
-        // PHSI checks live in 'PHSI Inspection Results'; everything else is HMI.
         var sectionName = checkName.StartsWith("PHSI", StringComparison.OrdinalIgnoreCase)
             ? "PHSI Inspection Results"
             : "HMI Inspection Results";
 
-        // Both PHSI and HMI sections live on the 'Inspection Results' tab.
-        // Dynamics lazily renders tab content — sections are only added to the DOM when
-        // the tab is first activated. If the section is not found, re-select the tab to
-        // trigger rendering before retrying.
         const string inspectionResultsTabName = "Inspection Results";
 
         string actualValue = null;
@@ -107,8 +106,6 @@ public class InspectionResultSteps : PowerAppsStepDefiner
                 sleepDurationProvider: _ => TimeSpan.FromSeconds(5),
                 onRetry: (outcome, delay, attempt, _) =>
                 {
-                    // If the section was not found, the tab panel has not rendered.
-                    // Re-select the Inspection Results tab to trigger lazy rendering.
                     if (debugSectionFound == "NOT FOUND")
                     {
                         Capgemini.PowerApps.SpecFlowBindings.Steps.EntitySteps.ISelectTab(inspectionResultsTabName);
@@ -119,7 +116,6 @@ public class InspectionResultSteps : PowerAppsStepDefiner
             {
                 Driver.WaitForTransaction();
 
-                // Re-find the section on every attempt — avoids stale element references.
                 var sections = Driver.FindElements(By.XPath($"//section[@aria-label='{sectionName}']"));
                 debugSectionFound = sections.Count > 0 ? $"found ({sections.Count})" : "NOT FOUND";
 
@@ -127,6 +123,9 @@ public class InspectionResultSteps : PowerAppsStepDefiner
                 {
                     return false;
                 }
+
+                Driver.ExecuteScript("arguments[0].scrollIntoView({block:'center'});", sections[0]);
+                Driver.WaitForTransaction();
 
                 var inputs = sections[0].FindElements(By.XPath($".//input[@aria-label='{ariaLabel}']"));
                 debugInputFound = inputs.Count > 0 ? $"found ({inputs.Count})" : "NOT FOUND";
@@ -167,12 +166,11 @@ public class InspectionResultSteps : PowerAppsStepDefiner
     {
         Driver.WaitForTransaction();
 
-        // Both 'PHSI Inspection Results' and 'HMI Inspection Results' live on the
-        // 'Inspection Results' tab. Dynamics lazily renders tab content — sections only
-        // appear in the DOM after the tab is activated. Never issue a full page Refresh
-        // here: it navigates back to the default tab and destroys the lazily-loaded
-        // section content, causing all subsequent FindElements calls to return NOT FOUND.
-        // Instead, re-select the Inspection Results tab on retry to re-trigger rendering.
+        // Scroll the Dynamics form container to the bottom to trigger lazy loading of all
+        // PCF controls before attempting to locate any section or input element.
+        ScrollFormToBottom();
+        Driver.WaitForTransaction();
+
         const string inspectionResultsTabName = "Inspection Results";
 
         string debugSectionFound = "not attempted";
@@ -194,7 +192,6 @@ public class InspectionResultSteps : PowerAppsStepDefiner
             {
                 Driver.WaitForTransaction();
 
-                // Re-find the section on every attempt to avoid stale element references.
                 var sections = Driver.FindElements(By.XPath($"//section[@aria-label='{sectionName}']"));
                 debugSectionFound = sections.Count > 0 ? $"found ({sections.Count})" : "NOT FOUND";
 
@@ -202,6 +199,9 @@ public class InspectionResultSteps : PowerAppsStepDefiner
                 {
                     return false;
                 }
+
+                Driver.ExecuteScript("arguments[0].scrollIntoView({block:'center'});", sections[0]);
+                Driver.WaitForTransaction();
 
                 var inputs = sections[0].FindElements(
                     By.XPath(".//input[contains(@class,'fui-Input__input')]"));
@@ -230,5 +230,27 @@ public class InspectionResultSteps : PowerAppsStepDefiner
         nonEmptyInputs.Should().BeEmpty(
             $"Expected all fields in the '{sectionName}' section to be blank " +
             $"but the following contained values: [{string.Join(", ", nonEmptyInputs)}].");
+    }
+
+    private static void ScrollFormToBottom()
+    {
+        // Dynamics 365 renders form content inside a scrollable child container, not on
+        // document.body. Scrolling body has no effect because its scrollHeight equals its
+        // clientHeight. We scroll the first ancestor container that actually has overflow,
+        // which forces lazy-loaded PCF controls below the fold to render into the DOM.
+        Driver.ExecuteScript(@"
+            var candidates = [
+                document.querySelector('[data-id=""editFormRoot""]'),
+                document.querySelector('.entityFormContainer'),
+                document.querySelector('[data-id=""form-view""]'),
+                document.documentElement
+            ];
+            for (var i = 0; i < candidates.length; i++) {
+                var el = candidates[i];
+                if (el && el.scrollHeight > el.clientHeight) {
+                    el.scrollTop = el.scrollHeight;
+                    return;
+                }
+            }");
     }
 }

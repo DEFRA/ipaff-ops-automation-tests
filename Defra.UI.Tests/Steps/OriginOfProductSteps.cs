@@ -13,6 +13,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         private readonly ScenarioContext _scenarioContext;
 
         private IOriginOfProductPage? originOfProductPage => _objectContainer.IsRegistered<IOriginOfProductPage>() ? _objectContainer.Resolve<IOriginOfProductPage>() : null;
+        private IOriginOfImportPage? originOfImportPage => _objectContainer.IsRegistered<IOriginOfImportPage>() ? _objectContainer.Resolve<IOriginOfImportPage>() : null;
 
 
         public OriginOfProductSteps(ScenarioContext context, IObjectContainer container)
@@ -34,6 +35,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             originOfProductPage?.SelectCountryOfOrigin(country);
             _scenarioContext["CountryOfOrigin"] = country;
+        }
+
+        [When("the user chooses {string} from the dropdown for Country of origin and records the country from where consigned")]
+        public void WhenTheUserChoosesFromTheDropdownForCountryOfOriginAndRecordsTheCountryFromWhereConsigned(string country)
+        {
+            originOfProductPage?.SelectCountryOfOrigin(country);
+            _scenarioContext["CountryOfOrigin"] = country;
+            _scenarioContext["ContryFromWhereConsigned"] = country;
         }
     }
 }

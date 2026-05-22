@@ -51,6 +51,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             var chedRef = _scenarioContext.Get<string>("CHEDReference");
             inspectorImportNotificationsPage?.VerifyNotificationStatusAndClick(chedRef, status);
+            Thread.Sleep(2000);
         }
 
         [Then("the notification is displayed on the inspector dashboard")]
