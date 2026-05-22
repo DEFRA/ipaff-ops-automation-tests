@@ -1,0 +1,326 @@
+5092
+
+[
+  {
+    "PageNumber": 1,
+    "Sections": {
+      "PartIDescriptionOfConsignment": {
+        "value": "CHEDPP.GB.2026.1069150"
+      },
+      "I3LocalReference": {
+        "value": "12345"
+      },
+      "I4BorderControlPostControlPointControlUnit": {
+        "value": "London Gateway"
+      },
+      "I2ChedReference": {
+        "Id": "CHEDPP.GB.2026.1069150"
+      },
+      "I5BorderControlPostControlPointControlUnitCode": {
+        "value": "GBLGP1PP"
+      },
+      "I1ConsignorExporter": {
+        "Name": "DEFRA",
+        "Address": "Hornbeam House, Electra Way, Crewe, CW1 6GJ",
+        "Country": "England",
+        "IsoCode": "GB",
+        "Code": "GB",
+        "value": "Name DEFRA Address Hornbeam House, Electra Way, Crewe, CW1 6GJ Country England ISO Code GB"
+      },
+      "I6ConsigneeImporter": {
+        "Name": "IPAFFS IDM Test",
+        "Address": "DEPARTMENT FOR ENVIRONMENT FOOD & RURAL AFFAIRS (D E F R A), HORNBEAM HOUSE, ELECTRA WAY, CREWE, CW1 6GJ",
+        "Country": "United Kingdom of Great Britain and Northern Ireland",
+        "IsoCode": "GB",
+        "Code": "GB",
+        "value": "Name IPAFFS IDM Test Address DEPARTMENT FOR ENVIRONMENT FOOD & RURAL AFFAIRS (D E F R A), HORNBEAM HOUSE, ELECTRA WAY, CREWE, CW1 6GJ Country United Kingdom of Great Britain and Northern Ireland ISO Code GB"
+      },
+      "I7PlaceOfDestination": {
+        "Name": "DEFRA",
+        "Address": "Hornbeam House, Electra Way, Crewe, CW1 6GJ",
+        "Country": "England",
+        "IsoCode": "GB",
+        "Code": "GB",
+        "value": "Name DEFRA Address Hornbeam House, Electra Way, Crewe, CW1 6GJ Country England ISO Code GB"
+      },
+      "I9AccompanyingDocuments": {
+        "Type": "Phytosanitary certificate",
+        "DocumentReference": "INV12345",
+        "DateOfIssue": "17.05.2026 +0100 BST",
+        "CountryAndPlaceOfIssue": "England (GB-ENG)",
+        "NameOfSignatory": ""
+      },
+      "I8OperatorResponsibleForTheConsignment": {
+        "Name": "IPAFFS IDM Test",
+        "Organisation": "IPAFFS IDM Test",
+        "Address": "DEPARTMENT FOR ENVIRONMENT FOOD & RURAL AFFAIRS (D E F R A), HORNBEAM HOUSE, ELECTRA WAY, CHESHIRE, CREWE, CW1 6GJ, GB",
+        "Country": "United Kingdom of Great Britain and Northern Ireland",
+        "IsoCode": "GB"
+      },
+      "IVReferences": {},
+      "I10PriorNotification": {
+        "Date": "18.05.2026 +0100 BST",
+        "Time": "19:14:00 +0100 BST"
+      },
+      "I11CountryOfOrigin": {
+        "IsoCode": "FR",
+        "value": "France"
+      },
+      "I13MeansOfTransport": {
+        "Mode": "ROAD VEHICLE",
+        "InternationalTransportDocument": "DOC1234123456",
+        "Identification": ""
+      },
+      "I12RegionOfOrigin": {
+        "value": ""
+      },
+      "I14CountryOfDispatch": {
+        "IsoCode": "FR",
+        "value": "France"
+      },
+      "I15EstablishmentOfOrigin": {
+        "ApprovalNumber": "",
+        "IsoCode": "",
+        "Address": "",
+        "Name": "",
+        "Code": "",
+        "Country": "",
+        "value": "Name Address Approval Number Country ISO Code"
+      },
+      "I16TransportConditions": {
+        "Ambient": "false",
+        "Chilled": "false",
+        "Frozen": "false",
+        "value": "Ambient Chilled Frozen"
+      },
+      "I17ContainerNoSealNo": {
+        "value": ""
+      },
+      "I18GoodsCertifiedAs": {
+        "value": "For internal market"
+      },
+      "I22Market": {
+        "Date": "",
+        "ExitTime12": "",
+        "Time": "",
+        "Yes": "true",
+        "No": "false",
+        "ApprovalNumber": "",
+        "IsoCode": "",
+        "value": "For internal market"
+      }
+    }
+  },
+  {
+    "PageNumber": 2,
+    "Sections": {
+      "I27MeansOfTransportAfterBcpStorage": {
+        "InternationalTransportDocument": "",
+        "Identification": "",
+        "Mode": ""
+      },
+      "I28Transporter": {
+        "IsoCode": "",
+        "Address": "",
+        "Name": "IPAFFS IDM Test",
+        "Code": "",
+        "Country": "",
+        "ApprovalNumber": "",
+        "TelephoneNumber": "0123456789",
+        "EmailAddress": "sfoster1351@sfoster2.33mail.com",
+        "Agent": "",
+        "PhoneEmail": "0123456789/sfoster1351@sfoster2.33mail.com",
+        "value": "Contact details\nName: IPAFFS IDM Test\nTelephone number: 0123456789\nEmail address: sfoster1351@sfoster2.33mail.com\nAgent: "
+      },
+      "I29DateOfDeparture": {
+        "value": ""
+      },
+      "I31DescriptionOfTheGoods": [
+        {
+          "CountryOfOrigin": "France (FR)",
+          "PackageCount": "10 Box",
+          "NetWeight": "10.0",
+          "Commodity": "12092980",
+          "value": "12092980 x Aliceara 10.0 10 Box France (FR)",
+          "Species": "x Aliceara"
+        },
+        {
+          "CountryOfOrigin": "France (FR)",
+          "PackageCount": "10 Case",
+          "NetWeight": "20.0",
+          "Commodity": "08105000",
+          "value": "08105000 Actinidia chinensis 20.0 10 Case France (FR)",
+          "Species": "Actinidia chinensis"
+        },
+        {
+          "CountryOfOrigin": "France (FR)",
+          "PackageCount": "10 Bag",
+          "NetWeight": "20.0",
+          "Commodity": "08105000",
+          "value": "08105000 Actinidia chinensis 20.0 10 Bag France (FR)",
+          "Species": "Actinidia chinensis"
+        },
+        {
+          "CountryOfOrigin": "France (FR)",
+          "PackageCount": "10 Bale",
+          "NetWeight": "20.0",
+          "Commodity": "08105000",
+          "value": "08105000 Actinidia chinensis 20.0 10 Bale France (FR)",
+          "Species": "Actinidia chinensis"
+        },
+        {
+          "CountryOfOrigin": "France (FR)",
+          "PackageCount": "510 Bulk solid granular particles (\"grains\")",
+          "NetWeight": "30.0",
+          "Commodity": "08105000",
+          "value": "08105000 Actinidia chinensis 30.0 510 Bulk solid granular particles (\"grains\") France (FR)",
+          "Species": "Actinidia chinensis"
+        },
+        {
+          "CountryOfOrigin": "France (FR)",
+          "PackageCount": "110 Can",
+          "NetWeight": "30.0",
+          "Commodity": "08105000",
+          "value": "08105000 Actinidia chinensis 30.0 110 Can France (FR)",
+          "Species": "Actinidia chinensis"
+        },
+        {
+          "CountryOfOrigin": "France (FR)",
+          "PackageCount": "32410 Carton",
+          "NetWeight": "30.0",
+          "Commodity": "08105000",
+          "value": "08105000 Actinidia chinensis 30.0 32410 Carton France (FR)",
+          "Species": "Actinidia chinensis"
+        },
+        {
+          "CountryOfOrigin": "France (FR)",
+          "PackageCount": "110 Package",
+          "NetWeight": "40.0",
+          "Commodity": "08105000",
+          "value": "08105000 Actinidia chinensis 40.0 110 Package France (FR)",
+          "Species": "Actinidia chinensis"
+        },
+        {
+          "CountryOfOrigin": "France (FR)",
+          "PackageCount": "5310 Pallet",
+          "NetWeight": "40.0",
+          "Commodity": "08105000",
+          "value": "08105000 Actinidia chinensis 40.0 5310 Pallet France (FR)",
+          "Species": "Actinidia chinensis"
+        },
+        {
+          "CountryOfOrigin": "France (FR)",
+          "PackageCount": "10 Tray",
+          "NetWeight": "40.0",
+          "Commodity": "08105000",
+          "value": "08105000 Actinidia chinensis 40.0 10 Tray France (FR)",
+          "Species": "Actinidia chinensis"
+        },
+        {
+          "CountryOfOrigin": "France (FR)",
+          "PackageCount": "10 Wood bundle",
+          "NetWeight": "40.0",
+          "Commodity": "08106000",
+          "value": "08106000 Durio zibethinus 40.0 10 Wood bundle France (FR)",
+          "Species": "Durio zibethinus"
+        }
+      ],
+      "I32TotalNumberOfPackages": {
+        "PackageCount": "38510 packages",
+        "value": "10 Box, 10 Case, 10 Bag, 10 Bale, 10 Bulk solid granular particles (\"grains\"), 10 Can, 10 Carton, 10 Package, 10 Pallet, 10 Tray, 10 Wood bundle"
+      },
+      "I34TotalNetWeight": {
+        "value": "3201.005 Kg"
+      },
+      "I34TotalGrossWeight": {
+        "value": "3500 Kg"
+      },
+      "I35Declaration": {
+        "DateOfSignature": "18 May 2026 15:10:26 +0100 BST",
+        "NameOfSignatory": "IPAFFS IDM Test",
+        "Signature": "",
+        "value": "Declaration signed by IPAFFS IDM Test on 18 May 2026 15:10:26 +0100 BST"
+      }
+    }
+  },
+  {
+    "PageNumber": 3,
+    "Sections": {
+      "PartIIControls": {
+        "value": ""
+      },
+      "II1PreviousChed": {
+        "value": "CHEDPP.GB.2026.1069150"
+      },
+      "II2ChedReference": {
+        "Id": "CHEDPP.GB.2026.1069150"
+      },
+      "II24SubsequentCheds": {
+        "value": ""
+      },
+      "II25BcpReferenceNumber": {
+        "value": "GBLGP1PP"
+      },
+      "II3DocumentaryCheck": {
+        "Satisfactory": "true",
+        "NotSatisfactory": "false",
+        "NotDone": "false",
+        "SatisfactoryFollowingOfficialIntervention": "false",
+        "EuStandard": ""
+      },
+      "II4IdentityCheck": {
+        "Yes": "true",
+        "No": "false",
+        "SealCheckOnly": "false",
+        "FullIdentityCheck": "false",
+        "Satisfactory": "true",
+        "NotSatisfactory": "false"
+      },
+      "II6LaboratoryTests": {
+        "Yes": "false",
+        "No": "true",
+        "Satisfactory": "false",
+        "NotSatisfactory": "false",
+        "Random": "false",
+        "Suspicion": "false",
+        "Pending": "false",
+        "IntensifiedControls": "false",
+        "Test": ""
+      },
+      "II5PhysicalCheck": {
+        "Yes": "true",
+        "No": "false",
+        "Satisfactory": "true",
+        "NotSatisfactory": "false"
+      },
+      "IvResultsPendingNot": {
+        "Satisfactory": "true",
+        "NotSatisfactory": "false",
+        "value": "Satisfactory"
+      },
+      "II16NotAcceptable": {
+        "value": "",
+        "Ischecked": "false",
+        "Text": "",
+        "Datetime": ""
+      },
+      "II17ReasonForRefusal": {
+        "value": ""
+      },
+      "II20IdentificationOfBcp": {
+        "UnitNumber": "GBLGP1PP",
+        "Stamp": "",
+        "Bcp": "London  Gateway"
+      },
+      "II21CertifyingOfficer": {
+        "Name": "",
+        "DateOfSignature": "",
+        "Signature": ""
+      },
+      "II22InspectionFeesFullNameLondon": {},
+      "II23CustomsDocumentReference": {
+        "value": ""
+      }
+    }
+  }
+]
