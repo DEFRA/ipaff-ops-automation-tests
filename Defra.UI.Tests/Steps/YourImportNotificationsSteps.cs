@@ -5,13 +5,13 @@ using Defra.UI.Tests.Tools;
 using Defra.UI.Tests.Tools.PDFProcessor.Models;
 using Newtonsoft.Json;
 using NUnit.Framework;
-using PdfExtraction;
 using Reqnroll;
 using Reqnroll.BoDi;
 using System.Globalization;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Data;
+using Defra.UI.Tests.Tools.PDFProcessor;
 
 
 namespace Defra.UI.Tests.Steps.IPAFF
