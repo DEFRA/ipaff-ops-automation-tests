@@ -80,8 +80,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             string pdfUrl = importNotificationsPage?.getPDFUrl();
             var chedReferenceFileName = _scenarioContext.Get<string>("CHEDReference") + "-certificate";
-
-            Utils.DownloadPDF(chedReferenceFileName, pdfUrl, UserObject, _scenarioContext.Get<string>("UserRole"));
+            _scenarioContext["PDFDownloadedDirectory"] = Utils.DownloadPDF(chedReferenceFileName, pdfUrl, UserObject, _scenarioContext.Get<string>("UserRole"));
         }
 
         [When("verifies laboratory tests should be displayed as No and Reasons for testing with no boxes selected")]
@@ -91,11 +90,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             var chedReference = _scenarioContext.Get<string>("CHEDReference");
             Assert.True(importNotificationsPage?.VerifyDataInCertificate(chedReference), "Certificate data verification failed");
-
             var json = JsonConvert.SerializeObject(_scenarioContext.ToDictionary(kvp => kvp.Key, kvp => kvp.Value), Formatting.Indented);
-            var chedReferenceFileName = "\\" + chedReference + "-certificate";
-            var downloadDirectory = Path.Combine(Path.GetTempPath(), "automation-downloads");
-            string pdfPath = downloadDirectory + chedReferenceFileName + ".pdf";
+            var chedReferenceFileName = chedReference + "-certificate.pdf";
+            string downloadDirectory = _scenarioContext.Get<string>("PDFDownloadedDirectory");
+            string pdfPath = Path.Combine(downloadDirectory, chedReferenceFileName);
             var converter = new PdfToJsonConverter();
             var jsonOutput = converter.ConvertToJson(pdfPath);
 
