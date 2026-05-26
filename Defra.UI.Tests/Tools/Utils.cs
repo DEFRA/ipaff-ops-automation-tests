@@ -220,7 +220,7 @@ namespace Defra.UI.Tests.Tools
             }
         }
 
-        public static bool IsDownloaded1(string fileName, string extension, string directory, int timeoutSeconds = 15)
+        public static bool IsDownloadedForPDF(string fileName, string extension, string directory, int timeoutSeconds = 15)
         {
             Console.WriteLine("Waiting for download...");
             var expectedFile = Path.Combine(directory, $"{fileName}.{extension}");
