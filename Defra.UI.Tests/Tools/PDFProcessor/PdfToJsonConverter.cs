@@ -2,6 +2,9 @@ using System.Text.RegularExpressions;
 using System.Text;
 using Defra.UI.Tests.Tools.PDFProcessor.Models;
 using Defra.UI.Tests.Tools.PDFProcessor.Extractors;
+using UglyToad.PdfPig.Content;
+using UglyToad.PdfPig;
+using Newtonsoft.Json;
 
 namespace Defra.UI.Tests.Tools.PDFProcessor
 {

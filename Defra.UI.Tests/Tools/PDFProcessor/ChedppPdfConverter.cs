@@ -4,6 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Defra.UI.Tests.Tools.PDFProcessor.Models;
+using Newtonsoft.Json;
+using UglyToad.PdfPig;
+using Defra.UI.Tests.Tools.PDFProcessor.Extractors;
 
 namespace Defra.UI.Tests.Tools.PDFProcessor
 {
@@ -78,7 +81,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
                     pages.Add(pageData);
                     
                     // DEBUG: Log page numbers
-                    System.IO.File.AppendAllText(@"C:\Dev\pdftojson\debug_pages.txt", $"Processed page {page.Number}\n");
+                    //System.IO.File.AppendAllText(@"C:\Dev\pdftojson\debug_pages.txt", $"Processed page {page.Number}\n");
                 }
             }
 
@@ -98,7 +101,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
                 Sections = new Dictionary<string, object>()
             };
 
-            var checkboxExtractor = new PdfExtraction.Extractors.CheckboxExtractor();
+            var checkboxExtractor = new CheckboxExtractor();
             var checkboxes = checkboxExtractor.ExtractCheckboxes(page, document);
 
             // Page 3 of this PDF encodes checkboxes purely as raster background image (no vector paths, no AcroForms).
@@ -451,7 +454,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
             else if (page.Number >= 3)
             {
                 // DEBUG: Check what page we're on and save page text
-                System.IO.File.WriteAllText($@"C:\Dev\pdftojson\debug_page{page.Number}_text.txt", $"Page {page.Number} text:\n\n{text}");
+                //System.IO.File.WriteAllText($@"C:\Dev\pdftojson\debug_page{page.Number}_text.txt", $"Page {page.Number} text:\n\n{text}");
                 ExtractDynamicChecksSections(page, pageData);
 
                 // If page 3, also process the II sections from before
@@ -499,7 +502,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
                     var ii6Match = Regex.Match(text, @"(?:Laboratory\s*tests?|II\.?6)(.*?)(?=II\.|Physical Check|II\.?5|$)", RegexOptions.Singleline | RegexOptions.IgnoreCase);
                     if (ii6Match.Success)
                     {
-                        System.IO.File.WriteAllText(@"C:\Dev\pdftojson\debug_ii6_text.txt", $"II.6 Laboratory Tests section:\n\n{ii6Match.Groups[1].Value}");
+                        //System.IO.File.WriteAllText(@"C:\Dev\pdftojson\debug_ii6_text.txt", $"II.6 Laboratory Tests section:\n\n{ii6Match.Groups[1].Value}");
                     }
 
                     var ii6 = TextSection(

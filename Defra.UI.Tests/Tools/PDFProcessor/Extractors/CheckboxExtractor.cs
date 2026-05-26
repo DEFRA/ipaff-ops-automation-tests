@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UglyToad.PdfPig;
+using UglyToad.PdfPig.Content;
+using UglyToad.PdfPig.Core;
 
 namespace Defra.UI.Tests.Tools.PDFProcessor.Extractors
 {
