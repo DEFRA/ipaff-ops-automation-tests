@@ -167,7 +167,7 @@ namespace Defra.UI.Tests.Tools
                     var downloadDirectory = RunPdfDownloadAttempt(fileName, pdfUrl, UserObject, userRole);
 
                     // Validate download
-                    if (IsDownloaded1(fileName, "pdf", downloadDirectory))
+                    if (IsDownloadedForPDF(fileName, "pdf", downloadDirectory))
                     {
                         Console.WriteLine("✅ PDF successfully downloaded.");
                         return downloadDirectory;
