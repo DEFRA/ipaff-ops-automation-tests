@@ -707,7 +707,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                                 }
                                 ValidateContains("Commodity_Commodity code", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
                                 ValidateContains("Commodity_Genus and Species", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
-                                //ValidateContains("Commodity_Eppo", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
+                                ValidateContains("Country of Origin", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
                                 ValidateContains("Commodity_Variety", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Variety, ref allDataMatches, mismatches);
                                 //ValidateContains("Commodity_Class", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
                                 ValidateContains("Commodity_Number of packages", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
@@ -721,6 +721,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             ValidateContains("TotalNetWeight", page.Sections.TotalNetWeight?.Value, ref allDataMatches, mismatches);
                             ValidateContains("TotalPackages", page.Sections.TotalNumberOfPackages?.Value, ref allDataMatches, mismatches);
                             ValidateContains("TotalGrossWeight", page.Sections.TotalGrossWeight?.Value, ref allDataMatches, mismatches);
+
+                            ValidateContains("ContactEmail", (string)page.Sections.Transporter.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches);
+                            ValidateContains("ContactTelephone", (string)page.Sections.Transporter.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
                         }
                     }
 
@@ -755,7 +758,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                                     {
                                         _scenarioContext[$"Commodity_{kv.Key}"] = kv.Value;
                                     }
-
+                                    //check Durio and PHSI from the PDF 
                                     var codeItem = codeItems.FirstOrDefault();
                                     if (codeItem == null) break;
                                     if (codeItem.CommCode.Equals(_scenarioContext.Get<string>("Commodity_Commodity code")))
