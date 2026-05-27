@@ -33,7 +33,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement changeLink => _driver.FindElement(By.XPath("//span[contains(@class, 'govuk-details__summary-text')]"));
         private IWebElement catchCertificateReferenceField => _driver.FindElement(By.Id("catch-certificate-reference-1"));
         private IWebElement catchCertificateReferenceLabel => _driver.FindElement(By.XPath("//label[@for='catch-certificate-reference-1']"));
-        private IWebElement dateOfIssueLabel => _driver.FindElement(By.XPath("//div[contains(@class, 'govuk-label--s')]"));
+        private IWebElement dateOfIssueLabel => _driver.FindElement(By.XPath("//div[contains(@class, 'govuk-label')]"));
         private IWebElement dateOfIssueDayField => _driver.FindElement(By.Id("date-of-issue-day-1"));
         private IWebElement dateOfIssueMonthField => _driver.FindElement(By.Id("date-of-issue-month-1"));
         private IWebElement dateOfIssueYearField => _driver.FindElement(By.Id("date-of-issue-year-1"));
