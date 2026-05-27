@@ -670,7 +670,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         //ArrivalDate Format need to be changed
                         ValidateContains("EstimatedArrivalDate", page.Sections.PriorNotification.Date, ref allDataMatches, mismatches);
                         ValidateContains("EstimatedArrivalTime", page.Sections.PriorNotification.Time, ref allDataMatches, mismatches);
-                        ValidateContains("ContactName", page.Sections.OperatorResponsible.Name, ref allDataMatches, mismatches);                        
+                        ValidateContains("ContactName", page.Sections.OperatorResponsible.Name, ref allDataMatches, mismatches);
                     }
 
                     else if (pageNumber == 2)
@@ -708,15 +708,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
                                 ValidateContains("Commodity_Commodity code", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
                                 ValidateContains("Commodity_Genus and Species", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
                                 //ValidateContains("Commodity_Eppo", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
-                                //ValidateContains("Commodity_Variety", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
+                                ValidateContains("Commodity_Variety", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Variety, ref allDataMatches, mismatches);
                                 //ValidateContains("Commodity_Class", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
                                 ValidateContains("Commodity_Number of packages", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
-                                ValidateContains("Commodity_Quantity", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
-                                //ValidateContains("Commodity_Net weight (kg)", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
-                                //ValidateContains("Commodity_Controlled atmosphere container", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
+                                ValidateContains("Commodity_Quantity", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Quantity, ref allDataMatches, mismatches);
+                                ValidateContains("Commodity_Net weight (kg)", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
+                                ValidateContains("Commodity_Controlled atmosphere container", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).ControlledAtmosphereContainer, ref allDataMatches, mismatches);
 
                                 rowIndex++;
-                            }                            
+                            }
 
                             ValidateContains("TotalNetWeight", page.Sections.TotalNetWeight?.Value, ref allDataMatches, mismatches);
                             ValidateContains("TotalPackages", page.Sections.TotalNumberOfPackages?.Value, ref allDataMatches, mismatches);
@@ -729,28 +729,75 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         ValidateIfExists("CHEDReference", page.Sections.II2ChedReference.Id, ref allDataMatches, mismatches);
                         ValidateContains("BorderControlPost", (string)page.Sections.IdentificationOfBcp.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches, true);
                         ValidateContains("BorderControlPost", (string)page.Sections.IdentificationOfBcp.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches, true);
+                        
+
+                        var codes = page.Sections.HMIChecks.AdditionalData.ElementAt(2).Value;
+
+                        if (codes != null)
+                        {
+                            var codeJson = codes.ToString();
+
+                            var codeItems = JsonConvert.DeserializeObject<List<Code>>(codeJson);
+
+                            if (codeItems != null && codeItems.Count > 0)
+                            {
+                                var allCommodityDetails = _scenarioContext["AllCommodityDetails"] as Reqnroll.DataTable;
+
+                                var list = allCommodityDetails.Rows
+                                    .Select(r => r.ToDictionary(k => k.Key, v => v.Value))
+                                    .ToList();
+
+                                int valueIndex = 0;
+
+                                foreach (var row in list)
+                                {
+                                    foreach (var kv in row)
+                                    {
+                                        _scenarioContext[$"Commodity_{kv.Key}"] = kv.Value;
+                                    }
+
+                                    var codeItem = codeItems.FirstOrDefault();
+                                    if (codeItem == null) break;
+                                    if (codeItem.CommCode.Equals(_scenarioContext.Get<string>("Commodity_Commodity code")))
+                                    {
+                                        var valueItem = codeItem.Values.ElementAtOrDefault(valueIndex);
+                                        if (valueItem == null) break;
+
+                                        ValidateContains("Commodity_Genus and Species", valueItem.GenusAndSpecies, ref allDataMatches, mismatches);
+                                        ValidateContains("Commodity_Eppo", valueItem.EppoCode, ref allDataMatches, mismatches);
+                                        ValidateContains("Commodity_Class", valueItem.Class, ref allDataMatches, mismatches);
+                                        ValidateContains("Commodity_Variety", valueItem.Variety, ref allDataMatches, mismatches);
+
+                                        valueIndex++;
+
+                                    }                                    
+                                }
+                            }
+                        }
+                    }
+
+
+                    if (!allDataMatches)
+                    {
+                        Console.WriteLine("[PDF VALIDATION] Data mismatches found:");
+                        foreach (var mismatch in mismatches)
+                        {
+                            Console.WriteLine($"[PDF VALIDATION] {mismatch}");
+                        }
+                    }
+
+                    Assert.True(allDataMatches, $"PDF data validation failed. Mismatches: {string.Join(", ", mismatches)}");
+
+                    if (File.Exists(pdfPath))
+                    {
+                        File.Delete(pdfPath);
+                        Console.WriteLine("File deleted successfully.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("File not found to delete.");
                     }
                 }
-            }
-            if (!allDataMatches)
-            {
-                Console.WriteLine("[PDF VALIDATION] Data mismatches found:");
-                foreach (var mismatch in mismatches)
-                {
-                    Console.WriteLine($"[PDF VALIDATION] {mismatch}");
-                }
-            }
-
-            Assert.True(allDataMatches, $"PDF data validation failed. Mismatches: {string.Join(", ", mismatches)}");
-
-            if (File.Exists(pdfPath))
-            {
-                File.Delete(pdfPath);
-                Console.WriteLine("File deleted successfully.");
-            }
-            else
-            {
-                Console.WriteLine("File not found to delete.");
             }
         }
 
@@ -1177,6 +1224,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
             {
                 isMatch = DatesMatch(expectedValue, actual);
             }
+            else if(contextKey.Contains("Net weight"))
+            {
+                isMatch = CompareValues(NormalizeNumber(expectedValue), actual, contextContainsPDF, result);
+            }
             else
             {
                 isMatch = CompareValues(expectedValue, actual, contextContainsPDF, result);
@@ -1191,6 +1242,20 @@ namespace Defra.UI.Tests.Steps.IPAFF
             {
                 Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
             }
+        }
+
+
+        public static string NormalizeNumber(string value)
+        {
+            string x = decimal
+        .Parse(value.Trim(), System.Globalization.CultureInfo.InvariantCulture)
+        .ToString("0.################", System.Globalization.CultureInfo.InvariantCulture);
+
+
+            return decimal
+                    .Parse(value.Trim(), System.Globalization.CultureInfo.InvariantCulture)
+                    .ToString("0.################", System.Globalization.CultureInfo.InvariantCulture);
+
         }
 
 

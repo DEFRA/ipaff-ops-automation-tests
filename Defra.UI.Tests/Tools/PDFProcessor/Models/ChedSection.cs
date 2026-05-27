@@ -7,6 +7,9 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
     {
         // Common fields found across many sections
         public string Value { get; set; }
+        public string Variety { get; set; }
+        public string Quantity { get; set; }
+        public string ControlledAtmosphereContainer { get; set; }
         public string Id { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }
@@ -62,9 +65,31 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
         public string SecondEntryPoint { get; set; }
         public string ArrivalOfConsignment { get; set; }
         public string ComplianceOfTheConsignment { get; set; }
+        //public string Codes { get; set; }
+        public List<Code> CodeValues { get; set; }
 
         // Catch-all for any other dynamic fields
         [JsonExtensionData]
-        public Dictionary<string, object> AdditionalData { get; set; }
+        public Dictionary<string, object> AdditionalData { get; set; }        
+
+    }
+
+    public class Code
+    {
+        [JsonProperty("Code")]
+        public string CommCode { get; set; }
+        public string Name { get; set; }
+        public List<string> Columns { get; set; }
+        public List<Values> Values { get; set; }
+
+    }
+    public class Values
+    {
+        public string GenusAndSpecies { get; set; }
+        public string EppoCode { get; set; }
+        public string Class { get; set; }
+        public string Variety { get; set; }
+        public string InspectionOutcome { get; set; }
+        public string ValidityPeriodDays { get; set; }
     }
 }
