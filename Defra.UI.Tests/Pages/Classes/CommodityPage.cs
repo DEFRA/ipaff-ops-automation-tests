@@ -451,5 +451,18 @@ namespace Defra.UI.Tests.Pages.Classes
             var optionValue = value.Trim().Equals("Yes", StringComparison.OrdinalIgnoreCase) ? "Finished" : "Propagated";
             new SelectElement(drpIntendedForFinalUsers(commodityCode)).SelectByValue(optionValue);
         }
+
+        public void SelectCommodityByCodeAndDescription(string commodityCode, string description)
+        {
+            // Find the "Select this commodity" button that matches both code and description
+            var selectButton = _driver.WaitForElement(
+                By.XPath($"//button[contains(@class, 'commodity-description-link') and normalize-space()='{description}']" +
+                         $"/following-sibling::span//button[@name='selected-commodity_{commodityCode}' and @value='{commodityCode}']"),
+                true);
+
+            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView({block: 'center'});", selectButton);
+            Thread.Sleep(300);
+            selectButton.Click();
+        }
     }
 }

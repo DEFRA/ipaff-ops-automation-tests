@@ -22,8 +22,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
         /// These are archived with an iteration prefix and then removed before the next iteration.
         /// </summary>
         private static readonly string[] IpaffsIterationKeys =
-[
-    "ImportType",
+        [
+            "ImportType",
             "CountryOfOrigin",
             "ContryFromWhereConsigned",
             "CommodityCode",
@@ -44,6 +44,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
             "IsRegionOfOriginCodeRequired",
             "TranshipmentDestinationCountry",
             "ConsignmentReferenceNumber",
+            "PlaceOfExit",
+            "ConsignmentLeavingFromGBDate",
+            "ConsignmentLeavingFromGBTime",
+            "CommodityIntendedFor",
             "NumberOfAnimals",
             "NumberOfPackages",
             "PackageType",
@@ -138,6 +142,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             "PlaceOfDestinationCountry",
             "RiskDecisionRequestsJson",
             "RiskDecisionJson",
+            "UserRole",
         ];
 
         public ConfirmationSteps(ScenarioContext context, IObjectContainer container)

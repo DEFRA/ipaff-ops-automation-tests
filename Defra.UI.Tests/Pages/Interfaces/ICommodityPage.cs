@@ -60,5 +60,6 @@
         string GetCHEDPPTotalPackages();
         void ClickCancelLink();
         void SelectIntendedForFinalUsers(string commodityCode, string value);
+        void SelectCommodityByCodeAndDescription(string commodityCode, string description);
     }
 }

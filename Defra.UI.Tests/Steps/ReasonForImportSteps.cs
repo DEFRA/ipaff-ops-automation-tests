@@ -44,6 +44,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
         [When("The user selects {string} radio option")]
+        [When("the user selects {string} radio option")]
         public void WhenTheUserSelectsRadioOption(string reasonForImport)
         {
             reasonForImportPage?.SelectReasonForImport(reasonForImport);

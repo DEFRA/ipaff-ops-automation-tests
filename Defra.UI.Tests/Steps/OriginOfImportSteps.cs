@@ -80,13 +80,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
         [When("country of origin and Country from where consigned fields are pre-populated with previously selected country")]
+        [Then("the Country of origin and Country from where consigned fields are pre-populated with the previously selected country")]
         public void ThenCountryOfOriginAndCountryFromWhereConsignedFieldsArePre_PopulatedWithPreviouslySelectedCountry()
         {
             var countryOfOrigin = _scenarioContext.Get<string>("CountryOfOrigin");
             Assert.Multiple(() =>
             {
                 Assert.True(countryOfOrigin.Equals(originOfImportPage?.GetOriginCountryText), "Country of origin field does not contain previously selected country");
-                Assert.True(countryOfOrigin.Equals(originOfImportPage?.GetOriginCountryText), "Country from where consigned field does not contain previously selected country");
+                Assert.True(countryOfOrigin.Equals(originOfImportPage?.GetConsignedCountryText), "Country from where consigned field does not contain previously selected country");
             });
         }
 
