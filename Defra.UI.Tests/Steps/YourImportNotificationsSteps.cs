@@ -94,7 +94,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var chedReference = _scenarioContext.Get<string>("CHEDReference");
             Assert.True(importNotificationsPage?.VerifyDataInCertificate(chedReference), "Certificate data verification failed");
             var json = JsonConvert.SerializeObject(_scenarioContext.ToDictionary(kvp => kvp.Key, kvp => kvp.Value), Formatting.Indented);
-            var chedReferenceFileName =  chedReference + "-certificate.pdf";
+            var chedReferenceFileName = chedReference + "-certificate.pdf";
             string downloadDirectory = _scenarioContext.Get<string>("PDFDownloadedDirectory");
             string pdfPath = Path.Combine(downloadDirectory, chedReferenceFileName);
             var converter = new PdfToJsonConverter();
@@ -374,15 +374,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         ValidateIfExists("PhysicalCheck", pdfPhysicalCheck, ref allDataMatches, mismatches);
                         ValidateIfExists("PhysicalCheckDecision", pdfPhysicalCheck, ref allDataMatches, mismatches);
 
-/*                        string pdfLaboratoryTestRequired;
-                        if (page.Sections.LaboratoryTests.AdditionalData != null)
-                        {
-                            pdfLaboratoryTestRequired = "Yes";
-                        }
-                        else
-                        {
-                            pdfLaboratoryTestRequired = "No";
-                        }*/
+                        /*                        string pdfLaboratoryTestRequired;
+                                                if (page.Sections.LaboratoryTests.AdditionalData != null)
+                                                {
+                                                    pdfLaboratoryTestRequired = "Yes";
+                                                }
+                                                else
+                                                {
+                                                    pdfLaboratoryTestRequired = "No";
+                                                }*/
 
                         //ValidateIfExists("AreLaboratoryTestsRequired", pdfLaboratoryTestRequired, ref allDataMatches, mismatches);
 
@@ -732,7 +732,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         ValidateIfExists("CHEDReference", page.Sections.II2ChedReference.Id, ref allDataMatches, mismatches);
                         ValidateContains("BorderControlPost", (string)page.Sections.IdentificationOfBcp.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches, true);
                         ValidateContains("BorderControlPost", (string)page.Sections.IdentificationOfBcp.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches, true);
-                        
+
 
                         var codes = page.Sections.HMIChecks.AdditionalData.ElementAt(2).Value;
 
@@ -773,34 +773,32 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
                                         valueIndex++;
 
-                                    }                                    
+                                    }
                                 }
                             }
                         }
                     }
-
-
-                    if (!allDataMatches)
-                    {
-                        Console.WriteLine("[PDF VALIDATION] Data mismatches found:");
-                        foreach (var mismatch in mismatches)
-                        {
-                            Console.WriteLine($"[PDF VALIDATION] {mismatch}");
-                        }
-                    }
-
-                    Assert.True(allDataMatches, $"PDF data validation failed. Mismatches: {string.Join(", ", mismatches)}");
-
-                    if (File.Exists(pdfPath))
-                    {
-                        File.Delete(pdfPath);
-                        Console.WriteLine("File deleted successfully.");
-                    }
-                    else
-                    {
-                        Console.WriteLine("File not found to delete.");
-                    }
                 }
+            }
+            if (!allDataMatches)
+            {
+                Console.WriteLine("[PDF VALIDATION] Data mismatches found:");
+                foreach (var mismatch in mismatches)
+                {
+                    Console.WriteLine($"[PDF VALIDATION] {mismatch}");
+                }
+            }
+
+            Assert.True(allDataMatches, $"PDF data validation failed. Mismatches: {string.Join(", ", mismatches)}");
+
+            if (File.Exists(pdfPath))
+            {
+                File.Delete(pdfPath);
+                Console.WriteLine("File deleted successfully.");
+            }
+            else
+            {
+                Console.WriteLine("File not found to delete.");
             }
         }
 
@@ -954,7 +952,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             importNotificationsPage?.ClickCloneButton();
         }
 
-        private void ValidateIfExists(string contextKey, string? reviewValue, ref bool allDataMatches, List<string> mismatches) 
+        private void ValidateIfExists(string contextKey, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
         {
             if (IsCloningDetailsKey(contextKey))
             {
@@ -1058,7 +1056,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
 
-        private bool IsIdentityField(string key) =>    key is "IdentityCheck" or "IdentityCheckType";
+        private bool IsIdentityField(string key) => key is "IdentityCheck" or "IdentityCheckType";
 
         private void NormalizeIdentityValues(string key, ref string? reviewValue)
         {
@@ -1138,7 +1136,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             }
 
             bool matchFound = array.Any(expected =>
-                string.Equals(expected?.Trim().Replace(" ",""), reviewValue.Trim().Replace(" ", ""), StringComparison.OrdinalIgnoreCase));
+                string.Equals(expected?.Trim().Replace(" ", ""), reviewValue.Trim().Replace(" ", ""), StringComparison.OrdinalIgnoreCase));
 
             if (!matchFound)
             {
@@ -1227,7 +1225,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             {
                 isMatch = DatesMatch(expectedValue, actual);
             }
-            else if(contextKey.Contains("Net weight"))
+            else if (contextKey.Contains("Net weight"))
             {
                 isMatch = CompareValues(NormalizeNumber(expectedValue), actual, contextContainsPDF, result);
             }
@@ -1314,7 +1312,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 if (expectedValue == "Compliant") expectedValue = "IUUOK";
             }
 
-            if (contextKey == "ExitBCP" && actual!=null) actual = actual.Replace(".", "").Trim();
+            if (contextKey == "ExitBCP" && actual != null) actual = actual.Replace(".", "").Trim();
             if (contextKey is "ExitBorderControlPost" or "PortOfEntry") expectedValue = expectedValue.Split(new[] { '(', '-' })[0].Trim();
             if (contextKey == "InspectionPremises") expectedValue = expectedValue.Split('-')[0].Trim();
             /*if (contextKey == "BorderControlPost" && _scenarioContext["CHEDReference"].ToString().Contains("CHEDPP"))
@@ -1342,7 +1340,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             {
                 if (actual.Contains(item.Trim(), StringComparison.OrdinalIgnoreCase))
                 {
-                    Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{item}' matches");                    
+                    Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{item}' matches");
                     return;
                 }
             }
@@ -1485,7 +1483,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     mismatches.Add($"{contextKey}: Unsupported type '{rawExpected.GetType().Name}'");
                     return;
                 }
-
             }
         }
 
