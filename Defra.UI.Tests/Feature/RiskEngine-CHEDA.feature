@@ -1468,6 +1468,8 @@ Scenario: Bulk upload update existing rules for CHEDA - SPS-9428
 		| Total          | 1             |
 		| Triggered      | 1             |
 		| IsTriggered    | true          |
+	And 'Iteration_5' is complete
+	# ---------- Iteration 5: Complete ----------
 	# Delete the 5 rules created by the update bulk upload
 	When the user clicks the 'Reports' link from the Risk Engine header menu
 	Then the Risk Engine Reports page should be displayed
@@ -1487,5 +1489,3 @@ Scenario: Bulk upload update existing rules for CHEDA - SPS-9428
 	Then the CHED-A rule Id recorded as 'Iteration_5_RuleId' should no longer be present in the rules table
 	When the user scrolls to the bottom of the CHED-A rules report page
 	Then the count of CHED-A rules should be 5 less than 'InitialRuleCount'
-	And 'Iteration_5' is complete
-	# ---------- Iteration 5: Complete ----------

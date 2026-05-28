@@ -177,6 +177,14 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CheckAndSubmitCommodityRulesForCHEDAPage, ICheckAndSubmitCommodityRulesForCHEDAPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CommodityRulesStatusForCHEDAPage, ICommodityRulesStatusForCHEDAPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ThereAreRulesInYourCSVFileThatAlreadyExistPage, IThereAreRulesInYourCSVFileThatAlreadyExistPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDDReportsPage, ICHEDDReportsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDDImportsPage, ICHEDDImportsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ViewAllCHEDDImportCommodityRulesPage, IViewAllCHEDDImportCommodityRulesPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<BulkUploadCommodityRulesForCHEDDPage, IBulkUploadCommodityRulesForCHEDDPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CommodityRulesForCHEDDPage, ICommodityRulesForCHEDDPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CheckAndSubmitCommodityRulesForCHEDDPage, ICheckAndSubmitCommodityRulesForCHEDDPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CommodityRulesStatusForCHEDDPage, ICommodityRulesStatusForCHEDDPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ThereAreRulesInYourCSVFileThatAlreadyExistCHEDDPage, IThereAreRulesInYourCSVFileThatAlreadyExistCHEDDPage>());
 
             //Read Email
             _objectContainer.RegisterInstanceAs(GetBaseWithScenarioContext<FetchCodeFromEmail, IFetchCodeFromEmail>());

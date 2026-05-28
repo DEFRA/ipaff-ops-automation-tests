@@ -14,6 +14,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='Reports']"), true);
         private IWebElement lnkChedPPReports => _driver.WaitForElement(By.XPath("//a[normalize-space()='CHED-PP reports']"));
         private IWebElement lnkChedAReports => _driver.WaitForElement(By.XPath("//a[normalize-space()='CHED-A reports']"));
+        private IWebElement lnkChedDReports => _driver.WaitForElement(By.XPath("//a[normalize-space()='CHED-D reports']"));
         #endregion
 
         public ReportsPage(IObjectContainer container)
@@ -26,5 +27,7 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickChedPPReportsLink() => lnkChedPPReports.Click();
 
         public void ClickChedAReportsLink() => lnkChedAReports.Click();
+
+        public void ClickChedDReportsLink() => lnkChedDReports.Click();
     }
 }
