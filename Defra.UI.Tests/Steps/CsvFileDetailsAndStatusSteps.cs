@@ -64,5 +64,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             csvFileDetailsAndStatusPage?.ClickPhsiReportingLink();
         }
+
+        [When("the user clicks the EU CHED-P reporting link at the bottom of the summary page")]
+        public void WhenTheUserClicksTheEuChedPReportingLink()
+        {
+            csvFileDetailsAndStatusPage?.ClickEuChedPReportingLink();
+        }
     }
 }

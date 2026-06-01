@@ -13,6 +13,7 @@ namespace Defra.UI.Tests.Pages.Classes
         #region Page Objects
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='Reports']"), true);
         private IWebElement lnkChedPPReports => _driver.WaitForElement(By.XPath("//a[normalize-space()='CHED-PP reports']"));
+        private IWebElement lnkChedPReports => _driver.WaitForElement(By.XPath("//a[normalize-space()='CHED-P reports']"));
         private IWebElement lnkChedAReports => _driver.WaitForElement(By.XPath("//a[normalize-space()='CHED-A reports']"));
         private IWebElement lnkChedDReports => _driver.WaitForElement(By.XPath("//a[normalize-space()='CHED-D reports']"));
         #endregion
@@ -25,6 +26,8 @@ namespace Defra.UI.Tests.Pages.Classes
         public bool IsPageLoaded() => pageTitle.Text.Trim().Equals("Reports");
 
         public void ClickChedPPReportsLink() => lnkChedPPReports.Click();
+
+        public void ClickChedPReportsLink() => lnkChedPReports.Click();
 
         public void ClickChedAReportsLink() => lnkChedAReports.Click();
 

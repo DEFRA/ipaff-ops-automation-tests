@@ -1,0 +1,6 @@
+Id,Description,Commodity code,Rate %,Previous rate %,Permanent,Start date,End date,Countries,Country groups,Country exceptions,Purpose,Border Control Post,Risk categorisation,Allow multiple inspections,Reason
+,ALL,'*,50,,No,,23/10/2027,ALL,None,"Austria, Belgium, Bulgaria, Croatia, Cyprus, Czechia, Denmark",All,All,High,Yes,Reason 1b
+,Of Kashmir (cashmere) goats,'51021100,1,,Yes,,,None,"CHED-P EU Countries, Third Countries","Hungary, Ireland, Romania, Djibouti",All,All,Any,No,Reason 2
+,"Extracts and juices of meat, fish or crustaceans, molluscs or other aquatic invertebrates",'1603,100,,Yes,,,"Djibouti, Togo",None,None,All,"GBDOV1P, GBEMA4, GBGSY1, GBHUL1H, GBLGP1",Any,Yes,
+,Goods of this chapter in tablets or similar forms or in packages of a gross weight not exceeding 10kg,'31051000,100,,Yes,,,"Brazil, Canada, Chile, China, Ecuador, India, Thailand, Turkey, Ukraine",EU Member States,None,"Transhipment / Onward travel, Transit",All,Low,No,
+,Boneless,'020130,15,,Yes,,,Australia,None,None,Transit,"GBDOV1P, GBEMA4, GBGSY1, GBHUL1H, GBLGP1",Any,Yes,

@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using Defra.UI.Tests.Pages.Interfaces;
+﻿using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
 using Reqnroll.BoDi;
+using System.Globalization;
 
 namespace Defra.UI.Tests.Pages.Classes
 {
@@ -17,6 +15,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement pageHeading => _driver.WaitForElement(By.XPath("//h1[normalize-space()='CSV file details and status']"), true);
         private IWebElement summaryList => _driver.WaitForElement(By.Id("commodity-information"));
         private IWebElement phsiReportingLink => _driver.WaitForElement(By.XPath("//a[normalize-space()='PHSI reporting']"));
+        private IWebElement euChedPReportingLink => _driver.WaitForElement(By.XPath("//a[normalize-space()='EU CHED-P reporting']"));
         private By summaryRowsBy => By.XPath(".//div[contains(@class,'govuk-summary-list__row')]");
         private By summaryKeyBy => By.XPath("./dt");
         private By summaryValueBy => By.XPath("./dd");
@@ -44,5 +43,7 @@ namespace Defra.UI.Tests.Pages.Classes
         }
 
         public void ClickPhsiReportingLink() => phsiReportingLink.Click();
+
+        public void ClickEuChedPReportingLink() => euChedPReportingLink.Click();
     }
 }

@@ -8,5 +8,6 @@ namespace Defra.UI.Tests.Pages.Interfaces
         IDictionary<string, string> GetSummaryDetails();
         int GetSummaryFieldAsInt(string field);
         void ClickPhsiReportingLink();
+        void ClickEuChedPReportingLink();
     }
 }

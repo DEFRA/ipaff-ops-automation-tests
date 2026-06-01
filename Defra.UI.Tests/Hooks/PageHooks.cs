@@ -169,6 +169,9 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<AreCommodityRuleChangesCorrectPage, IAreCommodityRuleChangesCorrectPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<UploadingRuleChangesPage, IUploadingRuleChangesPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CsvFileDetailsAndStatusPage, ICsvFileDetailsAndStatusPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDPReportsPage, ICHEDPReportsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDPImportsAndExportsPage, ICHEDPImportsAndExportsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ViewAllCHEDPImportCommodityRulesPage, IViewAllCHEDPImportCommodityRulesPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDAReportsPage, ICHEDAReportsPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDAImportsPage, ICHEDAImportsPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ViewAllCHEDAImportCommodityRulesPage, IViewAllCHEDAImportCommodityRulesPage>());
