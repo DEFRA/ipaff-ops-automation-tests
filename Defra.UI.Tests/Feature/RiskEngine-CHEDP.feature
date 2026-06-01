@@ -18,7 +18,7 @@ Scenario: Bulk upload initial load for CHEDP - SPS-9419
 	When the user scrolls to the bottom of the CHED-P rules report page
 	Then the count of CHED-P rules is recorded as 'InitialRuleCount'
 	When the user clicks the 'CHED-P' link from the Risk Engine header menu
-	Then the CHED-P imports and exports page should be displayed
+	Then the CHED-P imports page should be displayed
 	When the user clicks the Bulk upload commodity rules link on the CHED-P imports page
 	Then the Upload multiple commodity rules using a CSV file page should be displayed
 	When the user clicks the Choose file button
@@ -368,7 +368,7 @@ Scenario: Bulk upload update existing rules for CHEDP - SPS-9420
 	When the user scrolls to the bottom of the CHED-P rules report page
 	Then the count of CHED-P rules is recorded as 'InitialRuleCount'
 	When the user clicks the 'CHED-P' link from the Risk Engine header menu
-	Then the CHED-P imports and exports page should be displayed
+	Then the CHED-P imports page should be displayed
 	When the user clicks the Bulk upload commodity rules link on the CHED-P imports page
 	Then the Upload multiple commodity rules using a CSV file page should be displayed
 	When the user clicks the Choose file button
@@ -473,8 +473,8 @@ Scenario: Bulk upload update existing rules for CHEDP - SPS-9420
 		| Permanent                  | Yes                                              |
 		| End date                   |                                                  |
 		| Countries                  | None                                             |
-		| Country groups             | CHED-P EU Countries, Third Countries             |
-		| Country exceptions         | Hungary, Ireland, Romania, Djibouti              |
+		| Country groups             | Third Countries, CHED-P EU Countries             |
+		| Country exceptions         | Djibouti, Hungary, Ireland, Romania              |
 		| Purpose                    | All                                              |
 		| Border Control Post        | All                                              |
 		| Risk categorisation        | Any                                              |
