@@ -417,7 +417,9 @@ namespace Defra.UI.Tests.Pages.Classes
                     break;
 
                 case "Transit":
-                    SelectRandomDropdownOption(transitExitBCP);
+                    SelectRandomDropdownOption(transitExitBCP, excludedTexts: ["LONDON GATEWAY (GBLGP)"]);
+                    FillTransitDateTimeIfPresent();
+                    FillTransitedCountryIfPresent();
                     SelectRandomDropdownOption(txtDestinationCountry);
                     break;
 
@@ -429,6 +431,31 @@ namespace Defra.UI.Tests.Pages.Classes
                 case "Re-entry":
                     break;
             }
+        }
+
+        private void FillTransitDateTimeIfPresent()
+        {
+            try
+            {
+                if (txtDay.Displayed)
+                {
+                    EnterConsignmentDepartureDate();
+                    EnterConsignmentDepartureTime();
+                }
+            }
+            catch (NoSuchElementException) { }
+            catch (ElementNotInteractableException) { }
+        }
+
+        private void FillTransitedCountryIfPresent()
+        {
+            try
+            {
+                if (txtTransitedCountry.Displayed)
+                    SelectRandomDropdownOption(txtTransitedCountry);
+            }
+            catch (NoSuchElementException) { }
+            catch (ElementNotInteractableException) { }
         }
 
         private void SelectRandomInternalMarketSubOption(List<string>? constrainedSubOptions)
@@ -456,12 +483,21 @@ namespace Defra.UI.Tests.Pages.Classes
             SelectReasonForImportSubOption(chosen);
         }
 
-        private void SelectRandomDropdownOption(IWebElement selectElement)
+        private void SelectRandomDropdownOption(IWebElement selectElement, IEnumerable<string>? excludedTexts = null)
         {
             var select = new SelectElement(selectElement);
             var options = select.Options
                 .Where(o => !string.IsNullOrWhiteSpace(o.GetAttribute("value")))
                 .ToList();
+
+            if (excludedTexts is not null)
+                options = options
+                    .Where(o => !excludedTexts.Any(e => o.Text.Trim().Equals(e, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+
+            if (options.Count == 0)
+                throw new InvalidOperationException(
+                    $"No selectable options remain in dropdown '{selectElement.GetAttribute("id")}' after applying exclusions.");
 
             var chosen = options[_random.Next(options.Count)];
             select.SelectByValue(chosen.GetAttribute("value"));

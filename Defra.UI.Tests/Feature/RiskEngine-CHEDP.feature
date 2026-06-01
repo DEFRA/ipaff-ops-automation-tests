@@ -79,7 +79,92 @@ Scenario: Bulk upload initial load for CHEDP - SPS-9419
 	And the top CHED-P rule row should have Start date as today's date
 	And the user records the Id of the top CHED-P rule row as 'Iteration_1_RuleId'
 	# Submit a matching CHED-P notification in IPAFFS (Djibouti / 51021100 / Risk categorisation: High)
-	# TODO: IPAFFS notification submission steps to be added
+	When I navigate to the IPAFF application
+	Then I should see type of Gateway login page
+	And I have selected 'Sign in with Government Gateway' as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF credentials and signin
+	Then the user should be logged into Notification page
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Products of animal origin, germinal products or animal by-products' option
+	And the user clicks Save and continue
+	Then the Origin of the plants plant product or other objects page should be displayed
+	When the user chooses 'Djibouti' from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing 'Djibouti' as the Country of origin and Country from where consigned 
+	When the user chooses 'Yes' for Does this consignment conform to regulatory regulations?
+	And the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '51021100' commodity code
+	Then the commodity details should be populated '51021100' 'Of Kashmir (cashmere) goats'
+	When the user selects species of commodity 'Capra spp.'
+	And the user selects 'No' for Do you want to add another commodity?
+	And the user clicks Save and continue
+	Then What is the main reason for importing the consignment? page should be displayed
+	When the user randomly selects a purpose from 'Any'
+	And the user clicks Save and continue
+	Then Select the highest risk category for the commodities in this consignment page should be displayed
+	When the user chooses 'High risk' risk category
+	And the user clicks Save and continue
+	Then the Health certificate required page should be displayed
+	When the user clicks continue button
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Commodity page should be displayed with the commodity and description entered
+	When the user populates Net weight as '1000'
+	And the user populates Number of packages as '10'
+	And the user selects type of package as 'Box'
+	And the user clicks the Update total button
+	Then the total gross weight should be greater than the net weight '1500'
+	When the user clicks Save and continue in commodity page
+	Then the Additional details page should be displayed
+	When the user selects 'Ambient' radio button on the Additional details page
+	And the user clicks Save and continue
+	Then the Latest Health Certificate page should be displayed
+	When the user enters Latest Health Certificate Document reference 'INV12345'
+	And the user enters Latest Health Certificate date of issue from yesterday
+	And the user clicks Latest Health Certificate add attachment link
+	And the user uploads the Latest Health Certificate document 'IPAFFS Test Document' in the format '.docx'
+	Then the Latest Health Certificate document 'IPAFFS Test Document' '.docx' is uploaded successfully
+	When the user clicks Save and continue
+	Then the Accompanying documents page should be displayed
+	When the user clicks Save and continue
+	Then the Approved establishment of origin page should be displayed
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter should be displayed
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee 'DEF'
+	Then the chosen consignee should be displayed
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee
+	When the user clicks Same as consignee for Place of destination
+	Then the place of destination should be populated with the same details as the consignee
+	When the user clicks Save and continue
+	Then the Transport to the port of entry page should be displayed
+	When the user populates the transport details 'BRISTOL (GBBRS)' 'No' 'Road vehicle' '123456' 'Doc1234'
+	And the user clicks Save and continue
+	Then the Goods movement services page should be displayed
+	When the user selects 'No' for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user clicks Save and continue
+	Then the Contact details page should be displayed
+	When the user clicks Save and continue
+	Then the Nominated contacts page should be displayed
+	When the user clicks Save and continue
+	Then the Contact address for consignment page should be displayed
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
 	And the user records the CHED Reference for 'Iteration_1'
 	# Validate via Risk Decision Report
 	When I navigate to the Risk Engine application
@@ -136,10 +221,170 @@ Scenario: Bulk upload initial load for CHEDP - SPS-9419
 	And the top CHED-P rule row should have Start date as today's date
 	And the user records the Id of the top CHED-P rule row as 'Iteration_2_RuleId'
 	# Submit a matching CHED-P notification in IPAFFS (France / Internal Market - Technical use / 51021100 / Risk categorisation: Medium) - APP-A
-	# TODO: IPAFFS notification submission steps to be added
+	When I navigate to the IPAFF application
+	Then the Your import notifications page is displayed
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Products of animal origin, germinal products or animal by-products' option
+	And the user clicks Save and continue
+	Then the Origin of the plants plant product or other objects page should be displayed
+	When the user chooses 'France' from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing 'France' as the Country of origin and Country from where consigned 
+	When the user chooses 'Yes' for Does this consignment conform to regulatory regulations?
+	And the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '51021100' commodity code
+	Then the commodity details should be populated '51021100' 'Of Kashmir (cashmere) goats'
+	When the user selects species of commodity 'Capra spp.'
+	And the user selects 'No' for Do you want to add another commodity?
+	And the user clicks Save and continue
+	Then What is the main reason for importing the consignment? page should be displayed
+	When the user randomly selects a purpose from 'Internal market: Animal Feedingstuff, Human Consumption, Technical use'
+	And the user clicks Save and continue
+	Then Select the highest risk category for the commodities in this consignment page should be displayed
+	When the user chooses 'Medium risk' risk category
+	And the user clicks Save and continue
+	Then the Health certificate required page should be displayed
+	When the user clicks continue button
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Commodity page should be displayed with the commodity and description entered
+	When the user populates Net weight as '1000'
+	And the user populates Number of packages as '10'
+	And the user selects type of package as 'Box'
+	And the user clicks the Update total button
+	Then the total gross weight should be greater than the net weight '1500'
+	When the user clicks Save and continue in commodity page
+	Then the Additional details page should be displayed
+	When the user selects 'Ambient' radio button on the Additional details page
+	And the user clicks Save and continue
+	Then the Latest Health Certificate page should be displayed
+	When the user enters Latest Health Certificate Document reference 'INV12345'
+	And the user enters Latest Health Certificate date of issue from yesterday
+	And the user clicks Latest Health Certificate add attachment link
+	And the user uploads the Latest Health Certificate document 'IPAFFS Test Document' in the format '.docx'
+	Then the Latest Health Certificate document 'IPAFFS Test Document' '.docx' is uploaded successfully
+	When the user clicks Save and continue
+	Then the Accompanying documents page should be displayed
+	When the user clicks Save and continue
+	Then the Approved establishment of origin page should be displayed
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter should be displayed
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee 'DEF'
+	Then the chosen consignee should be displayed
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee
+	When the user clicks Same as consignee for Place of destination
+	Then the place of destination should be populated with the same details as the consignee
+	When the user clicks Save and continue
+	Then the Transport to the port of entry page should be displayed
+	When the user populates the transport details 'BRISTOL (GBBRS)' 'No' 'Road vehicle' '123456' 'Doc1234'
+	And the user clicks Save and continue
+	Then the Goods movement services page should be displayed
+	When the user selects 'No' for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user clicks Save and continue
+	Then the Contact details page should be displayed
+	When the user clicks Save and continue
+	Then the Nominated contacts page should be displayed
+	When the user clicks Save and continue
+	Then the Contact address for consignment page should be displayed
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
 	And the user records the CHED Reference for 'Iteration_2A'
 	# Submit a 2nd matching CHED-P notification in IPAFFS (France / Internal Market - Technical use / 51021100 / Risk categorisation: Medium) - APP-B
-	# TODO: IPAFFS notification submission steps to be added
+	When I navigate to the IPAFF application
+	Then the Your import notifications page is displayed
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Products of animal origin, germinal products or animal by-products' option
+	And the user clicks Save and continue
+	Then the Origin of the plants plant product or other objects page should be displayed
+	When the user chooses 'France' from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing 'France' as the Country of origin and Country from where consigned 
+	When the user chooses 'Yes' for Does this consignment conform to regulatory regulations?
+	And the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '51021100' commodity code
+	Then the commodity details should be populated '51021100' 'Of Kashmir (cashmere) goats'
+	When the user selects species of commodity 'Capra spp.'
+	And the user selects 'No' for Do you want to add another commodity?
+	And the user clicks Save and continue
+	Then What is the main reason for importing the consignment? page should be displayed
+	When the user randomly selects a purpose from 'Internal market: Animal Feedingstuff, Human Consumption, Technical use'
+	And the user clicks Save and continue
+	Then Select the highest risk category for the commodities in this consignment page should be displayed
+	When the user chooses 'Medium risk' risk category
+	And the user clicks Save and continue
+	Then the Health certificate required page should be displayed
+	When the user clicks continue button
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Commodity page should be displayed with the commodity and description entered
+	When the user populates Net weight as '1000'
+	And the user populates Number of packages as '10'
+	And the user selects type of package as 'Box'
+	And the user clicks the Update total button
+	Then the total gross weight should be greater than the net weight '1500'
+	When the user clicks Save and continue in commodity page
+	Then the Additional details page should be displayed
+	When the user selects 'Ambient' radio button on the Additional details page
+	And the user clicks Save and continue
+	Then the Latest Health Certificate page should be displayed
+	When the user enters Latest Health Certificate Document reference 'INV12345'
+	And the user enters Latest Health Certificate date of issue from yesterday
+	And the user clicks Latest Health Certificate add attachment link
+	And the user uploads the Latest Health Certificate document 'IPAFFS Test Document' in the format '.docx'
+	Then the Latest Health Certificate document 'IPAFFS Test Document' '.docx' is uploaded successfully
+	When the user clicks Save and continue
+	Then the Accompanying documents page should be displayed
+	When the user clicks Save and continue
+	Then the Approved establishment of origin page should be displayed
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter should be displayed
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee 'DEF'
+	Then the chosen consignee should be displayed
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee
+	When the user clicks Same as consignee for Place of destination
+	Then the place of destination should be populated with the same details as the consignee
+	When the user clicks Save and continue
+	Then the Transport to the port of entry page should be displayed
+	When the user populates the transport details 'BRISTOL (GBBRS)' 'No' 'Road vehicle' '123456' 'Doc1234'
+	And the user clicks Save and continue
+	Then the Goods movement services page should be displayed
+	When the user selects 'No' for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user clicks Save and continue
+	Then the Contact details page should be displayed
+	When the user clicks Save and continue
+	Then the Nominated contacts page should be displayed
+	When the user clicks Save and continue
+	Then the Contact address for consignment page should be displayed
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
 	And the user records the CHED Reference for 'Iteration_2B'
 	# Validate via Risk Decision Report - APP-A (Total=1, Triggered=0)
 	When I navigate to the Risk Engine application
@@ -210,7 +455,88 @@ Scenario: Bulk upload initial load for CHEDP - SPS-9419
 	And the top CHED-P rule row should have Start date as today's date
 	And the user records the Id of the top CHED-P rule row as 'Iteration_3_RuleId'
 	# Submit a matching CHED-P notification in IPAFFS (Djibouti / 1603)
-	# TODO: IPAFFS notification submission steps to be added
+	When I navigate to the IPAFF application
+	Then the Your import notifications page is displayed
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Products of animal origin, germinal products or animal by-products' option
+	And the user clicks Save and continue
+	Then the Origin of the plants plant product or other objects page should be displayed
+	When the user chooses 'Djibouti' from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing 'Djibouti' as the Country of origin and Country from where consigned 
+	When the user chooses 'Yes' for Does this consignment conform to regulatory regulations?
+	And the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '1603' commodity code
+	Then the commodity details should be populated '1603' 'Extracts and juices of meat, fish or crustaceans, molluscs or other aquatic invertebrates'
+	When the user selects the type of commodity 'Composite products'
+	When the user selects species of commodity 'Other'
+	And the user selects 'No' for Do you want to add another commodity?
+	And the user clicks Save and continue
+	Then What is the main reason for importing the consignment? page should be displayed
+	When the user randomly selects a purpose from 'Any'
+	And the user clicks Save and continue
+	Then Select the highest risk category for the commodities in this consignment page should be displayed
+	When the user chooses 'Medium risk' risk category
+	And the user clicks Save and continue
+	Then the Health certificate required page should be displayed
+	When the user clicks continue button
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Commodity page should be displayed with the commodity and description entered
+	When the user populates Net weight as '1000'
+	And the user populates Number of packages as '10'
+	And the user selects type of package as 'Box'
+	And the user clicks the Update total button
+	Then the total gross weight should be greater than the net weight '1500'
+	When the user clicks Save and continue in commodity page
+	Then the Additional details page should be displayed
+	When the user selects 'Ambient' radio button on the Additional details page
+	And the user clicks Save and continue
+	Then the Latest Health Certificate page should be displayed
+	When the user enters Latest Health Certificate Document reference 'INV12345'
+	And the user enters Latest Health Certificate date of issue from yesterday
+	And the user clicks Latest Health Certificate add attachment link
+	And the user uploads the Latest Health Certificate document 'IPAFFS Test Document' in the format '.docx'
+	Then the Latest Health Certificate document 'IPAFFS Test Document' '.docx' is uploaded successfully
+	When the user clicks Save and continue
+	Then the Accompanying documents page should be displayed
+	When the user clicks Save and continue
+	Then the Approved establishment of origin page should be displayed
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter should be displayed
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee 'DEF'
+	Then the chosen consignee should be displayed
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee
+	When the user clicks Same as consignee for Place of destination
+	Then the place of destination should be populated with the same details as the consignee
+	When the user clicks Save and continue
+	Then the Transport to the port of entry page should be displayed
+	When the user populates the transport details 'BRISTOL (GBBRS)' 'No' 'Road vehicle' '123456' 'Doc1234'
+	And the user clicks Save and continue
+	Then the Goods movement services page should be displayed
+	When the user selects 'No' for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user clicks Save and continue
+	Then the Contact details page should be displayed
+	When the user clicks Save and continue
+	Then the Nominated contacts page should be displayed
+	When the user clicks Save and continue
+	Then the Contact address for consignment page should be displayed
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
 	And the user records the CHED Reference for 'Iteration_3'
 	# Validate via Risk Decision Report
 	When I navigate to the Risk Engine application
@@ -266,7 +592,81 @@ Scenario: Bulk upload initial load for CHEDP - SPS-9419
 	And the top CHED-P rule row should have Start date as today's date
 	And the user records the Id of the top CHED-P rule row as 'Iteration_4_RuleId'
 	# Submit a matching CHED-P notification in IPAFFS (Brazil / Transhipment / Onward travel / 31051000 / Risk categorisation: Low)
-	# TODO: IPAFFS notification submission steps to be added
+	When I navigate to the IPAFF application
+	Then the Your import notifications page is displayed
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Products of animal origin, germinal products or animal by-products' option
+	And the user clicks Save and continue
+	Then the Origin of the plants plant product or other objects page should be displayed
+	When the user chooses 'Brazil' from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing 'Brazil' as the Country of origin and Country from where consigned 
+	When the user chooses 'Yes' for Does this consignment conform to regulatory regulations?
+	And the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '31051000' commodity code
+	Then the commodity details should be populated '31051000' 'Goods of this chapter in tablets or similar forms or in packages of a gross weight not exceeding 10kg'
+	When the user selects the type of commodity 'processed manure'
+	When the user selects species of commodity 'Aves'
+	And the user selects 'No' for Do you want to add another commodity?
+	And the user clicks Save and continue
+	Then What is the main reason for importing the consignment? page should be displayed
+	When the user randomly selects a purpose from 'Transit | Transhipment or onward travel'
+	And the user clicks Save and continue
+	Then Select the highest risk category for the commodities in this consignment page should be displayed
+	When the user chooses 'Low risk' risk category
+	And the user clicks Save and continue
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Commodity page should be displayed with the commodity and description entered
+	When the user populates Net weight as '1000'
+	And the user populates Number of packages as '10'
+	And the user selects type of package as 'Box'
+	And the user clicks the Update total button
+	Then the total gross weight should be greater than the net weight '1500'
+	When the user clicks Save and continue in commodity page
+	Then the Additional details page should be displayed
+	When the user selects 'Ambient' radio button on the Additional details page
+	And the user clicks Save and continue
+	Then the Latest Health Certificate page should be displayed
+	When the user clicks Save and continue
+	Then the Accompanying documents page should be displayed
+	When the user clicks Save and continue
+	Then the Approved establishment of origin page should be displayed
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter should be displayed
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee 'DEF'
+	Then the chosen consignee should be displayed
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee
+	When the user clicks Same as consignee for Place of destination
+	Then the place of destination should be populated with the same details as the consignee
+	When the user clicks Save and continue
+	Then the Transport to the port of entry page should be displayed
+	When the user populates the transport details 'BRISTOL (GBBRS)' 'No' 'Road vehicle' '123456' 'Doc1234'
+	And the user clicks Save and continue
+	Then the Goods movement services page should be displayed
+	When the user selects 'No' for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user clicks Save and continue
+	Then the Contact details page should be displayed
+	When the user clicks Save and continue
+	Then the Nominated contacts page should be displayed
+	When the user clicks Save and continue
+	Then the Contact address for consignment page should be displayed
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
 	And the user records the CHED Reference for 'Iteration_4'
 	# Validate via Risk Decision Report
 	When I navigate to the Risk Engine application
@@ -322,7 +722,80 @@ Scenario: Bulk upload initial load for CHEDP - SPS-9419
 	And the top CHED-P rule row should have Start date as today's date
 	And the user records the Id of the top CHED-P rule row as 'Iteration_5_RuleId'
 	# Submit a matching CHED-P notification in IPAFFS (Singapore / 020130 / Transit / London Gateway)
-	# TODO: IPAFFS notification submission steps to be added
+	When I navigate to the IPAFF application
+	Then the Your import notifications page is displayed
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Products of animal origin, germinal products or animal by-products' option
+	And the user clicks Save and continue
+	Then the Origin of the plants plant product or other objects page should be displayed
+	When the user chooses 'Singapore' from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing 'Singapore' as the Country of origin and Country from where consigned 
+	When the user chooses 'Yes' for Does this consignment conform to regulatory regulations?
+	And the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '020130' commodity code
+	Then the commodity details should be populated '020130' 'Boneless'
+	When the user selects species of commodity 'Bison bison'
+	And the user selects 'No' for Do you want to add another commodity?
+	And the user clicks Save and continue
+	Then What is the main reason for importing the consignment? page should be displayed
+	When the user randomly selects a purpose from 'Transit'
+	And the user clicks Save and continue
+	Then Select the highest risk category for the commodities in this consignment page should be displayed
+	When the user chooses 'Low risk' risk category
+	And the user clicks Save and continue
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Commodity page should be displayed with the commodity and description entered
+	When the user populates Net weight as '1000'
+	And the user populates Number of packages as '10'
+	And the user selects type of package as 'Box'
+	And the user clicks the Update total button
+	Then the total gross weight should be greater than the net weight '1500'
+	When the user clicks Save and continue in commodity page
+	Then the Additional details page should be displayed
+	When the user selects 'Ambient' radio button on the Additional details page
+	And the user clicks Save and continue
+	Then the Latest Health Certificate page should be displayed
+	When the user clicks Save and continue
+	Then the Accompanying documents page should be displayed
+	When the user clicks Save and continue
+	Then the Approved establishment of origin page should be displayed
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter should be displayed
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee 'DEF'
+	Then the chosen consignee should be displayed
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee
+	When the user clicks Same as consignee for Place of destination
+	Then the place of destination should be populated with the same details as the consignee
+	When the user clicks Save and continue
+	Then the Transport to the port of entry page should be displayed
+	When the user populates the transport details 'LONDON GATEWAY (GBLGP)' 'No' 'Road vehicle' '123456' 'Doc1234'
+	And the user clicks Save and continue
+	Then the Goods movement services page should be displayed
+	When the user selects 'No' for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user clicks Save and continue
+	Then the Contact details page should be displayed
+	When the user clicks Save and continue
+	Then the Nominated contacts page should be displayed
+	When the user clicks Save and continue
+	Then the Contact address for consignment page should be displayed
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
 	And the user records the CHED Reference for 'Iteration_5'
 	# Validate via Risk Decision Report
 	When I navigate to the Risk Engine application
