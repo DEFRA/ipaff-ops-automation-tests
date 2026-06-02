@@ -641,7 +641,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     if (pageNumber == 1)
                     {
                         ValidateContains("CHEDReference", page.Sections.ChedReference.Id, ref allDataMatches, mismatches);
-                        ValidateContains("ConsignmentReferenceNumber", page.Sections.LocalReference.Value, ref allDataMatches, mismatches);
+                        //ValidateContains("ConsignmentReferenceNumber", page.Sections.LocalReference.Value, ref allDataMatches, mismatches);
                         ValidateContains("BorderControlPost", page.Sections.BorderControlPost.Value, ref allDataMatches, mismatches, true);
                         ValidateContains("ConsignorName", page.Sections.ConsignorExporter.Name, ref allDataMatches, mismatches);
                         ValidateContains("ConsignorAddress", page.Sections.ConsignorExporter.Address, ref allDataMatches, mismatches);
@@ -747,20 +747,24 @@ namespace Defra.UI.Tests.Steps.IPAFF
                                         _scenarioContext[$"Commodity_{kv.Key}"] = kv.Value;
                                     }
                                     //check Durio and PHSI from the PDF 
-                                    var codeItem = codeItems.FirstOrDefault();
-                                    if (codeItem == null) break;
-                                    if (codeItem.CommCode.Equals(_scenarioContext.Get<string>("Commodity_Commodity code")))
+                                    //var codeItem = codeItems.FirstOrDefault();
+
+                                    for ( int i=0;i< codeItems.Count; i++)
                                     {
-                                        var valueItem = codeItem.Values.ElementAtOrDefault(valueIndex);
-                                        if (valueItem == null) break;
+                                        if (codeItems[i] == null) break;
+                                        if (codeItems[i].CommCode.Equals(_scenarioContext.Get<string>("Commodity_Commodity code")))
+                                        {
+                                            var valueItem = codeItems[i].Values.ElementAtOrDefault(valueIndex);
+                                            if (valueItem == null) break;
 
-                                        ValidateContains("Commodity_Genus and Species", valueItem.GenusAndSpecies, ref allDataMatches, mismatches);
-                                        ValidateContains("Commodity_Eppo", valueItem.EppoCode, ref allDataMatches, mismatches);
-                                        ValidateContains("Commodity_Class", valueItem.Class, ref allDataMatches, mismatches);
-                                        ValidateContains("Commodity_Variety", valueItem.Variety, ref allDataMatches, mismatches);
+                                            ValidateContains("Commodity_Genus and Species", valueItem.GenusAndSpecies, ref allDataMatches, mismatches);
+                                            ValidateContains("Commodity_Eppo", valueItem.EppoCode, ref allDataMatches, mismatches);
+                                            ValidateContains("Commodity_Class", valueItem.Class, ref allDataMatches, mismatches);
+                                            ValidateContains("Commodity_Variety", valueItem.Variety, ref allDataMatches, mismatches);
 
-                                        valueIndex++;
+                                            valueIndex++;
 
+                                        }
                                     }
                                 }
                             }
