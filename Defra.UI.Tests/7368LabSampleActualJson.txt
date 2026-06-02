@@ -1,0 +1,323 @@
+7368
+
+
+[
+  {
+    "PageNumber": 1,
+    "Sections": {
+      "PartIDescriptionOfConsignment": {
+        "value": ""
+      },
+      "I3LocalReference": {
+        "Id": "12345"
+      },
+      "I4BorderControlPostControlPointControlUnit": {
+        "value": "Bristol"
+      },
+      "I2ChedReference": {
+        "Id": "CHEDP.GB.2026.1070226"
+      },
+      "I5BorderControlPostControlPointControlUnitCode": {
+        "value": "GBPBY017"
+      },
+      "I1ConsignorExporter": {
+        "Name": "abc",
+        "Address": "street, three, town, a1 1a",
+        "Country": "Argentina",
+        "IsoCode": "AR",
+        "Code": "AR",
+        "value": "Name abc Address street, three, town, a1 1a Country Argentina ISO Code AR"
+      },
+      "I6ConsigneeImporter": {
+        "Name": "Vera Importation Emporium",
+        "Address": "Lucy Rise, Newcastle, NE4 8ES",
+        "Country": "United Kingdom of",
+        "IsoCode": "GB",
+        "Code": "GB Great Britain and Northern Ireland",
+        "Yes": "false",
+        "No": "true",
+        "value": "Name Vera Importation Emporium Address Lucy Rise, Newcastle, NE4 8ES Country United Kingdom of ISO Code GB Great Britain and Northern Ireland"
+      },
+      "I7PlaceOfDestination": {
+        "Name": "Vera Importation Emporium",
+        "Address": "Lucy Rise, Newcastle, NE4 8ES",
+        "Country": "United Kingdom of",
+        "IsoCode": "GB",
+        "Code": "GB Great Britain and Northern Ireland",
+        "Yes": "false",
+        "No": "true",
+        "value": "Name Vera Importation Emporium Address Lucy Rise, Newcastle, NE4 8ES Country United Kingdom of ISO Code GB Great Britain and Northern Ireland"
+      },
+      "I9AccompanyingDocuments": {
+        "Type": "Veterinary health certificate",
+        "DocumentReference": "INV12345",
+        "DateOfIssue": "24.10.2025 +0100 BST",
+        "CountryAndPlaceOfIssue": "Argentina (AR)",
+        "NameOfSignatory": "Commercial documentary"
+      },
+      "I8OperatorResponsibleForTheConsignment": {
+        "Name": "Bristol Admin",
+        "Organisation": "Bristol Port Health Authority",
+        "Address": "CEMEX, M BERTH, AVONMOUTH DOCK, BRISTOL CITY, BRISTOL, BS11 9DA",
+        "Country": "United Kingdom of Great Britain and Northern Ireland",
+        "IsoCode": "GB"
+      },
+      "IVReferences": {},
+      "I10PriorNotification": {
+        "Date": "07.06.2026 +0100 BST",
+        "Time": "21:41:00 +0100 BST"
+      },
+      "I11CountryOfOrigin": {
+        "IsoCode": "IT",
+        "value": "Italy"
+      },
+      "I13MeansOfTransport": {
+        "Mode": "ROAD VEHICLE",
+        "InternationalTransportDocument": "DOC1234",
+        "Identification": "123456"
+      },
+      "I12RegionOfOrigin": {
+        "value": ""
+      },
+      "I14CountryOfDispatch": {
+        "IsoCode": "IT",
+        "value": "Italy"
+      },
+      "I15EstablishmentsOfOrigin": {
+        "ApprovalNumber": "3787",
+        "Name": "\"VERALAT\" - SOCIETA' COOPERATIVA\"., Italy",
+        "Type": "ABP Transport",
+        "value": "Name Type Approval Number \"VERALAT\" - SOCIETA' COOPERATIVA\"., Italy ABP Transport 3787"
+      },
+      "I16TransportConditions": {
+        "Ambient": "true",
+        "Chilled": "false",
+        "Frozen": "false",
+        "value": "Ambient Chilled Frozen"
+      },
+      "I17ContainerNoSealNo": {
+        "value": ""
+      },
+      "I18GoodsCertifiedAs": {
+        "value": "Human Consumption"
+      },
+      "I19ConformityOfTheGoods": {
+        "Conforming": "true",
+        "NonConforming": "false"
+      },
+      "I23ForInternalMarket": {
+        "value": "true"
+      },
+      "I27MeansOfTransportAfterBcpStorage": {
+        "InternationalTransportDocument": "",
+        "Identification": "",
+        "Mode": ""
+      },
+      "I28Transporter": {
+        "IsoCode": "",
+        "Address": "",
+        "Name": "",
+        "Code": "",
+        "Country": "",
+        "ApprovalNumber": ""
+      },
+      "I29DateOfDeparture": {
+        "value": ""
+      }
+    }
+  },
+  {
+    "PageNumber": 2,
+    "Sections": {
+      "I31DescriptionOfTheGoods": [
+        {
+          "CountryOfOrigin": "Italy (IT)",
+          "PackageCount": "10 Box",
+          "NetWeight": "1000",
+          "Commodity": "16051000",
+          "Other": "true",
+          "value": "1. 16 PREPARATIONS OF MEAT, OF FISH OR OF CRUSTACEANS, MOLLUSCS OR OTHER AQUATIC INVERTEBRATES 1605 Crustaceans, molluscs and other aquatic invertebrates, prepared or preserved 16051000 Crab Commodity Country of Origin Net weight Package count 16051000 Geryon maritae 1000 10 Box Composite products \"VERALAT\" - SOCIETA' COOPERATIVA\". (IT) Italy (IT)",
+          "Species": "Crab"
+        }
+      ],
+      "I32TotalNumberOfPackages": {
+        "PackageCount": "10 Box",
+        "value": "10 Box"
+      },
+      "I34TotalNetWeight": {
+        "value": "1000 Kg"
+      },
+      "I34TotalGrossWeight": {
+        "value": "1500 Kg"
+      },
+      "I35Declaration": {
+        "NameOfSignatory": "Bristol Admin",
+        "DateOfSignature": "02 June 2026 21:42:31 +0100 BST",
+        "Signature": "",
+        "value": "I, the undersigned operator responsible for the consignment detailed above, certify that to the best of my knowledge and belief the statements made in Part I of this document are true and complete, and I agree to comply with the requirements of assimilated Regulation 2017/625 on official controls, including payment for official controls, as well as for re-dispatching consignments, quarantine or isolation of consignments, or costs of destruction and disposal where necessary. Date of signature Name of signatory Signature 02 June 2026 21:42:31 +0100 BST Bristol Admin"
+      }
+    }
+  },
+  {
+    "PageNumber": 3,
+    "Sections": {
+      "PartIIControls": {
+        "value": ""
+      },
+      "II1PreviousChed": {
+        "value": ""
+      },
+      "II2ChedReference": {
+        "Id": "CHEDP.GB.2026.1070226"
+      },
+      "II24SubsequentCheds": {
+        "value": ""
+      },
+      "II25BcpReferenceNumber": {
+        "value": "GBCHD2026.1070226"
+      },
+      "II3DocumentaryCheck": {
+        "NotDone": "false",
+        "Satisfactory": "true",
+        "NotSatisfactory": "false",
+        "SatisfactoryFollowingOfficialIntervention": "false",
+        "EuStandard": ""
+      },
+      "II4IdentityCheck": {
+        "SealCheckOnly": "true",
+        "FullIdentityCheck": "false",
+        "No": "false",
+        "Yes": "true",
+        "Satisfactory": "true",
+        "NotSatisfactory": "false"
+      },
+      "II6LaboratoryTests": {
+        "Yes": "true",
+        "No": "false",
+        "Tests": [
+          {
+            "Test": ".AMINOGLYCOSIDE/AMINOSIDE",
+            "Random": "false",
+            "Suspicion": "true",
+            "EmergencyMeasures": "false",
+            "Results": "false",
+            "Pending": "true",
+            "Satisfactory": "true",
+            "NotSatisfactory": "false"
+          }
+        ]
+      },
+      "II5PhysicalCheck": {
+        "Yes": "true",
+        "No": "false",
+        "Satisfactory": "true",
+        "NotSatisfactory": "false"
+      },
+      "IvResultsPendingNot": {
+        "Satisfactory": "true",
+        "NotSatisfactory": "false",
+        "value": "Satisfactory Satisfactory"
+      },
+      "II12AcceptableForInternalMarket": {
+        "value": "Animal feeding stuff"
+      },
+      "II20IdentificationOfBcp": {
+        "UnitNumber": "GBPBY017",
+        "Stamp": "",
+        "Bcp": "Bristol"
+      },
+      "II21CertifyingOfficer": {
+        "Name": "Bristol Admin",
+        "DateOfSignature": "02 June 2026 21:43:43 +0100 BST",
+        "Signature": ""
+      },
+      "II22InspectionFeesFullNameBristol": {},
+      "II23CustomsDocumentReference": {
+        "value": "IUUNA"
+      }
+    }
+  },
+  {
+    "PageNumber": 4,
+    "Sections": {
+      "PartIIIFollowUp": {
+        "value": ""
+      },
+      "III1PreviousChed": {
+        "value": ""
+      },
+      "III2ChedReference": {
+        "Id": "CHEDP.GB.2026.1070226"
+      },
+      "III24SubsequentChed": {
+        "value": ""
+      },
+      "III4DetailsOnReDispatching": {
+        "InternationalTransportDocument": "",
+        "CountryOfDestination": "",
+        "Identification": "",
+        "ExitAuthority": "",
+        "Mode": "",
+        "Code": "",
+        "IsoCode": ""
+      },
+      "III5FollowUp": {
+        "ControlAtDestination": "",
+        "ArrivalOfConsignment": "",
+        "SecondEntryPoint": "false",
+        "LocalCompetentAuthority": "false",
+        "ComplianceOfTheConsignment": ""
+      },
+      "III6OfficialInspector": {
+        "FullName": "",
+        "DateOfSignature": "",
+        "Signature": ""
+      }
+    }
+  },
+  {
+    "PageNumber": 5,
+    "Sections": {
+      "IVFicheForSampling": {
+        "value": "LAP-1070226-1-CHEDP.GB.2026.1070226"
+      },
+      "IVReferences": {
+        "Name": "Bristol GBPBY017",
+        "NameOfTheInspector": "Bristol Admin",
+        "PhoneEmail": "+44 1179 381171/Part214MarST2@nikhil12.33mail.com",
+        "CertificateReferenceNumber": "CHEDP.GB.2026.1070226"
+      },
+      "IVIdentificationOfTheSample": {
+        "CountriesOfOrigin": "Italy",
+        "EppoCode": "Geryon maritae",
+        "EstablishmentsOfOrigin": "\"VERALAT\" COOPERATIVA\". - SOCIETA'",
+        "PlaceOfDestination": "Lucy Rise, Newcastle, NE4 8ES",
+        "CountryOfDispatch": "Italy",
+        "Commodity": "1. 16 PREPARATIONS OF MEAT, OF FISH OR OF CRUSTACEANS, MOLLUSCS OR OTHER AQUATIC INVERTEBRATES 1605 Crustaceans, molluscs and other aquatic invertebrates, prepared or preserved 16051000 Crab"
+      },
+      "IVRequested analysis": {
+        "Motivation": "Random",
+        "InspectorConclusion": "",
+        "HarmfulOrganismName": ".AMINOGLYCOSIDE/AMINOSIDE"
+      },
+      "IVResults": {
+        "Name": "Campden BRI",
+        "Address": "Station Gloucestershire Road, Chipping GL55 6LD Campden,",
+        "Identification": "Campden BRI",
+        "PhoneEmail": "01386 842000/support@campdenbri.co.uk",
+        "SampleDate": "2 June 2026",
+        "SampleBatchNr": "12345",
+        "SampleType": "Blood",
+        "NumberOfSamples": "3",
+        "ConservationOfSamples": "Chilled",
+        "LaboratoryTest": ".AMINOGLYCOSIDE/AMINOSIDE",
+        "LaboratoryConclusion": "Pending",
+        "LaboratoryTestMethod": "",
+        "SampleUseByDate": "",
+        "ReleasedDate": "",
+        "SampleTime": "20:43",
+        "SampleResults": ""
+      }
+    }
+  }
+]
