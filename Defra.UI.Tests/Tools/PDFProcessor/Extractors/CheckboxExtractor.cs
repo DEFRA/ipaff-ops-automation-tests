@@ -295,8 +295,12 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Extractors
             PdfRectangle? FindLabelInBand(string label, double bandTop, double bandBottom)
             {
                 var parts = label.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                // The II.6 column labels (Random, Results, etc.) sit at the same Left as "II.6." (one column-stop
+                // LEFT of the "Laboratory" word). Filtering by Left > anchorX + 15 (Laboratory's Left) would drop
+                // those leftmost columns. Use anchorX - 20 instead to include them while still excluding noise
+                // from the far left margin (II.5 column at x≈30).
                 var lines = wordsBelow
-                    .Where(w => w.BoundingBox.Bottom <= bandTop && w.BoundingBox.Bottom >= bandBottom && w.BoundingBox.Left > anchorX + 15)
+                    .Where(w => w.BoundingBox.Bottom <= bandTop && w.BoundingBox.Bottom >= bandBottom && w.BoundingBox.Left > anchorX - 20)
                     .GroupBy(w => Math.Round(w.BoundingBox.Bottom, 0))
                     .Select(g => g.OrderBy(w => w.BoundingBox.Left).ToList())
                     .ToList();
@@ -330,7 +334,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Extractors
             PdfRectangle? FindStandaloneSatInBand(double bandTop, double bandBottom)
             {
                 var lines = wordsBelow
-                    .Where(w => w.BoundingBox.Bottom <= bandTop && w.BoundingBox.Bottom >= bandBottom && w.BoundingBox.Left > anchorX + 15)
+                    .Where(w => w.BoundingBox.Bottom <= bandTop && w.BoundingBox.Bottom >= bandBottom && w.BoundingBox.Left > anchorX - 20)
                     .GroupBy(w => Math.Round(w.BoundingBox.Bottom, 0))
                     .Select(g => g.OrderBy(w => w.BoundingBox.Left).ToList())
                     .ToList();
@@ -394,7 +398,10 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Extractors
 
                 var randomBounds = FindLabelInBand("Random", bandTop, bandBottom);
                 var suspicionBounds = FindLabelInBand("Suspicion", bandTop, bandBottom);
-                var emergencyBounds = FindLabelInBand("Emergency measures", bandTop, bandBottom);
+                // "Emergency measures" (legacy) or "Intensified controls" (current EU CHED) — same column slot.
+                var emergencyBounds = FindLabelInBand("Emergency measures", bandTop, bandBottom)
+                                      ?? FindLabelInBand("Intensified controls", bandTop, bandBottom)
+                                      ?? FindLabelInBand("Intensified Controls", bandTop, bandBottom);
                 var resultsBounds = FindLabelInBand("Results", bandTop, bandBottom);
                 var pendingBounds = FindLabelInBand("Pending", bandTop, bandBottom);
                 var satBounds = FindStandaloneSatInBand(bandTop, bandBottom);
@@ -487,6 +494,49 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Extractors
                             rowStates["Not Satisfactory"] = "false";
                         else
                             rowStates["Satisfactory"] = "false";
+                    }
+                }
+
+                // 4) Sampling-row disambiguation (Random / Suspicion / Emergency measures).
+                // These columns are mutually exclusive: a single tick lies in the gap between two adjacent
+                // labels, and the existing per-label detection can attribute it to BOTH the label on its
+                // left (via tight-fallback) and the label on its right (via geometric search). Resolve by
+                // the template's convention: the checkbox sits to the RIGHT of its label, so the tick
+                // belongs to the column whose Right edge is the smallest positive distance to the LEFT of
+                // the tick's X. Only the loser is demoted — nothing is promoted.
+                var samplingColumns = new List<(string key, PdfRectangle rect)>();
+                if (randomBounds.HasValue) samplingColumns.Add(("Random", randomBounds.Value));
+                if (suspicionBounds.HasValue) samplingColumns.Add(("Suspicion", suspicionBounds.Value));
+                if (emergencyBounds.HasValue) samplingColumns.Add(("Emergency measures", emergencyBounds.Value));
+
+                var trueSamplingColumns = samplingColumns.Where(c => rowStates[c.key] == "true").ToList();
+                if (trueSamplingColumns.Count > 1)
+                {
+                    var samplingLineY = samplingColumns.Average(c => (c.rect.Bottom + c.rect.Top) / 2.0);
+                    var samplingTicks = tickPositions
+                        .Where(t => Math.Abs(t.Item2 - samplingLineY) <= 6)
+                        .OrderBy(t => t.Item1)
+                        .ToList();
+
+                    foreach (var t in samplingTicks)
+                    {
+                        (string key, PdfRectangle rect)? winner = null;
+                        double bestGap = double.MaxValue;
+                        foreach (var c in trueSamplingColumns)
+                        {
+                            var gap = t.Item1 - c.rect.Right;
+                            if (gap < 0 || gap > 20) continue;
+                            if (gap < bestGap) { bestGap = gap; winner = c; }
+                        }
+
+                        if (winner.HasValue)
+                        {
+                            foreach (var c in trueSamplingColumns)
+                            {
+                                if (!c.key.Equals(winner.Value.key, StringComparison.Ordinal))
+                                    rowStates[c.key] = "false";
+                            }
+                        }
                     }
                 }
 
