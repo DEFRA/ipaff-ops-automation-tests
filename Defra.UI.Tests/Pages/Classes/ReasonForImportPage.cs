@@ -429,6 +429,12 @@ namespace Defra.UI.Tests.Pages.Classes
                     break;
 
                 case "Re-entry":
+                    // Manual override for Re-entry
+                    SelectReasonForImport("Transit");
+                    SelectRandomDropdownOption(transitExitBCP, excludedTexts: ["LONDON GATEWAY (GBLGP)"]);
+                    FillTransitDateTimeIfPresent();
+                    FillTransitedCountryIfPresent();
+                    SelectRandomDropdownOption(txtDestinationCountry);
                     break;
             }
         }
