@@ -1,9 +1,12 @@
 namespace Defra.UI.Tests.Tools.PDFProcessor
 {
-    public class SubSectionInfo
+    public partial class PdfToJsonConverter
     {
-        public string Header { get; set; }
-        public string Content { get; set; }
-        public double StartX { get; set; }
+        private class SubSectionInfo
+        {
+            public string Header { get; set; }
+            public string Content { get; set; }
+            public double StartX { get; set; }
+        }
     }
 }

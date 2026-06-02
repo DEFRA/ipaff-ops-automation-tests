@@ -424,6 +424,13 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
                 pageData.Sections["I29DateOfDeparture"] = new { value = "" };
 
                 var descriptions = BuildPage2GoodsRows(page, commoditySpeciesMap);
+                if (descriptions.Count == 0)
+                {
+                    // Small consignments can have the goods table cram onto page 1 with Part I.
+                    var page1 = document.GetPages().FirstOrDefault(p => p.Number == 1);
+                    if (page1 != null)
+                        descriptions = BuildPage2GoodsRows(page1, commoditySpeciesMap);
+                }
 
                 pageData.Sections["I31DescriptionOfTheGoods"] = descriptions;
 
@@ -597,18 +604,20 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
 
             var headerY = FindWord(words, "Commodity")?.BoundingBox.Bottom ?? 632;
 
-            // Column anchors from table headers; these are read from the page and converted into dynamic boundaries.
+            // Column anchors from table headers; constrain to the table header row's Y because
+            // labels like "Country" and "Variety" also appear in Part I sections on page 1
+            // when the goods table flows onto page 1 (small consignment layouts).
             var columnX = new Dictionary<string, double>
             {
-                ["Commodity"] = FindWord(words, "Commodity")?.BoundingBox.Left ?? 35,
-                ["Genus"] = FindWord(words, "Genus")?.BoundingBox.Left ?? 79,
-                ["Variety"] = FindWord(words, "Variety")?.BoundingBox.Left ?? 150,
+                ["Commodity"] = FindWord(words, "Commodity", headerY: headerY)?.BoundingBox.Left ?? 35,
+                ["Genus"] = FindWord(words, "Genus", headerY: headerY)?.BoundingBox.Left ?? 79,
+                ["Variety"] = FindWord(words, "Variety", headerY: headerY)?.BoundingBox.Left ?? 150,
                 ["Class"] = FindWord(words, "Class", headerY: headerY)?.BoundingBox.Left ?? 214,
                 ["NetWeight"] = FindWord(words, "Net", headerY: headerY)?.BoundingBox.Left ?? 247,
-                ["PackageCount"] = FindWord(words, "Package")?.BoundingBox.Left ?? 280,
-                ["Country"] = FindWord(words, "Country")?.BoundingBox.Left ?? 386,
-                ["Quantity"] = FindWord(words, "Quantity")?.BoundingBox.Left ?? 435,
-                ["ControlledAtmosphere"] = FindWord(words, "Controlled")?.BoundingBox.Left ?? 506
+                ["PackageCount"] = FindWord(words, "Package", headerY: headerY)?.BoundingBox.Left ?? 280,
+                ["Country"] = FindWord(words, "Country", headerY: headerY)?.BoundingBox.Left ?? 386,
+                ["Quantity"] = FindWord(words, "Quantity", headerY: headerY)?.BoundingBox.Left ?? 435,
+                ["ControlledAtmosphere"] = FindWord(words, "Controlled", headerY: headerY)?.BoundingBox.Left ?? 506
             };
 
             var sortedColumns = columnX.OrderBy(k => k.Value).ToList();
@@ -617,10 +626,35 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
             {
                 var current = sortedColumns[i];
                 var left = current.Value - 2;
+                // Make column extents contiguous up to (just before) the next column header.
+                // Midpoints leave gaps when columns are wide — e.g. a hybrid species "Ismene x deflexa"
+                // can place "x deflexa" past the Genus/Variety midpoint and get dropped.
                 var right = i < sortedColumns.Count - 1
-                    ? (current.Value + sortedColumns[i + 1].Value) / 2.0
+                    ? sortedColumns[i + 1].Value - 2
                     : current.Value + 120;
                 bounds[current.Key] = (left, right);
+            }
+
+            // Dynamic floor: the table ends just above the "Total number of packages" label
+            // when present on the same page (typical page 2 layout). On pages where everything
+            // fits and the table sits near the bottom (e.g. small consignment on page 1),
+            // there is no Total below the table — fall back to the page footer ("Page X of Y").
+            var totalWord = words
+                .FirstOrDefault(w => w.Text.Equals("Total", StringComparison.OrdinalIgnoreCase)
+                                     && w.BoundingBox.Bottom < headerY - 10);
+            double floorY;
+            if (totalWord != null)
+            {
+                floorY = totalWord.BoundingBox.Bottom + 8;
+            }
+            else
+            {
+                var pageFooter = words
+                    .Where(w => w.Text.Equals("Page", StringComparison.OrdinalIgnoreCase)
+                                && w.BoundingBox.Bottom < headerY - 10)
+                    .OrderBy(w => w.BoundingBox.Bottom)
+                    .FirstOrDefault();
+                floorY = pageFooter != null ? pageFooter.BoundingBox.Bottom + 8 : 10;
             }
 
             var commodityRows = words
@@ -628,7 +662,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
                             && w.BoundingBox.Left >= bounds["Commodity"].Left
                             && w.BoundingBox.Left < bounds["Commodity"].Right
                             && w.BoundingBox.Bottom < headerY - 10
-                            && w.BoundingBox.Bottom > 360)
+                            && w.BoundingBox.Bottom > floorY)
                 .OrderByDescending(w => w.BoundingBox.Bottom)
                 .Select(w => Math.Round(w.BoundingBox.Bottom, 1))
                 .ToList();
@@ -643,7 +677,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
             for (int i = 0; i < rowStarts.Count; i++)
             {
                 var top = rowStarts[i] + 2;
-                var bottom = i + 1 < rowStarts.Count ? rowStarts[i + 1] + 2 : 372;
+                var bottom = i + 1 < rowStarts.Count ? rowStarts[i + 1] + 2 : floorY + 2;
 
                 string Cell(string key) => ReadCellText(words, top, bottom, bounds[key].Left, bounds[key].Right);
 
