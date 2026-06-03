@@ -721,54 +721,57 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         ValidateContains("BorderControlPost", (string)page.Sections.IdentificationOfBcp.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches, true);
                         ValidateContains("BorderControlPost", (string)page.Sections.IdentificationOfBcp.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches, true);
 
-
-                        var codes = page.Sections.HMIChecks.AdditionalData.ElementAt(2).Value;
-
-                        if (codes != null)
+                        if (page.Sections.HMIChecks != null)
                         {
-                            var codeJson = codes.ToString();
+                            var codes = page.Sections.HMIChecks.AdditionalData.ElementAt(2).Value;
 
-                            var codeItems = JsonConvert.DeserializeObject<List<Code>>(codeJson);
-
-                            if (codeItems != null && codeItems.Count > 0)
+                            if (codes != null)
                             {
-                                var allCommodityDetails = _scenarioContext["AllCommodityDetails"] as Reqnroll.DataTable;
+                                var codeJson = codes.ToString();
 
-                                var list = allCommodityDetails.Rows
-                                    .Select(r => r.ToDictionary(k => k.Key, v => v.Value))
-                                    .ToList();
+                                var codeItems = JsonConvert.DeserializeObject<List<Code>>(codeJson);
 
-                                int valueIndex = 0;
-
-                                foreach (var row in list)
+                                if (codeItems != null && codeItems.Count > 0)
                                 {
-                                    foreach (var kv in row)
-                                    {
-                                        _scenarioContext[$"Commodity_{kv.Key}"] = kv.Value;
-                                    }
-                                    //check Durio and PHSI from the PDF 
-                                    //var codeItem = codeItems.FirstOrDefault();
+                                    var allCommodityDetails = _scenarioContext["AllCommodityDetails"] as Reqnroll.DataTable;
 
-                                    for ( int i=0;i< codeItems.Count; i++)
+                                    var list = allCommodityDetails.Rows
+                                        .Select(r => r.ToDictionary(k => k.Key, v => v.Value))
+                                        .ToList();
+
+                                    int valueIndex = 0;
+
+                                    foreach (var row in list)
                                     {
-                                        if (codeItems[i] == null) break;
-                                        if (codeItems[i].CommCode.Equals(_scenarioContext.Get<string>("Commodity_Commodity code")))
+                                        foreach (var kv in row)
                                         {
-                                            var valueItem = codeItems[i].Values.ElementAtOrDefault(valueIndex);
-                                            if (valueItem == null) break;
+                                            _scenarioContext[$"Commodity_{kv.Key}"] = kv.Value;
+                                        }
+                                        //check Durio and PHSI from the PDF 
+                                        //var codeItem = codeItems.FirstOrDefault();
 
-                                            ValidateContains("Commodity_Genus and Species", valueItem.GenusAndSpecies, ref allDataMatches, mismatches);
-                                            ValidateContains("Commodity_Eppo", valueItem.EppoCode, ref allDataMatches, mismatches);
-                                            ValidateContains("Commodity_Class", valueItem.Class, ref allDataMatches, mismatches);
-                                            ValidateContains("Commodity_Variety", valueItem.Variety, ref allDataMatches, mismatches);
+                                        for (int i = 0; i < codeItems.Count; i++)
+                                        {
+                                            if (codeItems[i] == null) break;
+                                            if (codeItems[i].CommCode.Equals(_scenarioContext.Get<string>("Commodity_Commodity code")))
+                                            {
+                                                var valueItem = codeItems[i].Values.ElementAtOrDefault(valueIndex);
+                                                if (valueItem == null) break;
 
-                                            valueIndex++;
+                                                ValidateContains("Commodity_Genus and Species", valueItem.GenusAndSpecies, ref allDataMatches, mismatches);
+                                                ValidateContains("Commodity_Eppo", valueItem.EppoCode, ref allDataMatches, mismatches);
+                                                ValidateContains("Commodity_Class", valueItem.Class, ref allDataMatches, mismatches);
+                                                ValidateContains("Commodity_Variety", valueItem.Variety, ref allDataMatches, mismatches);
 
+                                                valueIndex++;
+
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
+                        
                     }
                 }
             }
