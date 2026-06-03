@@ -121,6 +121,7 @@ namespace Defra.UI.Tests.Tools
         {
             var downloadedFilePath = Path.Combine(Path.GetTempPath(), "automation-downloads", $"{fileName}.{extension}");
 
+
             var timeout = TimeSpan.FromSeconds(30);
 
             var stopwatch = Stopwatch.StartNew();
@@ -196,55 +197,7 @@ namespace Defra.UI.Tests.Tools
                         return downloadDirectory;
                     }
 
-                    Console.WriteLine("❌ PDF not found after attempt " + attempt);
-
-                    // Cleanup before retry
-                    SafeDeleteDirectory(downloadDirectory);
-
-
-                    if (attempt >= maxRetries)
-                        throw new Exception("PDF failed to download after all retry attempts.");
-
-                    // Exponential backoff
-                    int delay = attempt * 1000;
-                    Console.WriteLine($"⏳ Waiting {delay}ms before retry...");
-                    Thread.Sleep(delay);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"⚠️ Attempt {attempt} failed: {ex.Message}");
-
-                    if (attempt >= maxRetries)
-                        throw;
-
-                    int delay = attempt * 1000;
-                    Console.WriteLine($"⏳ Retrying in {delay}ms...");
-                    Thread.Sleep(delay);
-                }
-            }
-        }
-
-        private static void SafeDeleteDirectory(string path)
-        {
-            if (string.IsNullOrWhiteSpace(path))
-                return;
-
-            try
-            {
-                if (Directory.Exists(path))
-                {
-                    Directory.Delete(path, true);
-                    Console.WriteLine("🧹 Deleted directory: " + path);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("⚠️ Failed to delete directory: " + ex.Message);
-            }
-        }
-
-
-        private static string RunPdfDownloadAttempt(string fileName, string pdfUrl, IUserObject UserObject, string userRole)
+        public static void DownloadPDF(string fileName, string pdfUrl, IUserObject UserObject, string userRole)
         {
             var chromeOptions = new ChromeOptions();
 
@@ -305,6 +258,9 @@ namespace Defra.UI.Tests.Tools
                 return downloadDirectory;
             }
         }
+
+
+
 
 
         #region WebDriver Extension Methods for Element Safety

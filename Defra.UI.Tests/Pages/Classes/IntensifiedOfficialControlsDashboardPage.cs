@@ -17,7 +17,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement btnCreateNewIntensifiedControlCheck => _driver.FindElement(By.Id("create-re-enforced-check"));
         private IWebElement lnkSignOut => _driver.WaitForElement(By.Id("sign-out-link"));
         private IWebElement GetViewDetailsLinkByIOCNumber(string iocNumber) => _driver.WaitForElement(By.Id(iocNumber));
-        private IWebElement GetIOCRowContainer(string iocNumber) => GetViewDetailsLinkByIOCNumber(iocNumber).FindElement(By.XPath("ancestor::dl[contains(@class,'reenforcedcheck-list__row')]"));
+        private IWebElement GetIOCRowContainer(string iocNumber) => GetViewDetailsLinkByIOCNumber(iocNumber).FindElement(By.XPath("ancestor::div[contains(@class,'reenforcedcheck-list__row-container')]"));
         private IWebElement GetIOCStatusElement(string iocNumber) => GetIOCRowContainer(iocNumber).FindElement(By.XPath(".//dt[normalize-space()='Status']/following-sibling::dd[1]"));
         private IWebElement txtSearchCommodity => _driver.FindElement(By.Id("search-commodity"));
         private IWebElement drpSearchStatus => _driver.FindElement(By.Id("search-status"));
