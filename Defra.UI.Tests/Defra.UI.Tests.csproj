@@ -146,6 +146,12 @@
 	<None Update="TestExecution.json">
 	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</None>
+	<None Update="testrun_1.runsettings">
+	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</None>
+	<None Update="testrun_4.runsettings">
+	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</None>
     <None Update="testrun_30.runsettings">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

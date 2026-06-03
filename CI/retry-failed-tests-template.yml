@@ -1,0 +1,64 @@
+parameters:
+  - name: jobName
+    type: string
+  - name: workers
+    type: string
+    default: '10'
+
+steps:
+  - powershell: |
+      $projectDllPath = "$(System.DefaultWorkingDirectory)/Defra.UI.Tests/Defra.UI.Tests.dll"
+      $maxRetries = 3
+
+      $resultsDir = "TestResults"
+      $attempt = 0
+      $failedTests = @()
+
+      if (-not (Test-Path $resultsDir)) {
+          New-Item -ItemType Directory -Path $resultsDir | Out-Null
+      }
+
+      do {
+          if ($attempt -eq 0) {
+              $trxFile = "Defra.UI.Tests/${resultsDir}/${{ parameters.jobName }}_results_${attempt}.trx"
+          }
+          else {
+              $trxFile = "${resultsDir}/${{ parameters.jobName }}_results_${attempt}.trx"
+          }
+
+          [xml]$trx = Get-Content $trxFile
+
+          $failedTests = $trx.TestRun.Results.UnitTestResult |
+              Where-Object { $_.outcome -eq "Failed" } |
+              ForEach-Object {
+                  $name = $_.testName
+                  if ($name.Contains('(')) {
+                      $cleanName = $name.Substring(0, $name.IndexOf('('))
+                  } else {
+                      $cleanName = $name
+                  }
+                  $cleanName
+              } |
+              Sort-Object |
+              Get-Unique
+
+          if ($failedTests.Count -gt 0 -and $attempt -lt $maxRetries) {
+              Write-Host "Found $($failedTests.Count) failed test(s). Preparing to rerun..."
+
+              $filterExpr = ($failedTests | ForEach-Object { "FullyQualifiedName~$_" }) -join '|'
+
+              Write-Host "Rerunning failed tests with filter: $filterExpr"
+
+              $attempt++
+
+              $nextTrxFile = "${{ parameters.jobName }}_results_${attempt}.trx"
+
+              dotnet test $projectDllPath --filter "$filterExpr" --logger:"trx;LogFileName=${nextTrxFile}"
+          }
+
+      } while ($failedTests.Count -gt 0 -and $attempt -lt $maxRetries)
+
+      Write-Host "Test rerun process complete."
+      exit 0
+    displayName: 'Retry Failed Tests'
+    failOnStderr: false

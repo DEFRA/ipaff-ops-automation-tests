@@ -1,0 +1,73 @@
+trigger: none
+
+parameters:
+  - name: environment
+    displayName: Environment
+    type: string
+    default: 'pre'
+  - name: workers
+    displayName: Number of Workers
+    type: string
+    default: '4'
+  - name: seleniumGrid
+    displayName: Selenium Grid URL
+    type: string
+    default: 'http://localhost:4444'
+  - name: deviceName
+    displayName: Device Name
+    type: string
+    default: 'Windows'
+  - name: bsOSVersion
+    displayName: BrowserStack OS Version
+    type: string
+    default: '11'
+  - name: bsBrowserVersion
+    displayName: BrowserStack Browser Version
+    type: string
+    default: 'latest'
+  - name: target
+    displayName: Target Browser
+    type: string
+    default: 'Chrome'
+  - name: isEmulationEnabled
+    displayName: Enable Emulation
+    type: string
+    default: 'false'
+  - name: emulateDeviceInfo
+    displayName: Emulated Device Info
+    type: string
+    default: 'iPhone 12 Pro'
+  - name: isAccessibilityEnabled
+    displayName: Is Accessibility Run Enabled
+    type: boolean
+    default: false
+  - name: enableRetry
+    displayName: Enable Failed Test Retry
+    type: boolean
+    default: false
+
+stages:
+
+  - stage: IPAFF_OPS_RISK_ENGINE
+    displayName: IPAFF OPS - Risk Engine
+    variables:
+      - template: 'variables/IPAFF/${{ parameters.environment }}.yml'
+    jobs:
+      - template: run-test-template.yml
+        parameters:
+          jobName: IPAFF_OPS_RISK_ENGINE
+          environment: ${{ parameters.environment }}
+          branchName: $(Build.SourceBranch)
+          seleniumGrid: ${{ parameters.seleniumGrid }}
+          deviceName: ${{ parameters.deviceName }}
+          bsOSVersion: ${{ parameters.bsOSVersion }}
+          workers: ${{ parameters.workers }}
+          bsBrowserVersion: 'latest'
+          target: ${{ parameters.target }}
+          isEmulationEnabled: ${{ parameters.isEmulationEnabled }}
+          emulateDeviceInfo: ${{ parameters.emulateDeviceInfo }}
+          isAccessibilityEnabled: ${{ parameters.isAccessibilityEnabled }}
+          enableRetry: ${{ parameters.enableRetry }}
+          application: 'IPAFF'
+          dependsOn: ''
+          filterTestCases: 'TestCategory=RiskEngine'

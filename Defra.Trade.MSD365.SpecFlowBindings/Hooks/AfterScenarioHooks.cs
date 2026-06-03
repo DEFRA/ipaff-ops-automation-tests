@@ -86,7 +86,7 @@ public class AfterScenarioHooks : PowerAppsStepDefiner
             return;
         }
 
-        var fileName = string.Concat(scenarioContext.ScenarioInfo.Title.Split(Path.GetInvalidFileNameChars()));
+        var fileName = SanitiseFileName(scenarioContext.ScenarioInfo.Title);
         var screenshotPath = Path.Combine(ScreenshotsFolder.FullName, $"{fileName}.jpg");
 
         if (!File.Exists(screenshotPath))
@@ -146,5 +146,23 @@ public class AfterScenarioHooks : PowerAppsStepDefiner
             return string.Join(", ", enumerable.Cast<object>());
 
         return value.ToString();
+    }
+
+    /// <summary>
+    /// Removes invalid file name characters, replaces spaces with underscores,
+    /// and truncates to 80 characters to avoid path-length issues.
+    /// </summary>
+    private static string SanitiseFileName(string input)
+    {
+        var invalidChars = Path.GetInvalidFileNameChars();
+        var sanitised = new string(input.Where(c => !invalidChars.Contains(c)).ToArray());
+        sanitised = sanitised.Replace(' ', '_');
+
+        if (sanitised.Length > 80)
+        {
+            sanitised = sanitised[..80];
+        }
+
+        return sanitised;
     }
 }
