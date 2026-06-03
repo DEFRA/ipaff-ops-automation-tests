@@ -137,33 +137,7 @@ namespace Defra.UI.Tests.Tools
             }
             return false;
         }
-
-        public static bool IsDownloaded1(string fileName, string extension, string directory, int timeoutSeconds = 15)
-        {
-            Console.WriteLine("Waiting for download...");
-            var expectedFile = Path.Combine(directory, $"{fileName}.{extension}");
-            var tempFile = expectedFile + ".crdownload";
-
-            var endTime = DateTime.Now.AddSeconds(timeoutSeconds);
-
-            while (DateTime.Now < endTime)
-            {
-                // ✅ File exists AND Chrome temp file is gone
-                if (File.Exists(expectedFile) && !File.Exists(tempFile))
-                {
-                    Console.WriteLine("Download complete: " + expectedFile);
-                    return true;
-                }
-                else
-                {
-                    Console.WriteLine("Download Pending");
-                }
-                Thread.Sleep(1000);
-            }
-            Console.WriteLine("Download timed out");
-            return false;
-        }
-
+               
         public static bool Equals(this string expected, string actual)
         {
             return expected.Equals(actual, StringComparison.OrdinalIgnoreCase);
@@ -191,13 +165,85 @@ namespace Defra.UI.Tests.Tools
                     var downloadDirectory = RunPdfDownloadAttempt(fileName, pdfUrl, UserObject, userRole);
 
                     // Validate download
-                    if (IsDownloaded1(fileName, "pdf", downloadDirectory))
+                    if (IsDownloadedForPDF(fileName, "pdf", downloadDirectory))
                     {
                         Console.WriteLine("✅ PDF successfully downloaded.");
                         return downloadDirectory;
                     }
 
-        public static void DownloadPDF(string fileName, string pdfUrl, IUserObject UserObject, string userRole)
+                    Console.WriteLine("❌ PDF not found after attempt " + attempt);
+
+                    // Cleanup before retry
+                    SafeDeleteDirectory(downloadDirectory);
+
+
+                    if (attempt >= maxRetries)
+                        throw new Exception("PDF failed to download after all retry attempts.");
+
+                    // Exponential backoff
+                    int delay = attempt * 1000;
+                    Console.WriteLine($"⏳ Waiting {delay}ms before retry...");
+                    Thread.Sleep(delay);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"⚠️ Attempt {attempt} failed: {ex.Message}");
+
+                    if (attempt >= maxRetries)
+                        throw;
+
+                    int delay = attempt * 1000;
+                    Console.WriteLine($"⏳ Retrying in {delay}ms...");
+                    Thread.Sleep(delay);
+                }
+            }
+        }
+
+        private static void SafeDeleteDirectory(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+                return;
+
+            try
+            {
+                if (Directory.Exists(path))
+                {
+                    Directory.Delete(path, true);
+                    Console.WriteLine("🧹 Deleted directory: " + path);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("⚠️ Failed to delete directory: " + ex.Message);
+            }
+        }
+
+        public static bool IsDownloadedForPDF(string fileName, string extension, string directory, int timeoutSeconds = 15)
+        {
+            Console.WriteLine("Waiting for download...");
+            var expectedFile = Path.Combine(directory, $"{fileName}.{extension}");
+            var tempFile = expectedFile + ".crdownload";
+
+            var endTime = DateTime.Now.AddSeconds(timeoutSeconds);
+
+            while (DateTime.Now < endTime)
+            {
+                // ✅ File exists AND Chrome temp file is gone
+                if (File.Exists(expectedFile) && !File.Exists(tempFile))
+                {
+                    Console.WriteLine("Download complete: " + expectedFile);
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("Download Pending");
+                }
+                Thread.Sleep(1000);
+            }
+            Console.WriteLine("Download timed out");
+            return false;
+        }
+        private static string RunPdfDownloadAttempt(string fileName, string pdfUrl, IUserObject UserObject, string userRole)
         {
             var chromeOptions = new ChromeOptions();
 
@@ -258,9 +304,6 @@ namespace Defra.UI.Tests.Tools
                 return downloadDirectory;
             }
         }
-
-
-
 
 
         #region WebDriver Extension Methods for Element Safety
