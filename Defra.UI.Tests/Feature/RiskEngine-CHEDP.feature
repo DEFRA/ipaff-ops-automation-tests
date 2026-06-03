@@ -1,4 +1,4 @@
-@RiskEngine
+#@RiskEngine
 Feature: Risk Engine CHEDP
 
 Bulk upload, Update and Test rules with end-to-end validation for a CHEDP notification

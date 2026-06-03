@@ -1,4 +1,4 @@
-@RiskEngine
+#@RiskEngine
 Feature: Risk Engine CHEDPP
 
 Bulk upload, Update and Test rules with end-to-end validation for a CHEDPP notification
