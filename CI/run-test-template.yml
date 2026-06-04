@@ -44,7 +44,7 @@ jobs:
 
   pool:
     ${{ if contains(parameters.seleniumGrid, 'localhost') }}:
-      name: 'DEFRA-COMMON-ubuntu2004-SSV3'
+      name: 'DEFRA-COMMON-UBUNTU-SSV5'
     ${{ if contains(parameters.seleniumGrid, 'browserstack') }}:
       name: 'DEFRA-TRD'
 
