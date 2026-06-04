@@ -195,6 +195,27 @@ jobs:
           }
         displayName: 'Wait for Selenium Grid to be ready (${{ parameters.workers }} node(s))'
 
+    - ${{ if contains(parameters.seleniumGrid, 'localhost:') }}:
+      - powershell: |
+          Write-Host "=== Proxy environment variables ==="
+          Write-Host "http_proxy:  $env:http_proxy"
+          Write-Host "https_proxy: $env:https_proxy"
+          Write-Host "HTTP_PROXY:  $env:HTTP_PROXY"
+          Write-Host "HTTPS_PROXY: $env:HTTPS_PROXY"
+          Write-Host "no_proxy:    $env:no_proxy"
+          Write-Host ""
+          Write-Host "=== Connectivity check ==="
+          try {
+              $response = Invoke-WebRequest -Uri "$(RiskEngineUrl)" -UseBasicParsing -TimeoutSec 15 -ErrorAction Stop
+              Write-Host "SUCCESS: Agent can reach RiskEngineUrl — HTTP $($response.StatusCode)"
+          }
+          catch {
+              Write-Host "FAILED: Agent cannot reach RiskEngineUrl — $($_.Exception.Message)"
+          }
+        displayName: 'Diagnose agent connectivity and proxy'
+        env:
+          RiskEngineUrl: $(RiskEngineUrl)
+
     - powershell: |
           Set-Location -Path "$(System.DefaultWorkingDirectory)/Defra.UI.Tests"
           $filterTestCases = "$(FilterTestCases)"
