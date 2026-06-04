@@ -1,5 +1,4 @@
-7368
-
+7371
 
 [
   {
@@ -15,61 +14,57 @@
         "value": "Bristol"
       },
       "I2ChedReference": {
-        "Id": "CHEDP.GB.2026.1070226"
+        "Id": "CHEDP.GB.2026.1070358"
       },
       "I5BorderControlPostControlPointControlUnitCode": {
         "value": "GBPBY017"
       },
       "I1ConsignorExporter": {
-        "Name": "abc",
-        "Address": "street, three, town, a1 1a",
-        "Country": "Argentina",
-        "IsoCode": "AR",
-        "Code": "AR",
-        "value": "Name abc Address street, three, town, a1 1a Country Argentina ISO Code AR"
+        "Name": "ABC",
+        "Address": "15 Walter Square, Bristol, BS7 0PP",
+        "Country": "England",
+        "IsoCode": "GB-ENG",
+        "Code": "GB-ENG",
+        "value": "Name ABC Address 15 Walter Square, Bristol, BS7 0PP Country England ISO Code GB-ENG"
       },
       "I6ConsigneeImporter": {
-        "Name": "Vera Importation Emporium",
-        "Address": "Lucy Rise, Newcastle, NE4 8ES",
-        "Country": "United Kingdom of",
-        "IsoCode": "GB",
-        "Code": "GB Great Britain and Northern Ireland",
-        "Yes": "false",
-        "No": "true",
-        "value": "Name Vera Importation Emporium Address Lucy Rise, Newcastle, NE4 8ES Country United Kingdom of ISO Code GB Great Britain and Northern Ireland"
+        "Name": "DEF",
+        "Address": "11 John Childs Way, Rayleigh, SS6 8QG",
+        "Country": "England",
+        "IsoCode": "GB-ENG",
+        "Code": "GB-ENG",
+        "value": "Name DEF Address 11 John Childs Way, Rayleigh, SS6 8QG Country England ISO Code GB-ENG"
       },
       "I7PlaceOfDestination": {
-        "Name": "Vera Importation Emporium",
-        "Address": "Lucy Rise, Newcastle, NE4 8ES",
-        "Country": "United Kingdom of",
-        "IsoCode": "GB",
-        "Code": "GB Great Britain and Northern Ireland",
-        "Yes": "false",
-        "No": "true",
-        "value": "Name Vera Importation Emporium Address Lucy Rise, Newcastle, NE4 8ES Country United Kingdom of ISO Code GB Great Britain and Northern Ireland"
+        "Name": "DEF",
+        "Address": "11 John Childs Way, Rayleigh, SS6 8QG",
+        "Country": "England",
+        "IsoCode": "GB-ENG",
+        "Code": "GB-ENG",
+        "value": "Name DEF Address 11 John Childs Way, Rayleigh, SS6 8QG Country England ISO Code GB-ENG"
       },
       "I9AccompanyingDocuments": {
         "Type": "Veterinary health certificate",
         "DocumentReference": "INV12345",
         "DateOfIssue": "24.10.2025 +0100 BST",
-        "CountryAndPlaceOfIssue": "Argentina (AR)",
+        "CountryAndPlaceOfIssue": "England (GB-ENG)",
         "NameOfSignatory": "Commercial documentary"
       },
       "I8OperatorResponsibleForTheConsignment": {
-        "Name": "Bristol Admin",
-        "Organisation": "Bristol Port Health Authority",
-        "Address": "CEMEX, M BERTH, AVONMOUTH DOCK, BRISTOL CITY, BRISTOL, BS11 9DA",
+        "Name": "IPaff Automation",
+        "Organisation": "IPAFF Automation",
+        "Address": "1 WREN STREET, WEST MIDLANDS, COVENTRY, CV2 4FT",
         "Country": "United Kingdom of Great Britain and Northern Ireland",
         "IsoCode": "GB"
       },
       "IVReferences": {},
       "I10PriorNotification": {
-        "Date": "07.06.2026 +0100 BST",
-        "Time": "21:41:00 +0100 BST"
+        "Date": "09.06.2026 +0100 BST",
+        "Time": "12:08:00 +0100 BST"
       },
       "I11CountryOfOrigin": {
-        "IsoCode": "IT",
-        "value": "Italy"
+        "IsoCode": "FI",
+        "value": "Finland"
       },
       "I13MeansOfTransport": {
         "Mode": "ROAD VEHICLE",
@@ -80,14 +75,14 @@
         "value": ""
       },
       "I14CountryOfDispatch": {
-        "IsoCode": "IT",
-        "value": "Italy"
+        "IsoCode": "FI",
+        "value": "Finland"
       },
       "I15EstablishmentsOfOrigin": {
-        "ApprovalNumber": "3787",
-        "Name": "\"VERALAT\" - SOCIETA' COOPERATIVA\"., Italy",
+        "ApprovalNumber": "75001429200031",
+        "Name": "2G TRANSPORTS, France",
         "Type": "ABP Transport",
-        "value": "Name Type Approval Number \"VERALAT\" - SOCIETA' COOPERATIVA\"., Italy ABP Transport 3787"
+        "value": "Name Type Approval Number 2G TRANSPORTS, France ABP Transport 75001429200031"
       },
       "I16TransportConditions": {
         "Ambient": "true",
@@ -131,13 +126,16 @@
     "Sections": {
       "I31DescriptionOfTheGoods": [
         {
-          "CountryOfOrigin": "Italy (IT)",
+          "CountryOfOrigin": "Finland (FI)",
           "PackageCount": "10 Box",
-          "NetWeight": "1000",
-          "Commodity": "16051000",
-          "Other": "true",
-          "value": "1. 16 PREPARATIONS OF MEAT, OF FISH OR OF CRUSTACEANS, MOLLUSCS OR OTHER AQUATIC INVERTEBRATES 1605 Crustaceans, molluscs and other aquatic invertebrates, prepared or preserved 16051000 Crab Commodity Country of Origin Net weight Package count 16051000 Geryon maritae 1000 10 Box Composite products \"VERALAT\" - SOCIETA' COOPERATIVA\". (IT) Italy (IT)",
-          "Species": "Crab"
+          "NetWeight": "2106",
+          "Commodity": "020110",
+          "Chilled": "true",
+          "Ambient": "false",
+          "Frozen": "false",
+          "value": "1. 02 MEAT AND EDIBLE MEAT OFFAL 0201 Meat of bovine animals, fresh or chilled 020110 Carcases and half-carcases Commodity Country of Origin Net weight Package count 020110 Bos taurus 2106 10 Box Domestic 2G TRANSPORTS (FR) Finland (FI)",
+          "EstablishmentOfOrigin": "G TRANSPORTS (FR)",
+          "Species": "Carcases"
         }
       ],
       "I32TotalNumberOfPackages": {
@@ -145,16 +143,16 @@
         "value": "10 Box"
       },
       "I34TotalNetWeight": {
-        "value": "1000 Kg"
+        "value": "2106 Kg"
       },
       "I34TotalGrossWeight": {
-        "value": "1500 Kg"
+        "value": "2200 Kg"
       },
       "I35Declaration": {
-        "NameOfSignatory": "Bristol Admin",
-        "DateOfSignature": "02 June 2026 21:42:31 +0100 BST",
+        "NameOfSignatory": "IPaff Automation",
+        "DateOfSignature": "04 June 2026 12:17:43 +0100 BST",
         "Signature": "",
-        "value": "I, the undersigned operator responsible for the consignment detailed above, certify that to the best of my knowledge and belief the statements made in Part I of this document are true and complete, and I agree to comply with the requirements of assimilated Regulation 2017/625 on official controls, including payment for official controls, as well as for re-dispatching consignments, quarantine or isolation of consignments, or costs of destruction and disposal where necessary. Date of signature Name of signatory Signature 02 June 2026 21:42:31 +0100 BST Bristol Admin"
+        "value": "I, the undersigned operator responsible for the consignment detailed above, certify that to the best of my knowledge and belief the statements made in Part I of this document are true and complete, and I agree to comply with the requirements of assimilated Regulation 2017/625 on official controls, including payment for official controls, as well as for re-dispatching consignments, quarantine or isolation of consignments, or costs of destruction and disposal where necessary. Date of signature Name of signatory Signature 04 June 2026 12:17:43 +0100 BST IPaff Automation"
       }
     }
   },
@@ -168,13 +166,13 @@
         "value": ""
       },
       "II2ChedReference": {
-        "Id": "CHEDP.GB.2026.1070226"
+        "Id": "CHEDP.GB.2026.1070358"
       },
       "II24SubsequentCheds": {
         "value": ""
       },
       "II25BcpReferenceNumber": {
-        "value": "GBCHD2026.1070226"
+        "value": "GBCHD2026.1070358"
       },
       "II3DocumentaryCheck": {
         "NotDone": "false",
@@ -193,19 +191,7 @@
       },
       "II6LaboratoryTests": {
         "Yes": "true",
-        "No": "false",
-        "Tests": [
-          {
-            "Test": ".AMINOGLYCOSIDE/AMINOSIDE",
-            "Random": "false",
-            "Suspicion": "true",
-            "EmergencyMeasures": "false",
-            "Results": "false",
-            "Pending": "true",
-            "Satisfactory": "true",
-            "NotSatisfactory": "false"
-          }
-        ]
+        "No": "false"
       },
       "II5PhysicalCheck": {
         "Yes": "true",
@@ -228,12 +214,12 @@
       },
       "II21CertifyingOfficer": {
         "Name": "Bristol Admin",
-        "DateOfSignature": "02 June 2026 21:43:43 +0100 BST",
+        "DateOfSignature": "04 June 2026 12:20:50 +0100 BST",
         "Signature": ""
       },
       "II22InspectionFeesFullNameBristol": {},
       "II23CustomsDocumentReference": {
-        "value": "IUUNA"
+        "value": ""
       }
     }
   },
@@ -247,7 +233,7 @@
         "value": ""
       },
       "III2ChedReference": {
-        "Id": "CHEDP.GB.2026.1070226"
+        "Id": "CHEDP.GB.2026.1070358"
       },
       "III24SubsequentChed": {
         "value": ""
@@ -279,43 +265,43 @@
     "PageNumber": 5,
     "Sections": {
       "IVFicheForSampling": {
-        "value": "LAP-1070226-1-CHEDP.GB.2026.1070226"
+        "value": "LAP-1070358-1-CHEDP.GB.2026.1070358"
       },
       "IVReferences": {
         "Name": "Bristol GBPBY017",
         "NameOfTheInspector": "Bristol Admin",
         "PhoneEmail": "+44 1179 381171/Part214MarST2@nikhil12.33mail.com",
-        "CertificateReferenceNumber": "CHEDP.GB.2026.1070226"
+        "CertificateReferenceNumber": "CHEDP.GB.2026.1070358"
       },
       "IVIdentificationOfTheSample": {
-        "CountriesOfOrigin": "Italy",
-        "EppoCode": "Geryon maritae",
-        "EstablishmentsOfOrigin": "\"VERALAT\" COOPERATIVA\". - SOCIETA'",
-        "PlaceOfDestination": "Lucy Rise, Newcastle, NE4 8ES",
-        "CountryOfDispatch": "Italy",
-        "Commodity": "1. 16 PREPARATIONS OF MEAT, OF FISH OR OF CRUSTACEANS, MOLLUSCS OR OTHER AQUATIC INVERTEBRATES 1605 Crustaceans, molluscs and other aquatic invertebrates, prepared or preserved 16051000 Crab"
+        "CountriesOfOrigin": "Finland",
+        "Commodity": "1. 02 MEAT AND EDIBLE MEAT OFFAL 0201 Meat of bovine animals, fresh or chilled 020110 Carcases and half- carcases",
+        "EppoCode": "Bos taurus",
+        "EstablishmentsOfOrigin": "2G TRANSPORTS",
+        "PlaceOfDestination": "11 John Childs Way, Rayleigh, SS6 8QG",
+        "CountryOfDispatch": "Finland"
       },
       "IVRequested analysis": {
-        "Motivation": "Random",
+        "Motivation": "Suspicious",
         "InspectorConclusion": "",
-        "HarmfulOrganismName": ".AMINOGLYCOSIDE/AMINOSIDE"
+        "HarmfulOrganismName": "Anaplasma marginale"
       },
       "IVResults": {
-        "Name": "Campden BRI",
-        "Address": "Station Gloucestershire Road, Chipping GL55 6LD Campden,",
-        "Identification": "Campden BRI",
-        "PhoneEmail": "01386 842000/support@campdenbri.co.uk",
-        "SampleDate": "2 June 2026",
-        "SampleBatchNr": "12345",
-        "SampleType": "Blood",
-        "NumberOfSamples": "3",
-        "ConservationOfSamples": "Chilled",
-        "LaboratoryTest": ".AMINOGLYCOSIDE/AMINOSIDE",
-        "LaboratoryConclusion": "Pending",
+        "Name": "Concept Life Sciences",
+        "Address": "Unit Cambridge 2, The CB23 Links, 8UD Trafalgar Way, Bar Hill,",
+        "Identification": "Concept Life Sciences (CLS) 01954 782791",
+        "PhoneEmail": "/cambridgecustomerservices@conceptlifesciences. com",
+        "SampleDate": "4 June 2026",
+        "SampleBatchNr": "987",
+        "SampleType": "Cuttings",
+        "NumberOfSamples": "12",
+        "ConservationOfSamples": "Frozen",
+        "LaboratoryTest": "Anaplasma marginale",
+        "LaboratoryConclusion": "Satisfactory",
         "LaboratoryTestMethod": "",
-        "SampleUseByDate": "",
+        "SampleUseByDate": "15 December 2025 00:00:00 +0000 GMT",
         "ReleasedDate": "",
-        "SampleTime": "20:43",
+        "SampleTime": "11:20",
         "SampleResults": ""
       }
     }
