@@ -1,7 +1,12 @@
-@RiskEngine
 Feature: Risk Engine CHEDA
 
 Bulk upload, Update and Test rules with end-to-end validation for a CHEDA notification
+
+@RiskEngine
+Scenario: Navigate to Risk Engine in the pipeline
+	Given that I navigate to the Risk Engine application
+	When I have provided the Risk Engine admin credentials and signed in
+	Then the Risk Engine Home page should be displayed
 
 Scenario: Bulk upload initial load for CHEDA - SPS-9427
 	# ---------- Iteration 1: Start ----------
