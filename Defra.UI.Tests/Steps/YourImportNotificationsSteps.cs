@@ -698,11 +698,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
                                 }
                                 ValidateContains("Commodity_Commodity code", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
                                 ValidateContains("Commodity_Genus and Species", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
-                                ValidateContains("Country of Origin", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
+                                ValidateContains("Commodity_EPPO code", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
                                 ValidateContains("Commodity_Variety", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Variety, ref allDataMatches, mismatches);
-                                ValidateContains("Commodity_Number of packages", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
-                                ValidateContains("Commodity_Quantity", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Quantity, ref allDataMatches, mismatches);
+                                ValidateContains("Commodity_Class", (string)page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches);
                                 ValidateContains("Commodity_Net weight (kg)", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
+                                ValidateContains("Commodity_Number of packages", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
+                                ValidateContains("CountryOfOrigin", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
+                                ValidateContains("Commodity_Quantity", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Quantity, ref allDataMatches, mismatches);
                                 ValidateContains("Commodity_Controlled atmosphere container", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).ControlledAtmosphereContainer, ref allDataMatches, mismatches);
 
                                 rowIndex++;
@@ -728,7 +730,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             if (codes != null)
                             {
                                 var codeJson = codes.ToString();
-
                                 var codeItems = JsonConvert.DeserializeObject<List<Code>>(codeJson);
 
                                 if (codeItems != null && codeItems.Count > 0)
@@ -739,36 +740,89 @@ namespace Defra.UI.Tests.Steps.IPAFF
                                         .Select(r => r.ToDictionary(k => k.Key, v => v.Value))
                                         .ToList();
 
-                                    int valueIndex = 0;
+                                    // Track index per commodity code
+                                    var valueIndexes = new Dictionary<string, int>();
 
                                     foreach (var row in list)
                                     {
+                                        // Push row values into scenario context
                                         foreach (var kv in row)
                                         {
                                             _scenarioContext[$"Commodity_{kv.Key}"] = kv.Value;
                                         }
-                                        //check Durio and PHSI from the PDF 
-                                        //var codeItem = codeItems.FirstOrDefault();
 
-                                        for (int i = 0; i < codeItems.Count; i++)
-                                        {
-                                            if (codeItems[i] == null) break;
-                                            if (codeItems[i].CommCode.Equals(_scenarioContext.Get<string>("Commodity_Commodity code")))
-                                            {
-                                                var valueItem = codeItems[i].Values.ElementAtOrDefault(valueIndex);
-                                                if (valueItem == null) break;
+                                        // Get the commodity code from the row
+                                        var commodityCode = _scenarioContext.Get<string>("Commodity_Commodity code");
 
-                                                ValidateContains("Commodity_Genus and Species", valueItem.GenusAndSpecies, ref allDataMatches, mismatches);
-                                                ValidateContains("Commodity_Eppo", valueItem.EppoCode, ref allDataMatches, mismatches);
-                                                ValidateContains("Commodity_Class", valueItem.Class, ref allDataMatches, mismatches);
-                                                ValidateContains("Commodity_Variety", valueItem.Variety, ref allDataMatches, mismatches);
+                                        // Find matching JSON entry
+                                        var codeItem = codeItems.FirstOrDefault(c => c.CommCode == commodityCode);
+                                        if (codeItem == null)
+                                            continue; // No match, skip
 
-                                                valueIndex++;
+                                        // Initialise index for this code if needed
+                                        if (!valueIndexes.ContainsKey(commodityCode))
+                                            valueIndexes[commodityCode] = 0;
 
-                                            }
-                                        }
+                                        int index = valueIndexes[commodityCode];
+
+                                        // Get the correct Values entry
+                                        var valueItem = codeItem.Values.ElementAtOrDefault(index);
+                                        if (valueItem == null)
+                                            continue;
+
+                                        // Perform validation
+                                        ValidateContains("Commodity_Genus and Species", valueItem.GenusAndSpecies, ref allDataMatches, mismatches);
+                                        ValidateContains("Commodity_EPPO code", valueItem.EppoCode, ref allDataMatches, mismatches);
+                                        ValidateContains("Commodity_Class", valueItem.Class, ref allDataMatches, mismatches);
+                                        ValidateContains("Commodity_Variety", valueItem.Variety, ref allDataMatches, mismatches);
+
+                                        // Move to next value for this commodity code
+                                        valueIndexes[commodityCode]++;
                                     }
                                 }
+
+
+                                /* var codeItems = JsonConvert.DeserializeObject<List<Code>>(codeJson);
+
+                                 if (codeItems != null && codeItems.Count > 0)
+                                 {
+                                     var allCommodityDetails = _scenarioContext["AllCommodityDetails"] as Reqnroll.DataTable;
+
+                                     var list = allCommodityDetails.Rows
+                                         .Select(r => r.ToDictionary(k => k.Key, v => v.Value))
+                                         .ToList();
+
+                                     int valueIndex = 0;
+
+                                     foreach (var row in list)
+                                     {
+                                         foreach (var kv in row)
+                                         {
+                                             _scenarioContext[$"Commodity_{kv.Key}"] = kv.Value;
+                                         }
+                                         //check Durio and PHSI from the PDF 
+                                         //var codeItem = codeItems.FirstOrDefault();
+
+                                         for (int i = 0; i < codeItems.Count; i++)
+                                         {
+                                             if (codeItems[i] == null) break;
+
+                                             if (codeItems[i].CommCode.Equals(_scenarioContext.Get<string>("Commodity_Commodity code")))
+                                             {
+                                                 var valueItem = codeItems[i].Values.ElementAtOrDefault(valueIndex);
+                                                 if (valueItem == null) break;
+
+                                                 ValidateContains("Commodity_Genus and Species", valueItem.GenusAndSpecies, ref allDataMatches, mismatches);
+                                                 ValidateContains("Commodity_EPPO code", valueItem.EppoCode, ref allDataMatches, mismatches);
+                                                 ValidateContains("Commodity_Class", valueItem.Class, ref allDataMatches, mismatches);
+                                                 ValidateContains("Commodity_Variety", valueItem.Variety, ref allDataMatches, mismatches);
+
+                                                 valueIndex++;
+
+                                             }
+                                         }
+                                     }
+                                 }*/
                             }
                         }
                         
