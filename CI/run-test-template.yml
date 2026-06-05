@@ -67,17 +67,16 @@ jobs:
 
   steps:
   
-    - task: DownloadBuildArtifacts@0
+    - task: DownloadPipelineArtifact@2
       displayName: TestArtifact
       inputs:
         buildType: 'specific'
         project: '303b7da1-1c89-467e-9730-12849c222832'
-        pipeline: '10248'
+        definition: '10248'
         buildVersionToDownload: 'latestFromBranch'
         branchName: ${{ parameters.branchName }}
-        downloadType: 'single'
         artifactName: 'drop'
-        downloadPath: '$(System.ArtifactsDirectory)'
+        targetPath: '$(System.ArtifactsDirectory)'
 
     - task: CopyFiles@2
       displayName: 'Copy Test Artifacts'
