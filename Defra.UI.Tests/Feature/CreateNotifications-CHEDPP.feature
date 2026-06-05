@@ -1,4 +1,4 @@
-﻿@Regression @CHEDPP
+﻿#@Regression @CHEDPP
 Feature: Create Notification CHEDPP
 
 Create a notification for CHEDPP type
@@ -566,7 +566,7 @@ Scenario: Agent submits CHEDPP notification for Trader after being delegated aut
 	Then the notification should be present in the list
 	And the notification status should include 'TRADE PARTNER'
 
-@Dynamics
+@CHEDPP @Dynamics
 Scenario: Trader creates CHEDPP notification via CSV upload and completes end-to-end workflow - SPS-9104
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
