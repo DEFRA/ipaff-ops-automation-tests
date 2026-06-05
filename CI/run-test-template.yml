@@ -238,11 +238,11 @@ jobs:
         $enableRetry = '${{ parameters.enableRetry }}'
 
         # Collect TRX files from initial run
-        $trxFiles = @(Get-ChildItem -Path $initialRunResult -Filter "*.trx" -Recurse)
+        $trxFiles = @(Get-ChildItem -Path $initialRunResult -Filter "*.trx" -Recurse -ErrorAction SilentlyContinue)
 
         # Only include retry results if retry was enabled and the directory exists
         if ($enableRetry -eq 'True' -and (Test-Path $retryRunResult)) {
-            $retryFiles = Get-ChildItem -Path $retryRunResult -Filter "*.trx" -Recurse
+            $retryFiles = Get-ChildItem -Path $retryRunResult -Filter "*.trx" -Recurse -ErrorAction SilentlyContinue
             if ($retryFiles) {
                 $trxFiles += $retryFiles
             }
@@ -253,8 +253,21 @@ jobs:
         }
 
         if ($trxFiles.Count -eq 0) {
-            Write-Error "No TRX files found. Cannot merge results."
-            exit 1
+            Write-Host "##[warning]No TRX files found. No tests were executed in this stage — skipping merge."
+            # Create an empty merged TRX so PublishTestResults doesn't fail
+            $emptyTrx = @"
+        <?xml version="1.0" encoding="utf-8"?>
+        <TestRun xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+          <Results />
+          <TestDefinitions />
+        </TestRun>
+        "@
+            if (-not (Test-Path $initialRunResult)) {
+                New-Item -ItemType Directory -Path $initialRunResult | Out-Null
+            }
+            Set-Content -Path $mergedTrxPath -Value $emptyTrx
+            Write-Host "Created empty merged TRX at: $mergedTrxPath"
+            exit 0
         }
 
         $latestResults = @{}
@@ -262,6 +275,11 @@ jobs:
 
         foreach ($file in $trxFiles) {
             [xml]$xml = Get-Content $file.FullName
+
+            if ($null -eq $xml.TestRun.TestDefinitions -or $null -eq $xml.TestRun.Results) {
+                Write-Host "Skipping $($file.Name) — no test results found in file."
+                continue
+            }
 
             foreach ($unitTest in $xml.TestRun.TestDefinitions.UnitTest) {
                 $name = $unitTest.name
@@ -278,13 +296,41 @@ jobs:
             }
         }
 
-        [xml]$finalTrx = Get-Content "$(System.DefaultWorkingDirectory)/Defra.UI.Tests/TestResults/${{ parameters.jobName }}_results_0.trx"
+        if ($latestResults.Count -eq 0) {
+            Write-Host "##[warning]TRX files found but contained no test results — creating empty merged TRX."
+            $emptyTrx = @"
+        <?xml version="1.0" encoding="utf-8"?>
+        <TestRun xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+          <Results />
+          <TestDefinitions />
+        </TestRun>
+        "@
+            Set-Content -Path $mergedTrxPath -Value $emptyTrx
+            exit 0
+        }
+
+        [xml]$finalTrx = Get-Content $trxFiles[0].FullName
 
         $namespaceManager = New-Object System.Xml.XmlNamespaceManager($finalTrx.NameTable)
         $namespaceManager.AddNamespace("ns", $finalTrx.DocumentElement.NamespaceURI)
 
-        $finalTrx.TestRun.Results.RemoveAll()
-        $finalTrx.TestRun.TestDefinitions.RemoveAll()
+        # Guard against null Results/TestDefinitions nodes
+        $resultsNode = $finalTrx.SelectSingleNode("//ns:Results", $namespaceManager)
+        $definitionsNode = $finalTrx.SelectSingleNode("//ns:TestDefinitions", $namespaceManager)
+
+        if ($null -eq $resultsNode) {
+            $resultsNode = $finalTrx.CreateElement("Results", $finalTrx.DocumentElement.NamespaceURI)
+            $finalTrx.TestRun.AppendChild($resultsNode) | Out-Null
+        } else {
+            $resultsNode.RemoveAll()
+        }
+
+        if ($null -eq $definitionsNode) {
+            $definitionsNode = $finalTrx.CreateElement("TestDefinitions", $finalTrx.DocumentElement.NamespaceURI)
+            $finalTrx.TestRun.AppendChild($definitionsNode) | Out-Null
+        } else {
+            $definitionsNode.RemoveAll()
+        }
 
         foreach ($name in $latestResults.Keys) {
             $result = $latestResults[$name]
@@ -292,15 +338,15 @@ jobs:
 
             if ($definition -and $result) {
                 $importedResult = $finalTrx.ImportNode($result, $true)
-                $finalTrx.SelectSingleNode("//ns:Results", $namespaceManager).AppendChild($importedResult) | Out-Null
+                $resultsNode.AppendChild($importedResult) | Out-Null
                 
                 $importedDef = $finalTrx.ImportNode($definition, $true)
-                $finalTrx.SelectSingleNode("//ns:TestDefinitions", $namespaceManager).AppendChild($importedDef) | Out-Null
+                $definitionsNode.AppendChild($importedDef) | Out-Null
             }
         }
 
         $finalTrx.Save($mergedTrxPath)
-        Write-Host "Merged .trx file saved to: $mergedTrxPath (from $($trxFiles.Count) file(s))"
+        Write-Host "Merged .trx file saved to: $mergedTrxPath (from $($trxFiles.Count) file(s), $($latestResults.Count) test(s))"
         exit 0
       displayName: 'Merge TRX Results'
       failOnStderr: false

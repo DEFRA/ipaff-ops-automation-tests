@@ -46,107 +46,142 @@ parameters:
     displayName: Enable Failed Test Retry
     type: boolean
     default: false
+  - name: featureFilter
+    displayName: 'Run specific scenario(s) by tag (e.g. SPS-9104 or SPS-9104,SPS-7364). Leave blank to run all CHED stages.'
+    type: string
+    default: ''
 
 stages:
 
-  - stage: IPAFF_OPS_CHEDA
-    displayName: IPAFF OPS - CHEDA
-    variables:
-      - template: 'variables/IPAFF/${{parameters.environment}}.yml'
-    jobs:
-      - template: run-test-template.yml
-        parameters:
-          jobName: IPAFF_OPS_CHEDA
-          environment: ${{ parameters.environment }}
-          branchName: $(Build.SourceBranch)
-          seleniumGrid: ${{ parameters.seleniumGrid }}
-          deviceName: ${{ parameters.deviceName }}
-          bsOSVersion: ${{ parameters.bsOSVersion }}
-          workers: ${{ parameters.workers }}
-          bsBrowserVersion: 'latest'
-          target: ${{ parameters.target }}
-          isEmulationEnabled: ${{ parameters.isEmulationEnabled }}
-          emulateDeviceInfo: ${{ parameters.emulateDeviceInfo }}
-          isAccessibilityEnabled: ${{ parameters.isAccessibilityEnabled }}
-          enableRetry: ${{ parameters.enableRetry }}
-          application: 'IPAFF'
-          dependsOn: ''
-          filterTestCases: 'TestCategory=CHEDA'
+  - ${{ if eq(parameters.featureFilter, '') }}:
+    - stage: IPAFFS_OPS_CHEDA
+      displayName: IPAFFS OPS - CHEDA
+      variables:
+        - template: 'variables/IPAFF/${{parameters.environment}}.yml'
+      jobs:
+        - template: run-test-template.yml
+          parameters:
+            jobName: IPAFFS_OPS_CHEDA
+            environment: ${{ parameters.environment }}
+            branchName: $(Build.SourceBranch)
+            seleniumGrid: ${{ parameters.seleniumGrid }}
+            deviceName: ${{ parameters.deviceName }}
+            bsOSVersion: ${{ parameters.bsOSVersion }}
+            workers: ${{ parameters.workers }}
+            bsBrowserVersion: 'latest'
+            target: ${{ parameters.target }}
+            isEmulationEnabled: ${{ parameters.isEmulationEnabled }}
+            emulateDeviceInfo: ${{ parameters.emulateDeviceInfo }}
+            isAccessibilityEnabled: ${{ parameters.isAccessibilityEnabled }}
+            enableRetry: ${{ parameters.enableRetry }}
+            application: 'IPAFF'
+            dependsOn: ''
+            filterTestCases: 'TestCategory=CHEDA'
+            featureFilter: ''
 
-  - stage: IPAFF_OPS_CHEDD
-    displayName: IPAFF OPS - CHEDD
-    dependsOn: IPAFF_OPS_CHEDA
-    condition: always()
-    variables:
-      - template: 'variables/IPAFF/${{parameters.environment}}.yml'
-    jobs:
-      - template: run-test-template.yml
-        parameters:
-          jobName: IPAFF_OPS_CHEDD
-          environment: ${{ parameters.environment }}
-          branchName: $(Build.SourceBranch)
-          seleniumGrid: ${{ parameters.seleniumGrid }}
-          deviceName: ${{ parameters.deviceName }}
-          bsOSVersion: ${{ parameters.bsOSVersion }}
-          workers: ${{ parameters.workers }}
-          bsBrowserVersion: 'latest'
-          target: ${{ parameters.target }}
-          isEmulationEnabled: ${{ parameters.isEmulationEnabled }}
-          emulateDeviceInfo: ${{ parameters.emulateDeviceInfo }}
-          isAccessibilityEnabled: ${{ parameters.isAccessibilityEnabled }}
-          enableRetry: ${{ parameters.enableRetry }}
-          application: 'IPAFF'
-          dependsOn: ''
-          filterTestCases: 'TestCategory=CHEDD'
+    - stage: IPAFFS_OPS_CHEDD
+      displayName: IPAFFS OPS - CHEDD
+      dependsOn: IPAFFS_OPS_CHEDA
+      condition: always()
+      variables:
+        - template: 'variables/IPAFF/${{parameters.environment}}.yml'
+      jobs:
+        - template: run-test-template.yml
+          parameters:
+            jobName: IPAFFS_OPS_CHEDD
+            environment: ${{ parameters.environment }}
+            branchName: $(Build.SourceBranch)
+            seleniumGrid: ${{ parameters.seleniumGrid }}
+            deviceName: ${{ parameters.deviceName }}
+            bsOSVersion: ${{ parameters.bsOSVersion }}
+            workers: ${{ parameters.workers }}
+            bsBrowserVersion: 'latest'
+            target: ${{ parameters.target }}
+            isEmulationEnabled: ${{ parameters.isEmulationEnabled }}
+            emulateDeviceInfo: ${{ parameters.emulateDeviceInfo }}
+            isAccessibilityEnabled: ${{ parameters.isAccessibilityEnabled }}
+            enableRetry: ${{ parameters.enableRetry }}
+            application: 'IPAFF'
+            dependsOn: ''
+            filterTestCases: 'TestCategory=CHEDD'
+            featureFilter: ''
 
-  - stage: IPAFF_OPS_CHEDP
-    displayName: IPAFF OPS - CHEDP
-    dependsOn: IPAFF_OPS_CHEDD
-    condition: always()
-    variables:
-      - template: 'variables/IPAFF/${{parameters.environment}}.yml'
-    jobs:
-      - template: run-test-template.yml
-        parameters:
-          jobName: IPAFF_OPS_CHEDP
-          environment: ${{ parameters.environment }}
-          branchName: $(Build.SourceBranch)
-          seleniumGrid: ${{ parameters.seleniumGrid }}
-          deviceName: ${{ parameters.deviceName }}
-          bsOSVersion: ${{ parameters.bsOSVersion }}
-          workers: ${{ parameters.workers }}
-          bsBrowserVersion: 'latest'
-          target: ${{ parameters.target }}
-          isEmulationEnabled: ${{ parameters.isEmulationEnabled }}
-          emulateDeviceInfo: ${{ parameters.emulateDeviceInfo }}
-          isAccessibilityEnabled: ${{ parameters.isAccessibilityEnabled }}
-          enableRetry: ${{ parameters.enableRetry }}
-          application: 'IPAFF'
-          dependsOn: ''
-          filterTestCases: 'TestCategory=CHEDP'
+    - stage: IPAFFS_OPS_CHEDP
+      displayName: IPAFFS OPS - CHEDP
+      dependsOn: IPAFFS_OPS_CHEDD
+      condition: always()
+      variables:
+        - template: 'variables/IPAFF/${{parameters.environment}}.yml'
+      jobs:
+        - template: run-test-template.yml
+          parameters:
+            jobName: IPAFFS_OPS_CHEDP
+            environment: ${{ parameters.environment }}
+            branchName: $(Build.SourceBranch)
+            seleniumGrid: ${{ parameters.seleniumGrid }}
+            deviceName: ${{ parameters.deviceName }}
+            bsOSVersion: ${{ parameters.bsOSVersion }}
+            workers: ${{ parameters.workers }}
+            bsBrowserVersion: 'latest'
+            target: ${{ parameters.target }}
+            isEmulationEnabled: ${{ parameters.isEmulationEnabled }}
+            emulateDeviceInfo: ${{ parameters.emulateDeviceInfo }}
+            isAccessibilityEnabled: ${{ parameters.isAccessibilityEnabled }}
+            enableRetry: ${{ parameters.enableRetry }}
+            application: 'IPAFF'
+            dependsOn: ''
+            filterTestCases: 'TestCategory=CHEDP'
+            featureFilter: ''
 
-  - stage: IPAFF_OPS_CHEDPP
-    displayName: IPAFF OPS - CHEDPP
-    dependsOn: IPAFF_OPS_CHEDP
-    condition: always()
-    variables:
-      - template: 'variables/IPAFF/${{parameters.environment}}.yml'
-    jobs:
-      - template: run-test-template.yml
-        parameters:
-          jobName: IPAFF_OPS_CHEDPP
-          environment: ${{ parameters.environment }}
-          branchName: $(Build.SourceBranch)
-          seleniumGrid: ${{ parameters.seleniumGrid }}
-          deviceName: ${{ parameters.deviceName }}
-          bsOSVersion: ${{ parameters.bsOSVersion }}
-          workers: ${{ parameters.workers }}
-          bsBrowserVersion: 'latest'
-          target: ${{ parameters.target }}
-          isEmulationEnabled: ${{ parameters.isEmulationEnabled }}
-          emulateDeviceInfo: ${{ parameters.emulateDeviceInfo }}
-          isAccessibilityEnabled: ${{ parameters.isAccessibilityEnabled }}
-          enableRetry: ${{ parameters.enableRetry }}
-          application: 'IPAFF'
-          dependsOn: ''
-          filterTestCases: 'TestCategory=CHEDPP'
+    - stage: IPAFFS_OPS_CHEDPP
+      displayName: IPAFFS OPS - CHEDPP
+      dependsOn: IPAFFS_OPS_CHEDP
+      condition: always()
+      variables:
+        - template: 'variables/IPAFF/${{parameters.environment}}.yml'
+      jobs:
+        - template: run-test-template.yml
+          parameters:
+            jobName: IPAFFS_OPS_CHEDPP
+            environment: ${{ parameters.environment }}
+            branchName: $(Build.SourceBranch)
+            seleniumGrid: ${{ parameters.seleniumGrid }}
+            deviceName: ${{ parameters.deviceName }}
+            bsOSVersion: ${{ parameters.bsOSVersion }}
+            workers: ${{ parameters.workers }}
+            bsBrowserVersion: 'latest'
+            target: ${{ parameters.target }}
+            isEmulationEnabled: ${{ parameters.isEmulationEnabled }}
+            emulateDeviceInfo: ${{ parameters.emulateDeviceInfo }}
+            isAccessibilityEnabled: ${{ parameters.isAccessibilityEnabled }}
+            enableRetry: ${{ parameters.enableRetry }}
+            application: 'IPAFF'
+            dependsOn: ''
+            filterTestCases: 'TestCategory=CHEDPP'
+            featureFilter: ''
+
+  - ${{ if ne(parameters.featureFilter, '') }}:
+    - stage: IPAFFS_OPS_CUSTOM
+      displayName: 'IPAFFS OPS - ${{ parameters.featureFilter }}'
+      variables:
+        - template: 'variables/IPAFF/${{parameters.environment}}.yml'
+      jobs:
+        - template: run-test-template.yml
+          parameters:
+            jobName: IPAFFS_OPS_CUSTOM
+            environment: ${{ parameters.environment }}
+            branchName: $(Build.SourceBranch)
+            seleniumGrid: ${{ parameters.seleniumGrid }}
+            deviceName: ${{ parameters.deviceName }}
+            bsOSVersion: ${{ parameters.bsOSVersion }}
+            workers: ${{ parameters.workers }}
+            bsBrowserVersion: 'latest'
+            target: ${{ parameters.target }}
+            isEmulationEnabled: ${{ parameters.isEmulationEnabled }}
+            emulateDeviceInfo: ${{ parameters.emulateDeviceInfo }}
+            isAccessibilityEnabled: ${{ parameters.isAccessibilityEnabled }}
+            enableRetry: ${{ parameters.enableRetry }}
+            application: 'IPAFF'
+            dependsOn: ''
+            filterTestCases: ''
+            featureFilter: ${{ parameters.featureFilter }}

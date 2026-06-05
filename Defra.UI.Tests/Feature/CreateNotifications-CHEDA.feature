@@ -1,8 +1,9 @@
-﻿#@Regression @CHEDA
+﻿@Regression @CHEDA
 Feature: Create Notification CHEDA
 
 Create a notification for CHEDA type
 
+@CHEDA-Happy-Path
 Scenario: User creates and submits a B2C consignment notification - CHEDA Happy Path
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -173,6 +174,7 @@ Scenario: User creates and submits a B2C consignment notification - CHEDA Happy 
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
 
+@SPS-7383
 Scenario: User creates and submits a CHEDA consignment notification with multiple emergency lab tests - SPS-7383
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -378,6 +380,7 @@ Scenario: User creates and submits a CHEDA consignment notification with multipl
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
 
+@SPS-7384
 Scenario: User creates and submits a CHEDA consignment notification for Temporary admission horses with laboratory tests - SPS-7384
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -583,6 +586,7 @@ Scenario: User creates and submits a CHEDA consignment notification for Temporar
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
 
+@SPS-7385
 Scenario: User creates and submits a CHEDA consignment notification with Transit through multiple countries - SPS-7385
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -778,6 +782,7 @@ Scenario: User creates and submits a CHEDA consignment notification with Transit
 	When the user clicks Return to your dashboard link
 	Then the Import notifications dashboard page should be displayed
 
+@SPS-7386
 Scenario: User creates and submits a CHEDA consignment notification with inspector workflow and lab test validations - SPS-7386
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -1060,6 +1065,7 @@ Scenario: User creates and submits a CHEDA consignment notification with inspect
 	When the user clicks on the Dashboard link
 	Then the dashboard page should be displayed
 
+@SPS-7387
 Scenario: User adds addresses to address book and amends a CHEDA notification to use new traders - SPS-7387
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -1272,6 +1278,7 @@ Scenario: User adds addresses to address book and amends a CHEDA notification to
 	And the user deletes the newly added operator 'Exporter'
 	And the user deletes the newly added operator 'Transporter'
 
+@SPS-7388
 Scenario: User creates and amends a CHEDA notification, inspector requests amendment, and processes with multiple emergency lab tests - SPS-7388
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -1637,6 +1644,7 @@ Scenario: User creates and amends a CHEDA notification, inspector requests amend
 	When the user searches for the newly created notification on the Import notifications page
 	Then the notification returned in the search has the status 'Valid' on the Import notifications page
 
+@SPS-7389
 Scenario: User creates and submits a CHEDA notification, copies it as new and verifies copied values - SPS-7389
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -1859,6 +1867,7 @@ Scenario: User creates and submits a CHEDA notification, copies it as new and ve
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 
+@SPS-7390
 Scenario: User creates and submits a CHEDA notification with laboratory tests changed from Yes to No - SPS-7390
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -2069,7 +2078,7 @@ Scenario: User creates and submits a CHEDA notification with laboratory tests ch
 	When the user clicks Return to your dashboard link
 	Then the Import notifications dashboard page should be displayed
 
-@Dynamics
+@Dynamics @SPS-7363
 Scenario: User creates and submits a CHEDA consignment notification with EU country, multiple species and permanent addresses for animals - SPS-7363
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -2225,6 +2234,7 @@ Scenario: User creates and submits a CHEDA consignment notification with EU coun
 	When I select the Permanent Addresses tab
 	Then I verify the permanent address displayed for each animal matches the address entered in IPAFFS
 
+@SPS-7392
 Scenario: User creates and submits a notification, override the risk decision, reject the notification and creates record control - CHEDA - SPS-7392
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
