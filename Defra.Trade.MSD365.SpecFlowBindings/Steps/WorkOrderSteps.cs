@@ -88,12 +88,33 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
 
         if (popupContainers.Count > 0)
         {
-            // Wait for the popup's own Assign button to be present and visible before clicking.
-            // Scope to the popup container to avoid matching the Work Order command bar.
-            var popupAssignButton = Driver.WaitUntilAvailable(
-                By.XPath("//section[contains(@id,'popupContainer')]//button[contains(@data-id,'Assign') or contains(@aria-label,'Assign')]"),
-                TimeSpan.FromSeconds(30),
-                "Assign button could not be found in the popup command bar within 30 seconds.");
+            // The popup command bar renders asynchronously after the popup opens.
+            // Poll with FindElements until the Assign button appears — a single
+            // WaitUntilAvailable call times out if the bar is still loading when it starts.
+            IWebElement popupAssignButton = null;
+            var deadline = DateTime.UtcNow.AddSeconds(60);
+
+            while (DateTime.UtcNow < deadline)
+            {
+                Driver.WaitForTransaction();
+
+                var candidates = Driver.FindElements(
+                    By.XPath("//section[contains(@id,'popupContainer')]//button[contains(@data-id,'Assign') or contains(@aria-label,'Assign')]"));
+
+                if (candidates.Count > 0)
+                {
+                    popupAssignButton = candidates[0];
+                    break;
+                }
+
+                Thread.Sleep(2000);
+            }
+
+            if (popupAssignButton == null)
+            {
+                throw new InvalidOperationException(
+                    "Assign button could not be found in the popup command bar within 60 seconds.");
+            }
 
             Driver.ExecuteScript("arguments[0].scrollIntoView({block:'center'});", popupAssignButton);
             Driver.WaitForTransaction();
