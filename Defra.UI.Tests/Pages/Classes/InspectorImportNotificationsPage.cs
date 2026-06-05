@@ -17,6 +17,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtCHEDRefInput => _driver.WaitForElement(By.Id("keywords"));
         private IWebElement btnSearch => _driver.WaitForElement(By.Id("search-notifications"));
         private IWebElement lnkChedRefNumSearcResult => _driver.WaitForElement(By.XPath("//*[normalize-space()='Reference Number']//following-sibling::dd"));
+        private IWebElement lnkChedRefNumSearcResultLink => _driver.WaitForElement(By.XPath("//*[normalize-space()='Reference Number']//following-sibling::dd//a"));
         private IWebElement lnkChedStatusSearcResult => _driver.WaitForElement(By.XPath("//*[normalize-space()='CHED status']//following-sibling::dd"));
         private IWebElement lnkRiskOutcomeSearchResult => _driver.WaitForElement(By.XPath("//*[normalize-space()='Risk outcome']//following-sibling::dd"));
         private IWebElement lnkViewCHED => _driver.FindElement(By.XPath("//a[normalize-space()='View CHED']"));
@@ -53,14 +54,14 @@ namespace Defra.UI.Tests.Pages.Classes
             if (lnkChedRefNumSearcResult.Text.Trim().Contains(chedRef)
                 && lnkChedStatusSearcResult.Text.Trim().Equals(status, StringComparison.OrdinalIgnoreCase))
             {
-                lnkChedRefNumSearcResult.Click();
+                ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", lnkChedRefNumSearcResultLink);
             }
         }
 
         public void SearchAndClickNotification(string chedRef)
         {
             SearchForChed(chedRef);
-            lnkChedRefNumSearcResult.Click();
+            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", lnkChedRefNumSearcResultLink);
         }
 
         public bool VerifyNotificationIsPresent(string chedRef)
@@ -102,7 +103,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void ClickNotification()
         {
-            lnkChedRefNumSearcResult.Click();
+            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", lnkChedRefNumSearcResultLink);
         }
 
         public bool VerifyNotificationIsNotPresent()
