@@ -286,7 +286,62 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Extractors
                 .OrderByDescending(w => w.BoundingBox.Bottom)
                 .ToList();
 
-            if (testDotWords.Count == 0) return;
+            // Each test row anchor: (y, testName). Populated either from dot-words or from the
+            // "Test" column header line as a fallback for templates that omit the dot prefix.
+            var testRows = new List<(double y, string name)>();
+
+            foreach (var tw in testDotWords)
+            {
+                var sameLineForName = words
+                    .Where(w => Math.Abs(w.BoundingBox.Bottom - tw.BoundingBox.Bottom) < 3)
+                    .OrderBy(w => w.BoundingBox.Left)
+                    .ToList();
+                var dotIdxForName = sameLineForName.FindIndex(w => w.Text == tw.Text);
+                var nameParts = new List<string>();
+                if (dotIdxForName >= 0)
+                {
+                    for (int k = dotIdxForName; k < sameLineForName.Count; k++)
+                    {
+                        var txt = sameLineForName[k].Text;
+                        if (txt.Length > 0 && (txt[0] == '.' || char.IsUpper(txt[0])))
+                            nameParts.Add(txt);
+                        else
+                            break;
+                    }
+                }
+                var nm = string.Join(" ", nameParts).Trim();
+                if (!string.IsNullOrWhiteSpace(nm))
+                    testRows.Add((tw.BoundingBox.Bottom, nm));
+            }
+
+            // Fallback: no dot-prefixed test rows — look for plain test names on the "Test" header line.
+            // Layout: "Test" column header sits below II.6 anchor, with the test name to its right
+            // on the same line (e.g. "Test  Anaplasma marginale").
+            if (testRows.Count == 0)
+            {
+                var testHeader = words.FirstOrDefault(w =>
+                    w.Text.Equals("Test", StringComparison.OrdinalIgnoreCase) &&
+                    w.BoundingBox.Bottom < anchorY &&
+                    w.BoundingBox.Bottom > lowerLimitY);
+
+                if (testHeader != null)
+                {
+                    var nameWords = words
+                        .Where(w => Math.Abs(w.BoundingBox.Bottom - testHeader.BoundingBox.Bottom) < 3 &&
+                                    w.BoundingBox.Left > testHeader.BoundingBox.Right)
+                        .OrderBy(w => w.BoundingBox.Left)
+                        .ToList();
+
+                    if (nameWords.Count > 0)
+                    {
+                        var nm = string.Join(" ", nameWords.Select(w => w.Text)).Trim();
+                        if (!string.IsNullOrWhiteSpace(nm))
+                            testRows.Add((testHeader.BoundingBox.Bottom, nm));
+                    }
+                }
+            }
+
+            if (testRows.Count == 0) return;
 
             var wordsBelow = words
                 .Where(w => w.BoundingBox.Bottom < anchorY && w.BoundingBox.Bottom > lowerLimitY)
@@ -352,34 +407,14 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Extractors
                 return null;
             }
 
-            for (int i = 0; i < testDotWords.Count; i++)
+            for (int i = 0; i < testRows.Count; i++)
             {
-                var testWord = testDotWords[i];
-                var bandTop = testWord.BoundingBox.Bottom + 2;
-                var bandBottom = (i + 1 < testDotWords.Count)
-                    ? testDotWords[i + 1].BoundingBox.Bottom + 2
+                var bandTop = testRows[i].y + 2;
+                var bandBottom = (i + 1 < testRows.Count)
+                    ? testRows[i + 1].y + 2
                     : lowerLimitY;
 
-                var sameLine = words
-                    .Where(w => Math.Abs(w.BoundingBox.Bottom - testWord.BoundingBox.Bottom) < 3)
-                    .OrderBy(w => w.BoundingBox.Left)
-                    .ToList();
-
-                var dotIdx = sameLine.FindIndex(w => w.Text == testWord.Text);
-                var nameParts = new List<string>();
-                if (dotIdx >= 0)
-                {
-                    for (int k = dotIdx; k < sameLine.Count; k++)
-                    {
-                        var txt = sameLine[k].Text;
-                        if (txt.Length > 0 && (txt[0] == '.' || char.IsUpper(txt[0])))
-                            nameParts.Add(txt);
-                        else
-                            break;
-                    }
-                }
-
-                var testName = string.Join(" ", nameParts).Trim();
+                var testName = testRows[i].name;
                 if (string.IsNullOrWhiteSpace(testName)) continue;
 
                 var prefix = $"II.6::row{i}";
@@ -662,7 +697,9 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Extractors
 
             foreach (var label in labels)
             {
-                var bounds = FindLabelBoundsNearestTo(words, label, anchorX, anchorY, maxDistance: 300, belowAnchorOnly: true);
+                // maxDistance must cover the rightmost column (Frozen) on a full-width row; the
+                // I.16 anchor sits in the left margin while "Frozen" sits near the right edge ~380px away.
+                var bounds = FindLabelBoundsNearestTo(words, label, anchorX, anchorY, maxDistance: 500, belowAnchorOnly: true);
                 var key = $"I16::{label}";
 
                 if (bounds == null)
