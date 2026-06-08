@@ -1,8 +1,9 @@
-#@RiskEngine
+@RiskEngine @RiskEngine-CHEDD
 Feature: Risk Engine CHEDD
 
 Bulk upload, Update and Test rules with end-to-end validation for a CHEDD notification
 
+@SPS-9442
 Scenario: Bulk upload initial load for CHEDD - SPS-9442
 	# ---------- Iteration 1: Start ----------
 	# Upload the rules
@@ -653,6 +654,7 @@ Scenario: Bulk upload initial load for CHEDD - SPS-9442
 	And 'Iteration_5' is complete
 	# ---------- Iteration 5: Complete ----------
 
+@SPS-9443
 Scenario: Bulk upload update existing rules for CHEDD - SPS-9443
 	# ---------- Iteration 1: Start ----------
 	# Upload the update rules

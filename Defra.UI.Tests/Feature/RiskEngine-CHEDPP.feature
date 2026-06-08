@@ -1,8 +1,9 @@
-#@RiskEngine
+@RiskEngine @RiskEngine-CHEDPP
 Feature: Risk Engine CHEDPP
 
 Bulk upload, Update and Test rules with end-to-end validation for a CHEDPP notification
 
+@SPS-9414
 Scenario: Bulk upload initial load for CHEDPP - SPS-9414
 	# ---------- Iteration 1: Start ----------
 	# Upload the rules
@@ -829,6 +830,7 @@ Scenario: Bulk upload initial load for CHEDPP - SPS-9414
 	And 'Iteration_5' is complete
 	# ---------- Iteration 5: Complete ----------	
 
+@SPS-9415
 Scenario: Bulk upload update existing rules for CHEDPP - SPS-9415
 	# ---------- Iteration 1: Start ----------
 	# Upload the updated rules
