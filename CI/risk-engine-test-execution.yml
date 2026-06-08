@@ -47,9 +47,9 @@ parameters:
     type: boolean
     default: false
   - name: featureFilter
-    displayName: 'Run specific scenario(s) by tag (e.g. SPS-9414 or SPS-9414,SPS-9415 or RiskEngine-CHEDPP). Leave blank to run all Risk Engine tests.'
+    displayName: 'Run specific scenario(s) by tag (e.g. SPS-9414 or SPS-9414,SPS-9419 or RiskEngine-CHEDPP). Leave as "all" to run all Risk Engine tests.'
     type: string
-    default: ''
+    default: 'all'
 
 stages:
 

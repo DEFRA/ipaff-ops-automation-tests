@@ -35,6 +35,9 @@
   - name: enableRetry
     type: boolean
     default: false
+  - name: featureFilter
+    type: string
+    default: 'all'
 
 jobs: 
 
@@ -67,6 +70,8 @@ jobs:
         value: $(FilterTestCategory)
       ${{ else }}:
         value: ${{parameters.filterTestCases}}
+    - name: FeatureFilter
+      value: ${{ parameters.featureFilter }}
 
   steps:
   
@@ -198,7 +203,33 @@ jobs:
     - powershell: |
           Set-Location -Path "$(System.DefaultWorkingDirectory)/Defra.UI.Tests"
           $filterTestCases = "$(FilterTestCases)"
-          dotnet test "$(System.DefaultWorkingDirectory)/Defra.UI.Tests/Defra.UI.Tests.dll" --settings "$(System.DefaultWorkingDirectory)/Defra.UI.Tests/testrun_${{ parameters.workers }}.runsettings" --filter "$filterTestCases" --logger:"trx;logfilename=${{ parameters.jobName }}_results_0.trx"
+          $featureFilter = "$(FeatureFilter)"
+
+          # Build the effective filter:
+          # - If featureFilter is 'all' or empty, use filterTestCases as-is (default behaviour).
+          # - If featureFilter is provided, it completely overrides filterTestCases.
+          if ($featureFilter -and $featureFilter.Trim() -ne '' -and $featureFilter.Trim() -ne 'all') {
+              $tags = $featureFilter.Split(',') | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne '' }
+
+              if ($tags.Count -eq 1) {
+                  $effectiveFilter = "TestCategory=$($tags[0])"
+              } else {
+                  $effectiveFilter = ($tags | ForEach-Object { "TestCategory=$_" }) -join ' | '
+                  $effectiveFilter = "($effectiveFilter)"
+              }
+
+              Write-Host "Feature filter override applied."
+          } else {
+              $effectiveFilter = $filterTestCases
+          }
+
+          Write-Host "Effective test filter: $effectiveFilter"
+
+          if ($effectiveFilter -and $effectiveFilter.Trim() -ne '') {
+              dotnet test "$(System.DefaultWorkingDirectory)/Defra.UI.Tests/Defra.UI.Tests.dll" --settings "$(System.DefaultWorkingDirectory)/Defra.UI.Tests/testrun_${{ parameters.workers }}.runsettings" --filter "$effectiveFilter" --logger:"trx;logfilename=${{ parameters.jobName }}_results_0.trx"
+          } else {
+              dotnet test "$(System.DefaultWorkingDirectory)/Defra.UI.Tests/Defra.UI.Tests.dll" --settings "$(System.DefaultWorkingDirectory)/Defra.UI.Tests/testrun_${{ parameters.workers }}.runsettings" --logger:"trx;logfilename=${{ parameters.jobName }}_results_0.trx"
+          }
       displayName: 'Execute Tests'
       failOnStderr: true
       ignoreLASTEXITCODE: true

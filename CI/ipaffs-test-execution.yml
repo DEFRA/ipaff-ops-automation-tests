@@ -47,13 +47,13 @@ parameters:
     type: boolean
     default: false
   - name: featureFilter
-    displayName: 'Run specific scenario(s) by tag (e.g. SPS-9104 or SPS-9104,SPS-7364). Leave blank to run all CHED stages.'
+    displayName: 'Run specific scenario(s) by tag (e.g. SPS-9104 or SPS-9104,SPS-7364). Leave as "all" to run all CHED stages.'
     type: string
-    default: ''
+    default: 'all'
 
 stages:
 
-  - ${{ if eq(parameters.featureFilter, '') }}:
+  - ${{ if eq(parameters.featureFilter, 'all') }}:
     - stage: IPAFFS_OPS_CHEDA
       displayName: IPAFFS OPS - CHEDA
       variables:
@@ -160,7 +160,7 @@ stages:
             filterTestCases: 'TestCategory=CHEDPP'
             featureFilter: ''
 
-  - ${{ if ne(parameters.featureFilter, '') }}:
+  - ${{ if ne(parameters.featureFilter, 'all') }}:
     - stage: IPAFFS_OPS_CUSTOM
       displayName: 'IPAFFS OPS - ${{ parameters.featureFilter }}'
       variables:
