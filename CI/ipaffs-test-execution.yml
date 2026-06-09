@@ -47,7 +47,7 @@ parameters:
     type: boolean
     default: false
   - name: featureFilter
-    displayName: 'Run specific scenario(s) by tag (e.g. SPS-9104 or SPS-9104,SPS-7364). Leave as "all" to run all CHED stages.'
+    displayName: 'Run specific scenario(s) by tag (e.g. SPS-9104 or SPS-9104,SPS-7364 or CHEDA). Leave as "all" to run all CHED stages.'
     type: string
     default: 'all'
 

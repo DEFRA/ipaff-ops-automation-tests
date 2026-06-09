@@ -1,6 +1,7 @@
 ﻿using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private IObjectContainer _objectContainer;
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
 
+        // Extended timeout for this page — DataTable can take ~60s to render
+        private const int PageLoadTimeoutSeconds = 120;
+
         // Column order in the rendered table — must match the HTML
         private static readonly string[] Columns =
         [
@@ -23,8 +27,8 @@ namespace Defra.UI.Tests.Pages.Classes
         ];
 
         #region Page Objects
-        private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='View all PHSI (Import) Commodity Rules']"), true);
-        private IWebElement searchInput => _driver.WaitForElement(By.XPath("//input[@type='search' or contains(@aria-controls,'commodity-rules-table')]"));
+        private By pageTitleBy => By.XPath("//h1[normalize-space()='View all PHSI (Import) Commodity Rules']");
+        private By searchInputBy => By.XPath("//input[@type='search' or contains(@aria-controls,'commodity-rules-table')]");
         private IWebElement idHeader => _driver.WaitForElement(By.XPath("//table[@id='commodity-rules-table']//thead//th[normalize-space()='Id']"));
         private IWebElement infoLabel => _driver.FindElement(By.XPath("//div[contains(@id,'commodity-rules-table_info') or contains(@class,'dataTables_info')]"));
         private IWebElement firstRow => _driver.FindElement(By.XPath("//table[@id='commodity-rules-table']/tbody/tr[1]"));
@@ -43,8 +47,17 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool IsPageLoaded()
         {
-            return pageTitle.Text.Trim().Equals("View all PHSI (Import) Commodity Rules")
-                && searchInput.Displayed;
+            try
+            {
+                var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(PageLoadTimeoutSeconds));
+                wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(pageTitleBy));
+                wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(searchInputBy));
+                return true;
+            }
+            catch (WebDriverTimeoutException)
+            {
+                return false;
+            }
         }
 
         public void ScrollToBottom() =>
@@ -58,6 +71,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void EnterSearchText(string text)
         {
+            var searchInput = _driver.WaitForElement(searchInputBy);
             searchInput.Clear();
             searchInput.SendKeys(text);
             Thread.Sleep(1000); // allow DataTables filter to apply
@@ -130,7 +144,11 @@ namespace Defra.UI.Tests.Pages.Classes
             return elements.Count > 0;
         }
 
-        public string GetSearchInputText() => searchInput.GetAttribute("value") ?? string.Empty;
+        public string GetSearchInputText()
+        {
+            var searchInput = _driver.WaitForElement(searchInputBy);
+            return searchInput.GetAttribute("value") ?? string.Empty;
+        }
 
         public bool IsIdColumnSorted()
         {

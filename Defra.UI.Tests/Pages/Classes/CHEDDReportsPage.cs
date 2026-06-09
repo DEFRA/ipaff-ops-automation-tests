@@ -12,8 +12,8 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='CHED-D reports']"), true);
-        private IWebElement lnkImportsCommodityRulesReport => _driver.WaitForElement(By.XPath("//a[normalize-space()='Imports commodity rules report']"));
-        private IWebElement lnkRiskDecisionReport => _driver.WaitForElement(By.XPath("//a[normalize-space()='Risk decision report']"));
+        private By byLnkImportsCommodityRulesReport => By.XPath("//a[normalize-space()='Imports commodity rules report']");
+        private By byLnkRiskDecisionReport => By.XPath("//a[normalize-space()='Risk decision report']");
         #endregion
 
         public CHEDDReportsPage(IObjectContainer container)
@@ -23,8 +23,16 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool IsPageLoaded() => pageTitle.Text.Trim().Equals("CHED-D reports");
 
-        public void ClickImportsCommodityRulesReportLink() => lnkImportsCommodityRulesReport.Click();
+        public void ClickImportsCommodityRulesReportLink()
+        {
+            var element = _driver.WaitForElementClickable(byLnkImportsCommodityRulesReport);
+            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", element);
+        }
 
-        public void ClickRiskDecisionReportLink() => lnkRiskDecisionReport.Click();
+        public void ClickRiskDecisionReportLink()
+        {
+            var element = _driver.WaitForElementClickable(byLnkRiskDecisionReport);
+            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", element);
+        }
     }
 }

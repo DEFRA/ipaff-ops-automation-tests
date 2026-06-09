@@ -1,6 +1,7 @@
 ﻿using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
 using System.Text.RegularExpressions;
 
@@ -10,6 +11,9 @@ namespace Defra.UI.Tests.Pages.Classes
     {
         private IObjectContainer _objectContainer;
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
+
+        // Extended timeout for this page — DataTable can take ~60s to render
+        private const int PageLoadTimeoutSeconds = 120;
 
         // Column order in the rendered table — must match the HTML
         private static readonly string[] Columns =
@@ -21,8 +25,8 @@ namespace Defra.UI.Tests.Pages.Classes
         ];
 
         #region Page Objects
-        private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='View all CHED-P (Import) Commodity Rules']"), true);
-        private IWebElement searchInput => _driver.WaitForElement(By.XPath("//div[contains(@class,'dataTables_filter')]//input[@type='search']"));
+        private By pageTitleBy => By.XPath("//h1[normalize-space()='View all CHED-P (Import) Commodity Rules']");
+        private By searchInputBy => By.XPath("//div[contains(@class,'dataTables_filter')]//input[@type='search']");
         private IWebElement infoLabel => _driver.FindElement(By.XPath("//div[contains(@class,'dataTables_info')]"));
         private IWebElement firstRow => _driver.FindElement(By.XPath("//table[contains(@class,'dt-instance-required')]/tbody/tr[1]"));
         private By firstRowCellsBy => By.XPath("./td[contains(@class,'govuk-table__cell')]");
@@ -37,8 +41,17 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool IsPageLoaded()
         {
-            return pageTitle.Text.Trim().Equals("View all CHED-P (Import) Commodity Rules")
-                && searchInput.Displayed;
+            try
+            {
+                var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(PageLoadTimeoutSeconds));
+                wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(pageTitleBy));
+                wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(searchInputBy));
+                return true;
+            }
+            catch (WebDriverTimeoutException)
+            {
+                return false;
+            }
         }
 
         public void ScrollToBottom() =>
@@ -52,6 +65,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void EnterSearchText(string text)
         {
+            var searchInput = _driver.WaitForElement(searchInputBy);
             searchInput.Clear();
             searchInput.SendKeys(text);
             Thread.Sleep(1000); // allow DataTables filter to apply
