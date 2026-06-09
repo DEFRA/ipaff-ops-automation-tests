@@ -209,7 +209,7 @@ jobs:
           # - If featureFilter is 'all' or empty, use filterTestCases as-is (default behaviour).
           # - If featureFilter is provided, it completely overrides filterTestCases.
           if ($featureFilter -and $featureFilter.Trim() -ne '' -and $featureFilter.Trim() -ne 'all') {
-              $tags = $featureFilter.Split(',') | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne '' }
+              $tags = @($featureFilter.Split(',') | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne '' })
 
               if ($tags.Count -eq 1) {
                   $effectiveFilter = "TestCategory=$($tags[0])"
