@@ -22,11 +22,12 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement rdoInternalMarket => _driver.WaitForElement(By.XPath("//*[@id='radio-internalmarket']/following-sibling::label"));
         private IWebElement rdoTranshipment => _driver.WaitForElement(By.XPath("//*[@id='radio-tranship']/following-sibling::label"));
         private IWebElement rdoTransit => _driver.WaitForElement(By.XPath("//*[@id='radio-transit']/following-sibling::label"));
-        private IWebElement rdoReentry => _driver.WaitForElement(By.XPath("//*[@id='a_impadm2']/following-sibling::label")); 
+        private IWebElement rdoReentry => _driver.WaitForElement(By.XPath("//*[@id='a_impadm2']/following-sibling::label"));
         private IWebElement rdoTemporaryAdmissionHorses => _driver.WaitForElement(By.XPath("//*[@id='a_impadm3']/following-sibling::label"));
         private IWebElement rdoNonInternalMarket => _driver.WaitForElement(By.XPath("//*[@id='radio-noninternalmarket']/following-sibling::label"));
         private IWebElement txtExitBCP => _driver.WaitForElement(By.Name("bcp-transit-third-country"));
-        private IWebElement txtTransitedCountry => _driver.WaitForElement(By.Id("transit-third-countries-last"));
+        private By txtTransitedCountryBy => By.Id("transit-third-countries-last");
+        private IWebElement txtTransitedCountry => _driver.WaitForElement(txtTransitedCountryBy);
         private IWebElement txtDestinationCountry => _driver.FindElement(By.Id("third-country-transit"));
         private IWebElement txtTranshipmentDestination => _driver.FindElement(By.Id("third-country-transhipment"));
         private IWebElement rdoIMAnimalFeeding => _driver.WaitForElement(By.XPath("//*[@id='internalMarketanimal']/following-sibling::label"));
@@ -39,7 +40,8 @@ namespace Defra.UI.Tests.Pages.Classes
             _driver.FindElement(By.XPath($"//label[contains(@class, 'govuk-radios__label')and contains(normalize-space(.), 'Transit')]/following::div[2]/*[contains(normalize-space(.), '{subOption}')]"));
         private IWebElement GetInternalMarketSubOption(string subOptionText) =>
             _driver.FindElement(By.XPath($"//div[contains(@id,'internalmarket-conditional')]//label[contains(@class, 'govuk-radios__label') and normalize-space()='{subOptionText}']"));
-        private IWebElement txtDay => _driver.WaitForElement(By.Id("estimated-arrival-at-port-of-exit-date-day"));
+        private By txtDayBy => By.Id("estimated-arrival-at-port-of-exit-date-day");
+        private IWebElement txtDay => _driver.WaitForElement(txtDayBy);
         private IWebElement txtMonth => _driver.WaitForElement(By.Id("estimated-arrival-at-port-of-exit-date-month"));
         private IWebElement txtYear => _driver.WaitForElement(By.Id("estimated-arrival-at-port-of-exit-date-year"));
         private IWebElement txtHours => _driver.WaitForElement(By.Id("estimated-arrival-at-port-of-exit-time-hour"));
@@ -174,7 +176,7 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             var futureDate = DateTime.Now.AddDays(7);
             var leavingFromGBTime = futureDate.ToString("HH:mm");
-            
+
             txtHours.SendKeys(futureDate.Hour.ToString());
             txtMinutes.SendKeys(futureDate.Minute.ToString());
 
@@ -231,7 +233,7 @@ namespace Defra.UI.Tests.Pages.Classes
             _driver.WaitForElementCondition(ExpectedConditions.ElementIsVisible(txtPointOfExitBy));
             txtPointOfExit.SendKeys(placeOfExit);
         }
-        
+
         public void EnterExitDate(int daysFromToday)
         {
             var exitDate = DateTime.Now.AddDays(daysFromToday);
@@ -372,14 +374,14 @@ namespace Defra.UI.Tests.Pages.Classes
                 return expectedSubOptions
                     .All(el => subOptions.Contains(el));
             }
-            else if(mainOption == "Transit")
+            else if (mainOption == "Transit")
             {
                 var transitSubOptionTexts = new List<string>();
 
                 foreach (var opt in subOptions)
                 {
                     var element = GetTranitSubOption(opt);
-                    transitSubOptionTexts.Add(element.Text.Split('\r')[0].Trim());                    
+                    transitSubOptionTexts.Add(element.Text.Split('\r')[0].Trim());
                 }
                 return transitSubOptionTexts.All(el => subOptions.Contains(el));
             }
@@ -443,7 +445,8 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             try
             {
-                if (txtDay.Displayed)
+                var elements = _driver.FindElements(txtDayBy);
+                if (elements.Count > 0 && elements[0].Displayed)
                 {
                     EnterConsignmentDepartureDate();
                     EnterConsignmentDepartureTime();
@@ -457,7 +460,8 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             try
             {
-                if (txtTransitedCountry.Displayed)
+                var elements = _driver.FindElements(txtTransitedCountryBy);
+                if (elements.Count > 0 && elements[0].Displayed)
                     SelectRandomDropdownOption(txtTransitedCountry);
             }
             catch (NoSuchElementException) { }
