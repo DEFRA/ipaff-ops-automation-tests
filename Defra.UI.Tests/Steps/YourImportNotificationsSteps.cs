@@ -374,17 +374,32 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         ValidateIfExists("PhysicalCheck", pdfPhysicalCheck, ref allDataMatches, mismatches);
                         ValidateIfExists("PhysicalCheckDecision", pdfPhysicalCheck, ref allDataMatches, mismatches);
 
-                        /*                        string pdfLaboratoryTestRequired;
-                                                if (page.Sections.LaboratoryTests.AdditionalData != null)
-                                                {
-                                                    pdfLaboratoryTestRequired = "Yes";
-                                                }
-                                                else
-                                                {
-                                                    pdfLaboratoryTestRequired = "No";
-                                                }*/
 
-                        //ValidateIfExists("AreLaboratoryTestsRequired", pdfLaboratoryTestRequired, ref allDataMatches, mismatches);
+                        string pdfLaboratoryTestRequired = "No";
+
+                        if (page.Sections.LaboratoryTests.AdditionalData != null)
+                        {
+                            var jsonLabTest = page.Sections.LaboratoryTests.AdditionalData
+                                                .ElementAt(0).Value?.ToString();
+
+                            if (!string.IsNullOrWhiteSpace(jsonLabTest))
+                            {
+                                using var doc = JsonDocument.Parse(jsonLabTest);
+
+                                bool anyTrue = doc.RootElement
+                                    .EnumerateArray()                  // array of objects
+                                    .SelectMany(e => e.EnumerateObject())
+                                    .Any(p =>
+                                        p.Value.ValueKind == JsonValueKind.String &&
+                                        bool.TryParse(p.Value.GetString(), out bool b) && b
+                                    );
+
+                                pdfLaboratoryTestRequired = anyTrue ? "Yes" : "No";
+                            }
+                        }
+
+
+                        ValidateIfExists("AreLaboratoryTestsRequired", pdfLaboratoryTestRequired, ref allDataMatches, mismatches);
 
                         if (page.Sections.LaboratoryTests.AdditionalData != null)
                         {
