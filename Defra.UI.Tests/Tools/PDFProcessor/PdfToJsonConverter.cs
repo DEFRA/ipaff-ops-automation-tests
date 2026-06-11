@@ -1601,8 +1601,21 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
                     });
                 }
 
-                if (testsList.Count > 0)
-                    sectionData["Tests"] = testsList;
+                if (testsList.Count == 0)
+                {
+                    testsList.Add(new Dictionary<string, object>
+                    {
+                        ["Test"] = "",
+                        ["Random"] = "false",
+                        ["Suspicion"] = "false",
+                        ["EmergencyMeasures"] = "false",
+                        ["Results"] = "false",
+                        ["Pending"] = "false",
+                        ["Satisfactory"] = "false",
+                        ["NotSatisfactory"] = "false"
+                    });
+                }
+                sectionData["Tests"] = testsList;
             }
 
             // II.11 Acceptable for transit: strip leaked II.x keys; structured fields come from keywords + allowlist
