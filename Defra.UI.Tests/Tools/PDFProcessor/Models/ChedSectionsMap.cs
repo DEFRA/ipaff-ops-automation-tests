@@ -158,6 +158,9 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
 
         [JsonProperty("HMIChecks")]
         public ChedSection HMIChecks { get; set; }
+        
+        [JsonProperty("PHSIChecks")]
+        public ChedSection PHSIChecks { get; set; }
 
         [JsonProperty("III1PreviousChed")]
         public ChedSection III1PreviousChed { get; set; }
