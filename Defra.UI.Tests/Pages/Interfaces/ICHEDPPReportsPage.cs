@@ -5,5 +5,6 @@
         bool IsPageLoaded();
         void ClickPHSIImportsCommodityRulesReportLink();
         void ClickRiskDecisionReportLink();
+        void ClickHMIImportsCommodityRulesReportLink();
     }
 }

@@ -31,5 +31,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             chedPPImportsAndExportsPage?.ClickBulkUploadCommodityRulesLink();
         }
+
+        [When("the user clicks the HMI import commodity rules link")]
+        public void WhenTheUserClicksTheHMIImportCommodityRulesLink()
+        {
+            chedPPImportsAndExportsPage?.ClickHMIImportCommodityRulesLink();
+        }
     }
 }

@@ -14,6 +14,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='CHED-PP reports']"), true);
         private By byLnkPhsiImportsCommodityRulesReport => By.XPath("//a[normalize-space()='PHSI imports commodity rules report']");
         private By byLnkRiskDecisionReport => By.XPath("//a[normalize-space()='Risk decision report']");
+        private By byLnkHmiImportsCommodityRulesReport => By.XPath("//a[normalize-space()='HMI imports commodity rules report']");
         #endregion
 
         public CHEDPPReportsPage(IObjectContainer container)
@@ -42,6 +43,21 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             var element = _driver.WaitForElementClickable(byLnkRiskDecisionReport);
             ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", element);
+        }
+
+        public void ClickHMIImportsCommodityRulesReportLink()
+        {
+            var element = _driver.WaitForElementClickable(byLnkHmiImportsCommodityRulesReport);
+            try
+            {
+                ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", element);
+            }
+            catch (WebDriverException ex) when (ex.Message.Contains("timed out"))
+            {
+                // The click succeeded and triggered navigation to a slow-loading page.
+                // The /execute/sync command times out waiting for page load, but the
+                // navigation is already in progress — safe to continue.
+            }
         }
     }
 }

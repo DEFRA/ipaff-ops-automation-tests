@@ -188,6 +188,10 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CheckAndSubmitCommodityRulesForCHEDDPage, ICheckAndSubmitCommodityRulesForCHEDDPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CommodityRulesStatusForCHEDDPage, ICommodityRulesStatusForCHEDDPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ThereAreRulesInYourCSVFileThatAlreadyExistCHEDDPage, IThereAreRulesInYourCSVFileThatAlreadyExistCHEDDPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<HMIImportCommodityRulesPage, IHMIImportCommodityRulesPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ConfirmationOfRateChangePage, IConfirmationOfRateChangePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<RuleChangeCompletePage, IRuleChangeCompletePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ViewAllHMIImportCommodityRulesPage, IViewAllHMIImportCommodityRulesPage>());
 
             //Read Email
             _objectContainer.RegisterInstanceAs(GetBaseWithScenarioContext<FetchCodeFromEmail, IFetchCodeFromEmail>());

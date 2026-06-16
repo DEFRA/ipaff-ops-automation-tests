@@ -192,6 +192,7 @@
   <ItemGroup>
     <Folder Include="Data\Users\IPAFF\PRE\" />
     <Folder Include="HTML\" />
+    <Folder Include="TestCase\" />
   </ItemGroup>
 
 

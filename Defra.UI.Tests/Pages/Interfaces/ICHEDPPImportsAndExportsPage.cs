@@ -4,5 +4,6 @@
     {
         bool IsPageLoaded();
         void ClickBulkUploadCommodityRulesLink();
+        void ClickHMIImportCommodityRulesLink();
     }
 }

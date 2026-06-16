@@ -13,6 +13,7 @@ namespace Defra.UI.Tests.Pages.Classes
         #region Page Objects
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='CHED-PP imports and exports']"), true);
         private IWebElement lnkBulkUploadCommodityRules => _driver.WaitForElement(By.XPath("//a[normalize-space()='Bulk upload commodity rules']"));
+        private IWebElement lnkHMIImportCommodityRules => _driver.WaitForElement(By.XPath("//a[normalize-space()='HMI import commodity rules']"));
         #endregion
 
         public CHEDPPImportsAndExportsPage(IObjectContainer container)
@@ -23,5 +24,7 @@ namespace Defra.UI.Tests.Pages.Classes
         public bool IsPageLoaded() => pageTitle.Text.Trim().Equals("CHED-PP imports and exports");
 
         public void ClickBulkUploadCommodityRulesLink() => lnkBulkUploadCommodityRules.Click();
+
+        public void ClickHMIImportCommodityRulesLink() => lnkHMIImportCommodityRules.Click();
     }
 }
