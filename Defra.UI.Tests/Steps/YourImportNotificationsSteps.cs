@@ -658,7 +658,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         Console.WriteLine("********************** Page 1 *********************************");
 
                         ValidateContains("CHEDReference", page.Sections.ChedReference.Id, ref allDataMatches, mismatches);
-                        //ValidateContains("ConsignmentReferenceNumber", page.Sections.LocalReference.Value, ref allDataMatches, mismatches);
                         ValidateContains("BorderControlPost", page.Sections.BorderControlPost.Value, ref allDataMatches, mismatches, true);
                         ValidateContains("ConsignorName", page.Sections.ConsignorExporter.Name, ref allDataMatches, mismatches);
                         ValidateContains("ConsignorAddress", page.Sections.ConsignorExporter.Address, ref allDataMatches, mismatches);
@@ -678,7 +677,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         var meansOfTransport = _scenarioContext.Get<string>("MeansOfTransport");
                         if (meansOfTransport.Equals(page.Sections.MeansOfTransport.Mode, StringComparison.OrdinalIgnoreCase))
                             ValidateContains("EnterTransportDocRef", page.Sections.MeansOfTransport.InternationalTransportDocument, ref allDataMatches, mismatches);
-                        else //Need to check else scenario
+                        else 
                             ValidateContains("EnterTransportDocRef", page.Sections.MeansOfTransport.Mode, ref allDataMatches, mismatches);
 
                         ValidateContains("TransportId", page.Sections.MeansOfTransport.Identification, ref allDataMatches, mismatches);
@@ -737,15 +736,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     }
                     else if (pageNumber == 3)
                     {
-
                         Console.WriteLine("********************** Page 3 *********************************");
 
                         ValidateIfExists("CHEDReference", page.Sections.II2ChedReference.Id, ref allDataMatches, mismatches);
                         ValidateContains("BorderControlPost", (string)page.Sections.IdentificationOfBcp.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches, true);
                         ValidateContains("BorderControlPost", (string)page.Sections.IdentificationOfBcp.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches, true);
 
-
-                        if (page.Sections.HMIChecks != null)
+                        if (_scenarioContext.ContainsKey("AllCommodityDetails") && page.Sections.HMIChecks != null)
                         {
                             var codes = page.Sections.HMIChecks.AdditionalData.ElementAt(2).Value;
 
@@ -802,7 +799,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
                                         valueIndexes[commodityCode]++;
 
                                         // REMOVE when done with all values
-
                                         if (valueIndexes[commodityCode] >= codeItem.Values.Count)
                                         {
                                             codeItems.Remove(codeItem);
@@ -813,76 +809,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             }
                         }
 
-                        /*if (page.Sections.PHSIChecks != null)
-                        {
-                            var codes = page.Sections.PHSIChecks.AdditionalData.ElementAt(2).Value;
-
-                            if (codes != null)
-                            {
-                                var codeJson = codes.ToString();
-                                var codeItems = JsonConvert.DeserializeObject<List<Code>>(codeJson);
-
-                                if (codeItems != null && codeItems.Count > 0)
-                                {
-                                    var allCommodityDetails = _scenarioContext["AllCommodityDetails"] as Reqnroll.DataTable;
-
-                                    var list = allCommodityDetails.Rows
-                                        .Select(r => r.ToDictionary(k => k.Key, v => v.Value))
-                                        .ToList();
-
-                                    // Track index per commodity code
-                                    var valueIndexes = new Dictionary<string, int>();
-
-                                    foreach (var row in list)
-                                    {
-                                        // Push row values into scenario context
-                                        foreach (var kv in row)
-                                        {
-                                            _scenarioContext[$"Commodity_{kv.Key}"] = kv.Value;
-                                        }
-
-                                        // Get the commodity code from row
-                                        var commodityCode = _scenarioContext.Get<string>("Commodity_Commodity code");
-
-                                        // Find matching JSON entry
-                                        var codeItem = codeItems.FirstOrDefault(c => c.CommCode == commodityCode);
-                                        if (codeItem == null)
-                                            continue;
-
-                                        // Initialise index if needed
-                                        if (!valueIndexes.ContainsKey(commodityCode))
-                                            valueIndexes[commodityCode] = 0;
-
-                                        int index = valueIndexes[commodityCode];
-
-                                        // Get corresponding Values item
-                                        var valueItem = codeItem.Values.ElementAtOrDefault(index);
-                                        if (valueItem == null)
-                                            continue;
-
-                                        // ✅ Perform validation
-                                        ValidateContains("Commodity_Genus (and species)", valueItem.GenusAndSpecies, ref allDataMatches, mismatches);
-                                        ValidateContains("Commodity_EPPO Code", valueItem.EppoCode, ref allDataMatches, mismatches);
-                                        ValidateContains("Commodity_Class", valueItem.Class, ref allDataMatches, mismatches);
-                                        ValidateContains("Commodity_Variety", valueItem.Variety, ref allDataMatches, mismatches);
-                                        ValidateContains("Commodity_Inspection outcome", valueItem.InspectionOutcome, ref allDataMatches, mismatches);
-                                        ValidateContains("Commodity_Validity period (days)", valueItem.ValidityPeriodDays, ref allDataMatches, mismatches);
-
-                                        // Move to next value index for this code
-                                        valueIndexes[commodityCode]++;
-
-
-                                        // REMOVE when done with all values
-                                        if (valueIndexes[commodityCode] >= codeItem.Values.Count)
-                                        {
-                                            codeItems.Remove(codeItem);
-                                        }
-
-                                    }
-                                }
-                            }*/
-
-                        if (page.Sections.PHSIChecks != null)
+                        if (_scenarioContext.ContainsKey("AllCommodityDetails") && page.Sections.PHSIChecks != null)
                         {
                             var codes = page.Sections.PHSIChecks.AdditionalData.ElementAt(2).Value;
 
@@ -925,7 +852,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                                         int index = valueIndexes[commodityCode];
 
                                         if (commodityCode.Equals(codeItem))
-                                        {   // ✅ VALIDATION
+                                        {   
                                             ValidateContains("Commodity_Genus and Species", code.GenusAndSpecies, ref allDataMatches, mismatches);
                                             ValidateContains("Commodity_EPPO code", code.EppoCode, ref allDataMatches, mismatches);
                                             ValidateContains("Commodity_Class", code.Class, ref allDataMatches, mismatches);
@@ -939,6 +866,39 @@ namespace Defra.UI.Tests.Steps.IPAFF
                                         // ✅ REMOVE ROW after validation
                                         list.RemoveAt(i);                                       
                                     }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            var codes = page.Sections.PHSIChecks.AdditionalData.ElementAt(2).Value;
+
+                            if (codes != null)
+                            {
+                                var codeJson = codes.ToString();
+                                var codeItems = JsonConvert.DeserializeObject<List<Code>>(codeJson);
+
+                                if (codeItems != null && codeItems.Count > 0)
+                                {
+                                    var valueIndexes = new Dictionary<string, int>();
+                                    var commodityCode = _scenarioContext.Get<string>("CommodityCode");
+
+                                    var codeItem = codeItems.ElementAt(0).CommCode;
+                                    var code = codeItems.ElementAt(0).Values.ElementAt(0);
+                                    if (codeItem == null && code == null)
+                                        continue;
+
+                                    if (!valueIndexes.ContainsKey(commodityCode))
+                                        valueIndexes[commodityCode] = 0;
+
+                                    int index = valueIndexes[commodityCode];
+
+                                    if (commodityCode.Equals(codeItem))
+                                    {   
+                                        ValidateContains("GenusFirstCommodity", code.GenusAndSpecies, ref allDataMatches, mismatches);
+                                        ValidateContains("EPPOCodeFirstCommodity", code.EppoCode, ref allDataMatches, mismatches);
+                                    }
+                                    valueIndexes[commodityCode]++;
                                 }
                             }
                         }
