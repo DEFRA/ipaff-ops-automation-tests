@@ -1669,7 +1669,7 @@ Scenario: Bulk upload update existing rules for CHEDPP - SPS-9415
 	Then the count of rules should be 5 less than 'InitialRuleCount'
 
 @SPS-9449
-Scenario: New HMI rule for CHEDPP - SPS-9449
+Scenario: New HMI commodity rule for CHEDPP - SPS-9449
 	# Create a new HMI import commodity rule
 	Given that I navigate to the Risk Engine application
 	When I have provided the Risk Engine admin credentials and signed in

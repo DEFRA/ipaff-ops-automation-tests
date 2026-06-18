@@ -204,21 +204,21 @@ Scenario: Bulk upload initial load for CHEDP - SPS-9419
 	Then the View all CHED-P (Import) Commodity Rules report page should be displayed
 	When the user enters '51021100' in the CHED-P rules search field
 	Then the top CHED-P rule row should match the following details
-		| Field                      | Value                                                                   |
-		| Description                | Of Kashmir (cashmere) goats                                             |
-		| Commodity code             | 51021100                                                                |
-		| Rate %                     | 1                                                                       |
-		| Previous rate %            | 0                                                                       |
-		| Permanent                  | Yes                                                                     |
-		| End date                   |                                                                         |
-		| Countries                  | None                                                                    |
-		| Country groups             | CHED-P EU Countries                                                     |
-		| Country exceptions         | Hungary, Ireland, Romania                                               |
+		| Field                      | Value                                                                                                       |
+		| Description                | Of Kashmir (cashmere) goats                                                                                 |
+		| Commodity code             | 51021100                                                                                                    |
+		| Rate %                     | 1                                                                                                           |
+		| Previous rate %            | 0                                                                                                           |
+		| Permanent                  | Yes                                                                                                         |
+		| End date                   |                                                                                                             |
+		| Countries                  | None                                                                                                        |
+		| Country groups             | CHED-P EU Countries                                                                                         |
+		| Country exceptions         | Hungary, Ireland, Romania                                                                                   |
 		| Purpose                    | Internal Market - Animal Feedingstuff, Internal Market - Human Consumption, Internal Market - Technical use |
-		| Border Control Post        | All                                                                     |
-		| Risk categorisation        | Medium                                                                  |
-		| Allow multiple inspections | No                                                                      |
-		| Reason                     |                                                                         |
+		| Border Control Post        | All                                                                                                         |
+		| Risk categorisation        | Medium                                                                                                      |
+		| Allow multiple inspections | No                                                                                                          |
+		| Reason                     |                                                                                                             |
 	And the top CHED-P rule row should have Start date as today's date
 	And the user records the Id of the top CHED-P rule row as 'Iteration_2_RuleId'
 	# Submit a matching CHED-P notification in IPAFFS (France / Internal Market - Technical use / 51021100 / Risk categorisation: Medium) - APP-A
@@ -440,7 +440,7 @@ Scenario: Bulk upload initial load for CHEDP - SPS-9419
 	When the user enters '1603' in the CHED-P rules search field
 	Then the top CHED-P rule row should match the following details
 		| Field                      | Value                                                                                              |
-		| Description                | Extracts and juices of meat, fish or crustaceans, molluscs or other aquatic invertebrates           |
+		| Description                | Extracts and juices of meat, fish or crustaceans, molluscs or other aquatic invertebrates          |
 		| Commodity code             | 1603                                                                                               |
 		| Rate %                     | 100                                                                                                |
 		| Previous rate %            | 0                                                                                                  |
@@ -717,7 +717,7 @@ Scenario: Bulk upload initial load for CHEDP - SPS-9419
 		| Country groups             | None                                                                                                                           |
 		| Country exceptions         | None                                                                                                                           |
 		| Purpose                    | Transit                                                                                                                        |
-		| Border Control Post        | Dover Port - GBDOV1P, East Midlands Airport - GBEMA4, Grimsby and Immingham - GBGSY1, Hull - GBHUL1H, London Gateway - GBLGP1 |
+		| Border Control Post        | Dover Port - GBDOV1P, East Midlands Airport - GBEMA4, Grimsby and Immingham - GBGSY1, Hull - GBHUL1H, London Gateway - GBLGP1  |
 		| Risk categorisation        | Any                                                                                                                            |
 		| Allow multiple inspections | Yes                                                                                                                            |
 		| Reason                     |                                                                                                                                |
@@ -1240,7 +1240,7 @@ Scenario: Bulk upload update existing rules for CHEDP - SPS-9420
 	When the user enters '1603' in the CHED-P rules search field
 	Then the top CHED-P rule row should match the following details
 		| Field                      | Value                                                                                                                          |
-		| Description                | Extracts and juices of meat, fish or crustaceans, molluscs or other aquatic invertebrates                                       |
+		| Description                | Extracts and juices of meat, fish or crustaceans, molluscs or other aquatic invertebrates                                      |
 		| Commodity code             | 1603                                                                                                                           |
 		| Rate %                     | 100                                                                                                                            |
 		| Previous rate %            | 0                                                                                                                              |
@@ -1250,7 +1250,7 @@ Scenario: Bulk upload update existing rules for CHEDP - SPS-9420
 		| Country groups             | None                                                                                                                           |
 		| Country exceptions         | None                                                                                                                           |
 		| Purpose                    | All                                                                                                                            |
-		| Border Control Post        | Dover Port - GBDOV1P, East Midlands Airport - GBEMA4, Grimsby and Immingham - GBGSY1, Hull - GBHUL1H, London Gateway - GBLGP1 |
+		| Border Control Post        | Dover Port - GBDOV1P, East Midlands Airport - GBEMA4, Grimsby and Immingham - GBGSY1, Hull - GBHUL1H, London Gateway - GBLGP1  |
 		| Risk categorisation        | Any                                                                                                                            |
 		| Allow multiple inspections | Yes                                                                                                                            |
 		| Reason                     |                                                                                                                                |
@@ -1502,7 +1502,7 @@ Scenario: Bulk upload update existing rules for CHEDP - SPS-9420
 		| Country groups             | None                                                                                                                           |
 		| Country exceptions         | None                                                                                                                           |
 		| Purpose                    | Transit                                                                                                                        |
-		| Border Control Post        | Dover Port - GBDOV1P, East Midlands Airport - GBEMA4, Grimsby and Immingham - GBGSY1, Hull - GBHUL1H, London Gateway - GBLGP1 |
+		| Border Control Post        | Dover Port - GBDOV1P, East Midlands Airport - GBEMA4, Grimsby and Immingham - GBGSY1, Hull - GBHUL1H, London Gateway - GBLGP1  |
 		| Risk categorisation        | Any                                                                                                                            |
 		| Allow multiple inspections | Yes                                                                                                                            |
 		| Reason                     |                                                                                                                                |

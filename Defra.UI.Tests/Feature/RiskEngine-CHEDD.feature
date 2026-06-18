@@ -176,19 +176,19 @@ Scenario: Bulk upload initial load for CHEDD - SPS-9442
 	Then the View all CHED-D (Import) Commodity Rules report page should be displayed
 	When the user enters '1006' in the CHED-D rules search field
 	Then the top CHED-D rule row should match the following details
-		| Field               | Value                 |
-		| Description         | Rice                  |
-		| Commodity code      | 1006                  |
-		| Rate %              | 0                     |
-		| Previous rate %     | 0                     |
-		| Permanent           | Yes                   |
-		| End date            |                       |
-		| Countries           | Montserrat            |
+		| Field               | Value                   |
+		| Description         | Rice                    |
+		| Commodity code      | 1006                    |
+		| Rate %              | 0                       |
+		| Previous rate %     | 0                       |
+		| Permanent           | Yes                     |
+		| End date            |                         |
+		| Countries           | Montserrat              |
 		| Country groups      | Euro-Mediterranean Area |
-		| Country exceptions  | None                  |
-		| Purpose             | All                   |
-		| Border Control Post | All                   |
-		| Reason              |                       |
+		| Country exceptions  | None                    |
+		| Purpose             | All                     |
+		| Border Control Post | All                     |
+		| Reason              |                         |
 	And the top CHED-D rule row should have Start date as today's date
 	And the user records the Id of the top CHED-D rule row as 'Iteration_2_RuleId'
 	# Submit a matching CHED-D notification in IPAFFS (Montserrat / 1006)
@@ -298,19 +298,19 @@ Scenario: Bulk upload initial load for CHEDD - SPS-9442
 	Then the View all CHED-D (Import) Commodity Rules report page should be displayed
 	When the user enters '13023290' in the CHED-D rules search field
 	Then the top CHED-D rule row should match the following details
-		| Field               | Value                                    |
-		| Description         | Of guar seeds                            |
-		| Commodity code      | 13023290                                 |
-		| Rate %              | 75                                       |
-		| Previous rate %     | 0                                        |
-		| Permanent           | Yes                                      |
-		| End date            |                                          |
-		| Countries           | Afghanistan, Zimbabwe                    |
-		| Country groups      | None                                     |
-		| Country exceptions  | None                                     |
-		| Purpose             | All                                      |
+		| Field               | Value                                            |
+		| Description         | Of guar seeds                                    |
+		| Commodity code      | 13023290                                         |
+		| Rate %              | 75                                               |
+		| Previous rate %     | 0                                                |
+		| Permanent           | Yes                                              |
+		| End date            |                                                  |
+		| Countries           | Afghanistan, Zimbabwe                            |
+		| Country groups      | None                                             |
+		| Country exceptions  | None                                             |
+		| Purpose             | All                                              |
 		| Border Control Post | Felixstowe - GBFXT1, Manchester airport - GBMNC1 |
-		| Reason              | Reason 3                                 |
+		| Reason              | Reason 3                                         |
 	And the top CHED-D rule row should have Start date as today's date
 	And the user records the Id of the top CHED-D rule row as 'Iteration_3_RuleId'
 	# Submit a matching CHED-D notification in IPAFFS (Afghanistan / 13023290 / Felixstowe)
