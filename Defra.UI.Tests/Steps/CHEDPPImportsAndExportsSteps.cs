@@ -37,5 +37,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             chedPPImportsAndExportsPage?.ClickHMIImportCommodityRulesLink();
         }
+
+        [When("the user clicks the PHSI individual commodity rules link")]
+        public void WhenTheUserClicksThePHSIIndividualCommodityRulesLink()
+        {
+            chedPPImportsAndExportsPage?.ClickPHSIIndividualCommodityRulesLink();
+        }
+
     }
 }
