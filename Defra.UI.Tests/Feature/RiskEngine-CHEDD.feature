@@ -679,8 +679,8 @@ Scenario: Bulk upload update existing rules for CHEDD - SPS-9443
 	When the user clicks the Continue button on the CHED-D bulk upload page
 	Then the Commodity rules for CHED-D page should be displayed with the File submission in progress section showing status 'Ready to submit'
 	When the user clicks the Confirm and submit link for the file submission in progress on the CHED-D page
-	Then the There are rules in your CSV file that already exist page should be displayed for CHED-D
-	When the user selects Yes to replace existing rules and clicks Continue for CHED-D
+	Then the There are rules in your CSV file that already exist page should be displayed
+	When the user selects Yes to replace existing rules and clicks Continue
 	Then the Check and submit commodity rules for CHED-D page is displayed with the following upload details
 		| Field                  | Value |
 		| Replace existing rules | 5     |

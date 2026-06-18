@@ -23,7 +23,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public CsvFileDetailsAndStatusPage(IObjectContainer container) => _objectContainer = container;
 
-        public bool IsPageLoaded() => pageHeading.Displayed;
+        public bool IsPageLoaded() => pageHeading.Text.Trim().Equals("CSV file details and status");
 
         public IDictionary<string, string> GetSummaryDetails()
         {

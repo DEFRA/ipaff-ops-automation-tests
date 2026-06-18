@@ -24,7 +24,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public CommodityRulesForCHEDDPage(IObjectContainer container) => _objectContainer = container;
 
-        public bool IsPageLoaded() => pageHeading.Displayed;
+        public bool IsPageLoaded() => pageHeading.Text.Trim().Equals("Commodity rules for CHED-D");
 
         public bool IsFileSubmissionInProgressSectionPresent() => _driver.FindElements(inProgressCaptionBy).Count > 0;
 

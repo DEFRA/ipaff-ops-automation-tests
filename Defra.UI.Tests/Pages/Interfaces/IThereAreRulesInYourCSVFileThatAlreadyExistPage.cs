@@ -4,5 +4,7 @@
     {
         bool IsPageLoaded();
         void SelectYesAndClickContinue();
+        void SelectYes();
+        void ClickContinue();
     }
 }

@@ -24,7 +24,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public CheckAndSubmitCommodityRulesForCHEDAPage(IObjectContainer container) => _objectContainer = container;
 
-        public bool IsPageLoaded() => pageHeading.Displayed;
+        public bool IsPageLoaded() => pageHeading.Text.Trim().Equals("Check and submit commodity rules for CHED-A");
 
         public IDictionary<string, string> GetSummaryDetails()
         {

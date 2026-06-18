@@ -15,7 +15,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public CheckFileProcessingStatusPage(IObjectContainer container) => _objectContainer = container;
 
-        public bool IsPageLoaded() => pageHeading.Displayed;
+        public bool IsPageLoaded() => pageHeading.Text.Trim().Equals("Check your file processing status");
         public void ClickViewProcessingStatusLink() => viewStatusLink.Click();
     }
 }

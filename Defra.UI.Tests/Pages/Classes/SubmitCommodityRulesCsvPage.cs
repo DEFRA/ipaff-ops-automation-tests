@@ -17,7 +17,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public SubmitCommodityRulesCsvPage(IObjectContainer container) => _objectContainer = container;
 
-        public bool IsPageLoaded() => pageHeading.Displayed;
+        public bool IsPageLoaded() => pageHeading.Text.Trim().Equals("Submit multiple commodity rules using a CSV file");
 
         /// <summary>
         /// Polls the status cell of the top row, refreshing if the expected status has not yet appeared.

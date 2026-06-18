@@ -21,11 +21,21 @@ namespace Defra.UI.Tests.Pages.Classes
             _objectContainer = container;
         }
 
-        public bool IsPageLoaded() => notificationBannerHeading.Displayed;
+        public bool IsPageLoaded() => notificationBannerHeading.Text.Trim().Contains("There are rules in your CSV file that already exist");
 
         public void SelectYesAndClickContinue()
         {
             yesRadioButton.Click();
+            continueButton.Click();
+        }
+
+        public void SelectYes()
+        {
+            yesRadioButton.Click();
+        }
+
+        public void ClickContinue()
+        {
             continueButton.Click();
         }
     }

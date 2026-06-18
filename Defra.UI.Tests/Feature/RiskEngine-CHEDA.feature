@@ -768,8 +768,8 @@ Scenario: Bulk upload update existing rules for CHEDA - SPS-9428
 	When the user clicks the Continue button on the CHED-A bulk upload page
 	Then the Commodity rules for CHED-A page should be displayed with the File submission in progress section showing status 'Ready to submit'
 	When the user clicks the Confirm and submit link for the file submission in progress on the CHED-A page
-	Then the There are rules in your CSV file that already exist page should be displayed for CHED-A
-	When the user selects Yes to replace existing rules and clicks Continue for CHED-A
+	Then the There are rules in your CSV file that already exist page should be displayed
+	When the user selects Yes to replace existing rules and clicks Continue
 	Then the Check and submit commodity rules for CHED-A page is displayed with the following upload details
 		| Field                  | Value |
 		| Replace existing rules | 5     |

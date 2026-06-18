@@ -21,7 +21,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public BulkUploadCommodityRulesForCHEDAPage(IObjectContainer container) => _objectContainer = container;
 
-        public bool IsPageLoaded() => pageHeading.Displayed;
+        public bool IsPageLoaded() => pageHeading.Text.Trim().Equals("Bulk upload commodity rules for CHED-A");
 
         public void ClickChooseFileButton()
         {

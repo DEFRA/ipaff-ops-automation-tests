@@ -25,7 +25,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public AreCommodityRuleChangesCorrectPage(IObjectContainer container) => _objectContainer = container;
 
-        public bool IsPageLoaded() => pageHeading.Displayed;
+        public bool IsPageLoaded() => pageHeading.Text.Trim().Equals("Are the commodity rule changes correct?");
 
         public IDictionary<string, string> GetSummaryDetails()
         {

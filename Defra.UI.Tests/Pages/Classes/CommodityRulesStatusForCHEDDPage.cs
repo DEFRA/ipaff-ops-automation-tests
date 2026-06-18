@@ -24,7 +24,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public CommodityRulesStatusForCHEDDPage(IObjectContainer container) => _objectContainer = container;
 
-        public bool IsPageLoaded() => pageHeading.Displayed;
+        public bool IsPageLoaded() => pageHeading.Text.Trim().Equals("Commodity rules status for CHED-D");
 
         public IDictionary<string, string> GetSummaryDetails()
         {

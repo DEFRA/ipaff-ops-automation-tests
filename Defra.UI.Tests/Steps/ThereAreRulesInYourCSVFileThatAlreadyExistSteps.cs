@@ -22,15 +22,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext = context;
         }
 
-        [Then("the There are rules in your CSV file that already exist page should be displayed for CHED-A")]
-        public void ThenTheThereAreRulesInYourCSVFileThatAlreadyExistPageShouldBeDisplayedForCHEDA()
+        [Then("the There are rules in your CSV file that already exist page should be displayed")]
+        public void ThenTheThereAreRulesInYourCSVFileThatAlreadyExistPageShouldBeDisplayed()
         {
             Assert.True(thereAreRulesInYourCSVFileThatAlreadyExistPage?.IsPageLoaded(),
-                "There are rules in your CSV file that already exist page is not displayed for CHED-A");
+                "There are rules in your CSV file that already exist page is not displayed");
         }
 
-        [When("the user selects Yes to replace existing rules and clicks Continue for CHED-A")]
-        public void WhenTheUserSelectsYesToReplaceExistingRulesAndClicksContinueForCHEDA()
+        [When("the user selects Yes to replace existing rules and clicks Continue")]
+        public void WhenTheUserSelectsYesToReplaceExistingRulesAndClicksContinue()
         {
             thereAreRulesInYourCSVFileThatAlreadyExistPage?.SelectYesAndClickContinue();
         }

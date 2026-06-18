@@ -13,13 +13,15 @@ namespace Defra.UI.Tests.Pages.Classes
         private readonly IObjectContainer _objectContainer;
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
 
+        #region Page Objects
         private IWebElement pageHeading => _driver.WaitForElement(By.XPath("//h1[normalize-space()='Upload multiple commodity rules using a CSV file']"), true);
         private IWebElement fileInput => _driver.WaitForElement(By.Id("uploadfile"));
         private IWebElement btnUpload => _driver.WaitForElement(By.XPath("//button[normalize-space()='Upload']"));
+        #endregion
 
         public UploadCommodityRulesCsvPage(IObjectContainer container) => _objectContainer = container;
 
-        public bool IsPageLoaded() => pageHeading.Displayed;
+        public bool IsPageLoaded() => pageHeading.Text.Trim().Equals("Upload multiple commodity rules using a CSV file");
 
         public void ClickChooseFileButton()
         {
