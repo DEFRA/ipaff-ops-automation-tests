@@ -395,8 +395,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             { EmergencyMeasures: "true" } => "EmergencyMeasures",
                             _ => null
                         };
-                        // TO DO: enable once PDF validation is working
-                        //ValidateIfExists("LaboratoryTestsReason", pdfLaboratoryTestNames, ref allDataMatches, mismatches);
+                        ValidateIfExists("LaboratoryTestsReason", pdfLaboratoryTestNames, ref allDataMatches, mismatches);
 
                         string? welfareCheckDecision = page.Sections.WelfareCheck
                         switch
