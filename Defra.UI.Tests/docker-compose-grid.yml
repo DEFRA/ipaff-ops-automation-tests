@@ -3,49 +3,77 @@ services:
   selenium-hub:
     image: selenium/hub:latest
     container_name: selenium-hub
-    ports:
-      - "4442:4442"
-      - "4443:4443"
-      - "4444:4444"
+    network_mode: host
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4444/status"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
-  chrome:
+  chrome-1:
     image: selenium/node-chrome:latest
     shm_size: 2gb
+    network_mode: host
     depends_on:
-      - selenium-hub
+      selenium-hub:
+        condition: service_healthy
     environment:
-      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_HOST=localhost
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_NODE_PORT=5551
       - SE_NODE_OVERRIDE_MAX_SESSIONS=true
-      - SE_NODE_MAX_SESSIONS=30
+      - SE_NODE_MAX_SESSIONS=1
       - SE_NODE_SESSION_TIMEOUT=350
       - SE_SESSION_REQUEST_TIMEOUT=550
 
-  firefox:
-    image: selenium/node-firefox:latest
+  chrome-2:
+    image: selenium/node-chrome:latest
     shm_size: 2gb
+    network_mode: host
     depends_on:
-      - selenium-hub
+      selenium-hub:
+        condition: service_healthy
     environment:
-      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_HOST=localhost
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_NODE_PORT=5552
       - SE_NODE_OVERRIDE_MAX_SESSIONS=true
-      - SE_NODE_MAX_SESSIONS=30
+      - SE_NODE_MAX_SESSIONS=1
       - SE_NODE_SESSION_TIMEOUT=350
       - SE_SESSION_REQUEST_TIMEOUT=550
 
-  edge:
-    image: selenium/node-edge:latest
+  chrome-3:
+    image: selenium/node-chrome:latest
     shm_size: 2gb
+    network_mode: host
     depends_on:
-      - selenium-hub
+      selenium-hub:
+        condition: service_healthy
     environment:
-      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_HOST=localhost
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_NODE_PORT=5553
       - SE_NODE_OVERRIDE_MAX_SESSIONS=true
-      - SE_NODE_MAX_SESSIONS=30
+      - SE_NODE_MAX_SESSIONS=1
+      - SE_NODE_SESSION_TIMEOUT=350
+      - SE_SESSION_REQUEST_TIMEOUT=550
+
+  chrome-4:
+    image: selenium/node-chrome:latest
+    shm_size: 2gb
+    network_mode: host
+    depends_on:
+      selenium-hub:
+        condition: service_healthy
+    environment:
+      - SE_EVENT_BUS_HOST=localhost
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_NODE_PORT=5554
+      - SE_NODE_OVERRIDE_MAX_SESSIONS=true
+      - SE_NODE_MAX_SESSIONS=1
       - SE_NODE_SESSION_TIMEOUT=350
       - SE_SESSION_REQUEST_TIMEOUT=550

@@ -31,7 +31,9 @@ namespace Defra.UI.Tests.Pages.Interfaces
         bool VerifyReentryHasNoSubOptions();
         bool VerifyTemporaryAdmissionHasExitDateAndBCPDropdown();
         bool VerifySubOption(string mainOption, string subOptions);
-
         string GetReasonForImportRadioLabelText { get; }
+        List<string> GetAvailablePurposeOptions();
+        List<string> GetAvailableInternalMarketSubOptions();
+        void SelectPurposeAndFillSubOptionData(string mainOption, List<string>? constrainedSubOptions);
     }
 }

@@ -49,9 +49,17 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the user searches for the CHED D notification that was recently submitted")]
         public void ThenTheNotificationShouldBeFoundWithStatus(string status)
         {
-            var chedRef = _scenarioContext.Get<string>("CHEDReference");
-            inspectorImportNotificationsPage?.VerifyNotificationStatusAndClick(chedRef, status);
             Thread.Sleep(2000);
+            var chedRef = _scenarioContext.Get<string>("CHEDReference");
+
+            Assert.True(inspectorImportNotificationsPage?.VerifyNotificationIsPresent(chedRef),
+                $"Notification '{chedRef}' was not found in the search results");
+
+            var actualStatus = inspectorImportNotificationsPage?.GetNotificationStatus();
+            Assert.That(actualStatus, Is.EqualTo(status).IgnoreCase,
+                $"Expected notification '{chedRef}' to have status '{status}' but found '{actualStatus}'");
+
+            inspectorImportNotificationsPage?.ClickNotification();
         }
 
         [Then("the notification is displayed on the inspector dashboard")]

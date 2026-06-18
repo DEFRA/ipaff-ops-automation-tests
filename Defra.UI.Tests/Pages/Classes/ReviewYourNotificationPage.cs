@@ -160,8 +160,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement ddContactName => _driver.FindElement(By.Id("responsible-contact-name"));
         private IWebElement ddContactEmail => _driver.FindElement(By.Id("responsible-contact-email"));
         private IWebElement ddContactTelephone => _driver.FindElement(By.Id("responsible-contact-telephone"));
-        private By tdIntendedForUsers => By.XPath("//th[normalize-space()='Intended for final users or commercial flower production'] /parent::tr/following-sibling::tr[1]/td[2]");
-        private By tdControlledAtmosphereContainer => By.XPath("//th[normalize-space()='Controlled atmosphere container']/parent::tr/following-sibling::tr[1]/td[6]");
+        private By tdIntendedForUsers => By.XPath("//th[normalize-space()='Intended for final users or commercial flower production' or normalize-space()='Intended for final users']/parent::tr/following-sibling::tr[1]/td[2]"); private By tdControlledAtmosphereContainer => By.XPath("//th[normalize-space()='Controlled atmosphere container']/parent::tr/following-sibling::tr[1]/td[6]");
         private By tdQuantity => By.XPath("//th[normalize-space()='Quantity']/parent::tr/following-sibling::tr[1]/td[3]");
         private By tdQuantityType => By.XPath("//th[normalize-space()='Quantity type']/parent::tr/following-sibling::tr[1]/td[4]");
         private By tdGrossVolume => By.XPath("//td[normalize-space()='Total gross volume']/following-sibling::td");
@@ -676,7 +675,13 @@ namespace Defra.UI.Tests.Pages.Classes
             {
                 var commodityTable = index == 0 ? firstCommodityTable : secondCommodityTable;
 
-                int quantityIndex = commodityTable.FindElements(forTestAndTrial).Count > 0 ? 3 : 2;
+                int quantityIndex;
+                if (commodityTable.FindElements(forTestAndTrial).Count > 0)
+                    quantityIndex = 3;
+                else if (commodityTable.FindElements(tdIntendedForUsers).Count > 0)
+                    quantityIndex = 3;
+                else
+                    quantityIndex = 2;
 
                 var quantityList = commodityTable.FindElements(By.XPath(".//tbody/tr[4]/td[" + quantityIndex + "]")).ToList();
 
@@ -702,10 +707,15 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             try
             {
-
                 var commodityTable = index == 0 ? firstCommodityTable : secondCommodityTable;
 
-                int quantityTypeIndex = commodityTable.FindElements(forTestAndTrial).Count > 0 ? 4 : 3;
+                int quantityTypeIndex;
+                if (commodityTable.FindElements(forTestAndTrial).Count > 0)
+                    quantityTypeIndex = 4;
+                else if (commodityTable.FindElements(tdIntendedForUsers).Count > 0)
+                    quantityTypeIndex = 4;
+                else
+                    quantityTypeIndex = 3;
 
                 var quantityTypeList = commodityTable.FindElements(By.XPath(".//tbody/tr[4]/td[" + quantityTypeIndex + "]")).ToList();
 
