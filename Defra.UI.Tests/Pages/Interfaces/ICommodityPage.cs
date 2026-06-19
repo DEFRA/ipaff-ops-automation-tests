@@ -47,7 +47,9 @@
         void SelectVariety(string variety, string eppoCode);
         void SelectClass(string classOfEPPO, string eppoCode);
         bool VerifySelectedCommoditiesDisplayed(string firstComm, string secondComm, string firstCode, string secondCode, string firstEPPO, string secondEPPO, string firstGenus, string secondGenus);
+        bool VerifySingleCommodityDisplayed(string commodityCode, string genus, string eppoCode, string variety, string commodityClass);
         void SelectCommodities(string firstCommCode, string secondCommCode);
+        void SelectCommodity(string commCode);
         void EnterCHEDPPNetWeight(string weight);
         void EnterCHEDPPNumberOfPackages(string numberOfPackages);
         void SelectCHEDPPPackageType(string packageType);
@@ -57,5 +59,7 @@
         string GetCHEDPPTotalNetWeight();
         string GetCHEDPPTotalPackages();
         void ClickCancelLink();
+        void SelectIntendedForFinalUsers(string commodityCode, string value);
+        void SelectCommodityByCodeAndDescription(string commodityCode, string description);
     }
 }

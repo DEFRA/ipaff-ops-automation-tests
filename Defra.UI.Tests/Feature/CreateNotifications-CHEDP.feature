@@ -3,6 +3,7 @@ Feature: Create Notification CHEDP
 
 Create a notification for CHEDP type
 
+@CHEDP-Happy-Path
 Scenario: User creates and submits a B2C consignment notification - CHEDP Happy Path
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -171,6 +172,7 @@ Scenario: User creates and submits a B2C consignment notification - CHEDP Happy 
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
 
+@SPS-7369
 Scenario: User creates and submits a B2C consignment notification for Transit Reason - CHEDP 7369
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -358,7 +360,7 @@ Scenario: User creates and submits a B2C consignment notification for Transit Re
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
 
-@CHEDP
+@SPS-7370
 Scenario: User creates and submits a B2C consignment notification for Transhipment or onward travel Reason - CHEDP 7370
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -531,6 +533,7 @@ Scenario: User creates and submits a B2C consignment notification for Transhipme
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
 
+@SPS-7365
 Scenario: User creates and submits 2 B2C consignment notification with existing Billing details - CHEDP 7365
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -748,6 +751,7 @@ Scenario: User creates and submits 2 B2C consignment notification with existing 
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
 
+@SPS-7368
 Scenario: Admin submits a notification and records decision and validate cookies page as normal user - CHEDP 7368
 	Given that I navigate to the IPAFF Inspector application
 	Then I should see type of Gateway login page
@@ -929,6 +933,7 @@ Scenario: Admin submits a notification and records decision and validate cookies
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
 
+@SPS-7371
 Scenario: User creates a B2C consignment notification, updates it from the review page, submits it, amends the notification, and sends it for laboratory tests - CHEDP 7371
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -1208,6 +1213,7 @@ Scenario: User creates a B2C consignment notification, updates it from the revie
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
 
+@SPS-7372
 Scenario: User creates and submits a notification, override the risk decision and reject the notification - CHEDP 7372
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -1441,6 +1447,7 @@ Scenario: User creates and submits a notification, override the risk decision an
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
 
+@SPS-8582
 Scenario: User submits a notification as no inspection required, override the risk decision and checks Inspection required box - CHEDP 8582
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -1595,6 +1602,7 @@ Scenario: User submits a notification as no inspection required, override the ri
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
 
+@SPS-9112
 Scenario: User submits a notification, inspector copy it as replacement, update and submit decision - CHEDP 9112
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -1871,6 +1879,7 @@ Scenario: User submits a notification, inspector copy it as replacement, update 
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
 
+@SPS-9113
 Scenario: Create and Submit B2C Consignment with Two Commodities and Catch Certificates, Submits decision and CHED Verification in BTMS CHEDP_SPS_9113
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -2098,6 +2107,7 @@ Scenario: Create and Submit B2C Consignment with Two Commodities and Catch Certi
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
 
+@SPS-7391
 Scenario: Verify IPAFF Inspector application SPS-7391
 	When I navigate to the IPAFF Inspector application
 	Then I should see type of Gateway login page
@@ -2330,6 +2340,7 @@ Scenario: Verify IPAFF Inspector application SPS-7391
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
 
+@SPS-6937
 Scenario: Create and submits a B2C consignment notification - SPS-6937 CHEDP
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -2555,6 +2566,7 @@ Scenario: Create and submits a B2C consignment notification - SPS-6937 CHEDP
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
 
+@SPS-6283
 Scenario: Verify IUU and Catch certificate details for EU and Non-EU countries CHEDP_SPS_6283
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -2891,6 +2903,7 @@ Scenario: Verify IUU and Catch certificate details for EU and Non-EU countries C
 	Then the user should be logged out successfully
 	Then the user should be logged out successfully
 
+@SPS-6944
 Scenario: User creates and submits a CHEDP consignment notification with multiple catch certificates and validates attachment management - SPS-6944
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -3093,6 +3106,7 @@ Scenario: User creates and submits a CHEDP consignment notification with multipl
 	And the user records the IPAFFS User details and CHED Reference
 	And the details should be recorded
 
+@SPS-7373
 Scenario: User creates and submits a notification with main reason as Re-entry, override the risk decision, reject the notification and creates record control CHEDP SPS-7373
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -3312,6 +3326,7 @@ Scenario: User creates and submits a notification with main reason as Re-entry, 
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
 
+@SPS-7361
 Scenario: Create a notification through clone a health or phytosanitary certificate process - SPS-7361
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -3402,6 +3417,7 @@ Scenario: Create a notification through clone a health or phytosanitary certific
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
 
+@SPS-7374
 Scenario: User submits a CHEDP notification and creates an Intensified Official Control check against it - SPS-7374
 # Stop any existing IOC
 	Given the user navigates to the IPAFFS Intensified Official Controls application

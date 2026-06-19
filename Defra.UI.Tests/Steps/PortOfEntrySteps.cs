@@ -139,14 +139,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user enters estimated arrival time at BCP with future time")]
         public void WhenTheUserEntersEstimatedArrivalTimeAtBCPWithFutureTime()
         {
-            // Use current time + 2 hours as a future time
-            var futureTime = DateTime.Now.AddHours(2);
-            var hour = futureTime.Hour.ToString();
-            var minutes = futureTime.Minute.ToString();
+            // Set fixed future time to 23:59
+            var hour = "23";
+            var minutes = "59";
 
             portOfEntryPage?.EnterEstimatedArrivalTime(hour, minutes);
 
-            var formattedTime = futureTime.ToString("HH:mm");
+            var formattedTime = "23:59";
             _scenarioContext["EstimatedArrivalTime"] = formattedTime;
         }
 

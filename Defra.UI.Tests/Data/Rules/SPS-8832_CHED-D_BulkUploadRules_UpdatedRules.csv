@@ -1,0 +1,6 @@
+Id,Description,Commodity code,Rate %,Previous rate %,Permanent,Start date,End date,Countries,Country groups,Country exceptions,Purpose,Border Control Post,Reason
+,"Ginger, saffron, turmeric (curcuma), thyme, bay leaves, curry and other spices",'0910,95,,Yes,,,All,None,"Djibouti, Togo, Montserrat",Non-internal market,All,Reason 1b
+,Rice,'1006,0,,Yes,,,Montserrat,Euro-Mediterranean Area,None,Internal market,All,Reason 2b
+,Of guar seeds,'13023290,50,,Yes,,,"Afghanistan, Zimbabwe",None,None,All,GBMNC1,
+,"Hazelnuts, otherwise prepared or preserved, including mixtures",'2008191930,100,,Yes,,,None,"EU Member States, Euro-Mediterranean Area, The Americas",Antigua and Barbuda,All,All,
+,All,*,30,,No,,01/01/2027,Togo,None,None,Internal market,All,

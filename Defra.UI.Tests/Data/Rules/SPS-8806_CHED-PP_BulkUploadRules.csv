@@ -1,0 +1,6 @@
+Id,Description,Commodity code,Name,Eppo,Intended Use,Type,Woody/Non-woody?,Indoor use/Outdoor use?,Rate %,Previous rate %,Permanent,Start date,End date,Countries,Country groups,Country exceptions,Document check aligned,Reason
+,Other,'07020099,,,None,None,None,None,25,,Yes,,,Djibouti,None,None,No,Reason 1
+,Salad beet seed or beetroot seed (Beta vulgaris var. conditiva),12099130,Beta sp.,BEASS,Not Test/Trial,Seed,None,None,1,,No,,01/01/2027,None,EU Member States,None,Yes,
+,"Bulbs, tubers, tuberous roots, corms, crowns and rhizomes, in growth or in flower; chicory plants and roots",'060120,,,Intended for final users,Plant,Non-woody,Outdoor use,30,,Yes,,,None,"European Countries, Euro-Mediterranean Area, Third Countries",None,No,Reason 3
+,Sloes,'08094090,,,None,None,None,None,5,,Yes,,,Montserrat,EU Member States,"Germany, France",Yes,
+,For sowing,'12040010,Linum usitatissimum,LIUUT,Not Test/Trial,Seed,None,None,10,,Yes,,,Togo,None,None,No,

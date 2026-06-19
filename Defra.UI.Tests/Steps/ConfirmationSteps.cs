@@ -3,6 +3,7 @@ using NUnit.Framework;
 using OpenQA.Selenium;
 using Reqnroll;
 using Defra.UI.Tests.Pages.Interfaces;
+using Defra.UI.Tests.Tools;
 
 
 namespace Defra.UI.Tests.Steps.IPAFF
@@ -16,6 +17,138 @@ namespace Defra.UI.Tests.Steps.IPAFF
         private IWebDriver? _driver => _objectContainer.IsRegistered<IWebDriver>() ? _objectContainer.Resolve<IWebDriver>() : null;
         private IConfirmationPage? confirmationPage => _objectContainer.IsRegistered<IConfirmationPage>() ? _objectContainer.Resolve<IConfirmationPage>() : null;
 
+        /// <summary>
+        /// IPAFFS notification-specific context keys that are set during each iteration.
+        /// These are archived with an iteration prefix and then removed before the next iteration.
+        /// </summary>
+        private static readonly string[] IpaffsIterationKeys =
+        [
+            "ImportType",
+            "CountryOfOrigin",
+            "ContryFromWhereConsigned",
+            "ConsignmentConformToRegulatoryRequirements",
+            "CommodityCode",
+            "CommodityDescription",
+            "CommodityCodeFirstCommodity",
+            "CommodityDescFirstCommodity",
+            "CommodityCodeSecondCommodity",
+            "CommodityDescSecondCommodity",
+            "GenusFirstCommodity",
+            "GenusSecondCommodity",
+            "EPPOCodeFirstCommodity",
+            "EPPOCodeSecondCommodity",
+            "CommodityVariety",
+            "CommodityClass",
+            "Species",
+            "TypeOfCommodity",
+            "MainReasonForImport",
+            "Purpose",
+            "IsRegionOfOriginCodeRequired",
+            "TranshipmentDestinationCountry",
+            "ConsignmentReferenceNumber",
+            "PlaceOfExit",
+            "ConsignmentLeavingFromGBDate",
+            "ConsignmentLeavingFromGBTime",
+            "CommodityIntendedFor",
+            "RiskCategory",
+            "NumberOfAnimals",
+            "NumberOfPackages",
+            "PackageType",
+            "Quantity",
+            "QuantityType",
+            "NetWeight",
+            "NetWeightFirstCommodity",
+            "NumberOfPackagesFirstCommodity",
+            "TypeOfPackageFirstCommodity",
+            "NetWeightSecondCommodity",
+            "NumOfPackagesSecondCommodity",
+            "TypeOfPackageSecondCommodity",
+            "SubtotalNetWeight",
+            "SubtotalPackages",
+            "TotalNetWeight",
+            "TotalPackages",
+            "TotalGrossWeight",
+            "IntendedForFinalUsers",
+            "ControlledAtmosphereContainer",
+            "GrossVolume",
+            "GrossVolumetUnit",
+            "Temperature",
+            "ConfirmationToDeclareGMS",
+            "BorderControlPost",
+            "PortOfEntry",
+            "InspectionPremises",
+            "MeansOfTransport",
+            "TransportId",
+            "AreContainers",
+            "ContainerNumber",
+            "SealNumber",
+            "OfficialSealAffixed",
+            "EnterTransportDocRef",
+            "EstimatedArrivalDate",
+            "EstimatedArrivalTime",
+            "EstimatedJourneyTime",
+            "IsCTC",
+            "IsGVMS",
+            "MovementReferenceNumber",
+            "MeansOfTransportAfterBCP",
+            "TransportIdentificationAfterBCP",
+            "TransportDocumentReferenceAfterBCP",
+            "DepartureDateFromBCP",
+            "DepartureTimeFromBCP",
+            "TransporterName",
+            "TransporterAddress",
+            "TransporterCountry",
+            "TransporterApprovalNumber",
+            "TransporterType",
+            "CountriesConsignmentWillTravelThrough",
+            "ShouldNotifyTransportContacts",
+            "ContactName",
+            "ContactEmail",
+            "ContactTelephone",
+            "ConsignmentContactAddress",
+            "MicrochipNumber",
+            "PassportNumber",
+            "EggMark",
+            "CollectionDate",
+            "LiveAnmimalIdentificationDetails",
+            "LiveAnimalDescription",
+            "CertificationOption",
+            "DocumentType",
+            "DocumentReference",
+            "DocumentDateOfIssue",
+            "DocumentName",
+            "HealthDocumentType",
+            "LatestHealthCertificateDocumentName",
+            "LatestHealthCertificateDocumentDateOfIssue",
+            "HealthCertificateReference",
+            "HealthCertificateDateOfIssue",
+            "HealthCertificateFileName",
+            "CompanyName",
+            "ImporterName",
+            "ImporterAddress",
+            "ImporterCountry",
+            "ConsignorName",
+            "ConsignorAddress",
+            "ConsignorCountry",
+            "ConsignorDetails",
+            "ConsigneeName",
+            "ConsigneeAddress",
+            "ConsigneeCountry",
+            "ConsigneeDetails",
+            "ImporterDetails",
+            "DeliveryAddressName",
+            "DeliveryAddress",
+            "DeliveryCountry",
+            "DeliveryAddressDetails",
+            "PlaceOfDestinationName",
+            "PlaceOfDestinationAddress",
+            "PlaceOfDestinationAddressTextOnly",
+            "PlaceOfDestinationDetails",
+            "PlaceOfDestinationCountry",
+            "RiskDecisionRequestsJson",
+            "RiskDecisionJson",
+            "UserRole",
+        ];
 
         public ConfirmationSteps(ScenarioContext context, IObjectContainer container)
         {
@@ -48,6 +181,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext[$"{prefix}CustomsDocumentCode"] = confirmationPage.GetCustomsDocumentCode();
         }
 
+        [When("the user records the CHED Reference for {string}")]
+        [Then("the user records the CHED Reference for {string}")]
+        public void WhenTheUserRecordsTheCHEDReferenceFor(string iterationName)
+        {
+            _scenarioContext[$"{iterationName}_CHEDReference"] = confirmationPage.GetCHEDReference();
+        }
+
         [When("the user clicks Return to your dashboard")]
         [When("the user clicks return to your dashboard link")]
         public void WhenTheUserClicksReturnToYourDashboard()
@@ -71,6 +211,20 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserClicksReturnToYourDashboardLink()
         {
             confirmationPage?.ClickReturnToDashboardLink();
+        }
+
+        [Then("{string} is complete")]
+        [When("{string} is complete")]
+        public void ThenIterationIsComplete(string iterationName)
+        {
+            // Archive only the Risk Decision JSON payloads for traceability, then clear all IPAFFS iteration keys
+            foreach (var key in new[] { "RiskDecisionRequestsJson", "RiskDecisionJson" })
+            {
+                if (_scenarioContext.ContainsKey(key))
+                    _scenarioContext[$"{iterationName}_{key}"] = _scenarioContext[key];
+            }
+
+            _scenarioContext.RemoveContextKeys(IpaffsIterationKeys);
         }
     }
 }

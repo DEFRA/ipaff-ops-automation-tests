@@ -54,14 +54,6 @@ parameters:
       - CHEDPP
       - RiskEngine
 
-resources:
-  repositories:
-    - repository: ipaffopsprovingrepo
-      type: github
-      name: DEFRA/ipaff-ops-automation-tests
-      ref: $(Build.SourceBranch)
-      endpoint: DEFRA
-
 stages:
   
   - stage: IPAFF_OPS_E2E

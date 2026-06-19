@@ -159,11 +159,48 @@ namespace Defra.Trade.MSD365.SpecFlowBindings.Hooks
             catch { }
 
             var screenshot = ((ITakesScreenshot)Driver).GetScreenshot();
-            var uniqueFileName = $"{Guid.NewGuid()}.png";
-            var filePath = Path.Combine(screenshotsDir, uniqueFileName);
+            var fileName = GenerateScreenshotFileName();
+            var filePath = Path.Combine(screenshotsDir, fileName);
             screenshot.SaveAsFile(filePath);
 
-            return $"./Screenshots/{uniqueFileName}";
+            return $"./Screenshots/{fileName}";
+        }
+
+        /// <summary>
+        /// Generates a screenshot filename using the scenario title and current timestamp.
+        /// Falls back to a GUID if the scenario title is unavailable.
+        /// </summary>
+        private string GenerateScreenshotFileName()
+        {
+            try
+            {
+                var scenarioTitle = _scenarioContext.ScenarioInfo.Title;
+                var sanitised = SanitiseFileName(scenarioTitle);
+                var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");
+                return $"{sanitised}_{timestamp}.png";
+            }
+            catch
+            {
+                return $"{Guid.NewGuid()}.png";
+            }
+        }
+
+        /// <summary>
+        /// Removes invalid file name characters, replaces spaces with underscores,
+        /// and truncates to 80 characters to avoid path-length issues.
+        /// </summary>
+        private static string SanitiseFileName(string input)
+        {
+            var invalidChars = Path.GetInvalidFileNameChars();
+            var sanitised = new string(input.Where(c => !invalidChars.Contains(c)).ToArray());
+            sanitised = sanitised.Replace(' ', '_');
+
+            if (sanitised.Length > 80)
+            {
+                sanitised = sanitised[..80];
+            }
+
+            return sanitised;
         }
     }
 }

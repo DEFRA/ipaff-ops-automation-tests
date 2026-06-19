@@ -29,6 +29,7 @@ namespace Defra.UI.Tests.Hooks
 
         private void BindAllPages()
         {
+            // IPAFFS pages
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<UserObject, IUserObject>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<UrlBuilder, IUrlBuilder>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SignInPage, ISignInPage>());
@@ -155,10 +156,46 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SelectChecksToRecordPage, ISelectChecksToRecordPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<RecordPhsiChecksPage, IRecordPhsiChecksPage>());
 
+            // Risk Engine pages
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<RiskEngineHomePage, IRiskEngineHomePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ReportsPage, IReportsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDPPReportsPage, ICHEDPPReportsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDPPImportsAndExportsPage, ICHEDPPImportsAndExportsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ViewAllPHSIImportCommodityRulesPage, IViewAllPHSIImportCommodityRulesPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<RiskDecisionReportPage, IRiskDecisionReportPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<UploadCommodityRulesCsvPage, IUploadCommodityRulesCsvPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CheckFileProcessingStatusPage, ICheckFileProcessingStatusPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SubmitCommodityRulesCsvPage, ISubmitCommodityRulesCsvPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<AreCommodityRuleChangesCorrectPage, IAreCommodityRuleChangesCorrectPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<UploadingRuleChangesPage, IUploadingRuleChangesPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CsvFileDetailsAndStatusPage, ICsvFileDetailsAndStatusPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDPReportsPage, ICHEDPReportsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDPImportsPage, ICHEDPImportsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ViewAllCHEDPImportCommodityRulesPage, IViewAllCHEDPImportCommodityRulesPage>()); 
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDAReportsPage, ICHEDAReportsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDAImportsPage, ICHEDAImportsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ViewAllCHEDAImportCommodityRulesPage, IViewAllCHEDAImportCommodityRulesPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<BulkUploadCommodityRulesForCHEDAPage, IBulkUploadCommodityRulesForCHEDAPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CommodityRulesForCHEDAPage, ICommodityRulesForCHEDAPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CheckAndSubmitCommodityRulesForCHEDAPage, ICheckAndSubmitCommodityRulesForCHEDAPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CommodityRulesStatusForCHEDAPage, ICommodityRulesStatusForCHEDAPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ThereAreRulesInYourCSVFileThatAlreadyExistPage, IThereAreRulesInYourCSVFileThatAlreadyExistPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDDReportsPage, ICHEDDReportsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDDImportsPage, ICHEDDImportsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ViewAllCHEDDImportCommodityRulesPage, IViewAllCHEDDImportCommodityRulesPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<BulkUploadCommodityRulesForCHEDDPage, IBulkUploadCommodityRulesForCHEDDPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CommodityRulesForCHEDDPage, ICommodityRulesForCHEDDPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CheckAndSubmitCommodityRulesForCHEDDPage, ICheckAndSubmitCommodityRulesForCHEDDPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CommodityRulesStatusForCHEDDPage, ICommodityRulesStatusForCHEDDPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<HMIImportCommodityRulesPage, IHMIImportCommodityRulesPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ConfirmationOfRateChangePage, IConfirmationOfRateChangePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<RuleChangeCompletePage, IRuleChangeCompletePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ViewAllHMIImportCommodityRulesPage, IViewAllHMIImportCommodityRulesPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<PHSIImportCommodityRulesPage, IPHSIImportCommodityRulesPage>());
+
             //Read Email
             _objectContainer.RegisterInstanceAs(GetBaseWithScenarioContext<FetchCodeFromEmail, IFetchCodeFromEmail>());
         }
-
 
         private TU GetBaseWithContainer<T, TU>() where T : TU => (TU)Activator.CreateInstance(typeof(T), _objectContainer);
         private TU GetBaseWithContainerScenarioContext<T, TU>() where T : TU => (TU)Activator.CreateInstance(typeof(T), _objectContainer, _scenarioContext);

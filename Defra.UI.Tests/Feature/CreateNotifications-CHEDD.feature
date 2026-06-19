@@ -3,6 +3,7 @@ Feature: CreateNotification CHEDD
 
 Create a notification for CHEDD type
 
+@CHEDD-Happy-Path
 Scenario: User creates and submits a B2C consignment notification - CHEDD Happy path
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -174,6 +175,7 @@ Scenario: User creates and submits a B2C consignment notification - CHEDD Happy 
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
 
+@SPS-9107
 Scenario: User creates and submits a notification, override the risk decision, reject the notification and creates border notification - CHEDD - SPS-9107
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -410,6 +412,7 @@ Scenario: User creates and submits a notification, override the risk decision, r
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
 
+@SPS-9106
 Scenario: User verifies Address book page search, submits notification for 'Non-Internal market' reason,  override the risk decision, reject the notification and creates border notification - CHEDD - SPS-9106
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -649,6 +652,7 @@ Scenario: User verifies Address book page search, submits notification for 'Non-
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
 
+@SPS-7378
 Scenario: User submits B2C consignment notification, inspector rejects and creates border notification - CHEDD - SPS-7378
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -866,6 +870,7 @@ Scenario: User submits B2C consignment notification, inspector rejects and creat
 	And the user validates the commodity code "12024200", description "Shelled, whether or not broken", quantity "100", authority "FNAO" and decision "Non Acceptable" for commodity "1" after the decision is given
 	When the user logs out of BTMS
 
+@SPS-9111
 Scenario: User creates and submits a notification, Copy the notification and submit, Records decision as Inspector and Validate in BTMS - CHEDD - SPS-9111
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -1118,7 +1123,7 @@ Scenario: User creates and submits a notification, Copy the notification and sub
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
 
-
+@SPS-7381
 Scenario: User submits B2C consignment notification, reason for refusal and creates border notification - CHED D SPS-7381
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -1471,6 +1476,7 @@ Scenario: User submits B2C consignment notification, reason for refusal and crea
 	When the user logs out of Border notifications in IPAFFS Part 1
 	Then the user should be logged out successfully
 
+@SPS-7379
 Scenario: User submits consignment notification, inspector overrides the risk decision and rejects the notification - CHED D 7379
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -1625,6 +1631,7 @@ Scenario: User submits consignment notification, inspector overrides the risk de
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
 
+@SPS-7380
 Scenario: User creates a notification and the inspector revises the decision throughout the Record Decision workflow CHEDD - SPS-7380
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -1845,6 +1852,7 @@ Scenario: User creates a notification and the inspector revises the decision thr
 	When the user logs out of IPAFFS Part 2
 	Then the user should be logged out successfully
 
+@SPS-8581
 Scenario: User submits notification of no inspection required, inspector overrides the risk decision and make the notification acceptable - CHEDD 8581
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page

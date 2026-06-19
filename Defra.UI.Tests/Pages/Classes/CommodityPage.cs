@@ -58,6 +58,10 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement drpClass(string eppoCode) => _driver.FindElement(By.Id($"add-class-{eppoCode}"));
         private IWebElement txtSelectedCommodity(string commodity) => _driver.FindElement(By.XPath($"//h2[normalize-space()='{commodity}']"));
         private IWebElement txtSelectedCommodityDetails(string commodity) => _driver.FindElement(By.XPath($"//h2[normalize-space()='{commodity}']/following-sibling::div[1]"));
+        private IWebElement commoditySummaryTable(string commodityCode) =>
+            _driver.FindElement(By.Id($"commodity-summary-table-{commodityCode}"));
+        private IWebElement commoditySummaryTableCell(string commodityCode, int columnIndex) =>
+            _driver.FindElement(By.XPath($"//table[@id='commodity-summary-table-{commodityCode}']/tbody/tr/td[{columnIndex}]"));
         private IWebElement chkBoxCommodity(string commodity) => _driver.FindElement(By.XPath($"//td[normalize-space()='{commodity}']/../td[1]//input"));
         private IWebElement txtCHEDPPNetWeight => _driver.FindElement(By.Id("bulk-net-weight"));
         private IWebElement txtCHEDPPNumOfPackages => _driver.FindElement(By.Id("bulk-num-packages"));
@@ -74,6 +78,11 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement speciesNetWeightInput(string commodityCode) => _driver.FindElement(By.XPath($"//input[starts-with(@id, '{commodityCode}') and contains(@id, '.net-weight-desktop')]"));
         private IWebElement speciesNumPackagesInput(string commodityCode) => _driver.FindElement(By.XPath($"//input[starts-with(@id, '{commodityCode}') and contains(@id, '.num-packages-desktop')]"));
         private By speciesPackageTypeSelectBy(string commodityCode) => By.XPath($"//select[starts-with(@id, '{commodityCode}-') and contains(@id, '.package-type-desktop')]");
+        private IWebElement drpIntendedForFinalUsers(string commodityCode) =>
+            _driver.FindElement(By.XPath(
+                $"//div[contains(@class,'commodity-details-commodity-wrapper')]" +
+                $"[.//h2[normalize-space()='{commodityCode}']]" +
+                $"//select[contains(@id,'finished-or-propagated')]"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -383,10 +392,25 @@ namespace Defra.UI.Tests.Pages.Classes
                 && txtSelectedCommodityDetails(secondComm).Text.Contains(secondGenus);
         }
 
+        public bool VerifySingleCommodityDisplayed(string commodityCode, string genus, string eppoCode, string variety, string commodityClass)
+        {
+            _driver.Wait(1);
+            return commoditySummaryTableCell(commodityCode, 1).Text.Trim().Equals(commodityCode)
+                && commoditySummaryTableCell(commodityCode, 2).Text.Trim().Equals(genus)
+                && commoditySummaryTableCell(commodityCode, 3).Text.Trim().Equals(eppoCode)
+                && commoditySummaryTableCell(commodityCode, 4).Text.Trim().Equals(variety)
+                && commoditySummaryTableCell(commodityCode, 5).Text.Trim().Equals(commodityClass);
+        }
+
         public void SelectCommodities(string firstCommCode, string secondCommCode)
         {
             chkBoxCommodity(firstCommCode).Click();
             chkBoxCommodity(secondCommCode).Click();
+        }
+
+        public void SelectCommodity(string commCode)
+        {
+            chkBoxCommodity(commCode).Click();
         }
 
         public void EnterCHEDPPNetWeight(string weight)
@@ -420,6 +444,25 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickApplyButton()
         {
             btnApply.Click();
+        }        
+
+        public void SelectIntendedForFinalUsers(string commodityCode, string value)
+        {
+            var optionValue = value.Trim().Equals("Yes", StringComparison.OrdinalIgnoreCase) ? "Finished" : "Propagated";
+            new SelectElement(drpIntendedForFinalUsers(commodityCode)).SelectByValue(optionValue);
+        }
+
+        public void SelectCommodityByCodeAndDescription(string commodityCode, string description)
+        {
+            // Find the "Select this commodity" button that matches both code and description
+            var selectButton = _driver.WaitForElement(
+                By.XPath($"//button[contains(@class, 'commodity-description-link') and normalize-space()='{description}']" +
+                         $"/following-sibling::span//button[@name='selected-commodity_{commodityCode}' and @value='{commodityCode}']"),
+                true);
+
+            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView({block: 'center'});", selectButton);
+            Thread.Sleep(300);
+            selectButton.Click();
         }
     }
 }
