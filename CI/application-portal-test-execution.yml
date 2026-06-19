@@ -63,7 +63,7 @@ stages:
     - template: 'variables/IPAFF/${{parameters.environment}}.yml'
 
     jobs:
-         
+    
     - template: run-test-template.yml
       parameters:
         jobName: IPAFF_OPS_E2E
