@@ -218,7 +218,7 @@ Scenario: User creates and submits a notification, override the risk decision, r
 	Then the Additional details page should be displayed
 	And the Commodity intended for field displays the radio options 'Feedingstuff' 'Further process' 'Human consumption' and 'Other'
 	When the user selects 'Human consumption' radio button under Commodity intended for on the Additional details page
-	When the user selects 'Ambient' radio button on the Additional details page
+	When the user selects 'Frozen' radio button on the Additional details page
 	And the user clicks Save and continue
 	Then the Accompanying documents page should be displayed
 	When the user selects Document type "Air waybill"
@@ -473,7 +473,7 @@ Scenario: User verifies Address book page search, submits notification for 'Non-
 	Then the Additional details page should be displayed
 	And the Commodity intended for field displays the radio options 'Feedingstuff' 'Further process' 'Human consumption' and 'Other'
 	When the user selects 'Human consumption' radio button under Commodity intended for on the Additional details page
-	When the user selects 'Ambient' radio button on the Additional details page
+	When the user selects 'Frozen' radio button on the Additional details page
 	And the user clicks Save and continue
 	Then the Accompanying documents page should be displayed
 	When the user selects Document type "Sea waybill"
