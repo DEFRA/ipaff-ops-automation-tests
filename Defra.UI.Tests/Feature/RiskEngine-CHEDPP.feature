@@ -1678,11 +1678,11 @@ Scenario: New HMI commodity rule for CHEDPP - SPS-9449
 	Then the CHED-PP imports and exports page should be displayed
 	When the user clicks the HMI import commodity rules link
 	Then the HMI (Import) - Commodity Rules page should be displayed
-	When the user selects 'Zambia' from the country dropdown on the HMI commodity rules page
-	And the user searches for commodity '07096010' with name 'Capsicum annuum' on the HMI commodity rules page
-	And the user sets the inspection rate to 50 on the HMI commodity rules page
-	And the user ensures the Permanent checkbox is checked on the HMI commodity rules page
-	And the user clicks the Confirm and send button on the HMI commodity rules page
+	When the user selects 'Zambia' from the country dropdown on the HMI import commodity rules page
+	And the user searches for commodity '07096010' with name 'Capsicum annuum' on the HMI import commodity rules page
+	And the user sets the inspection rate to 50 on the HMI import commodity rules page
+	And the user ensures the Permanent checkbox is checked on the HMI import commodity rules page
+	And the user clicks the Confirm and send button on the HMI import commodity rules page
 	Then the Confirmation of rate change page should be displayed with the following details
 		| Field                | Value            |
 		| From                 | 0%               |
@@ -1704,11 +1704,11 @@ Scenario: New HMI commodity rule for CHEDPP - SPS-9449
 	Then the CHED-PP reports page should be displayed
 	When the user clicks the HMI imports commodity rules report link
 	Then the View all HMI (Import) Commodity Rules report page should be displayed
-	When the user scrolls to the bottom of the HMI rules report page
-	Then the HMI rule count is recorded as 'HMIRuleCount'
-	When the user enters '07096010' in the HMI rules search field
-	And the user sorts the HMI rules table by Id descending
-	Then the top HMI rule row should match the following details
+	When the user scrolls to the bottom of the HMI (Import) Commodity Rules report page
+	Then the HMI import commodity rule count is recorded as 'HMIRuleCount'
+	When the user enters '07096010' in the HMI import commodity rules search field
+	And the user sorts the HMI import commodity rules table by Id descending
+	Then the top HMI import commodity rule row should match the following details
 		| Field           | Value         |
 		| Description     | Sweet peppers |
 		| EPPO            | CPSAN         |
@@ -1719,7 +1719,7 @@ Scenario: New HMI commodity rule for CHEDPP - SPS-9449
 		| Permanent       | Yes           |
 		| Start date      |               |
 		| End date        |               |
-	And the user records the Id of the top HMI rule row as 'NewHMIRuleId'
+	And the user records the Id of the top HMI import commodity rule row as 'NewHMIRuleId'
 	# Submit 4 matching CHED-PP notifications in IPAFFS (Zambia / 07096010 / CPSAN)
 	# --- APP-A ---
 	When I navigate to the IPAFF application
@@ -2125,17 +2125,17 @@ Scenario: New HMI commodity rule for CHEDPP - SPS-9449
 	Then the CHED-PP reports page should be displayed
 	When the user clicks the HMI imports commodity rules report link
 	Then the View all HMI (Import) Commodity Rules report page should be displayed
-	When the user enters '07096010' in the HMI rules search field
-	And the user sorts the HMI rules table by Id descending
-	And the user ticks the Select to Delete checkbox for HMI rule Id recorded as 'NewHMIRuleId'
-	Then the HMI selected rules info banner should display '1 rule selected across all pages'
-	When the user clicks the Delete Rules button on the HMI rules page
-	Then the HMI Confirm rule deletion dialog should be displayed with 1 rules selected for deletion
-	When the user clicks the Delete rules button on the HMI confirmation dialog
-	Then the HMI Confirm rule deletion dialog should be closed
-	And the HMI rule Id recorded as 'NewHMIRuleId' should no longer be present in the rules table
-	When the user scrolls to the bottom of the HMI rules report page
-	Then the HMI rule count should be 1 less than 'HMIRuleCount'
+	When the user enters '07096010' in the HMI import commodity rules search field
+	And the user sorts the HMI import commodity rules table by Id descending
+	And the user ticks the Select to Delete checkbox for HMI import commodity rule Id recorded as 'NewHMIRuleId'
+	Then the info banner should display '1 rule selected across all pages' on the View all HMI (Import) Commodity Rules page
+	When the user clicks the Delete Rules button on the View all HMI (Import) Commodity Rules page
+	Then the Confirm rule deletion dialog should be displayed with 1 rules selected for deletion on the View all HMI (Import) Commodity Rules page
+	When the user clicks the Delete rules button on the confirmation dialog on the View all HMI (Import) Commodity Rules page
+	Then the Confirm rule deletion dialog should be closed on the View all HMI (Import) Commodity Rules page
+	And the HMI import commodity rule Id recorded as 'NewHMIRuleId' should no longer be present in the rules table
+	When the user scrolls to the bottom of the HMI (Import) Commodity Rules report page
+	Then the HMI import commodity rule count should be 1 less than 'HMIRuleCount'
 
 @SPS-9450
 Scenario: New PHSI commodity rule for CHEDPP - SPS-9450
