@@ -186,8 +186,8 @@ Scenario: Delegation of Authority Agent submits CHEDPP notification by uploading
 		|       08105000 | Actinidia chinensis | ATICH     | None (Yellow flesh)    | Extra Class |                                                            |                 10 | PU              |       40 | KGM           |             400 |                                 |
 		|       08106000 | Durio zibethinus    | DURZI     |                        |             |                                                            |                 10 | BE              |       40 | CRZ           |             400 | No                              |
 	Then CSV file should be uploaded successfully with 'Upload successful' message and validate the count of commodity
-	#And all the displayed commodity data in all tables should be validated with the values given in the input
-	#And checks the information message heading 'If details are incorrect or missing' and content 'You will need to upload commodity details CSV file again. This will replace your previous upload.'
+	And all the displayed commodity data in all tables should be validated with the values given in the input
+	And checks the information message heading 'If details are incorrect or missing' and content 'You will need to upload commodity details CSV file again. This will replace your previous upload.'
 	When the user clicks Confirm and continue button
 	Then What is the main reason for importing the consignment? page should be displayed
 	When The user selects 'Internal market' radio option
@@ -195,8 +195,8 @@ Scenario: Delegation of Authority Agent submits CHEDPP notification by uploading
 	Then the Notification Hub page should be displayed
 	When the user clicks the Commodity hyperlink
 	Then Check uploaded commodity details page should be displayed
-	#And all the displayed commodity data in all tables should be validated with the values given in the input
-	#And checks the information message heading 'If details are incorrect or missing' and content 'You will need to upload commodity details CSV file again. This will replace your previous upload.'
+	And all the displayed commodity data in all tables should be validated with the values given in the input
+	And checks the information message heading 'If details are incorrect or missing' and content 'You will need to upload commodity details CSV file again. This will replace your previous upload.'
 	When the user clicks Confirm and continue button
 	Then the Additional details page should be displayed
 	And user enters the total gross weight greater than the net weight '3500'
