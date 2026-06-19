@@ -1247,7 +1247,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
         private void ValidateStringArray(string key, string[] array, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
         {
-            //ValidateString(key, array.FirstOrDefault(), reviewValue, ref allDataMatches, mismatches);
             if (array == null || array.Length == 0)
             {
                 LogSkip(key, "empty array");
@@ -1344,7 +1343,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             if (string.IsNullOrEmpty(expectedValue) || string.IsNullOrEmpty(actual))
                 return;
 
-            //bool isMatch = CompareValues(expectedValue, actual, contextContainsPDF, result);
             bool isMatch;
             // Special handling for date fields
             if (contextKey == "EstimatedArrivalDate")
@@ -1440,9 +1438,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             if (contextKey == "ExitBCP" && actual != null) actual = actual.Replace(".", "").Trim();
             if (contextKey is "ExitBorderControlPost" or "PortOfEntry") expectedValue = expectedValue.Split(new[] { '(', '-' })[0].Trim();
-            if (contextKey == "InspectionPremises") expectedValue = expectedValue.Split('-')[0].Trim();
-            /*if (contextKey == "BorderControlPost" && _scenarioContext["CHEDReference"].ToString().Contains("CHEDPP"))
-                    expectedValue = expectedValue.Split('-')[0].Trim();*/
+            if (contextKey == "InspectionPremises") expectedValue = expectedValue.Split('-')[0].Trim();            
             if (contextKey == "ImporterAddress") actual = actual.Replace("Address ", "").Trim();
             if (contextKey == "TotalPackages") actual = Regex.Matches(actual, @"\d+").Select(m => int.Parse(m.Value)).Sum().ToString();
             if (contextKey == "NumberOfAnimals") expectedValue += " Units";
