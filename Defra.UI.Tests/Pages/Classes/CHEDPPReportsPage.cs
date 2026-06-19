@@ -15,6 +15,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private By byLnkPhsiImportsCommodityRulesReport => By.XPath("//a[normalize-space()='PHSI imports commodity rules report']");
         private By byLnkRiskDecisionReport => By.XPath("//a[normalize-space()='Risk decision report']");
         private By byLnkHmiImportsCommodityRulesReport => By.XPath("//a[normalize-space()='HMI imports commodity rules report']");
+        private IWebElement lnkCountryRulesReport => _driver.FindElement(By.XPath("//a[normalize-space()='Country rules report']"));
         #endregion
 
         public CHEDPPReportsPage(IObjectContainer container)
@@ -59,5 +60,7 @@ namespace Defra.UI.Tests.Pages.Classes
                 // navigation is already in progress — safe to continue.
             }
         }
+
+        public void ClickCountryRulesReportLink() => lnkCountryRulesReport.Click();
     }
 }

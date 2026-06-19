@@ -2691,6 +2691,7 @@ Scenario: New HMI country rule for CHEDPP - SPS-9507
 	And the user clicks Save and continue
 	Then the Confirmation to declare GMS page should be displayed
 	When the user selects 'Yes' confirmation option
+	And the user clicks Save and continue
 	Then Transport to the Border Control Post (BCP) page should be dislayed
 	When the user populates the transport to the BCP details 'Heathrow Airport - GBLHR4PP' 'Eurobip' 'Road vehicle' 'YY10 KTP' 'No' 'Doc23456'
 	And the user clicks Save and continue
@@ -2769,6 +2770,7 @@ Scenario: New HMI country rule for CHEDPP - SPS-9507
 	And the user clicks Save and continue
 	Then the Confirmation to declare GMS page should be displayed
 	When the user selects 'Yes' confirmation option
+	And the user clicks Save and continue
 	Then Transport to the Border Control Post (BCP) page should be dislayed
 	When the user populates the transport to the BCP details 'Heathrow Airport - GBLHR4PP' 'Eurobip' 'Road vehicle' 'YY10 KTP' 'No' 'Doc23456'
 	And the user clicks Save and continue
@@ -2847,6 +2849,7 @@ Scenario: New HMI country rule for CHEDPP - SPS-9507
 	And the user clicks Save and continue
 	Then the Confirmation to declare GMS page should be displayed
 	When the user selects 'Yes' confirmation option
+	And the user clicks Save and continue
 	Then Transport to the Border Control Post (BCP) page should be dislayed
 	When the user populates the transport to the BCP details 'Heathrow Airport - GBLHR4PP' 'Eurobip' 'Road vehicle' 'YY10 KTP' 'No' 'Doc23456'
 	And the user clicks Save and continue
@@ -2925,6 +2928,7 @@ Scenario: New HMI country rule for CHEDPP - SPS-9507
 	And the user clicks Save and continue
 	Then the Confirmation to declare GMS page should be displayed
 	When the user selects 'Yes' confirmation option
+	And the user clicks Save and continue
 	Then Transport to the Border Control Post (BCP) page should be dislayed
 	When the user populates the transport to the BCP details 'Heathrow Airport - GBLHR4PP' 'Eurobip' 'Road vehicle' 'YY10 KTP' 'No' 'Doc23456'
 	And the user clicks Save and continue
@@ -3047,7 +3051,7 @@ Scenario: New HMI country rule for CHEDPP - SPS-9507
 	Then the View rules for all countries page should display the '1 rule selected across all pages' info banner
 	When the user clicks the Delete Rules button on the View rules for all countries page
 	Then the Confirm rule deletion dialog should be displayed with 1 rules selected for deletion on the View rules for all countries page
-	When the user clicks the Delete rules button on the confirmation dialog
+	When the user clicks the Delete rules button on the confirmation dialog on the View rules for all countries page
 	Then the Confirm rule deletion dialog should be closed on the View rules for all countries page
 	And the HMI country rule Id recorded as 'NewHMIRuleId' should no longer be present in the rules table
 	When the user scrolls to the bottom of the View rules for all countries page
