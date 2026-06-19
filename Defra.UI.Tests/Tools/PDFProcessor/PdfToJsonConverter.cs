@@ -1,12 +1,13 @@
-using Defra.UI.Tests.Tools.PDFProcessor.Extractors;
-using Defra.UI.Tests.Tools.PDFProcessor.Models;
-using Newtonsoft.Json;
-using System.Text;
 using System.Text.RegularExpressions;
+using System.Text;
+using Newtonsoft.Json;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
+using Defra.UI.Tests.Tools.PDFProcessor.Extractors;
+using Defra.UI.Tests.Tools.PDFProcessor.Models;
+using Defra.UI.Tests.Tools.PDFProcessor;
 
-namespace Defra.UI.Tests.Tools.PDFProcessor
+namespace PdfExtraction
 {
     public partial class PdfToJsonConverter
     {
@@ -767,6 +768,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
                             sectionName.Contains("II.4", StringComparison.OrdinalIgnoreCase) ||
                             sectionName.Contains("II.5", StringComparison.OrdinalIgnoreCase) ||
                             sectionName.Contains("II.6", StringComparison.OrdinalIgnoreCase) ||
+                            sectionName.Contains("II.7", StringComparison.OrdinalIgnoreCase) ||
                             sectionName.Contains("II.11", StringComparison.OrdinalIgnoreCase) ||
                             sectionName.Contains("II.12", StringComparison.OrdinalIgnoreCase) ||
                             sectionName.Contains("III.5", StringComparison.OrdinalIgnoreCase) ||
@@ -1521,10 +1523,16 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
                     else if (!sectionData.ContainsKey(k))
                         sectionData[k] = "false";
                 }
+
+                var totalMatch = Regex.Match(fullText,
+                    @"Total\s+number\s+of\s+animals\s+checked[:\s]+(\d+)",
+                    RegexOptions.IgnoreCase);
+                if (totalMatch.Success)
+                    sectionData["Total number of animals checked"] = totalMatch.Groups[1].Value;
             }
 
-            // II.6 Laboratory tests: Specific Cleanup
-            if (sectionName.Contains("II.6", StringComparison.OrdinalIgnoreCase))
+            // II.7 Welfare Check: Specific Cleanup
+            if (sectionName.Contains("II.7", StringComparison.OrdinalIgnoreCase))
             {
                 var keysToRemove = new[] { "value", "ISO Code" };
                 foreach (var k in keysToRemove)
@@ -1532,52 +1540,52 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
                     if (sectionData.ContainsKey(k)) sectionData.Remove(k);
                 }
 
-                // Extract Test name: appears as "Test" label followed by the test name value
-                var testMatch = Regex.Match(fullText, @"\bTest\b\s*(.*?)(?=\s*\bRandom\b|\s*\bSuspicion\b|\s*\bIntensified\b|\s*\bPending\b|\s*\bSatisfactory\b|\s*\bYes\b|\s*\bNo\b|\s*\bResults\b|$)", RegexOptions.IgnoreCase);
-                if (testMatch.Success)
+                var requiredKeys = new[] { "Yes", "No", "Satisfactory", "Not Satisfactory" };
+                foreach (var k in requiredKeys)
                 {
-                    var testValue = testMatch.Groups[1].Value.Trim();
-                    // Clean up if it's just a label
-                    var labels = new[] { "Random", "Suspicion", "Intensified Controls", "Results", "Pending", "Satisfactory", "Not Satisfactory", "Yes", "No" };
-                    if (labels.Any(l => testValue.Equals(l, StringComparison.OrdinalIgnoreCase)))
+                    if (checkboxes.TryGetValue($"II.7::{k}", out var v))
+                        sectionData[k] = v;
+                    else if (!sectionData.ContainsKey(k))
+                        sectionData[k] = "false";
+                }
+            }
+
+            // II.6 Laboratory tests: Yes/No at top level + per-row Tests array from checkbox extractor
+            if (sectionName.Contains("II.6", StringComparison.OrdinalIgnoreCase))
+            {
+                sectionData.Clear();
+                sectionData["Yes"] = checkboxes.TryGetValue("II.6::Yes", out var ii6Yes) ? ii6Yes : "false";
+                sectionData["No"] = checkboxes.TryGetValue("II.6::No", out var ii6No) ? ii6No : "false";
+
+                var testsList = new List<Dictionary<string, object>>();
+                var testNameKeys = checkboxes.Keys
+                    .Where(k => k.StartsWith("II.6::row") && k.EndsWith("::TestName"))
+                    .OrderBy(k => k)
+                    .ToList();
+
+                foreach (var testNameKey in testNameKeys)
+                {
+                    var rowPrefix = testNameKey[..testNameKey.LastIndexOf("::")];
+                    string GetVal(string key) =>
+                        checkboxes.TryGetValue($"{rowPrefix}::{key}", out var v) ? v : "false";
+
+                    var testName = GetVal("TestName");
+                    if (string.IsNullOrWhiteSpace(testName)) continue;
+
+                    testsList.Add(new Dictionary<string, object>
                     {
-                        testValue = "";
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(testValue))
-                        sectionData["Test"] = testValue;
+                        ["Test"] = testName,
+                        ["Satisfactory"] = GetVal("Satisfactory"),
+                        ["Random"] = GetVal("Random"),
+                        ["Suspicion"] = GetVal("Suspicion"),
+                        ["EmergencyMeasures"] = GetVal("EmergencyMeasures"),
+                        ["Pending"] = GetVal("Pending"),
+                        ["NotSatisfactory"] = GetVal("NotSatisfactory")
+                    });
                 }
 
-                var ii6Map = new Dictionary<string, string>
-                {
-                    { "II.6::Yes", "Yes" },
-                    { "II.6::No", "No" },
-                    { "II.6::Satisfactory", "Satisfactory" },
-                    { "II.6::Not Satisfactory", "Not Satisfactory" },
-                    { "II.6::Random", "Random" },
-                    { "II.6::Suspicion", "Suspicion" },
-                    { "II.6::Intensified Controls", "Intensified Controls" },
-                    { "II.6::Pending", "Pending" }
-                };
-
-                foreach (var scoped in ii6Map)
-                {
-                    if (checkboxes.TryGetValue(scoped.Key, out var scopedValue))
-                    {
-                        sectionData[scoped.Value] = scopedValue;
-                    }
-                }
-
-                var requiredFalseKeys = new[] { "Yes", "No", "Satisfactory", "Not Satisfactory", "Random", "Suspicion", "Intensified Controls", "Pending" };
-                foreach (var k in requiredFalseKeys)
-                {
-                    if (!sectionData.ContainsKey(k)) sectionData[k] = "false";
-                }
-
-                if (!sectionData.ContainsKey("Test"))
-                {
-                    sectionData["Test"] = "";
-                }
+                if (testsList.Count > 0)
+                    sectionData["Tests"] = testsList;
             }
 
             // II.11 Acceptable for transit: strip leaked II.x keys; structured fields come from keywords + allowlist
@@ -2011,7 +2019,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
                     // Extract phone parts (things that aren't the email)
                     var phoneParts = Regex.Replace(rawVal, Regex.Escape(emailMatch.Success ? emailMatch.Value : ""), "").Split(' ', StringSplitOptions.RemoveEmptyEntries);
                     var phone = string.Join(" ", phoneParts).Trim().TrimEnd('/');
-
+                    
                     if (!string.IsNullOrEmpty(phone) && !string.IsNullOrEmpty(email))
                         sectionData["Phone/email"] = $"{phone}/{email}";
                     else if (!string.IsNullOrEmpty(phone))
