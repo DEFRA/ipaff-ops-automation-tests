@@ -1669,7 +1669,7 @@ Scenario: Bulk upload update existing rules for CHEDPP - SPS-9415
 	Then the count of PHSI import commodity rules should be 5 less than 'InitialRuleCount'
 
 @SPS-9449
-Scenario: New HMI commodity rule for CHEDPP - SPS-9449
+Scenario: New HMI import commodity rule for CHEDPP - SPS-9449
 	# Create a new HMI import commodity rule
 	Given that I navigate to the Risk Engine application
 	When I have provided the Risk Engine admin credentials and signed in
@@ -2138,7 +2138,7 @@ Scenario: New HMI commodity rule for CHEDPP - SPS-9449
 	Then the HMI import commodity rule count should be 1 less than 'HMIRuleCount'
 
 @SPS-9450
-Scenario: New PHSI commodity rule for CHEDPP - SPS-9450
+Scenario: New PHSI import commodity rule for CHEDPP - SPS-9450
 	# Create a new PHSI import commodity rule
 	Given that I navigate to the Risk Engine application
 	When I have provided the Risk Engine admin credentials and signed in
@@ -2601,7 +2601,7 @@ Scenario: New PHSI commodity rule for CHEDPP - SPS-9450
 	Then the count of PHSI import commodity rules should be 1 less than 'PHSIRuleCount'
 
 @SPS-9507
-Scenario: New HMI country rule for CHEDPP - SPS-9507
+Scenario: New HMI import country rule for CHEDPP - SPS-9507
 	# Create a new HMI import country rule
 	Given that I navigate to the Risk Engine application
 	When I have provided the Risk Engine admin credentials and signed in
