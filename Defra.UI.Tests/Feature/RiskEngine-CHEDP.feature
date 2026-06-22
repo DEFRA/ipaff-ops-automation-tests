@@ -16,8 +16,8 @@ Scenario: Bulk upload initial load for CHEDP - SPS-9419
 	Then the CHED-P reports page should be displayed
 	When the user clicks the CHED-P imports commodity rules report link
 	Then the View all CHED-P (Import) Commodity Rules report page should be displayed
-	When the user scrolls to the bottom of the CHED-P rules report page
-	Then the count of CHED-P rules is recorded as 'InitialRuleCount'
+	When the user scrolls to the bottom of the View all CHED-P (Import) Commodity Rules page
+	Then the count of CHED-P import commodity rules is recorded as 'InitialRuleCount'
 	When the user clicks the 'CHED-P' link from the Risk Engine header menu
 	Then the CHED-P imports page should be displayed
 	When the user clicks the Bulk upload commodity rules link on the CHED-P imports page
@@ -58,10 +58,10 @@ Scenario: Bulk upload initial load for CHEDP - SPS-9419
 	And the CSV file details and status page should show Total rules 5 more than 'InitialRuleCount'
 	When the user clicks the EU CHED-P reporting link at the bottom of the summary page
 	Then the View all CHED-P (Import) Commodity Rules report page should be displayed in a new browser tab
-	When the user scrolls to the bottom of the CHED-P rules report page
-	Then the count of CHED-P rules should be 5 more than 'InitialRuleCount'
-	When the user enters '*' in the CHED-P rules search field
-	Then the top CHED-P rule row should match the following details
+	When the user scrolls to the bottom of the View all CHED-P (Import) Commodity Rules page
+	Then the count of CHED-P import commodity rules should be 5 more than 'InitialRuleCount'
+	When the user enters '*' in the CHED-P import commodity rules search field
+	Then the top CHED-P import commodity rule row should match the following details
 		| Field                      | Value                                                            |
 		| Description                | ALL                                                              |
 		| Commodity code             | *                                                                |
@@ -77,8 +77,8 @@ Scenario: Bulk upload initial load for CHEDP - SPS-9419
 		| Risk categorisation        | High                                                             |
 		| Allow multiple inspections | Yes                                                              |
 		| Reason                     | Reason 1                                                         |
-	And the top CHED-P rule row should have Start date as today's date
-	And the user records the Id of the top CHED-P rule row as 'Iteration_1_RuleId'
+	And the top CHED-P import commodity rule row should have Start date as today's date
+	And the user records the Id of the top CHED-P import commodity rule row as 'Iteration_1_RuleId'
 	# Submit a matching CHED-P notification in IPAFFS (Djibouti / 51021100 / Risk categorisation: High)
 	When I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -202,8 +202,8 @@ Scenario: Bulk upload initial load for CHEDP - SPS-9419
 	Then the CHED-P reports page should be displayed
 	When the user clicks the CHED-P imports commodity rules report link
 	Then the View all CHED-P (Import) Commodity Rules report page should be displayed
-	When the user enters '51021100' in the CHED-P rules search field
-	Then the top CHED-P rule row should match the following details
+	When the user enters '51021100' in the CHED-P import commodity rules search field
+	Then the top CHED-P import commodity rule row should match the following details
 		| Field                      | Value                                                                                                       |
 		| Description                | Of Kashmir (cashmere) goats                                                                                 |
 		| Commodity code             | 51021100                                                                                                    |
@@ -219,8 +219,8 @@ Scenario: Bulk upload initial load for CHEDP - SPS-9419
 		| Risk categorisation        | Medium                                                                                                      |
 		| Allow multiple inspections | No                                                                                                          |
 		| Reason                     |                                                                                                             |
-	And the top CHED-P rule row should have Start date as today's date
-	And the user records the Id of the top CHED-P rule row as 'Iteration_2_RuleId'
+	And the top CHED-P import commodity rule row should have Start date as today's date
+	And the user records the Id of the top CHED-P import commodity rule row as 'Iteration_2_RuleId'
 	# Submit a matching CHED-P notification in IPAFFS (France / Internal Market - Technical use / 51021100 / Risk categorisation: Medium) - APP-A
 	When I navigate to the IPAFF application
 	Then the Your import notifications page is displayed
@@ -437,8 +437,8 @@ Scenario: Bulk upload initial load for CHEDP - SPS-9419
 	Then the CHED-P reports page should be displayed
 	When the user clicks the CHED-P imports commodity rules report link
 	Then the View all CHED-P (Import) Commodity Rules report page should be displayed
-	When the user enters '1603' in the CHED-P rules search field
-	Then the top CHED-P rule row should match the following details
+	When the user enters '1603' in the CHED-P import commodity rules search field
+	Then the top CHED-P import commodity rule row should match the following details
 		| Field                      | Value                                                                                              |
 		| Description                | Extracts and juices of meat, fish or crustaceans, molluscs or other aquatic invertebrates          |
 		| Commodity code             | 1603                                                                                               |
@@ -454,8 +454,8 @@ Scenario: Bulk upload initial load for CHEDP - SPS-9419
 		| Risk categorisation        | Any                                                                                                |
 		| Allow multiple inspections | Yes                                                                                                |
 		| Reason                     | Reason 3                                                                                           |
-	And the top CHED-P rule row should have Start date as today's date
-	And the user records the Id of the top CHED-P rule row as 'Iteration_3_RuleId'
+	And the top CHED-P import commodity rule row should have Start date as today's date
+	And the user records the Id of the top CHED-P import commodity rule row as 'Iteration_3_RuleId'
 	# Submit a matching CHED-P notification in IPAFFS (Djibouti / 1603)
 	When I navigate to the IPAFF application
 	Then the Your import notifications page is displayed
@@ -575,8 +575,8 @@ Scenario: Bulk upload initial load for CHEDP - SPS-9419
 	Then the CHED-P reports page should be displayed
 	When the user clicks the CHED-P imports commodity rules report link
 	Then the View all CHED-P (Import) Commodity Rules report page should be displayed
-	When the user enters '31051000' in the CHED-P rules search field
-	Then the top CHED-P rule row should match the following details
+	When the user enters '31051000' in the CHED-P import commodity rules search field
+	Then the top CHED-P import commodity rule row should match the following details
 		| Field                      | Value                                                                                                   |
 		| Description                | Goods of this chapter in tablets or similar forms or in packages of a gross weight not exceeding 10kg   |
 		| Commodity code             | 31051000                                                                                                |
@@ -592,8 +592,8 @@ Scenario: Bulk upload initial load for CHEDP - SPS-9419
 		| Risk categorisation        | Low                                                                                                     |
 		| Allow multiple inspections | No                                                                                                      |
 		| Reason                     |                                                                                                         |
-	And the top CHED-P rule row should have Start date as today's date
-	And the user records the Id of the top CHED-P rule row as 'Iteration_4_RuleId'
+	And the top CHED-P import commodity rule row should have Start date as today's date
+	And the user records the Id of the top CHED-P import commodity rule row as 'Iteration_4_RuleId'
 	# Submit a matching CHED-P notification in IPAFFS (Brazil / Transhipment / Onward travel / 31051000 / Risk categorisation: Low)
 	When I navigate to the IPAFF application
 	Then the Your import notifications page is displayed
@@ -704,8 +704,8 @@ Scenario: Bulk upload initial load for CHEDP - SPS-9419
 	Then the CHED-P reports page should be displayed
 	When the user clicks the CHED-P imports commodity rules report link
 	Then the View all CHED-P (Import) Commodity Rules report page should be displayed
-	When the user enters '020130' in the CHED-P rules search field
-	Then the top CHED-P rule row should match the following details
+	When the user enters '020130' in the CHED-P import commodity rules search field
+	Then the top CHED-P import commodity rule row should match the following details
 		| Field                      | Value                                                                                                                          |
 		| Description                | Boneless                                                                                                                       |
 		| Commodity code             | 020130                                                                                                                         |
@@ -721,8 +721,8 @@ Scenario: Bulk upload initial load for CHEDP - SPS-9419
 		| Risk categorisation        | Any                                                                                                                            |
 		| Allow multiple inspections | Yes                                                                                                                            |
 		| Reason                     |                                                                                                                                |
-	And the top CHED-P rule row should have Start date as today's date
-	And the user records the Id of the top CHED-P rule row as 'Iteration_5_RuleId'
+	And the top CHED-P import commodity rule row should have Start date as today's date
+	And the user records the Id of the top CHED-P import commodity rule row as 'Iteration_5_RuleId'
 	# Submit a matching CHED-P notification in IPAFFS (Singapore / 020130 / Transit / London Gateway)
 	When I navigate to the IPAFF application
 	Then the Your import notifications page is displayed
@@ -840,8 +840,8 @@ Scenario: Bulk upload update existing rules for CHEDP - SPS-9420
 	Then the CHED-P reports page should be displayed
 	When the user clicks the CHED-P imports commodity rules report link
 	Then the View all CHED-P (Import) Commodity Rules report page should be displayed
-	When the user scrolls to the bottom of the CHED-P rules report page
-	Then the count of CHED-P rules is recorded as 'InitialRuleCount'
+	When the user scrolls to the bottom of the View all CHED-P (Import) Commodity Rules page
+	Then the count of CHED-P import commodity rules is recorded as 'InitialRuleCount'
 	When the user clicks the 'CHED-P' link from the Risk Engine header menu
 	Then the CHED-P imports page should be displayed
 	When the user clicks the Bulk upload commodity rules link on the CHED-P imports page
@@ -882,10 +882,10 @@ Scenario: Bulk upload update existing rules for CHEDP - SPS-9420
 	And the CSV file details and status page should show Total rules 0 more than 'InitialRuleCount'
 	When the user clicks the EU CHED-P reporting link at the bottom of the summary page
 	Then the View all CHED-P (Import) Commodity Rules report page should be displayed in a new browser tab
-	When the user scrolls to the bottom of the CHED-P rules report page
-	Then the count of CHED-P rules should equal the recorded 'InitialRuleCount'
-	When the user enters '*' in the CHED-P rules search field
-	Then the top CHED-P rule row should match the following details
+	When the user scrolls to the bottom of the View all CHED-P (Import) Commodity Rules page
+	Then the count of CHED-P import commodity rules should equal the recorded 'InitialRuleCount'
+	When the user enters '*' in the CHED-P import commodity rules search field
+	Then the top CHED-P import commodity rule row should match the following details
 		| Field                      | Value                                                            |
 		| Description                | ALL                                                              |
 		| Commodity code             | *                                                                |
@@ -901,8 +901,8 @@ Scenario: Bulk upload update existing rules for CHEDP - SPS-9420
 		| Risk categorisation        | High                                                             |
 		| Allow multiple inspections | Yes                                                              |
 		| Reason                     | Reason 1b                                                        |
-	And the top CHED-P rule row should have Start date as today's date
-	And the user records the Id of the top CHED-P rule row as 'Iteration_1_RuleId'
+	And the top CHED-P import commodity rule row should have Start date as today's date
+	And the user records the Id of the top CHED-P import commodity rule row as 'Iteration_1_RuleId'
 	# Submit a matching CHED-P notification in IPAFFS (Djibouti / 51021100 / Risk categorisation: High)
 	When I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -1023,8 +1023,8 @@ Scenario: Bulk upload update existing rules for CHEDP - SPS-9420
 	Then the CHED-P reports page should be displayed
 	When the user clicks the CHED-P imports commodity rules report link
 	Then the View all CHED-P (Import) Commodity Rules report page should be displayed
-	When the user enters '51021100' in the CHED-P rules search field
-	Then the top CHED-P rule row should match the following details
+	When the user enters '51021100' in the CHED-P import commodity rules search field
+	Then the top CHED-P import commodity rule row should match the following details
 		| Field                      | Value                                            |
 		| Description                | Of Kashmir (cashmere) goats                      |
 		| Commodity code             | 51021100                                         |
@@ -1040,8 +1040,8 @@ Scenario: Bulk upload update existing rules for CHEDP - SPS-9420
 		| Risk categorisation        | Any                                              |
 		| Allow multiple inspections | No                                               |
 		| Reason                     | Reason 2                                         |
-	And the top CHED-P rule row should have Start date as today's date
-	And the user records the Id of the top CHED-P rule row as 'Iteration_2_RuleId'
+	And the top CHED-P import commodity rule row should have Start date as today's date
+	And the user records the Id of the top CHED-P import commodity rule row as 'Iteration_2_RuleId'
 	# Submit a matching CHED-P notification in IPAFFS (Zambia / 51021100) - APP-A
 	When I navigate to the IPAFF application
 	Then the Your import notifications page is displayed
@@ -1237,8 +1237,8 @@ Scenario: Bulk upload update existing rules for CHEDP - SPS-9420
 	Then the CHED-P reports page should be displayed
 	When the user clicks the CHED-P imports commodity rules report link
 	Then the View all CHED-P (Import) Commodity Rules report page should be displayed
-	When the user enters '1603' in the CHED-P rules search field
-	Then the top CHED-P rule row should match the following details
+	When the user enters '1603' in the CHED-P import commodity rules search field
+	Then the top CHED-P import commodity rule row should match the following details
 		| Field                      | Value                                                                                                                          |
 		| Description                | Extracts and juices of meat, fish or crustaceans, molluscs or other aquatic invertebrates                                      |
 		| Commodity code             | 1603                                                                                                                           |
@@ -1254,8 +1254,8 @@ Scenario: Bulk upload update existing rules for CHEDP - SPS-9420
 		| Risk categorisation        | Any                                                                                                                            |
 		| Allow multiple inspections | Yes                                                                                                                            |
 		| Reason                     |                                                                                                                                |
-	And the top CHED-P rule row should have Start date as today's date
-	And the user records the Id of the top CHED-P rule row as 'Iteration_3_RuleId'
+	And the top CHED-P import commodity rule row should have Start date as today's date
+	And the user records the Id of the top CHED-P import commodity rule row as 'Iteration_3_RuleId'
 	# Submit a matching CHED-P notification in IPAFFS (Togo / 1603 / London Gateway)
 	When I navigate to the IPAFF application
 	Then the Your import notifications page is displayed
@@ -1363,8 +1363,8 @@ Scenario: Bulk upload update existing rules for CHEDP - SPS-9420
 	Then the CHED-P reports page should be displayed
 	When the user clicks the CHED-P imports commodity rules report link
 	Then the View all CHED-P (Import) Commodity Rules report page should be displayed
-	When the user enters '31051000' in the CHED-P rules search field
-	Then the top CHED-P rule row should match the following details
+	When the user enters '31051000' in the CHED-P import commodity rules search field
+	Then the top CHED-P import commodity rule row should match the following details
 		| Field                      | Value                                                                                                   |
 		| Description                | Goods of this chapter in tablets or similar forms or in packages of a gross weight not exceeding 10kg   |
 		| Commodity code             | 31051000                                                                                                |
@@ -1380,8 +1380,8 @@ Scenario: Bulk upload update existing rules for CHEDP - SPS-9420
 		| Risk categorisation        | Low                                                                                                     |
 		| Allow multiple inspections | No                                                                                                      |
 		| Reason                     |                                                                                                         |
-	And the top CHED-P rule row should have Start date as today's date
-	And the user records the Id of the top CHED-P rule row as 'Iteration_4_RuleId'
+	And the top CHED-P import commodity rule row should have Start date as today's date
+	And the user records the Id of the top CHED-P import commodity rule row as 'Iteration_4_RuleId'
 	# Submit a matching CHED-P notification in IPAFFS (Brazil / Transhipment or Onward travel OR Transit / 31051000 / Risk categorisation: Low)
 	When I navigate to the IPAFF application
 	Then the Your import notifications page is displayed
@@ -1489,8 +1489,8 @@ Scenario: Bulk upload update existing rules for CHEDP - SPS-9420
 	Then the CHED-P reports page should be displayed
 	When the user clicks the CHED-P imports commodity rules report link
 	Then the View all CHED-P (Import) Commodity Rules report page should be displayed
-	When the user enters '020130' in the CHED-P rules search field
-	Then the top CHED-P rule row should match the following details
+	When the user enters '020130' in the CHED-P import commodity rules search field
+	Then the top CHED-P import commodity rule row should match the following details
 		| Field                      | Value                                                                                                                          |
 		| Description                | Boneless                                                                                                                       |
 		| Commodity code             | 020130                                                                                                                         |
@@ -1506,8 +1506,8 @@ Scenario: Bulk upload update existing rules for CHEDP - SPS-9420
 		| Risk categorisation        | Any                                                                                                                            |
 		| Allow multiple inspections | Yes                                                                                                                            |
 		| Reason                     |                                                                                                                                |
-	And the top CHED-P rule row should have Start date as today's date
-	And the user records the Id of the top CHED-P rule row as 'Iteration_5_RuleId'
+	And the top CHED-P import commodity rule row should have Start date as today's date
+	And the user records the Id of the top CHED-P import commodity rule row as 'Iteration_5_RuleId'
 	# Submit a matching CHED-P notification in IPAFFS (Australia / 020130 / Transit / London Gateway)
 	When I navigate to the IPAFF application
 	Then the Your import notifications page is displayed
@@ -1614,15 +1614,15 @@ Scenario: Bulk upload update existing rules for CHEDP - SPS-9420
 	Then the CHED-P reports page should be displayed
 	When the user clicks the CHED-P imports commodity rules report link
 	Then the View all CHED-P (Import) Commodity Rules report page should be displayed
-	When the user clicks the Remove rule link for CHED-P rule Id recorded as 'Iteration_1_RuleId'
-	Then the CHED-P rule Id recorded as 'Iteration_1_RuleId' should no longer be present in the rules table
-	When the user clicks the Remove rule link for CHED-P rule Id recorded as 'Iteration_2_RuleId'
-	Then the CHED-P rule Id recorded as 'Iteration_2_RuleId' should no longer be present in the rules table
-	When the user clicks the Remove rule link for CHED-P rule Id recorded as 'Iteration_3_RuleId'
-	Then the CHED-P rule Id recorded as 'Iteration_3_RuleId' should no longer be present in the rules table
-	When the user clicks the Remove rule link for CHED-P rule Id recorded as 'Iteration_4_RuleId'
-	Then the CHED-P rule Id recorded as 'Iteration_4_RuleId' should no longer be present in the rules table
-	When the user clicks the Remove rule link for CHED-P rule Id recorded as 'Iteration_5_RuleId'
-	Then the CHED-P rule Id recorded as 'Iteration_5_RuleId' should no longer be present in the rules table
-	When the user scrolls to the bottom of the CHED-P rules report page
-	Then the count of CHED-P rules should be 5 less than 'InitialRuleCount'
+	When the user clicks the Remove rule link for CHED-P import commodity rule Id recorded as 'Iteration_1_RuleId'
+	Then the CHED-P import commodity rule Id recorded as 'Iteration_1_RuleId' should no longer be present in the rules table
+	When the user clicks the Remove rule link for CHED-P import commodity rule Id recorded as 'Iteration_2_RuleId'
+	Then the CHED-P import commodity rule Id recorded as 'Iteration_2_RuleId' should no longer be present in the rules table
+	When the user clicks the Remove rule link for CHED-P import commodity rule Id recorded as 'Iteration_3_RuleId'
+	Then the CHED-P import commodity rule Id recorded as 'Iteration_3_RuleId' should no longer be present in the rules table
+	When the user clicks the Remove rule link for CHED-P import commodity rule Id recorded as 'Iteration_4_RuleId'
+	Then the CHED-P import commodity rule Id recorded as 'Iteration_4_RuleId' should no longer be present in the rules table
+	When the user clicks the Remove rule link for CHED-P import commodity rule Id recorded as 'Iteration_5_RuleId'
+	Then the CHED-P import commodity rule Id recorded as 'Iteration_5_RuleId' should no longer be present in the rules table
+	When the user scrolls to the bottom of the View all CHED-P (Import) Commodity Rules page
+	Then the count of CHED-P import commodity rules should be 5 less than 'InitialRuleCount'
