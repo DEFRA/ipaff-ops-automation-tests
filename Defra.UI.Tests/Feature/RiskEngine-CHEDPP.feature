@@ -2610,11 +2610,11 @@ Scenario: New HMI country rule for CHEDPP - SPS-9507
 	Then the CHED-PP imports and exports page should be displayed
 	When the user clicks the Country rules link under the HMI imports and exports rules header
 	Then the HMI (Import) Country Rules page should be displayed
-	When the user selects 'Yemen' from the country dropdown on the HMI country rules page
-	And the user sets the inspection rate to 50 on the HMI country rules page
-	And the user ensures the Approved Inspection Service checkbox is not checked on the HMI country rules page
-	And the user ensures the Permanent checkbox is checked on the HMI country rules page
-	And the user clicks the Confirm and send button on the HMI country rules page
+	When the user selects 'Yemen' from the country dropdown on the HMI import country rules page
+	And the user sets the inspection rate to 50 on the HMI import country rules page
+	And the user ensures the Approved Inspection Service checkbox is not checked on the HMI import country rules page
+	And the user ensures the Permanent checkbox is checked on the HMI import country rules page
+	And the user clicks the Confirm and send button on the HMI import country rules page
 	Then the Confirmation of country rate change page should be displayed with the following details
 		| Field                | Value            |
 		| From                 | 0%               |
@@ -2629,10 +2629,10 @@ Scenario: New HMI country rule for CHEDPP - SPS-9507
 	When the user clicks the Country rules report link under the HMI reports header
 	Then the View rules for all countries page should be displayed
 	When the user scrolls to the bottom of the View rules for all countries page
-	Then the HMI country rule count is recorded as 'HMIRuleCount'
-	When the user enters 'Yemen' in the HMI country rules search field
-	And the user sorts the HMI country rules table by Id descending
-	Then the top HMI country rule row should match the following details
+	Then the HMI import country rule count is recorded as 'HMIRuleCount'
+	When the user enters 'Yemen' in the HMI import country rules search field
+	And the user sorts the HMI import country rules table by Id descending
+	Then the top HMI import country rule row should match the following details
 		| Field                       | Value |
 		| Country                     | Yemen |
 		| Rate %                      | 50    |
@@ -2641,9 +2641,9 @@ Scenario: New HMI country rule for CHEDPP - SPS-9507
 		| Permanent rule              | YES   |
 		| Start Date                  |       |
 		| End Date                    |       |
-	And the top HMI country rule row should have Last Updated date as today's date
-	And the top HMI country rule row should have Created date as today's date
-	And the user records the Id of the top HMI country rule row as 'NewHMIRuleId'
+	And the top HMI import country rule row should have Last Updated date as today's date
+	And the top HMI import country rule row should have Created date as today's date
+	And the user records the Id of the top HMI import country rule row as 'NewHMIRuleId'
 	# Submit 4 matching CHED-PP notifications in IPAFFS (Zambia / 07096010 / CPSAN)
 	# --- APP-A ---
 	When I navigate to the IPAFF application
@@ -3045,14 +3045,14 @@ Scenario: New HMI country rule for CHEDPP - SPS-9507
 	Then the CHED-PP reports page should be displayed
 	When the user clicks the Country rules report link under the HMI reports header
 	Then the View rules for all countries page should be displayed
-	When the user enters 'Yemen' in the HMI country rules search field
-	And the user sorts the HMI country rules table by Id descending
-	And the user ticks the Select to Delete checkbox for HMI country rule Id recorded as 'NewHMIRuleId'
+	When the user enters 'Yemen' in the HMI import country rules search field
+	And the user sorts the HMI import country rules table by Id descending
+	And the user ticks the Select to Delete checkbox for HMI import country rule Id recorded as 'NewHMIRuleId'
 	Then the View rules for all countries page should display the '1 rule selected across all pages' info banner
 	When the user clicks the Delete Rules button on the View rules for all countries page
 	Then the Confirm rule deletion dialog should be displayed with 1 rules selected for deletion on the View rules for all countries page
 	When the user clicks the Delete rules button on the confirmation dialog on the View rules for all countries page
 	Then the Confirm rule deletion dialog should be closed on the View rules for all countries page
-	And the HMI country rule Id recorded as 'NewHMIRuleId' should no longer be present in the rules table
+	And the HMI import country rule Id recorded as 'NewHMIRuleId' should no longer be present in the rules table
 	When the user scrolls to the bottom of the View rules for all countries page
-	Then the HMI country rule count should be 1 less than 'HMIRuleCount'
+	Then the HMI import country rule count should be 1 less than 'HMIRuleCount'

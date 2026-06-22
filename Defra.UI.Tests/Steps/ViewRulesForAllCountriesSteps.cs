@@ -35,16 +35,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
             ViewRulesForAllCountriesPage?.ScrollToBottom();
         }
 
-        [Then("the HMI country rule count is recorded as {string}")]
-        public void ThenTheHMICountryRuleCountIsRecordedAs(string key)
+        [Then("the HMI import country rule count is recorded as {string}")]
+        public void ThenTheHMIImportCountryRuleCountIsRecordedAs(string key)
         {
             var count = ViewRulesForAllCountriesPage!.GetTotalRuleCount();
             _scenarioContext[key] = count;
             Assert.Greater(count, 0, $"Recorded HMI country rule count for '{key}' is 0");
         }
 
-        [Then("the HMI country rule count should be {int} less than {string}")]
-        public void ThenTheHMICountryRuleCountShouldBeLessThan(int delta, string key)
+        [Then("the HMI import country rule count should be {int} less than {string}")]
+        public void ThenTheHMIImportCountryRuleCountShouldBeLessThan(int delta, string key)
         {
             var initial = (int)_scenarioContext[key];
             var actual = ViewRulesForAllCountriesPage!.GetTotalRuleCount();
@@ -52,20 +52,20 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 $"Expected HMI country rule count to be {initial - delta} (initial '{key}'={initial} - {delta}) but was {actual}");
         }
 
-        [When("the user enters {string} in the HMI country rules search field")]
-        public void WhenTheUserEntersInTheHMICountryRulesSearchField(string text)
+        [When("the user enters {string} in the HMI import country rules search field")]
+        public void WhenTheUserEntersInTheHMIImportCountryRulesSearchField(string text)
         {
             ViewRulesForAllCountriesPage?.EnterSearchText(text);
         }
 
-        [When("the user sorts the HMI country rules table by Id descending")]
-        public void WhenTheUserSortsTheHMICountryRulesTableByIdDescending()
+        [When("the user sorts the HMI import country rules table by Id descending")]
+        public void WhenTheUserSortsTheHMIImportCountryRulesTableByIdDescending()
         {
             ViewRulesForAllCountriesPage?.SortByIdDescending();
         }
 
-        [Then("the top HMI country rule row should match the following details")]
-        public void ThenTheTopHMICountryRuleRowShouldMatchTheFollowingDetails(Table table)
+        [Then("the top HMI import country rule row should match the following details")]
+        public void ThenTheTopHMIImportCountryRuleRowShouldMatchTheFollowingDetails(Table table)
         {
             var actual = ViewRulesForAllCountriesPage!.GetTopRowDetails();
             foreach (var row in table.Rows)
@@ -78,8 +78,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
             }
         }
 
-        [Then("the top HMI country rule row should have Last Updated date as today's date")]
-        public void ThenTheTopHMICountryRuleRowShouldHaveLastUpdatedDateAsTodaysDate()
+        [Then("the top HMI import country rule row should have Last Updated date as today's date")]
+        public void ThenTheTopHMIImportCountryRuleRowShouldHaveLastUpdatedDateAsTodaysDate()
         {
             var actual = ViewRulesForAllCountriesPage!.GetTopRowDetails();
             Assert.True(actual.ContainsKey("Last Updated"), "Field 'Last Updated' not found in top row");
@@ -88,8 +88,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 $"Field 'Last Updated' mismatch: expected '{expected}' but got '{actual["Last Updated"]}'");
         }
 
-        [Then("the top HMI country rule row should have Created date as today's date")]
-        public void ThenTheTopHMICountryRuleRowShouldHaveCreatedDateAsTodaysDate()
+        [Then("the top HMI import country rule row should have Created date as today's date")]
+        public void ThenTheTopHMIImportCountryRuleRowShouldHaveCreatedDateAsTodaysDate()
         {
             var actual = ViewRulesForAllCountriesPage!.GetTopRowDetails();
             Assert.True(actual.ContainsKey("Created"), "Field 'Created' not found in top row");
@@ -98,16 +98,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 $"Field 'Created' mismatch: expected '{expected}' but got '{actual["Created"]}'");
         }
 
-        [Then("the user records the Id of the top HMI country rule row as {string}")]
-        public void ThenTheUserRecordsTheIdOfTheTopHMICountryRuleRowAs(string key)
+        [Then("the user records the Id of the top HMI import country rule row as {string}")]
+        public void ThenTheUserRecordsTheIdOfTheTopHMIImportCountryRuleRowAs(string key)
         {
             var id = ViewRulesForAllCountriesPage!.GetTopRowId();
             Assert.IsNotEmpty(id, "Top HMI country rule row Id is empty");
             _scenarioContext[key] = id;
         }
 
-        [When("the user ticks the Select to Delete checkbox for HMI country rule Id recorded as {string}")]
-        public void WhenTheUserTicksTheSelectToDeleteCheckboxForHMICountryRuleIdRecordedAs(string contextKey)
+        [When("the user ticks the Select to Delete checkbox for HMI import country rule Id recorded as {string}")]
+        public void WhenTheUserTicksTheSelectToDeleteCheckboxForHMIImportCountryRuleIdRecordedAs(string contextKey)
         {
             var ruleId = _scenarioContext.Get<string>(contextKey);
             ViewRulesForAllCountriesPage?.TickSelectToDeleteCheckboxForRuleId(ruleId);
@@ -150,8 +150,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
                             "Confirm rule deletion dialog is still displayed");
         }
 
-        [Then("the HMI country rule Id recorded as {string} should no longer be present in the rules table")]
-        public void ThenTheHMICountryRuleIdRecordedAsShouldNoLongerBePresentInTheRulesTable(string contextKey)
+        [Then("the HMI import country rule Id recorded as {string} should no longer be present in the rules table")]
+        public void ThenTheHMIImportCountryRuleIdRecordedAsShouldNoLongerBePresentInTheRulesTable(string contextKey)
         {
             var ruleId = _scenarioContext.Get<string>(contextKey);
             Assert.False(ViewRulesForAllCountriesPage!.IsRuleIdPresent(ruleId),
