@@ -473,7 +473,7 @@ Scenario: Bulk upload initial load for CHEDPP - SPS-9414
 	When the user clicks Commodity code search tab
 	And the user searches for the commodity code '06012010'
 	Then the CHED PP commodity details should be populated '06012010' 'Chicory plants and roots'
-	When the user searchs for EPPO code 'CICCA' and clicks add link
+	When the user searches for EPPO code 'CICCA' and clicks add link
 	Then Genus (and Species) 'Cichorium calvum' and EPPO code 'CICCA' should be populated in commodity page
 	When the user clicks Save and continue
 	Then What is the main reason for importing the consignment? page should be displayed
@@ -609,7 +609,7 @@ Scenario: Bulk upload initial load for CHEDPP - SPS-9414
 	When the user clicks Commodity code search tab
 	And the user searches for the commodity code '08094090'
 	Then the CHED PP commodity details should be populated '08094090' 'Sloes'
-	When the user searchs for EPPO code 'PRNAF' and clicks add link
+	When the user searches for EPPO code 'PRNAF' and clicks add link
 	Then Genus (and Species) 'Prunus africana' and EPPO code 'PRNAF' should be populated in commodity page
 	When the user clicks Save and continue
 	Then What is the main reason for importing the consignment? page should be displayed
@@ -1294,7 +1294,7 @@ Scenario: Bulk upload update existing rules for CHEDPP - SPS-9415
 	When the user clicks Commodity code search tab
 	And the user searches for the commodity code '06012010'
 	Then the CHED PP commodity details should be populated '06012010' 'Chicory plants and roots'
-	When the user searchs for EPPO code 'CICCA' and clicks add link
+	When the user searches for EPPO code 'CICCA' and clicks add link
 	Then Genus (and Species) 'Cichorium calvum' and EPPO code 'CICCA' should be populated in commodity page
 	When the user clicks Save and continue
 	Then What is the main reason for importing the consignment? page should be displayed
@@ -1427,7 +1427,7 @@ Scenario: Bulk upload update existing rules for CHEDPP - SPS-9415
 	When the user clicks Commodity code search tab
 	And the user searches for the commodity code '08094090'
 	Then the CHED PP commodity details should be populated '08094090' 'Sloes'
-	When the user searchs for EPPO code 'PRNAF' and clicks add link
+	When the user searches for EPPO code 'PRNAF' and clicks add link
 	Then Genus (and Species) 'Prunus africana' and EPPO code 'PRNAF' should be populated in commodity page
 	When the user clicks Save and continue
 	Then What is the main reason for importing the consignment? page should be displayed
@@ -2224,7 +2224,7 @@ Scenario: New PHSI commodity rule for CHEDPP - SPS-9450
 	When the user clicks Commodity code search tab
 	And the user searches for the commodity code '06042020'
 	Then the CHED PP commodity details should be populated '06042020' 'Christmas trees'
-	When the user searchs for EPPO code 'ABIAL' and clicks add link
+	When the user searches for EPPO code 'ABIAL' and clicks add link
 	Then Genus (and Species) 'Abies alba' and EPPO code 'ABIAL' should be populated in commodity page
 	When the user clicks Save and continue
 	Then What is the main reason for importing the consignment? page should be displayed
@@ -2300,7 +2300,7 @@ Scenario: New PHSI commodity rule for CHEDPP - SPS-9450
 	When the user clicks Commodity code search tab
 	And the user searches for the commodity code '06042020'
 	Then the CHED PP commodity details should be populated '06042020' 'Christmas trees'
-	When the user searchs for EPPO code 'ABIAL' and clicks add link
+	When the user searches for EPPO code 'ABIAL' and clicks add link
 	Then Genus (and Species) 'Abies alba' and EPPO code 'ABIAL' should be populated in commodity page
 	When the user clicks Save and continue
 	Then What is the main reason for importing the consignment? page should be displayed
@@ -2376,7 +2376,7 @@ Scenario: New PHSI commodity rule for CHEDPP - SPS-9450
 	When the user clicks Commodity code search tab
 	And the user searches for the commodity code '06042020'
 	Then the CHED PP commodity details should be populated '06042020' 'Christmas trees'
-	When the user searchs for EPPO code 'ABIAL' and clicks add link
+	When the user searches for EPPO code 'ABIAL' and clicks add link
 	Then Genus (and Species) 'Abies alba' and EPPO code 'ABIAL' should be populated in commodity page
 	When the user clicks Save and continue
 	Then What is the main reason for importing the consignment? page should be displayed
@@ -2452,7 +2452,7 @@ Scenario: New PHSI commodity rule for CHEDPP - SPS-9450
 	When the user clicks Commodity code search tab
 	And the user searches for the commodity code '06042020'
 	Then the CHED PP commodity details should be populated '06042020' 'Christmas trees'
-	When the user searchs for EPPO code 'ABIAL' and clicks add link
+	When the user searches for EPPO code 'ABIAL' and clicks add link
 	Then Genus (and Species) 'Abies alba' and EPPO code 'ABIAL' should be populated in commodity page
 	When the user clicks Save and continue
 	Then What is the main reason for importing the consignment? page should be displayed
@@ -2669,7 +2669,7 @@ Scenario: New HMI country rule for CHEDPP - SPS-9507
 	When the user clicks Commodity code search tab
 	And the user searches for the commodity code '08107000'
 	Then the CHED PP commodity details should be populated '08107000' 'Persimmons'
-	When the user searchs for EPPO code 'DOSAR' and clicks add link
+	When the user searches for EPPO code 'DOSAR' and clicks add link
 	Then Genus (and Species) 'Diospyros armata' and EPPO code 'DOSAR' should be populated in commodity page
 	When the user clicks Save and continue
 	Then What is the main reason for importing the consignment? page should be displayed
@@ -2748,7 +2748,7 @@ Scenario: New HMI country rule for CHEDPP - SPS-9507
 	When the user clicks Commodity code search tab
 	And the user searches for the commodity code '08107000'
 	Then the CHED PP commodity details should be populated '08107000' 'Persimmons'
-	When the user searchs for EPPO code 'DOSAR' and clicks add link
+	When the user searches for EPPO code 'DOSAR' and clicks add link
 	Then Genus (and Species) 'Diospyros armata' and EPPO code 'DOSAR' should be populated in commodity page
 	When the user clicks Save and continue
 	Then What is the main reason for importing the consignment? page should be displayed
@@ -2827,7 +2827,7 @@ Scenario: New HMI country rule for CHEDPP - SPS-9507
 	When the user clicks Commodity code search tab
 	And the user searches for the commodity code '08107000'
 	Then the CHED PP commodity details should be populated '08107000' 'Persimmons'
-	When the user searchs for EPPO code 'DOSAR' and clicks add link
+	When the user searches for EPPO code 'DOSAR' and clicks add link
 	Then Genus (and Species) 'Diospyros armata' and EPPO code 'DOSAR' should be populated in commodity page
 	When the user clicks Save and continue
 	Then What is the main reason for importing the consignment? page should be displayed
@@ -2906,7 +2906,7 @@ Scenario: New HMI country rule for CHEDPP - SPS-9507
 	When the user clicks Commodity code search tab
 	And the user searches for the commodity code '08107000'
 	Then the CHED PP commodity details should be populated '08107000' 'Persimmons'
-	When the user searchs for EPPO code 'DOSAR' and clicks add link
+	When the user searches for EPPO code 'DOSAR' and clicks add link
 	Then Genus (and Species) 'Diospyros armata' and EPPO code 'DOSAR' should be populated in commodity page
 	When the user clicks Save and continue
 	Then What is the main reason for importing the consignment? page should be displayed
