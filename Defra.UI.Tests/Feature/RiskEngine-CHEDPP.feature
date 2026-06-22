@@ -16,8 +16,8 @@ Scenario: Bulk upload initial load for CHEDPP - SPS-9414
 	Then the CHED-PP reports page should be displayed
 	When the user clicks the PHSI imports commodity rules report link
 	Then the View all PHSI (Import) Commodity Rules report page should be displayed
-	When the user scrolls to the bottom of the PHSI rules report page
-	Then the count of rules is recorded as 'InitialRuleCount'
+	When the user scrolls to the bottom of the View all PHSI (Import) Commodity Rules report page
+	Then the count of PHSI import commodity rules is recorded as 'InitialRuleCount'
 	When the user clicks the 'CHED-PP' link from the Risk Engine header menu
 	Then the CHED-PP imports and exports page should be displayed
 	When the user clicks the Bulk upload commodity rules link
@@ -58,12 +58,12 @@ Scenario: Bulk upload initial load for CHEDPP - SPS-9414
 	And the CSV file details and status page should show Total rules 5 more than 'InitialRuleCount'
 	When the user clicks the PHSI reporting link at the bottom of the summary page
 	Then the View all PHSI (Import) Commodity Rules report page should be displayed in a new browser tab
-	When the user scrolls to the bottom of the PHSI rules report page
-	Then the count of rules should be 5 more than 'InitialRuleCount'
-	And the count of rules is recorded as 'FinalRuleCount'
-	When the user enters '07020099' in the PHSI rules search field
-	And the user sorts the PHSI rules table by Id descending
-	Then the top PHSI rule row should match the following details
+	When the user scrolls to the bottom of the View all PHSI (Import) Commodity Rules report page
+	Then the count of PHSI import commodity rules should be 5 more than 'InitialRuleCount'
+	And the count of PHSI import commodity rules is recorded as 'FinalRuleCount'
+	When the user enters '07020099' in the PHSI import commodity rules search field
+	And the user sorts the PHSI import commodity rules table by Id descending
+	Then the top PHSI import commodity rule row should match the following details
 		| Field                  | Value    |
 		| Description            | Other    |
 		| Commodity code         | 07020099 |
@@ -83,7 +83,7 @@ Scenario: Bulk upload initial load for CHEDPP - SPS-9414
 		| Country exceptions     | None     |
 		| Document check aligned | No       |
 		| Reason                 | Reason 1 |
-	And the user records the Id of the top PHSI rule row as 'Iteration_1_RuleId'
+	And the user records the Id of the top PHSI import commodity rule row as 'Iteration_1_RuleId'
 	# Submit a matching CHED-PP notification in IPAFFS (Djibouti / 0702009907)
 	When I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -206,9 +206,9 @@ Scenario: Bulk upload initial load for CHEDPP - SPS-9414
 	Then the CHED-PP reports page should be displayed
 	When the user clicks the PHSI imports commodity rules report link
 	Then the View all PHSI (Import) Commodity Rules report page should be displayed
-	When the user enters '12099130' in the PHSI rules search field
-	And the user sorts the PHSI rules table by Id descending
-	Then the top PHSI rule row should match the following details
+	When the user enters '12099130' in the PHSI import commodity rules search field
+	And the user sorts the PHSI import commodity rules table by Id descending
+	Then the top PHSI import commodity rule row should match the following details
 		| Field                  | Value                                                           |
 		| Description            | Salad beet seed or beetroot seed (Beta vulgaris var. conditiva) |
 		| Commodity code         | 12099130                                                        |
@@ -228,7 +228,7 @@ Scenario: Bulk upload initial load for CHEDPP - SPS-9414
 		| Country exceptions     | None                                                            |
 		| Document check aligned | Yes                                                             |
 		| Reason                 |                                                                 |
-	And the user records the Id of the top PHSI rule row as 'Iteration_2_RuleId'
+	And the user records the Id of the top PHSI import commodity rule row as 'Iteration_2_RuleId'
 	# Submit TWO matching CHED-PP notifications in IPAFFS (Italy / 12099130)
 	When I navigate to the IPAFF application
 	Then the Your import notifications page is displayed
@@ -431,9 +431,9 @@ Scenario: Bulk upload initial load for CHEDPP - SPS-9414
 	Then the CHED-PP reports page should be displayed
 	When the user clicks the PHSI imports commodity rules report link
 	Then the View all PHSI (Import) Commodity Rules report page should be displayed
-	When the user enters '060120' in the PHSI rules search field
-	And the user sorts the PHSI rules table by Id descending
-	Then the top PHSI rule row should match the following details
+	When the user enters '060120' in the PHSI import commodity rules search field
+	And the user sorts the PHSI import commodity rules table by Id descending
+	Then the top PHSI import commodity rule row should match the following details
 		| Field                  | Value                                                                                                       |
 		| Description            | Bulbs, tubers, tuberous roots, corms, crowns and rhizomes, in growth or in flower; chicory plants and roots |
 		| Commodity code         | 060120                                                                                                      |
@@ -453,7 +453,7 @@ Scenario: Bulk upload initial load for CHEDPP - SPS-9414
 		| Country exceptions     | None                                                                                                        |
 		| Document check aligned | No                                                                                                          |
 		| Reason                 | Reason 3                                                                                                    |
-	And the user records the Id of the top PHSI rule row as 'Iteration_3_RuleId'
+	And the user records the Id of the top PHSI import commodity rule row as 'Iteration_3_RuleId'
 	# Submit a matching CHED-PP notification in IPAFFS (Monaco / 06012010 / Intended for final users)
 	When I navigate to the IPAFF application
 	Then the Your import notifications page is displayed
@@ -567,9 +567,9 @@ Scenario: Bulk upload initial load for CHEDPP - SPS-9414
 	Then the CHED-PP reports page should be displayed
 	When the user clicks the PHSI imports commodity rules report link
 	Then the View all PHSI (Import) Commodity Rules report page should be displayed
-	When the user enters '08094090' in the PHSI rules search field
-	And the user sorts the PHSI rules table by Id descending
-	Then the top PHSI rule row should match the following details
+	When the user enters '08094090' in the PHSI import commodity rules search field
+	And the user sorts the PHSI import commodity rules table by Id descending
+	Then the top PHSI import commodity rule row should match the following details
 		| Field                  | Value            |
 		| Description            | Sloes            |
 		| Commodity code         | 08094090         |
@@ -589,7 +589,7 @@ Scenario: Bulk upload initial load for CHEDPP - SPS-9414
 		| Country exceptions     | France, Germany  |
 		| Document check aligned | Yes              |
 		| Reason                 |                  |
-	And the user records the Id of the top PHSI rule row as 'Iteration_4_RuleId'
+	And the user records the Id of the top PHSI import commodity rule row as 'Iteration_4_RuleId'
 	# Submit a matching CHED-PP notification in IPAFFS (Montserrat / 08094090)
 	When I navigate to the IPAFF application
 	Then the Your import notifications page is displayed
@@ -702,9 +702,9 @@ Scenario: Bulk upload initial load for CHEDPP - SPS-9414
 	Then the CHED-PP reports page should be displayed
 	When the user clicks the PHSI imports commodity rules report link
 	Then the View all PHSI (Import) Commodity Rules report page should be displayed
-	When the user enters '12040010' in the PHSI rules search field
-	And the user sorts the PHSI rules table by Id descending
-	Then the top PHSI rule row should match the following details
+	When the user enters '12040010' in the PHSI import commodity rules search field
+	And the user sorts the PHSI import commodity rules table by Id descending
+	Then the top PHSI import commodity rule row should match the following details
 		| Field                  | Value               |
 		| Description            | For sowing          |
 		| Commodity code         | 12040010            |
@@ -724,7 +724,7 @@ Scenario: Bulk upload initial load for CHEDPP - SPS-9414
 		| Country exceptions     | None                |
 		| Document check aligned | No                  |
 		| Reason                 |                     |
-	And the user records the Id of the top PHSI rule row as 'Iteration_5_RuleId'
+	And the user records the Id of the top PHSI import commodity rule row as 'Iteration_5_RuleId'
 	# Submit a matching CHED-PP notification in IPAFFS (Togo / 12040010 / LIUUT)
 	When I navigate to the IPAFF application
 	Then the Your import notifications page is displayed
@@ -843,8 +843,8 @@ Scenario: Bulk upload update existing rules for CHEDPP - SPS-9415
 	Then the CHED-PP reports page should be displayed
 	When the user clicks the PHSI imports commodity rules report link
 	Then the View all PHSI (Import) Commodity Rules report page should be displayed
-	When the user scrolls to the bottom of the PHSI rules report page
-	Then the count of rules is recorded as 'InitialRuleCount'
+	When the user scrolls to the bottom of the View all PHSI (Import) Commodity Rules report page
+	Then the count of PHSI import commodity rules is recorded as 'InitialRuleCount'
 	When the user clicks the 'CHED-PP' link from the Risk Engine header menu
 	Then the CHED-PP imports and exports page should be displayed
 	When the user clicks the Bulk upload commodity rules link
@@ -885,12 +885,12 @@ Scenario: Bulk upload update existing rules for CHEDPP - SPS-9415
 	And the CSV file details and status page should show Total rules 0 more than 'InitialRuleCount'
 	When the user clicks the PHSI reporting link at the bottom of the summary page
 	Then the View all PHSI (Import) Commodity Rules report page should be displayed in a new browser tab
-	When the user scrolls to the bottom of the PHSI rules report page
-	Then the count of rules should equal the recorded 'InitialRuleCount'
+	When the user scrolls to the bottom of the View all PHSI (Import) Commodity Rules report page
+	Then the count of PHSI import commodity rules should equal the recorded 'InitialRuleCount'
 	# Locate and record the updated rule for commodity 07020099
-	When the user enters '07020099' in the PHSI rules search field
-	And the user sorts the PHSI rules table by Id descending
-	Then the top PHSI rule row should match the following details
+	When the user enters '07020099' in the PHSI import commodity rules search field
+	And the user sorts the PHSI import commodity rules table by Id descending
+	Then the top PHSI import commodity rule row should match the following details
 		| Field                  | Value     |
 		| Description            | Other     |
 		| Commodity code         | 07020099  |
@@ -910,7 +910,7 @@ Scenario: Bulk upload update existing rules for CHEDPP - SPS-9415
 		| Country exceptions     | None      |
 		| Document check aligned | No        |
 		| Reason                 | Reason 1b |
-	And the user records the Id of the top PHSI rule row as 'Iteration_1_RuleId'
+	And the user records the Id of the top PHSI import commodity rule row as 'Iteration_1_RuleId'
 	# Submit a matching CHED-PP notification in IPAFFS (Djibouti / 0702009907)
 	When I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -1030,9 +1030,9 @@ Scenario: Bulk upload update existing rules for CHEDPP - SPS-9415
 	Then the CHED-PP reports page should be displayed
 	When the user clicks the PHSI imports commodity rules report link
 	Then the View all PHSI (Import) Commodity Rules report page should be displayed
-	When the user enters '12099130' in the PHSI rules search field
-	And the user sorts the PHSI rules table by Id descending
-	Then the top PHSI rule row should match the following details
+	When the user enters '12099130' in the PHSI import commodity rules search field
+	And the user sorts the PHSI import commodity rules table by Id descending
+	Then the top PHSI import commodity rule row should match the following details
 		| Field                  | Value                                                           |
 		| Description            | Salad beet seed or beetroot seed (Beta vulgaris var. conditiva) |
 		| Commodity code         | 12099130                                                        |
@@ -1052,7 +1052,7 @@ Scenario: Bulk upload update existing rules for CHEDPP - SPS-9415
 		| Country exceptions     | None                                                            |
 		| Document check aligned | Yes                                                             |
 		| Reason                 | Reason 2                                                        |
-	And the user records the Id of the top PHSI rule row as 'Iteration_2_RuleId'
+	And the user records the Id of the top PHSI import commodity rule row as 'Iteration_2_RuleId'
 	# Submit TWO matching CHED-PP notifications in IPAFFS (Spain then Italy / 12099130)
 	When I navigate to the IPAFF application
 	Then the Your import notifications page is displayed
@@ -1252,9 +1252,9 @@ Scenario: Bulk upload update existing rules for CHEDPP - SPS-9415
 	Then the CHED-PP reports page should be displayed
 	When the user clicks the PHSI imports commodity rules report link
 	Then the View all PHSI (Import) Commodity Rules report page should be displayed
-	When the user enters '060120' in the PHSI rules search field
-	And the user sorts the PHSI rules table by Id descending
-	Then the top PHSI rule row should match the following details
+	When the user enters '060120' in the PHSI import commodity rules search field
+	And the user sorts the PHSI import commodity rules table by Id descending
+	Then the top PHSI import commodity rule row should match the following details
 		| Field                  | Value                                                                                                       |
 		| Description            | Bulbs, tubers, tuberous roots, corms, crowns and rhizomes, in growth or in flower; chicory plants and roots |
 		| Commodity code         | 060120                                                                                                      |
@@ -1274,7 +1274,7 @@ Scenario: Bulk upload update existing rules for CHEDPP - SPS-9415
 		| Country exceptions     | Djibouti                                                                                                    |
 		| Document check aligned | No                                                                                                          |
 		| Reason                 |                                                                                                             |
-	And the user records the Id of the top PHSI rule row as 'Iteration_3_RuleId'
+	And the user records the Id of the top PHSI import commodity rule row as 'Iteration_3_RuleId'
 	# Submit a matching CHED-PP notification in IPAFFS (Monaco / 06012010 / Intended for final users)
 	When I navigate to the IPAFF application
 	Then the Your import notifications page is displayed
@@ -1385,9 +1385,9 @@ Scenario: Bulk upload update existing rules for CHEDPP - SPS-9415
 	Then the CHED-PP reports page should be displayed
 	When the user clicks the PHSI imports commodity rules report link
 	Then the View all PHSI (Import) Commodity Rules report page should be displayed
-	When the user enters '08094090' in the PHSI rules search field
-	And the user sorts the PHSI rules table by Id descending
-	Then the top PHSI rule row should match the following details
+	When the user enters '08094090' in the PHSI import commodity rules search field
+	And the user sorts the PHSI import commodity rules table by Id descending
+	Then the top PHSI import commodity rule row should match the following details
 		| Field                  | Value            |
 		| Description            | Sloes            |
 		| Commodity code         | 08094090         |
@@ -1407,7 +1407,7 @@ Scenario: Bulk upload update existing rules for CHEDPP - SPS-9415
 		| Country exceptions     | France, Germany  |
 		| Document check aligned | Yes              |
 		| Reason                 |                  |
-	And the user records the Id of the top PHSI rule row as 'Iteration_4_RuleId'
+	And the user records the Id of the top PHSI import commodity rule row as 'Iteration_4_RuleId'
 	# Submit a matching CHED-PP notification in IPAFFS (Spain / 08094090)
 	When I navigate to the IPAFF application
 	Then the Your import notifications page is displayed
@@ -1517,9 +1517,9 @@ Scenario: Bulk upload update existing rules for CHEDPP - SPS-9415
 	Then the CHED-PP reports page should be displayed
 	When the user clicks the PHSI imports commodity rules report link
 	Then the View all PHSI (Import) Commodity Rules report page should be displayed
-	When the user enters '12040010' in the PHSI rules search field
-	And the user sorts the PHSI rules table by Id descending
-	Then the top PHSI rule row should match the following details
+	When the user enters '12040010' in the PHSI import commodity rules search field
+	And the user sorts the PHSI import commodity rules table by Id descending
+	Then the top PHSI import commodity rule row should match the following details
 		| Field                  | Value               |
 		| Description            | For sowing          |
 		| Commodity code         | 12040010            |
@@ -1539,7 +1539,7 @@ Scenario: Bulk upload update existing rules for CHEDPP - SPS-9415
 		| Country exceptions     | None                |
 		| Document check aligned | No                  |
 		| Reason                 |                     |
-	And the user records the Id of the top PHSI rule row as 'Iteration_5_RuleId'
+	And the user records the Id of the top PHSI import commodity rule row as 'Iteration_5_RuleId'
 	# Submit a matching CHED-PP notification in IPAFFS (Togo / 12040010 / LIUUT)
 	When I navigate to the IPAFF application
 	Then the Your import notifications page is displayed
@@ -1647,26 +1647,26 @@ Scenario: Bulk upload update existing rules for CHEDPP - SPS-9415
 	Then the CHED-PP reports page should be displayed
 	When the user clicks the PHSI imports commodity rules report link
 	Then the View all PHSI (Import) Commodity Rules report page should be displayed
-	When the user sorts the PHSI rules table by Id descending
-	And the user ticks the Select to Delete checkbox for rule Id recorded as 'Iteration_1_RuleId'
-	And the user ticks the Select to Delete checkbox for rule Id recorded as 'Iteration_2_RuleId'
-	And the user ticks the Select to Delete checkbox for rule Id recorded as 'Iteration_3_RuleId'
-	And the user ticks the Select to Delete checkbox for rule Id recorded as 'Iteration_4_RuleId'
-	And the user ticks the Select to Delete checkbox for rule Id recorded as 'Iteration_5_RuleId'
-	Then the selected rules info banner should display '5 rules selected across all pages'
-	When the user clicks the Delete Rules button
-	Then the Confirm rule deletion dialog should be displayed with 5 rules selected for deletion
-	When the user clicks the Delete rules button on the confirmation dialog
-	Then the Confirm rule deletion dialog should be closed
-	And the rule Id recorded as 'Iteration_1_RuleId' should no longer be present in the rules table
-	And the rule Id recorded as 'Iteration_2_RuleId' should no longer be present in the rules table
-	And the rule Id recorded as 'Iteration_3_RuleId' should no longer be present in the rules table
-	And the rule Id recorded as 'Iteration_4_RuleId' should no longer be present in the rules table
-	And the rule Id recorded as 'Iteration_5_RuleId' should no longer be present in the rules table
-	And the PHSI rules search field should be empty
-	And the PHSI rules table Id column should have no sort applied
-	When the user scrolls to the bottom of the PHSI rules report page
-	Then the count of rules should be 5 less than 'InitialRuleCount'
+	When the user sorts the PHSI import commodity rules table by Id descending
+	And the user ticks the Select to Delete checkbox for PHSI import commodity rule Id recorded as 'Iteration_1_RuleId'
+	And the user ticks the Select to Delete checkbox for PHSI import commodity rule Id recorded as 'Iteration_2_RuleId'
+	And the user ticks the Select to Delete checkbox for PHSI import commodity rule Id recorded as 'Iteration_3_RuleId'
+	And the user ticks the Select to Delete checkbox for PHSI import commodity rule Id recorded as 'Iteration_4_RuleId'
+	And the user ticks the Select to Delete checkbox for PHSI import commodity rule Id recorded as 'Iteration_5_RuleId'
+	Then the info banner should display '5 rules selected across all pages' on the View all PHSI (Import) Commodity Rules report page
+	When the user clicks the Delete Rules button on the View all PHSI (Import) Commodity Rules report page
+	Then the Confirm rule deletion dialog should be displayed with 5 rules selected for deletion on the View all PHSI (Import) Commodity Rules report page
+	When the user clicks the Delete rules button on the confirmation dialog on the View all PHSI (Import) Commodity Rules report page
+	Then the Confirm rule deletion dialog should be closed on the View all PHSI (Import) Commodity Rules report page
+	And the PHSI import commodity rule Id recorded as 'Iteration_1_RuleId' should no longer be present in the rules table
+	And the PHSI import commodity rule Id recorded as 'Iteration_2_RuleId' should no longer be present in the rules table
+	And the PHSI import commodity rule Id recorded as 'Iteration_3_RuleId' should no longer be present in the rules table
+	And the PHSI import commodity rule Id recorded as 'Iteration_4_RuleId' should no longer be present in the rules table
+	And the PHSI import commodity rule Id recorded as 'Iteration_5_RuleId' should no longer be present in the rules table
+	And the PHSI import commodity rules search field should be empty
+	And the PHSI import commodity rules table Id column should have no sort applied
+	When the user scrolls to the bottom of the View all PHSI (Import) Commodity Rules report page
+	Then the count of PHSI import commodity rules should be 5 less than 'InitialRuleCount'
 
 @SPS-9449
 Scenario: New HMI commodity rule for CHEDPP - SPS-9449

@@ -51,8 +51,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.Greater(count, 0, $"Recorded rule count for '{key}' is 0");
         }
 
-        [Then("the count of rules should be {int} more than {string}")]
-        public void ThenTheCountOfRulesShouldBeMoreThan(int delta, string key)
+        [Then("the count of PHSI import commodity rules should be {int} more than {string}")]
+        public void ThenTheCountOfPHSIImportCommodityRulesShouldBeMoreThan(int delta, string key)
         {
             var initial = (int)_scenarioContext[key];
             var actual = viewAllPHSIImportCommodityRulesPage!.GetTotalRuleCount();
@@ -69,8 +69,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 $"Expected rule count to be {initial - delta} (initial '{key}'={initial} - {delta}) but was {actual}");
         }
 
-        [Then("the count of rules should equal the recorded {string}")]
-        public void ThenTheCountOfRulesShouldEqualTheRecorded(string key)
+        [Then("the count of PHSI import commodity rules should equal the recorded {string}")]
+        public void ThenTheCountOfPHSIImportCommodityRulesShouldEqualTheRecorded(string key)
         {
             var expected = (int)_scenarioContext[key];
             var actual = viewAllPHSIImportCommodityRulesPage!.GetTotalRuleCount();
@@ -166,15 +166,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 $"Rule Id '{ruleId}' (from '{contextKey}') is still present in the rules table after deletion");
         }
 
-        [Then("the PHSI rules search field should be empty")]
-        public void ThenThePHSIRulesSearchFieldShouldBeEmpty()
+        [Then("the PHSI import commodity rules search field should be empty")]
+        public void ThenThePHSIImportCommodityRulesSearchFieldShouldBeEmpty()
         {
             var text = viewAllPHSIImportCommodityRulesPage!.GetSearchInputText();
             Assert.IsEmpty(text, $"Expected search field to be empty but found '{text}'");
         }
 
-        [Then("the PHSI rules table Id column should have no sort applied")]
-        public void ThenThePHSIRulesTableIdColumnShouldHaveNoSortApplied()
+        [Then("the PHSI import commodity rules table Id column should have no sort applied")]
+        public void ThenThePHSIImportCommodityRulesTableIdColumnShouldHaveNoSortApplied()
         {
             Assert.False(viewAllPHSIImportCommodityRulesPage!.IsIdColumnSorted(),
                 "Id column still has a sort applied (aria-sort is present) after deletion");
