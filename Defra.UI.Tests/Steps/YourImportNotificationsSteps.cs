@@ -2,14 +2,17 @@
 using Defra.UI.Tests.Data.Users;
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
-using Defra.UI.Tests.Tools.PDFProcessor;
 using Defra.UI.Tests.Tools.PDFProcessor.Models;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;
 using System.Globalization;
+using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Data;
+using Defra.UI.Tests.Tools.PDFProcessor;
+
 
 namespace Defra.UI.Tests.Steps.IPAFF
 {
@@ -371,32 +374,80 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         ValidateIfExists("PhysicalCheck", pdfPhysicalCheck, ref allDataMatches, mismatches);
                         ValidateIfExists("PhysicalCheckDecision", pdfPhysicalCheck, ref allDataMatches, mismatches);
 
-                        string? pdfLaboratoryTestRequired = page.Sections.LaboratoryTests.No;
-                        if (pdfLaboratoryTestRequired.Equals("true") && page.Sections.LaboratoryTests.Random.Equals("false")
-                            && page.Sections.LaboratoryTests.Suspicion.Equals("false"))
-                        //&& (page.Sections.LaboratoryTests.EmergencyMeasures.Equals("false")
-                        //|| page.Sections.LaboratoryTests.IntensifiedControls.Equals("false"))   ---- Need to verify once value is retrieved from pdf
+
+                        string pdfLaboratoryTestRequired = "No";
+
+                        if (page.Sections.LaboratoryTests.AdditionalData != null)
                         {
-                            pdfLaboratoryTestRequired = "No";
+                            var jsonLabTest = page.Sections.LaboratoryTests.AdditionalData
+                                                .ElementAt(0).Value?.ToString();
+
+                            if (!string.IsNullOrWhiteSpace(jsonLabTest))
+                            {
+                                using var doc = JsonDocument.Parse(jsonLabTest);
+
+                                bool anyTrue = doc.RootElement
+                                    .EnumerateArray()                  // array of objects
+                                    .SelectMany(e => e.EnumerateObject())
+                                    .Any(p =>
+                                        p.Value.ValueKind == JsonValueKind.String &&
+                                        bool.TryParse(p.Value.GetString(), out bool b) && b
+                                    );
+
+                                pdfLaboratoryTestRequired = anyTrue ? "Yes" : "No";
+                            }
                         }
-                        else
-                        {
-                            pdfLaboratoryTestRequired = "Yes";
-                        }
+
 
                         ValidateIfExists("AreLaboratoryTestsRequired", pdfLaboratoryTestRequired, ref allDataMatches, mismatches);
 
-                        string? pdfLaboratoryTestNames = page.Sections.LaboratoryTests
-                        switch
+                        if (page.Sections.LaboratoryTests.AdditionalData != null)
                         {
-                            { Random: "true" } => "Random",
-                            { Suspicion: "true" } => "Suspicion",
-                            { IntensifiedControls: "true" } => "IntensifiedControls",
-                            { EmergencyMeasures: "true" } => "EmergencyMeasures",
-                            _ => null
-                        };
-                        ValidateIfExists("LaboratoryTestsReason", pdfLaboratoryTestNames, ref allDataMatches, mismatches);
+                            var jsonLabTest = page.Sections.LaboratoryTests.AdditionalData.ElementAt(0).Value.ToString();
+                            using var doc = JsonDocument.Parse(jsonLabTest);
 
+
+                            string[] labTestsReasons = doc.RootElement
+                                .EnumerateArray()              // ✅ Step 1: array
+                                .SelectMany(e => e             // ✅ Step 2: object inside array
+                                    .EnumerateObject()
+                                    .Where(p => p.Value.GetString() == "true" && p.Name != "Satisfactory" && p.Name != "NotSatisfactory" && p.Name != "Pending")
+                                    .Select(p => p.Name))
+                                .ToArray();
+
+
+                            foreach (string labTestReason in labTestsReasons)
+                            {
+                                ValidateIfExists("LaboratoryTestsReason", labTestReason, ref allDataMatches, mismatches);
+                            }
+
+                            string[] LabTestNames = doc.RootElement
+                            .EnumerateArray()
+                            .Where(e => e.TryGetProperty("Test", out _))
+                            .Select(e => e.GetProperty("Test").GetString())
+                            .Where(t => !string.IsNullOrEmpty(t))
+                            .ToArray();
+
+
+                            foreach (string labTest in LabTestNames)
+                            {
+                                ValidateIfExists("LaboratoryTestName", labTest, ref allDataMatches, mismatches);
+                            }
+                        }
+                        else
+                        {
+                            string? pdfLaboratoryTestNames1 = page.Sections.LaboratoryTests
+                        switch
+                            {
+                                { Random: "true" } => "Random",
+                                { Suspicion: "true" } => "Suspicion",
+                                { IntensifiedControls: "true" } => "IntensifiedControls",
+                                { EmergencyMeasures: "true" } => "EmergencyMeasures",
+                                _ => null
+                            };
+                            ValidateIfExists("LaboratoryTestsReason", pdfLaboratoryTestNames1, ref allDataMatches, mismatches);
+                            ValidateContains("LaboratoryTestName", (string?)page.Sections.LaboratoryTests?.AdditionalData?.ElementAt(0).Value, ref allDataMatches, mismatches, true);
+                        }
                         string? welfareCheckDecision = page.Sections.WelfareCheck
                         switch
                         {
@@ -408,8 +459,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         ValidateContains("NumberOfDeadAnimals", page.Sections.ImpactOnTransportAnimals?.Value, ref allDataMatches, mismatches);
                         ValidateContains("NumberOfUnfitAnimals", page.Sections.ImpactOnTransportAnimals?.Value, ref allDataMatches, mismatches);
                         ValidateContains("NumberOfBirthsOrAbortions", page.Sections.ImpactOnTransportAnimals?.Value, ref allDataMatches, mismatches);
-
-                        ValidateContains("LaboratoryTestName", (string?)page.Sections.LaboratoryTests?.AdditionalData?.ElementAt(0).Value, ref allDataMatches, mismatches, true);
 
                         ValidateContains("IUUSubOption", page.Sections.CustomsDocumentReference?.Value, ref allDataMatches, mismatches);
 
@@ -559,6 +608,315 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             Assert.True(allDataMatches, $"PDF data validation failed. Mismatches: {string.Join(", ", mismatches)}");
 
+
+            if (Directory.Exists(downloadDirectory))
+            {
+                if (File.Exists(pdfPath))
+                {
+                    File.Delete(pdfPath);
+                    Console.WriteLine("File deleted successfully.");
+                }
+                else
+                {
+                    Console.WriteLine("File not found to delete.");
+                }
+
+                Directory.Delete(downloadDirectory, true);
+                Console.WriteLine("Deleted directory: " + downloadDirectory);
+            }
+
+        }
+
+        [When("the user checks that the data in the certificate matches the data entered into the CHED PP notification")]
+        public void WhenTheUserChecksThatTheDataInTheCertificateMatchesTheDataEnteredIntoTheCHEDPPNotification()
+        {
+            var chedReference = _scenarioContext.Get<string>("CHEDReference");
+            Assert.True(importNotificationsPage?.VerifyDataInCertificate(chedReference), "Certificate data verification failed");
+
+            var json = JsonConvert.SerializeObject(_scenarioContext.ToDictionary(kvp => kvp.Key, kvp => kvp.Value), Formatting.Indented);
+
+            var chedReferenceFileName = chedReference + "-certificate.pdf";
+            string downloadDirectory = _scenarioContext.Get<string>("PDFDownloadedDirectory");
+            string pdfPath = Path.Combine(downloadDirectory, chedReferenceFileName);
+
+            var converter = new ChedppPdfConverter();
+            var jsonOutput = converter.ConvertToJson(pdfPath);
+
+            var chedDocumentPages = JsonConvert.DeserializeObject<ChedRootObject>(jsonOutput);
+
+            var allDataMatches = true;
+            var mismatches = new List<string>();
+
+            if (chedDocumentPages != null)
+            {
+                for (int pageNumber = 1; pageNumber <= chedDocumentPages.Count; pageNumber++)
+                {
+                    var page = chedDocumentPages[pageNumber - 1];
+
+                    if (pageNumber == 1)
+                    {
+                        Console.WriteLine("********************** Page 1 *********************************");
+
+                        ValidateContains("CHEDReference", page.Sections.ChedReference.Id, ref allDataMatches, mismatches);
+                        ValidateContains("BorderControlPost", page.Sections.BorderControlPost.Value, ref allDataMatches, mismatches, true);
+                        ValidateContains("ConsignorName", page.Sections.ConsignorExporter.Name, ref allDataMatches, mismatches);
+                        ValidateContains("ConsignorAddress", page.Sections.ConsignorExporter.Address, ref allDataMatches, mismatches);
+                        ValidateContains("ConsignorCountry", page.Sections.ConsignorExporter.Country, ref allDataMatches, mismatches);
+                        ValidateContains("CompanyName", page.Sections.ConsigneeImporter.Name, ref allDataMatches, mismatches);
+                        ValidateContains("ImporterAddress", page.Sections.ConsigneeImporter.Address, ref allDataMatches, mismatches);
+                        ValidateContains("ConsigneeCountry", page.Sections.ConsigneeImporter.Country, ref allDataMatches, mismatches);
+                        ValidateContains("DeliveryAddressName", page.Sections.PlaceOfDestination.Name, ref allDataMatches, mismatches);
+                        ValidateContains("DeliveryAddress", page.Sections.PlaceOfDestination.Address, ref allDataMatches, mismatches);
+                        ValidateContains("DeliveryCountry", page.Sections.PlaceOfDestination.Country, ref allDataMatches, mismatches);
+
+                        ValidateContains("DocumentType", (string)page.Sections.AccompanyingDocuments?.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches);
+                        ValidateContains("DocumentReference", (string)page.Sections.AccompanyingDocuments?.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
+
+                        ValidateIfExists("ContryFromWhereConsigned", page.Sections.CountryOfDispatch.Value, ref allDataMatches, mismatches);
+                        ValidateContains("MeansOfTransport", page.Sections.MeansOfTransport.Mode, ref allDataMatches, mismatches);
+                        var meansOfTransport = _scenarioContext.Get<string>("MeansOfTransport");
+                        if (meansOfTransport.Equals(page.Sections.MeansOfTransport.Mode, StringComparison.OrdinalIgnoreCase))
+                            ValidateContains("EnterTransportDocRef", page.Sections.MeansOfTransport.InternationalTransportDocument, ref allDataMatches, mismatches);
+                        else 
+                            ValidateContains("EnterTransportDocRef", page.Sections.MeansOfTransport.Mode, ref allDataMatches, mismatches);
+
+                        ValidateContains("TransportId", page.Sections.MeansOfTransport.Identification, ref allDataMatches, mismatches);
+                        ValidateContains("CountryOfOrigin", page.Sections.CountryOfOrigin.Value, ref allDataMatches, mismatches);
+
+                        ValidateContains("EstimatedArrivalDate", page.Sections.PriorNotification.Date, ref allDataMatches, mismatches);
+                        ValidateContains("EstimatedArrivalTime", page.Sections.PriorNotification.Time, ref allDataMatches, mismatches);
+                        ValidateContains("ContactName", page.Sections.OperatorResponsible.Name, ref allDataMatches, mismatches);
+                    }
+
+                    else if (pageNumber == 2)
+                    {
+                        Console.WriteLine("********************** Page 2 *********************************");
+                        if (_scenarioContext.ContainsKey("CloningHealthCertificateDetails") || _scenarioContext.ContainsKey("CloningNotificationDetails"))
+                        {
+                            ValidateContains("CommodityCode", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("Description", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("GenusFirstCommodity", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("NetWeight", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("Packages", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("PackageType", page.Sections.DescriptionOfTheGoods.ElementAt(0).Value, ref allDataMatches, mismatches);
+                            ValidateContains("CountryOfOrigin", page.Sections.DescriptionOfTheGoods.ElementAt(0).CountryOfOrigin, ref allDataMatches, mismatches);  
+                        }
+                        else if (page.Sections.DescriptionOfTheGoods?.Count > 1)
+                        {
+                            var allCommodityDetails = _scenarioContext["AllCommodityDetails"] as Reqnroll.DataTable;
+                            var list = allCommodityDetails.Rows.Select(r => r.ToDictionary(k => k.Key, v => v.Value)).ToList();
+                            int rowIndex = 0;
+
+                            foreach (var row in list)
+                            {
+                                foreach (var kv in row)
+                                {
+                                    _scenarioContext[$"Commodity_{kv.Key}"] = kv.Value;
+                                }
+                                ValidateContains("Commodity_Commodity code", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
+                                ValidateContains("Commodity_Genus and Species", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
+                                ValidateContains("Commodity_EPPO code", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
+                                ValidateContains("Commodity_Variety", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Variety, ref allDataMatches, mismatches);
+                                ValidateContains("Commodity_Class", (string)page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches);
+                                ValidateContains("Commodity_Net weight (kg)", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
+                                ValidateContains("Commodity_Number of packages", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
+                                ValidateContains("CountryOfOrigin", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
+                                ValidateContains("Commodity_Quantity", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Quantity, ref allDataMatches, mismatches);
+                                ValidateContains("Commodity_Controlled atmosphere container", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).ControlledAtmosphereContainer, ref allDataMatches, mismatches);
+
+                                rowIndex++;
+                            }                           
+                        }
+                        ValidateContains("TotalNetWeight", page.Sections.TotalNetWeight?.Value, ref allDataMatches, mismatches);
+                        ValidateContains("TotalPackages", page.Sections.TotalNumberOfPackages?.Value, ref allDataMatches, mismatches);
+                        ValidateContains("TotalGrossWeight", page.Sections.TotalGrossWeight?.Value, ref allDataMatches, mismatches);
+
+                        ValidateContains("ContactEmail", (string)page.Sections.Transporter.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches);
+                        ValidateContains("ContactTelephone", (string)page.Sections.Transporter.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
+                    }
+                    else if (pageNumber == 3)
+                    {
+                        Console.WriteLine("********************** Page 3 *********************************");
+
+                        ValidateIfExists("CHEDReference", page.Sections.II2ChedReference.Id, ref allDataMatches, mismatches);
+                        ValidateContains("BorderControlPost", (string)page.Sections.IdentificationOfBcp.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches, true);
+                        ValidateContains("BorderControlPost", (string)page.Sections.IdentificationOfBcp.AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches, true);
+
+                        if (_scenarioContext.ContainsKey("AllCommodityDetails") && page.Sections.HMIChecks != null)
+                        {
+                            var codes = page.Sections.HMIChecks.AdditionalData.ElementAt(2).Value;
+
+                            if (codes != null)
+                            {
+                                var codeJson = codes.ToString();
+                                var codeItems = JsonConvert.DeserializeObject<List<Code>>(codeJson);
+
+                                if (codeItems != null && codeItems.Count > 0)
+                                {
+                                    var allCommodityDetails = _scenarioContext["AllCommodityDetails"] as Reqnroll.DataTable;
+
+                                    var list = allCommodityDetails.Rows
+                                        .Select(r => r.ToDictionary(k => k.Key, v => v.Value))
+                                        .ToList();
+
+                                    // Track index per commodity code
+                                    var valueIndexes = new Dictionary<string, int>();
+
+                                    foreach (var row in list)
+                                    {
+                                        // Push row values into scenario context
+                                        foreach (var kv in row)
+                                        {
+                                            _scenarioContext[$"Commodity_{kv.Key}"] = kv.Value;
+                                        }
+
+                                        // Get the commodity code from the row
+                                        var commodityCode = _scenarioContext.Get<string>("Commodity_Commodity code");
+
+                                        // Find matching JSON entry
+                                        var codeItem = codeItems.FirstOrDefault(c => c.CommCode == commodityCode);
+                                        if (codeItem == null)
+                                            continue; // No match, skip
+
+                                        // Initialise index for this code if needed
+                                        if (!valueIndexes.ContainsKey(commodityCode))
+                                            valueIndexes[commodityCode] = 0;
+
+                                        int index = valueIndexes[commodityCode];
+
+                                        // Get the correct Values entry
+                                        var valueItem = codeItem.Values.ElementAtOrDefault(index);
+                                        if (valueItem == null)
+                                            continue;
+
+                                        // Perform validation
+                                        ValidateContains("Commodity_Genus and Species", valueItem.GenusAndSpecies, ref allDataMatches, mismatches);
+                                        ValidateContains("Commodity_EPPO code", valueItem.EppoCode, ref allDataMatches, mismatches);
+                                        ValidateContains("Commodity_Class", valueItem.Class, ref allDataMatches, mismatches);
+                                        ValidateContains("Commodity_Variety", valueItem.Variety, ref allDataMatches, mismatches);                                    
+
+                                        // Move to next value for this commodity code
+                                        valueIndexes[commodityCode]++;
+
+                                        // REMOVE when done with all values
+                                        if (valueIndexes[commodityCode] >= codeItem.Values.Count)
+                                        {
+                                            codeItems.Remove(codeItem);
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+
+                        if (_scenarioContext.ContainsKey("AllCommodityDetails") && page.Sections.PHSIChecks != null)
+                        {
+                            var codes = page.Sections.PHSIChecks.AdditionalData.ElementAt(2).Value;
+
+                            if (codes != null)
+                            {
+                                var codeJson = codes.ToString();
+                                var codeItems = JsonConvert.DeserializeObject<List<Code>>(codeJson);
+
+                                if (codeItems != null && codeItems.Count > 0)
+                                {
+                                    var allCommodityDetails = _scenarioContext["AllCommodityDetails"] as Reqnroll.DataTable;
+
+                                    var list = allCommodityDetails.Rows
+                                        .Select(r => r.ToDictionary(k => k.Key, v => v.Value))
+                                        .ToList();
+
+                                    var valueIndexes = new Dictionary<string, int>();
+
+                                    // ✅ LOOP BACKWARDS to safely remove rows
+                                    for (int i = list.Count - 1; i >= 0; i--)
+                                    {
+                                        var row = list[i];
+
+                                        // Push row values into scenario context
+                                        foreach (var kv in row)
+                                        {
+                                            _scenarioContext[$"Commodity_{kv.Key}"] = kv.Value;
+                                        }
+
+                                        var commodityCode = _scenarioContext.Get<string>("Commodity_Commodity code");
+
+                                        var codeItem = codeItems.ElementAt(0).CommCode;
+                                        var code = codeItems.ElementAt(0).Values.ElementAt(0);
+                                        if (codeItem == null && code == null)
+                                            continue;
+                                       
+                                        if (!valueIndexes.ContainsKey(commodityCode))
+                                            valueIndexes[commodityCode] = 0;
+
+                                        int index = valueIndexes[commodityCode];
+
+                                        if (commodityCode.Equals(codeItem))
+                                        {   
+                                            ValidateContains("Commodity_Genus and Species", code.GenusAndSpecies, ref allDataMatches, mismatches);
+                                            ValidateContains("Commodity_EPPO code", code.EppoCode, ref allDataMatches, mismatches);
+                                            ValidateContains("Commodity_Class", code.Class, ref allDataMatches, mismatches);
+                                            ValidateContains("Commodity_Variety", code.Variety, ref allDataMatches, mismatches);
+                                            ValidateContains("Commodity_Inspection outcome", code.InspectionOutcome, ref allDataMatches, mismatches);
+                                            ValidateContains("Commodity_Validity period (days)", code.ValidityPeriodDays, ref allDataMatches, mismatches);
+                                        }
+
+                                        valueIndexes[commodityCode]++;
+
+                                        // ✅ REMOVE ROW after validation
+                                        list.RemoveAt(i);                                       
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            var codes = page.Sections.PHSIChecks.AdditionalData.ElementAt(2).Value;
+
+                            if (codes != null)
+                            {
+                                var codeJson = codes.ToString();
+                                var codeItems = JsonConvert.DeserializeObject<List<Code>>(codeJson);
+
+                                if (codeItems != null && codeItems.Count > 0)
+                                {
+                                    var valueIndexes = new Dictionary<string, int>();
+                                    var commodityCode = _scenarioContext.Get<string>("CommodityCode");
+
+                                    var codeItem = codeItems.ElementAt(0).CommCode;
+                                    var code = codeItems.ElementAt(0).Values.ElementAt(0);
+                                    if (codeItem == null && code == null)
+                                        continue;
+
+                                    if (!valueIndexes.ContainsKey(commodityCode))
+                                        valueIndexes[commodityCode] = 0;
+
+                                    int index = valueIndexes[commodityCode];
+
+                                    if (commodityCode.Equals(codeItem))
+                                    {   
+                                        ValidateContains("GenusFirstCommodity", code.GenusAndSpecies, ref allDataMatches, mismatches);
+                                        ValidateContains("EPPOCodeFirstCommodity", code.EppoCode, ref allDataMatches, mismatches);
+                                    }
+                                    valueIndexes[commodityCode]++;
+                                }
+                            }
+                        }
+
+                    }                    
+                }
+            }
+            if (!allDataMatches)
+            {
+                Console.WriteLine("[PDF VALIDATION] Data mismatches found:");
+                foreach (var mismatch in mismatches)
+                {
+                    Console.WriteLine($"[PDF VALIDATION] {mismatch}");
+                }
+            }
+
+            Assert.True(allDataMatches, $"PDF data validation failed. Mismatches: {string.Join(", ", mismatches)}");
+
             if (File.Exists(pdfPath))
             {
                 File.Delete(pdfPath);
@@ -569,7 +927,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 Console.WriteLine("File not found to delete.");
             }
         }
-
 
         [When("the user closes the newly opened tab")]
         [When("the user closes the PDF browser tab")]
@@ -721,7 +1078,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             importNotificationsPage?.ClickCloneButton();
         }
 
-        private void ValidateIfExists(string contextKey, string? reviewValue, ref bool allDataMatches, List<string> mismatches) 
+        private void ValidateIfExists(string contextKey, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
         {
             if (IsCloningDetailsKey(contextKey))
             {
@@ -825,7 +1182,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
 
-        private bool IsIdentityField(string key) =>    key is "IdentityCheck" or "IdentityCheckType";
+        private bool IsIdentityField(string key) => key is "IdentityCheck" or "IdentityCheckType";
 
         private void NormalizeIdentityValues(string key, ref string? reviewValue)
         {
@@ -858,12 +1215,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
         private void ValidateLabReason(string key, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
         {
-            var expected = _scenarioContext.Get<string>(key);
+            var expected = _scenarioContext.Get<string[]>(key);
             var actual = reviewValue?.Equals("Suspicious", StringComparison.OrdinalIgnoreCase) == true
                 ? "Suspicion"
                 : reviewValue;
 
-            ValidateString(key, expected, actual, ref allDataMatches, mismatches);
+            ValidateStringArray(key, expected, actual, ref allDataMatches, mismatches);
         }
 
 
@@ -890,7 +1247,33 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
         private void ValidateStringArray(string key, string[] array, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
         {
-            ValidateString(key, array.FirstOrDefault(), reviewValue, ref allDataMatches, mismatches);
+            if (array == null || array.Length == 0)
+            {
+                LogSkip(key, "empty array");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(reviewValue))
+            {
+                allDataMatches = false;
+                mismatches.Add($"{key}: Actual value is empty");
+                return;
+            }
+
+            bool matchFound = array.Any(expected =>
+                string.Equals(expected?.Trim().Replace(" ", ""), reviewValue.Trim().Replace(" ", ""), StringComparison.OrdinalIgnoreCase));
+
+            if (!matchFound)
+            {
+                allDataMatches = false;
+                mismatches.Add(
+                    $"{key}: Expected any of [{string.Join(", ", array)}], Found '{reviewValue}'");
+            }
+            else
+            {
+                LogMatch(key, reviewValue);
+            }
+
         }
 
 
@@ -960,7 +1343,20 @@ namespace Defra.UI.Tests.Steps.IPAFF
             if (string.IsNullOrEmpty(expectedValue) || string.IsNullOrEmpty(actual))
                 return;
 
-            bool isMatch = CompareValues(expectedValue, actual, contextContainsPDF, result);
+            bool isMatch;
+            // Special handling for date fields
+            if (contextKey == "EstimatedArrivalDate")
+            {
+                isMatch = DatesMatch(expectedValue, actual);
+            }
+            else if (contextKey.Contains("Net weight"))
+            {
+                isMatch = CompareValues(NormalizeNumber(expectedValue), actual, contextContainsPDF, result);
+            }
+            else
+            {
+                isMatch = CompareValues(expectedValue, actual, contextContainsPDF, result);
+            }
 
             if (!isMatch)
             {
@@ -971,6 +1367,20 @@ namespace Defra.UI.Tests.Steps.IPAFF
             {
                 Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
             }
+        }
+
+
+        public static string NormalizeNumber(string value)
+        {
+            string x = decimal
+        .Parse(value.Trim(), System.Globalization.CultureInfo.InvariantCulture)
+        .ToString("0.################", System.Globalization.CultureInfo.InvariantCulture);
+
+
+            return decimal
+                    .Parse(value.Trim(), System.Globalization.CultureInfo.InvariantCulture)
+                    .ToString("0.################", System.Globalization.CultureInfo.InvariantCulture);
+
         }
 
 
@@ -1026,9 +1436,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 if (expectedValue == "Compliant") expectedValue = "IUUOK";
             }
 
-            if (contextKey == "ExitBCP" && actual!=null) actual = actual.Replace(".", "").Trim();
+            if (contextKey == "ExitBCP" && actual != null) actual = actual.Replace(".", "").Trim();
             if (contextKey is "ExitBorderControlPost" or "PortOfEntry") expectedValue = expectedValue.Split(new[] { '(', '-' })[0].Trim();
-            if (contextKey == "InspectionPremises") expectedValue = expectedValue.Split('-')[0].Trim();
+            if (contextKey == "InspectionPremises") expectedValue = expectedValue.Split('-')[0].Trim();            
             if (contextKey == "ImporterAddress") actual = actual.Replace("Address ", "").Trim();
             if (contextKey == "TotalPackages") actual = Regex.Matches(actual, @"\d+").Select(m => int.Parse(m.Value)).Sum().ToString();
             if (contextKey == "NumberOfAnimals") expectedValue += " Units";
@@ -1052,7 +1462,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             {
                 if (actual.Contains(item.Trim(), StringComparison.OrdinalIgnoreCase))
                 {
-                    Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{item}' matches");                    
+                    Console.WriteLine($"[PDF VALIDATION] ✓ {contextKey}: '{item}' matches");
                     return;
                 }
             }
@@ -1137,6 +1547,25 @@ namespace Defra.UI.Tests.Steps.IPAFF
             return (expectedWords, actualWords);
         }
 
+        private bool DatesMatch(string expected, string actual)
+        {
+            var culture = CultureInfo.GetCultureInfo("en-GB");
+
+            if (!DateTime.TryParseExact(expected, "dd.MM.yyyy", culture, DateTimeStyles.None, out var expectedDate))
+            {
+                return false;
+            }
+
+            var cleanedActual = Regex.Replace(actual, @"\s+\+\d{4}\s+[A-Z]+", "").Trim();
+
+            if (!DateTime.TryParseExact(cleanedActual, "dd.MM.yyyy", culture, DateTimeStyles.None, out var actualDate))
+            {
+                return false;
+            }
+
+            return expectedDate.Date == actualDate.Date;
+        }
+
         public void ValidateAllMatchesInList(string contextKey, string? actual, ref bool allDataMatches, List<string> mismatches)
         {
             if (_scenarioContext.ContainsKey(contextKey))
@@ -1176,7 +1605,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     mismatches.Add($"{contextKey}: Unsupported type '{rawExpected.GetType().Name}'");
                     return;
                 }
-
             }
         }
 
