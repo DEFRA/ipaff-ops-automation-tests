@@ -2147,12 +2147,12 @@ Scenario: New PHSI commodity rule for CHEDPP - SPS-9450
 	Then the CHED-PP imports and exports page should be displayed
 	When the user clicks the PHSI individual commodity rules link
 	Then the PHSI (Import) Commodity Rules page should be displayed
-	When the user searches for commodity '06042020' with name 'Abies alba' on the PHSI commodity rules page
-	And the user selects 'Zambia' from the Countries dropdown on the PHSI commodity rules page
-	And the user sets the inspection rate to 50 on the PHSI commodity rules page
-	And the user ensures the Permanent checkbox is checked on the PHSI commodity rules page
-	And the user ensures the Alignment of inspections checkbox is checked on the PHSI commodity rules page
-	And the user clicks the Confirm and send button on the PHSI commodity rules page
+	When the user searches for commodity '06042020' with name 'Abies alba' on the PHSI import commodity rules page
+	And the user selects 'Zambia' from the Countries dropdown on the PHSI import commodity rules page
+	And the user sets the inspection rate to 50 on the PHSI import commodity rules page
+	And the user ensures the Permanent checkbox is checked on the PHSI import commodity rules page
+	And the user ensures the Alignment of inspections checkbox is checked on the PHSI import commodity rules page
+	And the user clicks the Confirm and send button on the PHSI import commodity rules page
 	Then the Confirmation of rate change page should be displayed with the following details
 		| Field                | Value           |
 		| From                 | 0%              |
@@ -2174,11 +2174,11 @@ Scenario: New PHSI commodity rule for CHEDPP - SPS-9450
 	Then the CHED-PP reports page should be displayed
 	When the user clicks the PHSI imports commodity rules report link
 	Then the View all PHSI (Import) Commodity Rules report page should be displayed
-	When the user scrolls to the bottom of the PHSI rules report page
-	Then the count of rules is recorded as 'PHSIRuleCount'
-	When the user enters '06042020' in the PHSI rules search field
-	And the user sorts the PHSI rules table by Id descending
-	Then the top PHSI rule row should match the following details
+	When the user scrolls to the bottom of the View all PHSI (Import) Commodity Rules report page
+	Then the count of PHSI import commodity rules is recorded as 'PHSIRuleCount'
+	When the user enters '06042020' in the PHSI import commodity rules search field
+	And the user sorts the PHSI import commodity rules table by Id descending
+	Then the top PHSI import commodity rule row should match the following details
 		| Field                   | Value           |
 		| Description             | Christmas trees |
 		| Commodity code          | 06042020        |
@@ -2198,7 +2198,7 @@ Scenario: New PHSI commodity rule for CHEDPP - SPS-9450
 		| Country exceptions      | None            |
 		| Document check aligned  | Yes             |
 		| Reason                  |                 |
-	And the user records the Id of the top PHSI rule row as 'NewPHSIRuleId'
+	And the user records the Id of the top PHSI import commodity rule row as 'NewPHSIRuleId'
 	# Submit 4 matching CHED-PP notifications in IPAFFS (Zambia / 06042020 / ABIAL)
 	# --- APP-A ---
 	When I navigate to the IPAFF application
@@ -2588,17 +2588,17 @@ Scenario: New PHSI commodity rule for CHEDPP - SPS-9450
 	Then the CHED-PP reports page should be displayed
 	When the user clicks the PHSI imports commodity rules report link
 	Then the View all PHSI (Import) Commodity Rules report page should be displayed
-	When the user enters '06042020' in the PHSI rules search field
-	And the user sorts the PHSI rules table by Id descending
-	And the user ticks the Select to Delete checkbox for rule Id recorded as 'NewPHSIRuleId'
-	Then the selected rules info banner should display '1 rule selected across all pages'
-	When the user clicks the Delete Rules button
-	Then the Confirm rule deletion dialog should be displayed with 1 rules selected for deletion
-	When the user clicks the Delete rules button on the confirmation dialog
-	Then the Confirm rule deletion dialog should be closed
-	And the rule Id recorded as 'NewPHSIRuleId' should no longer be present in the rules table
-	When the user scrolls to the bottom of the PHSI rules report page
-	Then the count of rules should be 1 less than 'PHSIRuleCount'
+	When the user enters '06042020' in the PHSI import commodity rules search field
+	And the user sorts the PHSI import commodity rules table by Id descending
+	And the user ticks the Select to Delete checkbox for PHSI import commodity rule Id recorded as 'NewPHSIRuleId'
+	Then the info banner should display '1 rule selected across all pages' on the View all PHSI (Import) Commodity Rules report page
+	When the user clicks the Delete Rules button on the View all PHSI (Import) Commodity Rules report page
+	Then the Confirm rule deletion dialog should be displayed with 1 rules selected for deletion on the View all PHSI (Import) Commodity Rules report page
+	When the user clicks the Delete rules button on the confirmation dialog on the View all PHSI (Import) Commodity Rules report page
+	Then the Confirm rule deletion dialog should be closed on the View all PHSI (Import) Commodity Rules report page
+	And the PHSI import commodity rule Id recorded as 'NewPHSIRuleId' should no longer be present in the rules table
+	When the user scrolls to the bottom of the View all PHSI (Import) Commodity Rules report page
+	Then the count of PHSI import commodity rules should be 1 less than 'PHSIRuleCount'
 
 @SPS-9507
 Scenario: New HMI country rule for CHEDPP - SPS-9507
