@@ -44,5 +44,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
             chedPPImportsAndExportsPage?.ClickPHSIIndividualCommodityRulesLink();
         }
 
+        [When("the user clicks the System settings for HMI rules link")]
+        public void WhenTheUserClicksTheSystemSettingsForHMIRulesLink()
+        {
+            chedPPImportsAndExportsPage?.ClickSystemSettingsForHMIRulesLink();
+        }
+
     }
 }
