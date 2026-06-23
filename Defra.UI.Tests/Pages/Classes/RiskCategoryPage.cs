@@ -14,8 +14,12 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects
         private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
-        private IWebElement rdoMediumRisk => _driver.FindElement(By.XPath("//*[@id='risk-category']/following-sibling::label"));
-        private IWebElement rdoLowRisk => _driver.FindElement(By.XPath("//*[@id='risk-category-2']/following-sibling::label")); 
+
+        private IWebElement GetRiskCategoryLabel(string option) =>
+            _driver.FindElement(By.XPath($"//label[contains(normalize-space(text()),'{option}')]"));
+
+        private IWebElement GetRiskCategoryInput(string option) =>
+            _driver.FindElement(By.XPath($"//label[contains(normalize-space(text()),'{option}')]/preceding-sibling::input[@name='risk-category']"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -32,10 +36,13 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void ClickRiskCategory(string option)
         {
-            if (rdoMediumRisk.Text.Trim().Contains(option))
-                rdoMediumRisk.Click();
-            else if (rdoLowRisk.Text.Trim().Contains(option))
-                rdoLowRisk.Click();
+            IWebElement label = GetRiskCategoryLabel(option);
+            IWebElement input = GetRiskCategoryInput(option);
+
+            label.Click();
+
+            if (!input.Selected)
+                label.Click();
         }
     }
 }

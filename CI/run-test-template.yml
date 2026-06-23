@@ -32,6 +32,12 @@
   - name: isAccessibilityEnabled
     type: boolean
     default: false
+  - name: enableRetry
+    type: boolean
+    default: false
+  - name: featureFilter
+    type: string
+    default: 'all'
 
 jobs: 
 
@@ -41,7 +47,7 @@ jobs:
 
   pool:
     ${{ if contains(parameters.seleniumGrid, 'localhost') }}:
-      name: 'DEFRA-COMMON-ubuntu2004-SSV3'
+      name: 'DEFRA-COMMON-UBUNTU-SSV5'
     ${{ if contains(parameters.seleniumGrid, 'browserstack') }}:
       name: 'DEFRA-TRD'
 
@@ -64,6 +70,8 @@ jobs:
         value: $(FilterTestCategory)
       ${{ else }}:
         value: ${{parameters.filterTestCases}}
+    - name: FeatureFilter
+      value: ${{ parameters.featureFilter }}
 
   steps:
   
@@ -135,8 +143,7 @@ jobs:
       displayName: 'Display power-apps-bindings.yml'
 
     - ${{ if contains(parameters.seleniumGrid, 'localhost:') }}:
-      - powershell:
-          docker system prune -a --volumes --force
+      - powershell: 'docker system prune -a --volumes --force'
         displayName: 'Stop and Clean all containers'
 
     - ${{ if contains(parameters.seleniumGrid, 'localhost:') }}:
@@ -149,138 +156,209 @@ jobs:
           projectName: defra-ui-tests
           qualifyImageNames: true
           dockerComposeCommand: up -d
-          #arguments: '--exit-code-from selenium-hub'
+
+    - ${{ if contains(parameters.seleniumGrid, 'localhost:') }}:
+      - powershell: |
+          $timeout = 120
+          $elapsed = 0
+          $interval = 5
+          $expectedNodes = [int]'${{ parameters.workers }}'
+          $ready = $false
+
+          Write-Host "Waiting for Selenium Grid hub and $expectedNodes Chrome node(s) to be ready..."
+
+          while ($elapsed -lt $timeout) {
+              try {
+                  $response = Invoke-RestMethod -Uri "http://localhost:4444/status" -Method Get -ErrorAction Stop
+
+                  $readyNodes = @(
+                      $response.value.nodes | Where-Object {
+                          $_.availability -eq "UP" -and $_.slots.Count -gt 0
+                      }
+                  )
+
+                  $readyNodeCount = $readyNodes.Count
+                  Write-Host "[$elapsed s] Hub ready: $($response.value.ready) — nodes registered and available: $readyNodeCount / $expectedNodes"
+
+                  if ($response.value.ready -eq $true -and $readyNodeCount -ge $expectedNodes) {
+                      Write-Host "All $expectedNodes node(s) are registered and available. Proceeding with tests."
+                      $ready = $true
+                      break
+                  }
+              }
+              catch {
+                  Write-Host "[$elapsed s] Grid not reachable yet — retrying..."
+              }
+
+              Start-Sleep -Seconds $interval
+              $elapsed += $interval
+          }
+
+          if (-not $ready) {
+              Write-Error "Selenium Grid did not reach $expectedNodes ready node(s) within $timeout seconds."
+              exit 1
+          }
+        displayName: 'Wait for Selenium Grid to be ready (${{ parameters.workers }} node(s))'
 
     - powershell: |
           Set-Location -Path "$(System.DefaultWorkingDirectory)/Defra.UI.Tests"
           $filterTestCases = "$(FilterTestCases)"
-          dotnet test "$(System.DefaultWorkingDirectory)/Defra.UI.Tests/Defra.UI.Tests.dll" --settings "$(System.DefaultWorkingDirectory)/Defra.UI.Tests/testrun_${{ parameters.workers }}.runsettings" --filter "$filterTestCases" --logger:"trx;logfilename=${{ parameters.jobName }}_results_0.trx"
+          $featureFilter = "$(FeatureFilter)"
+
+          # Build the effective filter:
+          # - If featureFilter is 'all' or empty, use filterTestCases as-is (default behaviour).
+          # - If featureFilter is provided, it completely overrides filterTestCases.
+          if ($featureFilter -and $featureFilter.Trim() -ne '' -and $featureFilter.Trim() -ne 'all') {
+              $tags = @($featureFilter.Split(',') | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne '' })
+
+              if ($tags.Count -eq 1) {
+                  $effectiveFilter = "TestCategory=$($tags[0])"
+              } else {
+                  $effectiveFilter = ($tags | ForEach-Object { "TestCategory=$_" }) -join ' | '
+                  $effectiveFilter = "($effectiveFilter)"
+              }
+
+              Write-Host "Feature filter override applied."
+          } else {
+              $effectiveFilter = $filterTestCases
+          }
+
+          Write-Host "Effective test filter: $effectiveFilter"
+
+          if ($effectiveFilter -and $effectiveFilter.Trim() -ne '') {
+              dotnet test "$(System.DefaultWorkingDirectory)/Defra.UI.Tests/Defra.UI.Tests.dll" --settings "$(System.DefaultWorkingDirectory)/Defra.UI.Tests/testrun_${{ parameters.workers }}.runsettings" --filter "$effectiveFilter" --logger:"trx;logfilename=${{ parameters.jobName }}_results_0.trx"
+          } else {
+              dotnet test "$(System.DefaultWorkingDirectory)/Defra.UI.Tests/Defra.UI.Tests.dll" --settings "$(System.DefaultWorkingDirectory)/Defra.UI.Tests/testrun_${{ parameters.workers }}.runsettings" --logger:"trx;logfilename=${{ parameters.jobName }}_results_0.trx"
+          }
       displayName: 'Execute Tests'
       failOnStderr: true
       ignoreLASTEXITCODE: true
       continueOnError: true
 
+    - ${{ if eq(parameters.enableRetry, true) }}:
+      - template: retry-failed-tests-template.yml
+        parameters:
+          jobName: ${{ parameters.jobName }}
+          workers: ${{ parameters.workers }}
+
     - powershell: |
-         
-            $projectDllPath = "$(System.DefaultWorkingDirectory)/Defra.UI.Tests/Defra.UI.Tests.dll"
-            $maxRetries = 3
-  
-            $resultsDir = "TestResults"
-            $attempt = 0
-            $failedTests = @()
+        $initialRunResult = "$(System.DefaultWorkingDirectory)/Defra.UI.Tests/TestResults"
+        $retryRunResult = "$(System.DefaultWorkingDirectory)/TestResults"
+        $mergedTrxPath = "$(System.DefaultWorkingDirectory)/Defra.UI.Tests/TestResults/${{ parameters.jobName }}_MergedResults.trx"
+        $enableRetry = '${{ parameters.enableRetry }}'
 
-            # Ensure results directory exists
-            if (-not (Test-Path $resultsDir)) {
-                New-Item -ItemType Directory -Path $resultsDir | Out-Null
+        # Collect TRX files from initial run
+        $trxFiles = @(Get-ChildItem -Path $initialRunResult -Filter "*.trx" -Recurse -ErrorAction SilentlyContinue)
+
+        # Only include retry results if retry was enabled and the directory exists
+        if ($enableRetry -eq 'True' -and (Test-Path $retryRunResult)) {
+            $retryFiles = Get-ChildItem -Path $retryRunResult -Filter "*.trx" -Recurse -ErrorAction SilentlyContinue
+            if ($retryFiles) {
+                $trxFiles += $retryFiles
             }
+            Write-Host "Retry enabled — found $($retryFiles.Count) retry TRX file(s)."
+        }
+        else {
+            Write-Host "Retry disabled or no retry results directory — using initial run only."
+        }
 
-            do {
-                
-                if ($attempt -eq 0) {
-                    $trxFile = "Defra.UI.Tests/${resultsDir}/${{ parameters.jobName }}_results_${attempt}.trx"
-                }
-                else {
-                    $trxFile = "${resultsDir}/${{ parameters.jobName }}_results_${attempt}.trx"
-                }
-
-                [xml]$trx = Get-Content $trxFile
-
-                $failedTests = $trx.TestRun.Results.UnitTestResult |
-                    Where-Object { $_.outcome -eq "Failed" } |
-                    ForEach-Object {
-                        $name = $_.testName
-                        if ($name.Contains('(')) {
-                            $cleanName = $name.Substring(0, $name.IndexOf('('))
-                        } else {
-                            $cleanName = $name
-                        }
-
-                        $cleanName
-                     }| 
-                     Sort-Object | 
-                     Get-Unique
-                
-                if ($failedTests.Count -gt 0 -and $attempt -lt $maxRetries) {
-                    Write-Host "Found $($failedTests.Count) failed test(s). Preparing to rerun..."
-
-                    $filterExpr = ($failedTests | ForEach-Object { "FullyQualifiedName~$_" }) -join '|'
-
-                    Write-Host "Rerunning failed tests with filter: $filterExpr"
-
-                    $attempt++
-
-                    $nextTrxFile = "${{ parameters.jobName }}_results_${attempt}.trx"
-
-                    dotnet test $projectDllPath --filter "$filterExpr" --logger:"trx;LogFileName=${nextTrxFile}"
-                }
-
-            } while ($failedTests.Count -gt 0 -and $attempt -lt $maxRetries)
-
-            Write-Host "Test rerun process complete."
-
-            # Merge all trx files into one
-
-            $initialRunResult = "$(System.DefaultWorkingDirectory)/Defra.UI.Tests/TestResults"
-            $retryRunResult = "$(System.DefaultWorkingDirectory)/TestResults"
-            $mergedTrxPath = "$(System.DefaultWorkingDirectory)/Defra.UI.Tests/TestResults/${{ parameters.jobName }}_MergedResults.trx"
-
-            $trxFiles = @( 
-                Get-ChildItem -Path $initialRunResult -Filter "*.trx" -Recurse
-                Get-ChildItem -Path $retryRunResult -Filter "*.trx" -Recurse
-            )
-
-            $latestResults = @{}
-            $unitTestDefinitions = @{}
-
-            foreach ($file in $trxFiles) {
-                [xml]$xml = Get-Content $file.FullName
-
-                foreach ($unitTest in $xml.TestRun.TestDefinitions.UnitTest) {
-                    $name = $unitTest.name
-                    $unitTestDefinitions[$name] = $unitTest
-                }
-
-                foreach ($result in $xml.TestRun.Results.UnitTestResult) {
-                    $name = $result.testName
-                    $endTime = [datetime]$result.endTime
-
-                    if (-not $latestResults.ContainsKey($name) -or $endTime -gt $latestResults[$name].endTime) {
-                        $latestResults[$name] = $result
-                    }
-                }
+        if ($trxFiles.Count -eq 0) {
+            Write-Host "##[warning]No TRX files found. No tests were executed in this stage — skipping merge."
+            # Create an empty merged TRX so PublishTestResults doesn't fail
+            $emptyTrx = @"
+        <?xml version="1.0" encoding="utf-8"?>
+        <TestRun xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+          <Results />
+          <TestDefinitions />
+        </TestRun>
+        "@
+            if (-not (Test-Path $initialRunResult)) {
+                New-Item -ItemType Directory -Path $initialRunResult | Out-Null
             }
-
-            # Use the first .trx file as a base
-            [xml]$finalTrx = Get-Content "$(System.DefaultWorkingDirectory)/Defra.UI.Tests/TestResults/${{ parameters.jobName }}_results_0.trx"
-
-            $namespaceManager = New-Object System.Xml.XmlNamespaceManager($finalTrx.NameTable)
-            $namespaceManager.AddNamespace("ns", $finalTrx.DocumentElement.NamespaceURI)
-
-            # Clear existing results and definitions
-            $finalTrx.TestRun.Results.RemoveAll()
-            $finalTrx.TestRun.TestDefinitions.RemoveAll()
-
-            # Add latest results and matching definitions
-            foreach ($name in $latestResults.Keys) {
-                $result = $latestResults[$name]
-                $definition = $unitTestDefinitions[$name]
-
-                if ($definition -and $result) {
-                    $importedResult = $finalTrx.ImportNode($result, $true)
-                    $finalTrx.SelectSingleNode("//ns:Results", $namespaceManager).AppendChild($importedResult) | Out-Null
-                    
-                    $importedDef = $finalTrx.ImportNode($definition, $true)
-                    $finalTrx.SelectSingleNode("//ns:TestDefinitions", $namespaceManager).AppendChild($importedDef) | Out-Null
-                }
-            }
-
-            # Save the final merged .trx file
-            $finalTrx.Save($mergedTrxPath)
-
-            Write-Host "Merged .trx file saved to: $mergedTrxPath"
-
+            Set-Content -Path $mergedTrxPath -Value $emptyTrx
+            Write-Host "Created empty merged TRX at: $mergedTrxPath"
             exit 0
-      displayName: 'Retry Failed Tests'
+        }
+
+        $latestResults = @{}
+        $unitTestDefinitions = @{}
+
+        foreach ($file in $trxFiles) {
+            [xml]$xml = Get-Content $file.FullName
+
+            if ($null -eq $xml.TestRun.TestDefinitions -or $null -eq $xml.TestRun.Results) {
+                Write-Host "Skipping $($file.Name) — no test results found in file."
+                continue
+            }
+
+            foreach ($unitTest in $xml.TestRun.TestDefinitions.UnitTest) {
+                $name = $unitTest.name
+                $unitTestDefinitions[$name] = $unitTest
+            }
+
+            foreach ($result in $xml.TestRun.Results.UnitTestResult) {
+                $name = $result.testName
+                $endTime = [datetime]$result.endTime
+
+                if (-not $latestResults.ContainsKey($name) -or $endTime -gt $latestResults[$name].endTime) {
+                    $latestResults[$name] = $result
+                }
+            }
+        }
+
+        if ($latestResults.Count -eq 0) {
+            Write-Host "##[warning]TRX files found but contained no test results — creating empty merged TRX."
+            $emptyTrx = @"
+        <?xml version="1.0" encoding="utf-8"?>
+        <TestRun xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+          <Results />
+          <TestDefinitions />
+        </TestRun>
+        "@
+            Set-Content -Path $mergedTrxPath -Value $emptyTrx
+            exit 0
+        }
+
+        [xml]$finalTrx = Get-Content $trxFiles[0].FullName
+
+        $namespaceManager = New-Object System.Xml.XmlNamespaceManager($finalTrx.NameTable)
+        $namespaceManager.AddNamespace("ns", $finalTrx.DocumentElement.NamespaceURI)
+
+        # Guard against null Results/TestDefinitions nodes
+        $resultsNode = $finalTrx.SelectSingleNode("//ns:Results", $namespaceManager)
+        $definitionsNode = $finalTrx.SelectSingleNode("//ns:TestDefinitions", $namespaceManager)
+
+        if ($null -eq $resultsNode) {
+            $resultsNode = $finalTrx.CreateElement("Results", $finalTrx.DocumentElement.NamespaceURI)
+            $finalTrx.TestRun.AppendChild($resultsNode) | Out-Null
+        } else {
+            $resultsNode.RemoveAll()
+        }
+
+        if ($null -eq $definitionsNode) {
+            $definitionsNode = $finalTrx.CreateElement("TestDefinitions", $finalTrx.DocumentElement.NamespaceURI)
+            $finalTrx.TestRun.AppendChild($definitionsNode) | Out-Null
+        } else {
+            $definitionsNode.RemoveAll()
+        }
+
+        foreach ($name in $latestResults.Keys) {
+            $result = $latestResults[$name]
+            $definition = $unitTestDefinitions[$name]
+
+            if ($definition -and $result) {
+                $importedResult = $finalTrx.ImportNode($result, $true)
+                $resultsNode.AppendChild($importedResult) | Out-Null
+                
+                $importedDef = $finalTrx.ImportNode($definition, $true)
+                $definitionsNode.AppendChild($importedDef) | Out-Null
+            }
+        }
+
+        $finalTrx.Save($mergedTrxPath)
+        Write-Host "Merged .trx file saved to: $mergedTrxPath (from $($trxFiles.Count) file(s), $($latestResults.Count) test(s))"
+        exit 0
+      displayName: 'Merge TRX Results'
       failOnStderr: false
 
     - ${{ if contains(parameters.seleniumGrid, 'localhost:') }}:
@@ -310,12 +388,11 @@ jobs:
       failOnStderr: true
       ignoreLASTEXITCODE: true
       continueOnError: true
-      condition: always() # this step will always run, even if the pipeline is canceled
+      condition: always()
 
     - task: PublishPipelineArtifact@0
       displayName: 'Publish Json reports for Specflow'
       inputs:
-          testResultsFiles: 'TestExecution_${{ parameters.jobName }}.json'
           artifactName: TestExecution_${{ parameters.jobName }}
           targetPath: '$(System.DefaultWorkingDirectory)/Defra.UI.Tests/TestExecution_${{ parameters.jobName }}.json'
     
@@ -323,16 +400,13 @@ jobs:
         mkdir -p $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/Screenshots
         mkdir -p $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports
         
-        # Find and copy all PNG files from TestResults
         find $(System.DefaultWorkingDirectory)/Defra.UI.Tests/TestResults -name "*.png" -exec cp {} $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/Screenshots/ \;
         
-        # Copy HTML reports if they exist
         find $(System.DefaultWorkingDirectory)/Defra.UI.Tests -name "TestExecutionReport_*.html" -exec cp {} $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/ \;
       displayName: 'Copy reports and screenshots'
       condition: always()
       continueOnError: true    
 
-    # Fix screenshot paths in HTML
     - powershell: |
         $reportsPath = "$(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports"
         $htmlFiles = Get-ChildItem -Path $reportsPath -Filter "*.html"
@@ -341,12 +415,8 @@ jobs:
             Write-Host "Processing $($htmlFile.Name)..."
             $content = Get-Content $htmlFile.FullName -Raw
             
-            # Replace absolute paths with relative paths
-            # Matches: /agent/_work/1/s/Defra.UI.Tests/Reports/Screenshots/guid.png
-            # Replaces with: Screenshots/guid.png
             $content = $content -replace '(?<=["\(])/agent/_work/[^"()]+/Defra\.UI\.Tests/Reports/Screenshots/([^"/)]+\.png)', 'Screenshots/$1'
             
-            # Save the modified content
             Set-Content -Path $htmlFile.FullName -Value $content
             Write-Host "Fixed screenshot paths in $($htmlFile.Name)"
         }

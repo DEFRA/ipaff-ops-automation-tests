@@ -163,5 +163,26 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             Assert.True(allDataMatches, $"Additional details validation failed. Mismatches: {string.Join(", ", mismatches)}");
         }
+
+        /// <summary>
+        /// Randomly selects a certification option from a specification string.
+        /// 
+        /// Format examples:
+        ///   "Any"                                        — any option visible on the page
+        ///   "Approved bodies, Slaughter, Other"           — pick from whichever of these exist on the page
+        ///   "Breeding and/or production, Circus/exhibition" — pick from whichever of these exist on the page
+        /// </summary>
+        [When("the user randomly selects a certification from {string}")]
+        public void WhenTheUserRandomlySelectsACertificationFrom(string certificationSpec)
+        {
+            List<string>? constrainedOptions = null;
+
+            if (!certificationSpec.Equals("Any", StringComparison.OrdinalIgnoreCase))
+            {
+                constrainedOptions = certificationSpec.Split(',').Select(s => s.Trim()).ToList();
+            }
+
+            additionalDetailsPage!.SelectRandomCertification(constrainedOptions);
+        }
     }
 }

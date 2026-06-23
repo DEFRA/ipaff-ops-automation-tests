@@ -141,7 +141,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
         public ChedSection AcceptableForInternalMarket { get; set; }
 
         [JsonProperty("II20IdentificationOfBcp")]
-        public ChedSection IdentificationOfBcp { get; set; }
+        public ChedSection IdentificationOfBcp { get; set; }       
 
         [JsonProperty("II21CertifyingOfficer")]
         public ChedSection CertifyingOfficer { get; set; }
@@ -155,6 +155,12 @@ namespace Defra.UI.Tests.Tools.PDFProcessor.Models
         // Part III
         [JsonProperty("PartIIIFollowUp")]
         public ChedSection PartIIIFollowUp { get; set; }
+
+        [JsonProperty("HMIChecks")]
+        public ChedSection HMIChecks { get; set; }
+        
+        [JsonProperty("PHSIChecks")]
+        public ChedSection PHSIChecks { get; set; }
 
         [JsonProperty("III1PreviousChed")]
         public ChedSection III1PreviousChed { get; set; }

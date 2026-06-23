@@ -24,6 +24,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext = context;
         }
 
+        [Then("the Contact details page should be displayed")]
+        public void ThenTheContactDetailsPageShouldBeDisplayed()
+        {
+            Assert.True(contactDetailsPage?.IsPageLoaded(), "Contact details page not loaded");
+        }
+
+
         [Then("the Contact details page should be displayed, pre-populated with the user's details")]
         public void ThenTheContactDetailsPageShouldBeDisplayedPre_PopulatedWithTheUsersDetails()
         {

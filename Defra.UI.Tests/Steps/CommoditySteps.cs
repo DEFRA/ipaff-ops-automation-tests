@@ -27,6 +27,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(commodityPage?.IsPageLoaded(), "Description of the goods Commodity page not loaded");
         }
 
+        [When("the user searches for the commodity code {string}")]
         [When("the user searches {string} commodity code")]
         public void WhenTheUserSearchesCommodityCode(string code)
         {
@@ -150,6 +151,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["TotalPackages"] = commodityPage?.GetTotalPackages();
         }
 
+        [When("the user enters the total gross weight {string}")]
         [When("user enters the total gross weight greater than the net weight {string}")]
         [Then("user enters the total gross weight greater than the net weight {string}")]
         [When("the total gross weight should be greater than the net weight {string}")]
@@ -342,6 +344,17 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["CommodityDescFirstCommodity"] = description;
         }
 
+        [Then("the CHED PP commodity details should be populated {string} {string}")]
+        public void ThenTheCHEDPPCommodityDetailsShouldBePopulated(string code, string description)
+        {
+            var commodityDescriptions = _scenarioContext.GetFromContext<List<string>>("CommodityDescription", []);
+            commodityDescriptions.Add(description);
+
+            _scenarioContext["CommodityDescription"] = commodityDescriptions;
+            Assert.True(commodityPage?.VerifyCHEDPPCommodityDetails(code, description));
+        }
+
+        [When("the user searches for EPPO code {string} and clicks add link")]
         [When("the user searchs for EPPO code {string} and clicks add link")]
         public void WhenTheUserSearchsForEPPOCodeAndClicksAddLink(string eppoCode)
         {
@@ -349,6 +362,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             commodityPage?.ClickAddLink(eppoCode);
         }
 
+        [Then("Genus \\(and Species) {string} and EPPO code {string} should be populated in commodity page")]
         [Then("Genus\\(and Species) {string} and EPPO code {string} should be populated in commodity page")]
         public void ThenGenusAndSpeciesAndEPPOCodeShouldBePopulatedInCommodityPage(string genus, string eppoCode)
         {
@@ -432,6 +446,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["QuantityType"] = type;
         }
 
+        [When("the user clicks Apply Button")]
         [Then("the user clicks Apply Button")]
         public void ThenTheUserClicksApplyButton()
         {
@@ -465,6 +480,38 @@ namespace Defra.UI.Tests.Steps.IPAFF
             // Store in unified MultiSpeciesData model
             var multiSpecies = _scenarioContext.GetOrCreateMultiSpeciesData();
             multiSpecies.GetOrCreateSpecies(species).NumberOfPackages = numberOfPackages;
+        }
+
+        [Then("the selected commodity {string} should be displayed with Commodity code {string} and Genus {string} and EPPO code {string} and Class {string} and Variety {string}")]
+        public void ThenTheSelectedCommodityShouldBeDisplayedWithDetails(
+            string commodityName, string commodityCode, string genus, string eppoCode, string commodityClass, string variety)
+        {
+            Assert.True(
+                commodityPage?.VerifySingleCommodityDisplayed(commodityCode, genus, eppoCode, variety, commodityClass),
+                $"Commodity '{commodityName}' was not displayed with the expected details: " +
+                $"code='{commodityCode}', genus='{genus}', EPPO='{eppoCode}', variety='{variety}', class='{commodityClass}'");
+
+            _scenarioContext["GenusFirstCommodity"] = genus;
+            _scenarioContext["EPPOCodeFirstCommodity"] = eppoCode;
+        }
+
+        [When("the user selects the check box for the commodity code {string}")]
+        public void WhenTheUserSelectsTheCheckBoxForTheCommodityCode(string commCode)
+        {
+            commodityPage?.SelectCommodity(commCode);
+        }
+
+        [When("the user selects Intended for final users as {string} for CHED PP commodity {string}")]
+        public void WhenTheUserSelectsIntendedForFinalUsersForCHEDPPCommodity(string value, string commodityCode)
+        {
+            commodityPage?.SelectIntendedForFinalUsers(commodityCode, value);
+            _scenarioContext[$"IntendedForFinalUsers"] = value;
+        }
+
+        [When("the user selects the commodity code {string} and description {string} in the commodity tree")]
+        public void WhenTheUserSelectsTheCommodityCodeAndDescriptionInTheCommodityTree(string commodityCode, string description)
+        {
+            commodityPage?.SelectCommodityByCodeAndDescription(commodityCode, description);
         }
     }
 }

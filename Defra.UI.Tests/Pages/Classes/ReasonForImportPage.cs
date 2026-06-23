@@ -14,6 +14,7 @@ namespace Defra.UI.Tests.Pages.Classes
     {
         private string Platform => ConfigSetup.BaseConfiguration.TestConfiguration.Platform;
         private IObjectContainer _objectContainer;
+        private readonly Random _random = new();
 
         #region Page Objects
         private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
@@ -21,11 +22,12 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement rdoInternalMarket => _driver.WaitForElement(By.XPath("//*[@id='radio-internalmarket']/following-sibling::label"));
         private IWebElement rdoTranshipment => _driver.WaitForElement(By.XPath("//*[@id='radio-tranship']/following-sibling::label"));
         private IWebElement rdoTransit => _driver.WaitForElement(By.XPath("//*[@id='radio-transit']/following-sibling::label"));
-        private IWebElement rdoReentry => _driver.WaitForElement(By.XPath("//*[@id='a_impadm2']/following-sibling::label")); 
+        private IWebElement rdoReentry => _driver.WaitForElement(By.XPath("//*[@id='a_impadm2']/following-sibling::label"));
         private IWebElement rdoTemporaryAdmissionHorses => _driver.WaitForElement(By.XPath("//*[@id='a_impadm3']/following-sibling::label"));
         private IWebElement rdoNonInternalMarket => _driver.WaitForElement(By.XPath("//*[@id='radio-noninternalmarket']/following-sibling::label"));
         private IWebElement txtExitBCP => _driver.WaitForElement(By.Name("bcp-transit-third-country"));
-        private IWebElement txtTransitedCountry => _driver.WaitForElement(By.Id("transit-third-countries-last"));
+        private By txtTransitedCountryBy => By.Id("transit-third-countries-last");
+        private IWebElement txtTransitedCountry => _driver.WaitForElement(txtTransitedCountryBy);
         private IWebElement txtDestinationCountry => _driver.FindElement(By.Id("third-country-transit"));
         private IWebElement txtTranshipmentDestination => _driver.FindElement(By.Id("third-country-transhipment"));
         private IWebElement rdoIMAnimalFeeding => _driver.WaitForElement(By.XPath("//*[@id='internalMarketanimal']/following-sibling::label"));
@@ -38,7 +40,8 @@ namespace Defra.UI.Tests.Pages.Classes
             _driver.FindElement(By.XPath($"//label[contains(@class, 'govuk-radios__label')and contains(normalize-space(.), 'Transit')]/following::div[2]/*[contains(normalize-space(.), '{subOption}')]"));
         private IWebElement GetInternalMarketSubOption(string subOptionText) =>
             _driver.FindElement(By.XPath($"//div[contains(@id,'internalmarket-conditional')]//label[contains(@class, 'govuk-radios__label') and normalize-space()='{subOptionText}']"));
-        private IWebElement txtDay => _driver.WaitForElement(By.Id("estimated-arrival-at-port-of-exit-date-day"));
+        private By txtDayBy => By.Id("estimated-arrival-at-port-of-exit-date-day");
+        private IWebElement txtDay => _driver.WaitForElement(txtDayBy);
         private IWebElement txtMonth => _driver.WaitForElement(By.Id("estimated-arrival-at-port-of-exit-date-month"));
         private IWebElement txtYear => _driver.WaitForElement(By.Id("estimated-arrival-at-port-of-exit-date-year"));
         private IWebElement txtHours => _driver.WaitForElement(By.Id("estimated-arrival-at-port-of-exit-time-hour"));
@@ -58,6 +61,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement transitDestinationCountry => _driver.WaitForElement(By.Id("third-country-transit"));
         private IReadOnlyCollection<IWebElement> internalMarketSubOptions => internalMarketConditional.FindElements(By.CssSelector("input[type='radio'][name='internal-market']"));
         private IWebElement selectedReasonForImportRadioLabel => _driver.FindElement(By.XPath("//input[contains(@class,'govuk-radios__input') and @checked]/following-sibling::label"));
+        private IReadOnlyCollection<IWebElement> purposeRadioLabels => _driver.FindElements(By.XPath("//div[@id='purpose']/div[contains(@class,'govuk-radios__item')]//label[contains(@class,'govuk-radios__label') and contains(@class,'govuk-!-font-weight-bold')]"));
+        private IReadOnlyCollection<IWebElement> internalMarketSubOptionLabels => _driver.FindElements(By.XPath("//div[contains(@id,'internalmarket-conditional')]//label[contains(@class, 'govuk-radios__label')]"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -171,7 +176,7 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             var futureDate = DateTime.Now.AddDays(7);
             var leavingFromGBTime = futureDate.ToString("HH:mm");
-            
+
             txtHours.SendKeys(futureDate.Hour.ToString());
             txtMinutes.SendKeys(futureDate.Minute.ToString());
 
@@ -227,7 +232,8 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             _driver.WaitForElementCondition(ExpectedConditions.ElementIsVisible(txtPointOfExitBy));
             txtPointOfExit.SendKeys(placeOfExit);
-        }      
+        }
+
         public void EnterExitDate(int daysFromToday)
         {
             var exitDate = DateTime.Now.AddDays(daysFromToday);
@@ -368,18 +374,143 @@ namespace Defra.UI.Tests.Pages.Classes
                 return expectedSubOptions
                     .All(el => subOptions.Contains(el));
             }
-            else if(mainOption == "Transit")
+            else if (mainOption == "Transit")
             {
                 var transitSubOptionTexts = new List<string>();
 
                 foreach (var opt in subOptions)
                 {
                     var element = GetTranitSubOption(opt);
-                    transitSubOptionTexts.Add(element.Text.Split('\r')[0].Trim());                    
+                    transitSubOptionTexts.Add(element.Text.Split('\r')[0].Trim());
                 }
                 return transitSubOptionTexts.All(el => subOptions.Contains(el));
             }
             return false;
+        }
+
+        public List<string> GetAvailablePurposeOptions()
+        {
+            return purposeRadioLabels
+                .Select(l => l.Text.Trim())
+                .Where(t => !string.IsNullOrEmpty(t))
+                .ToList();
+        }
+
+        public List<string> GetAvailableInternalMarketSubOptions()
+        {
+            return internalMarketSubOptionLabels
+                .Select(l => l.Text.Trim())
+                .Where(t => !string.IsNullOrEmpty(t))
+                .ToList();
+        }
+
+        public void SelectPurposeAndFillSubOptionData(string mainOption, List<string>? constrainedSubOptions)
+        {
+            SelectReasonForImport(mainOption);
+
+            switch (mainOption)
+            {
+                case "Internal market":
+                    SelectRandomInternalMarketSubOption(constrainedSubOptions);
+                    break;
+
+                case "Transhipment or onward travel":
+                    SelectRandomDropdownOption(txtTranshipmentDestination);
+                    break;
+
+                case "Transit":
+                    SelectRandomDropdownOption(transitExitBCP, excludedTexts: ["LONDON GATEWAY (GBLGP)"]);
+                    FillTransitDateTimeIfPresent();
+                    FillTransitedCountryIfPresent();
+                    SelectRandomDropdownOption(txtDestinationCountry);
+                    break;
+
+                case "Temporary admission horses":
+                    EnterExitDate(_random.Next(1, 91));
+                    SelectRandomDropdownOption(ddlExitBCP);
+                    break;
+
+                case "Re-entry":
+                    // Manual override for Re-entry
+                    SelectReasonForImport("Transit");
+                    SelectRandomDropdownOption(transitExitBCP, excludedTexts: ["LONDON GATEWAY (GBLGP)"]);
+                    FillTransitDateTimeIfPresent();
+                    FillTransitedCountryIfPresent();
+                    SelectRandomDropdownOption(txtDestinationCountry);
+                    break;
+            }
+        }
+
+        private void FillTransitDateTimeIfPresent()
+        {
+            try
+            {
+                var elements = _driver.FindElements(txtDayBy);
+                if (elements.Count > 0 && elements[0].Displayed)
+                {
+                    EnterConsignmentDepartureDate();
+                    EnterConsignmentDepartureTime();
+                }
+            }
+            catch (NoSuchElementException) { }
+            catch (ElementNotInteractableException) { }
+        }
+
+        private void FillTransitedCountryIfPresent()
+        {
+            try
+            {
+                var elements = _driver.FindElements(txtTransitedCountryBy);
+                if (elements.Count > 0 && elements[0].Displayed)
+                    SelectRandomDropdownOption(txtTransitedCountry);
+            }
+            catch (NoSuchElementException) { }
+            catch (ElementNotInteractableException) { }
+        }
+
+        private void SelectRandomInternalMarketSubOption(List<string>? constrainedSubOptions)
+        {
+            var availableSubOptions = GetAvailableInternalMarketSubOptions();
+
+            List<string> candidates;
+            if (constrainedSubOptions is { Count: > 0 })
+            {
+                candidates = availableSubOptions
+                    .Where(a => constrainedSubOptions.Any(c => a.Equals(c, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+
+                if (candidates.Count == 0)
+                    throw new InvalidOperationException(
+                        $"None of the constrained sub-options [{string.Join(", ", constrainedSubOptions)}] " +
+                        $"were found on the page. Available: [{string.Join(", ", availableSubOptions)}]");
+            }
+            else
+            {
+                candidates = availableSubOptions;
+            }
+
+            var chosen = candidates[_random.Next(candidates.Count)];
+            SelectReasonForImportSubOption(chosen);
+        }
+
+        private void SelectRandomDropdownOption(IWebElement selectElement, IEnumerable<string>? excludedTexts = null)
+        {
+            var select = new SelectElement(selectElement);
+            var options = select.Options
+                .Where(o => !string.IsNullOrWhiteSpace(o.GetAttribute("value")))
+                .ToList();
+
+            if (excludedTexts is not null)
+                options = options
+                    .Where(o => !excludedTexts.Any(e => o.Text.Trim().Equals(e, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+
+            if (options.Count == 0)
+                throw new InvalidOperationException(
+                    $"No selectable options remain in dropdown '{selectElement.GetAttribute("id")}' after applying exclusions.");
+
+            var chosen = options[_random.Next(options.Count)];
+            select.SelectByValue(chosen.GetAttribute("value"));
         }
     }
 }

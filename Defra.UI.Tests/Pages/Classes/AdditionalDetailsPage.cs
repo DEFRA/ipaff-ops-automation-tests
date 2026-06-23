@@ -10,6 +10,7 @@ namespace Defra.UI.Tests.Pages.Classes
     {
         private string Platform => ConfigSetup.BaseConfiguration.TestConfiguration.Platform;
         private IObjectContainer _objectContainer;
+        private readonly Random _random = new();
 
         #region Page Objects
         private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
@@ -30,6 +31,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtGrossVolume => _driver.FindElement(By.Id("gross-volume"));
         private IWebElement tdNetWeight => _driver.FindElement(By.XPath("//th[normalize-space()='Net weight of the consignment (kg)']/following-sibling::td"));
         private IWebElement tdNumberOfPackages => _driver.FindElement(By.XPath("//th[normalize-space()='Number of packages of the consignment']/following-sibling::td"));
+        private IReadOnlyCollection<IWebElement> animalCertificationLabels => _driver.FindElements(By.XPath("//div[contains(@class,'animal-certified-as')]//label[contains(@class,'govuk-radios__label')]"));
         #endregion
 
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -53,7 +55,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void ClickImportingProduct(string option)
         {
-            if(option.Equals(rdoAmbient.Text))
+            if (option.Equals(rdoAmbient.Text))
                 rdoAmbient.Click();
             else if (option.Equals(rdoChilled.Text))
                 rdoChilled.Click();
@@ -113,7 +115,7 @@ namespace Defra.UI.Tests.Pages.Classes
         }
 
         public string GetCommIntendedForRadioLabelText => commIntendedForSelectedRadioLabel.Text.Trim() ?? string.Empty;
-        
+
         public string GetTemperatureRadioLabelText => temperatureSelectedRadioLabel.Text.Trim() ?? string.Empty;
 
         public string GetGrossWeightValue() => txtGrossWeight.GetAttribute("value")?.Trim() ?? string.Empty;
@@ -123,5 +125,42 @@ namespace Defra.UI.Tests.Pages.Classes
         public string GetNumberOfPackages() => tdNumberOfPackages.Text.Trim();
 
         public string GetGrossVolumeValue() => txtGrossVolume.GetAttribute("value")?.Trim() ?? string.Empty;
+
+        public List<string> GetAvailableCertificationOptions()
+        {
+            return animalCertificationLabels
+                .Select(l => l.Text.Trim())
+                .Where(t => !string.IsNullOrEmpty(t))
+                .ToList();
+        }
+
+        public void SelectRandomCertification(List<string>? constrainedOptions)
+        {
+            var available = GetAvailableCertificationOptions();
+
+            if (available.Count == 0)
+                throw new InvalidOperationException(
+                    "No certification options found on the page. Verify the page is loaded and the locator for 'animalCertificationLabels' matches the current HTML structure.");
+
+            List<string> candidates;
+            if (constrainedOptions is { Count: > 0 })
+            {
+                candidates = available
+                    .Where(a => constrainedOptions.Any(c => a.Equals(c, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+
+                if (candidates.Count == 0)
+                    throw new InvalidOperationException(
+                        $"None of the constrained certification options [{string.Join(", ", constrainedOptions)}] " +
+                        $"were found on the page. Available: [{string.Join(", ", available)}]");
+            }
+            else
+            {
+                candidates = available;
+            }
+
+            var chosen = candidates[_random.Next(candidates.Count)];
+            SelectAnimalCertification(chosen);
+        }
     }
 }

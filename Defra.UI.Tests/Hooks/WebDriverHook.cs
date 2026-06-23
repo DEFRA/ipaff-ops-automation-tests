@@ -345,7 +345,7 @@ namespace Defra.UI.Tests.Hooks
                 Directory.CreateDirectory(screenshotsDir);
             }
 
-            var uniqueFileName = $"{Guid.NewGuid()}.png";
+            var uniqueFileName = GenerateScreenshotFileName();
             var filePath = Path.Combine(screenshotsDir, uniqueFileName);
 
             var driver = ActiveDriver;
@@ -509,12 +509,51 @@ namespace Defra.UI.Tests.Hooks
             }
 
             var screenshot = ((ITakesScreenshot)driver).GetScreenshot();
-            var uniqueFileName = $"{Guid.NewGuid()}.png";
+            var uniqueFileName = GenerateScreenshotFileName();
             var filePath = Path.Combine(screenshotsDir, uniqueFileName);
 
             screenshot.SaveAsFile(filePath);
 
             return $"./Screenshots/{uniqueFileName}";
+        }
+
+        /// <summary>
+        /// Generates a screenshot filename using the scenario title and current timestamp.
+        /// Falls back to a GUID if the scenario title is unavailable.
+        /// </summary>
+        private string GenerateScreenshotFileName()
+        {
+            try
+            {
+                var scenarioTitle = _scenarioContext.ScenarioInfo.Title;
+                var sanitised = SanitiseFileName(scenarioTitle);
+                var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");
+                return $"{sanitised}_{timestamp}.png";
+            }
+            catch
+            {
+                return $"{Guid.NewGuid()}.png";
+            }
+        }
+
+        /// <summary>
+        /// Removes invalid file name characters and truncates to a reasonable length.
+        /// </summary>
+        private static string SanitiseFileName(string input)
+        {
+            var invalidChars = Path.GetInvalidFileNameChars();
+            var sanitised = new string(input.Where(c => !invalidChars.Contains(c)).ToArray());
+
+            // Replace spaces with underscores for readability
+            sanitised = sanitised.Replace(' ', '_');
+
+            // Truncate to avoid path-length issues (max 80 chars for the title portion)
+            if (sanitised.Length > 80)
+            {
+                sanitised = sanitised.Substring(0, 80);
+            }
+
+            return sanitised;
         }
     }
 }

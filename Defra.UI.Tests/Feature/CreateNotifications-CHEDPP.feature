@@ -3,6 +3,7 @@ Feature: Create Notification CHEDPP
 
 Create a notification for CHEDPP type
 
+@SPS-7394
 Scenario: Delegation of Authority Agent submits CHEDPP notification on behalf of trader and status becomes valid after auto clear SLA - SPS - 7394
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -141,6 +142,7 @@ Scenario: Delegation of Authority Agent submits CHEDPP notification on behalf of
 	And the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
 
+@SPS-5092
 Scenario: Delegation of Authority Agent submits CHEDPP notification by uploading commodity details in CSV file - SPS - 5092
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -249,13 +251,14 @@ Scenario: Delegation of Authority Agent submits CHEDPP notification by uploading
 	When the user clicks Show notification
 	Then the certificate should be displayed in a new browser tab
 	When the user downloads the PDF for validation
-	#And the user checks that the data in the certificate matches the data entered into the CHED PP notification
+	And the user checks that the data in the certificate matches the data entered into the CHED PP notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	And the dashboard page should be displayed
 	When the user logs out of IPAFFS Part 1
 	Then the user should be logged out successfully
 	
+@SPS-9272
 Scenario: Create a new import notification through clone a health or phytosanitary certificate process - SPS-9272
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -351,12 +354,13 @@ Scenario: Create a new import notification through clone a health or phytosanita
 	When the user clicks View CHED grey button
 	Then the certificate should be displayed in a new browser tab
 	When the user downloads the PDF for validation
-	#And the user checks that the data in the certificate matches the data entered into the notification
+	And the user checks that the data in the certificate matches the data entered into the CHED PP notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed
 	When the user clicks on the Dashboard link
 	Then the dashboard page should be displayed
 
+@SPS-7364
 Scenario: Agent submits CHEDPP notification for Trader after being delegated authority - SPS-7364
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -566,7 +570,7 @@ Scenario: Agent submits CHEDPP notification for Trader after being delegated aut
 	Then the notification should be present in the list
 	And the notification status should include 'TRADE PARTNER'
 
-@Dynamics
+@Dynamics @SPS-9104
 Scenario: Trader creates CHEDPP notification via CSV upload and completes end-to-end workflow - SPS-9104
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page

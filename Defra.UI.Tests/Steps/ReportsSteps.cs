@@ -1,0 +1,53 @@
+﻿using Defra.UI.Tests.Pages.Interfaces;
+using NUnit.Framework;
+using Reqnroll;
+using Reqnroll.BoDi;
+
+namespace Defra.UI.Tests.Steps.IPAFF
+{
+    [Binding]
+    public class ReportsSteps
+    {
+        private readonly IObjectContainer _objectContainer;
+
+        private IReportsPage? reportsPage =>
+            _objectContainer.IsRegistered<IReportsPage>()
+                ? _objectContainer.Resolve<IReportsPage>()
+                : null;
+
+        public ReportsSteps(IObjectContainer container)
+        {
+            _objectContainer = container;
+        }
+
+        [Then("the Risk Engine Reports page should be displayed")]
+        public void ThenTheRiskEngineReportsPageShouldBeDisplayed()
+        {
+            Assert.True(reportsPage?.IsPageLoaded(), "Reports page is not displayed");
+        }
+
+        [When("the user clicks the CHED-PP reports link")]
+        public void WhenTheUserClicksTheCHEDPPReportsLink()
+        {
+            reportsPage?.ClickChedPPReportsLink();
+        }
+
+        [When("the user clicks the CHED-P reports link")]
+        public void WhenTheUserClicksTheCHEDPReportsLink()
+        {
+            reportsPage?.ClickChedPReportsLink();
+        }
+
+        [When("the user clicks the CHED-A reports link")]
+        public void WhenTheUserClicksTheCHEDAReportsLink()
+        {
+            reportsPage?.ClickChedAReportsLink();
+        }
+
+        [When("the user clicks the CHED-D reports link")]
+        public void WhenTheUserClicksTheCHEDDReportsLink()
+        {
+            reportsPage?.ClickChedDReportsLink();
+        }
+    }
+}

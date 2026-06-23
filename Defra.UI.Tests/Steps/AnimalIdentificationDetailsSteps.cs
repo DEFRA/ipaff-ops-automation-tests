@@ -17,7 +17,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
         private IWebDriver? _driver => _objectContainer.IsRegistered<IWebDriver>() ? _objectContainer.Resolve<IWebDriver>() : null;
         private IAnimalIdentificationDetailsPage? animalIdentificationDetailsPage => _objectContainer.IsRegistered<IAnimalIdentificationDetailsPage>() ? _objectContainer.Resolve<IAnimalIdentificationDetailsPage>() : null;
 
-
         public AnimalIdentificationDetailsSteps(ScenarioContext context, IObjectContainer container)
         {
             _objectContainer = container;
@@ -34,12 +33,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserPopulatesIdenitificationDetailsAs(string identificationDetails)
         {
             animalIdentificationDetailsPage?.EnterIdentificationDetails(identificationDetails);
+            _scenarioContext["LiveAnmimalIdentificationDetails"] = identificationDetails;
         }
 
         [When("the user populates the Description as {string}")]
         public void WhenTheUserPopulatesTheDescriptionAs(string description)
         {
             animalIdentificationDetailsPage?.EnterDescription(description);
+            _scenarioContext["LiveAnimalDescription"] = description;
         }
 
         [When("the user populates the Horse name as {string}")]
@@ -68,6 +69,21 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             animalIdentificationDetailsPage?.EnterEarTag(earTag);
             _scenarioContext["EarTag"] = earTag;
+        }
+
+        [When("the user populates the Egg mark as {string}")]
+        public void WhenTheUserPopulatesTheEggMarkAs(string eggMark)
+        {
+            animalIdentificationDetailsPage?.EnterEggMark(eggMark);
+            _scenarioContext["EggMark"] = eggMark;
+        }
+
+        [When("the user populates the Collection date as {int} days ago")]
+        public void WhenTheUserPopulatesTheCollectionDateAsDaysAgo(int daysAgo)
+        {
+            var date = DateTime.Today.AddDays(-daysAgo).ToString("dd/MM/yyyy");
+            animalIdentificationDetailsPage?.EnterCollectionDate(date);
+            _scenarioContext["CollectionDate"] = date;
         }
 
         [Then("the Ear tag should not be copied from the original notification")]
@@ -154,7 +170,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
         private void StoreSpeciesIdentification(string species, int animalIndex, string fieldType, string value)
         {
-            // Store in unified model
             var multiSpecies = _scenarioContext.GetOrCreateMultiSpeciesData();
             var animal = multiSpecies.GetOrCreateSpecies(species).GetOrCreateAnimal(animalIndex);
 

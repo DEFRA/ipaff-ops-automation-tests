@@ -28,9 +28,6 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool IsPageLoaded()
         {
-            Console.WriteLine("Primary " + primaryTitle.Text);
-            Console.WriteLine("Secondary " + secondaryTitle.Text);
-
             return secondaryTitle.Text.Contains("Description of the goods")
                 && primaryTitle.Text.Contains("Transport to the Border Control Post (BCP)");
         }
