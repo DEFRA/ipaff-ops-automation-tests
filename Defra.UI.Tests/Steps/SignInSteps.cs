@@ -68,6 +68,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _driver?.Navigate().GoToUrl(url);
         }
 
+        [Given(@"that I navigate to the Exporter Portal")]
+        [When(@"I navigate to the Exporter Portal")]
+        public void GivenThatINavigateToTheExporterPortal()
+        {
+            var url = urlBuilder.ExporterPortalDefault().BuildExporterPortalApp();
+            _driver?.Navigate().GoToUrl(url);
+        }
+
         [When(@"I click signin button on port checker application")]
         [Given(@"I click signin button on port checker application")]
         public void GivenIClickSigninButtonOnPortCheckerApplication()

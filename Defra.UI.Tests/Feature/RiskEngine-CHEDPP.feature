@@ -1720,7 +1720,7 @@ Scenario: New HMI import commodity rule for CHEDPP - SPS-9449
 		| Start date      |               |
 		| End date        |               |
 	And the user records the Id of the top HMI import commodity rule row as 'NewHMIRuleId'
-	# Submit 4 matching CHED-PP notifications in IPAFFS (Zambia / 07096010 / CPSAN)
+	# Submit 4 matching CHED-PP notifications in IPAFFS (Zambia / 07096010 / Sweet peppers / CPSAN / Capsicum annuum)
 	# --- APP-A ---
 	When I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -2199,7 +2199,7 @@ Scenario: New PHSI import commodity rule for CHEDPP - SPS-9450
 		| Document check aligned  | Yes             |
 		| Reason                  |                 |
 	And the user records the Id of the top PHSI import commodity rule row as 'NewPHSIRuleId'
-	# Submit 4 matching CHED-PP notifications in IPAFFS (Zambia / 06042020 / ABIAL)
+	# Submit 4 matching CHED-PP notifications in IPAFFS (Zambia / 06042020 / Christmas trees / ABIAL)
 	# --- APP-A ---
 	When I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -2621,7 +2621,7 @@ Scenario: New HMI import country rule for CHEDPP - SPS-9507
 		| To                   | 50%              |
 	When the user clicks the Confirm and send button on the confirmation of country rate change page
 	Then the Rule change complete page should be displayed
-	# Verify the rule in the HMI country rules report
+	# Verify the rule in the HMI import country rules report
 	When the user clicks the 'Reports' link from the Risk Engine header menu
 	Then the Risk Engine Reports page should be displayed
 	When the user clicks the CHED-PP reports link
@@ -2644,7 +2644,7 @@ Scenario: New HMI import country rule for CHEDPP - SPS-9507
 	And the top HMI import country rule row should have Last Updated date as today's date
 	And the top HMI import country rule row should have Created date as today's date
 	And the user records the Id of the top HMI import country rule row as 'NewHMIRuleId'
-	# Submit 4 matching CHED-PP notifications in IPAFFS (Zambia / 07096010 / CPSAN)
+	# Submit 4 matching CHED-PP notifications in IPAFFS (Yemen / 08107000)
 	# --- APP-A ---
 	When I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -3056,3 +3056,7 @@ Scenario: New HMI import country rule for CHEDPP - SPS-9507
 	And the HMI import country rule Id recorded as 'NewHMIRuleId' should no longer be present in the rules table
 	When the user scrolls to the bottom of the View rules for all countries page
 	Then the HMI import country rule count should be 1 less than 'HMIRuleCount'
+
+@SPS-9510
+Scenario: New exporter application for a certificate of conformity - SPS-9510
+	Given that I navigate to the Exporter Portal
