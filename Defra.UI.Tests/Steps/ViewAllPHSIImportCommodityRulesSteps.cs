@@ -37,22 +37,22 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(viewAllPHSIImportCommodityRulesPage?.IsPageLoaded(), "View all PHSI (Import) Commodity Rules report page is not displayed in new tab");
         }
 
-        [When("the user scrolls to the bottom of the PHSI rules report page")]
-        public void WhenTheUserScrollsToTheBottomOfThePHSIRulesReportPage()
+        [When("the user scrolls to the bottom of the View all PHSI \\(Import) Commodity Rules report page")]
+        public void WhenTheUserScrollsToTheBottomOfTheViewAllPHSIImportCommodityRulesReportPage()
         {
             viewAllPHSIImportCommodityRulesPage?.ScrollToBottom();
         }
 
-        [Then("the count of rules is recorded as {string}")]
-        public void ThenTheCountOfRulesIsRecordedAs(string key)
+        [Then("the count of PHSI import commodity rules is recorded as {string}")]
+        public void ThenTheCountOfPHSIImportCommodityRulesIsRecordedAs(string key)
         {
             var count = viewAllPHSIImportCommodityRulesPage!.GetTotalRuleCount();
             _scenarioContext[key] = count;
             Assert.Greater(count, 0, $"Recorded rule count for '{key}' is 0");
         }
 
-        [Then("the count of rules should be {int} more than {string}")]
-        public void ThenTheCountOfRulesShouldBeMoreThan(int delta, string key)
+        [Then("the count of PHSI import commodity rules should be {int} more than {string}")]
+        public void ThenTheCountOfPHSIImportCommodityRulesShouldBeMoreThan(int delta, string key)
         {
             var initial = (int)_scenarioContext[key];
             var actual = viewAllPHSIImportCommodityRulesPage!.GetTotalRuleCount();
@@ -60,8 +60,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 $"Expected rule count to be {initial + delta} (initial '{key}'={initial} + {delta}) but was {actual}");
         }
 
-        [Then("the count of rules should be {int} less than {string}")]
-        public void ThenTheCountOfRulesShouldBeLessThan(int delta, string key)
+        [Then("the count of PHSI import commodity rules should be {int} less than {string}")]
+        public void ThenTheCountOfPHSIImportCommodityRulesShouldBeLessThan(int delta, string key)
         {
             var initial = (int)_scenarioContext[key];
             var actual = viewAllPHSIImportCommodityRulesPage!.GetTotalRuleCount();
@@ -69,8 +69,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 $"Expected rule count to be {initial - delta} (initial '{key}'={initial} - {delta}) but was {actual}");
         }
 
-        [Then("the count of rules should equal the recorded {string}")]
-        public void ThenTheCountOfRulesShouldEqualTheRecorded(string key)
+        [Then("the count of PHSI import commodity rules should equal the recorded {string}")]
+        public void ThenTheCountOfPHSIImportCommodityRulesShouldEqualTheRecorded(string key)
         {
             var expected = (int)_scenarioContext[key];
             var actual = viewAllPHSIImportCommodityRulesPage!.GetTotalRuleCount();
@@ -78,20 +78,20 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 $"Expected rule count to equal '{key}'={expected} but was {actual}");
         }
 
-        [When("the user enters {string} in the PHSI rules search field")]
-        public void WhenTheUserEntersInThePHSIRulesSearchField(string text)
+        [When("the user enters {string} in the PHSI import commodity rules search field")]
+        public void WhenTheUserEntersInThePHSIImportCommodityRulesSearchField(string text)
         {
             viewAllPHSIImportCommodityRulesPage?.EnterSearchText(text);
         }
 
-        [When("the user sorts the PHSI rules table by Id descending")]
-        public void WhenTheUserSortsThePHSIRulesTableByIdDescending()
+        [When("the user sorts the PHSI import commodity rules table by Id descending")]
+        public void WhenTheUserSortsThePHSIImportCommodityRulesTableByIdDescending()
         {
             viewAllPHSIImportCommodityRulesPage?.SortByIdDescending();
         }
 
-        [Then("the top PHSI rule row should match the following details")]
-        public void ThenTheTopPHSIRuleRowShouldMatchTheFollowingDetails(Table table)
+        [Then("the top PHSI import commodity rule row should match the following details")]
+        public void ThenTheTopPHSIImportCommodityRuleRowShouldMatchTheFollowingDetails(Table table)
         {
             var actual = viewAllPHSIImportCommodityRulesPage!.GetTopRowDetails();
             foreach (var row in table.Rows)
@@ -104,37 +104,37 @@ namespace Defra.UI.Tests.Steps.IPAFF
             }
         }
 
-        [Then("the user records the Id of the top PHSI rule row as {string}")]
-        public void ThenTheUserRecordsTheIdOfTheTopPHSIRuleRowAs(string key)
+        [Then("the user records the Id of the top PHSI import commodity rule row as {string}")]
+        public void ThenTheUserRecordsTheIdOfTheTopPHSIImportCommodityRuleRowAs(string key)
         {
             var id = viewAllPHSIImportCommodityRulesPage!.GetTopRowId();
             Assert.IsNotEmpty(id, "Top row Id is empty");
             _scenarioContext[key] = id;
         }
 
-        [When("the user ticks the Select to Delete checkbox for rule Id recorded as {string}")]
-        public void WhenTheUserTicksTheSelectToDeleteCheckboxForRuleIdRecordedAs(string contextKey)
+        [When("the user ticks the Select to Delete checkbox for PHSI import commodity rule Id recorded as {string}")]
+        public void WhenTheUserTicksTheSelectToDeleteCheckboxForPHSIImportCommodityRuleIdRecordedAs(string contextKey)
         {
             var ruleId = _scenarioContext.Get<string>(contextKey);
             viewAllPHSIImportCommodityRulesPage?.TickSelectToDeleteCheckboxForRuleId(ruleId);
         }
 
-        [Then("the selected rules info banner should display {string}")]
-        public void ThenTheSelectedRulesInfoBannerShouldDisplay(string expectedText)
+        [Then("the info banner should display {string} on the View all PHSI \\(Import) Commodity Rules report page")]
+        public void ThenTheInfoBannerShouldDisplayOnTheViewAllPHSIImportCommodityRulesReportPage(string expectedText)
         {
             var actual = viewAllPHSIImportCommodityRulesPage!.GetSelectedRulesInfoText();
             Assert.AreEqual(expectedText, actual,
                 $"Selected rules info banner mismatch: expected '{expectedText}' but got '{actual}'");
         }
 
-        [When("the user clicks the Delete Rules button")]
-        public void WhenTheUserClicksTheDeleteRulesButton()
+        [When("the user clicks the Delete Rules button on the View all PHSI \\(Import) Commodity Rules report page")]
+        public void WhenTheUserClicksTheDeleteRulesButtonOnTheViewAllPHSIImportCommodityRulesReportPage()
         {
             viewAllPHSIImportCommodityRulesPage?.ClickDeleteRulesButton();
         }
 
-        [Then("the Confirm rule deletion dialog should be displayed with {int} rules selected for deletion")]
-        public void ThenTheConfirmRuleDeletionDialogShouldBeDisplayedWithRulesSelectedForDeletion(int expectedCount)
+        [Then("the Confirm rule deletion dialog should be displayed with {int} rules selected for deletion on the View all PHSI \\(Import) Commodity Rules report page")]
+        public void ThenTheConfirmRuleDeletionDialogShouldBeDisplayedWithRulesSelectedForDeletionOnTheViewAllPHSIImportCommodityRulesReportPage(int expectedCount)
         {
             Assert.True(viewAllPHSIImportCommodityRulesPage?.IsConfirmDeletionDialogDisplayed(),
                 "Confirm rule deletion dialog is not displayed");
@@ -143,21 +143,21 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 $"Expected {expectedCount} rule(s) in deletion dialog but found {actual}");
         }
 
-        [When("the user clicks the Delete rules button on the confirmation dialog")]
-        public void WhenTheUserClicksTheDeleteRulesButtonOnTheConfirmationDialog()
+        [When("the user clicks the Delete rules button on the confirmation dialog on the View all PHSI \\(Import) Commodity Rules report page")]
+        public void WhenTheUserClicksTheDeleteRulesButtonOnTheConfirmationDialogOnTheViewAllPHSIImportCommodityRulesReportPage()
         {
             viewAllPHSIImportCommodityRulesPage?.ClickConfirmDeleteButton();
         }
 
-        [Then("the Confirm rule deletion dialog should be closed")]
-        public void ThenTheConfirmRuleDeletionDialogShouldBeClosed()
+        [Then("the Confirm rule deletion dialog should be closed on the View all PHSI \\(Import) Commodity Rules report page")]
+        public void ThenTheConfirmRuleDeletionDialogShouldBeClosedOnTheViewAllPHSIImportCommodityRulesReportPage()
         {
             Assert.True(viewAllPHSIImportCommodityRulesPage?.IsConfirmDeletionDialogClosed(),
                 "Confirm rule deletion dialog is still displayed");
         }
 
-        [Then("the rule Id recorded as {string} should no longer be present in the rules table")]
-        public void ThenTheRuleIdRecordedAsShouldNoLongerBePresentInTheRulesTable(string contextKey)
+        [Then("the PHSI import commodity rule Id recorded as {string} should no longer be present in the rules table")]
+        public void ThenThePHSIImportCommodityRuleIdRecordedAsShouldNoLongerBePresentInTheRulesTable(string contextKey)
         {
             Assert.True(viewAllPHSIImportCommodityRulesPage?.IsPageLoaded(),
                 "PHSI rules page has not fully loaded after deletion");
@@ -166,15 +166,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 $"Rule Id '{ruleId}' (from '{contextKey}') is still present in the rules table after deletion");
         }
 
-        [Then("the PHSI rules search field should be empty")]
-        public void ThenThePHSIRulesSearchFieldShouldBeEmpty()
+        [Then("the PHSI import commodity rules search field should be empty")]
+        public void ThenThePHSIImportCommodityRulesSearchFieldShouldBeEmpty()
         {
             var text = viewAllPHSIImportCommodityRulesPage!.GetSearchInputText();
             Assert.IsEmpty(text, $"Expected search field to be empty but found '{text}'");
         }
 
-        [Then("the PHSI rules table Id column should have no sort applied")]
-        public void ThenThePHSIRulesTableIdColumnShouldHaveNoSortApplied()
+        [Then("the PHSI import commodity rules table Id column should have no sort applied")]
+        public void ThenThePHSIImportCommodityRulesTableIdColumnShouldHaveNoSortApplied()
         {
             Assert.False(viewAllPHSIImportCommodityRulesPage!.IsIdColumnSorted(),
                 "Id column still has a sort applied (aria-sort is present) after deletion");

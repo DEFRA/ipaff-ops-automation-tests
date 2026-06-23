@@ -192,6 +192,9 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<RuleChangeCompletePage, IRuleChangeCompletePage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ViewAllHMIImportCommodityRulesPage, IViewAllHMIImportCommodityRulesPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<PHSIImportCommodityRulesPage, IPHSIImportCommodityRulesPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ConfirmationOfCountryRateChangePage, IConfirmationOfCountryRateChangePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<HMIImportCountryRulesPage, IHMIImportCountryRulesPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ViewRulesForAllCountriesPage, IViewRulesForAllCountriesPage>());
 
             //Read Email
             _objectContainer.RegisterInstanceAs(GetBaseWithScenarioContext<FetchCodeFromEmail, IFetchCodeFromEmail>());

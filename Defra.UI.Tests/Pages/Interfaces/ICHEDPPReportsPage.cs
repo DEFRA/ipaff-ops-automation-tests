@@ -6,5 +6,6 @@
         void ClickPHSIImportsCommodityRulesReportLink();
         void ClickRiskDecisionReportLink();
         void ClickHMIImportsCommodityRulesReportLink();
+        void ClickCountryRulesReportLink();
     }
 }

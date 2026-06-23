@@ -16,8 +16,8 @@ Scenario: Bulk upload initial load for CHEDD - SPS-9442
 	Then the CHED-D reports page should be displayed
 	When the user clicks the CHED-D Imports commodity rules report link
 	Then the View all CHED-D (Import) Commodity Rules report page should be displayed
-	When the user scrolls to the bottom of the CHED-D rules report page
-	Then the count of CHED-D rules is recorded as 'InitialRuleCount'
+	When the user scrolls to the bottom of the View all CHED-D (Import) Commodity Rules report page
+	Then the count of CHED-D import commodity rules is recorded as 'InitialRuleCount'
 	When the user clicks the 'CHED-D' link from the Risk Engine header menu
 	Then the CHED-D imports page should be displayed
 	When the user clicks the Bulk upload commodity rules link on the CHED-D imports page
@@ -43,10 +43,10 @@ Scenario: Bulk upload initial load for CHEDD - SPS-9442
 	And the Commodity rules status for CHED-D page should show Existing rules equal to 'InitialRuleCount'
 	When the user clicks the View all CHED-D imports commodity rules link
 	Then the View all CHED-D (Import) Commodity Rules report page should be displayed
-	When the user scrolls to the bottom of the CHED-D rules report page
-	Then the count of CHED-D rules should be 5 more than 'InitialRuleCount'
-	When the user enters '0910' in the CHED-D rules search field
-	Then the top CHED-D rule row should match the following details
+	When the user scrolls to the bottom of the View all CHED-D (Import) Commodity Rules report page
+	Then the count of CHED-D import commodity rules should be 5 more than 'InitialRuleCount'
+	When the user enters '0910' in the CHED-D import commodity rules search field
+	Then the top CHED-D import commodity rule row should match the following details
 		| Field               | Value                                                                          |
 		| Description         | Ginger, saffron, turmeric (curcuma), thyme, bay leaves, curry and other spices |
 		| Commodity code      | 0910                                                                           |
@@ -60,8 +60,8 @@ Scenario: Bulk upload initial load for CHEDD - SPS-9442
 		| Purpose             | Non-Internal Market                                                            |
 		| Border Control Post | All                                                                            |
 		| Reason              | Reason 1                                                                       |
-	And the top CHED-D rule row should have Start date as today's date
-	And the user records the Id of the top CHED-D rule row as 'Iteration_1_RuleId'
+	And the top CHED-D import commodity rule row should have Start date as today's date
+	And the user records the Id of the top CHED-D import commodity rule row as 'Iteration_1_RuleId'
 	# Submit a matching CHED-D notification in IPAFFS (Democratic Republic of the Congo / 0910 / Non-Internal Market)
 	When I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -174,8 +174,8 @@ Scenario: Bulk upload initial load for CHEDD - SPS-9442
 	Then the CHED-D reports page should be displayed
 	When the user clicks the CHED-D Imports commodity rules report link
 	Then the View all CHED-D (Import) Commodity Rules report page should be displayed
-	When the user enters '1006' in the CHED-D rules search field
-	Then the top CHED-D rule row should match the following details
+	When the user enters '1006' in the CHED-D import commodity rules search field
+	Then the top CHED-D import commodity rule row should match the following details
 		| Field               | Value                   |
 		| Description         | Rice                    |
 		| Commodity code      | 1006                    |
@@ -189,8 +189,8 @@ Scenario: Bulk upload initial load for CHEDD - SPS-9442
 		| Purpose             | All                     |
 		| Border Control Post | All                     |
 		| Reason              |                         |
-	And the top CHED-D rule row should have Start date as today's date
-	And the user records the Id of the top CHED-D rule row as 'Iteration_2_RuleId'
+	And the top CHED-D import commodity rule row should have Start date as today's date
+	And the user records the Id of the top CHED-D import commodity rule row as 'Iteration_2_RuleId'
 	# Submit a matching CHED-D notification in IPAFFS (Montserrat / 1006)
 	When I navigate to the IPAFF application
 	Then the Your import notifications page is displayed
@@ -296,8 +296,8 @@ Scenario: Bulk upload initial load for CHEDD - SPS-9442
 	Then the CHED-D reports page should be displayed
 	When the user clicks the CHED-D Imports commodity rules report link
 	Then the View all CHED-D (Import) Commodity Rules report page should be displayed
-	When the user enters '13023290' in the CHED-D rules search field
-	Then the top CHED-D rule row should match the following details
+	When the user enters '13023290' in the CHED-D import commodity rules search field
+	Then the top CHED-D import commodity rule row should match the following details
 		| Field               | Value                                            |
 		| Description         | Of guar seeds                                    |
 		| Commodity code      | 13023290                                         |
@@ -311,8 +311,8 @@ Scenario: Bulk upload initial load for CHEDD - SPS-9442
 		| Purpose             | All                                              |
 		| Border Control Post | Felixstowe - GBFXT1, Manchester airport - GBMNC1 |
 		| Reason              | Reason 3                                         |
-	And the top CHED-D rule row should have Start date as today's date
-	And the user records the Id of the top CHED-D rule row as 'Iteration_3_RuleId'
+	And the top CHED-D import commodity rule row should have Start date as today's date
+	And the user records the Id of the top CHED-D import commodity rule row as 'Iteration_3_RuleId'
 	# Submit a matching CHED-D notification in IPAFFS (Afghanistan / 13023290 / Felixstowe)
 	When I navigate to the IPAFF application
 	Then the Your import notifications page is displayed
@@ -417,8 +417,8 @@ Scenario: Bulk upload initial load for CHEDD - SPS-9442
 	Then the CHED-D reports page should be displayed
 	When the user clicks the CHED-D Imports commodity rules report link
 	Then the View all CHED-D (Import) Commodity Rules report page should be displayed
-	When the user enters '2008191930' in the CHED-D rules search field
-	Then the top CHED-D rule row should match the following details
+	When the user enters '2008191930' in the CHED-D import commodity rules search field
+	Then the top CHED-D import commodity rule row should match the following details
 		| Field               | Value                                                            |
 		| Description         | Hazelnuts, otherwise prepared or preserved, including mixtures   |
 		| Commodity code      | 2008191930                                                       |
@@ -432,8 +432,8 @@ Scenario: Bulk upload initial load for CHEDD - SPS-9442
 		| Purpose             | All                                                              |
 		| Border Control Post | All                                                              |
 		| Reason              |                                                                  |
-	And the top CHED-D rule row should have Start date as today's date
-	And the user records the Id of the top CHED-D rule row as 'Iteration_4_RuleId'
+	And the top CHED-D import commodity rule row should have Start date as today's date
+	And the user records the Id of the top CHED-D import commodity rule row as 'Iteration_4_RuleId'
 	# Submit a matching CHED-D notification in IPAFFS (Mexico / 2008191930)
 	When I navigate to the IPAFF application
 	Then the Your import notifications page is displayed
@@ -538,8 +538,8 @@ Scenario: Bulk upload initial load for CHEDD - SPS-9442
 	Then the CHED-D reports page should be displayed
 	When the user clicks the CHED-D Imports commodity rules report link
 	Then the View all CHED-D (Import) Commodity Rules report page should be displayed
-	When the user enters '*' in the CHED-D rules search field
-	Then the top CHED-D rule row should match the following details
+	When the user enters '*' in the CHED-D import commodity rules search field
+	Then the top CHED-D import commodity rule row should match the following details
 		| Field               | Value           |
 		| Description         | ALL             |
 		| Commodity code      | *               |
@@ -553,8 +553,8 @@ Scenario: Bulk upload initial load for CHEDD - SPS-9442
 		| Purpose             | Internal Market |
 		| Border Control Post | All             |
 		| Reason              |                 |
-	And the top CHED-D rule row should have Start date as today's date
-	And the user records the Id of the top CHED-D rule row as 'Iteration_5_RuleId'
+	And the top CHED-D import commodity rule row should have Start date as today's date
+	And the user records the Id of the top CHED-D import commodity rule row as 'Iteration_5_RuleId'
 	# Submit a matching CHED-D notification in IPAFFS (Togo / 200850 / Internal Market)
 	When I navigate to the IPAFF application
 	Then the Your import notifications page is displayed
@@ -667,8 +667,8 @@ Scenario: Bulk upload update existing rules for CHEDD - SPS-9443
 	Then the CHED-D reports page should be displayed
 	When the user clicks the CHED-D Imports commodity rules report link
 	Then the View all CHED-D (Import) Commodity Rules report page should be displayed
-	When the user scrolls to the bottom of the CHED-D rules report page
-	Then the count of CHED-D rules is recorded as 'InitialRuleCount'
+	When the user scrolls to the bottom of the View all CHED-D (Import) Commodity Rules report page
+	Then the count of CHED-D import commodity rules is recorded as 'InitialRuleCount'
 	When the user clicks the 'CHED-D' link from the Risk Engine header menu
 	Then the CHED-D imports page should be displayed
 	When the user clicks the Bulk upload commodity rules link on the CHED-D imports page
@@ -696,10 +696,10 @@ Scenario: Bulk upload update existing rules for CHEDD - SPS-9443
 	And the Commodity rules status for CHED-D page should show Existing rules equal to 'InitialRuleCount'
 	When the user clicks the View all CHED-D imports commodity rules link
 	Then the View all CHED-D (Import) Commodity Rules report page should be displayed
-	When the user scrolls to the bottom of the CHED-D rules report page
-	Then the count of CHED-D rules should equal the recorded 'InitialRuleCount'
-	When the user enters '0910' in the CHED-D rules search field
-	Then the top CHED-D rule row should match the following details
+	When the user scrolls to the bottom of the View all CHED-D (Import) Commodity Rules report page
+	Then the count of CHED-D import commodity rules should equal the recorded 'InitialRuleCount'
+	When the user enters '0910' in the CHED-D import commodity rules search field
+	Then the top CHED-D import commodity rule row should match the following details
 		| Field               | Value                                                                          |
 		| Description         | Ginger, saffron, turmeric (curcuma), thyme, bay leaves, curry and other spices |
 		| Commodity code      | 0910                                                                           |
@@ -713,8 +713,8 @@ Scenario: Bulk upload update existing rules for CHEDD - SPS-9443
 		| Purpose             | Non-Internal Market                                                            |
 		| Border Control Post | All                                                                            |
 		| Reason              | Reason 1b                                                                      |
-	And the top CHED-D rule row should have Start date as today's date
-	And the user records the Id of the top CHED-D rule row as 'Iteration_1_RuleId'
+	And the top CHED-D import commodity rule row should have Start date as today's date
+	And the user records the Id of the top CHED-D import commodity rule row as 'Iteration_1_RuleId'
 	# Submit a matching CHED-D notification in IPAFFS (Democratic Republic of the Congo / 0910 / Non-Internal Market)
 	When I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -824,8 +824,8 @@ Scenario: Bulk upload update existing rules for CHEDD - SPS-9443
 	Then the CHED-D reports page should be displayed
 	When the user clicks the CHED-D Imports commodity rules report link
 	Then the View all CHED-D (Import) Commodity Rules report page should be displayed
-	When the user enters '1006' in the CHED-D rules search field
-	Then the top CHED-D rule row should match the following details
+	When the user enters '1006' in the CHED-D import commodity rules search field
+	Then the top CHED-D import commodity rule row should match the following details
 		| Field               | Value                   |
 		| Description         | Rice                    |
 		| Commodity code      | 1006                    |
@@ -839,8 +839,8 @@ Scenario: Bulk upload update existing rules for CHEDD - SPS-9443
 		| Purpose             | Internal Market         |
 		| Border Control Post | All                     |
 		| Reason              | Reason 2b               |
-	And the top CHED-D rule row should have Start date as today's date
-	And the user records the Id of the top CHED-D rule row as 'Iteration_2_RuleId'
+	And the top CHED-D import commodity rule row should have Start date as today's date
+	And the user records the Id of the top CHED-D import commodity rule row as 'Iteration_2_RuleId'
 	# Submit a matching CHED-D notification in IPAFFS (Montserrat / 1006 / Internal Market)
 	When I navigate to the IPAFF application
 	Then the Your import notifications page is displayed
@@ -943,8 +943,8 @@ Scenario: Bulk upload update existing rules for CHEDD - SPS-9443
 	Then the CHED-D reports page should be displayed
 	When the user clicks the CHED-D Imports commodity rules report link
 	Then the View all CHED-D (Import) Commodity Rules report page should be displayed
-	When the user enters '13023290' in the CHED-D rules search field
-	Then the top CHED-D rule row should match the following details
+	When the user enters '13023290' in the CHED-D import commodity rules search field
+	Then the top CHED-D import commodity rule row should match the following details
 		| Field               | Value                          |
 		| Description         | Of guar seeds                  |
 		| Commodity code      | 13023290                       |
@@ -958,8 +958,8 @@ Scenario: Bulk upload update existing rules for CHEDD - SPS-9443
 		| Purpose             | All                            |
 		| Border Control Post | Manchester airport - GBMNC1    |
 		| Reason              |                                |
-	And the top CHED-D rule row should have Start date as today's date
-	And the user records the Id of the top CHED-D rule row as 'Iteration_3_RuleId'
+	And the top CHED-D import commodity rule row should have Start date as today's date
+	And the user records the Id of the top CHED-D import commodity rule row as 'Iteration_3_RuleId'
 	# Submit a matching CHED-D notification in IPAFFS (Afghanistan / 13023290 / Manchester airport)
 	When I navigate to the IPAFF application
 	Then the Your import notifications page is displayed
@@ -1061,8 +1061,8 @@ Scenario: Bulk upload update existing rules for CHEDD - SPS-9443
 	Then the CHED-D reports page should be displayed
 	When the user clicks the CHED-D Imports commodity rules report link
 	Then the View all CHED-D (Import) Commodity Rules report page should be displayed
-	When the user enters '2008191930' in the CHED-D rules search field
-	Then the top CHED-D rule row should match the following details
+	When the user enters '2008191930' in the CHED-D import commodity rules search field
+	Then the top CHED-D import commodity rule row should match the following details
 		| Field               | Value                                                          |
 		| Description         | Hazelnuts, otherwise prepared or preserved, including mixtures |
 		| Commodity code      | 2008191930                                                     |
@@ -1076,8 +1076,8 @@ Scenario: Bulk upload update existing rules for CHEDD - SPS-9443
 		| Purpose             | All                                                            |
 		| Border Control Post | All                                                            |
 		| Reason              |                                                                |
-	And the top CHED-D rule row should have Start date as today's date
-	And the user records the Id of the top CHED-D rule row as 'Iteration_4_RuleId'
+	And the top CHED-D import commodity rule row should have Start date as today's date
+	And the user records the Id of the top CHED-D import commodity rule row as 'Iteration_4_RuleId'
 	# Submit a matching CHED-D notification in IPAFFS (Mexico / 2008191930)
 	When I navigate to the IPAFF application
 	Then the Your import notifications page is displayed
@@ -1179,8 +1179,8 @@ Scenario: Bulk upload update existing rules for CHEDD - SPS-9443
 	Then the CHED-D reports page should be displayed
 	When the user clicks the CHED-D Imports commodity rules report link
 	Then the View all CHED-D (Import) Commodity Rules report page should be displayed
-	When the user enters '*' in the CHED-D rules search field
-	Then the top CHED-D rule row should match the following details
+	When the user enters '*' in the CHED-D import commodity rules search field
+	Then the top CHED-D import commodity rule row should match the following details
 		| Field               | Value           |
 		| Description         | ALL             |
 		| Commodity code      | *               |
@@ -1194,8 +1194,8 @@ Scenario: Bulk upload update existing rules for CHEDD - SPS-9443
 		| Purpose             | Internal Market |
 		| Border Control Post | All             |
 		| Reason              |                 |
-	And the top CHED-D rule row should have Start date as today's date
-	And the user records the Id of the top CHED-D rule row as 'Iteration_5_RuleId'
+	And the top CHED-D import commodity rule row should have Start date as today's date
+	And the user records the Id of the top CHED-D import commodity rule row as 'Iteration_5_RuleId'
 	# Submit a matching CHED-D notification in IPAFFS (Togo / 200850 / Internal Market)
 	When I navigate to the IPAFF application
 	Then the Your import notifications page is displayed
@@ -1297,15 +1297,15 @@ Scenario: Bulk upload update existing rules for CHEDD - SPS-9443
 	Then the CHED-D reports page should be displayed
 	When the user clicks the CHED-D Imports commodity rules report link
 	Then the View all CHED-D (Import) Commodity Rules report page should be displayed
-	When the user clicks the Remove rule link for CHED-D rule Id recorded as 'Iteration_1_RuleId'
-	Then the CHED-D rule Id recorded as 'Iteration_1_RuleId' should no longer be present in the rules table
-	When the user clicks the Remove rule link for CHED-D rule Id recorded as 'Iteration_2_RuleId'
-	Then the CHED-D rule Id recorded as 'Iteration_2_RuleId' should no longer be present in the rules table
-	When the user clicks the Remove rule link for CHED-D rule Id recorded as 'Iteration_3_RuleId'
-	Then the CHED-D rule Id recorded as 'Iteration_3_RuleId' should no longer be present in the rules table
-	When the user clicks the Remove rule link for CHED-D rule Id recorded as 'Iteration_4_RuleId'
-	Then the CHED-D rule Id recorded as 'Iteration_4_RuleId' should no longer be present in the rules table
-	When the user clicks the Remove rule link for CHED-D rule Id recorded as 'Iteration_5_RuleId'
-	Then the CHED-D rule Id recorded as 'Iteration_5_RuleId' should no longer be present in the rules table
-	When the user scrolls to the bottom of the CHED-D rules report page
-	Then the count of CHED-D rules should be 5 less than 'InitialRuleCount'
+	When the user clicks the Remove rule link for CHED-D import commodity rule Id recorded as 'Iteration_1_RuleId'
+	Then the CHED-D import commodity rule Id recorded as 'Iteration_1_RuleId' should no longer be present in the rules table
+	When the user clicks the Remove rule link for CHED-D import commodity rule Id recorded as 'Iteration_2_RuleId'
+	Then the CHED-D import commodity rule Id recorded as 'Iteration_2_RuleId' should no longer be present in the rules table
+	When the user clicks the Remove rule link for CHED-D import commodity rule Id recorded as 'Iteration_3_RuleId'
+	Then the CHED-D import commodity rule Id recorded as 'Iteration_3_RuleId' should no longer be present in the rules table
+	When the user clicks the Remove rule link for CHED-D import commodity rule Id recorded as 'Iteration_4_RuleId'
+	Then the CHED-D import commodity rule Id recorded as 'Iteration_4_RuleId' should no longer be present in the rules table
+	When the user clicks the Remove rule link for CHED-D import commodity rule Id recorded as 'Iteration_5_RuleId'
+	Then the CHED-D import commodity rule Id recorded as 'Iteration_5_RuleId' should no longer be present in the rules table
+	When the user scrolls to the bottom of the View all CHED-D (Import) Commodity Rules report page
+	Then the count of CHED-D import commodity rules should be 5 less than 'InitialRuleCount'
