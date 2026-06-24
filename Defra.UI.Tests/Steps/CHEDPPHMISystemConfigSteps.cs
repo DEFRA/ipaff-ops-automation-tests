@@ -36,6 +36,7 @@ namespace Defra.UI.Tests.Steps
         }
 
         [When("the user sets the AIS Country Rate to {int}")]
+        [When("the user resets the AIS Country Rate to {int}")]
         public void WhenTheUserSetsTheAISCountryRateTo(int newAISRate)
         {
             chedPPHmiSystemConfigPage?.SetNewAISRate(newAISRate);

@@ -3138,7 +3138,6 @@ Scenario: New HMI country rule for CHEDPP - SPS-9508
 	When the user clicks Commodity code search tab
 	And the user searches for the commodity code '08105000'
 	Then the CHED PP commodity details should be populated '08105000' 'Kiwifruit'
-	#When the user searches for EPPO code 'DOSAR' and clicks add link
 	When the user selects EPPO code 'ATICH' checkbox
 	And the user clicks Save and continue
 	Then the Description of the goods Variety and class of commodity should be displayed
@@ -3164,14 +3163,8 @@ Scenario: New HMI country rule for CHEDPP - SPS-9508
 	Then the Additional details page should be displayed
 	When the user enters the total gross weight '110'
 	And the user clicks Save and continue
-	#Then the Confirmation to declare GMS page should be displayed
-	#When the user selects 'Yes' confirmation option
-	#And the user clicks Save and continue
 	Then Transport to the Border Control Post (BCP) page should be dislayed
 	When the user populates the transport to the BCP details 'Heathrow Airport - GBLHR4PP' 'Eurobip' 'Road vehicle' 'YY10 KTP' 'No' 'Doc23456'
-	#Check if below 2 steps needed for arrival time on bcp page
-	#And the user enters arrival date at BCP or Port of entry as today's date
-	#And the user enters estimated arrival time at BCP with future time
 	And the user clicks Save and continue
 	Then the Goods movement services page should be displayed
 	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
@@ -3540,3 +3533,16 @@ Scenario: New HMI country rule for CHEDPP - SPS-9508
 	And the HMI import country rule Id recorded as 'NewHMIRuleId' should no longer be present in the rules table
 	When the user scrolls to the bottom of the View rules for all countries page
 	Then the HMI import country rule count should be 1 less than 'HMIRuleCount'
+	# Reset AIS Country Rate on CHED-PP HMI System Configuration page
+	When the user clicks the 'CHED-PP' link from the Risk Engine header menu
+	Then the CHED-PP imports and exports page should be displayed
+	When the user clicks the System settings for HMI rules link
+	Then the HMI System Configuration page should be displayed
+	When the user makes note of the current setting for AIS Country Rate
+	When the user resets the AIS Country Rate to 0
+	And the user clicks the Save and continue button
+	Then the Confirm HMI System Configuration Changes page should be displayed
+	And the AIS Country Rate should be displayed as 0
+	And the user clicks the Confirm and send button
+	Then the System configuration update page should be displayed
+	And the system configuration update successful message should be displayed
