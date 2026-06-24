@@ -119,8 +119,21 @@ namespace Defra.UI.Tests.Tools
 
         public static bool IsDownloaded(string fileName, string extension)
         {
-            var downloadedFilePath = Path.Combine(Path.GetTempPath(), "automation-downloads", $"{fileName}.{extension}");
+            //var downloadedFilePath = Path.Combine(Path.GetTempPath(), "automation-downloads", $"{fileName}.{extension}");
 
+            /*var basePath = Environment.GetEnvironmentVariable("DOWNLOAD_DIR")
+              ?? Path.Combine(Path.GetTempPath(), "automation-downloads");
+
+            Directory.CreateDirectory(basePath);
+
+            var downloadedFilePath = Path.Combine(basePath, $"{fileName}.{extension}");*/
+
+
+            var basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"automation-downloads");
+
+            Directory.CreateDirectory(basePath);
+
+            var downloadedFilePath = Path.Combine(basePath, $"{fileName}.{extension}");
 
             var timeout = TimeSpan.FromSeconds(30);
 

@@ -9,8 +9,8 @@ pool:
     name: 'DEFRA-TRD'
 
 variables:
-  BuildConfiguration: Release
-
+  BuildConfiguration: Release 
+  
 steps:
 
   - task: DotNetCoreCLI@2
