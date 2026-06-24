@@ -16,7 +16,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement lnkHMIImportCommodityRules => _driver.WaitForElement(By.XPath("//a[normalize-space()='HMI import commodity rules']"));
         private IWebElement lnkPHSIIndividualCommodityRules => _driver.WaitForElement(By.XPath("//a[normalize-space()='PHSI individual commodity rules']"));
         private IWebElement lnkSystemSettingsForHMIRules => _driver.WaitForElement(By.XPath("//a[normalize-space()='System settings for HMI rules']"));
-
+        private IWebElement lnkCountryRules => _driver.WaitForElement(By.XPath("//a[normalize-space()='Country rules']"));
         #endregion
 
         public CHEDPPImportsAndExportsPage(IObjectContainer container)
@@ -30,5 +30,6 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickHMIImportCommodityRulesLink() => lnkHMIImportCommodityRules.Click();
         public void ClickPHSIIndividualCommodityRulesLink() => lnkPHSIIndividualCommodityRules.Click();
         public void ClickSystemSettingsForHMIRulesLink() => lnkSystemSettingsForHMIRules.Click();
+        public void ClickCountryRulesLink() => lnkCountryRules.Click();
     }
 }

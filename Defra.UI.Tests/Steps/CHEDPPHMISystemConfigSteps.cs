@@ -16,14 +16,16 @@ namespace Defra.UI.Tests.Steps
                 ? _objectContainer.Resolve<ICHEDPPHMISystemConfigPage>()
                 : null;
 
-        public CHEDPPHMISystemConfigSteps(IObjectContainer container)
+        public CHEDPPHMISystemConfigSteps(ScenarioContext context, IObjectContainer container)
         {
             _objectContainer = container;
+            _scenarioContext = context;
         }
 
         [Then("the HMI System Configuration page should be displayed")]
         public void ThenTheHMISystemConfigurationPageShouldBeDisplayed()
         {
+            //Thread.Sleep(5000);
             Assert.True(ChedPPHmiSystemConfigPage?.IsPageLoaded(), "HMI System Configuration page is not displayed");
         }
 

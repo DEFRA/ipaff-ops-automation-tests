@@ -28,22 +28,22 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(viewAllHMIImportCommodityRulesPage?.IsPageLoaded(), "View all HMI (Import) Commodity Rules report page is not displayed");
         }
 
-        [When("the user scrolls to the bottom of the HMI rules report page")]
-        public void WhenTheUserScrollsToTheBottomOfTheHMIRulesReportPage()
+        [When("the user scrolls to the bottom of the HMI \\(Import\\) Commodity Rules report page")]
+        public void WhenTheUserScrollsToTheBottomOfTheHMIImportCommodityRulesReportPage()
         {
             viewAllHMIImportCommodityRulesPage?.ScrollToBottom();
         }
 
-        [Then("the HMI rule count is recorded as {string}")]
-        public void ThenTheHMIRuleCountIsRecordedAs(string key)
+        [Then("the HMI import commodity rule count is recorded as {string}")]
+        public void ThenTheHMIImportCommodityRuleCountIsRecordedAs(string key)
         {
             var count = viewAllHMIImportCommodityRulesPage!.GetTotalRuleCount();
             _scenarioContext[key] = count;
             Assert.Greater(count, 0, $"Recorded HMI rule count for '{key}' is 0");
         }
 
-        [Then("the HMI rule count should be {int} less than {string}")]
-        public void ThenTheHMIRuleCountShouldBeLessThan(int delta, string key)
+        [Then("the HMI import commodity rule count should be {int} less than {string}")]
+        public void ThenTheHMIImportCommodityRuleCountShouldBeLessThan(int delta, string key)
         {
             var initial = (int)_scenarioContext[key];
             var actual = viewAllHMIImportCommodityRulesPage!.GetTotalRuleCount();
@@ -51,20 +51,20 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 $"Expected HMI rule count to be {initial - delta} (initial '{key}'={initial} - {delta}) but was {actual}");
         }
 
-        [When("the user enters {string} in the HMI rules search field")]
-        public void WhenTheUserEntersInTheHMIRulesSearchField(string text)
+        [When("the user enters {string} in the HMI import commodity rules search field")]
+        public void WhenTheUserEntersInTheHMIImportCommodityRulesSearchField(string text)
         {
             viewAllHMIImportCommodityRulesPage?.EnterSearchText(text);
         }
 
-        [When("the user sorts the HMI rules table by Id descending")]
-        public void WhenTheUserSortsTheHMIRulesTableByIdDescending()
+        [When("the user sorts the HMI import commodity rules table by Id descending")]
+        public void WhenTheUserSortsTheHMIImportCommodityRulesTableByIdDescending()
         {
             viewAllHMIImportCommodityRulesPage?.SortByIdDescending();
         }
 
-        [Then("the top HMI rule row should match the following details")]
-        public void ThenTheTopHMIRuleRowShouldMatchTheFollowingDetails(Table table)
+        [Then("the top HMI import commodity rule row should match the following details")]
+        public void ThenTheTopHMIImportCommodityRuleRowShouldMatchTheFollowingDetails(Table table)
         {
             var actual = viewAllHMIImportCommodityRulesPage!.GetTopRowDetails();
             foreach (var row in table.Rows)
@@ -77,64 +77,64 @@ namespace Defra.UI.Tests.Steps.IPAFF
             }
         }
 
-        [Then("the user records the Id of the top HMI rule row as {string}")]
-        public void ThenTheUserRecordsTheIdOfTheTopHMIRuleRowAs(string key)
+        [Then("the user records the Id of the top HMI import commodity rule row as {string}")]
+        public void ThenTheUserRecordsTheIdOfTheTopHMIImportCommodityRuleRowAs(string key)
         {
             var id = viewAllHMIImportCommodityRulesPage!.GetTopRowId();
             Assert.IsNotEmpty(id, "Top HMI rule row Id is empty");
             _scenarioContext[key] = id;
         }
 
-        [When("the user ticks the Select to Delete checkbox for HMI rule Id recorded as {string}")]
-        public void WhenTheUserTicksTheSelectToDeleteCheckboxForHMIRuleIdRecordedAs(string contextKey)
+        [When("the user ticks the Select to Delete checkbox for HMI import commodity rule Id recorded as {string}")]
+        public void WhenTheUserTicksTheSelectToDeleteCheckboxForHMIImportCommodityRuleIdRecordedAs(string contextKey)
         {
             var ruleId = _scenarioContext.Get<string>(contextKey);
             viewAllHMIImportCommodityRulesPage?.TickSelectToDeleteCheckboxForRuleId(ruleId);
         }
 
-        [Then("the HMI selected rules info banner should display {string}")]
-        public void ThenTheHMISelectedRulesInfoBannerShouldDisplay(string expectedText)
+        [Then("the info banner should display {string} on the View all HMI \\(Import\\) Commodity Rules page")]
+        public void ThenTheInfoBannerShouldDisplayOnTheViewAllHMIImportCommodityRulesPage(string expectedText)
         {
             var actual = viewAllHMIImportCommodityRulesPage!.GetSelectedRulesInfoText();
             Assert.AreEqual(expectedText, actual,
                 $"HMI selected rules info banner mismatch: expected '{expectedText}' but got '{actual}'");
         }
 
-        [When("the user clicks the Delete Rules button on the HMI rules page")]
-        public void WhenTheUserClicksTheDeleteRulesButtonOnTheHMIRulesPage()
+        [When("the user clicks the Delete Rules button on the View all HMI \\(Import\\) Commodity Rules page")]
+        public void WhenTheUserClicksTheDeleteRulesButtonOnTheViewAllHMIImportCommodityRulesPage()
         {
             viewAllHMIImportCommodityRulesPage?.ClickDeleteRulesButton();
         }
 
-        [Then("the HMI Confirm rule deletion dialog should be displayed with {int} rules selected for deletion")]
-        public void ThenTheHMIConfirmRuleDeletionDialogShouldBeDisplayedWithRulesSelectedForDeletion(int expectedCount)
+        [Then("the Confirm rule deletion dialog should be displayed with {int} rules selected for deletion on the View all HMI \\(Import\\) Commodity Rules page")]
+        public void ThenTheConfirmRuleDeletionDialogShouldBeDisplayedWithRulesSelectedForDeletionOnTheViewAllHMIImportCommodityRulesPage(int expectedCount)
         {
             Assert.True(viewAllHMIImportCommodityRulesPage?.IsConfirmDeletionDialogDisplayed(),
-                "HMI Confirm rule deletion dialog is not displayed");
+                "Confirm rule deletion dialog is not displayed");
             var actual = viewAllHMIImportCommodityRulesPage!.GetConfirmDeletionDialogRuleCount();
             Assert.AreEqual(expectedCount, actual,
-                $"Expected {expectedCount} rule(s) in HMI deletion dialog but found {actual}");
+                $"Expected {expectedCount} rule(s) in deletion dialog but found {actual}");
         }
 
-        [When("the user clicks the Delete rules button on the HMI confirmation dialog")]
-        public void WhenTheUserClicksTheDeleteRulesButtonOnTheHMIConfirmationDialog()
+        [When("the user clicks the Delete rules button on the confirmation dialog on the View all HMI \\(Import\\) Commodity Rules page")]
+        public void WhenTheUserClicksTheDeleteRulesButtonOnTheConfirmationDialogOnTheViewAllHMIImportCommodityRulesPage()
         {
             viewAllHMIImportCommodityRulesPage?.ClickConfirmDeleteButton();
         }
 
-        [Then("the HMI Confirm rule deletion dialog should be closed")]
-        public void ThenTheHMIConfirmRuleDeletionDialogShouldBeClosed()
+        [Then("the Confirm rule deletion dialog should be closed on the View all HMI \\(Import) Commodity Rules page")]
+        public void ThenTheConfirmRuleDeletionDialogShouldBeClosedOnTheViewAllHMIImportCommodityRulesPage()
         {
             Assert.True(viewAllHMIImportCommodityRulesPage?.IsConfirmDeletionDialogClosed(),
-                "HMI Confirm rule deletion dialog is still displayed");
+                            "Confirm rule deletion dialog is still displayed");
         }
 
-        [Then("the HMI rule Id recorded as {string} should no longer be present in the rules table")]
-        public void ThenTheHMIRuleIdRecordedAsShouldNoLongerBePresentInTheRulesTable(string contextKey)
+        [Then("the HMI import commodity rule Id recorded as {string} should no longer be present in the rules table")]
+        public void ThenTheHMIImportCommodityRuleIdRecordedAsShouldNoLongerBePresentInTheRulesTable(string contextKey)
         {
             var ruleId = _scenarioContext.Get<string>(contextKey);
             Assert.False(viewAllHMIImportCommodityRulesPage!.IsRuleIdPresent(ruleId),
-                $"HMI Rule Id '{ruleId}' (from '{contextKey}') is still present in the rules table after deletion");
+                $"Rule Id '{ruleId}' (from '{contextKey}') is still present in the rules table after deletion");
         }
     }
 }

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Defra.UI.Tests.Tools.PDFProcessor.Models
 {
     /// <summary>

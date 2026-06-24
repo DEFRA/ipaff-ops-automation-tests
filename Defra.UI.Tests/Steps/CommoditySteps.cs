@@ -354,6 +354,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(commodityPage?.VerifyCHEDPPCommodityDetails(code, description));
         }
 
+        [When("the user searches for EPPO code {string} and clicks add link")]
         [When("the user searchs for EPPO code {string} and clicks add link")]
         public void WhenTheUserSearchsForEPPOCodeAndClicksAddLink(string eppoCode)
         {

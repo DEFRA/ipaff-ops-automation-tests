@@ -50,5 +50,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
             chedPPImportsAndExportsPage?.ClickSystemSettingsForHMIRulesLink();
         }
 
+        [When("the user clicks the Country rules link under the HMI imports and exports rules header")]
+        public void WhenTheUserClicksTheCountryRulesLinkUnderTheHMIImportsAndExportsRulesHeader()
+        {
+            chedPPImportsAndExportsPage?.ClickCountryRulesLink();
+        }
     }
 }

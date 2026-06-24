@@ -1,7 +1,9 @@
 ﻿using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
+using SeleniumExtras.WaitHelpers;
 
 namespace Defra.UI.Tests.Pages.Classes
 {
@@ -23,7 +25,14 @@ namespace Defra.UI.Tests.Pages.Classes
         }
 
         public bool IsPageLoaded() => pageTitle.Text.Trim().Equals("HMI System Configuration");
-        
+
+        /*public bool IsPageLoaded()
+        {
+            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(50));
+            wait.Until(ExpectedConditions.TextToBePresentInElement(pageTitle, "HMI System Configuration"));
+            return pageTitle.Text.Trim().Contains("HMI System Configuration");
+        }*/
+
         public int? GetCurrentAISRate() => int.TryParse(aisRate.GetAttribute("value"), out int value)? value: null;
 
         public void SetNewAISRate(int newAISRate)

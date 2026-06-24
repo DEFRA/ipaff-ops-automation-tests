@@ -137,7 +137,7 @@ namespace Defra.UI.Tests.Tools
             }
             return false;
         }
-
+               
         public static bool Equals(this string expected, string actual)
         {
             return expected.Equals(actual, StringComparison.OrdinalIgnoreCase);
@@ -149,8 +149,6 @@ namespace Defra.UI.Tests.Tools
         {
             return actual.OrderBy(x => x).SequenceEqual(expected.OrderBy(x => x));
         }
-
-        
 
         public static string DownloadPDF(string fileName, string pdfUrl, IUserObject UserObject, string userRole)
         {
@@ -306,9 +304,6 @@ namespace Defra.UI.Tests.Tools
                 return downloadDirectory;
             }
         }
-
-
-
 
 
         #region WebDriver Extension Methods for Element Safety

@@ -12,7 +12,7 @@ namespace Defra.UI.Tests.Pages.Classes
         #region Page Objects
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='Confirm HMI System Configuration Changes']"), true);
         private IWebElement aisRate => _driver.WaitForElement(By.XPath("//ul[contains(@class,'govuk-list--bullet')]/li[contains(text(), 'AIS: Country Rate to')]"));
-        private IWebElement btnConfirmAndSend => _driver.WaitForElement(By.XPath("//button[@type='submit' and normalize-space()='Send and continue']"));
+        private IWebElement btnConfirmAndSend => _driver.WaitForElement(By.XPath("//button[@type='submit' and normalize-space()='Confirm and send']"));
 
         #endregion
 
