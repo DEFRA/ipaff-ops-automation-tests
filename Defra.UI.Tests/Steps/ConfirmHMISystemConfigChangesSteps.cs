@@ -31,7 +31,6 @@ namespace Defra.UI.Tests.Steps
         [Then("the AIS Country Rate should be displayed as {int}")]
         public void ThenTheAISCountryRateShouldBeDisplayedAs(int aisRateExpected)
         {
-            var aisRateExpectedNew = "AIS: Country Rate to " + aisRateExpected;
             var aisRateActual = confirmHMISystemConfigChangesPage?.GetAISCountryRate();
 
             StringAssert.Contains($"AIS: Country Rate to {aisRateExpected}%", aisRateActual, $"AIS Country rate should be {aisRateExpected}");

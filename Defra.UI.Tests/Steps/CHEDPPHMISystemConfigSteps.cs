@@ -11,7 +11,7 @@ namespace Defra.UI.Tests.Steps
         private readonly IObjectContainer _objectContainer;
         private readonly ScenarioContext _scenarioContext;
 
-        private ICHEDPPHMISystemConfigPage? ChedPPHmiSystemConfigPage =>
+        private ICHEDPPHMISystemConfigPage? chedPPHmiSystemConfigPage =>
             _objectContainer.IsRegistered<ICHEDPPHMISystemConfigPage>()
                 ? _objectContainer.Resolve<ICHEDPPHMISystemConfigPage>()
                 : null;
@@ -25,29 +25,27 @@ namespace Defra.UI.Tests.Steps
         [Then("the HMI System Configuration page should be displayed")]
         public void ThenTheHMISystemConfigurationPageShouldBeDisplayed()
         {
-            //Thread.Sleep(5000);
-            Assert.True(ChedPPHmiSystemConfigPage?.IsPageLoaded(), "HMI System Configuration page is not displayed");
+            Assert.True(chedPPHmiSystemConfigPage?.IsPageLoaded(), "HMI System Configuration page is not displayed");
         }
 
         [When("the user makes note of the current setting for AIS Country Rate")]
         public void WhenTheUserMakesNoteOfTheCurrentSettingForAISCountryRate()
         {
-            var countryRate = ChedPPHmiSystemConfigPage?.GetCurrentAISRate();
+            var countryRate = chedPPHmiSystemConfigPage?.GetCurrentAISRate();
             _scenarioContext["AISCountryRate"] = countryRate;
         }
 
         [When("the user sets the AIS Country Rate to {int}")]
         public void WhenTheUserSetsTheAISCountryRateTo(int newAISRate)
         {
-            ChedPPHmiSystemConfigPage?.SetNewAISRate(newAISRate);
+            chedPPHmiSystemConfigPage?.SetNewAISRate(newAISRate);
             _scenarioContext["NewAISCountryRate"] = newAISRate;
         }
 
         [When("the user clicks the Save and continue button")]
         public void WhenTheUserClicksTheSaveAndContinueButton()
         {
-            ChedPPHmiSystemConfigPage.ClickSaveAndContinueButton();
+            chedPPHmiSystemConfigPage.ClickSaveAndContinueButton();
         }
-
     }
 }

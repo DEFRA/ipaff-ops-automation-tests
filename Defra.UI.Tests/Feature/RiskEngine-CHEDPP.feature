@@ -3063,18 +3063,18 @@ Scenario: New HMI country rule for CHEDPP - SPS-9508
 	Given that I navigate to the Risk Engine application
 	When I have provided the Risk Engine admin credentials and signed in
 	Then the Risk Engine Home page should be displayed
-	#When the user clicks the 'CHED-PP' link from the Risk Engine header menu
-	#Then the CHED-PP imports and exports page should be displayed
-	#When the user clicks the System settings for HMI rules link
-	#Then the HMI System Configuration page should be displayed
-	#When the user makes note of the current setting for AIS Country Rate
-	#And the user sets the AIS Country Rate to 50
-	#And the user clicks the Save and continue button
-	#Then the Confirm HMI System Configuration Changes page should be displayed
-	#And the AIS Country Rate should be displayed as 50
-	#And the user clicks the Confirm and send button
-	#Then the System configuration update page should be displayed
-	#And the system configuration update successful message should be displayed
+	When the user clicks the 'CHED-PP' link from the Risk Engine header menu
+	Then the CHED-PP imports and exports page should be displayed
+	When the user clicks the System settings for HMI rules link
+	Then the HMI System Configuration page should be displayed
+	When the user makes note of the current setting for AIS Country Rate
+	And the user sets the AIS Country Rate to 50
+	And the user clicks the Save and continue button
+	Then the Confirm HMI System Configuration Changes page should be displayed
+	And the AIS Country Rate should be displayed as 50
+	And the user clicks the Confirm and send button
+	Then the System configuration update page should be displayed
+	And the system configuration update successful message should be displayed
 	When the user clicks the 'CHED-PP' link from the Risk Engine header menu
 	Then the CHED-PP imports and exports page should be displayed
 	When the user clicks the Country rules link under the HMI imports and exports rules header

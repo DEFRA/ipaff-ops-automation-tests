@@ -26,13 +26,6 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool IsPageLoaded() => pageTitle.Text.Trim().Equals("HMI System Configuration");
 
-        /*public bool IsPageLoaded()
-        {
-            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(50));
-            wait.Until(ExpectedConditions.TextToBePresentInElement(pageTitle, "HMI System Configuration"));
-            return pageTitle.Text.Trim().Contains("HMI System Configuration");
-        }*/
-
         public int? GetCurrentAISRate() => int.TryParse(aisRate.GetAttribute("value"), out int value)? value: null;
 
         public void SetNewAISRate(int newAISRate)
@@ -42,6 +35,5 @@ namespace Defra.UI.Tests.Pages.Classes
         }
 
         public void ClickSaveAndContinueButton() => btnSaveAndContinue.Click();
-
     }
 }

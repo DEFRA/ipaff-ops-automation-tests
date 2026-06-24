@@ -24,6 +24,5 @@ namespace Defra.UI.Tests.Pages.Classes
         public bool IsPageLoaded() => pageTitle.Text.Trim().Equals("System Configuration Update Complete");
 
         public bool VerifySystemConfigCompleteText() => systemConfigCompleteText.Text.Contains("System configuration details have been updated successfully.");
-
     }
 }
