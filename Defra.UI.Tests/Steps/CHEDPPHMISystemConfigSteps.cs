@@ -43,8 +43,8 @@ namespace Defra.UI.Tests.Steps
             _scenarioContext["NewAISCountryRate"] = newAISRate;
         }
 
-        [When("the user clicks the Save and continue button")]
-        public void WhenTheUserClicksTheSaveAndContinueButton()
+        [When("the user clicks the Save and continue button on the HMI System Configuration page")]
+        public void WhenTheUserClicksTheSaveAndContinueButtonOnTheHMISystemConfigurationPage()
         {
             chedPPHmiSystemConfigPage.ClickSaveAndContinueButton();
         }

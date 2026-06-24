@@ -3058,8 +3058,8 @@ Scenario: New HMI import country rule for CHEDPP - SPS-9507
 	Then the HMI import country rule count should be 1 less than 'HMIRuleCount'
 
 @SPS-9508
-Scenario: New HMI country rule for CHEDPP - SPS-9508
-	# Create a new HMI import country rule
+Scenario: New HMI import country rule with AIS for CHEDPP - SPS-9508
+	# Create a new HMI import country rule with AIS
 	Given that I navigate to the Risk Engine application
 	When I have provided the Risk Engine admin credentials and signed in
 	Then the Risk Engine Home page should be displayed
@@ -3069,10 +3069,10 @@ Scenario: New HMI country rule for CHEDPP - SPS-9508
 	Then the HMI System Configuration page should be displayed
 	When the user makes note of the current setting for AIS Country Rate
 	And the user sets the AIS Country Rate to 50
-	And the user clicks the Save and continue button
+	And the user clicks the Save and continue button on the HMI System Configuration page
 	Then the Confirm HMI System Configuration Changes page should be displayed
 	And the AIS Country Rate should be displayed as 50
-	And the user clicks the Confirm and send button
+	And the user clicks the Confirm and send button on the Confirm HMI System Configuration Changes page
 	Then the System configuration update page should be displayed
 	And the system configuration update successful message should be displayed
 	When the user clicks the 'CHED-PP' link from the Risk Engine header menu
@@ -3090,7 +3090,7 @@ Scenario: New HMI country rule for CHEDPP - SPS-9508
 		| To                   | 99%              |
 	When the user clicks the Confirm and send button on the confirmation of country rate change page
 	Then the Rule change complete page should be displayed
-	# Verify the rule in the HMI country rules report
+	# Verify the rule in the HMI import country rules report
 	When the user clicks the 'Reports' link from the Risk Engine header menu
 	Then the Risk Engine Reports page should be displayed
 	When the user clicks the CHED-PP reports link
@@ -3104,8 +3104,8 @@ Scenario: New HMI country rule for CHEDPP - SPS-9508
 	Then the top HMI import country rule row should match the following details
 		| Field                       | Value  |
 		| Country                     | Zambia |
-		| Rate %                      |     99 |
-		| Previous rate %             |      0 |
+		| Rate %                      | 99     |
+		| Previous rate %             | 0      |
 		| Approved Inspection Service | YES    |
 		| Permanent rule              | YES    |
 		| Start Date                  |        |
@@ -3113,7 +3113,7 @@ Scenario: New HMI country rule for CHEDPP - SPS-9508
 	And the top HMI import country rule row should have Last Updated date as today's date
 	And the top HMI import country rule row should have Created date as today's date
 	And the user records the Id of the top HMI import country rule row as 'NewHMIRuleId'
-	# Submit 4 matching CHED-PP notifications in IPAFFS (Zambia / 07096010 / CPSAN)
+	# Submit 4 matching CHED-PP notifications in IPAFFS (Zambia / 08105000)
 	# --- APP-A ---
 	When I navigate to the IPAFF application
 	Then I should see type of Gateway login page
@@ -3540,9 +3540,9 @@ Scenario: New HMI country rule for CHEDPP - SPS-9508
 	Then the HMI System Configuration page should be displayed
 	When the user makes note of the current setting for AIS Country Rate
 	When the user resets the AIS Country Rate to 0
-	And the user clicks the Save and continue button
+	And the user clicks the Save and continue button on the HMI System Configuration page
 	Then the Confirm HMI System Configuration Changes page should be displayed
 	And the AIS Country Rate should be displayed as 0
-	And the user clicks the Confirm and send button
+	And the user clicks the Confirm and send button on the Confirm HMI System Configuration Changes page
 	Then the System configuration update page should be displayed
 	And the system configuration update successful message should be displayed
