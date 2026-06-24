@@ -30,8 +30,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user enters valid contact details and clicks the Save and continue button")]
         public void WhenTheUserEntersValidContactDetailsAndClicksTheSaveAndContinueButton()
         {
-            var email = $"sps9510.{Utils.GenerateRandomNumber()}@example.com";
-            exporterWhoIsTheContactForThisApplicationPage?.EnterContactDetails("Automation User", email, Utils.GenerateRandomUKPhonenumber());
+            exporterWhoIsTheContactForThisApplicationPage?.EnterContactDetails(
+                "Automation Org",
+                "Automation User",
+                Utils.GenerateRandomUKPhonenumber());
+
             exporterWhoIsTheContactForThisApplicationPage?.ClickSaveAndContinueButton();
         }
     }

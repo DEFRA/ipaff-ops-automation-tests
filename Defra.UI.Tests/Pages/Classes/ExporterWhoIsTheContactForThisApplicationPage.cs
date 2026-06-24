@@ -12,10 +12,10 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects with all the element locators
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='Who is the contact for this application?']"), true);
-        private IWebElement txtName => _driver.WaitForElement(By.XPath("//input[contains(@id,'name') and @type='text'][1]"), true);
-        private IWebElement txtEmail => _driver.WaitForElement(By.XPath("//input[contains(@id,'email') or @type='email'][1]"), true);
-        private IWebElement txtTelephone => _driver.WaitForElement(By.XPath("//input[contains(@id,'telephone') or contains(@id,'phone')][1]"), true);
-        private IWebElement btnSaveAndContinue => _driver.WaitForElement(By.XPath("//button[normalize-space()='Save and continue'] | //input[@value='Save and continue']"));
+        private IWebElement txtOrganisationName => _driver.WaitForElement(By.Id("inspection-organisation-name"), true);
+        private IWebElement txtContactName => _driver.WaitForElement(By.Id("inspection-contact-name"), true);
+        private IWebElement txtPhoneNumber => _driver.WaitForElement(By.Id("inspection-contact-phone-number"), true);
+        private IWebElement btnSaveAndContinue => _driver.WaitForElement(By.Id("Button-SaveAndContinue"));
         #endregion
 
         public ExporterWhoIsTheContactForThisApplicationPage(IObjectContainer container)
@@ -25,14 +25,16 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool IsPageLoaded() => pageTitle.Text.Trim().Equals("Who is the contact for this application?");
 
-        public void EnterContactDetails(string name, string email, string telephone)
+        public void EnterContactDetails(string organisationName, string contactName, string telephone)
         {
-            txtName.Clear();
-            txtName.SendKeys(name);
-            txtEmail.Clear();
-            txtEmail.SendKeys(email);
-            txtTelephone.Clear();
-            txtTelephone.SendKeys(telephone);
+            txtOrganisationName.Clear();
+            txtOrganisationName.SendKeys(organisationName);
+
+            txtContactName.Clear();
+            txtContactName.SendKeys(contactName);
+
+            txtPhoneNumber.Clear();
+            txtPhoneNumber.SendKeys(telephone);
         }
 
         public void ClickSaveAndContinueButton() => btnSaveAndContinue.Click();

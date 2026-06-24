@@ -3,7 +3,7 @@
     public interface IExporterWhoIsTheContactForThisApplicationPage
     {
         bool IsPageLoaded();
-        void EnterContactDetails(string name, string email, string telephone);
+        void EnterContactDetails(string organisationName, string contactName, string telephone);
         void ClickSaveAndContinueButton();
     }
 }

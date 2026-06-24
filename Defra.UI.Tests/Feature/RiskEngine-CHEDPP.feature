@@ -3096,16 +3096,16 @@ Scenario: New exporter application for a certificate of conformity - SPS-9510
 	Then the Who is the contact for this application? page is displayed
 	When the user enters valid contact details and clicks the Save and continue button
 	Then the When and where will the consignment be ready? page is displayed
-	When the user enters a valid ready date time and place and clicks the Save and continue button
-	Then the Your applications page is displayed
+	When the user enters a valid ready date, time and place and clicks the Save and continue button
+	Then the Your application page is displayed
 	When the user clicks the How will this consignment be transported? link
 	Then the How will this consignment be transported? page is displayed
 	When the user selects a transport method and clicks the Save and continue button
-	Then the Your applications page is displayed
+	Then the Your application page is displayed
 	When the user clicks the What are the packer details? link
 	Then the What are the packing details as they appear on the packaging? page is displayed
 	When the user selects the middle packer details option and clicks the Save and continue button
-	Then the Your applications page is displayed
+	Then the Your application page is displayed
 	When the user clicks the Check your answers and submit your application link
 	Then the Review your answers page is displayed
 	When the user clicks the Continue button on the Review your answers page

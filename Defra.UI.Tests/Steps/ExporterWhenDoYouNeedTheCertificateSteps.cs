@@ -29,7 +29,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user enters a valid date and time at least 24 hours in the future and clicks the Continue button")]
         public void WhenTheUserEntersAValidDateAndTimeAtLeast24HoursInTheFutureAndClicksTheContinueButton()
         {
-            exporterWhenDoYouNeedTheCertificatePage?.EnterNeededDateAndTime(DateTime.Today.AddDays(2), "11:00");
+            exporterWhenDoYouNeedTheCertificatePage?.EnterNeededDateAndTime(
+                DateTime.Today.AddDays(3),
+                "11:00",
+                "am");
+
             exporterWhenDoYouNeedTheCertificatePage?.ClickContinueButton();
         }
     }

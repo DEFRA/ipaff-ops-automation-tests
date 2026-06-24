@@ -26,10 +26,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(exporterWhenAndWhereWillTheConsignmentBeReadyPage?.IsPageLoaded(), "When and where will the consignment be ready? page is not displayed");
         }
 
-        [When("the user enters a valid ready date time and place and clicks the Save and continue button")]
+        [When("the user enters a valid ready date, time and place and clicks the Save and continue button")]
         public void WhenTheUserEntersAValidReadyDateTimeAndPlaceAndClicksTheSaveAndContinueButton()
         {
-            exporterWhenAndWhereWillTheConsignmentBeReadyPage?.EnterReadyDateTimeAndPlace(DateTime.Today.AddDays(2), "10:30", "Main Warehouse Gate");
+            exporterWhenAndWhereWillTheConsignmentBeReadyPage?.EnterReadyDateTimeAndPlace(DateTime.Today.AddDays(2), "10:30","am", "Main Warehouse Gate");
             exporterWhenAndWhereWillTheConsignmentBeReadyPage?.ClickSaveAndContinueButton();
         }
     }

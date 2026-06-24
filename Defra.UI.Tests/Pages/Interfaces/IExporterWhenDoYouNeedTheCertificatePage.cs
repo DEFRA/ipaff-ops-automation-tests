@@ -3,7 +3,7 @@
     public interface IExporterWhenDoYouNeedTheCertificatePage
     {
         bool IsPageLoaded();
-        void EnterNeededDateAndTime(DateTime date, string hhmm);
+        void EnterNeededDateAndTime(DateTime date, string hhmm, string meridiem);
         void ClickContinueButton();
     }
 }

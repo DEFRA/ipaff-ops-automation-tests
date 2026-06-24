@@ -12,7 +12,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects with all the element locators
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='How will this consignment be transported?']"), true);
-        private IWebElement rdoFirstTransportOption => _driver.WaitForElement(By.XPath("//input[@type='radio']/following-sibling::label[1]"), true);
+        private IWebElement rdoFirstTransportOption => _driver.WaitForElementExists(By.XPath("//input[@type='radio']/following-sibling::label[1]"), true);
         private IWebElement btnSaveAndContinue => _driver.WaitForElement(By.XPath("//button[normalize-space()='Save and continue'] | //input[@value='Save and continue']"));
         #endregion
 

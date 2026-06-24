@@ -3,7 +3,7 @@
     public interface IExporterWhenAndWhereWillTheConsignmentBeReadyPage
     {
         bool IsPageLoaded();
-        void EnterReadyDateTimeAndPlace(DateTime date, string hhmm, string place);
+        void EnterReadyDateTimeAndPlace(DateTime date, string hhmm, string meridiem, string place);
         void ClickSaveAndContinueButton();
     }
 }
