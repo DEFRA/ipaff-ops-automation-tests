@@ -9,14 +9,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
     public class ExporterAddCommoditiesToYourConsignmentSteps
     {
         private readonly IObjectContainer _objectContainer;
+        private readonly ScenarioContext _scenarioContext;
 
         private IExporterAddCommoditiesToYourConsignmentPage? exporterAddCommoditiesToYourConsignmentPage =>
             _objectContainer.IsRegistered<IExporterAddCommoditiesToYourConsignmentPage>()
                 ? _objectContainer.Resolve<IExporterAddCommoditiesToYourConsignmentPage>()
                 : null;
 
-        public ExporterAddCommoditiesToYourConsignmentSteps(IObjectContainer container)
+        public ExporterAddCommoditiesToYourConsignmentSteps(ScenarioContext context, IObjectContainer container)
         {
+            _scenarioContext = context;
             _objectContainer = container;
         }
 
@@ -46,6 +48,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 numberOfPackages,
                 typeOfPackaging,
                 reusablePackaging);
+
+            _scenarioContext["Variety"] = varietyType;
+            _scenarioContext["SpecificVariety"] = specificVariety;
         }
 
         [When("the user clicks the Save and continue button on the Add commodities to your consignment page")]

@@ -32,7 +32,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserEntersAReferenceNumberAndClicksTheSaveAndContinueButton()
         {
             var reference = DateTime.Now.ToString("ddMMyyyyHHmmss");
-            _scenarioContext["SPS-9510 Reference"] = reference;
+            _scenarioContext["Reference"] = reference;
             exporterCreateAReferencePage?.EnterReference(reference);
             exporterCreateAReferencePage?.ClickSaveAndContinueButton();
         }
@@ -40,7 +40,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When(@"^the user enters reference '([^']*)' and clicks the Save and continue button$")]
         public void WhenTheUserEntersReferenceAndClicksTheSaveAndContinueButton(string reference)
         {
-            _scenarioContext["SPS-9510 Reference"] = reference;
+            _scenarioContext["Reference"] = reference;
             exporterCreateAReferencePage?.EnterReference(reference);
             exporterCreateAReferencePage?.ClickSaveAndContinueButton();
         }

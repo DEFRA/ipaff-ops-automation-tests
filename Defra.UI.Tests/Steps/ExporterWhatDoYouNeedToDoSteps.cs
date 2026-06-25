@@ -9,14 +9,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
     public class ExporterWhatDoYouNeedToDoSteps
     {
         private readonly IObjectContainer _objectContainer;
+        private readonly ScenarioContext _scenarioContext;
 
         private IExporterWhatDoYouNeedToDoPage? exporterWhatDoYouNeedToDoPage =>
             _objectContainer.IsRegistered<IExporterWhatDoYouNeedToDoPage>()
                 ? _objectContainer.Resolve<IExporterWhatDoYouNeedToDoPage>()
                 : null;
 
-        public ExporterWhatDoYouNeedToDoSteps(IObjectContainer container)
+        public ExporterWhatDoYouNeedToDoSteps(ScenarioContext context, IObjectContainer container)
         {
+            _scenarioContext = context;
             _objectContainer = container;
         }
 
@@ -29,6 +31,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When(@"^the user selects '([^']*)' and clicks the Continue button on the What do you need to do\? page$")]
         public void WhenTheUserSelectsAndClicksTheContinueButtonOnTheWhatDoYouNeedToDoPage(string option)
         {
+            _scenarioContext["Journey"] = option;
             exporterWhatDoYouNeedToDoPage?.SelectWhatDoYouNeedToDoOption(option);
             exporterWhatDoYouNeedToDoPage?.ClickContinueButton();
         }

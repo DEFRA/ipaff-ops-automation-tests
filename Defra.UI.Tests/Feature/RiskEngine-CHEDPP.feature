@@ -3115,4 +3115,4 @@ Scenario: New exporter application for a certificate of conformity - SPS-9510
 	When the user ticks the exporter declaration checkbox
 	And the user clicks the Submit application button
 	Then the You have successfully submitted your application for a certificate of conformity page is displayed
-	And the user records the APHA reference number for 'SPS-9510 APHA Reference'
+	And the user records the APHA reference number for 'APHA Reference'

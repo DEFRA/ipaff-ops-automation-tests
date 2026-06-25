@@ -24,7 +24,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When(@"^the user selects commodity '([^']*)' and clicks the Continue button$")]
         public void WhenTheUserSelectsCommodityAndClicksTheContinueButton(string commodity)
         {
-            _scenarioContext["SPS-9510_Commodity"] = commodity;
+            _scenarioContext["Commodity"] = commodity;
             exporterWhatAreYouExportingSelectOneCommodityAtATimePage?.SelectCommodity(commodity);
             exporterWhatAreYouExportingSelectOneCommodityAtATimePage?.ClickContinueButton();
         }

@@ -9,14 +9,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
     public class ExporterWhatAreYouExportingSteps
     {
         private readonly IObjectContainer _objectContainer;
+        private readonly ScenarioContext _scenarioContext;
 
         private IExporterWhatAreYouExportingPage? exporterWhatAreYouExportingPage =>
             _objectContainer.IsRegistered<IExporterWhatAreYouExportingPage>()
                 ? _objectContainer.Resolve<IExporterWhatAreYouExportingPage>()
                 : null;
 
-        public ExporterWhatAreYouExportingSteps(IObjectContainer container)
+        public ExporterWhatAreYouExportingSteps(ScenarioContext context, IObjectContainer container)
         {
+            _scenarioContext = context;
             _objectContainer = container;
         }
 
@@ -29,6 +31,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When(@"^the user selects '([^']*)' and clicks the Continue button on the What are you exporting\? page$")]
         public void WhenTheUserSelectsAndClicksTheContinueButtonOnTheWhatAreYouExportingPage(string exportType)
         {
+            _scenarioContext["Export"] = exportType;
             exporterWhatAreYouExportingPage?.SelectExportType(exportType);
             exporterWhatAreYouExportingPage?.ClickContinueButton();
         }
