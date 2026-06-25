@@ -13,7 +13,7 @@ namespace Defra.UI.Tests.Pages.Classes
         #region Page Objects with all the element locators
         private IWebElement pageTitle => _driver.WaitForElement(By.Id("choose-form-heading"), true);
         private IWebElement btnContinue => _driver.WaitForElement(By.Id("Button-Continue"));
-        private IWebElement GetRadioInputByValue(string value) => _driver.WaitForElement(By.XPath($"//input[@name='parentCommonName' and @value='{value}']"));
+        private IWebElement GetRadioInputByValue(string value) => _driver.WaitForElementExists(By.XPath($"//input[@name='parentCommonName' and @value='{value}']"));
         private IWebElement citrusAutocompleteInput => _driver.WaitForElement(By.Id("autocomplete-citrus-subtype"));
         private IWebElement lettuceAutocompleteInput => _driver.WaitForElement(By.Id("autocomplete-lettuce-subtype"));
         private IWebElement strawberryAutocompleteInput => _driver.WaitForElement(By.Id("autocomplete-strawberry-subtype"));

@@ -12,7 +12,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects with all the element locators
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='Exporter declaration']"), true);
-        private IWebElement chkDeclaration => _driver.WaitForElement(By.Id("confirm"), true);
+        private IWebElement chkDeclaration => _driver.WaitForElementExists(By.Id("confirm"), true);
         private IWebElement btnSubmitApplication => _driver.WaitForElement(By.Id("Button-SubmitApplication"));
         #endregion
 

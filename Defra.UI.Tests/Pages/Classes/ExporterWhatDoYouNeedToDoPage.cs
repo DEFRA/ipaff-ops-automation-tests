@@ -13,7 +13,7 @@ namespace Defra.UI.Tests.Pages.Classes
         #region Page Objects with all the element locators
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='What do you need to do?']"), true);
         private IWebElement optionLabel(string option) => _driver.WaitForElement(By.XPath($"//label[contains(normalize-space(),'{option}')]"), true);
-        private IWebElement btnContinue => _driver.WaitForElement(By.Id("Button-Continue"));
+        private IWebElement btnContinue => _driver.WaitForElement(By.Id("choose-form-type-continue-button"));
         #endregion
 
         public ExporterWhatDoYouNeedToDoPage(IObjectContainer container)

@@ -12,7 +12,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects with all the element locators
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='Create a reference']"), true);
-        private IWebElement txtReference => _driver.WaitForElement(By.Id("application-reference"), true);
+        private IWebElement txtReference => _driver.WaitForElement(By.Id("reference_number"), true);
         private IWebElement btnSaveAndContinue => _driver.WaitForElement(By.Id("Button-SaveAndContinue"));
         #endregion
 
