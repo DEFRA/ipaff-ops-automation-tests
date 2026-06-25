@@ -12,7 +12,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects with all the element locators
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='Your applications']"), true);
-        private IWebElement btnStartNewApplication => _driver.WaitForElement(By.XPath("//button[normalize-space()='Start a new application'] | //a[normalize-space()='Start a new application']"), true);
+        private IWebElement btnStartNewApplication => _driver.WaitForElement(By.Id("Button-StartNewApplication"));
         #endregion
 
         public ExporterYourApplicationsPage(IObjectContainer container)

@@ -3075,7 +3075,7 @@ Scenario: New exporter application for a certificate of conformity - SPS-9510
 	Then the Destination country page is displayed
 	When the user searches for destination country 'France' and clicks the Continue button
 	Then the Create a reference page is displayed
-	When the user enters reference 'SPS-9510-AUTO-REF' and clicks the Save and continue button
+	When the user enters a reference number and clicks the Save and continue button
 	Then the Your application page is displayed
 	When the user clicks the What's in your consignment? link
 	Then the How do you want to add commodities to your consignment? page is displayed
@@ -3115,4 +3115,4 @@ Scenario: New exporter application for a certificate of conformity - SPS-9510
 	When the user ticks the exporter declaration checkbox
 	And the user clicks the Submit application button
 	Then the You have successfully submitted your application for a certificate of conformity page is displayed
-	And the user records the APHA reference number for 'SPS-9510'
+	And the user records the APHA reference number for 'SPS-9510 APHA Reference'

@@ -28,10 +28,19 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(exporterCreateAReferencePage?.IsPageLoaded(), "Create a reference page is not displayed");
         }
 
+        [When("the user enters a reference number and clicks the Save and continue button")]
+        public void WhenTheUserEntersAReferenceNumberAndClicksTheSaveAndContinueButton()
+        {
+            var reference = DateTime.Now.ToString("ddMMyyyyHHmmss");
+            _scenarioContext["SPS-9510 Reference"] = reference;
+            exporterCreateAReferencePage?.EnterReference(reference);
+            exporterCreateAReferencePage?.ClickSaveAndContinueButton();
+        }
+
         [When(@"^the user enters reference '([^']*)' and clicks the Save and continue button$")]
         public void WhenTheUserEntersReferenceAndClicksTheSaveAndContinueButton(string reference)
         {
-            _scenarioContext["SPS-9510_Reference"] = reference;
+            _scenarioContext["SPS-9510 Reference"] = reference;
             exporterCreateAReferencePage?.EnterReference(reference);
             exporterCreateAReferencePage?.ClickSaveAndContinueButton();
         }

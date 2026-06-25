@@ -14,7 +14,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='Your commodities']"), true);
         private IWebElement tblCommodities => _driver.WaitForElement(By.Id("commodity-table"), true);
         private IWebElement finishedAddingOption(string option) => _driver.WaitForElement(By.XPath($"//label[contains(normalize-space(),'{option}')]"), true);
-        private IWebElement btnSaveAndContinue => _driver.WaitForElement(By.XPath("//button[normalize-space()='Save and continue'] | //input[@value='Save and continue']"));
+        private IWebElement btnSaveAndContinue => _driver.WaitForElement(By.Id("Button-SaveAndContinue"));
         #endregion
 
         public ExporterYourCommoditiesPage(IObjectContainer container)

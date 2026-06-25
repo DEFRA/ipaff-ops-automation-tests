@@ -12,7 +12,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects with all the element locators
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='Review your answers']"), true);
-        private IWebElement btnContinue => _driver.WaitForElement(By.XPath("//button[normalize-space()='Continue'] | //input[@value='Continue']"));
+        private IWebElement btnContinue => _driver.WaitForElement(By.Id("Button-Continue"));
         #endregion
 
         public ExporterReviewYourAnswersPage(IObjectContainer container)

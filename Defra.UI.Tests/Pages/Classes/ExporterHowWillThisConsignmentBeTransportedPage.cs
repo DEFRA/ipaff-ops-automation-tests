@@ -12,8 +12,11 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects with all the element locators
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='How will this consignment be transported?']"), true);
-        private IWebElement rdoFirstTransportOption => _driver.WaitForElementExists(By.XPath("//input[@type='radio']/following-sibling::label[1]"), true);
-        private IWebElement btnSaveAndContinue => _driver.WaitForElement(By.XPath("//button[normalize-space()='Save and continue'] | //input[@value='Save and continue']"));
+        private IWebElement rdoAir => _driver.WaitForElementExists(By.Id("air"), true);
+        private IWebElement rdoMaritime => _driver.WaitForElementExists(By.Id("maritime"), true);
+        private IWebElement rdoRail => _driver.WaitForElementExists(By.Id("rail"), true);
+        private IWebElement rdoRoad => _driver.WaitForElementExists(By.Id("road"), true);
+        private IWebElement btnSaveAndContinue => _driver.WaitForElement(By.Id("Button-SaveAndContinue"));
         #endregion
 
         public ExporterHowWillThisConsignmentBeTransportedPage(IObjectContainer container)
@@ -22,7 +25,31 @@ namespace Defra.UI.Tests.Pages.Classes
         }
 
         public bool IsPageLoaded() => pageTitle.Text.Trim().Equals("How will this consignment be transported?");
-        public void SelectAnyTransportMethod() => rdoFirstTransportOption.Click();
+
+        public void SelectAnyTransportMethod() => rdoAir.Click();
+
+        public void SelectTransportMethod(string method)
+        {
+            switch (method.ToLower())
+            {
+                case "air":
+                    rdoAir.Click();
+                    break;
+                case "maritime":
+                    rdoMaritime.Click();
+                    break;
+                case "rail":
+                    rdoRail.Click();
+                    break;
+                case "road":
+                    rdoRoad.Click();
+                    break;
+                default:
+                    rdoAir.Click();
+                    break;
+            }
+        }
+
         public void ClickSaveAndContinueButton() => btnSaveAndContinue.Click();
     }
 }

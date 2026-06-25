@@ -13,7 +13,7 @@ namespace Defra.UI.Tests.Pages.Classes
         #region Page Objects with all the element locators
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='How do you want to add commodities to your consignment?']"), true);
         private IWebElement addMethodLabel(string method) => _driver.WaitForElement(By.XPath($"//label[contains(normalize-space(),'{method}')]"), true);
-        private IWebElement btnContinue => _driver.WaitForElement(By.XPath("//button[normalize-space()='Continue'] | //input[@value='Continue']"));
+        private IWebElement btnContinue => _driver.WaitForElement(By.Id("Button-Continue"));
         #endregion
 
         public ExporterHowDoYouWantToAddCommoditiesToYourConsignmentPage(IObjectContainer container)

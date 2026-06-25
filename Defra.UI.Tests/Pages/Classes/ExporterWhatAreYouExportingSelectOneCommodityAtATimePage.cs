@@ -11,11 +11,13 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
 
         #region Page Objects with all the element locators
-        private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='What are you exporting?']"), true);
-        private IWebElement btnContinue => _driver.WaitForElement(By.XPath("//button[normalize-space()='Continue'] | //input[@value='Continue']"));
-        private IReadOnlyCollection<IWebElement> commodityRadioOptions(string commodity) => _driver.FindElements(By.XPath($"//label[contains(normalize-space(),'{commodity}')]"));
-        private IWebElement txtCommoditySearch => _driver.WaitForElement(By.XPath("//input[@type='search' or contains(@class,'autocomplete__input')]"), true);
-        private IWebElement commodityOption(string commodity) => _driver.WaitForElement(By.XPath($"//li[contains(.,'{commodity}')] | //div[contains(@class,'autocomplete__option') and contains(.,'{commodity}')]"), true);
+        private IWebElement pageTitle => _driver.WaitForElement(By.Id("choose-form-heading"), true);
+        private IWebElement btnContinue => _driver.WaitForElement(By.Id("Button-Continue"));
+        private IWebElement GetRadioInputByValue(string value) => _driver.WaitForElement(By.XPath($"//input[@name='parentCommonName' and @value='{value}']"));
+        private IWebElement citrusAutocompleteInput => _driver.WaitForElement(By.Id("autocomplete-citrus-subtype"));
+        private IWebElement lettuceAutocompleteInput => _driver.WaitForElement(By.Id("autocomplete-lettuce-subtype"));
+        private IWebElement strawberryAutocompleteInput => _driver.WaitForElement(By.Id("autocomplete-strawberry-subtype"));
+        private IWebElement autocompleteOption(string option) => _driver.WaitForElement(By.XPath($"//div[contains(@class,'autocomplete__option') and contains(normalize-space(),'{option}')]"));
         #endregion
 
         public ExporterWhatAreYouExportingSelectOneCommodityAtATimePage(IObjectContainer container)
@@ -27,15 +29,46 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void SelectCommodity(string commodity)
         {
-            if (commodityRadioOptions(commodity).Count > 0)
-            {
-                commodityRadioOptions(commodity).First().Click();
-                return;
-            }
+            // Define commodity categories with their autocomplete subtypes
+            var citrusOptions = new[] { "Clementine", "Lemon", "Mandarin", "Sweet orange", "Satsuma", "Tangerine", "Tangelo" };
+            var lettuceOptions = new[] { "Cos / Romaine", "Frisee", "Iceberg", "Little Gem", "Lollo Rosso", "Oakleaf", "Round / Flat / Butterhead", "Escarole" };
+            var strawberryOptions = new[] { "Wild strawberry", "Green strawberry", "White strawberry", "Red strawberry" };
 
-            txtCommoditySearch.Clear();
-            txtCommoditySearch.SendKeys(commodity);
-            commodityOption(commodity).Click();
+            // Check if commodity requires autocomplete selection
+            if (citrusOptions.Contains(commodity, StringComparer.OrdinalIgnoreCase))
+            {
+                SelectRadioByValue("Citrus");
+                SelectAutocompleteOption(citrusAutocompleteInput, commodity);
+            }
+            else if (lettuceOptions.Contains(commodity, StringComparer.OrdinalIgnoreCase))
+            {
+                SelectRadioByValue("Lettuce");
+                SelectAutocompleteOption(lettuceAutocompleteInput, commodity);
+            }
+            else if (strawberryOptions.Contains(commodity, StringComparer.OrdinalIgnoreCase))
+            {
+                SelectRadioByValue("Strawberry");
+                SelectAutocompleteOption(strawberryAutocompleteInput, commodity);
+            }
+            else
+            {
+                // Direct radio selection for simple commodities (Apple, Grape, Kiwi, etc.)
+                SelectRadioByValue(commodity);
+            }
+        }
+
+        private void SelectRadioByValue(string value)
+        {
+            var radio = GetRadioInputByValue(value);
+            radio.Click();
+        }
+
+        private void SelectAutocompleteOption(IWebElement autocompleteElement, string option)
+        {
+            autocompleteElement.Clear();
+            autocompleteElement.SendKeys(option);
+            var optionElement = autocompleteOption(option);
+            optionElement.Click();
         }
 
         public void ClickContinueButton() => btnContinue.Click();
