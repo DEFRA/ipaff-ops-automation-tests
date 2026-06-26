@@ -3538,11 +3538,10 @@ Scenario: New HMI import country rule with AIS for CHEDPP - SPS-9508
 	Then the CHED-PP imports and exports page should be displayed
 	When the user clicks the System settings for HMI rules link
 	Then the HMI System Configuration page should be displayed
-	When the user makes note of the current setting for AIS Country Rate
-	When the user resets the AIS Country Rate to 0
+	When the user resets the AIS Country Rate back to the value noted at the start
 	And the user clicks the Save and continue button on the HMI System Configuration page
 	Then the Confirm HMI System Configuration Changes page should be displayed
-	And the AIS Country Rate should be displayed as 0
+	And the AIS Country Rate should be displayed and reset back to the value noted at the start
 	And the user clicks the Confirm and send button on the Confirm HMI System Configuration Changes page
 	Then the System configuration update page should be displayed
 	And the system configuration update successful message should be displayed

@@ -36,6 +36,15 @@ namespace Defra.UI.Tests.Steps
             StringAssert.Contains($"AIS: Country Rate to {aisRateExpected}%", aisRateActual, $"AIS Country rate should be {aisRateExpected}");
         }
 
+        [Then("the AIS Country Rate should be displayed and reset back to the value noted at the start")]
+        public void ThenTheAISCountryRateShouldBeDisplayedAndResetBackToTheValueNotedAtTheStart()
+        {
+            var aisRateActual = confirmHMISystemConfigChangesPage?.GetAISCountryRate();
+            var aisRateExpected = (int)_scenarioContext["AISCountryRate"];
+
+            StringAssert.Contains($"AIS: Country Rate to {aisRateExpected}%", aisRateActual, $"AIS Country rate should be {aisRateExpected}");
+        }
+
         [Then("the user clicks the Confirm and send button on the Confirm HMI System Configuration Changes page")]
         public void ThenTheUserClicksTheConfirmAndSendButtonOnTheConfirmHMISystemConfigurationChangesPage()
         {
