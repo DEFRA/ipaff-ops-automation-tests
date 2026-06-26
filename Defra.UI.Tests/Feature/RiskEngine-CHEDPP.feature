@@ -3072,7 +3072,7 @@ Scenario: New HMI import country rule with AIS for CHEDPP - SPS-9508
 	And the user clicks the Save and continue button on the HMI System Configuration page
 	Then the Confirm HMI System Configuration Changes page should be displayed
 	And the AIS Country Rate should be displayed as 50
-	And the user clicks the Confirm and send button on the Confirm HMI System Configuration Changes page
+	When the user clicks the Confirm and send button on the Confirm HMI System Configuration Changes page
 	Then the System configuration update page should be displayed
 	And the system configuration update successful message should be displayed
 	When the user clicks the 'CHED-PP' link from the Risk Engine header menu
@@ -3542,7 +3542,7 @@ Scenario: New HMI import country rule with AIS for CHEDPP - SPS-9508
 	And the user clicks the Save and continue button on the HMI System Configuration page
 	Then the Confirm HMI System Configuration Changes page should be displayed
 	And the AIS Country Rate should be displayed and reset back to the value noted at the start
-	And the user clicks the Confirm and send button on the Confirm HMI System Configuration Changes page
+	When the user clicks the Confirm and send button on the Confirm HMI System Configuration Changes page
 	Then the System configuration update page should be displayed
 	And the system configuration update successful message should be displayed
 
