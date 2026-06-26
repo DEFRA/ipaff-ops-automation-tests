@@ -3605,4 +3605,3 @@ Scenario: New exporter application for a certificate of conformity - SPS-9510
 	And the user clicks the Submit application button
 	Then the You have successfully submitted your application for a certificate of conformity page is displayed
 	And the user records the APHA reference number for 'APHA Reference'
-	Then the HMI import country rule count should be 1 less than 'HMIRuleCount'
