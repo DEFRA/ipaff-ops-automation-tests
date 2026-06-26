@@ -1,4 +1,4 @@
-﻿namespace Defra.UI.Tests.Pages.Classes
+﻿namespace Defra.UI.Tests.Pages.Interfaces
 {
     public interface IConfirmHMISystemConfigChangesPage
     {

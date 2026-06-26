@@ -5,6 +5,6 @@
         bool IsPageLoaded();
         int? GetCurrentAISRate();
         void SetNewAISRate(int newAISRate);
-        void ClickSaveAndContinueButton();
+        void ClickSendAndContinueButton();
     }
 }

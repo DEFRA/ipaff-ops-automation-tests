@@ -15,7 +15,7 @@ namespace Defra.UI.Tests.Pages.Classes
         #region Page Objects
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='HMI System Configuration']"), true);
         private IWebElement aisRate => _driver.WaitForElement(By.Id("aisrate"));
-        private IWebElement btnSaveAndContinue => _driver.WaitForElement(By.XPath("//button[@type='submit' and normalize-space()='Send and continue']"));
+        private IWebElement btnSendAndContinue => _driver.WaitForElement(By.XPath("//button[@type='submit' and normalize-space()='Send and continue']"));
 
         #endregion
 
@@ -34,6 +34,6 @@ namespace Defra.UI.Tests.Pages.Classes
             aisRate.SendKeys(newAISRate.ToString());
         }
 
-        public void ClickSaveAndContinueButton() => btnSaveAndContinue.Click();
+        public void ClickSendAndContinueButton() => btnSendAndContinue.Click();
     }
 }

@@ -1,4 +1,4 @@
-﻿using Defra.UI.Tests.Pages.Classes;
+﻿using Defra.UI.Tests.Pages.Interfaces;
 using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;
