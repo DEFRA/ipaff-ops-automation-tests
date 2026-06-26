@@ -199,6 +199,28 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ConfirmHMISystemConfigChangesPage, IConfirmHMISystemConfigChangesPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDPPHMISystemConfigUpdateCompletePage, ICHEDPPHMISystemConfigUpdateCompletePage>());
 
+            // Exporter Portal pages
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterYourApplicationsPage, IExporterYourApplicationsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterWhatAreYouExportingPage, IExporterWhatAreYouExportingPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterWhatDoYouNeedToDoPage, IExporterWhatDoYouNeedToDoPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterDestinationCountryPage, IExporterDestinationCountryPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterCreateAReferencePage, IExporterCreateAReferencePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterYourApplicationPage, IExporterYourApplicationPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterHowDoYouWantToAddCommoditiesToYourConsignmentPage, IExporterHowDoYouWantToAddCommoditiesToYourConsignmentPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterWhatAreYouExportingSelectOneCommodityAtATimePage, IExporterWhatAreYouExportingSelectOneCommodityAtATimePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterAddCommoditiesToYourConsignmentPage, IExporterAddCommoditiesToYourConsignmentPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterYourCommoditiesPage, IExporterYourCommoditiesPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterWhatAreTheInspectionDetailsPage, IExporterWhatAreTheInspectionDetailsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterDoYouWantToSelectThisInspectionAddressPage, IExporterDoYouWantToSelectThisInspectionAddressPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterWhoIsTheContactForThisApplicationPage, IExporterWhoIsTheContactForThisApplicationPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterWhenAndWhereWillTheConsignmentBeReadyPage, IExporterWhenAndWhereWillTheConsignmentBeReadyPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterHowWillThisConsignmentBeTransportedPage, IExporterHowWillThisConsignmentBeTransportedPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterWhatAreThePackingDetailsAsTheyAppearOnThePackagingPage, IExporterWhatAreThePackingDetailsAsTheyAppearOnThePackagingPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterReviewYourAnswersPage, IExporterReviewYourAnswersPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterWhenDoYouNeedTheCertificatePage, IExporterWhenDoYouNeedTheCertificatePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterDeclarationPage, IExporterDeclarationPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterYouHaveSuccessfullySubmittedYourApplicationPage, IExporterYouHaveSuccessfullySubmittedYourApplicationPage>());
+
             //Read Email
             _objectContainer.RegisterInstanceAs(GetBaseWithScenarioContext<FetchCodeFromEmail, IFetchCodeFromEmail>());
         }
