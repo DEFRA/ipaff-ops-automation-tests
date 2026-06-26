@@ -26,7 +26,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void ThenTheYourCommoditiesPageIsDisplayedWithTheCommodityLineJustEntered()
         {
             Assert.True(exporterYourCommoditiesPage?.IsPageLoaded(), "Your commodities page is not displayed");
-            var commodity = _scenarioContext.Get<string>("SPS-9510_Commodity");
+            var commodity = _scenarioContext.Get<string>("Commodity");
             Assert.True(exporterYourCommoditiesPage?.IsCommodityLineDisplayed(commodity), "Commodity line is not displayed");
         }
 

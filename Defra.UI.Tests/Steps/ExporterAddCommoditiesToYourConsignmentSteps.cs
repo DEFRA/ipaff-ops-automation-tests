@@ -49,8 +49,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 typeOfPackaging,
                 reusablePackaging);
 
-            _scenarioContext["Variety"] = varietyType;
-            _scenarioContext["SpecificVariety"] = specificVariety;
+            _scenarioContext["Variety"] = specificVariety;
         }
 
         [When("the user clicks the Save and continue button on the Add commodities to your consignment page")]
