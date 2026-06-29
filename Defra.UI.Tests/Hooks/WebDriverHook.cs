@@ -175,7 +175,10 @@ namespace Defra.UI.Tests.Hooks
         /// Attaches the failure screenshot to the TRX report.
         /// Prefers the full-page image captured during <see cref="AfterStep"/> (stashed in
         /// ScenarioContext) so the rich screenshot already on the Extent report is reused.
-        /// Falls back to a viewport capture only when the step-level capture is missing.
+        /// Falls back to a viewport capture only when the step-level capture is missing AND
+        /// the Dynamics hook is not the owner of this scenario — re-capturing in a pure-Dynamics
+        /// run would shoot Browser 1 (unused IPAFFS browser) and overwrite the Dynamics image
+        /// the Extent report already references.
         /// </summary>
         private void AttachScreenShotToXmlReport()
         {
@@ -192,17 +195,40 @@ namespace Defra.UI.Tests.Hooks
 
             if (fullScreenshotPath == null)
             {
-                // No step-level capture available — take a viewport screenshot as a fallback.
-                var relativePath = ScreenshotService.CaptureScreenshot(ActiveDriver, _scenarioContext.ScenarioInfo.Title);
-                if (string.IsNullOrWhiteSpace(relativePath))
-                {
-                    return;
-                }
+                var isDynamicsActive = _scenarioContext.ContainsKey("IsDynamicsActive")
+                                       && _scenarioContext.Get<bool>("IsDynamicsActive");
 
-                fullScreenshotPath = Path.Combine(
-                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                    "Reports",
-                    relativePath.TrimStart('.', '/'));
+                if (isDynamicsActive)
+                {
+                    // Defensive: AfterStepHooks should have written the screenshot at the canonical
+                    // path. Reuse the file if it exists rather than re-capturing through ActiveDriver,
+                    // which in a pure-Dynamics run is Browser 1 (wrong window).
+                    var dynamicsPath = ScreenshotService.GetScreenshotPathForScenario(_scenarioContext.ScenarioInfo.Title);
+                    if (File.Exists(dynamicsPath))
+                    {
+                        fullScreenshotPath = dynamicsPath;
+                    }
+                    else
+                    {
+                        // No screenshot is available and capturing here would shoot the wrong browser.
+                        // Skip the attachment rather than corrupt the report.
+                        return;
+                    }
+                }
+                else
+                {
+                    // No step-level capture available — take a viewport screenshot as a fallback.
+                    var relativePath = ScreenshotService.CaptureScreenshot(ActiveDriver, _scenarioContext.ScenarioInfo.Title);
+                    if (string.IsNullOrWhiteSpace(relativePath))
+                    {
+                        return;
+                    }
+
+                    fullScreenshotPath = Path.Combine(
+                        Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                        "Reports",
+                        relativePath.TrimStart('.', '/'));
+                }
             }
 
             _reqnrollOutputHelper.AddAttachment(fullScreenshotPath);

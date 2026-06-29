@@ -10,6 +10,10 @@ namespace Defra.Trade.MSD365.SpecFlowBindings.Hooks
     [Binding]
     public class AfterStepHooks : PowerAppsStepDefiner
     {
+        // Must match WebDriverHook.FailureScreenshotPathKey — both hooks live in different
+        // assemblies and communicate the failure screenshot path via ScenarioContext.
+        private const string FailureScreenshotPathKey = "FailureScreenshotPath";
+
         private readonly ScenarioContext _scenarioContext;
 
         public AfterStepHooks(ScenarioContext scenarioContext)
@@ -55,6 +59,14 @@ namespace Defra.Trade.MSD365.SpecFlowBindings.Hooks
                         if (!string.IsNullOrWhiteSpace(screenshotPath))
                         {
                             stepNode.AddScreenCaptureFromPath(screenshotPath);
+
+                            // Stash the absolute path so WebDriverHook.AfterScenario reuses this
+                            // Dynamics screenshot for the TRX attachment. Without this, the fallback
+                            // recapture in AttachScreenShotToXmlReport would re-shoot via ActiveDriver
+                            // (Browser 1, parked on IPAFFS/blank in pure-Dynamics runs) and overwrite
+                            // this file — so the Extent report would render the wrong image.
+                            _scenarioContext[FailureScreenshotPathKey] =
+                                ScreenshotService.GetScreenshotPathForScenario(_scenarioContext.ScenarioInfo.Title);
                         }
 
                         var log = ScreenshotService.CreateLogForContextValues(_scenarioContext);
