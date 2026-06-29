@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Dynamics365.UIAut
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Capgemini.PowerApps.SpecFlowBindings", "Capgemini.PowerApps.SpecFlowBindings\Capgemini.PowerApps.SpecFlowBindings.csproj", "{FCEDD789-D520-406A-B6E9-60BB7758B4F6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Defra.UI.Tests.Shared", "Defra.UI.Tests.Shared\Defra.UI.Tests.Shared.csproj", "{3DC32333-1DFA-441C-B5C6-847C4176531C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,10 @@ Global
 		{FCEDD789-D520-406A-B6E9-60BB7758B4F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FCEDD789-D520-406A-B6E9-60BB7758B4F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FCEDD789-D520-406A-B6E9-60BB7758B4F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DC32333-1DFA-441C-B5C6-847C4176531C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DC32333-1DFA-441C-B5C6-847C4176531C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DC32333-1DFA-441C-B5C6-847C4176531C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DC32333-1DFA-441C-B5C6-847C4176531C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
