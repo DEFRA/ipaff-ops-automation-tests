@@ -19,6 +19,8 @@ namespace Defra.UI.Tests.Hooks
     [Binding]
     public class WebDriverHook
     {
+        private const string FailureScreenshotPathKey = "FailureScreenshotPath";
+
         public IWebDriver Driver { get; set; }
 
         private ScenarioContext _scenarioContext;
@@ -53,6 +55,13 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.IsRegistered<IWebDriver>()
                 ? _objectContainer.Resolve<IWebDriver>()
                 : Driver;
+
+        /// <summary>
+        /// Selenium Grid hub URL pulled from configuration. Required by the screenshot service
+        /// to issue CDP commands against the grid when the driver is a RemoteWebDriver.
+        /// </summary>
+        private static string GridUrl =>
+            ConfigSetup.BaseConfiguration?.UiFrameworkConfiguration?.SeleniumGrid;
 
         [BeforeTestRun]
         public static void BeforeTestRun()
@@ -162,19 +171,42 @@ namespace Defra.UI.Tests.Hooks
             }
         }
 
+        /// <summary>
+        /// Attaches the failure screenshot to the TRX report.
+        /// Prefers the full-page image captured during <see cref="AfterStep"/> (stashed in
+        /// ScenarioContext) so the rich screenshot already on the Extent report is reused.
+        /// Falls back to a viewport capture only when the step-level capture is missing.
+        /// </summary>
         private void AttachScreenShotToXmlReport()
         {
-            var screenshotPath = ScreenshotService.CaptureScreenshot(ActiveDriver, _scenarioContext.ScenarioInfo.Title);
+            string fullScreenshotPath = null;
 
-            if (!string.IsNullOrWhiteSpace(screenshotPath))
+            if (_scenarioContext.ContainsKey(FailureScreenshotPathKey))
             {
-                _reqnrollOutputHelper.AddAttachment(Path.Combine(
+                var stashed = _scenarioContext.Get<string>(FailureScreenshotPathKey);
+                if (!string.IsNullOrWhiteSpace(stashed) && File.Exists(stashed))
+                {
+                    fullScreenshotPath = stashed;
+                }
+            }
+
+            if (fullScreenshotPath == null)
+            {
+                // No step-level capture available — take a viewport screenshot as a fallback.
+                var relativePath = ScreenshotService.CaptureScreenshot(ActiveDriver, _scenarioContext.ScenarioInfo.Title);
+                if (string.IsNullOrWhiteSpace(relativePath))
+                {
+                    return;
+                }
+
+                fullScreenshotPath = Path.Combine(
                     Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
                     "Reports",
-                    screenshotPath.TrimStart('.', '/')
-                ));
-                Logger.Debug($"SCREENSHOT {screenshotPath}");
+                    relativePath.TrimStart('.', '/'));
             }
+
+            _reqnrollOutputHelper.AddAttachment(fullScreenshotPath);
+            Logger.Debug($"SCREENSHOT {fullScreenshotPath}");
         }
 
         private DriverOptions GetDriverOptions()
@@ -224,11 +256,20 @@ namespace Defra.UI.Tests.Hooks
             else
             {
                 // Use ActiveDriver so the screenshot is taken on the correct browser
-                // (Browser 2 IPAFFS tab after hand-off, Browser 1 before)
-                var screenshotPath = ScreenshotService.CaptureScreenshotFullPage(ActiveDriver, _scenarioContext.ScenarioInfo.Title);
+                // (Browser 2 IPAFFS tab after hand-off, Browser 1 before).
+                // GridUrl enables full-page CDP capture when running against the dockerized Selenium Grid.
+                var screenshotPath = ScreenshotService.CaptureScreenshotFullPage(
+                    ActiveDriver,
+                    _scenarioContext.ScenarioInfo.Title,
+                    GridUrl);
 
                 if (!string.IsNullOrWhiteSpace(screenshotPath))
                 {
+                    // Stash the absolute path so AfterScenario can reuse this full-page image for
+                    // the TRX attachment instead of overwriting it with a viewport screenshot.
+                    _scenarioContext[FailureScreenshotPathKey] = ScreenshotService.GetScreenshotPathForScenario(
+                        _scenarioContext.ScenarioInfo.Title);
+
                     var stepNode = _scenario.CreateNode(new GherkinKeyword(stepType), stepInfo)
                                  .Fail(_scenarioContext.TestError.Message)
                                  .AddScreenCaptureFromPath(screenshotPath);

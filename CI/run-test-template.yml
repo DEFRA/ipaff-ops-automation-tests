@@ -241,273 +241,130 @@ jobs:
           jobName: ${{ parameters.jobName }}
           workers: ${{ parameters.workers }}
 
-    - powershell: |
-        $initialRunResult = "$(System.DefaultWorkingDirectory)/Defra.UI.Tests/TestResults"
-        $retryRunResult = "$(System.DefaultWorkingDirectory)/TestResults"
-        $mergedTrxPath = "$(System.DefaultWorkingDirectory)/Defra.UI.Tests/TestResults/${{ parameters.jobName }}_MergedResults.trx"
-        $enableRetry = '${{ parameters.enableRetry }}'
+    # TRX merging is only meaningful when retries can produce additional TRX files to consolidate.
+    # When retries are disabled, the single initial TRX (jobName_results_0.trx) is published directly.
+    - ${{ if eq(parameters.enableRetry, true) }}:
+      - powershell: |
+          $initialRunResult = "$(System.DefaultWorkingDirectory)/Defra.UI.Tests/TestResults"
+          $retryRunResult = "$(System.DefaultWorkingDirectory)/TestResults"
+          $mergedTrxPath = "$(System.DefaultWorkingDirectory)/Defra.UI.Tests/TestResults/${{ parameters.jobName }}_MergedResults.trx"
 
-        # Collect TRX files from initial run
-        $trxFiles = @(Get-ChildItem -Path $initialRunResult -Filter "*.trx" -Recurse -ErrorAction SilentlyContinue)
+          # Collect TRX files from initial run
+          $trxFiles = @(Get-ChildItem -Path $initialRunResult -Filter "*.trx" -Recurse -ErrorAction SilentlyContinue)
 
-        # Only include retry results if retry was enabled and the directory exists
-        if ($enableRetry -eq 'True' -and (Test-Path $retryRunResult)) {
-            $retryFiles = Get-ChildItem -Path $retryRunResult -Filter "*.trx" -Recurse -ErrorAction SilentlyContinue
-            if ($retryFiles) {
-                $trxFiles += $retryFiles
-            }
-            Write-Host "Retry enabled — found $($retryFiles.Count) retry TRX file(s)."
-        }
-        else {
-            Write-Host "Retry disabled or no retry results directory — using initial run only."
-        }
+          if (Test-Path $retryRunResult) {
+              $retryFiles = Get-ChildItem -Path $retryRunResult -Filter "*.trx" -Recurse -ErrorAction SilentlyContinue
+              if ($retryFiles) {
+                  $trxFiles += $retryFiles
+              }
+              Write-Host "Retry enabled — found $($retryFiles.Count) retry TRX file(s)."
+          }
+          else {
+              Write-Host "Retry enabled but no retry results directory was created — using initial run only."
+          }
 
-        if ($trxFiles.Count -eq 0) {
-            Write-Host "##[warning]No TRX files found. No tests were executed in this stage — skipping merge."
-            # Create an empty merged TRX so PublishTestResults doesn't fail
-            $emptyTrx = @"
-        <?xml version="1.0" encoding="utf-8"?>
-        <TestRun xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
-          <Results />
-          <TestDefinitions />
-        </TestRun>
-        "@
-            if (-not (Test-Path $initialRunResult)) {
-                New-Item -ItemType Directory -Path $initialRunResult | Out-Null
-            }
-            Set-Content -Path $mergedTrxPath -Value $emptyTrx
-            Write-Host "Created empty merged TRX at: $mergedTrxPath"
-            exit 0
-        }
+          if ($trxFiles.Count -eq 0) {
+              Write-Host "##[warning]No TRX files found. No tests were executed in this stage — skipping merge."
+              # Create an empty merged TRX so PublishTestResults doesn't fail
+              $emptyTrx = @"
+          <?xml version="1.0" encoding="utf-8"?>
+          <TestRun xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+            <Results />
+            <TestDefinitions />
+          </TestRun>
+          "@
+              if (-not (Test-Path $initialRunResult)) {
+                  New-Item -ItemType Directory -Path $initialRunResult | Out-Null
+              }
+              Set-Content -Path $mergedTrxPath -Value $emptyTrx
+              Write-Host "Created empty merged TRX at: $mergedTrxPath"
+              exit 0
+          }
 
-        $latestResults = @{}
-        $unitTestDefinitions = @{}
+          $latestResults = @{}
+          $unitTestDefinitions = @{}
 
-        foreach ($file in $trxFiles) {
-            [xml]$xml = Get-Content $file.FullName
+          foreach ($file in $trxFiles) {
+              [xml]$xml = Get-Content $file.FullName
 
-            if ($null -eq $xml.TestRun.TestDefinitions -or $null -eq $xml.TestRun.Results) {
-                Write-Host "Skipping $($file.Name) — no test results found in file."
-                continue
-            }
+              if ($null -eq $xml.TestRun.TestDefinitions -or $null -eq $xml.TestRun.Results) {
+                  Write-Host "Skipping $($file.Name) — no test results found in file."
+                  continue
+              }
 
-            foreach ($unitTest in $xml.TestRun.TestDefinitions.UnitTest) {
-                $name = $unitTest.name
-                $unitTestDefinitions[$name] = $unitTest
-            }
+              foreach ($unitTest in $xml.TestRun.TestDefinitions.UnitTest) {
+                  $name = $unitTest.name
+                  $unitTestDefinitions[$name] = $unitTest
+              }
 
-            foreach ($result in $xml.TestRun.Results.UnitTestResult) {
-                $name = $result.testName
-                $endTime = [datetime]$result.endTime
+              foreach ($result in $xml.TestRun.Results.UnitTestResult) {
+                  $name = $result.testName
+                  $endTime = [datetime]$result.endTime
 
-                if (-not $latestResults.ContainsKey($name) -or $endTime -gt $latestResults[$name].endTime) {
-                    $latestResults[$name] = $result
-                }
-            }
-        }
+                  if (-not $latestResults.ContainsKey($name) -or $endTime -gt $latestResults[$name].endTime) {
+                      $latestResults[$name] = $result
+                  }
+              }
+          }
 
-        if ($latestResults.Count -eq 0) {
-            Write-Host "##[warning]TRX files found but contained no test results — creating empty merged TRX."
-            $emptyTrx = @"
-        <?xml version="1.0" encoding="utf-8"?>
-        <TestRun xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
-          <Results />
-          <TestDefinitions />
-        </TestRun>
-        "@
-            Set-Content -Path $mergedTrxPath -Value $emptyTrx
-            exit 0
-        }
+          if ($latestResults.Count -eq 0) {
+              Write-Host "##[warning]TRX files found but contained no test results — creating empty merged TRX."
+              $emptyTrx = @"
+          <?xml version="1.0" encoding="utf-8"?>
+          <TestRun xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+            <Results />
+            <TestDefinitions />
+          </TestRun>
+          "@
+              Set-Content -Path $mergedTrxPath -Value $emptyTrx
+              exit 0
+          }
 
-        [xml]$finalTrx = Get-Content $trxFiles[0].FullName
+          [xml]$finalTrx = Get-Content $trxFiles[0].FullName
 
-        $namespaceManager = New-Object System.Xml.XmlNamespaceManager($finalTrx.NameTable)
-        $namespaceManager.AddNamespace("ns", $finalTrx.DocumentElement.NamespaceURI)
+          $namespaceManager = New-Object System.Xml.XmlNamespaceManager($finalTrx.NameTable)
+          $namespaceManager.AddNamespace("ns", $finalTrx.DocumentElement.NamespaceURI)
 
-        # Guard against null Results/TestDefinitions nodes
-        $resultsNode = $finalTrx.SelectSingleNode("//ns:Results", $namespaceManager)
-        $definitionsNode = $finalTrx.SelectSingleNode("//ns:TestDefinitions", $namespaceManager)
+          # Guard against null Results/TestDefinitions nodes
+          $resultsNode = $finalTrx.SelectSingleNode("//ns:Results", $namespaceManager)
+          $definitionsNode = $finalTrx.SelectSingleNode("//ns:TestDefinitions", $namespaceManager)
 
-        if ($null -eq $resultsNode) {
-            $resultsNode = $finalTrx.CreateElement("Results", $finalTrx.DocumentElement.NamespaceURI)
-            $finalTrx.TestRun.AppendChild($resultsNode) | Out-Null
-        } else {
-            $resultsNode.RemoveAll()
-        }
+          if ($null -eq $resultsNode) {
+              $resultsNode = $finalTrx.CreateElement("Results", $finalTrx.DocumentElement.NamespaceURI)
+              $finalTrx.TestRun.AppendChild($resultsNode) | Out-Null
+          } else {
+              $resultsNode.RemoveAll()
+          }
 
-        if ($null -eq $definitionsNode) {
-            $definitionsNode = $finalTrx.CreateElement("TestDefinitions", $finalTrx.DocumentElement.NamespaceURI)
-            $finalTrx.TestRun.AppendChild($definitionsNode) | Out-Null
-        } else {
-            $definitionsNode.RemoveAll()
-        }
+          if ($null -eq $definitionsNode) {
+              $definitionsNode = $finalTrx.CreateElement("TestDefinitions", $finalTrx.DocumentElement.NamespaceURI)
+              $finalTrx.TestRun.AppendChild($definitionsNode) | Out-Null
+          } else {
+              $definitionsNode.RemoveAll()
+          }
 
-        foreach ($name in $latestResults.Keys) {
-            $result = $latestResults[$name]
-            $definition = $unitTestDefinitions[$name]
+          foreach ($name in $latestResults.Keys) {
+              $result = $latestResults[$name]
+              $definition = $unitTestDefinitions[$name]
 
-            if ($definition -and $result) {
-                $importedResult = $finalTrx.ImportNode($result, $true)
-                $resultsNode.AppendChild($importedResult) | Out-Null
-                
-                $importedDef = $finalTrx.ImportNode($definition, $true)
-                $definitionsNode.AppendChild($importedDef) | Out-Null
-            }
-        }
+              if ($definition -and $result) {
+                  $importedResult = $finalTrx.ImportNode($result, $true)
+                  $resultsNode.AppendChild($importedResult) | Out-Null
+                  
+                  $importedDef = $finalTrx.ImportNode($definition, $true)
+                  $definitionsNode.AppendChild($importedDef) | Out-Null
+              }
+          }
 
-        $finalTrx.Save($mergedTrxPath)
-        Write-Host "Merged .trx file saved to: $mergedTrxPath (from $($trxFiles.Count) file(s), $($latestResults.Count) test(s))"
-        exit 0
-      displayName: 'Merge TRX Results'
-      failOnStderr: false
+          $finalTrx.Save($mergedTrxPath)
+          Write-Host "Merged .trx file saved to: $mergedTrxPath (from $($trxFiles.Count) file(s), $($latestResults.Count) test(s))"
+          exit 0
+        displayName: 'Merge TRX Results'
+        failOnStderr: false
 
-    - powershell: |
-        $mergedTrxPath = "$(System.DefaultWorkingDirectory)/Defra.UI.Tests/TestResults/${{ parameters.jobName }}_MergedResults.trx"
-        $outputHtmlPath = "$(System.DefaultWorkingDirectory)/Defra.UI.Tests/TestExecutionReport_Merged.html"
-
-        if (-not (Test-Path $mergedTrxPath)) {
-            Write-Host "##[warning]Merged TRX not found — skipping merged HTML report generation."
-            exit 0
-        }
-
-        [xml]$trx = Get-Content $mergedTrxPath
-
-        $results = $trx.TestRun.Results.UnitTestResult
-        if ($null -eq $results -or $results.Count -eq 0) {
-            Write-Host "##[warning]Merged TRX has no results — skipping merged HTML report generation."
-            exit 0
-        }
-
-        $passed = @($results | Where-Object { $_.outcome -eq "Passed" })
-        $failed = @($results | Where-Object { $_.outcome -eq "Failed" })
-        $other  = @($results | Where-Object { $_.outcome -ne "Passed" -and $_.outcome -ne "Failed" })
-        $total  = $results.Count
-
-        $passRate = if ($total -gt 0) { [math]::Round(($passed.Count / $total) * 100, 1) } else { 0 }
-        $timestamp = Get-Date -Format "dd MMM yyyy HH:mm:ss"
-        $jobName = '${{ parameters.jobName }}'
-
-        # Build test rows sorted by outcome (failed first) then name
-        $sortedResults = $results | Sort-Object @{Expression={$_.outcome -eq "Passed"}}, @{Expression={$_.testName}}
-
-        $testRows = ""
-        foreach ($r in $sortedResults) {
-            $name = $r.testName
-            $outcome = $r.outcome
-            $duration = ""
-            if ($r.duration) {
-                try {
-                    $ts = [TimeSpan]::Parse($r.duration)
-                    $duration = "{0:mm\:ss\.fff}" -f $ts
-                } catch {
-                    $duration = $r.duration
-                }
-            }
-            $endTime = if ($r.endTime) { ([datetime]$r.endTime).ToString("HH:mm:ss") } else { "" }
-
-            $statusClass = switch ($outcome) {
-                "Passed" { "passed" }
-                "Failed" { "failed" }
-                default  { "other" }
-            }
-            $statusIcon = switch ($outcome) {
-                "Passed" { "&#10004;" }
-                "Failed" { "&#10008;" }
-                default  { "&#9679;" }
-            }
-
-            $errorMessage = ""
-            if ($outcome -eq "Failed" -and $r.Output -and $r.Output.ErrorInfo -and $r.Output.ErrorInfo.Message) {
-                $errorMessage = [System.Security.SecurityElement]::Escape($r.Output.ErrorInfo.Message)
-                if ($errorMessage.Length -gt 300) {
-                    $errorMessage = $errorMessage.Substring(0, 300) + "..."
-                }
-                $errorMessage = "<div class='error-msg'>$errorMessage</div>"
-            }
-
-            $testRows += @"
-              <tr class="$statusClass">
-                <td class="status-cell">$statusIcon</td>
-                <td>$name$errorMessage</td>
-                <td>$outcome</td>
-                <td>$duration</td>
-                <td>$endTime</td>
-              </tr>
-        "@
-        }
-
-        $html = @"
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="utf-8">
-            <title>Merged Test Results - $jobName</title>
-            <style>
-                body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
-                .container { max-width: 1200px; margin: 0 auto; }
-                h1 { color: #1a1a1a; margin-bottom: 5px; }
-                .subtitle { color: #666; margin-bottom: 20px; font-size: 14px; }
-                .summary { display: flex; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
-                .summary-card { background: white; border-radius: 8px; padding: 15px 25px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-align: center; min-width: 120px; }
-                .summary-card .number { font-size: 28px; font-weight: 700; }
-                .summary-card .label { font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
-                .summary-card.total .number { color: #333; }
-                .summary-card.pass .number { color: #22863a; }
-                .summary-card.fail .number { color: #cb2431; }
-                .summary-card.rate .number { color: #0366d6; }
-                table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-                th { background: #24292e; color: white; padding: 12px 15px; text-align: left; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
-                td { padding: 10px 15px; border-bottom: 1px solid #eee; font-size: 14px; }
-                tr.passed td { background: #f0fff4; }
-                tr.failed td { background: #fff5f5; }
-                tr.other td { background: #fffbdd; }
-                .status-cell { text-align: center; font-size: 16px; width: 40px; }
-                tr.passed .status-cell { color: #22863a; }
-                tr.failed .status-cell { color: #cb2431; }
-                tr.other .status-cell { color: #b08800; }
-                .error-msg { font-size: 11px; color: #cb2431; margin-top: 4px; font-family: monospace; white-space: pre-wrap; word-break: break-word; max-width: 600px; }
-                .note { margin-top: 15px; font-size: 12px; color: #666; font-style: italic; }
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <h1>Merged Test Execution Report</h1>
-                <div class="subtitle">$jobName &mdash; Generated $timestamp &mdash; Shows final state of each test across all retry attempts</div>
-
-                <div class="summary">
-                    <div class="summary-card total"><div class="number">$total</div><div class="label">Total</div></div>
-                    <div class="summary-card pass"><div class="number">$($passed.Count)</div><div class="label">Passed</div></div>
-                    <div class="summary-card fail"><div class="number">$($failed.Count)</div><div class="label">Failed</div></div>
-                    <div class="summary-card rate"><div class="number">$passRate%</div><div class="label">Pass Rate</div></div>
-                </div>
-
-                <table>
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Test Name</th>
-                            <th>Final Status</th>
-                            <th>Duration</th>
-                            <th>Completed</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        $testRows
-                    </tbody>
-                </table>
-
-                <p class="note">This report reflects the final outcome of each test after up to 3 retry attempts. Tests that passed on retry show as Passed.</p>
-            </div>
-        </body>
-        </html>
-        "@
-
-        Set-Content -Path $outputHtmlPath -Value $html -Encoding UTF8
-        Write-Host "Merged HTML report generated: $outputHtmlPath"
-        Write-Host "Summary: $total total | $($passed.Count) passed | $($failed.Count) failed | $passRate% pass rate"
-      displayName: 'Generate Merged HTML Report'
-      condition: always()
-      continueOnError: true
+    # NOTE: The custom "Generate Merged HTML Report" step was removed. The ExtentReports HTML
+    # (TestExecutionReport.html) is now the single rich report — its JSON archive auto-merges
+    # retry attempts and includes Gherkin steps, screenshots and scenario-context logs.
 
     - script: |
         mkdir -p $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/Screenshots
@@ -515,7 +372,7 @@ jobs:
         
         find $(System.DefaultWorkingDirectory)/Defra.UI.Tests/TestResults -name "*.png" -exec cp {} $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/Screenshots/ \;
         
-        find $(System.DefaultWorkingDirectory)/Defra.UI.Tests -name "TestExecutionReport_*.html" -exec cp {} $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/ \;
+        find $(System.DefaultWorkingDirectory)/Defra.UI.Tests -name "TestExecutionReport*.html" -exec cp {} $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/ \;
       displayName: 'Copy reports and screenshots'
       condition: always()
       continueOnError: true
@@ -568,12 +425,25 @@ jobs:
       condition: always()
       continueOnError: true
 
-    - task: PublishTestResults@2
-      displayName: 'Publish Test Results'
-      inputs:
-        testResultsFormat: VSTest
-        testResultsFiles: '${{ parameters.jobName }}_MergedResults.trx'
-        searchFolder: '$(System.DefaultWorkingDirectory)/Defra.UI.Tests/TestResults'
-        testRunTitle: ${{ parameters.jobName }}
-        failTaskOnFailedTests: true
-        continueOnError: true
+    # Publish the merged TRX when retries ran, otherwise publish the single initial TRX directly.
+    - ${{ if eq(parameters.enableRetry, true) }}:
+      - task: PublishTestResults@2
+        displayName: 'Publish Test Results (Merged)'
+        inputs:
+          testResultsFormat: VSTest
+          testResultsFiles: '${{ parameters.jobName }}_MergedResults.trx'
+          searchFolder: '$(System.DefaultWorkingDirectory)/Defra.UI.Tests/TestResults'
+          testRunTitle: ${{ parameters.jobName }}
+          failTaskOnFailedTests: true
+          continueOnError: true
+
+    - ${{ if not(eq(parameters.enableRetry, true)) }}:
+      - task: PublishTestResults@2
+        displayName: 'Publish Test Results'
+        inputs:
+          testResultsFormat: VSTest
+          testResultsFiles: '${{ parameters.jobName }}_results_0.trx'
+          searchFolder: '$(System.DefaultWorkingDirectory)/Defra.UI.Tests/TestResults'
+          testRunTitle: ${{ parameters.jobName }}
+          failTaskOnFailedTests: true
+          continueOnError: true
