@@ -70,6 +70,14 @@ namespace Defra.UI.Tests.Hooks
             isRunOnce = true;
         }
 
+        [AfterTestRun]
+        public static void AfterTestRun()
+        {
+            // Collapse duplicate scenarios (created by earlier retry attempts) so the final
+            // HTML report shows only the latest outcome per test, annotated with retry history.
+            ExtentReportManager.FinalizeReport();
+        }
+
         [BeforeFeature]
         public static void BeforeFeature(FeatureContext featureContext)
         {
