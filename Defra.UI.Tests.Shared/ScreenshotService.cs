@@ -1,4 +1,5 @@
 ﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Reflection;
@@ -8,7 +9,7 @@ namespace Defra.UI.Tests.Shared.Tools
 {
     /// <summary>
     /// Centralized screenshot service for both Dynamics and non-Dynamics test hooks.
-    /// Provides simplified, containerized-environment-optimized screenshot capture.
+    /// Optimized for headless Chrome using Chrome DevTools Protocol (CDP) for full-page screenshots.
     /// Used by WebDriverHook (non-Dynamics), AfterStepHooks (Dynamics), and AfterScenarioHooks (Dynamics).
     /// </summary>
     public class ScreenshotService
@@ -23,8 +24,7 @@ namespace Defra.UI.Tests.Shared.Tools
 
         /// <summary>
         /// Captures a screenshot using the provided driver.
-        /// In Docker/containerized environments, viewport screenshot is preferred over full-page
-        /// as full-page composition can be unreliable with headless Chrome.
+        /// For headless Chrome, uses viewport screenshot.
         /// </summary>
         /// <param name="driver">The WebDriver instance to capture from</param>
         /// <param name="scenarioTitle">The scenario title for filename generation</param>
@@ -52,8 +52,9 @@ namespace Defra.UI.Tests.Shared.Tools
         }
 
         /// <summary>
-        /// Attempts to capture a full-page screenshot with fallback to viewport.
-        /// Optimized for containerized environments by using viewport as primary fallback.
+        /// Captures a full-page screenshot optimized for headless Chrome using CDP.
+        /// Automatically detects if the driver is Chrome and uses CDP protocol for best results.
+        /// Falls back to viewport screenshot if CDP fails or driver is not Chrome.
         /// </summary>
         /// <param name="driver">The WebDriver instance to capture from</param>
         /// <param name="scenarioTitle">The scenario title for filename generation</param>
@@ -62,53 +63,21 @@ namespace Defra.UI.Tests.Shared.Tools
         {
             EnsureScreenshotDirectory();
 
+            var uniqueFileName = GenerateScreenshotFileName(scenarioTitle);
+            var filePath = Path.Combine(ScreenshotsFolder.FullName, uniqueFileName);
+
             try
             {
                 SwitchToValidWindow(driver);
 
-                var uniqueFileName = GenerateScreenshotFileName(scenarioTitle);
-                var filePath = Path.Combine(ScreenshotsFolder.FullName, uniqueFileName);
-
-                // Guard against PDF tabs and other non-HTML contexts
-                var js = (IJavaScriptExecutor)driver;
-                var bodyExists = js.ExecuteScript("return document.body !== null && document.body !== undefined");
-
-                if (bodyExists == null || !(bool)bodyExists)
+                // Try CDP method first (works great for headless Chrome)
+                if (TryCaptureCdpScreenshot(driver, filePath))
                 {
-                    ((ITakesScreenshot)driver).GetScreenshot().SaveAsFile(filePath);
                     return $"./Screenshots/{uniqueFileName}";
                 }
 
-                try
-                {
-                    int totalHeight = Convert.ToInt32(js.ExecuteScript(
-                        "return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight)"));
-                    int viewportHeight = Convert.ToInt32(js.ExecuteScript("return window.innerHeight"));
-                    int viewportWidth = Convert.ToInt32(js.ExecuteScript("return window.innerWidth"));
-
-                    // If page fits in viewport, take single screenshot
-                    if (totalHeight <= viewportHeight)
-                    {
-                        ((ITakesScreenshot)driver).GetScreenshot().SaveAsFile(filePath);
-                        return $"./Screenshots/{uniqueFileName}";
-                    }
-
-                    // Attempt full-page composition
-                    return CaptureFullPageComposite(driver, js, filePath, totalHeight, viewportHeight, viewportWidth, uniqueFileName);
-                }
-                catch (Exception)
-                {
-                    // Full-page composition failed — fall back to viewport screenshot
-                    try
-                    {
-                        ((ITakesScreenshot)driver).GetScreenshot().SaveAsFile(filePath);
-                        return $"./Screenshots/{uniqueFileName}";
-                    }
-                    catch
-                    {
-                        return string.Empty;
-                    }
-                }
+                // Fall back to viewport screenshot
+                return CaptureViewportScreenshot(driver, filePath, uniqueFileName);
             }
             catch (Exception)
             {
@@ -118,88 +87,115 @@ namespace Defra.UI.Tests.Shared.Tools
         }
 
         /// <summary>
-        /// Composes multiple viewport screenshots into a single full-page image.
+        /// Attempts to capture full-page screenshot using Chrome DevTools Protocol (CDP).
+        /// This method works reliably with headless Chrome and handles dynamic content.
         /// </summary>
-        private static string CaptureFullPageComposite(
-            IWebDriver driver,
-            IJavaScriptExecutor js,
-            string filePath,
-            int totalHeight,
-            int viewportHeight,
-            int viewportWidth,
-            string uniqueFileName)
+        private static bool TryCaptureCdpScreenshot(IWebDriver driver, string filePath)
         {
-            js.ExecuteScript("window.scrollTo(0, 0)");
-            Thread.Sleep(200);
-
-            var screenshots = new List<Bitmap>();
-            int scrollPosition = 0;
-
             try
             {
-                while (scrollPosition < totalHeight)
+                // Only works with Chrome drivers
+                if (!(driver is ChromeDriver chromeDriver))
                 {
-                    js.ExecuteScript($"window.scrollTo(0, {scrollPosition})");
-                    Thread.Sleep(200);
-
-                    var screenshotBytes = ((ITakesScreenshot)driver).GetScreenshot().AsByteArray;
-                    using var ms = new MemoryStream(screenshotBytes);
-                    var bmp = new Bitmap(ms);
-
-                    // Crop overlapping sections on subsequent scrolls
-                    if (scrollPosition + viewportHeight > totalHeight && scrollPosition > 0)
-                    {
-                        int overlap = (scrollPosition + viewportHeight) - totalHeight;
-                        var cropped = bmp.Clone(
-                            new Rectangle(0, overlap, bmp.Width, bmp.Height - overlap),
-                            bmp.PixelFormat
-                        );
-                        screenshots.Add(cropped);
-                        bmp.Dispose();
-                    }
-                    else
-                    {
-                        screenshots.Add(bmp);
-                    }
-
-                    scrollPosition += viewportHeight;
+                    return false;
                 }
 
-                // Compose final image
-                int finalHeight = screenshots.Sum(s => s.Height);
-                int finalWidth = screenshots.Max(s => s.Width);
-
-                using var finalImage = new Bitmap(finalWidth, finalHeight);
-                using (var graphics = Graphics.FromImage(finalImage))
+                // Guard against non-HTML contexts (PDFs, etc.)
+                var js = (IJavaScriptExecutor)driver;
+                var bodyExists = js.ExecuteScript("return document.body !== null && document.body !== undefined");
+                if (bodyExists == null || !(bool)bodyExists)
                 {
-                    graphics.Clear(Color.White);
-                    int yOffset = 0;
+                    return false;
+                }
 
-                    foreach (var screenshot in screenshots)
-                    {
-                        graphics.DrawImage(screenshot, 0, yOffset);
-                        yOffset += screenshot.Height;
+                // Get page dimensions using CDP
+                var pageMetricsResult = chromeDriver.ExecuteCdpCommand("Page.getLayoutMetrics", new Dictionary<string, object>());
+
+                // Cast the result to a dictionary
+                if (!(pageMetricsResult is Dictionary<string, object> pageMetrics))
+                {
+                    return false;
+                }
+
+                if (!pageMetrics.ContainsKey("contentSize"))
+                {
+                    return false;
+                }
+
+                // Extract width and height from contentSize
+                if (!(pageMetrics["contentSize"] is Dictionary<string, object> contentSize))
+                {
+                    return false;
+                }
+
+                if (!contentSize.ContainsKey("width") || !contentSize.ContainsKey("height"))
+                {
+                    return false;
+                }
+
+                var width = Convert.ToInt32(contentSize["width"]);
+                var height = Convert.ToInt32(contentSize["height"]);
+
+                // Capture screenshot with full page dimensions using CDP
+                var screenshotParams = new Dictionary<string, object>
+                {
+                    { "format", "png" },
+                    { "clip", new Dictionary<string, object>
+                        {
+                            { "x", 0 },
+                            { "y", 0 },
+                            { "width", width },
+                            { "height", height },
+                            { "scale", 1 }
+                        }
                     }
-                }
+                };
 
-                finalImage.Save(filePath, ImageFormat.Png);
+                var screenshotResult = chromeDriver.ExecuteCdpCommand("Page.captureScreenshot", screenshotParams);
 
-                foreach (var screenshot in screenshots)
+                // Cast the result to a dictionary
+                if (!(screenshotResult is Dictionary<string, object> screenshot))
                 {
-                    screenshot.Dispose();
+                    return false;
                 }
 
-                js.ExecuteScript("window.scrollTo(0, 0)");
+                if (!screenshot.ContainsKey("data"))
+                {
+                    return false;
+                }
 
+                // Decode base64 screenshot data and save
+                var screenshotData = screenshot["data"] as string;
+                if (string.IsNullOrEmpty(screenshotData))
+                {
+                    return false;
+                }
+
+                var imageBytes = Convert.FromBase64String(screenshotData);
+                File.WriteAllBytes(filePath, imageBytes);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                // CDP method failed — will fall back to viewport
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Captures a viewport screenshot as a fallback when CDP is unavailable.
+        /// </summary>
+        private static string CaptureViewportScreenshot(IWebDriver driver, string filePath, string uniqueFileName)
+        {
+            try
+            {
+                ((ITakesScreenshot)driver).GetScreenshot().SaveAsFile(filePath);
                 return $"./Screenshots/{uniqueFileName}";
             }
-            finally
+            catch (Exception)
             {
-                // Ensure cleanup
-                foreach (var screenshot in screenshots)
-                {
-                    screenshot?.Dispose();
-                }
+                return string.Empty;
             }
         }
 

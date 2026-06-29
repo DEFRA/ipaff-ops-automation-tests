@@ -361,6 +361,165 @@ jobs:
       displayName: 'Merge TRX Results'
       failOnStderr: false
 
+    - powershell: |
+        $mergedTrxPath = "$(System.DefaultWorkingDirectory)/Defra.UI.Tests/TestResults/${{ parameters.jobName }}_MergedResults.trx"
+        $outputHtmlPath = "$(System.DefaultWorkingDirectory)/Defra.UI.Tests/TestExecutionReport_Merged.html"
+
+        if (-not (Test-Path $mergedTrxPath)) {
+            Write-Host "##[warning]Merged TRX not found — skipping merged HTML report generation."
+            exit 0
+        }
+
+        [xml]$trx = Get-Content $mergedTrxPath
+
+        $results = $trx.TestRun.Results.UnitTestResult
+        if ($null -eq $results -or $results.Count -eq 0) {
+            Write-Host "##[warning]Merged TRX has no results — skipping merged HTML report generation."
+            exit 0
+        }
+
+        $passed = @($results | Where-Object { $_.outcome -eq "Passed" })
+        $failed = @($results | Where-Object { $_.outcome -eq "Failed" })
+        $other  = @($results | Where-Object { $_.outcome -ne "Passed" -and $_.outcome -ne "Failed" })
+        $total  = $results.Count
+
+        $passRate = if ($total -gt 0) { [math]::Round(($passed.Count / $total) * 100, 1) } else { 0 }
+        $timestamp = Get-Date -Format "dd MMM yyyy HH:mm:ss"
+        $jobName = '${{ parameters.jobName }}'
+
+        # Build test rows sorted by outcome (failed first) then name
+        $sortedResults = $results | Sort-Object @{Expression={$_.outcome -eq "Passed"}}, @{Expression={$_.testName}}
+
+        $testRows = ""
+        foreach ($r in $sortedResults) {
+            $name = $r.testName
+            $outcome = $r.outcome
+            $duration = ""
+            if ($r.duration) {
+                try {
+                    $ts = [TimeSpan]::Parse($r.duration)
+                    $duration = "{0:mm\:ss\.fff}" -f $ts
+                } catch {
+                    $duration = $r.duration
+                }
+            }
+            $endTime = if ($r.endTime) { ([datetime]$r.endTime).ToString("HH:mm:ss") } else { "" }
+
+            $statusClass = switch ($outcome) {
+                "Passed" { "passed" }
+                "Failed" { "failed" }
+                default  { "other" }
+            }
+            $statusIcon = switch ($outcome) {
+                "Passed" { "&#10004;" }
+                "Failed" { "&#10008;" }
+                default  { "&#9679;" }
+            }
+
+            $errorMessage = ""
+            if ($outcome -eq "Failed" -and $r.Output -and $r.Output.ErrorInfo -and $r.Output.ErrorInfo.Message) {
+                $errorMessage = [System.Security.SecurityElement]::Escape($r.Output.ErrorInfo.Message)
+                if ($errorMessage.Length -gt 300) {
+                    $errorMessage = $errorMessage.Substring(0, 300) + "..."
+                }
+                $errorMessage = "<div class='error-msg'>$errorMessage</div>"
+            }
+
+            $testRows += @"
+              <tr class="$statusClass">
+                <td class="status-cell">$statusIcon</td>
+                <td>$name$errorMessage</td>
+                <td>$outcome</td>
+                <td>$duration</td>
+                <td>$endTime</td>
+              </tr>
+        "@
+        }
+
+        $html = @"
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>Merged Test Results - $jobName</title>
+            <style>
+                body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+                .container { max-width: 1200px; margin: 0 auto; }
+                h1 { color: #1a1a1a; margin-bottom: 5px; }
+                .subtitle { color: #666; margin-bottom: 20px; font-size: 14px; }
+                .summary { display: flex; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
+                .summary-card { background: white; border-radius: 8px; padding: 15px 25px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-align: center; min-width: 120px; }
+                .summary-card .number { font-size: 28px; font-weight: 700; }
+                .summary-card .label { font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
+                .summary-card.total .number { color: #333; }
+                .summary-card.pass .number { color: #22863a; }
+                .summary-card.fail .number { color: #cb2431; }
+                .summary-card.rate .number { color: #0366d6; }
+                table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+                th { background: #24292e; color: white; padding: 12px 15px; text-align: left; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
+                td { padding: 10px 15px; border-bottom: 1px solid #eee; font-size: 14px; }
+                tr.passed td { background: #f0fff4; }
+                tr.failed td { background: #fff5f5; }
+                tr.other td { background: #fffbdd; }
+                .status-cell { text-align: center; font-size: 16px; width: 40px; }
+                tr.passed .status-cell { color: #22863a; }
+                tr.failed .status-cell { color: #cb2431; }
+                tr.other .status-cell { color: #b08800; }
+                .error-msg { font-size: 11px; color: #cb2431; margin-top: 4px; font-family: monospace; white-space: pre-wrap; word-break: break-word; max-width: 600px; }
+                .note { margin-top: 15px; font-size: 12px; color: #666; font-style: italic; }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>Merged Test Execution Report</h1>
+                <div class="subtitle">$jobName &mdash; Generated $timestamp &mdash; Shows final state of each test across all retry attempts</div>
+
+                <div class="summary">
+                    <div class="summary-card total"><div class="number">$total</div><div class="label">Total</div></div>
+                    <div class="summary-card pass"><div class="number">$($passed.Count)</div><div class="label">Passed</div></div>
+                    <div class="summary-card fail"><div class="number">$($failed.Count)</div><div class="label">Failed</div></div>
+                    <div class="summary-card rate"><div class="number">$passRate%</div><div class="label">Pass Rate</div></div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Test Name</th>
+                            <th>Final Status</th>
+                            <th>Duration</th>
+                            <th>Completed</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        $testRows
+                    </tbody>
+                </table>
+
+                <p class="note">This report reflects the final outcome of each test after up to 3 retry attempts. Tests that passed on retry show as Passed.</p>
+            </div>
+        </body>
+        </html>
+        "@
+
+        Set-Content -Path $outputHtmlPath -Value $html -Encoding UTF8
+        Write-Host "Merged HTML report generated: $outputHtmlPath"
+        Write-Host "Summary: $total total | $($passed.Count) passed | $($failed.Count) failed | $passRate% pass rate"
+      displayName: 'Generate Merged HTML Report'
+      condition: always()
+      continueOnError: true
+
+    - script: |
+        mkdir -p $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/Screenshots
+        mkdir -p $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports
+        
+        find $(System.DefaultWorkingDirectory)/Defra.UI.Tests/TestResults -name "*.png" -exec cp {} $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/Screenshots/ \;
+        
+        find $(System.DefaultWorkingDirectory)/Defra.UI.Tests -name "TestExecutionReport_*.html" -exec cp {} $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/ \;
+      displayName: 'Copy reports and screenshots'
+      condition: always()
+      continueOnError: true
+
     - ${{ if contains(parameters.seleniumGrid, 'localhost:') }}:
       - task: DockerCompose@0
         displayName: Run a Docker Compose command
@@ -374,14 +533,6 @@ jobs:
     
     - powershell: |
         Set-Location -Path "$(System.DefaultWorkingDirectory)/Defra.UI.Tests"
-        Get-Content -Path TestExecution.json
-      displayName: 'Display Test Exe Json'
-      failOnStderr: true
-      ignoreLASTEXITCODE: true
-      continueOnError: true
-
-    - powershell: |
-        Set-Location -Path "$(System.DefaultWorkingDirectory)/Defra.UI.Tests"
         Rename-Item -Path "TestExecution.json" -NewName "TestExecution_${{ parameters.jobName }}.json"            
         Get-Content -Path $(System.DefaultWorkingDirectory)/Defra.UI.Tests/TestExecution_${{ parameters.jobName }}.json
       displayName: 'Display TestExecution_${{ parameters.jobName }}.json'
@@ -389,23 +540,6 @@ jobs:
       ignoreLASTEXITCODE: true
       continueOnError: true
       condition: always()
-
-    - task: PublishPipelineArtifact@0
-      displayName: 'Publish Json reports for Specflow'
-      inputs:
-          artifactName: TestExecution_${{ parameters.jobName }}
-          targetPath: '$(System.DefaultWorkingDirectory)/Defra.UI.Tests/TestExecution_${{ parameters.jobName }}.json'
-    
-    - script: |
-        mkdir -p $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/Screenshots
-        mkdir -p $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports
-        
-        find $(System.DefaultWorkingDirectory)/Defra.UI.Tests/TestResults -name "*.png" -exec cp {} $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/Screenshots/ \;
-        
-        find $(System.DefaultWorkingDirectory)/Defra.UI.Tests -name "TestExecutionReport_*.html" -exec cp {} $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/ \;
-      displayName: 'Copy reports and screenshots'
-      condition: always()
-      continueOnError: true    
 
     - powershell: |
         $reportsPath = "$(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports"
