@@ -39,11 +39,19 @@ namespace Defra.UI.Tests.Pages.Classes
             rateInput.SendKeys(rate.ToString());
         }
 
+        public void EnsureApprovedInspectionServiceIsChecked()
+        {
+            if (!approvedInspectionServiceCheckbox.Selected)
+            {
+                ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", approvedInspectionServiceCheckbox);
+            }
+        }
+
         public void EnsureApprovedInspectionServiceIsNotChecked()
         {
             if (approvedInspectionServiceCheckbox.Selected)
             {
-                ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", permanentCheckbox);
+                ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", approvedInspectionServiceCheckbox);
             }
         }
 

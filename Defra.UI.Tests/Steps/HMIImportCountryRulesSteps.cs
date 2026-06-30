@@ -47,6 +47,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
             HMIImportCountryRulesPage?.EnsureApprovedInspectionServiceIsNotChecked();
         }
 
+        [When("the user ensures the Approved Inspection Service checkbox is checked on the HMI import country rules page")]
+        public void WhenTheUserEnsuresTheApprovedInspectionServiceCheckboxIsCheckedOnTheHMIImportCountryRulesPage()
+        {
+            HMIImportCountryRulesPage?.EnsureApprovedInspectionServiceIsChecked();
+        }
+
         [When("the user ensures the Permanent checkbox is checked on the HMI import country rules page")]
         public void WhenTheUserEnsuresThePermanentCheckboxIsCheckedOnTheHMIImportCountryRulesPage()
         {
