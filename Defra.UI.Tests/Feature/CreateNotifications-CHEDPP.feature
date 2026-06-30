@@ -4,7 +4,7 @@ Feature: Create Notification CHEDPP
 Create a notification for CHEDPP type
 
 @SPS-7394
-Scenario: Delegation of Authority Agent submits CHEDPP notification on behalf of trader and status becomes valid after auto clear SLA - SPS - 7394
+Scenario: Delegation of Authority Agent submits CHEDPP notification on behalf of trader and status becomes valid after auto clear SLA - SPS-7394
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
@@ -143,7 +143,7 @@ Scenario: Delegation of Authority Agent submits CHEDPP notification on behalf of
 	Then the user should be logged out successfully
 
 @SPS-5092
-Scenario: Delegation of Authority Agent submits CHEDPP notification by uploading commodity details in CSV file - SPS - 5092
+Scenario: Delegation of Authority Agent submits CHEDPP notification by uploading commodity details in CSV file - SPS-5092
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type

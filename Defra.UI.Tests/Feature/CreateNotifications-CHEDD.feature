@@ -4,7 +4,7 @@ Feature: CreateNotification CHEDD
 Create a notification for CHEDD type
 
 @CHEDD-Happy-Path
-Scenario: User creates and submits a B2C consignment notification - CHEDD Happy path
+Scenario: User creates and submits a B2C consignment notification - CHEDD Happy Path
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type
@@ -1853,7 +1853,7 @@ Scenario: User creates a notification and the inspector revises the decision thr
 	Then the user should be logged out successfully
 
 @SPS-8581
-Scenario: User submits notification of no inspection required, inspector overrides the risk decision and make the notification acceptable - CHEDD 8581
+Scenario: User submits notification of no inspection required, inspector overrides the risk decision and make the notification acceptable - SPS-8581
 	Given that I navigate to the IPAFF application
 	Then I should see type of Gateway login page
 	And I have selected "Sign in with Government Gateway" as login type

@@ -85,7 +85,7 @@ Scenario: Bulk upload initial load for CHEDP - SPS-9419
 	And I have selected 'Sign in with Government Gateway' as login type
 	When I click Continue button from How do you want to sign in page
 	Then I should redirected to the IPAFF Sign in using Government Gateway page
-	When I have provided the IPAFF credentials and signin
+	When I have provided the IPAFF 'Trader 2' credentials and signin
 	Then the user should be logged into Notification page
 	When the user clicks Create a new notification
 	Then the About the consignment/What are you importing? page should be displayed with radio buttons
@@ -909,7 +909,7 @@ Scenario: Bulk upload update existing rules for CHEDP - SPS-9420
 	And I have selected 'Sign in with Government Gateway' as login type
 	When I click Continue button from How do you want to sign in page
 	Then I should redirected to the IPAFF Sign in using Government Gateway page
-	When I have provided the IPAFF credentials and signin
+	When I have provided the IPAFF 'Trader 2' credentials and signin
 	Then the user should be logged into Notification page
 	When the user clicks Create a new notification
 	Then the About the consignment/What are you importing? page should be displayed with radio buttons
