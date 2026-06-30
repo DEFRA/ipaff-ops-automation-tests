@@ -6,6 +6,7 @@
         void ClickBulkUploadCommodityRulesLink();
         void ClickHMIImportCommodityRulesLink();
         void ClickPHSIIndividualCommodityRulesLink();
+        void ClickSystemSettingsForHMIRulesLink();
         void ClickCountryRulesLink();
     }
 }

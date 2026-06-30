@@ -8,7 +8,6 @@ namespace Defra.UI.Tests.Pages.Classes
 {
     public class BorderNotificationOverviewPage : IBorderNotificationOverviewPage
     {
-        private string Platform => ConfigSetup.BaseConfiguration.TestConfiguration.Platform;
         private IObjectContainer _objectContainer;
 
         #region Page Objects
