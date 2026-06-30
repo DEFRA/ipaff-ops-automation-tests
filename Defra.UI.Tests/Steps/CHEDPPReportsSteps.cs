@@ -44,6 +44,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
             chedPPReportsPage?.ClickHMIImportsCommodityRulesReportLink();
         }
 
+        [When("the user clicks the HMI exports commodity rules report link")]
+        public void WhenTheUserClicksTheHMIExportsCommodityRulesReportLink()
+        {
+            chedPPReportsPage?.ClickHMIExportsCommodityRulesReportLink();
+        }
+
         [When("the user clicks the Country rules report link under the HMI reports header")]
         public void WhenTheUserClicksTheCountryRulesReportLinkUnderTheHMIReportsHeader()
         {
