@@ -18,11 +18,11 @@ namespace Defra.UI.Tests.Tools
     ///      complete with steps, screenshots and scenario-context logs.
     ///   4. At end of run, <see cref="FinalizeReport"/> collapses duplicate scenarios produced by
     ///      earlier retry attempts so the final HTML shows only the latest outcome per test,
-    ///      annotated with a retry-history note. The cleaned archive is written back so the next
-    ///      retry process loads a single baseline entry per scenario.
+    ///      annotated with a retry-history note.
     ///
-    /// When <c>enableRetry</c> is OFF in the pipeline, the archive is created once and the single
-    /// HTML report is the deliverable — no separate "_Merged" file is produced.
+    /// <b>Local runs</b>: When <c>TF_BUILD</c> is not set (i.e. not running in Azure DevOps),
+    /// the archive is neither loaded nor written. Each run produces a timestamped HTML report
+    /// so individual test executions are preserved side-by-side.
     /// </summary>
     public class ExtentReportManager
     {
@@ -32,6 +32,15 @@ namespace Defra.UI.Tests.Tools
         private static ExtentReports _extent;
         private static ExtentSparkReporter _htmlReporter;
         private static ExtentJsonFormatter _jsonReporter;
+
+        /// <summary>
+        /// Returns true when executing inside an Azure DevOps pipeline.
+        /// </summary>
+        private static bool IsRunningInPipeline =>
+            string.Equals(
+                Environment.GetEnvironmentVariable("TF_BUILD"),
+                "True",
+                StringComparison.OrdinalIgnoreCase);
 
         public static ExtentReports GetInstance()
         {
@@ -46,39 +55,50 @@ namespace Defra.UI.Tests.Tools
                     Directory.CreateDirectory(reportDir);
                 }
 
-                var htmlPath = Path.Combine(reportDir, HtmlReportName);
                 var archivePath = Path.Combine(reportDir, JsonArchiveName);
 
                 _extent = new ExtentReports();
 
-                // Load a previous run's results so the current attempt is appended to the same
-                // cumulative report. This is what enables retry attempts to roll up into one HTML.
-                if (File.Exists(archivePath))
+                if (IsRunningInPipeline)
                 {
+                    // --- CI mode: stable filename + archive for retry support ---
+
+                    var htmlPath = Path.Combine(reportDir, HtmlReportName);
+
+                    if (File.Exists(archivePath))
+                    {
+                        try
+                        {
+                            _extent.CreateDomainFromJsonArchive(archivePath);
+                        }
+                        catch
+                        {
+                            // Archive corrupt or incompatible — start fresh rather than fail the run.
+                        }
+                    }
+
                     try
                     {
-                        _extent.CreateDomainFromJsonArchive(archivePath);
+                        _jsonReporter = new ExtentJsonFormatter(archivePath);
+                        _extent.AttachReporter(_jsonReporter);
                     }
                     catch
                     {
-                        // Archive corrupt or incompatible — start fresh rather than fail the run.
+                        // JsonFormatter unavailable — retry runs won't merge, but HTML still works.
                     }
+
+                    _htmlReporter = new ExtentSparkReporter(htmlPath);
+                }
+                else
+                {
+                    // --- Local mode: timestamped filename, no archive load/write ---
+
+                    var timestamp = DateTime.Now.ToString("dd-MM-yyyy_HHmmss");
+                    var htmlPath = Path.Combine(reportDir, $"TestExecutionReport_{timestamp}.html");
+
+                    _htmlReporter = new ExtentSparkReporter(htmlPath);
                 }
 
-                // Persist this run's results for any subsequent retry attempts to pick up.
-                try
-                {
-                    _jsonReporter = new ExtentJsonFormatter(archivePath);
-                    _extent.AttachReporter(_jsonReporter);
-                }
-                catch
-                {
-                    // JsonFormatter unavailable in this ExtentReports build — HTML still generates,
-                    // but retry runs will not be able to merge into a single report.
-                }
-
-                // Stable HTML filename so retry runs overwrite the same file with the cumulative view.
-                _htmlReporter = new ExtentSparkReporter(htmlPath);
                 _extent.AttachReporter(_htmlReporter);
             }
 
@@ -90,12 +110,11 @@ namespace Defra.UI.Tests.Tools
         /// latest result per (Feature, Scenario) pair, annotates the survivor with a retry-history
         /// note, writes the cleaned data back to the JSON archive and re-renders the HTML.
         ///
-        /// Call once at end of run from a Reqnroll <c>[AfterTestRun]</c> hook. Safe to call when
-        /// no duplicates exist — in that case the archive and HTML are left untouched.
+        /// Only operates in CI mode. Local runs have no archive accumulation so dedup is a no-op.
         /// </summary>
         public static void FinalizeReport()
         {
-            if (_extent == null)
+            if (_extent == null || !IsRunningInPipeline)
             {
                 return;
             }
@@ -115,15 +134,11 @@ namespace Defra.UI.Tests.Tools
             {
                 if (!TryDeduplicateArchive(archivePath, out var dedupedJson))
                 {
-                    // Nothing to dedupe (single run / no duplicates) — leave existing outputs alone.
                     return;
                 }
 
                 File.WriteAllText(archivePath, dedupedJson);
 
-                // Re-render the HTML from the cleaned archive. Use a fresh ExtentReports instance
-                // with ONLY an HTML reporter — re-attaching the JSON formatter would replay the
-                // original (duplicated) in-memory tree from this process back into the archive.
                 var freshExtent = new ExtentReports();
                 freshExtent.CreateDomainFromJsonArchive(archivePath);
 
@@ -133,17 +148,10 @@ namespace Defra.UI.Tests.Tools
             }
             catch
             {
-                // Report finalisation must never break the build — worst case duplicates remain
-                // in the HTML, but the underlying test pass/fail signal is unaffected.
+                // Report finalisation must never break the build.
             }
         }
 
-        /// <summary>
-        /// Reads <paramref name="archivePath"/>, drops scenarios superseded by a later retry
-        /// attempt with the same Feature+Scenario name, and annotates the surviving scenario's
-        /// Description with a retry-history note. Returns <c>true</c> with the cleaned JSON when
-        /// duplicates were found; returns <c>false</c> otherwise.
-        /// </summary>
         private static bool TryDeduplicateArchive(string archivePath, out string dedupedJson)
         {
             dedupedJson = null;
@@ -169,11 +177,7 @@ namespace Defra.UI.Tests.Tools
                 return false;
             }
 
-            // key = "Feature||Scenario", value = winning scenario + history of prior attempts.
             var winners = new Dictionary<string, ScenarioWinner>(StringComparer.Ordinal);
-
-            // Preserve one Feature node template per Feature name so we can rebuild the tree with
-            // consistent Feature-level metadata (BehaviorDrivenType, Tags, StartTime, etc).
             var featureTemplates = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
 
             foreach (var node in features)
@@ -217,7 +221,6 @@ namespace Defra.UI.Tests.Tools
                     {
                         if (endTime > existing.EndTime)
                         {
-                            // New attempt is later — demote the previous survivor into history.
                             existing.PriorStatuses.Add(GetStringProp(existing.Scenario, "Status") ?? string.Empty);
                             winners[key] = new ScenarioWinner
                             {
@@ -229,7 +232,6 @@ namespace Defra.UI.Tests.Tools
                         }
                         else
                         {
-                            // Older attempt — record it as history against the current survivor.
                             existing.PriorStatuses.Add(status);
                         }
                     }
@@ -252,8 +254,6 @@ namespace Defra.UI.Tests.Tools
                 return false;
             }
 
-            // Annotate each survivor with a retry-history note (visible via the Description field,
-            // which the Spark HTML template renders near the test title).
             foreach (var winner in winners.Values)
             {
                 if (winner.PriorStatuses.Count == 0)
@@ -261,9 +261,8 @@ namespace Defra.UI.Tests.Tools
                     continue;
                 }
 
-                var attemptNumber = winner.PriorStatuses.Count;
                 var finalStatus = GetStringProp(winner.Scenario, "Status") ?? "Unknown";
-                var note = $"<b>{finalStatus} on retry attempt {attemptNumber}</b> " +
+                var note = $"<b>{finalStatus} on retry attempt</b> " +
                            $"(previous attempts: {string.Join(", ", winner.PriorStatuses)})";
 
                 var existingDesc = GetStringProp(winner.Scenario, "Description");
@@ -272,7 +271,6 @@ namespace Defra.UI.Tests.Tools
                     : $"{note}<br/>{existingDesc}";
             }
 
-            // Rebuild the features array — one Feature per name, scenarios = winners only.
             var deduped = new JsonArray();
             foreach (var group in winners.Values.GroupBy(w => w.FeatureName, StringComparer.Ordinal))
             {
@@ -281,8 +279,6 @@ namespace Defra.UI.Tests.Tools
                     continue;
                 }
 
-                // JsonNode instances may have only one parent — deep-clone via re-parse so we can
-                // re-attach freely without detaching from the original tree.
                 var clonedFeature = (JsonObject)JsonNode.Parse(template.ToJsonString());
 
                 var newChildren = new JsonArray();
@@ -312,7 +308,6 @@ namespace Defra.UI.Tests.Tools
                 return node;
             }
 
-            // Case-insensitive fallback in case the serialiser ever changes casing convention.
             foreach (var kvp in obj)
             {
                 if (string.Equals(kvp.Key, name, StringComparison.OrdinalIgnoreCase))

@@ -28,12 +28,12 @@ namespace Defra.UI.Tests.Pages.Classes
             var raw = lblAphaReference.Text.Trim();
             if (!string.IsNullOrWhiteSpace(raw))
             {
-                return raw;
+                return raw.Replace(" ", "");
             }
 
             var bodyText = _driver.WaitForElement(By.TagName("body"), true).Text;
             var match = Regex.Match(bodyText, @"\b\d{4}\s\d{5}\s\d{4}\b");
-            return match.Success ? match.Value : string.Empty;
+            return match.Success ? match.Value.Replace(" ", "") : string.Empty;
         }
     }
 }

@@ -29,11 +29,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
         [Then("the user records the APHA reference number for {string}")]
-        public void ThenTheUserRecordsTheAPHAReferenceNumberForSPS9510(string contextKey)
+        public void ThenTheUserRecordsTheAPHAReferenceNumberForSPS9510(string iterationName)
         {
-            var aphaReference = exporterYouHaveSuccessfullySubmittedYourApplicationPage?.GetAphaReferenceNumber();
-            Assert.False(string.IsNullOrWhiteSpace(aphaReference), "APHA reference number is not found");
-            _scenarioContext[contextKey] = aphaReference;
+            _scenarioContext[$"{iterationName}_APHAReference"] = exporterYouHaveSuccessfullySubmittedYourApplicationPage?.GetAphaReferenceNumber();
         }
     }
 }

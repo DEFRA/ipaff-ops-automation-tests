@@ -37,6 +37,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
             riskDecisionReportPage?.Search(chedRef);
         }
 
+        [When("the user enters the recorded APHA Reference for {string} in the Risk decision search box and clicks Search")]
+        public void WhenTheUserEntersTheRecordedAPHAReferenceForIterationInTheRiskDecisionSearchBoxAndClicksSearch(string iterationName)
+        {
+            var aphaRef = _scenarioContext.Get<string>($"{iterationName}_APHAReference");
+            riskDecisionReportPage?.Search(aphaRef);
+        }
+
         [Then("the Risk decision report returns one matching record")]
         public void ThenTheRiskDecisionReportReturnsOneMatchingRecord()
         {
@@ -50,10 +57,18 @@ namespace Defra.UI.Tests.Steps.IPAFF
             riskDecisionReportPage?.ClickExpandForCHED(chedRef);
         }
 
+        [When("the user clicks the Expand button for the APHA Reference of {string}")]
+        public void WhenTheUserClicksTheExpandButtonForTheAPHAReferenceOfIteration(string iterationName)
+        {
+            var aphaRef = _scenarioContext.Get<string>($"{iterationName}_APHAReference");
+            riskDecisionReportPage?.ClickExpandForCHED(aphaRef);
+        }
+
         [When("the user clicks the Requests details link")]
         public void WhenTheUserClicksTheRequestsDetailsLink() => riskDecisionReportPage?.ClickRequestsDetails();
 
         [Then("the Requests section is expanded with details from IPAFFS")]
+        [Then("the Requests section is expanded with details from Exporter Portal")]
         public void ThenTheRequestsSectionIsExpandedWithDetailsFromIPAFFS()
         {
             var requestsJson = riskDecisionReportPage!.GetRequestsJson();

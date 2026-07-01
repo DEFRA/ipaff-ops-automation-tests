@@ -148,6 +148,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
             "RiskDecisionRequestsJson",
             "RiskDecisionJson",
             "UserRole",
+            "Export",
+            "Journey",
+            "Reference",
+            "Commodity",
+            "Variety",
         ];
 
         public ConfirmationSteps(ScenarioContext context, IObjectContainer container)

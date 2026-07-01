@@ -38,6 +38,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
             chedPPImportsAndExportsPage?.ClickHMIImportCommodityRulesLink();
         }
 
+        [When("the user clicks the HMI export commodity rules link")]
+        public void WhenTheUserClicksTheHMIExportCommodityRulesLink()
+        {
+            chedPPImportsAndExportsPage?.ClickHMIExportCommodityRulesLink();
+        }
+
         [When("the user clicks the PHSI individual commodity rules link")]
         public void WhenTheUserClicksThePHSIIndividualCommodityRulesLink()
         {

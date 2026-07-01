@@ -198,6 +198,9 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDPPHMISystemConfigPage, ICHEDPPHMISystemConfigPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ConfirmHMISystemConfigChangesPage, IConfirmHMISystemConfigChangesPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDPPHMISystemConfigUpdateCompletePage, ICHEDPPHMISystemConfigUpdateCompletePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<HMIExportCommodityRulesPage, IHMIExportCommodityRulesPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ConfirmationOfCommodityRateChangePage, IConfirmationOfCommodityRateChangePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ViewAllHMIExportCommodityRulesPage, IViewAllHMIExportCommodityRulesPage>());
 
             // Exporter Portal pages
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterYourApplicationsPage, IExporterYourApplicationsPage>());

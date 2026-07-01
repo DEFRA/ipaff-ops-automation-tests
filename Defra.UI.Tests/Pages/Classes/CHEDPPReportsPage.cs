@@ -15,6 +15,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private By byLnkPhsiImportsCommodityRulesReport => By.XPath("//a[normalize-space()='PHSI imports commodity rules report']");
         private By byLnkRiskDecisionReport => By.XPath("//a[normalize-space()='Risk decision report']");
         private By byLnkHmiImportsCommodityRulesReport => By.XPath("//a[normalize-space()='HMI imports commodity rules report']");
+        private By byLnkHmiExportsCommodityRulesReport => By.XPath("//a[normalize-space()='HMI exports commodity rules report']");
         private IWebElement lnkCountryRulesReport => _driver.FindElement(By.XPath("//a[normalize-space()='Country rules report']"));
         #endregion
 
@@ -35,8 +36,6 @@ namespace Defra.UI.Tests.Pages.Classes
             catch (WebDriverException ex) when (ex.Message.Contains("timed out"))
             {
                 // The click succeeded and triggered navigation to a slow-loading page.
-                // The /execute/sync command times out waiting for page load, but the
-                // navigation is already in progress — safe to continue.
             }
         }
 
@@ -56,8 +55,19 @@ namespace Defra.UI.Tests.Pages.Classes
             catch (WebDriverException ex) when (ex.Message.Contains("timed out"))
             {
                 // The click succeeded and triggered navigation to a slow-loading page.
-                // The /execute/sync command times out waiting for page load, but the
-                // navigation is already in progress — safe to continue.
+            }
+        }
+
+        public void ClickHMIExportsCommodityRulesReportLink()
+        {
+            var element = _driver.WaitForElementClickable(byLnkHmiExportsCommodityRulesReport);
+            try
+            {
+                ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", element);
+            }
+            catch (WebDriverException ex) when (ex.Message.Contains("timed out"))
+            {
+                // The click succeeded and triggered navigation to a slow-loading page.
             }
         }
 
