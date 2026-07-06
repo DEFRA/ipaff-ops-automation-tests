@@ -9,5 +9,6 @@
         void ClickPHSIIndividualCommodityRulesLink();
         void ClickSystemSettingsForHMIRulesLink();
         void ClickCountryRulesLink();
+        void ClickGlobalInspectionRulesLink();
     }
 }

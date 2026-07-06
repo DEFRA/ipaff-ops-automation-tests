@@ -61,5 +61,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             chedPPImportsAndExportsPage?.ClickCountryRulesLink();
         }
+
+        [When("the user clicks the Global inspection rules link under the HMI imports and exports rules header")]
+        public void WhenTheUserClicksTheGlobalInspectionRulesLinkUnderTheHMIImportsAndExportsRulesHeader()
+        {
+            chedPPImportsAndExportsPage?.ClickGlobalInspectionRulesLink();
+        }
+
+
     }
 }
