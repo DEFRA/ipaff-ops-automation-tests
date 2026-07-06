@@ -22,12 +22,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext = context;
         }
 
-        [Then("the Confirmation of rate change page should be displayed")]
-        public void ThenTheConfirmationOfRateChangePageShouldBeDisplayed()
-        {
-            Assert.True(confirmationOfRateChangePage?.IsPageLoaded(), "Confirmation of rate change page is not displayed");
-        }
-
         [Then("the Confirmation of rate change page should be displayed with the following details")]
         public void ThenTheConfirmationOfRateChangePageShouldBeDisplayedWithTheFollowingDetails(Table table)
         {
