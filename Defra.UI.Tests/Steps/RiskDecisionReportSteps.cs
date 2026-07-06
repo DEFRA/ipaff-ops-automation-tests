@@ -126,5 +126,52 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     $"DecisionRule field '{field}' mismatch for RuleId '{ruleId}': expected '{expected}' but got '{actual}'");
             }
         }
+
+        [Then("the Decision section contains a DecisionRule with the following values")]
+        public void ThenTheDecisionSectionContainsADecisionRuleWithTheFollowingValues(Table table)
+        {
+            var decisionJson = riskDecisionReportPage!.GetDecisionJson();
+            _scenarioContext["RiskDecisionJson"] = decisionJson;
+
+            using var doc = JsonDocument.Parse(decisionJson);
+            var commodities = doc.RootElement.GetProperty("Commodities");
+
+            JsonElement? matchedRule = null;
+            foreach (var commodity in commodities.EnumerateArray())
+            {
+                var rules = commodity.GetProperty("DecisionRules");
+                foreach (var rule in rules.EnumerateArray())
+                {
+                    var allFieldsMatch = table.Rows.All(row =>
+                    {
+                        var field = row["Field"];
+                        var expected = row["Value"];
+
+                        if (!rule.TryGetProperty(field, out var property))
+                            return false;
+
+                        var actual = property.ValueKind switch
+                        {
+                            JsonValueKind.String => property.GetString(),
+                            JsonValueKind.True => "true",
+                            JsonValueKind.False => "false",
+                            _ => property.GetRawText()
+                        };
+
+                        return actual == expected;
+                    });
+
+                    if (allFieldsMatch)
+                    {
+                        matchedRule = rule;
+                        break;
+                    }
+                }
+                if (matchedRule.HasValue) break;
+            }
+
+            Assert.IsNotNull(matchedRule,
+                $"No DecisionRule found matching all expected values in the Decision JSON.\nExpected fields:\n{string.Join("\n", table.Rows.Select(r => $"  {r["Field"]} = {r["Value"]}"))}");
+        }
     }
 }
