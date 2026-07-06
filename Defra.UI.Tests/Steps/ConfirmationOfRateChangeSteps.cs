@@ -1,5 +1,4 @@
-﻿using Defra.UI.Tests.Pages.Classes;
-using Defra.UI.Tests.Pages.Interfaces;
+﻿using Defra.UI.Tests.Pages.Interfaces;
 using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;
@@ -35,22 +34,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(confirmationOfRateChangePage?.IsPageLoaded(), "Confirmation of rate change page is not displayed");
 
             var actual = confirmationOfRateChangePage!.GetConfirmationDetails();
-            foreach (var row in table.Rows)
-            {
-                var field = row["Field"];
-                var expected = row["Value"];
-                Assert.True(actual.ContainsKey(field), $"Field '{field}' not found on Confirmation of rate change page");
-                Assert.AreEqual(expected, actual[field],
-                    $"Field '{field}' mismatch: expected '{expected}' but got '{actual[field]}'");
-            }
-        }
-
-        [Then("the Confirmation of rate change page should be displayed with the following HMI Import Rate details")]
-        public void ThenTheConfirmationOfRateChangePageShouldBeDisplayedWithTheFollowingHMIImportRateDetails(Table table)
-        {
-            Assert.True(confirmationOfRateChangePage?.IsDefaultRateChangePageLoaded(), "Confirmation of default rate change page is not displayed");
-
-            var actual = confirmationOfRateChangePage!.GetHmiImportRateConfirmationDetails();
             foreach (var row in table.Rows)
             {
                 var field = row["Field"];

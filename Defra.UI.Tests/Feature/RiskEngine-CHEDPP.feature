@@ -3973,23 +3973,22 @@ Scenario: New Global inspection rules for HMI import CHED PP - SPS-9512
 	When the user makes a note of the HMI (Import) setting value on the Default Rules page
 	And the user sets the HMI (Import) value to 0 if it is not already 0
 	And the user clicks the Confirm and send button on the Default Rules page
-	Then the Confirmation of rate change page should be displayed with the following HMI Import Rate details
+	Then the Confirmation of default rate change page should be displayed with the following HMI Import Rate details
 		| Field | Value |
 		| To    | 0%    |
-	When the user clicks the Confirm and send button on the confirmation of rate change page
+	When the user clicks the Confirm and send button on the confirmation of default rate change page
 	Then the Rule change complete page should be displayed
 	When the user clicks the 'CHED-PP' link from the Risk Engine header menu
 	Then the CHED-PP imports and exports page should be displayed
 	When the user clicks the Global inspection rules link under the HMI imports and exports rules header
 	Then the Default rules page should be displayed
 	When the user enters 50 for HMI (Import) value on the Default Rules page
-	Then the Confirmation of rate change page should be displayed with the following HMI Import Rate details
+	When the user clicks the Confirm and send button on the Default Rules page
+	Then the Confirmation of default rate change page should be displayed with the following HMI Import Rate details
 		| Field | Value |
 		| From  | 0%    |
 		| To    | 50%   |
-	When the user clicks the Confirm and send button on the Default Rules page
-	Then the Confirmation of rate change page should be displayed
-	When the user clicks the Confirm and send button on the confirmation of rate change page
+	When the user clicks the Confirm and send button on the confirmation of default rate change page
 	Then the Rule change complete page should be displayed
 	# Submit 4 matching CHED-PP notifications in IPAFFS (Indonesia / 08105000)
 	# --- APP-A ---
@@ -4415,12 +4414,11 @@ Scenario: New Global inspection rules for HMI import CHED PP - SPS-9512
 	When the user clicks the Global inspection rules link under the HMI imports and exports rules header
 	Then the Default rules page should be displayed
 	When the user enters 0 for HMI (Import) value on the Default Rules page
-	Then the Confirmation of rate change page should be displayed with the following HMI Import Rate details
+	And the user clicks the Confirm and send button on the Default Rules page
+	Then the Confirmation of default rate change page should be displayed with the following HMI Import Rate details
 		| Field | Value |
 		| To    | 0%    |
-	When the user clicks the Confirm and send button on the Default Rules page
-	Then the Confirmation of rate change page should be displayed
-	When the user clicks the Confirm and send button on the confirmation of rate change page
+	When the user clicks the Confirm and send button on the confirmation of default rate change page
 	Then the Rule change complete page should be displayed
 	When the user clicks the 'CHED-PP' link from the Risk Engine header menu
 	Then the CHED-PP imports and exports page should be displayed
@@ -4428,6 +4426,6 @@ Scenario: New Global inspection rules for HMI import CHED PP - SPS-9512
 	Then the Default rules page should be displayed
 	When the user resets the HMI (Import) rate back to the value noted at the start
 	And the user clicks the Confirm and send button on the Default Rules page
-	Then the Confirmation of rate change page should be displayed
-	When the user clicks the Confirm and send button on the confirmation of rate change page
+	Then the Confirmation of default rate change page should be displayed
+	When the user clicks the Confirm and send button on the confirmation of default rate change page
 	Then the Rule change complete page should be displayed
