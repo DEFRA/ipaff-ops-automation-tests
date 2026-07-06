@@ -17,7 +17,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement btnConfirmAndSend => _driver.WaitForElement(By.XPath("//button[normalize-space()='Confirm and send']"));
         private By rateChangePaneKeyBy => By.XPath(".//div[contains(@class,'app-pane-header')]");
         private By rateChangePaneValueBy => By.XPath(".//div[contains(@class,'app-pane-body')]//span[contains(@class,'govuk-body-l')]");
-        #endregion
+       #endregion
 
         public ConfirmationOfRateChangePage(IObjectContainer container)
         {
