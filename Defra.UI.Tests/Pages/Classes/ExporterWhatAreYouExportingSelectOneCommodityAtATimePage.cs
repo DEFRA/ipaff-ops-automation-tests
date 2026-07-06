@@ -20,6 +20,11 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement autocompleteOption(string option) => _driver.WaitForElement(By.XPath($"//div[contains(@class,'autocomplete__option') and contains(normalize-space(),'{option}')]"));
         #endregion
 
+        private static readonly Dictionary<string, string> CommodityLabelToValueMap = new(StringComparer.OrdinalIgnoreCase)
+        {
+            { "General marketing standards (GMS) commodity", "gms" }
+        };
+
         public ExporterWhatAreYouExportingSelectOneCommodityAtATimePage(IObjectContainer container)
         {
             _objectContainer = container;
@@ -52,8 +57,11 @@ namespace Defra.UI.Tests.Pages.Classes
             }
             else
             {
-                // Direct radio selection for simple commodities (Apple, Grape, Kiwi, etc.)
-                SelectRadioByValue(commodity);
+                // Resolve label text to actual value if mapping exists, otherwise use commodity directly
+                var radioValue = CommodityLabelToValueMap.TryGetValue(commodity, out var mappedValue)
+                    ? mappedValue
+                    : commodity;
+                SelectRadioByValue(radioValue);
             }
         }
 

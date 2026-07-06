@@ -4413,3 +4413,70 @@ Scenario: New Global inspection rules for HMI import CHED PP - SPS-9512
 	Then the Confirmation of default rate change page should be displayed
 	When the user clicks the Confirm and send button on the confirmation of default rate change page
 	Then the Rule change complete page should be displayed
+
+@SPS-9513
+Scenario: New Global inspection rules for GMS Export CHED PP - SPS-9513
+	# Submit 4 matching exporter portal applications 
+	# Exporting: Plants and fresh produce
+	# Journey: Apply for a certificate of conformity
+	# Commodity: GMS
+	# Common Name: Avocado
+	# Botanical Name: PEBAM
+	# --- APP-A ---
+	Given that I navigate to the Exporter Portal
+	Then I should see type of Gateway login page
+	And I have selected 'Sign in with Government Gateway' as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should be redirected to the Exporter Portal Sign in using Government Gateway page
+	When I have provided the Exporter Trader credentials and signin
+	Then the Exporter Portal homepage should be displayed
+	And the Your applications page is displayed
+	When the user clicks the Start a new application button
+	Then the What are you exporting? page is displayed
+	When the user selects 'Plants and fresh produce' and clicks the Continue button on the What are you exporting? page
+	Then the What do you need to do? page is displayed
+	When the user selects 'Apply for a certificate of conformity' and clicks the Continue button on the What do you need to do? page
+	Then the Destination country page is displayed
+	When the user searches for destination country 'France' and clicks the Continue button
+	Then the Create a reference page is displayed
+	When the user enters a reference number and clicks the Save and continue button
+	Then the Your application page is displayed
+	When the user clicks the What's in your consignment? link
+	Then the How do you want to add commodities to your consignment? page is displayed
+	When the user selects 'Manually, by adding one at a time' and clicks the Continue button on the How do you want to add commodities to your consignment? page
+	Then the What are you exporting? page is displayed
+	When the user selects commodity 'General marketing standards (GMS) commodity' and clicks the Continue button
+	Then the Add commodities to your consignment page is displayed
+	When the user describes the commodity with common name 'Avocado', botanical name 'PEBAM', country of origin 'France', net weight per package '1', number of packages '10', type of packaging 'Box', reusable packaging 'Yes'
+	And the user clicks the Save and continue button on the Add commodities to your consignment page
+	Then the Your commodities page is displayed with the commodity line just entered
+	When the user selects 'No, I have finished adding commodities' and clicks the Save and continue button on the Your commodities page
+	Then the Your application page is displayed
+	When the user clicks the What are the inspection details? link
+	Then the What are the inspection details? page is displayed
+	When the user selects an inspection address and continues
+	Then the Do you want to select this inspection address? page is displayed
+	When the user selects 'Yes, select this inspection address' and clicks the Continue button on the Do you want to select this inspection address? page
+	Then the Who is the contact for this application? page is displayed
+	When the user enters valid contact details and clicks the Save and continue button
+	Then the When and where will the consignment be ready? page is displayed
+	When the user enters a valid ready date, time and place and clicks the Save and continue button
+	Then the Your application page is displayed
+	When the user clicks the How will this consignment be transported? link
+	Then the How will this consignment be transported? page is displayed
+	When the user selects a transport method and clicks the Save and continue button
+	Then the Your application page is displayed
+	When the user clicks the What are the packer details? link
+	Then the What are the packing details as they appear on the packaging? page is displayed
+	When the user selects the middle packer details option and clicks the Save and continue button
+	Then the Your application page is displayed
+	When the user clicks the Check your answers and submit your application link
+	Then the Review your answers page is displayed
+	When the user clicks the Continue button on the Review your answers page
+	Then the When do you need the certificate? page is displayed
+	When the user enters a valid date and time at least 24 hours in the future and clicks the Continue button
+	Then the Exporter declaration page is displayed
+	When the user ticks the exporter declaration checkbox
+	And the user clicks the Submit application button
+	Then the You have successfully submitted your application for a certificate of conformity page is displayed
+	And the user records the APHA reference number for 'APP_A'

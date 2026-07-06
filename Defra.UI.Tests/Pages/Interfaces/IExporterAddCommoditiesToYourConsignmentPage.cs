@@ -12,6 +12,14 @@
             string numberOfPackages,
             string typeOfPackaging,
             string reusablePackagingOption);
+        void DescribeCommodity(
+            string commonName,
+            string botanicalName,
+            string countryOfOrigin,
+            string netWeightPerPackage,
+            string numberOfPackages,
+            string typeOfPackaging,
+            string reusablePackagingOption);
         void ClickSaveAndContinueButton();
     }
 }
