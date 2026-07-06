@@ -4079,12 +4079,7 @@ Scenario: New Global inspection rules for HMI import CHED PP - SPS-9512
 	And the user records the CHED Reference for 'APP_A'
 	# --- APP-B ---
 	When I navigate to the IPAFF application
-	Then I should see type of Gateway login page
-	And I have selected "Sign in with Government Gateway" as login type
-	When I click Continue button from How do you want to sign in page
-	Then I should redirected to the IPAFF Sign in using Government Gateway page
-	When I have provided the IPAFF Trader credentials and signin
-	Then the user should be logged into Notification page
+	Then the Your import notifications page is displayed
 	When the user clicks Create a new notification
 	Then the About the consignment/What are you importing? page should be displayed with radio buttons
 	When the user chooses 'Plants, plant products and other objects' option
@@ -4165,12 +4160,7 @@ Scenario: New Global inspection rules for HMI import CHED PP - SPS-9512
 	And the user records the CHED Reference for 'APP_B'
 	# --- APP-C ---
 	When I navigate to the IPAFF application
-	Then I should see type of Gateway login page
-	And I have selected "Sign in with Government Gateway" as login type
-	When I click Continue button from How do you want to sign in page
-	Then I should redirected to the IPAFF Sign in using Government Gateway page
-	When I have provided the IPAFF Trader credentials and signin
-	Then the user should be logged into Notification page
+	Then the Your import notifications page is displayed
 	When the user clicks Create a new notification
 	Then the About the consignment/What are you importing? page should be displayed with radio buttons
 	When the user chooses 'Plants, plant products and other objects' option
@@ -4251,12 +4241,7 @@ Scenario: New Global inspection rules for HMI import CHED PP - SPS-9512
 	And the user records the CHED Reference for 'APP_C'
 	# --- APP-D ---
 	When I navigate to the IPAFF application
-	Then I should see type of Gateway login page
-	And I have selected "Sign in with Government Gateway" as login type
-	When I click Continue button from How do you want to sign in page
-	Then I should redirected to the IPAFF Sign in using Government Gateway page
-	When I have provided the IPAFF Trader credentials and signin
-	Then the user should be logged into Notification page
+	Then the Your import notifications page is displayed
 	When the user clicks Create a new notification
 	Then the About the consignment/What are you importing? page should be displayed with radio buttons
 	When the user chooses 'Plants, plant products and other objects' option
