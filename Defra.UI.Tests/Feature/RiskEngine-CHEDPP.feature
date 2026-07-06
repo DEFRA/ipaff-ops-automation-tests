@@ -4412,7 +4412,7 @@ Scenario: New Global inspection rules for HMI import CHED PP - SPS-9512
 	Then the CHED-PP imports and exports page should be displayed
 	When the user clicks the Global inspection rules link under the HMI imports and exports rules header
 	Then the Default rules page should be displayed
-	When the user enters 0 for HMI (Import) value on the Default Rules page
+	When the user resets the HMI (Import) rate to 0 on the Default Rules page
 	And the user clicks the Confirm and send button on the Default Rules page
 	Then the Confirmation of default rate change page should be displayed with the following HMI Import Rate details
 		| Field | Value |

@@ -48,6 +48,12 @@ namespace Defra.UI.Tests.Steps
             _scenarioContext["NewHmiImportRate"] = hmiImportRate;
         }
 
+        [When("the user resets the HMI \\(Import) rate to {int} on the Default Rules page")]
+        public void WhenTheUserResetsTheHMIImportRateToOnTheDefaultRulesPage(int hmiImportRate)
+        {
+            defaultRulesForCHEDPPPage?.SetHmiImportRate(hmiImportRate);
+        }
+
         [When("the user resets the HMI \\(Import\\) rate back to the value noted at the start")]
         public void WhenTheUserResetsTheHMIImportRateBackToTheValueNotedAtTheStart()
         {
