@@ -4350,8 +4350,7 @@ Scenario: New Global inspection rules for HMI import CHED PP - SPS-9512
 	And the user clicks the Requests details link
 	Then the Requests section is expanded with details from IPAFFS
 	When the user clicks the Decision details link
-	#update the below step as we don't validate RuleId
-	Then the Decision section contains a DecisionRule matching the recorded 'NewHMIRuleId' with the following values
+	Then the Decision section contains a DecisionRule with the following values
 		| Field          | Value         |
 		| RuleType       | DefaultRule   |
 		| RegulatorType  | HMIImport     |
@@ -4367,7 +4366,7 @@ Scenario: New Global inspection rules for HMI import CHED PP - SPS-9512
 	And the user clicks the Requests details link
 	Then the Requests section is expanded with details from IPAFFS
 	When the user clicks the Decision details link
-	Then the Decision section contains a DecisionRule matching the recorded 'NewHMIRuleId' with the following values
+	Then the Decision section contains a DecisionRule with the following values
 		| Field          | Value         |
 		| RuleType       | DefaultRule   |
 		| RegulatorType  | HMIImport     |
@@ -4383,7 +4382,7 @@ Scenario: New Global inspection rules for HMI import CHED PP - SPS-9512
 	And the user clicks the Requests details link
 	Then the Requests section is expanded with details from IPAFFS
 	When the user clicks the Decision details link
-	Then the Decision section contains a DecisionRule matching the recorded 'NewHMIRuleId' with the following values
+	Then the Decision section contains a DecisionRule with the following values
 		| Field          | Value         |
 		| RuleType       | DefaultRule   |
 		| RegulatorType  | HMIImport     |
@@ -4399,7 +4398,7 @@ Scenario: New Global inspection rules for HMI import CHED PP - SPS-9512
 	And the user clicks the Requests details link
 	Then the Requests section is expanded with details from IPAFFS
 	When the user clicks the Decision details link
-	Then the Decision section contains a DecisionRule matching the recorded 'NewHMIRuleId' with the following values
+	Then the Decision section contains a DecisionRule with the following values
 		| Field          | Value         |
 		| RuleType       | DefaultRule   |
 		| RegulatorType  | HMIImport     |
