@@ -14,6 +14,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='Confirmation of default rate change']"), true);
         private IReadOnlyCollection<IWebElement> hmiImportRateChangePanes => _driver.FindElements(By.XPath("//p[contains(text(),'HMI (Import)')]/following-sibling::div[1]//div[contains(concat(' ',normalize-space(@class),' '),' app-pane ')]"));
         private IReadOnlyCollection<IWebElement> gmsExportRateChangePanes => _driver.FindElements(By.XPath("//p[contains(text(),'GMS (Export)')]/following-sibling::div[1]//div[contains(concat(' ',normalize-space(@class),' '),' app-pane ')]"));
+        private IReadOnlyCollection<IWebElement> smsExportRateChangePanes => _driver.FindElements(By.XPath("//p[contains(text(),'SMS (Export)')]/following-sibling::div[1]//div[contains(concat(' ',normalize-space(@class),' '),' app-pane ')]"));
         private By ratePaneKeyBy => By.XPath(".//div[contains(@class,'app-pane-header')]");
         private By ratePaneValueBy => By.XPath(".//div[contains(@class,'app-pane-body')]");
         private IWebElement btnConfirmAndSend => _driver.WaitForElement(By.XPath("//button[normalize-space()='Confirm and send']"));
@@ -31,6 +32,9 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public IDictionary<string, string> GetGmsExportRateConfirmationDetails()
             => ExtractPaneDetails(gmsExportRateChangePanes);
+
+        public IDictionary<string, string> GetSmsExportRateConfirmationDetails()
+            => ExtractPaneDetails(smsExportRateChangePanes);
 
         public void ClickConfirmAndSendButton() => btnConfirmAndSend.Click();
 

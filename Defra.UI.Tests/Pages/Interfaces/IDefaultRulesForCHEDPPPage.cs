@@ -9,6 +9,9 @@
         int GetGmsExportRate();
         void EnsureGmsExportRateIs(int targetRate);
         void SetGmsExportRate(int rate);
+        int GetSmsExportRate();
+        void EnsureSmsExportRateIs(int targetRate);
+        void SetSmsExportRate(int rate);
         void ClickConfirmAndSendButton();
     }
 }

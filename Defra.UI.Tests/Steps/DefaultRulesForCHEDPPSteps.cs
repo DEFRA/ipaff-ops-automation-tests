@@ -88,6 +88,33 @@ namespace Defra.UI.Tests.Steps
             defaultRulesForCHEDPPPage?.SetGmsExportRate(originalGmsExportRate);
         }
 
+        [When("the user makes a note of the SMS \\(Export) setting value on the Default Rules page")]
+        public void WhenTheUserMakesANoteOfTheSMSExportSettingValueOnTheDefaultRulesPage()
+        {
+            var smsExportRate = defaultRulesForCHEDPPPage?.GetSmsExportRate();
+            _scenarioContext["SmsExportRate"] = smsExportRate;
+        }
+
+        [When("the user sets the default inspection rate for SMS \\(Export) to {int} if it is not already {int}")]
+        public void WhenTheUserSetsTheDefaultInspectionRateForSMSExportToIfItIsNotAlready(int newSmsExportVal, int currentSmsExportVal)
+        {
+            defaultRulesForCHEDPPPage?.EnsureSmsExportRateIs(newSmsExportVal);
+        }
+
+        [When("the user sets the default inspection rate for SMS \\(Export) to {int} on the Default Rules page")]
+        public void WhenTheUserSetsTheDefaultInspectionRateForSMSExportToOnTheDefaultRulesPage(int smsExportRate)
+        {
+            defaultRulesForCHEDPPPage?.SetSmsExportRate(smsExportRate);
+            _scenarioContext["NewSmsExportRate"] = smsExportRate;
+        }
+
+        [When("the user resets the default inspection rate for SMS \\(Export) to the value noted at the start")]
+        public void WhenTheUserResetsTheDefaultInspectionRateForSMSExportToTheValueNotedAtTheStart()
+        {
+            var originalSmsExportRate = (int)_scenarioContext["SmsExportRate"];
+            defaultRulesForCHEDPPPage?.SetSmsExportRate(originalSmsExportRate);
+        }
+
         [When("the user clicks the Confirm and send button on the Default Rules page")]
         public void WhenTheUserClicksTheConfirmAndSendButtonOnTheDefaultRulesPage()
         {

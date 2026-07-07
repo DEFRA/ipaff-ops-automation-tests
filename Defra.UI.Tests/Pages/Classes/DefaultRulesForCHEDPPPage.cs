@@ -14,6 +14,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='Default rules']"), true);
         private IWebElement hmiImportRate => _driver.WaitForElement(By.Id("defaultrules_0__rate"));
         private IWebElement gmsExportRate => _driver.WaitForElement(By.Id("defaultrules_1__rate"));
+        private IWebElement smsExportRate => _driver.WaitForElement(By.Id("defaultrules_2__rate"));
         private IWebElement btnConfirmAndSend => _driver.WaitForElement(By.XPath("//button[@type='submit' and normalize-space()='Confirm and send']"));
         #endregion
 
@@ -76,6 +77,33 @@ namespace Defra.UI.Tests.Pages.Classes
             gmsExportRate.Clear();
             gmsExportRate.SendKeys(rate.ToString());
             gmsExportRate.SendKeys(Keys.Tab);
+        }
+
+        public int GetSmsExportRate()
+        {
+            var value = smsExportRate.GetAttribute("value")?.Trim();
+            return int.TryParse(value, out var result) ? result : 0;
+        }
+
+        public void EnsureSmsExportRateIs(int targetRate)
+        {
+            var currentValue = smsExportRate.GetAttribute("value")?.Trim() ?? string.Empty;
+            var targetValue = targetRate.ToString();
+
+            // Set SMS (Export) rate to the target value only if it is not already that value
+            if (currentValue != targetValue)
+            {
+                smsExportRate.Clear();
+                smsExportRate.SendKeys(targetValue);
+                smsExportRate.SendKeys(Keys.Tab);
+            }
+        }
+
+        public void SetSmsExportRate(int rate)
+        {
+            smsExportRate.Clear();
+            smsExportRate.SendKeys(rate.ToString());
+            smsExportRate.SendKeys(Keys.Tab);
         }
 
         public void ClickConfirmAndSendButton() => btnConfirmAndSend.Click();

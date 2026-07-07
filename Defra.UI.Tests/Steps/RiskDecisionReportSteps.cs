@@ -47,7 +47,28 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the Risk decision report returns one matching record")]
         public void ThenTheRiskDecisionReportReturnsOneMatchingRecord()
         {
-            Assert.AreEqual(1, riskDecisionReportPage?.GetRecordCount(), "Expected exactly one record");
+            var timeout = TimeSpan.FromMinutes(1);
+            var retryInterval = TimeSpan.FromSeconds(10);
+            var startTime = DateTime.Now;
+
+            while (true)
+            {
+                var recordCount = riskDecisionReportPage?.GetRecordCount() ?? 0;
+
+                if (recordCount == 1)
+                {
+                    Assert.AreEqual(1, recordCount, "Expected exactly one record");
+                    return;
+                }
+
+                if (DateTime.Now - startTime >= timeout)
+                {
+                    Assert.AreEqual(1, recordCount, $"Expected exactly one record, but got {recordCount} after retrying for {timeout.TotalSeconds} seconds");
+                }
+
+                Thread.Sleep(retryInterval);
+                riskDecisionReportPage?.ClickSearch();
+            }
         }
 
         [When("the user clicks the Expand button for the CHED Reference of {string}")]
