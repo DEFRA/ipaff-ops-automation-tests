@@ -2,6 +2,8 @@
 using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
 using Reqnroll.BoDi;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Defra.UI.Tests.Pages.Classes
 {
@@ -26,7 +28,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement btnSaveAndContinue => _driver.WaitForElement(By.Id("Button-SaveAndContinue"));
         private IWebElement txtCommonName => _driver.WaitForElement(By.Id("commonName"), true);
         private IWebElement txtBotanicalNameAutocomplete => _driver.WaitForElement(By.Id("botanical-autocomplete-label"), true);
-        private IWebElement botanicalNameOption(string botanicalName) => _driver.WaitForElement(By.XPath($"//ul[contains(@id,'botanical-autocomplete-label__listbox')]//li[contains(.,'{botanicalName}')] | //li[contains(@class,'autocomplete__option') and contains(.,'{botanicalName}')]"), true);
+        private By botanicalNameListboxLocator => By.Id("botanical-autocomplete-label__listbox");
+        private By botanicalNameOptionsLocator => By.XPath("//ul[@id='botanical-autocomplete-label__listbox']//li[contains(@class,'autocomplete__option')]");
         #endregion
 
         public ExporterAddCommoditiesToYourConsignmentPage(IObjectContainer container)
@@ -144,7 +147,45 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             txtBotanicalNameAutocomplete.Clear();
             txtBotanicalNameAutocomplete.SendKeys(botanicalName);
-            botanicalNameOption(botanicalName).Click();
+            Thread.Sleep(500); // Small delay to allow dropdown to populate
+
+            var wait = new OpenQA.Selenium.Support.UI.WebDriverWait(_driver, TimeSpan.FromSeconds(5));
+            wait.Until(d =>
+            {
+                var listbox = d.FindElement(botanicalNameListboxLocator);
+                return listbox.GetAttribute("class").Contains("autocomplete__menu--visible");
+            });
+
+            var options = _driver.FindElements(botanicalNameOptionsLocator);
+
+            var matchingOption = options.FirstOrDefault(option =>
+            {
+                var normalizedText = Regex.Replace(option.Text, @"\s+", " ").Trim();
+                var pattern = $@"\({Regex.Escape(botanicalName)}\)$";
+                return Regex.IsMatch(normalizedText, pattern);
+            });
+
+            if (matchingOption != null)
+            {
+                matchingOption.Click();
+            }
+            else
+            {
+                matchingOption = options.FirstOrDefault(option =>
+                    option.Text.Contains($"({botanicalName})"));
+
+                if (matchingOption != null)
+                {
+                    matchingOption.Click();
+                }
+                else
+                {
+                    var availableOptions = string.Join(", ", options.Select(o => $"'{o.Text.Trim()}'"));
+                    throw new NoSuchElementException(
+                        $"Could not find botanical name option containing '({botanicalName})'. " +
+                        $"Available options: {availableOptions}");
+                }
+            }
         }
 
         #endregion
