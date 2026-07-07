@@ -4,6 +4,7 @@
     {
         bool IsPageLoaded();
         IDictionary<string, string> GetHmiImportRateConfirmationDetails();
+        IDictionary<string, string> GetGmsExportRateConfirmationDetails();
         void ClickConfirmAndSendButton();
     }
 }

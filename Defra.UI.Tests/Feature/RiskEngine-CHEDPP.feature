@@ -3971,9 +3971,9 @@ Scenario: New Global inspection rules for HMI import CHED PP - SPS-9512
 	When the user clicks the Global inspection rules link under the HMI imports and exports rules header
 	Then the Default rules page should be displayed
 	When the user makes a note of the HMI (Import) setting value on the Default Rules page
-	And the user sets the HMI (Import) value to 0 if it is not already 0
+	And the user sets the default inspection rate for HMI (Import) to 0 if it is not already 0
 	And the user clicks the Confirm and send button on the Default Rules page
-	Then the Confirmation of default rate change page should be displayed with the following HMI Import Rate details
+	Then the Confirmation of default rate change page should be displayed with the following HMI (Import) rate details
 		| Field | Value |
 		| To    | 0%    |
 	When the user clicks the Confirm and send button on the confirmation of default rate change page
@@ -3982,9 +3982,9 @@ Scenario: New Global inspection rules for HMI import CHED PP - SPS-9512
 	Then the CHED-PP imports and exports page should be displayed
 	When the user clicks the Global inspection rules link under the HMI imports and exports rules header
 	Then the Default rules page should be displayed
-	When the user enters 50 for HMI (Import) value on the Default Rules page
-	When the user clicks the Confirm and send button on the Default Rules page
-	Then the Confirmation of default rate change page should be displayed with the following HMI Import Rate details
+	When the user sets the default inspection rate for HMI (Import) to 50 on the Default Rules page
+	And the user clicks the Confirm and send button on the Default Rules page
+	Then the Confirmation of default rate change page should be displayed with the following HMI (Import) rate details
 		| Field | Value |
 		| From  | 0%    |
 		| To    | 50%   |
@@ -4397,9 +4397,41 @@ Scenario: New Global inspection rules for HMI import CHED PP - SPS-9512
 	Then the CHED-PP imports and exports page should be displayed
 	When the user clicks the Global inspection rules link under the HMI imports and exports rules header
 	Then the Default rules page should be displayed
-	When the user resets the HMI (Import) rate to 0 on the Default Rules page
+	When the user sets the default inspection rate for HMI (Import) to 0 if it is not already 0
 	And the user clicks the Confirm and send button on the Default Rules page
-	Then the Confirmation of default rate change page should be displayed with the following HMI Import Rate details
+	Then the Confirmation of default rate change page should be displayed with the following HMI (Import) rate details
+		| Field | Value |
+		| From  | 50%   |
+		| To    | 0%    |
+	When the user clicks the Confirm and send button on the confirmation of default rate change page
+	Then the Rule change complete page should be displayed
+	When the user clicks the 'CHED-PP' link from the Risk Engine header menu
+	Then the CHED-PP imports and exports page should be displayed
+	When the user clicks the Global inspection rules link under the HMI imports and exports rules header
+	Then the Default rules page should be displayed
+	When the user resets the default inspection rate for HMI (Import) to the value noted at the start
+	And the user clicks the Confirm and send button on the Default Rules page
+	Then the Confirmation of default rate change page should be displayed with the following HMI (Import) rate details
+		| Field | Value |
+		| From  | 0%    |
+	And the HMI (Import) rate should be changing to the value noted at the start
+	When the user clicks the Confirm and send button on the confirmation of default rate change page
+	Then the Rule change complete page should be displayed
+
+@SPS-9513
+Scenario: New Global inspection rules for GMS Export CHED PP - SPS-9513
+	# Create a new Global inspection rule for HMI import
+	Given that I navigate to the Risk Engine application
+	When I have provided the Risk Engine admin credentials and signed in
+	Then the Risk Engine Home page should be displayed
+	When the user clicks the 'CHED-PP' link from the Risk Engine header menu
+	Then the CHED-PP imports and exports page should be displayed
+	When the user clicks the Global inspection rules link under the HMI imports and exports rules header
+	Then the Default rules page should be displayed
+	When the user makes a note of the GMS (Export) setting value on the Default Rules page
+	And the user sets the default inspection rate for GMS (Export) to 0 if it is not already 0
+	And the user clicks the Confirm and send button on the Default Rules page
+	Then the Confirmation of default rate change page should be displayed with the following GMS (Export) rate details
 		| Field | Value |
 		| To    | 0%    |
 	When the user clicks the Confirm and send button on the confirmation of default rate change page
@@ -4408,15 +4440,15 @@ Scenario: New Global inspection rules for HMI import CHED PP - SPS-9512
 	Then the CHED-PP imports and exports page should be displayed
 	When the user clicks the Global inspection rules link under the HMI imports and exports rules header
 	Then the Default rules page should be displayed
-	When the user resets the HMI (Import) rate back to the value noted at the start
+	When the user sets the default inspection rate for GMS (Export) to 50 on the Default Rules page
 	And the user clicks the Confirm and send button on the Default Rules page
-	Then the Confirmation of default rate change page should be displayed
+	Then the Confirmation of default rate change page should be displayed with the following GMS (Export) rate details
+		| Field | Value |
+		| From  | 0%    |
+		| To    | 50%   |
 	When the user clicks the Confirm and send button on the confirmation of default rate change page
 	Then the Rule change complete page should be displayed
-
-@SPS-9513
-Scenario: New Global inspection rules for GMS Export CHED PP - SPS-9513
-	# Submit 4 matching exporter portal applications 
+	# Submit 4 matching exporter portal applications
 	# Exporting: Plants and fresh produce
 	# Journey: Apply for a certificate of conformity
 	# Commodity: GMS
@@ -4447,7 +4479,7 @@ Scenario: New Global inspection rules for GMS Export CHED PP - SPS-9513
 	Then the What are you exporting? page is displayed
 	When the user selects commodity 'General marketing standards (GMS) commodity' and clicks the Continue button
 	Then the Add commodities to your consignment page is displayed
-	When the user describes the commodity with common name 'Avocado', botanical name 'PEBAM', country of origin 'France', net weight per package '1', number of packages '10', type of packaging 'Box', reusable packaging 'Yes'
+	When the user describes the commodity with common name 'Avocado', botanical name 'PEBAM', country of origin 'Spain', net weight per package '1', number of packages '10', type of packaging 'Box', reusable packaging 'Yes'
 	And the user clicks the Save and continue button on the Add commodities to your consignment page
 	Then the Your commodities page is displayed with the commodity line just entered
 	When the user selects 'No, I have finished adding commodities' and clicks the Save and continue button on the Your commodities page
@@ -4480,3 +4512,259 @@ Scenario: New Global inspection rules for GMS Export CHED PP - SPS-9513
 	And the user clicks the Submit application button
 	Then the You have successfully submitted your application for a certificate of conformity page is displayed
 	And the user records the APHA reference number for 'APP_A'
+	# --- APP-B ---
+	When I navigate to the Exporter Portal
+	Then the Exporter Portal homepage should be displayed
+	And the Your applications page is displayed
+	When the user clicks the Start a new application button
+	Then the What are you exporting? page is displayed
+	When the user selects 'Plants and fresh produce' and clicks the Continue button on the What are you exporting? page
+	Then the What do you need to do? page is displayed
+	When the user selects 'Apply for a certificate of conformity' and clicks the Continue button on the What do you need to do? page
+	Then the Destination country page is displayed
+	When the user searches for destination country 'France' and clicks the Continue button
+	Then the Create a reference page is displayed
+	When the user enters a reference number and clicks the Save and continue button
+	Then the Your application page is displayed
+	When the user clicks the What's in your consignment? link
+	Then the How do you want to add commodities to your consignment? page is displayed
+	When the user selects 'Manually, by adding one at a time' and clicks the Continue button on the How do you want to add commodities to your consignment? page
+	Then the What are you exporting? page is displayed
+	When the user selects commodity 'General marketing standards (GMS) commodity' and clicks the Continue button
+	Then the Add commodities to your consignment page is displayed
+	When the user describes the commodity with common name 'Avocado', botanical name 'PEBAM', country of origin 'Spain', net weight per package '1', number of packages '10', type of packaging 'Box', reusable packaging 'Yes'
+	And the user clicks the Save and continue button on the Add commodities to your consignment page
+	Then the Your commodities page is displayed with the commodity line just entered
+	When the user selects 'No, I have finished adding commodities' and clicks the Save and continue button on the Your commodities page
+	Then the Your application page is displayed
+	When the user clicks the What are the inspection details? link
+	Then the What are the inspection details? page is displayed
+	When the user selects an inspection address and continues
+	Then the Do you want to select this inspection address? page is displayed
+	When the user selects 'Yes, select this inspection address' and clicks the Continue button on the Do you want to select this inspection address? page
+	Then the Who is the contact for this application? page is displayed
+	When the user enters valid contact details and clicks the Save and continue button
+	Then the When and where will the consignment be ready? page is displayed
+	When the user enters a valid ready date, time and place and clicks the Save and continue button
+	Then the Your application page is displayed
+	When the user clicks the How will this consignment be transported? link
+	Then the How will this consignment be transported? page is displayed
+	When the user selects a transport method and clicks the Save and continue button
+	Then the Your application page is displayed
+	When the user clicks the What are the packer details? link
+	Then the What are the packing details as they appear on the packaging? page is displayed
+	When the user selects the middle packer details option and clicks the Save and continue button
+	Then the Your application page is displayed
+	When the user clicks the Check your answers and submit your application link
+	Then the Review your answers page is displayed
+	When the user clicks the Continue button on the Review your answers page
+	Then the When do you need the certificate? page is displayed
+	When the user enters a valid date and time at least 24 hours in the future and clicks the Continue button
+	Then the Exporter declaration page is displayed
+	When the user ticks the exporter declaration checkbox
+	And the user clicks the Submit application button
+	Then the You have successfully submitted your application for a certificate of conformity page is displayed
+	And the user records the APHA reference number for 'APP_B'
+	# --- APP-C ---
+	When I navigate to the Exporter Portal
+	Then the Exporter Portal homepage should be displayed
+	And the Your applications page is displayed
+	When the user clicks the Start a new application button
+	Then the What are you exporting? page is displayed
+	When the user selects 'Plants and fresh produce' and clicks the Continue button on the What are you exporting? page
+	Then the What do you need to do? page is displayed
+	When the user selects 'Apply for a certificate of conformity' and clicks the Continue button on the What do you need to do? page
+	Then the Destination country page is displayed
+	When the user searches for destination country 'France' and clicks the Continue button
+	Then the Create a reference page is displayed
+	When the user enters a reference number and clicks the Save and continue button
+	Then the Your application page is displayed
+	When the user clicks the What's in your consignment? link
+	Then the How do you want to add commodities to your consignment? page is displayed
+	When the user selects 'Manually, by adding one at a time' and clicks the Continue button on the How do you want to add commodities to your consignment? page
+	Then the What are you exporting? page is displayed
+	When the user selects commodity 'General marketing standards (GMS) commodity' and clicks the Continue button
+	Then the Add commodities to your consignment page is displayed
+	When the user describes the commodity with common name 'Avocado', botanical name 'PEBAM', country of origin 'Spain', net weight per package '1', number of packages '10', type of packaging 'Box', reusable packaging 'Yes'
+	And the user clicks the Save and continue button on the Add commodities to your consignment page
+	Then the Your commodities page is displayed with the commodity line just entered
+	When the user selects 'No, I have finished adding commodities' and clicks the Save and continue button on the Your commodities page
+	Then the Your application page is displayed
+	When the user clicks the What are the inspection details? link
+	Then the What are the inspection details? page is displayed
+	When the user selects an inspection address and continues
+	Then the Do you want to select this inspection address? page is displayed
+	When the user selects 'Yes, select this inspection address' and clicks the Continue button on the Do you want to select this inspection address? page
+	Then the Who is the contact for this application? page is displayed
+	When the user enters valid contact details and clicks the Save and continue button
+	Then the When and where will the consignment be ready? page is displayed
+	When the user enters a valid ready date, time and place and clicks the Save and continue button
+	Then the Your application page is displayed
+	When the user clicks the How will this consignment be transported? link
+	Then the How will this consignment be transported? page is displayed
+	When the user selects a transport method and clicks the Save and continue button
+	Then the Your application page is displayed
+	When the user clicks the What are the packer details? link
+	Then the What are the packing details as they appear on the packaging? page is displayed
+	When the user selects the middle packer details option and clicks the Save and continue button
+	Then the Your application page is displayed
+	When the user clicks the Check your answers and submit your application link
+	Then the Review your answers page is displayed
+	When the user clicks the Continue button on the Review your answers page
+	Then the When do you need the certificate? page is displayed
+	When the user enters a valid date and time at least 24 hours in the future and clicks the Continue button
+	Then the Exporter declaration page is displayed
+	When the user ticks the exporter declaration checkbox
+	And the user clicks the Submit application button
+	Then the You have successfully submitted your application for a certificate of conformity page is displayed
+	And the user records the APHA reference number for 'APP_C'
+	# --- APP-D ---
+	When I navigate to the Exporter Portal
+	Then the Exporter Portal homepage should be displayed
+	And the Your applications page is displayed
+	When the user clicks the Start a new application button
+	Then the What are you exporting? page is displayed
+	When the user selects 'Plants and fresh produce' and clicks the Continue button on the What are you exporting? page
+	Then the What do you need to do? page is displayed
+	When the user selects 'Apply for a certificate of conformity' and clicks the Continue button on the What do you need to do? page
+	Then the Destination country page is displayed
+	When the user searches for destination country 'France' and clicks the Continue button
+	Then the Create a reference page is displayed
+	When the user enters a reference number and clicks the Save and continue button
+	Then the Your application page is displayed
+	When the user clicks the What's in your consignment? link
+	Then the How do you want to add commodities to your consignment? page is displayed
+	When the user selects 'Manually, by adding one at a time' and clicks the Continue button on the How do you want to add commodities to your consignment? page
+	Then the What are you exporting? page is displayed
+	When the user selects commodity 'General marketing standards (GMS) commodity' and clicks the Continue button
+	Then the Add commodities to your consignment page is displayed
+	When the user describes the commodity with common name 'Avocado', botanical name 'PEBAM', country of origin 'Spain', net weight per package '1', number of packages '10', type of packaging 'Box', reusable packaging 'Yes'
+	And the user clicks the Save and continue button on the Add commodities to your consignment page
+	Then the Your commodities page is displayed with the commodity line just entered
+	When the user selects 'No, I have finished adding commodities' and clicks the Save and continue button on the Your commodities page
+	Then the Your application page is displayed
+	When the user clicks the What are the inspection details? link
+	Then the What are the inspection details? page is displayed
+	When the user selects an inspection address and continues
+	Then the Do you want to select this inspection address? page is displayed
+	When the user selects 'Yes, select this inspection address' and clicks the Continue button on the Do you want to select this inspection address? page
+	Then the Who is the contact for this application? page is displayed
+	When the user enters valid contact details and clicks the Save and continue button
+	Then the When and where will the consignment be ready? page is displayed
+	When the user enters a valid ready date, time and place and clicks the Save and continue button
+	Then the Your application page is displayed
+	When the user clicks the How will this consignment be transported? link
+	Then the How will this consignment be transported? page is displayed
+	When the user selects a transport method and clicks the Save and continue button
+	Then the Your application page is displayed
+	When the user clicks the What are the packer details? link
+	Then the What are the packing details as they appear on the packaging? page is displayed
+	When the user selects the middle packer details option and clicks the Save and continue button
+	Then the Your application page is displayed
+	When the user clicks the Check your answers and submit your application link
+	Then the Review your answers page is displayed
+	When the user clicks the Continue button on the Review your answers page
+	Then the When do you need the certificate? page is displayed
+	When the user enters a valid date and time at least 24 hours in the future and clicks the Continue button
+	Then the Exporter declaration page is displayed
+	When the user ticks the exporter declaration checkbox
+	And the user clicks the Submit application button
+	Then the You have successfully submitted your application for a certificate of conformity page is displayed
+	And the user records the APHA reference number for 'APP_D'
+	# Validate via Risk Decision Report - APP-A (Total=1, Triggered=1, IsTriggered=true)
+	When I navigate to the Risk Engine application
+	Then the Risk Engine Home page should be displayed
+	When the user clicks the 'Reports' link from the Risk Engine header menu
+	Then the Risk Engine Reports page should be displayed
+	When the user clicks the CHED-PP reports link
+	Then the CHED-PP reports page should be displayed
+	When the user clicks the Risk decision report link
+	Then the Risk decision report page should be displayed
+	When the user enters the recorded APHA Reference for 'APP_A' in the Risk decision search box and clicks Search
+	Then the Risk decision report returns one matching record
+	When the user clicks the Expand button for the APHA Reference of 'APP_A'
+	And the user clicks the Requests details link
+	Then the Requests section is expanded with details from IPAFFS
+	When the user clicks the Decision details link
+	Then the Decision section contains a DecisionRule with the following values
+		| Field         | Value          |
+		| RuleType      | GMSDefaultRule |
+		| RegulatorType | GMSExport      |
+		| Rate          | 50             |
+		| Total         | 1              |
+		| Triggered     | 1              |
+		| IsTriggered   | true           |
+	And 'APP_A' is complete
+	# Validate via Risk Decision Report - APP-B (Total=2, Triggered=1, IsTriggered=false)
+	When the user enters the recorded APHA Reference for 'APP_B' in the Risk decision search box and clicks Search
+	Then the Risk decision report returns one matching record
+	When the user clicks the Expand button for the APHA Reference of 'APP_B'
+	And the user clicks the Requests details link
+	Then the Requests section is expanded with details from IPAFFS
+	When the user clicks the Decision details link
+	Then the Decision section contains a DecisionRule with the following values
+		| Field         | Value          |
+		| RuleType      | GMSDefaultRule |
+		| RegulatorType | GMSExport      |
+		| Rate          | 50             |
+		| Total         | 2              |
+		| Triggered     | 1              |
+		| IsTriggered   | false          |
+	And 'APP_B' is complete
+	# Validate via Risk Decision Report - APP-C (Total=3, Triggered=1, IsTriggered=false)
+	When the user enters the recorded APHA Reference for 'APP_C' in the Risk decision search box and clicks Search
+	Then the Risk decision report returns one matching record
+	When the user clicks the Expand button for the APHA Reference of 'APP_C'
+	And the user clicks the Requests details link
+	Then the Requests section is expanded with details from IPAFFS
+	When the user clicks the Decision details link
+	Then the Decision section contains a DecisionRule with the following values
+		| Field         | Value          |
+		| RuleType      | GMSDefaultRule |
+		| RegulatorType | GMSExport      |
+		| Rate          | 50             |
+		| Total         | 3              |
+		| Triggered     | 1              |
+		| IsTriggered   | false          |
+	And 'APP_C' is complete
+	# Validate via Risk Decision Report - APP-D (Total=4, Triggered=2, IsTriggered=true)
+	When the user enters the recorded APHA Reference for 'APP_D' in the Risk decision search box and clicks Search
+	Then the Risk decision report returns one matching record
+	When the user clicks the Expand button for the APHA Reference of 'APP_D'
+	And the user clicks the Requests details link
+	Then the Requests section is expanded with details from IPAFFS
+	When the user clicks the Decision details link
+	Then the Decision section contains a DecisionRule with the following values
+		| Field         | Value          |
+		| RuleType      | GMSDefaultRule |
+		| RegulatorType | GMSExport      |
+		| Rate          | 50             |
+		| Total         | 4              |
+		| Triggered     | 2              |
+		| IsTriggered   | true           |
+	And 'APP_D' is complete
+	# Reset the HMI (Import) rate on the Default rules page
+	When the user clicks the 'CHED-PP' link from the Risk Engine header menu
+	Then the CHED-PP imports and exports page should be displayed
+	When the user clicks the Global inspection rules link under the HMI imports and exports rules header
+	Then the Default rules page should be displayed
+	When the user sets the default inspection rate for GMS (Export) to 0 if it is not already 0
+	And the user clicks the Confirm and send button on the Default Rules page
+	Then the Confirmation of default rate change page should be displayed with the following GMS (Export) rate details
+		| Field | Value |
+		| From  | 50%   |
+		| To    | 0%    |
+	When the user clicks the Confirm and send button on the confirmation of default rate change page
+	Then the Rule change complete page should be displayed
+	When the user clicks the 'CHED-PP' link from the Risk Engine header menu
+	Then the CHED-PP imports and exports page should be displayed
+	When the user clicks the Global inspection rules link under the HMI imports and exports rules header
+	Then the Default rules page should be displayed
+	When the user resets the default inspection rate for GMS (Export) to the value noted at the start
+	And the user clicks the Confirm and send button on the Default Rules page
+	Then the Confirmation of default rate change page should be displayed with the following GMS (Export) rate details
+		| Field | Value |
+		| From  | 0%    |
+	And the GMS (Export) rate should be changing to the value noted at the start
+	When the user clicks the Confirm and send button on the confirmation of default rate change page
+	Then the Rule change complete page should be displayed
