@@ -16,7 +16,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='Risk decision report']"), true);
         private IWebElement queryInput => _driver.WaitForElement(By.Id("query"));
         private IWebElement btnSearch => _driver.WaitForElement(By.Id("search"));
-        private IWebElement caption => _driver.FindElement(By.XPath("//table//caption"));
+        private IWebElement caption => _driver.WaitForElement(By.XPath("//table//caption"));
         private IWebElement btnExpandForCHED(string chedReference) =>
             _driver.WaitForElement(By.XPath($"//button[starts-with(normalize-space(),'Expand') and contains(.,'{chedReference}')]"));
         private By btnExpandDecisionsBy => By.XPath("//button[@data-action='expand-decision']");
@@ -63,5 +63,7 @@ namespace Defra.UI.Tests.Pages.Classes
         public string GetRequestsJson() => preRequestsJson.Text.Trim();
 
         public string GetDecisionJson() => preDecisionJson.Text.Trim();
+
+        public void ClickSearch() => btnSearch.Click();
     }
 }

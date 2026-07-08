@@ -38,10 +38,22 @@ namespace Defra.UI.Tests.Steps.IPAFF
             chedPPImportsAndExportsPage?.ClickHMIImportCommodityRulesLink();
         }
 
+        [When("the user clicks the HMI export commodity rules link")]
+        public void WhenTheUserClicksTheHMIExportCommodityRulesLink()
+        {
+            chedPPImportsAndExportsPage?.ClickHMIExportCommodityRulesLink();
+        }
+
         [When("the user clicks the PHSI individual commodity rules link")]
         public void WhenTheUserClicksThePHSIIndividualCommodityRulesLink()
         {
             chedPPImportsAndExportsPage?.ClickPHSIIndividualCommodityRulesLink();
+        }
+
+        [When("the user clicks the System settings for HMI rules link")]
+        public void WhenTheUserClicksTheSystemSettingsForHMIRulesLink()
+        {
+            chedPPImportsAndExportsPage?.ClickSystemSettingsForHMIRulesLink();
         }
 
         [When("the user clicks the Country rules link under the HMI imports and exports rules header")]
@@ -49,5 +61,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             chedPPImportsAndExportsPage?.ClickCountryRulesLink();
         }
+
+        [When("the user clicks the Global inspection rules link under the HMI imports and exports rules header")]
+        public void WhenTheUserClicksTheGlobalInspectionRulesLinkUnderTheHMIImportsAndExportsRulesHeader()
+        {
+            chedPPImportsAndExportsPage?.ClickGlobalInspectionRulesLink();
+        }
+
+
     }
 }

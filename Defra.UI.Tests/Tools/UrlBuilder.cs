@@ -1,5 +1,5 @@
-﻿using Reqnroll.BoDi;
-using Defra.UI.Tests.Configuration;
+﻿using Defra.UI.Tests.Configuration;
+using Reqnroll.BoDi;
 
 namespace Defra.UI.Tests.Tools
 {
@@ -8,6 +8,7 @@ namespace Defra.UI.Tests.Tools
         public UrlBuilder Default();
         public UrlBuilder BTMSDefault();
         public UrlBuilder InspectorDefault();
+        public UrlBuilder ExporterPortalDefault();
         public string BuildApp();
         public UrlBuilder Add(string segment);
     }
@@ -25,6 +26,7 @@ namespace Defra.UI.Tests.Tools
         private string BaseApplicationUrl = null;
         private string BaseBTMSApplicationUrl = null;
         private string BaseInspectorUrl = null;
+        private string BaseExporterPortalUrl = null;
 
         public UrlBuilder Add(string segment)
         {
@@ -102,6 +104,26 @@ namespace Defra.UI.Tests.Tools
             return path;
         }
 
+        public string BuildExporterPortalApp()
+        {
+            string path = null;
+            if (segments.Count > 0)
+            {
+                path = string.Join("/", segments);
+
+                if (segments.Count > 0 && hasTrailingSlash)
+                {
+                    path += "/";
+                }
+                path = BaseExporterPortalUrl + "/" + path;
+            }
+            else
+            {
+                path = BaseExporterPortalUrl;
+            }
+            return path;
+        }
+
         public UrlBuilder Default()
         {
             BaseApplicationUrl = ConfigSetup.BaseConfiguration.TestConfiguration.ApplicationUrl;
@@ -119,6 +141,13 @@ namespace Defra.UI.Tests.Tools
         public UrlBuilder InspectorDefault()
         {
             BaseInspectorUrl = ConfigSetup.BaseConfiguration.TestConfiguration.InspectorUrl;
+
+            return this;
+        }
+
+        public UrlBuilder ExporterPortalDefault()
+        {
+            BaseExporterPortalUrl = ConfigSetup.BaseConfiguration.TestConfiguration.ExporterPortalUrl;
 
             return this;
         }

@@ -1,16 +1,19 @@
 ﻿using AventStack.ExtentReports;
 using AventStack.ExtentReports.Gherkin;
 using Capgemini.PowerApps.SpecFlowBindings;
+using Defra.UI.Tests.Shared.Tools;
 using OpenQA.Selenium;
 using Reqnroll;
-using System.Reflection;
-using System.Text;
 
 namespace Defra.Trade.MSD365.SpecFlowBindings.Hooks
 {
     [Binding]
     public class AfterStepHooks : PowerAppsStepDefiner
     {
+        // Must match WebDriverHook.FailureScreenshotPathKey — both hooks live in different
+        // assemblies and communicate the failure screenshot path via ScenarioContext.
+        private const string FailureScreenshotPathKey = "FailureScreenshotPath";
+
         private readonly ScenarioContext _scenarioContext;
 
         public AfterStepHooks(ScenarioContext scenarioContext)
@@ -30,7 +33,6 @@ namespace Defra.Trade.MSD365.SpecFlowBindings.Hooks
             // Always read directly from ScenarioContext — the flag can be toggled
             // mid-scenario (e.g. set false when handing off to the IPAFFS tab,
             // restored to true when switching back to the Dynamics tab).
-            // A cached static field would miss those mid-scenario changes.
             var isDynamicsActive = _scenarioContext.ContainsKey("IsDynamicsActive")
                                    && _scenarioContext.Get<bool>("IsDynamicsActive");
 
@@ -48,14 +50,26 @@ namespace Defra.Trade.MSD365.SpecFlowBindings.Hooks
                     {
                         var stepType = _scenarioContext.StepContext.StepInfo.StepDefinitionType.ToString();
                         var stepInfo = _scenarioContext.StepContext.StepInfo.Text;
-                        var screenshotPath = CaptureScreenshotForDynamics();
+                        var screenshotPath = ScreenshotService.CaptureScreenshot(Driver, _scenarioContext.ScenarioInfo.Title);
                         var scenario = _scenarioContext.Get<ExtentTest>("ExtentScenario");
 
                         var stepNode = scenario.CreateNode(new GherkinKeyword(stepType), stepInfo)
-                                               .Fail(_scenarioContext.TestError.Message)
-                                               .AddScreenCaptureFromPath(screenshotPath);
+                                               .Fail(_scenarioContext.TestError.Message);
 
-                        var log = CreateLogForContextValues();
+                        if (!string.IsNullOrWhiteSpace(screenshotPath))
+                        {
+                            stepNode.AddScreenCaptureFromPath(screenshotPath);
+
+                            // Stash the absolute path so WebDriverHook.AfterScenario reuses this
+                            // Dynamics screenshot for the TRX attachment. Without this, the fallback
+                            // recapture in AttachScreenShotToXmlReport would re-shoot via ActiveDriver
+                            // (Browser 1, parked on IPAFFS/blank in pure-Dynamics runs) and overwrite
+                            // this file — so the Extent report would render the wrong image.
+                            _scenarioContext[FailureScreenshotPathKey] =
+                                ScreenshotService.GetScreenshotPathForScenario(_scenarioContext.ScenarioInfo.Title);
+                        }
+
+                        var log = ScreenshotService.CreateLogForContextValues(_scenarioContext);
                         if (!string.IsNullOrWhiteSpace(log) && log != "<pre></pre>")
                         {
                             stepNode.Info(log);
@@ -81,126 +95,6 @@ namespace Defra.Trade.MSD365.SpecFlowBindings.Hooks
                 }
                 catch { }
             }
-        }
-
-        private string CreateLogForContextValues()
-        {
-            var internalKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                "ExtentScenario",
-                "IsDynamicsActive",
-                "DynamicsWindowHandle",
-                "IpaffsInDynamicsBrowserHandle",
-                "DynamicsIpaffsDriver"
-            };
-
-            var log = new StringBuilder("<pre>");
-            try
-            {
-                foreach (var context in _scenarioContext)
-                {
-                    if (!internalKeys.Contains(context.Key))
-                    {
-                        log.AppendLine($"{context.Key} : <b>{FormatValue(context.Value)}</b><br>");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                log.AppendLine($"Error capturing context values: {ex.Message}<br>");
-            }
-
-            log.Append("</pre>");
-            return log.ToString();
-        }
-
-        private static string FormatValue(object value)
-        {
-            if (value == null)
-                return "null";
-
-            if (value is Array array)
-                return string.Join(", ", array.Cast<object>());
-
-            if (value is IEnumerable<object> list)
-                return string.Join(", ", list);
-
-            if (value is System.Collections.IEnumerable enumerable && value is not string)
-                return string.Join(", ", enumerable.Cast<object>());
-
-            return value.ToString();
-        }
-
-        private string CaptureScreenshotForDynamics()
-        {
-            var screenshotsDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Reports", "Screenshots");
-
-            if (!Directory.Exists(screenshotsDir))
-            {
-                Directory.CreateDirectory(screenshotsDir);
-            }
-
-            try
-            {
-                var handles = Driver.WindowHandles;
-                if (handles.Count > 0)
-                {
-                    var currentHandle = Driver.CurrentWindowHandle;
-                    if (handles.Contains(currentHandle))
-                    {
-                        Driver.SwitchTo().Window(currentHandle);
-                    }
-                    else
-                    {
-                        Driver.SwitchTo().Window(handles.Last());
-                    }
-                }
-            }
-            catch { }
-
-            var screenshot = ((ITakesScreenshot)Driver).GetScreenshot();
-            var fileName = GenerateScreenshotFileName();
-            var filePath = Path.Combine(screenshotsDir, fileName);
-            screenshot.SaveAsFile(filePath);
-
-            return $"./Screenshots/{fileName}";
-        }
-
-        /// <summary>
-        /// Generates a screenshot filename using the scenario title and current timestamp.
-        /// Falls back to a GUID if the scenario title is unavailable.
-        /// </summary>
-        private string GenerateScreenshotFileName()
-        {
-            try
-            {
-                var scenarioTitle = _scenarioContext.ScenarioInfo.Title;
-                var sanitised = SanitiseFileName(scenarioTitle);
-                var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");
-                return $"{sanitised}_{timestamp}.png";
-            }
-            catch
-            {
-                return $"{Guid.NewGuid()}.png";
-            }
-        }
-
-        /// <summary>
-        /// Removes invalid file name characters, replaces spaces with underscores,
-        /// and truncates to 80 characters to avoid path-length issues.
-        /// </summary>
-        private static string SanitiseFileName(string input)
-        {
-            var invalidChars = Path.GetInvalidFileNameChars();
-            var sanitised = new string(input.Where(c => !invalidChars.Contains(c)).ToArray());
-            sanitised = sanitised.Replace(' ', '_');
-
-            if (sanitised.Length > 80)
-            {
-                sanitised = sanitised[..80];
-            }
-
-            return sanitised;
         }
     }
 }

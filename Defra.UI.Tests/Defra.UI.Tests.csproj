@@ -65,6 +65,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Capgemini.PowerApps.SpecFlowBindings\Capgemini.PowerApps.SpecFlowBindings.csproj" />
     <ProjectReference Include="..\Defra.Trade.MSD365.SpecFlowBindings\Defra.Trade.MSD365.SpecFlowBindings.csproj" />
+	<ProjectReference Include="..\Defra.UI.Tests.Shared\Defra.UI.Tests.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

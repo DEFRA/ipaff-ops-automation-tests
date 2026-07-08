@@ -14,8 +14,12 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='CHED-PP imports and exports']"), true);
         private IWebElement lnkBulkUploadCommodityRules => _driver.WaitForElement(By.XPath("//a[normalize-space()='Bulk upload commodity rules']"));
         private IWebElement lnkHMIImportCommodityRules => _driver.WaitForElement(By.XPath("//a[normalize-space()='HMI import commodity rules']"));
+        private IWebElement lnkHMIExportCommodityRules => _driver.WaitForElement(By.XPath("//a[normalize-space()='HMI export commodity rules']"));
         private IWebElement lnkPHSIIndividualCommodityRules => _driver.WaitForElement(By.XPath("//a[normalize-space()='PHSI individual commodity rules']"));
+        private IWebElement lnkSystemSettingsForHMIRules => _driver.WaitForElement(By.XPath("//a[normalize-space()='System settings for HMI rules']"));
         private IWebElement lnkCountryRules => _driver.WaitForElement(By.XPath("//a[normalize-space()='Country rules']"));
+        private IWebElement lnkGlobalInspectionRules => _driver.WaitForElement(By.XPath("//a[normalize-space()='Global inspection rules']"));
+
         #endregion
 
         public CHEDPPImportsAndExportsPage(IObjectContainer container)
@@ -26,9 +30,11 @@ namespace Defra.UI.Tests.Pages.Classes
         public bool IsPageLoaded() => pageTitle.Text.Trim().Equals("CHED-PP imports and exports");
 
         public void ClickBulkUploadCommodityRulesLink() => lnkBulkUploadCommodityRules.Click();
-
         public void ClickHMIImportCommodityRulesLink() => lnkHMIImportCommodityRules.Click();
+        public void ClickHMIExportCommodityRulesLink() => lnkHMIExportCommodityRules.Click();
         public void ClickPHSIIndividualCommodityRulesLink() => lnkPHSIIndividualCommodityRules.Click();
+        public void ClickSystemSettingsForHMIRulesLink() => lnkSystemSettingsForHMIRules.Click();
         public void ClickCountryRulesLink() => lnkCountryRules.Click();
+        public void ClickGlobalInspectionRulesLink() => lnkGlobalInspectionRules.Click();
     }
 }
