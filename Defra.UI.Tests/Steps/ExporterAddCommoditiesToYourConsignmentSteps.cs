@@ -52,6 +52,28 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["Variety"] = specificVariety;
         }
 
+        [When(@"^the user describes the commodity with common name '([^']*)', botanical name '([^']*)', country of origin '([^']*)', net weight per package '([^']*)', number of packages '([^']*)', type of packaging '([^']*)', reusable packaging '([^']*)'$")]
+        public void WhenTheUserDescribesTheCommodityWithCommonNameBotanicalNameCountryOfOriginNetWeightPerPackageNumberOfPackagesTypeOfPackagingReusablePackaging(
+            string commonName,
+            string botanicalName,
+            string countryOfOrigin,
+            string netWeightPerPackage,
+            string numberOfPackages,
+            string typeOfPackaging,
+            string reusablePackaging)
+        {
+            exporterAddCommoditiesToYourConsignmentPage?.DescribeCommodity(
+                commonName,
+                botanicalName,
+                countryOfOrigin,
+                netWeightPerPackage,
+                numberOfPackages,
+                typeOfPackaging,
+                reusablePackaging);
+
+            _scenarioContext["Commodity"] = commonName;
+        }
+
         [When("the user clicks the Save and continue button on the Add commodities to your consignment page")]
         public void WhenTheUserClicksTheSaveAndContinueButtonOnTheAddCommoditiesToYourConsignmentPage()
         {

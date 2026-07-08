@@ -10,5 +10,6 @@
         void ClickDecisionDetails();
         string GetRequestsJson();
         string GetDecisionJson();
+        void ClickSearch();
     }
 }

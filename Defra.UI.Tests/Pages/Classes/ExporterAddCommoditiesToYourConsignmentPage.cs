@@ -24,6 +24,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement typeOfPackagingOption(string packagingType) => _driver.WaitForElement(By.XPath($"//li[contains(.,'{packagingType}')] | //div[contains(@class,'autocomplete__option') and contains(.,'{packagingType}')]"), true);
         private IWebElement rdoPackagingReusable(string yesNoValue) => _driver.WaitForElementExists(By.XPath($"//input[@name='packagingReusableOrReclaimed' and @value='{yesNoValue}']"), true);
         private IWebElement btnSaveAndContinue => _driver.WaitForElement(By.Id("Button-SaveAndContinue"));
+        private IWebElement txtCommonName => _driver.WaitForElement(By.Id("commonName"), true);
+        private IWebElement txtBotanicalNameAutocomplete => _driver.WaitForElement(By.Id("botanical-autocomplete-label"), true);
+        private IWebElement botanicalNameOption(string botanicalName) => _driver.WaitForElement(By.XPath($"//ul[@id='botanical-autocomplete-label__listbox']//li[contains(.,'{botanicalName}')]"), true);
         #endregion
 
         public ExporterAddCommoditiesToYourConsignmentPage(IObjectContainer container)
@@ -51,6 +54,31 @@ namespace Defra.UI.Tests.Pages.Classes
             EnterNumberOfPackages(numberOfPackages);
             SelectTypeOfPackaging(typeOfPackaging);
             SelectReusablePackagingOption(reusablePackagingOptionValue);
+        }
+
+        public void DescribeCommodity(
+            string commonName,
+            string botanicalName,
+            string countryOfOrigin,
+            string netWeightPerPackage,
+            string numberOfPackages,
+            string typeOfPackaging,
+            string reusablePackagingOptionValue)
+        {
+            if (!string.IsNullOrWhiteSpace(commonName))
+                EnterCommonName(commonName);
+            if (!string.IsNullOrWhiteSpace(botanicalName))
+                EnterBotanicalName(botanicalName);
+            if (!string.IsNullOrWhiteSpace(countryOfOrigin))
+                SelectCountryOfOrigin(countryOfOrigin);
+            if (!string.IsNullOrWhiteSpace(netWeightPerPackage))
+                EnterNetWeightPerPackage(netWeightPerPackage);
+            if (!string.IsNullOrWhiteSpace(numberOfPackages))
+                EnterNumberOfPackages(numberOfPackages);
+            if (!string.IsNullOrWhiteSpace(typeOfPackaging))
+                SelectTypeOfPackaging(typeOfPackaging);
+            if (!string.IsNullOrWhiteSpace(reusablePackagingOptionValue))
+                SelectReusablePackagingOption(reusablePackagingOptionValue);
         }
 
         public void ClickSaveAndContinueButton() => btnSaveAndContinue.Click();
@@ -104,6 +132,19 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             var yesNoValue = reusablePackagingOptionValue.ToLower() == "yes" ? "true" : "false";
             rdoPackagingReusable(yesNoValue).Click();
+        }
+
+        private void EnterCommonName(string commonName)
+        {
+            txtCommonName.Clear();
+            txtCommonName.SendKeys(commonName);
+        }
+
+        private void EnterBotanicalName(string botanicalName)
+        {
+            txtBotanicalNameAutocomplete.Clear();
+            txtBotanicalNameAutocomplete.SendKeys(botanicalName);
+            botanicalNameOption($"({botanicalName})").Click();
         }
 
         #endregion

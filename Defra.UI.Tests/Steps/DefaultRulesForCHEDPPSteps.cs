@@ -35,14 +35,14 @@ namespace Defra.UI.Tests.Steps
             _scenarioContext["HmiImportRate"] = hmiImportRate;
         }
 
-        [When("the user sets the HMI \\(Import\\) value to {int} if it is not already {int}")]
-        public void ThenTheUserSetsTheHMIImportValueToIfItIsNotAlready(int newHmiImportVal, int currentHmiImportVal)
+        [When("the user sets the default inspection rate for HMI \\(Import) to {int} if it is not already {int}")]
+        public void WhenTheUserSetsTheDefaultInspectionRateForHMIImportToIfItIsNotAlready(int newHmiImportVal, int currentHmiImportVal)
         {
-            defaultRulesForCHEDPPPage?.EnsureHmiImportRateIsZero();
+            defaultRulesForCHEDPPPage?.EnsureHmiImportRateIs(newHmiImportVal);
         }
 
-        [When("the user enters {int} for HMI \\(Import\\) value on the Default Rules page")]
-        public void WhenTheUserEntersForHMIImportValueOnTheDefaultRulesPage(int hmiImportRate)
+        [When("the user sets the default inspection rate for HMI \\(Import) to {int} on the Default Rules page")]
+        public void WhenTheUserSetsTheDefaultInspectionRateForHMIImportToOnTheDefaultRulesPage(int hmiImportRate)
         {
             defaultRulesForCHEDPPPage?.SetHmiImportRate(hmiImportRate);
             _scenarioContext["NewHmiImportRate"] = hmiImportRate;
@@ -54,11 +54,65 @@ namespace Defra.UI.Tests.Steps
             defaultRulesForCHEDPPPage?.SetHmiImportRate(hmiImportRate);
         }
 
-        [When("the user resets the HMI \\(Import\\) rate back to the value noted at the start")]
-        public void WhenTheUserResetsTheHMIImportRateBackToTheValueNotedAtTheStart()
+        [When("the user resets the default inspection rate for HMI \\(Import) to the value noted at the start")]
+        public void WhenTheUserResetsTheDefaultInspectionRateForHMIImportToTheValueNotedAtTheStart()
         {
             var originalHmiImportRate = (int)_scenarioContext["HmiImportRate"];
             defaultRulesForCHEDPPPage?.SetHmiImportRate(originalHmiImportRate);
+        }
+
+        [When("the user makes a note of the GMS \\(Export) setting value on the Default Rules page")]
+        public void WhenTheUserMakesANoteOfTheGMSExportSettingValueOnTheDefaultRulesPage()
+        {
+            var gmsExportRate = defaultRulesForCHEDPPPage?.GetGmsExportRate();
+            _scenarioContext["GmsExportRate"] = gmsExportRate;
+        }
+
+        [When("the user sets the default inspection rate for GMS \\(Export) to {int} if it is not already {int}")]
+        public void WhenTheUserSetsTheDefaultInspectionRateForGMSExportToIfItIsNotAlready(int newGmsExportVal, int currentGmsExportVal)
+        {
+            defaultRulesForCHEDPPPage?.EnsureGmsExportRateIs(newGmsExportVal);
+        }
+
+        [When("the user sets the default inspection rate for GMS \\(Export) to {int} on the Default Rules page")]
+        public void WhenTheUserSetsTheDefaultInspectionRateForGMSExportToOnTheDefaultRulesPage(int gmsExportRate)
+        {
+            defaultRulesForCHEDPPPage?.SetGmsExportRate(gmsExportRate);
+            _scenarioContext["NewGmsExportRate"] = gmsExportRate;
+        }
+
+        [When("the user resets the default inspection rate for GMS \\(Export) to the value noted at the start")]
+        public void WhenTheUserResetsTheDefaultInspectionRateForGMSExportToTheValueNotedAtTheStart()
+        {
+            var originalGmsExportRate = (int)_scenarioContext["GmsExportRate"];
+            defaultRulesForCHEDPPPage?.SetGmsExportRate(originalGmsExportRate);
+        }
+
+        [When("the user makes a note of the SMS \\(Export) setting value on the Default Rules page")]
+        public void WhenTheUserMakesANoteOfTheSMSExportSettingValueOnTheDefaultRulesPage()
+        {
+            var smsExportRate = defaultRulesForCHEDPPPage?.GetSmsExportRate();
+            _scenarioContext["SmsExportRate"] = smsExportRate;
+        }
+
+        [When("the user sets the default inspection rate for SMS \\(Export) to {int} if it is not already {int}")]
+        public void WhenTheUserSetsTheDefaultInspectionRateForSMSExportToIfItIsNotAlready(int newSmsExportVal, int currentSmsExportVal)
+        {
+            defaultRulesForCHEDPPPage?.EnsureSmsExportRateIs(newSmsExportVal);
+        }
+
+        [When("the user sets the default inspection rate for SMS \\(Export) to {int} on the Default Rules page")]
+        public void WhenTheUserSetsTheDefaultInspectionRateForSMSExportToOnTheDefaultRulesPage(int smsExportRate)
+        {
+            defaultRulesForCHEDPPPage?.SetSmsExportRate(smsExportRate);
+            _scenarioContext["NewSmsExportRate"] = smsExportRate;
+        }
+
+        [When("the user resets the default inspection rate for SMS \\(Export) to the value noted at the start")]
+        public void WhenTheUserResetsTheDefaultInspectionRateForSMSExportToTheValueNotedAtTheStart()
+        {
+            var originalSmsExportRate = (int)_scenarioContext["SmsExportRate"];
+            defaultRulesForCHEDPPPage?.SetSmsExportRate(originalSmsExportRate);
         }
 
         [When("the user clicks the Confirm and send button on the Default Rules page")]
