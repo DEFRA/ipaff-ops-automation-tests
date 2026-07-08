@@ -119,18 +119,9 @@ namespace Defra.UI.Tests.Tools
 
         public static bool IsDownloaded(string fileName, string extension)
         {
-            //var downloadedFilePath = Path.Combine(Path.GetTempPath(), "automation-downloads", $"{fileName}.{extension}");
-
-            // Create a stable, cross‑environment download directory
             var downloadRoot = Path.Combine(
-                Directory.GetCurrentDirectory(),
+                Path.GetTempPath(),
                 "automation-downloads");
-
-            // Ensure the directory exists
-            Directory.CreateDirectory(downloadRoot);
-
-            // Build the full file path
-            var downloadedFilePath = Path.Combine(downloadRoot, $"{fileName}.{extension}");
 
             var timeout = TimeSpan.FromSeconds(30);
 
@@ -138,7 +129,8 @@ namespace Defra.UI.Tests.Tools
 
             while (stopwatch.Elapsed < timeout)
             {
-                if (File.Exists(downloadedFilePath))
+                if (Directory.GetFiles(downloadRoot,
+                        $"{fileName}*.{extension}").Any())
                 {
                     return true;
                 }
