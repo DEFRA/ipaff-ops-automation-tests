@@ -203,6 +203,15 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ViewAllHMIExportCommodityRulesPage, IViewAllHMIExportCommodityRulesPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<DefaultRulesForCHEDPPPage, IDefaultRulesForCHEDPPPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ConfirmationOfDefaultRateChangePage, IConfirmationOfDefaultRateChangePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SelectTheCHEDDCommodityYouWantToAddARuleForPage, ISelectTheCHEDDCommodityYouWantToAddARuleForPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<YouHaveSelectedACommodityPage, IYouHaveSelectedACommodityPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<WhichCountriesWillThisCommodityRuleApplyToPage, IWhichCountriesWillThisCommodityRuleApplyToPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<WillThisCommodityRuleApplyToAllBorderControlPostsPage, IWillThisCommodityRuleApplyToAllBorderControlPostsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<WhichImportPurposesWillThisCommodityRuleApplyToPage, IWhichImportPurposesWillThisCommodityRuleApplyToPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<DoesThisCommodityRuleHaveAStartOrEndDatePage, IDoesThisCommodityRuleHaveAStartOrEndDatePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SetTheInspectionRatePage, ISetTheInspectionRatePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CheckAndSubmitCommodityRulePage, ICheckAndSubmitCommodityRulePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CommodityRuleSubmittedPage, ICommodityRuleSubmittedPage>());
 
             // Exporter Portal pages
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterYourApplicationsPage, IExporterYourApplicationsPage>());
