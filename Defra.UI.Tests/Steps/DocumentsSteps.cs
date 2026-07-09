@@ -1,4 +1,5 @@
 ﻿using Defra.UI.Tests.Pages.Interfaces;
+using Defra.UI.Tests.Tools;
 using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;
@@ -100,7 +101,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user clicks on Download all documents link")]
         public void WhenTheUserClicksOnDownloadAllDocumentsLink()
         {
-            documentsPage?.ClickDownloadAllDocumentsLink();
+            var chedReference = _scenarioContext.GetFromContext<string>("CHEDReference");
+            documentsPage?.ClickDownloadAllDocumentsLink(chedReference);
         }
 
         [When("the user clicks on Download url")]
