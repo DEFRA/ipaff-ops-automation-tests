@@ -89,9 +89,12 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickDownloadLinkInCatchCertificate()
         {
             var fileName = lnkDownloadLink.GetAttribute("download");
+
             if (string.IsNullOrWhiteSpace(fileName))
             {
-                fileName = lnkDownloadLink.Text.Trim();
+                fileName = lnkDownloadLink
+                    .GetAttribute("aria-label")
+                    ?.Replace("Download ", string.Empty);
             }
 
             lnkDownloadLink.Click();
