@@ -88,7 +88,12 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void ClickDownloadLinkInCatchCertificate()
         {
-            var fileName = lnkDownloadLink.GetAttribute("download") ?? lnkDownloadLink.Text.Trim();
+            var fileName = lnkDownloadLink.GetAttribute("download");
+            if (string.IsNullOrWhiteSpace(fileName))
+            {
+                fileName = lnkDownloadLink.Text.Trim();
+            }
+
             lnkDownloadLink.Click();
             Utils.RetrieveFileFromGrid(_driver, fileName);
         }
