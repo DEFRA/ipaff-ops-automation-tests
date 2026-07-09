@@ -14,8 +14,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='Select the CHED-D commodity you want to add a rule for']"), true);
         private IWebElement searchCommodityInput => _driver.WaitForElement(By.Id("SearchText-CommodityCode"));
         private IWebElement searchCommodityButton => _driver.WaitForElement(By.XPath("//button[@name='selector-search-button']"));
-        private IWebElement commoditySearchResult(string commodityName) =>
-            _driver.WaitForElement(By.XPath($"//div[@id='testContainer-CommodityCode']//a[contains(normalize-space(),'{commodityName}')]"));
+        private IWebElement selectCommodityLink(string commodityName) =>
+            _driver.WaitForElement(By.XPath($"//div[@id='CommodityTreeRouteCommodityCode']//span[@class='commodity-description-tree-item'][.//a[normalize-space()='{commodityName}']]//a[@name='select-commodity-link']"));
         #endregion
 
         public SelectTheCHEDDCommodityYouWantToAddARuleForPage(IObjectContainer container)
@@ -31,7 +31,7 @@ namespace Defra.UI.Tests.Pages.Classes
             searchCommodityInput.SendKeys(commodityCode);
             searchCommodityButton.Click();
             Thread.Sleep(2000);
-            commoditySearchResult(commodityName).Click();
+            selectCommodityLink(commodityName).Click();
             Thread.Sleep(1000);
         }
     }

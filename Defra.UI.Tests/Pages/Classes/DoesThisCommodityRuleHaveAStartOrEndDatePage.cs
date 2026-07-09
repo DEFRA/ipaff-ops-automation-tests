@@ -12,8 +12,8 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='Does this commodity rule have a start or end date?']"), true);
-        private IWebElement radioYes => _driver.WaitForElement(By.Id("yes"));
-        private IWebElement radioNo => _driver.WaitForElement(By.Id("no"));
+        private IWebElement radioYes => _driver.WaitForElementExists(By.Id("yes"));
+        private IWebElement radioNo => _driver.WaitForElementExists(By.Id("no"));
         private IWebElement btnContinue => _driver.WaitForElement(By.XPath("//button[@type='submit' and normalize-space()='Continue']"));
         #endregion
 

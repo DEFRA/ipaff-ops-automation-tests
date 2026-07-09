@@ -12,8 +12,8 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='Which import purposes will this commodity rule apply to?']"), true);
-        private IWebElement chkInternalMarket => _driver.WaitForElement(By.Id("importpurpose-internalmarket"));
-        private IWebElement chkNonInternalMarket => _driver.WaitForElement(By.Id("importpurpose-noninternalmarket"));
+        private IWebElement chkInternalMarket => _driver.WaitForElementExists(By.Id("importpurpose-internalmarket"));
+        private IWebElement chkNonInternalMarket => _driver.WaitForElementExists(By.Id("importpurpose-noninternalmarket"));
         private IWebElement btnContinue => _driver.WaitForElement(By.XPath("//button[@type='submit' and normalize-space()='Continue']"));
         #endregion
 
