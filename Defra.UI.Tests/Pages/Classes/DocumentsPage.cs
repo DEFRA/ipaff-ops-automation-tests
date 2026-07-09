@@ -69,9 +69,11 @@ namespace Defra.UI.Tests.Pages.Classes
             return (documentType, documentReference, dateOfIssue);
         }
 
-        public void ClickDownloadAllDocumentsLink()
+        public void ClickDownloadAllDocumentsLink(string chedReference)
         {
             lnkDownloadAllDocuments.Click();
+            Thread.Sleep(1000);
+            Utils.RetrieveFileFromGrid(_driver, $"{chedReference}.zip");
         }
 
         public bool IsCatchCertificateSummaryUrlDisplayed()
