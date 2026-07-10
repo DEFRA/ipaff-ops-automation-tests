@@ -1,6 +1,6 @@
 ﻿namespace Defra.UI.Tests.Pages.Interfaces
 {
-    public interface IViewRulesForAllCountriesPage
+    public interface IViewRulesForAllCountriesHMIImportPage
     {
         bool IsPageLoaded();
         void ScrollToBottom();
@@ -17,6 +17,5 @@
         void ClickConfirmDeleteButton();
         bool IsConfirmDeletionDialogClosed();
         bool IsRuleIdPresent(string ruleId);
-        void ClickRemoveRuleLinkForRuleId(string ruleId);
     }
 }

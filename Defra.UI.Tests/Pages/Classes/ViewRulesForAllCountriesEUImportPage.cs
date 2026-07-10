@@ -7,7 +7,7 @@ using Reqnroll.BoDi;
 
 namespace Defra.UI.Tests.Pages.Classes
 {
-    public class ViewRulesForAllCountriesPage : IViewRulesForAllCountriesPage
+    public class ViewRulesForAllCountriesEUImportPage : IViewRulesForAllCountriesEUImportPage
     {
         private IObjectContainer _objectContainer;
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
@@ -18,26 +18,22 @@ namespace Defra.UI.Tests.Pages.Classes
         // Column order in the rendered table — must match the HTML
         private static readonly string[] Columns =
         [
-            "Id", "Country", "Rate %", "Previous rate %", "Approved Inspection Service",
+            "Id", "Country", "Rate %", "Previous rate %",
             "Permanent rule", "Start Date", "End Date", "Last Updated", "Created"
         ];
 
         #region Page Objects
         private By pageTitleBy => By.XPath("//h1[normalize-space()='View rules for all countries']");
-        private By searchInputBy => By.XPath("//input[@type='search' or contains(@aria-controls,'commodity-rules-table')]");
-        private IWebElement idHeader => _driver.WaitForElement(By.XPath("//table[@id='commodity-rules-table']//thead//th[normalize-space()='Id']"));
-        private IWebElement infoLabel => _driver.FindElement(By.XPath("//div[contains(@id,'commodity-rules-table_info') or contains(@class,'dataTables_info')]"));
-        private IWebElement firstRow => _driver.FindElement(By.XPath("//table[@id='commodity-rules-table']/tbody/tr[1]"));
+        private By searchInputBy => By.XPath("//div[contains(@class,'dataTables_filter')]//input[@type='search']");
+        private IWebElement idHeader => _driver.WaitForElement(By.XPath("//table[contains(@class,'dt-instance-required')]//thead//th[normalize-space(text()[1])='Id']"));
+        private IWebElement infoLabel => _driver.FindElement(By.XPath("//div[contains(@class,'dataTables_info')]"));
+        private IWebElement firstRow => _driver.FindElement(By.XPath("//table[contains(@class,'dt-instance-required')]/tbody/tr[1]"));
         private By firstRowCellsBy => By.XPath("./td");
-        private IWebElement selectedCountText => _driver.WaitForElement(By.Id("selected-count-text"));
-        private IWebElement deleteRulesButton => _driver.WaitForElement(By.Id("remove-selected-rules"));
-        private IWebElement confirmDeleteButton => _driver.WaitForElement(By.Id("confirm-delete"));
-        private By confirmationModalBy => By.Id("confirmation-modal");
-        private IWebElement ruleCountSpan => _driver.WaitForElement(By.Id("rule-count"));
         private IWebElement RemoveRuleLink(string ruleId) => _driver.WaitForElement(By.XPath($"//a[contains(@href,'ruleId={ruleId}') and normalize-space()='Remove rule']"));
+        private By RemoveRuleLinkBy(string ruleId) => By.XPath($"//a[contains(@href,'ruleId={ruleId}') and normalize-space()='Remove rule']");
         #endregion
 
-        public ViewRulesForAllCountriesPage(IObjectContainer container)
+        public ViewRulesForAllCountriesEUImportPage(IObjectContainer container)
         {
             _objectContainer = container;
         }
@@ -56,9 +52,6 @@ namespace Defra.UI.Tests.Pages.Classes
                 return false;
             }
         }
-
-        public void ScrollToBottom() =>
-            ((IJavaScriptExecutor)_driver).ExecuteScript("window.scrollTo(0, document.body.scrollHeight);");
 
         public int GetTotalRuleCount()
         {
@@ -96,37 +89,9 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public string GetTopRowId() => GetTopRowDetails().TryGetValue("Id", out var id) ? id : string.Empty;
 
-        public void TickSelectToDeleteCheckboxForRuleId(string ruleId)
-        {
-            var checkbox = _driver.FindElement(By.Id($"rule-{ruleId}"));
-            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView({block: 'center'});", checkbox);
-            Thread.Sleep(300);
-            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", checkbox);
-        }
-
-        public string GetSelectedRulesInfoText() => selectedCountText.Text.Trim();
-
-        public void ClickDeleteRulesButton() => deleteRulesButton.Click();
-
-        public bool IsConfirmDeletionDialogDisplayed()
-        {
-            var modals = _driver.FindElements(confirmationModalBy);
-            return modals.Count > 0 && modals[0].Displayed;
-        }
-
-        public int GetConfirmDeletionDialogRuleCount() => int.Parse(ruleCountSpan.Text.Trim());
-
-        public void ClickConfirmDeleteButton() => confirmDeleteButton.Click();
-
-        public bool IsConfirmDeletionDialogClosed()
-        {
-            var modals = _driver.FindElements(confirmationModalBy);
-            return modals.Count == 0 || !modals[0].Displayed;
-        }
-
         public bool IsRuleIdPresent(string ruleId)
         {
-            var elements = _driver.FindElements(By.Id($"rule-{ruleId}"));
+            var elements = _driver.FindElements(RemoveRuleLinkBy(ruleId));
             return elements.Count > 0;
         }
 

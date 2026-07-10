@@ -2072,7 +2072,7 @@ Scenario: New EU import country rule for CHEDD - SPS-9522
 	And the user clicks the Requests details link
 	Then the Requests section is expanded with details from IPAFFS
 	When the user clicks the Decision details link
-	Then the Decision section contains a DecisionRule matching the recorded 'NewCommodityRuleId' with the following values
+	Then the Decision section contains a DecisionRule matching the recorded 'NewCountryRuleId' with the following values
 		| Field         | Value       |
 		| RuleType      | CountryRule |
 		| RegulatorType | EUImport    |
@@ -2088,7 +2088,7 @@ Scenario: New EU import country rule for CHEDD - SPS-9522
 	And the user clicks the Requests details link
 	Then the Requests section is expanded with details from IPAFFS
 	When the user clicks the Decision details link
-	Then the Decision section contains a DecisionRule matching the recorded 'NewCommodityRuleId' with the following values
+	Then the Decision section contains a DecisionRule matching the recorded 'NewCountryRuleId' with the following values
 		| Field         | Value       |
 		| RuleType      | CountryRule |
 		| RegulatorType | EUImport    |
@@ -2104,7 +2104,7 @@ Scenario: New EU import country rule for CHEDD - SPS-9522
 	And the user clicks the Requests details link
 	Then the Requests section is expanded with details from IPAFFS
 	When the user clicks the Decision details link
-	Then the Decision section contains a DecisionRule matching the recorded 'NewCommodityRuleId' with the following values
+	Then the Decision section contains a DecisionRule matching the recorded 'NewCountryRuleId' with the following values
 		| Field         | Value       |
 		| RuleType      | CountryRule |
 		| RegulatorType | EUImport    |
@@ -2120,7 +2120,7 @@ Scenario: New EU import country rule for CHEDD - SPS-9522
 	And the user clicks the Requests details link
 	Then the Requests section is expanded with details from IPAFFS
 	When the user clicks the Decision details link
-	Then the Decision section contains a DecisionRule matching the recorded 'NewCommodityRuleId' with the following values
+	Then the Decision section contains a DecisionRule matching the recorded 'NewCountryRuleId' with the following values
 		| Field         | Value       |
 		| RuleType      | CountryRule |
 		| RegulatorType | EUImport    |
