@@ -131,13 +131,19 @@ namespace Defra.UI.Tests.Pages.Classes
         
         public bool VerifyLabel(string label)
         {
-            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView({block: 'center'});", lblImportNotificationPage(label));
+            var element = lblImportNotificationPage(label); 
+            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView({block: 'center'});", element);
+            var text = element.Text.Trim();
+            var firstLine = text.Split(new[] { "\r\n", "\n", "\r" }, StringSplitOptions.None)[0]; 
+            return firstLine.Equals(label.Trim(), StringComparison.Ordinal);
+
+           /* ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView({block: 'center'});", lblImportNotificationPage(label));
 
             int index = lblImportNotificationPage(label).Text.IndexOf("\r\n");
 
             return  (index >= 0
                 ? lblImportNotificationPage(label).Text.Substring(0, index)
-                : lblImportNotificationPage(label).Text).Equals(label);
+                : lblImportNotificationPage(label).Text).Equals(label);*/
         }
 
         public bool VerifyRiskOutcome(string chedRef, string riskOutcome)
