@@ -4,6 +4,7 @@
     {
         bool IsPageLoaded();
         int GetTotalRuleCount();
+        bool IsTableEmpty();
         void EnterSearchText(string text);
         void SortByIdDescending();
         IDictionary<string, string> GetTopRowDetails();

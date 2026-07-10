@@ -31,6 +31,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private By firstRowCellsBy => By.XPath("./td");
         private IWebElement RemoveRuleLink(string ruleId) => _driver.WaitForElement(By.XPath($"//a[contains(@href,'ruleId={ruleId}') and normalize-space()='Remove rule']"));
         private By RemoveRuleLinkBy(string ruleId) => By.XPath($"//a[contains(@href,'ruleId={ruleId}') and normalize-space()='Remove rule']");
+        private By emptyTableMessageBy => By.XPath("//table[contains(@class,'dt-instance-required')]/tbody/tr/td[normalize-space()='No country rules have been found.']");
         #endregion
 
         public ViewRulesForAllCountriesEUImportPage(IObjectContainer container)
@@ -102,6 +103,11 @@ namespace Defra.UI.Tests.Pages.Classes
             Thread.Sleep(300); // allow scroll to settle before click
             removeLink.Click();
             Thread.Sleep(2000); // allow page to reload after removal
+        }
+
+        public bool IsTableEmpty()
+        {
+            return _driver.FindElements(emptyTableMessageBy).Count > 0;
         }
     }
 }

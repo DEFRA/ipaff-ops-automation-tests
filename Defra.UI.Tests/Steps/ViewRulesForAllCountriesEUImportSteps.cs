@@ -103,9 +103,18 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void ThenTheEUImportCountryRuleCountShouldBeLessThan(int count, string countryRuleCount)
         {
             var initial = (int)_scenarioContext[countryRuleCount];
+            var expected = initial - count;
+
+            if (expected == 0)
+            {
+                Assert.True(viewRulesForAllCountriesEUImportPage!.IsTableEmpty(),
+                    $"Expected EU import country rules table to be empty (initial '{countryRuleCount}'={initial} - {count} = 0) but rules are still present");
+                return;
+            }
+
             var actual = viewRulesForAllCountriesEUImportPage!.GetTotalRuleCount();
-            Assert.AreEqual(initial - count, actual,
-                $"Expected EU import country rule count to be {initial - count} (initial '{countryRuleCount}'={initial} - {count}) but was {actual}");
+            Assert.AreEqual(expected, actual,
+                $"Expected EU import country rule count to be {expected} (initial '{countryRuleCount}'={initial} - {count}) but was {actual}");
         }
     }
 }
