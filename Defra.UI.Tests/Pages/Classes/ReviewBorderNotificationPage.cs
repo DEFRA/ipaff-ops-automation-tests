@@ -90,10 +90,8 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void ClickDocumentLink()
         {
-            //var fileName = lnkDocument.Text.Trim();
             lnkDocument.Click();
             Thread.Sleep(1000);
-            //Utils.RetrieveFileFromGrid(_driver, fileName);
             Utils.RetrieveFileFromGrid(_driver, "IPAFFS Test Document.docx");
         }
 

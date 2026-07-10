@@ -121,7 +121,7 @@ namespace Defra.UI.Tests.Tools
         {
             var downloadRoot = Path.Combine(Path.GetTempPath(), "automation-downloads");
 
-            var timeout = TimeSpan.FromSeconds(90);
+            var timeout = TimeSpan.FromSeconds(30);
 
             var stopwatch = Stopwatch.StartNew();
 
