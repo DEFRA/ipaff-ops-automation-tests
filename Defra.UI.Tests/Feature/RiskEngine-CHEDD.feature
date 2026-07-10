@@ -1753,7 +1753,7 @@ Scenario: New EU import country rule for CHEDD - SPS-9522
 		| To    | 50%   |
 	When the user clicks the Confirm and send button on the confirmation of country rate change page
 	Then the Rule change complete page should be displayed
-	# Verify the rule in the imports commodity rules report
+	# Verify the rule in the country rules report
 	When the user clicks the 'Reports' link from the Risk Engine header menu
 	Then the Risk Engine Reports page should be displayed
 	When the user clicks the CHED-D reports link
