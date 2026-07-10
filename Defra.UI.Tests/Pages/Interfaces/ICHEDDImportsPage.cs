@@ -6,5 +6,6 @@
         void ClickBulkUploadCommodityRulesLink();
         void ClickImportsCommodityRulesReportLink();
         void ClickIndividualCommodityRulesLink();
+        void ClickCountryRulesLink();
     }
 }

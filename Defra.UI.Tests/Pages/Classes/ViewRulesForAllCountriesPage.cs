@@ -34,6 +34,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement confirmDeleteButton => _driver.WaitForElement(By.Id("confirm-delete"));
         private By confirmationModalBy => By.Id("confirmation-modal");
         private IWebElement ruleCountSpan => _driver.WaitForElement(By.Id("rule-count"));
+        private IWebElement RemoveRuleLink(string ruleId) => _driver.WaitForElement(By.XPath($"//a[contains(@href,'ruleId={ruleId}') and normalize-space()='Remove rule']"));
         #endregion
 
         public ViewRulesForAllCountriesPage(IObjectContainer container)
@@ -127,6 +128,15 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             var elements = _driver.FindElements(By.Id($"rule-{ruleId}"));
             return elements.Count > 0;
+        }
+
+        public void ClickRemoveRuleLinkForRuleId(string ruleId)
+        {
+            var removeLink = RemoveRuleLink(ruleId);
+            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView({block: 'center'});", removeLink);
+            Thread.Sleep(300); // allow scroll to settle before click
+            removeLink.Click();
+            Thread.Sleep(2000); // allow page to reload after removal
         }
     }
 }

@@ -17,5 +17,6 @@
         void ClickConfirmDeleteButton();
         bool IsConfirmDeletionDialogClosed();
         bool IsRuleIdPresent(string ruleId);
+        void ClickRemoveRuleLinkForRuleId(string ruleId);
     }
 }

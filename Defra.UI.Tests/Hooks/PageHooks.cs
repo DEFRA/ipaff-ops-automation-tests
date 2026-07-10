@@ -212,6 +212,7 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SetTheInspectionRatePage, ISetTheInspectionRatePage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CheckAndSubmitCommodityRulePage, ICheckAndSubmitCommodityRulePage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CommodityRuleSubmittedPage, ICommodityRuleSubmittedPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<EUImportCountryRulesPage, IEUImportCountryRulesPage>());
 
             // Exporter Portal pages
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterYourApplicationsPage, IExporterYourApplicationsPage>());
