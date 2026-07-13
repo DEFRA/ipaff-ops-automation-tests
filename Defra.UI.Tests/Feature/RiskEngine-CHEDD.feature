@@ -1309,3 +1309,834 @@ Scenario: Bulk upload update existing rules for CHEDD - SPS-9443
 	Then the CHED-D import commodity rule Id recorded as 'Iteration_5_RuleId' should no longer be present in the rules table
 	When the user scrolls to the bottom of the View all CHED-D (Import) Commodity Rules report page
 	Then the count of CHED-D import commodity rules should be 5 less than 'InitialRuleCount'
+
+@SPS-9521
+Scenario: New import commodity rule for CHEDD - SPS-9521
+	# Create a new import commodity rule
+	Given that I navigate to the Risk Engine application
+	When I have provided the Risk Engine admin credentials and signed in
+	Then the Risk Engine Home page should be displayed
+	When the user clicks the 'CHED-D' link from the Risk Engine header menu
+	Then the CHED-D imports page should be displayed
+	When the user clicks the Individual commodity rules link under the CHED-D rules header
+	Then the Select the CHED-D commodity you want to add a rule for page should be displayed
+	When the user searches for commodity '070930' with name 'Aubergines (eggplants)' on the Select the CHED-D commodity you want to add a rule for page
+	Then the You have selected a commodity page should be displayed showing commodity '070930' with description 'Aubergines (eggplants)'
+	When the user clicks the Continue button on the You have selected a commodity page
+	Then the Which countries will this commodity rule apply to? page should be displayed
+	When the user selects 'Yemen' in the Countries field on the Which countries will this commodity rule apply to? page
+	And the user clicks the Continue button on the Which countries will this commodity rule apply to? page
+	Then the Will this commodity rule apply to all border control posts? page should be displayed
+	When the user selects the 'Yes' radio button on the Will this commodity rule apply to all border control posts? page
+	And the user clicks the Continue button on the Will this commodity rule apply to all border control posts? page
+	Then the Which import purposes will this commodity rule apply to? page should be displayed
+	When the user ticks both import purpose checkboxes on the Which import purposes will this commodity rule apply to? page
+	And the user clicks the Continue button on the Which import purposes will this commodity rule apply to? page
+	Then the Does this commodity rule have a start or end date? page should be displayed
+	When the user selects the 'No' radio button on the Does this commodity rule have a start or end date? page
+	And the user clicks the Continue button on the Does this commodity rule have a start or end date? page
+	Then the Set the inspection rate page should be displayed
+	When the user enters '50' as the inspection rate on the Set the inspection rate page
+	And the user clicks the Continue button on the Set the inspection rate page
+	Then the Check and submit commodity rule page should be displayed
+	When the user clicks the Confirm and submit rule button on the Check and submit commodity rule page
+	Then the Commodity rule submitted page should be displayed
+	# Verify the rule in the imports commodity rules report
+	When the user clicks the 'Reports' link from the Risk Engine header menu
+	Then the Risk Engine Reports page should be displayed
+	When the user clicks the CHED-D reports link
+	Then the CHED-D reports page should be displayed
+	When the user clicks the CHED-D Imports commodity rules report link
+	Then the View all CHED-D (Import) Commodity Rules report page should be displayed
+	When the user scrolls to the bottom of the View all CHED-D (Import) Commodity Rules report page
+	Then the count of CHED-D import commodity rules is recorded as 'CommodityRuleCount'
+	When the user enters '070930' in the CHED-D import commodity rules search field
+	Then the top CHED-D import commodity rule row should match the following details
+		| Field               | Value                  |
+		| Description         | Aubergines (eggplants) |
+		| Commodity code      | 070930                 |
+		| Rate %              | 50                     |
+		| Previous rate %     | 0                      |
+		| Permanent           | Yes                    |
+		| End date            |                        |
+		| Countries           | Yemen                  |
+		| Country groups      | None                   |
+		| Country exceptions  | None                   |
+		| Purpose             | All                    |
+		| Border Control Post | All                    |
+		| Reason              |                        |
+	And the top CHED-D import commodity rule row should have Start date as today's date
+	And the user records the Id of the top CHED-D import commodity rule row as 'NewCommodityRuleId'
+	# Submit 4 matching CHED-D notifications in IPAFFS (Yemen / 0709300005)
+	# --- APP-A ---
+	When I navigate to the IPAFF application
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF 'Trader 1' credentials and signin
+	Then the user should be logged into Notification page
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'High risk food and feed of non-animal origin' option
+	And the user clicks Save and continue
+	Then the Origin of the animal or product page should be displayed
+	When the user chooses "Yemen" from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed
+	And the Country of origin and Country from where consigned fields are pre-populated with the previously selected country
+	When the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '0709300005' commodity code
+	Then the commodity details should be populated '0709300005' 'Solanum melongena'
+	When the user selects "No" for Do you want to add another commodity?
+	And the user clicks Save and continue
+	Then What is the main reason for importing the consignment? page should be displayed with radio buttons for CHEDD
+	When the user selects 'Internal market' radio option
+	And the user clicks Save and continue
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Description of the goods/Commodity page should be displayed
+	When the user populates Net weight as '1000'
+	And the user populates Number of packages as '10'
+	And the user selects type of package as 'Box'
+	And the user clicks the Update total button
+	And the total gross weight should be greater than the net weight '1500'
+	When the user clicks Save and continue in commodity page
+	Then the Additional details page should be displayed
+	When the user selects 'Human consumption' radio button under Commodity intended for on the Additional details page
+	And the user selects 'Ambient' radio button on the Additional details page
+	And the user clicks Save and continue
+	Then the Accompanying documents page should be displayed
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter should be displayed
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee 'DEF'
+	Then the chosen consignee should be displayed
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee
+	When the user clicks Same as consignee for Place of destination
+	Then the place of destination should be populated with the same details as the consignee
+	When the user clicks Save and continue
+	Then the Transport to the port of entry page should be displayed
+	When the user populates the transport details 'LONDON GATEWAY (GBLGP)' 'No' 'Road vehicle' '123456' 'Doc1234'
+	When the user clicks Save and continue
+	Then the Goods movement services page should be displayed
+	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user clicks Save and continue
+	Then the Contact details page should be displayed
+	When the user clicks Save and continue
+	Then the Nominated contacts page should be displayed
+	When the user clicks Save and continue
+	Then the Contacts - Contact address for consignment page should be displayed
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the CHED Reference for 'APP_A'
+	# --- APP-B ---
+	When I navigate to the IPAFF application
+	Then the Your import notifications page is displayed
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'High risk food and feed of non-animal origin' option
+	And the user clicks Save and continue
+	Then the Origin of the animal or product page should be displayed
+	When the user chooses "Yemen" from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed
+	And the Country of origin and Country from where consigned fields are pre-populated with the previously selected country
+	When the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '0709300005' commodity code
+	Then the commodity details should be populated '0709300005' 'Solanum melongena'
+	When the user selects "No" for Do you want to add another commodity?
+	And the user clicks Save and continue
+	Then What is the main reason for importing the consignment? page should be displayed with radio buttons for CHEDD
+	When the user selects 'Internal market' radio option
+	And the user clicks Save and continue
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Description of the goods/Commodity page should be displayed
+	When the user populates Net weight as '1000'
+	And the user populates Number of packages as '10'
+	And the user selects type of package as 'Box'
+	And the user clicks the Update total button
+	And the total gross weight should be greater than the net weight '1500'
+	When the user clicks Save and continue in commodity page
+	Then the Additional details page should be displayed
+	When the user selects 'Human consumption' radio button under Commodity intended for on the Additional details page
+	And the user selects 'Ambient' radio button on the Additional details page
+	And the user clicks Save and continue
+	Then the Accompanying documents page should be displayed
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter should be displayed
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee 'DEF'
+	Then the chosen consignee should be displayed
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee
+	When the user clicks Same as consignee for Place of destination
+	Then the place of destination should be populated with the same details as the consignee
+	When the user clicks Save and continue
+	Then the Transport to the port of entry page should be displayed
+	When the user populates the transport details 'LONDON GATEWAY (GBLGP)' 'No' 'Road vehicle' '123456' 'Doc1234'
+	When the user clicks Save and continue
+	Then the Goods movement services page should be displayed
+	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user clicks Save and continue
+	Then the Contact details page should be displayed
+	When the user clicks Save and continue
+	Then the Nominated contacts page should be displayed
+	When the user clicks Save and continue
+	Then the Contacts - Contact address for consignment page should be displayed
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the CHED Reference for 'APP_B'
+	# --- APP-C ---
+	When I navigate to the IPAFF application
+	Then the Your import notifications page is displayed
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'High risk food and feed of non-animal origin' option
+	And the user clicks Save and continue
+	Then the Origin of the animal or product page should be displayed
+	When the user chooses "Yemen" from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed
+	And the Country of origin and Country from where consigned fields are pre-populated with the previously selected country
+	When the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '0709300005' commodity code
+	Then the commodity details should be populated '0709300005' 'Solanum melongena'
+	When the user selects "No" for Do you want to add another commodity?
+	And the user clicks Save and continue
+	Then What is the main reason for importing the consignment? page should be displayed with radio buttons for CHEDD
+	When the user selects 'Internal market' radio option
+	And the user clicks Save and continue
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Description of the goods/Commodity page should be displayed
+	When the user populates Net weight as '1000'
+	And the user populates Number of packages as '10'
+	And the user selects type of package as 'Box'
+	And the user clicks the Update total button
+	And the total gross weight should be greater than the net weight '1500'
+	When the user clicks Save and continue in commodity page
+	Then the Additional details page should be displayed
+	When the user selects 'Human consumption' radio button under Commodity intended for on the Additional details page
+	And the user selects 'Ambient' radio button on the Additional details page
+	And the user clicks Save and continue
+	Then the Accompanying documents page should be displayed
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter should be displayed
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee 'DEF'
+	Then the chosen consignee should be displayed
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee
+	When the user clicks Same as consignee for Place of destination
+	Then the place of destination should be populated with the same details as the consignee
+	When the user clicks Save and continue
+	Then the Transport to the port of entry page should be displayed
+	When the user populates the transport details 'LONDON GATEWAY (GBLGP)' 'No' 'Road vehicle' '123456' 'Doc1234'
+	When the user clicks Save and continue
+	Then the Goods movement services page should be displayed
+	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user clicks Save and continue
+	Then the Contact details page should be displayed
+	When the user clicks Save and continue
+	Then the Nominated contacts page should be displayed
+	When the user clicks Save and continue
+	Then the Contacts - Contact address for consignment page should be displayed
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the CHED Reference for 'APP_C'
+	# --- APP-D ---
+	When I navigate to the IPAFF application
+	Then the Your import notifications page is displayed
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'High risk food and feed of non-animal origin' option
+	And the user clicks Save and continue
+	Then the Origin of the animal or product page should be displayed
+	When the user chooses "Yemen" from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed
+	And the Country of origin and Country from where consigned fields are pre-populated with the previously selected country
+	When the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '0709300005' commodity code
+	Then the commodity details should be populated '0709300005' 'Solanum melongena'
+	When the user selects "No" for Do you want to add another commodity?
+	And the user clicks Save and continue
+	Then What is the main reason for importing the consignment? page should be displayed with radio buttons for CHEDD
+	When the user selects 'Internal market' radio option
+	And the user clicks Save and continue
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Description of the goods/Commodity page should be displayed
+	When the user populates Net weight as '1000'
+	And the user populates Number of packages as '10'
+	And the user selects type of package as 'Box'
+	And the user clicks the Update total button
+	And the total gross weight should be greater than the net weight '1500'
+	When the user clicks Save and continue in commodity page
+	Then the Additional details page should be displayed
+	When the user selects 'Human consumption' radio button under Commodity intended for on the Additional details page
+	And the user selects 'Ambient' radio button on the Additional details page
+	And the user clicks Save and continue
+	Then the Accompanying documents page should be displayed
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter should be displayed
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee 'DEF'
+	Then the chosen consignee should be displayed
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee
+	When the user clicks Same as consignee for Place of destination
+	Then the place of destination should be populated with the same details as the consignee
+	When the user clicks Save and continue
+	Then the Transport to the port of entry page should be displayed
+	When the user populates the transport details 'LONDON GATEWAY (GBLGP)' 'No' 'Road vehicle' '123456' 'Doc1234'
+	When the user clicks Save and continue
+	Then the Goods movement services page should be displayed
+	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user clicks Save and continue
+	Then the Contact details page should be displayed
+	When the user clicks Save and continue
+	Then the Nominated contacts page should be displayed
+	When the user clicks Save and continue
+	Then the Contacts - Contact address for consignment page should be displayed
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the CHED Reference for 'APP_D'
+	# Validate via Risk Decision Report - APP-A (Total=1, Triggered=1, IsTriggered=true)
+	When I navigate to the Risk Engine application
+	Then the Risk Engine Home page should be displayed
+	When the user clicks the 'Reports' link from the Risk Engine header menu
+	Then the Risk Engine Reports page should be displayed
+	When the user clicks the CHED-D reports link
+	Then the CHED-D reports page should be displayed
+	When the user clicks the Risk decision report link
+	Then the Risk decision report page should be displayed
+	When the user enters the recorded CHED Reference for 'APP_A' in the Risk decision search box and clicks Search
+	Then the Risk decision report returns one matching record
+	When the user clicks the Expand button for the CHED Reference of 'APP_A'
+	And the user clicks the Requests details link
+	Then the Requests section is expanded with details from IPAFFS
+	When the user clicks the Decision details link
+	Then the Decision section contains a DecisionRule matching the recorded 'NewCommodityRuleId' with the following values
+		| Field          | Value         |
+		| RuleType       | CommodityRule |
+		| RegulatorType  | EUImport      |
+		| Rate           | 50            |
+		| Total          | 1             |
+		| Triggered      | 1             |
+		| IsTriggered    | true          |
+	And 'APP_A' is complete
+	# Validate via Risk Decision Report - APP-B (Total=2, Triggered=1, IsTriggered=false)
+	When the user enters the recorded CHED Reference for 'APP_B' in the Risk decision search box and clicks Search
+	Then the Risk decision report returns one matching record
+	When the user clicks the Expand button for the CHED Reference of 'APP_B'
+	And the user clicks the Requests details link
+	Then the Requests section is expanded with details from IPAFFS
+	When the user clicks the Decision details link
+	Then the Decision section contains a DecisionRule matching the recorded 'NewCommodityRuleId' with the following values
+		| Field          | Value         |
+		| RuleType       | CommodityRule |
+		| RegulatorType  | EUImport      |
+		| Rate           | 50            |
+		| Total          | 2             |
+		| Triggered      | 1             |
+		| IsTriggered    | false         |
+	And 'APP_B' is complete
+	# Validate via Risk Decision Report - APP-C (Total=3, Triggered=1, IsTriggered=false)
+	When the user enters the recorded CHED Reference for 'APP_C' in the Risk decision search box and clicks Search
+	Then the Risk decision report returns one matching record
+	When the user clicks the Expand button for the CHED Reference of 'APP_C'
+	And the user clicks the Requests details link
+	Then the Requests section is expanded with details from IPAFFS
+	When the user clicks the Decision details link
+	Then the Decision section contains a DecisionRule matching the recorded 'NewCommodityRuleId' with the following values
+		| Field          | Value         |
+		| RuleType       | CommodityRule |
+		| RegulatorType  | EUImport      |
+		| Rate           | 50            |
+		| Total          | 3             |
+		| Triggered      | 1             |
+		| IsTriggered    | false         |
+	And 'APP_C' is complete
+	# Validate via Risk Decision Report - APP-D (Total=4, Triggered=2, IsTriggered=true)
+	When the user enters the recorded CHED Reference for 'APP_D' in the Risk decision search box and clicks Search
+	Then the Risk decision report returns one matching record
+	When the user clicks the Expand button for the CHED Reference of 'APP_D'
+	And the user clicks the Requests details link
+	Then the Requests section is expanded with details from IPAFFS
+	When the user clicks the Decision details link
+	Then the Decision section contains a DecisionRule matching the recorded 'NewCommodityRuleId' with the following values
+		| Field          | Value         |
+		| RuleType       | CommodityRule |
+		| RegulatorType  | EUImport      |
+		| Rate           | 50            |
+		| Total          | 4             |
+		| Triggered      | 2             |
+		| IsTriggered    | true          |
+	And 'APP_D' is complete
+	# Delete the rule created by this test
+	When the user clicks the 'Reports' link from the Risk Engine header menu
+	Then the Risk Engine Reports page should be displayed
+	When the user clicks the CHED-D reports link
+	Then the CHED-D reports page should be displayed
+	When the user clicks the CHED-D Imports commodity rules report link
+	Then the View all CHED-D (Import) Commodity Rules report page should be displayed
+	When the user clicks the Remove rule link for CHED-D import commodity rule Id recorded as 'NewCommodityRuleId'
+	Then the CHED-D import commodity rule Id recorded as 'NewCommodityRuleId' should no longer be present in the rules table
+	When the user scrolls to the bottom of the View all CHED-D (Import) Commodity Rules report page
+	Then the count of CHED-D import commodity rules should be 1 less than 'CommodityRuleCount'
+
+@SPS-9522
+Scenario: New EU import country rule for CHEDD - SPS-9522
+	# Create a new EU import country rule
+	Given that I navigate to the Risk Engine application
+	When I have provided the Risk Engine admin credentials and signed in
+	Then the Risk Engine Home page should be displayed
+	When the user clicks the 'CHED-D' link from the Risk Engine header menu
+	Then the CHED-D imports page should be displayed
+	When the user clicks the Country rules link under the CHED-D rules header
+	Then the EU (Import) Country Rules page should be displayed
+	When the user selects 'Mozambique' from the country dropdown on the EU import country rules page
+	And the user sets the inspection rate to 50 on the EU import country rules page
+	And the user ensures the Permanent checkbox is checked on the EU import country rules page
+	And the user clicks the Confirm and send button on the EU import country rules page
+	Then the Confirmation of country rate change page should be displayed with the following details
+		| Field | Value |
+		| From  | 0%    |
+		| To    | 50%   |
+	When the user clicks the Confirm and send button on the confirmation of country rate change page
+	Then the Rule change complete page should be displayed
+	# Verify the rule in the country rules report
+	When the user clicks the 'Reports' link from the Risk Engine header menu
+	Then the Risk Engine Reports page should be displayed
+	When the user clicks the CHED-D reports link
+	Then the CHED-D reports page should be displayed
+	When the user clicks the Country rules report link under the CHED-D reports header
+	Then the View rules for all countries page should be displayed
+	When the user scrolls to the bottom of the View rules for all countries page
+	Then the EU import country rule count is recorded as 'CountryRuleCount'
+	When the user enters 'Mozambique' in the EU import country rules search field
+	And the user sorts the EU import country rules table by Id descending
+	Then the top EU import country rule row should match the following details
+		| Field           | Value      |
+		| Country         | Mozambique |
+		| Rate %          | 50         |
+		| Previous rate % | 0          |
+		| Permanent rule  | YES        |
+		| Start Date      |            |
+		| End Date        |            |
+	And the top EU import country rule row should have Last Updated date as today's date
+	And the top EU import country rule row should have Created date as today's date
+	And the user records the Id of the top EU import country rule row as 'NewCountryRuleId'
+	# Submit 4 matching CHED-D notifications in IPAFFS (Mozambique / 11041999 / Internal Market)
+	# --- APP-A ---
+	When I navigate to the IPAFF application
+	Then I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF 'Trader 1' credentials and signin
+	Then the user should be logged into Notification page
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'High risk food and feed of non-animal origin' option
+	And the user clicks Save and continue
+	Then the Origin of the animal or product page should be displayed
+	When the user chooses "Mozambique" from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed
+	And the Country of origin and Country from where consigned fields are pre-populated with the previously selected country
+	When the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '11041999' commodity code
+	Then the commodity details should be populated '11041999' 'Rolled or flaked cereal grains (excluding grains of oats, wheat, rye, maize and barley, and flaked rice)'
+	When the user selects "No" for Do you want to add another commodity?
+	And the user clicks Save and continue
+	Then What is the main reason for importing the consignment? page should be displayed with radio buttons for CHEDD
+	When the user selects 'Internal market' radio option
+	And the user clicks Save and continue
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Description of the goods/Commodity page should be displayed
+	When the user populates Net weight as '1000'
+	And the user populates Number of packages as '10'
+	And the user selects type of package as 'Box'
+	And the user clicks the Update total button
+	And the total gross weight should be greater than the net weight '1500'
+	When the user clicks Save and continue in commodity page
+	Then the Additional details page should be displayed
+	When the user selects 'Human consumption' radio button under Commodity intended for on the Additional details page
+	And the user selects 'Ambient' radio button on the Additional details page
+	And the user clicks Save and continue
+	Then the Accompanying documents page should be displayed
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter should be displayed
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee 'DEF'
+	Then the chosen consignee should be displayed
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee
+	When the user clicks Same as consignee for Place of destination
+	Then the place of destination should be populated with the same details as the consignee
+	When the user clicks Save and continue
+	Then the Transport to the port of entry page should be displayed
+	When the user populates the transport details 'LONDON GATEWAY (GBLGP)' 'No' 'Road vehicle' '123456' 'Doc1234'
+	When the user clicks Save and continue
+	Then the Goods movement services page should be displayed
+	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user clicks Save and continue
+	Then the Contact details page should be displayed
+	When the user clicks Save and continue
+	Then the Nominated contacts page should be displayed
+	When the user clicks Save and continue
+	Then the Contacts - Contact address for consignment page should be displayed
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the CHED Reference for 'APP_A'
+	# --- APP-B ---
+	When I navigate to the IPAFF application
+	Then the Your import notifications page is displayed
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'High risk food and feed of non-animal origin' option
+	And the user clicks Save and continue
+	Then the Origin of the animal or product page should be displayed
+	When the user chooses "Mozambique" from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed
+	And the Country of origin and Country from where consigned fields are pre-populated with the previously selected country
+	When the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '11041999' commodity code
+	Then the commodity details should be populated '11041999' 'Rolled or flaked cereal grains (excluding grains of oats, wheat, rye, maize and barley, and flaked rice)'
+	When the user selects "No" for Do you want to add another commodity?
+	And the user clicks Save and continue
+	Then What is the main reason for importing the consignment? page should be displayed with radio buttons for CHEDD
+	When the user selects 'Internal market' radio option
+	And the user clicks Save and continue
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Description of the goods/Commodity page should be displayed
+	When the user populates Net weight as '1000'
+	And the user populates Number of packages as '10'
+	And the user selects type of package as 'Box'
+	And the user clicks the Update total button
+	And the total gross weight should be greater than the net weight '1500'
+	When the user clicks Save and continue in commodity page
+	Then the Additional details page should be displayed
+	When the user selects 'Human consumption' radio button under Commodity intended for on the Additional details page
+	And the user selects 'Ambient' radio button on the Additional details page
+	And the user clicks Save and continue
+	Then the Accompanying documents page should be displayed
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter should be displayed
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee 'DEF'
+	Then the chosen consignee should be displayed
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee
+	When the user clicks Same as consignee for Place of destination
+	Then the place of destination should be populated with the same details as the consignee
+	When the user clicks Save and continue
+	Then the Transport to the port of entry page should be displayed
+	When the user populates the transport details 'LONDON GATEWAY (GBLGP)' 'No' 'Road vehicle' '123456' 'Doc1234'
+	When the user clicks Save and continue
+	Then the Goods movement services page should be displayed
+	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user clicks Save and continue
+	Then the Contact details page should be displayed
+	When the user clicks Save and continue
+	Then the Nominated contacts page should be displayed
+	When the user clicks Save and continue
+	Then the Contacts - Contact address for consignment page should be displayed
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the CHED Reference for 'APP_B'
+	# --- APP-C ---
+	When I navigate to the IPAFF application
+	Then the Your import notifications page is displayed
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'High risk food and feed of non-animal origin' option
+	And the user clicks Save and continue
+	Then the Origin of the animal or product page should be displayed
+	When the user chooses "Mozambique" from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed
+	And the Country of origin and Country from where consigned fields are pre-populated with the previously selected country
+	When the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '11041999' commodity code
+	Then the commodity details should be populated '11041999' 'Rolled or flaked cereal grains (excluding grains of oats, wheat, rye, maize and barley, and flaked rice)'
+	When the user selects "No" for Do you want to add another commodity?
+	And the user clicks Save and continue
+	Then What is the main reason for importing the consignment? page should be displayed with radio buttons for CHEDD
+	When the user selects 'Internal market' radio option
+	And the user clicks Save and continue
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Description of the goods/Commodity page should be displayed
+	When the user populates Net weight as '1000'
+	And the user populates Number of packages as '10'
+	And the user selects type of package as 'Box'
+	And the user clicks the Update total button
+	And the total gross weight should be greater than the net weight '1500'
+	When the user clicks Save and continue in commodity page
+	Then the Additional details page should be displayed
+	When the user selects 'Human consumption' radio button under Commodity intended for on the Additional details page
+	And the user selects 'Ambient' radio button on the Additional details page
+	And the user clicks Save and continue
+	Then the Accompanying documents page should be displayed
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter should be displayed
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee 'DEF'
+	Then the chosen consignee should be displayed
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee
+	When the user clicks Same as consignee for Place of destination
+	Then the place of destination should be populated with the same details as the consignee
+	When the user clicks Save and continue
+	Then the Transport to the port of entry page should be displayed
+	When the user populates the transport details 'LONDON GATEWAY (GBLGP)' 'No' 'Road vehicle' '123456' 'Doc1234'
+	When the user clicks Save and continue
+	Then the Goods movement services page should be displayed
+	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user clicks Save and continue
+	Then the Contact details page should be displayed
+	When the user clicks Save and continue
+	Then the Nominated contacts page should be displayed
+	When the user clicks Save and continue
+	Then the Contacts - Contact address for consignment page should be displayed
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the CHED Reference for 'APP_C'
+	# --- APP-D ---
+	When I navigate to the IPAFF application
+	Then the Your import notifications page is displayed
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'High risk food and feed of non-animal origin' option
+	And the user clicks Save and continue
+	Then the Origin of the animal or product page should be displayed
+	When the user chooses "Mozambique" from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed
+	And the Country of origin and Country from where consigned fields are pre-populated with the previously selected country
+	When the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '11041999' commodity code
+	Then the commodity details should be populated '11041999' 'Rolled or flaked cereal grains (excluding grains of oats, wheat, rye, maize and barley, and flaked rice)'
+	When the user selects "No" for Do you want to add another commodity?
+	And the user clicks Save and continue
+	Then What is the main reason for importing the consignment? page should be displayed with radio buttons for CHEDD
+	When the user selects 'Internal market' radio option
+	And the user clicks Save and continue
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Description of the goods/Commodity page should be displayed
+	When the user populates Net weight as '1000'
+	And the user populates Number of packages as '10'
+	And the user selects type of package as 'Box'
+	And the user clicks the Update total button
+	And the total gross weight should be greater than the net weight '1500'
+	When the user clicks Save and continue in commodity page
+	Then the Additional details page should be displayed
+	When the user selects 'Human consumption' radio button under Commodity intended for on the Additional details page
+	And the user selects 'Ambient' radio button on the Additional details page
+	And the user clicks Save and continue
+	Then the Accompanying documents page should be displayed
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter should be displayed
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee 'DEF'
+	Then the chosen consignee should be displayed
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee
+	When the user clicks Same as consignee for Place of destination
+	Then the place of destination should be populated with the same details as the consignee
+	When the user clicks Save and continue
+	Then the Transport to the port of entry page should be displayed
+	When the user populates the transport details 'LONDON GATEWAY (GBLGP)' 'No' 'Road vehicle' '123456' 'Doc1234'
+	When the user clicks Save and continue
+	Then the Goods movement services page should be displayed
+	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
+	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?
+	And the user clicks Save and continue
+	Then the Contact details page should be displayed
+	When the user clicks Save and continue
+	Then the Nominated contacts page should be displayed
+	When the user clicks Save and continue
+	Then the Contacts - Contact address for consignment page should be displayed
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the CHED Reference for 'APP_D'
+	# Validate via Risk Decision Report - APP-A (Total=1, Triggered=1, IsTriggered=true)
+	When I navigate to the Risk Engine application
+	Then the Risk Engine Home page should be displayed
+	When the user clicks the 'Reports' link from the Risk Engine header menu
+	Then the Risk Engine Reports page should be displayed
+	When the user clicks the CHED-D reports link
+	Then the CHED-D reports page should be displayed
+	When the user clicks the Risk decision report link
+	Then the Risk decision report page should be displayed
+	When the user enters the recorded CHED Reference for 'APP_A' in the Risk decision search box and clicks Search
+	Then the Risk decision report returns one matching record
+	When the user clicks the Expand button for the CHED Reference of 'APP_A'
+	And the user clicks the Requests details link
+	Then the Requests section is expanded with details from IPAFFS
+	When the user clicks the Decision details link
+	Then the Decision section contains a DecisionRule matching the recorded 'NewCountryRuleId' with the following values
+		| Field         | Value       |
+		| RuleType      | CountryRule |
+		| RegulatorType | EUImport    |
+		| Rate          | 50          |
+		| Total         | 1           |
+		| Triggered     | 1           |
+		| IsTriggered   | true        |
+	And 'APP_A' is complete
+	# Validate via Risk Decision Report - APP-B (Total=2, Triggered=1, IsTriggered=false)
+	When the user enters the recorded CHED Reference for 'APP_B' in the Risk decision search box and clicks Search
+	Then the Risk decision report returns one matching record
+	When the user clicks the Expand button for the CHED Reference of 'APP_B'
+	And the user clicks the Requests details link
+	Then the Requests section is expanded with details from IPAFFS
+	When the user clicks the Decision details link
+	Then the Decision section contains a DecisionRule matching the recorded 'NewCountryRuleId' with the following values
+		| Field         | Value       |
+		| RuleType      | CountryRule |
+		| RegulatorType | EUImport    |
+		| Rate          | 50          |
+		| Total         | 2           |
+		| Triggered     | 1           |
+		| IsTriggered   | false       |
+	And 'APP_B' is complete
+	# Validate via Risk Decision Report - APP-C (Total=3, Triggered=1, IsTriggered=false)
+	When the user enters the recorded CHED Reference for 'APP_C' in the Risk decision search box and clicks Search
+	Then the Risk decision report returns one matching record
+	When the user clicks the Expand button for the CHED Reference of 'APP_C'
+	And the user clicks the Requests details link
+	Then the Requests section is expanded with details from IPAFFS
+	When the user clicks the Decision details link
+	Then the Decision section contains a DecisionRule matching the recorded 'NewCountryRuleId' with the following values
+		| Field         | Value       |
+		| RuleType      | CountryRule |
+		| RegulatorType | EUImport    |
+		| Rate          | 50          |
+		| Total         | 3           |
+		| Triggered     | 1           |
+		| IsTriggered   | false       |
+	And 'APP_C' is complete
+	# Validate via Risk Decision Report - APP-D (Total=4, Triggered=2, IsTriggered=true)
+	When the user enters the recorded CHED Reference for 'APP_D' in the Risk decision search box and clicks Search
+	Then the Risk decision report returns one matching record
+	When the user clicks the Expand button for the CHED Reference of 'APP_D'
+	And the user clicks the Requests details link
+	Then the Requests section is expanded with details from IPAFFS
+	When the user clicks the Decision details link
+	Then the Decision section contains a DecisionRule matching the recorded 'NewCountryRuleId' with the following values
+		| Field         | Value       |
+		| RuleType      | CountryRule |
+		| RegulatorType | EUImport    |
+		| Rate          | 50          |
+		| Total         | 4           |
+		| Triggered     | 2           |
+		| IsTriggered   | true        |
+	And 'APP_D' is complete
+	# Delete the rule created by this test
+	When the user clicks the 'Reports' link from the Risk Engine header menu
+	Then the Risk Engine Reports page should be displayed
+	When the user clicks the CHED-D reports link
+	Then the CHED-D reports page should be displayed
+	When the user clicks the Country rules report link under the CHED-D reports header
+	Then the View rules for all countries page should be displayed
+	When the user clicks the Remove rule link for EU import country rule Id recorded as 'NewCountryRuleId'
+	Then the EU import country rule Id recorded as 'NewCountryRuleId' should no longer be present in the rules table
+	When the user scrolls to the bottom of the View rules for all countries page
+	Then the EU import country rule count should be 1 less than 'CountryRuleCount'

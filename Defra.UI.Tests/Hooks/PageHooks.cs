@@ -194,7 +194,8 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<PHSIImportCommodityRulesPage, IPHSIImportCommodityRulesPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ConfirmationOfCountryRateChangePage, IConfirmationOfCountryRateChangePage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<HMIImportCountryRulesPage, IHMIImportCountryRulesPage>());
-            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ViewRulesForAllCountriesPage, IViewRulesForAllCountriesPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ViewRulesForAllCountriesHMIImportPage, IViewRulesForAllCountriesHMIImportPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ViewRulesForAllCountriesEUImportPage, IViewRulesForAllCountriesEUImportPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDPPHMISystemConfigPage, ICHEDPPHMISystemConfigPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ConfirmHMISystemConfigChangesPage, IConfirmHMISystemConfigChangesPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDPPHMISystemConfigUpdateCompletePage, ICHEDPPHMISystemConfigUpdateCompletePage>());
@@ -203,6 +204,16 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ViewAllHMIExportCommodityRulesPage, IViewAllHMIExportCommodityRulesPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<DefaultRulesForCHEDPPPage, IDefaultRulesForCHEDPPPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ConfirmationOfDefaultRateChangePage, IConfirmationOfDefaultRateChangePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SelectTheCHEDDCommodityYouWantToAddARuleForPage, ISelectTheCHEDDCommodityYouWantToAddARuleForPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<YouHaveSelectedACommodityPage, IYouHaveSelectedACommodityPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<WhichCountriesWillThisCommodityRuleApplyToPage, IWhichCountriesWillThisCommodityRuleApplyToPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<WillThisCommodityRuleApplyToAllBorderControlPostsPage, IWillThisCommodityRuleApplyToAllBorderControlPostsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<WhichImportPurposesWillThisCommodityRuleApplyToPage, IWhichImportPurposesWillThisCommodityRuleApplyToPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<DoesThisCommodityRuleHaveAStartOrEndDatePage, IDoesThisCommodityRuleHaveAStartOrEndDatePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SetTheInspectionRatePage, ISetTheInspectionRatePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CheckAndSubmitCommodityRulePage, ICheckAndSubmitCommodityRulePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CommodityRuleSubmittedPage, ICommodityRuleSubmittedPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<EUImportCountryRulesPage, IEUImportCountryRulesPage>());
 
             // Exporter Portal pages
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterYourApplicationsPage, IExporterYourApplicationsPage>());
