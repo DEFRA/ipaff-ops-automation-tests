@@ -26,8 +26,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(chedAReportsPage?.IsPageLoaded(), "CHED-A reports page is not displayed");
         }
 
-        [When("the user clicks the Imports commodity rules report link")]
-        public void WhenTheUserClicksTheImportsCommodityRulesReportLink()
+        [When("the user clicks the CHED-A Imports commodity rules report link")]
+        public void WhenTheUserClicksTheCHEDAImportsCommodityRulesReportLink()
         {
             chedAReportsPage?.ClickImportsCommodityRulesReportLink();
         }

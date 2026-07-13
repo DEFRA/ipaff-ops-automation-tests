@@ -1338,15 +1338,22 @@ Scenario: New import commodity rule for CHEDD - SPS-9521
 	Then the Set the inspection rate page should be displayed
 	When the user enters '50' as the inspection rate on the Set the inspection rate page
 	And the user clicks the Continue button on the Set the inspection rate page
-	Then the Check and submit commodity rule page should be displayed
+	Then the Check and submit commodity rule page should be displayed showing the following details
+		| Field                | Value                    |
+		| Commodity code       | 070930                   |
+		| Description          | Aubergines (eggplants)   |
+		| Country groups       | None                     |
+		| Countries            | Yemen                    |
+		| Countries to exclude | None                     |
+		| Border control posts | All border control posts |
+		| Import purposes      | All import purposes      |
+		| Start date           | Immediately              |
+		| End date             | None                     |
+		| Inspection rate      | 50%                      |
 	When the user clicks the Confirm and submit rule button on the Check and submit commodity rule page
 	Then the Commodity rule submitted page should be displayed
 	# Verify the rule in the imports commodity rules report
-	When the user clicks the 'Reports' link from the Risk Engine header menu
-	Then the Risk Engine Reports page should be displayed
-	When the user clicks the CHED-D reports link
-	Then the CHED-D reports page should be displayed
-	When the user clicks the CHED-D Imports commodity rules report link
+	When the user clicks the View all CHED-D imports commodity rules link on the Commodity rule submitted page
 	Then the View all CHED-D (Import) Commodity Rules report page should be displayed
 	When the user scrolls to the bottom of the View all CHED-D (Import) Commodity Rules report page
 	Then the count of CHED-D import commodity rules is recorded as 'CommodityRuleCount'

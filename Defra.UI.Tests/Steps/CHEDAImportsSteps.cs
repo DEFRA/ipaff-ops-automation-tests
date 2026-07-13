@@ -31,5 +31,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             chedAImportsPage?.ClickBulkUploadCommodityRulesLink();
         }
+
+        [When("the user clicks the Individual commodity rules link under the CHED-A rules header")]
+        public void WhenTheUserClicksTheIndividualCommodityRulesLinkUnderTheCHED_ARulesHeader()
+        {
+            chedAImportsPage?.ClickIndividualCommodityRulesLink();
+        }
     }
 }

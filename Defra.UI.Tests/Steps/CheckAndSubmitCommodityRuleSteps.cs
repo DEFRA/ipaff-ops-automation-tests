@@ -33,5 +33,18 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             checkAndSubmitCommodityRulePage?.ClickConfirmAndSubmitRuleButton();
         }
+
+        [Then("the Check and submit commodity rule page should be displayed showing the following details")]
+        public void ThenTheCheckAndSubmitCommodityRulePageShouldBeDisplayedShowingTheFollowingDetails(DataTable dataTable)
+        {
+            Assert.True(checkAndSubmitCommodityRulePage?.IsPageLoaded(), "Check and submit commodity rule page is not displayed");
+            var expectedDetails = dataTable.Rows.ToDictionary(r => r[0], r => r[1]);
+            var actualDetails = checkAndSubmitCommodityRulePage?.GetSummaryDetails();
+            foreach (var expected in expectedDetails)
+            {
+                Assert.True(actualDetails!.ContainsKey(expected.Key), $"Field '{expected.Key}' not found on the page");
+                Assert.That(actualDetails[expected.Key], Is.EqualTo(expected.Value), $"Field '{expected.Key}' expected '{expected.Value}' but was '{actualDetails[expected.Key]}'");
+            }
+        }
     }
 }
