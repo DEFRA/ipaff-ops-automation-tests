@@ -137,8 +137,6 @@ namespace Defra.UI.Tests.Pages.Classes
             var firstLine = text.Split(new[] { "\r\n", "\n", "\r" }, StringSplitOptions.None)[0]; 
             return firstLine.Equals(label.Trim(), StringComparison.Ordinal);
 
-           /* ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView({block: 'center'});", lblImportNotificationPage(label));
-
             int index = lblImportNotificationPage(label).Text.IndexOf("\r\n");
 
             return  (index >= 0
