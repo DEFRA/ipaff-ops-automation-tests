@@ -136,12 +136,6 @@ namespace Defra.UI.Tests.Pages.Classes
             var text = element.Text.Trim();
             var firstLine = text.Split(new[] { "\r\n", "\n", "\r" }, StringSplitOptions.None)[0]; 
             return firstLine.Equals(label.Trim(), StringComparison.Ordinal);
-
-            int index = lblImportNotificationPage(label).Text.IndexOf("\r\n");
-
-            return  (index >= 0
-                ? lblImportNotificationPage(label).Text.Substring(0, index)
-                : lblImportNotificationPage(label).Text).Equals(label);*/
         }
 
         public bool VerifyRiskOutcome(string chedRef, string riskOutcome)
