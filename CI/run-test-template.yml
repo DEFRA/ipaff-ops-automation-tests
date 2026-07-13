@@ -370,8 +370,6 @@ jobs:
         mkdir -p $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/Screenshots
         mkdir -p $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports
         
-        find $(System.DefaultWorkingDirectory)/Defra.UI.Tests/TestResults -name "*.png" -exec cp {} $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/Screenshots/ \;
-        
         find $(System.DefaultWorkingDirectory)/Defra.UI.Tests -name "TestExecutionReport*.html" -exec cp {} $(System.DefaultWorkingDirectory)/Defra.UI.Tests/Reports/ \;
       displayName: 'Copy reports and screenshots'
       condition: always()

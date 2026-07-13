@@ -1,6 +1,6 @@
 ﻿namespace Defra.UI.Tests.Pages.Interfaces
 {
-    public interface IViewRulesForAllCountriesPage
+    public interface IViewRulesForAllCountriesHMIImportPage
     {
         bool IsPageLoaded();
         void ScrollToBottom();
