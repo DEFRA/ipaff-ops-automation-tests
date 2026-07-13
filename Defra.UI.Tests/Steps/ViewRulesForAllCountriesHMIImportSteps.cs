@@ -1,5 +1,4 @@
-﻿using Defra.UI.Tests.Pages.Classes;
-using Defra.UI.Tests.Pages.Interfaces;
+﻿using Defra.UI.Tests.Pages.Interfaces;
 using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;
@@ -12,9 +11,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
         private readonly IObjectContainer _objectContainer;
         private readonly ScenarioContext _scenarioContext;
 
-        private IViewRulesForAllCountriesPage? ViewRulesForAllCountriesPage =>
-            _objectContainer.IsRegistered<IViewRulesForAllCountriesPage>()
-                ? _objectContainer.Resolve<IViewRulesForAllCountriesPage>()
+        private IViewRulesForAllCountriesHMIImportPage? ViewRulesForAllCountriesHMIImportPage =>
+            _objectContainer.IsRegistered<IViewRulesForAllCountriesHMIImportPage>()
+                ? _objectContainer.Resolve<IViewRulesForAllCountriesHMIImportPage>()
                 : null;
 
         public ViewRulesForAllCountriesSteps(ScenarioContext context, IObjectContainer container)
@@ -26,19 +25,19 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the View rules for all countries page should be displayed")]
         public void ThenTheViewRulesForAllCountriesPageShouldBeDisplayed()
         {
-            Assert.True(ViewRulesForAllCountriesPage?.IsPageLoaded(), "View rules for all countries page is not displayed");
+            Assert.True(ViewRulesForAllCountriesHMIImportPage?.IsPageLoaded(), "View rules for all countries page is not displayed");
         }
 
         [When("the user scrolls to the bottom of the View rules for all countries page")]
         public void WhenTheUserScrollsToTheBottomOfTheViewRulesForAllCountriesPage()
         {
-            ViewRulesForAllCountriesPage?.ScrollToBottom();
+            ViewRulesForAllCountriesHMIImportPage?.ScrollToBottom();
         }
 
         [Then("the HMI import country rule count is recorded as {string}")]
         public void ThenTheHMIImportCountryRuleCountIsRecordedAs(string key)
         {
-            var count = ViewRulesForAllCountriesPage!.GetTotalRuleCount();
+            var count = ViewRulesForAllCountriesHMIImportPage!.GetTotalRuleCount();
             _scenarioContext[key] = count;
             Assert.Greater(count, 0, $"Recorded HMI country rule count for '{key}' is 0");
         }
@@ -47,7 +46,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void ThenTheHMIImportCountryRuleCountShouldBeLessThan(int delta, string key)
         {
             var initial = (int)_scenarioContext[key];
-            var actual = ViewRulesForAllCountriesPage!.GetTotalRuleCount();
+            var actual = ViewRulesForAllCountriesHMIImportPage!.GetTotalRuleCount();
             Assert.AreEqual(initial - delta, actual,
                 $"Expected HMI country rule count to be {initial - delta} (initial '{key}'={initial} - {delta}) but was {actual}");
         }
@@ -55,19 +54,19 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user enters {string} in the HMI import country rules search field")]
         public void WhenTheUserEntersInTheHMIImportCountryRulesSearchField(string text)
         {
-            ViewRulesForAllCountriesPage?.EnterSearchText(text);
+            ViewRulesForAllCountriesHMIImportPage?.EnterSearchText(text);
         }
 
         [When("the user sorts the HMI import country rules table by Id descending")]
         public void WhenTheUserSortsTheHMIImportCountryRulesTableByIdDescending()
         {
-            ViewRulesForAllCountriesPage?.SortByIdDescending();
+            ViewRulesForAllCountriesHMIImportPage?.SortByIdDescending();
         }
 
         [Then("the top HMI import country rule row should match the following details")]
         public void ThenTheTopHMIImportCountryRuleRowShouldMatchTheFollowingDetails(Table table)
         {
-            var actual = ViewRulesForAllCountriesPage!.GetTopRowDetails();
+            var actual = ViewRulesForAllCountriesHMIImportPage!.GetTopRowDetails();
             foreach (var row in table.Rows)
             {
                 var field = row["Field"];
@@ -81,7 +80,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the top HMI import country rule row should have Last Updated date as today's date")]
         public void ThenTheTopHMIImportCountryRuleRowShouldHaveLastUpdatedDateAsTodaysDate()
         {
-            var actual = ViewRulesForAllCountriesPage!.GetTopRowDetails();
+            var actual = ViewRulesForAllCountriesHMIImportPage!.GetTopRowDetails();
             Assert.True(actual.ContainsKey("Last Updated"), "Field 'Last Updated' not found in top row");
             var expected = DateTime.Now.ToString("dd/MM/yyyy");
             Assert.AreEqual(expected, actual["Last Updated"],
@@ -91,7 +90,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the top HMI import country rule row should have Created date as today's date")]
         public void ThenTheTopHMIImportCountryRuleRowShouldHaveCreatedDateAsTodaysDate()
         {
-            var actual = ViewRulesForAllCountriesPage!.GetTopRowDetails();
+            var actual = ViewRulesForAllCountriesHMIImportPage!.GetTopRowDetails();
             Assert.True(actual.ContainsKey("Created"), "Field 'Created' not found in top row");
             var expected = DateTime.Now.ToString("dd/MM/yyyy");
             Assert.AreEqual(expected, actual["Created"],
@@ -101,7 +100,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the user records the Id of the top HMI import country rule row as {string}")]
         public void ThenTheUserRecordsTheIdOfTheTopHMIImportCountryRuleRowAs(string key)
         {
-            var id = ViewRulesForAllCountriesPage!.GetTopRowId();
+            var id = ViewRulesForAllCountriesHMIImportPage!.GetTopRowId();
             Assert.IsNotEmpty(id, "Top HMI country rule row Id is empty");
             _scenarioContext[key] = id;
         }
@@ -110,13 +109,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserTicksTheSelectToDeleteCheckboxForHMIImportCountryRuleIdRecordedAs(string contextKey)
         {
             var ruleId = _scenarioContext.Get<string>(contextKey);
-            ViewRulesForAllCountriesPage?.TickSelectToDeleteCheckboxForRuleId(ruleId);
+            ViewRulesForAllCountriesHMIImportPage?.TickSelectToDeleteCheckboxForRuleId(ruleId);
         }
 
         [Then("the View rules for all countries page should display the {string} info banner")]
         public void ThenTheViewRulesForAllCountriesPageShouldDisplayTheInfoBanner(string expectedText)
         {
-            var actual = ViewRulesForAllCountriesPage!.GetSelectedRulesInfoText();
+            var actual = ViewRulesForAllCountriesHMIImportPage!.GetSelectedRulesInfoText();
             Assert.AreEqual(expectedText, actual,
                 $"Info banner mismatch: expected '{expectedText}' but got '{actual}'");
         }
@@ -124,15 +123,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user clicks the Delete Rules button on the View rules for all countries page")]
         public void WhenTheUserClicksTheDeleteRulesButtonOnTheViewRulesForAllCountriesPage()
         {
-            ViewRulesForAllCountriesPage?.ClickDeleteRulesButton();
+            ViewRulesForAllCountriesHMIImportPage?.ClickDeleteRulesButton();
         }
 
         [Then("the Confirm rule deletion dialog should be displayed with {int} rules selected for deletion on the View rules for all countries page")]
         public void ThenTheConfirmRuleDeletionDialogShouldBeDisplayedWithRulesSelectedForDeletionOnTheViewRulesForAllCountriesPage(int expectedCount)
         {
-            Assert.True(ViewRulesForAllCountriesPage?.IsConfirmDeletionDialogDisplayed(),
+            Assert.True(ViewRulesForAllCountriesHMIImportPage?.IsConfirmDeletionDialogDisplayed(),
                 "Confirm rule deletion dialog is not displayed");
-            var actual = ViewRulesForAllCountriesPage!.GetConfirmDeletionDialogRuleCount();
+            var actual = ViewRulesForAllCountriesHMIImportPage!.GetConfirmDeletionDialogRuleCount();
             Assert.AreEqual(expectedCount, actual,
                 $"Expected {expectedCount} rule(s) in deletion dialog but found {actual}");
         }
@@ -140,21 +139,21 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user clicks the Delete rules button on the confirmation dialog on the View rules for all countries page")]
         public void WhenTheUserClicksTheDeleteRulesButtonOnTheConfirmationDialogOnTheViewRulesForAllCountriesPage()
         {
-            ViewRulesForAllCountriesPage?.ClickConfirmDeleteButton();
+            ViewRulesForAllCountriesHMIImportPage?.ClickConfirmDeleteButton();
         }
 
         [Then("the Confirm rule deletion dialog should be closed on the View rules for all countries page")]
         public void ThenTheConfirmRuleDeletionDialogShouldBeClosedOnTheViewRulesForAllCountriesPage()
         {
-            Assert.True(ViewRulesForAllCountriesPage?.IsConfirmDeletionDialogClosed(),
-                            "Confirm rule deletion dialog is still displayed");
+            Assert.True(ViewRulesForAllCountriesHMIImportPage?.IsConfirmDeletionDialogClosed(),
+                "Confirm rule deletion dialog is still displayed");
         }
 
         [Then("the HMI import country rule Id recorded as {string} should no longer be present in the rules table")]
         public void ThenTheHMIImportCountryRuleIdRecordedAsShouldNoLongerBePresentInTheRulesTable(string contextKey)
         {
             var ruleId = _scenarioContext.Get<string>(contextKey);
-            Assert.False(ViewRulesForAllCountriesPage!.IsRuleIdPresent(ruleId),
+            Assert.False(ViewRulesForAllCountriesHMIImportPage!.IsRuleIdPresent(ruleId),
                 $"HMI Country Rule Id '{ruleId}' (from '{contextKey}') is still present in the rules table after deletion");
         }
     }

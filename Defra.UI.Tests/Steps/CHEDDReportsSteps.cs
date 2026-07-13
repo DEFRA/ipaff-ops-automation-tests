@@ -37,5 +37,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             chedDReportsPage?.ClickRiskDecisionReportLink();
         }
+
+        [When("the user clicks the Country rules report link under the CHED-D reports header")]
+        public void WhenTheUserClicksTheCountryRulesReportLinkUnderTheCHED_DReportsHeader()
+        {
+            chedDReportsPage?.ClickCountryRulesReportLink();
+        }
     }
 }
