@@ -14,6 +14,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='CHED-A reports']"), true);
         private By byLnkImportsCommodityRulesReport => By.XPath("//a[normalize-space()='Imports commodity rules report']");
         private By byLnkRiskDecisionReport => By.XPath("//a[normalize-space()='Risk decision report']");
+        private By byLnkCountryRulesReport => By.XPath("//a[normalize-space()='Country rules report']");
         #endregion
 
         public CHEDAReportsPage(IObjectContainer container)
@@ -32,6 +33,12 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickRiskDecisionReportLink()
         {
             var element = _driver.WaitForElementClickable(byLnkRiskDecisionReport);
+            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", element);
+        }
+
+        public void ClickCountryRulesReportLink()
+        {
+            var element = _driver.WaitForElementClickable(byLnkCountryRulesReport);
             ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", element);
         }
     }
