@@ -17,7 +17,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement primaryTitle => _driver.WaitForElement(By.Id("page-primary-title"), true);
         private IWebElement secondaryTitle => _driver.WaitForElement(By.XPath("//*[@id='commodity-details-upload-page']//span"), true);
         private IWebElement lnkDownloadCSVTemplate => _driver.FindElement(By.XPath("//*[@class='govuk-list govuk-list--number']//a"));
-        private IWebElement primaryTitleGuidancePage => _driver.WaitForElement(By.XPath("//*[@class='gem-c-heading__text govuk-heading-l']"), true);
+        private IWebElement primaryTitleGuidancePage => _driver.WaitForElement(By.XPath("//*[@class='gem-c-heading__text govuk-heading-xl']"), true);
         private IWebElement secondaryTitleGuidancePage => _driver.WaitForElement(By.XPath("//*[@class='govuk-caption-xl gem-c-heading__context']"), true);
         private IWebElement lnkCommDetailsCSVTemplate(string linkName) => _driver.FindElement(By.XPath($"//a[normalize-space()='{linkName}']"));
         private IWebElement btnChooseFile => _driver.FindElement(By.Id("fileUpload"));

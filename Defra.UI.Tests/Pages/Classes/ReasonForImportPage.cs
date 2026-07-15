@@ -381,7 +381,7 @@ namespace Defra.UI.Tests.Pages.Classes
                 foreach (var opt in subOptions)
                 {
                     var element = GetTranitSubOption(opt);
-                    transitSubOptionTexts.Add(element.Text.Split('\r')[0].Trim());
+                    transitSubOptionTexts.Add(element.Text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)[0].Trim()); 
                 }
                 return transitSubOptionTexts.All(el => subOptions.Contains(el));
             }

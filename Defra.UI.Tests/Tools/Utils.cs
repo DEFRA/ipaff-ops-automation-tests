@@ -119,8 +119,7 @@ namespace Defra.UI.Tests.Tools
 
         public static bool IsDownloaded(string fileName, string extension)
         {
-            var downloadedFilePath = Path.Combine(Path.GetTempPath(), "automation-downloads", $"{fileName}.{extension}");
-
+            var downloadRoot = Path.Combine(Path.GetTempPath(), "automation-downloads");
 
             var timeout = TimeSpan.FromSeconds(30);
 
@@ -128,7 +127,16 @@ namespace Defra.UI.Tests.Tools
 
             while (stopwatch.Elapsed < timeout)
             {
-                if (File.Exists(downloadedFilePath))
+                Console.WriteLine($"Looking for: {fileName}*.{extension}");
+                Console.WriteLine($"Folder: {downloadRoot}");
+
+                foreach (var file in Directory.GetFiles(downloadRoot))
+                {
+                    Console.WriteLine($"Found: {Path.GetFileName(file)}");
+                }
+
+                if (Directory.GetFiles(downloadRoot,
+                        $"{fileName}*.{extension}").Any())
                 {
                     return true;
                 }

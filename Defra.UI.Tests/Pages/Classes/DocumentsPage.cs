@@ -69,9 +69,11 @@ namespace Defra.UI.Tests.Pages.Classes
             return (documentType, documentReference, dateOfIssue);
         }
 
-        public void ClickDownloadAllDocumentsLink()
+        public void ClickDownloadAllDocumentsLink(string chedReference)
         {
             lnkDownloadAllDocuments.Click();
+            Thread.Sleep(1000);
+            Utils.RetrieveFileFromGrid(_driver, $"{chedReference}.zip");
         }
 
         public bool IsCatchCertificateSummaryUrlDisplayed()
@@ -86,7 +88,15 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void ClickDownloadLinkInCatchCertificate()
         {
-            var fileName = lnkDownloadLink.GetAttribute("download") ?? lnkDownloadLink.Text.Trim();
+            var fileName = lnkDownloadLink.GetAttribute("download");
+
+            if (string.IsNullOrWhiteSpace(fileName))
+            {
+                fileName = lnkDownloadLink
+                    .GetAttribute("aria-label")
+                    ?.Replace("Download ", string.Empty);
+            }
+
             lnkDownloadLink.Click();
             Utils.RetrieveFileFromGrid(_driver, fileName);
         }
