@@ -30,6 +30,7 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickImportsCommodityRulesReportLink() => lnkImportsCommodityRulesReport.Click();
 
         public void ClickIndividualCommodityRulesLink() => lnkIndividualCommodityRules.Click();
+
         public void ClickCountryRulesLink() => lnkCountryRules.Click();
     }
 }
