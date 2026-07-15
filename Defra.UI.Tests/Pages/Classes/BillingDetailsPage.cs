@@ -18,7 +18,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IReadOnlyCollection<IWebElement> btnSaveAndContinueList => _driver.FindElements(By.XPath("//button[text()='Save and continue']"));
         private IWebElement lnkRatesAndEligibility => _driver.FindElement(By.Id("read-rates"));
         private IWebElement lnkTermsAndConditions => _driver.FindElement(By.Id("read-terms"));
-        private IWebElement ratesPageTitle => _driver.FindElement(By.XPath("//h1[@class='gem-c-heading__text govuk-heading-l']"));
+        private IWebElement ratesPageTitle => _driver.FindElement(By.XPath("//h1[contains(@class,'gem-c-heading__text govuk-heading')]"));
         private IWebElement termsAndConditionsPageTitle => _driver.FindElement(By.Id("read-rates"));
         #endregion
 
