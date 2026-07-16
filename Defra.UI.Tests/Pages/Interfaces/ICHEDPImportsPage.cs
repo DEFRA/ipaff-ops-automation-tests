@@ -4,5 +4,7 @@
     {
         bool IsPageLoaded();
         void ClickBulkUploadCommodityRulesLink();
+        void ClickIndividualCommodityRulesLink();
+        void ClickCountryRulesLink();
     }
 }
