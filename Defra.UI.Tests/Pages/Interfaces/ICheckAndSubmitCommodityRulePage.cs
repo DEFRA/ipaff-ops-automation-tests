@@ -4,5 +4,6 @@
     {
         bool IsPageLoaded();
         void ClickConfirmAndSubmitRuleButton();
+        IDictionary<string, string> GetSummaryDetails();
     }
 }

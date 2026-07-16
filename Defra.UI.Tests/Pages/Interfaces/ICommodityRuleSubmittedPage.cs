@@ -3,5 +3,7 @@
     public interface ICommodityRuleSubmittedPage
     {
         bool IsPageLoaded();
+        void ClickViewAllCHEDAImportsCommodityRulesLink();
+        void ClickViewAllCHEDDImportsCommodityRulesLink();
     }
 }

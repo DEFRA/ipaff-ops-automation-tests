@@ -26,8 +26,14 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool IsCommodityDisplayed(string commodityCode, string description)
         {
+            var normalisedDescription = descriptionCell.Text
+                .Trim()
+                .Replace("\u00C2\u00A0", " ")  // remove UTF-8 mojibake: Â + non-breaking space
+                .Replace("\u00A0", " ")         // remove any remaining non-breaking spaces
+                .Replace("\u00C2", "");          // remove any remaining Â characters
+
             return commodityCodeCell.Text.Trim().Contains(commodityCode)
-                && descriptionCell.Text.Trim().Contains(description);
+                && normalisedDescription.Contains(description);
         }
 
         public void ClickContinueButton() => btnContinue.Click();
