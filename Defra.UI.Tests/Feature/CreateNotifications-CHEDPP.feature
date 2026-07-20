@@ -1240,7 +1240,7 @@ Scenario: Trader creates CHEDPP notification via CSV upload and completes end-to
 	When I sort Commodity Lines by Regulatory Authority
 	And I double click on a Commodity Line with Regulatory Authority set to 'Joint'
 	Then the Import Commodity Line page is displayed
-	And the settings are displayed as HMI Inspection Required 'Yes', PHSI Inspection Required 'No' and Inspection Classification 'Mandatory / Controlled / Reduced / Not Notifiable'
+	And the settings are displayed as HMI Inspection Required 'No', PHSI Inspection Required 'No' and Inspection Classification 'Mandatory / Controlled / Reduced / Not Notifiable'
 	When I click the Back button in the command bar
 	Then I verify the Work Order page is displayed for the notification created in IPAFFS
 	And the 'Import' tab is displayed and selected

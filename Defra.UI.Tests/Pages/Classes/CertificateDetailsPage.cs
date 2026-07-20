@@ -72,8 +72,8 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             return new NotificationDetails
             {
-                CertificateReferenceNumber = "PHYTO.FR.2026.0000064",
-                CertificateDateOfIssue = "15/04/2026",
+                CertificateReferenceNumber = "PHYTO.FR.2026.0000114",
+                CertificateDateOfIssue = "02/07/2026",
                 CountryOfOriginOfCertificate = "France",
                 ConsignorConsigneeOrImporterName = "WorldUSIN74 Co",
                 PurposeOfTheConsignment = "For Import",
@@ -94,8 +94,8 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             return new NotificationDetails
             {
-                CertificateReferenceNumber = "NZL2026/AGL18/3",
-                CertificateDateOfIssue = "20/04/2026",
+                CertificateReferenceNumber = "NZL2026/AGL18/9",
+                CertificateDateOfIssue = "30/06/2026",
                 CountryOfOriginOfCertificate = "New Zealand",
                 ConsignorConsigneeOrImporterName = "ALLIANCE GROUP (NZ) LTD",
                 PurposeOfTheConsignment = "Human Consumption",
