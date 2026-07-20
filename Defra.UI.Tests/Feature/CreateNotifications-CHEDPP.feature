@@ -1351,7 +1351,7 @@ Scenario: Trader creates CHEDPP notification via CSV upload and completes end-to
 	And the user can see 2 hypertext links 'Record PHSI checks' 'Record HMI checks'
 	When the user clicks Save and set as in progress
 	Then the notification status should change from 'New' to 'In progress'
-	And the 'Record HMI checks' status is 'To do'
+	And the 'Record HMI checks' status is 'In progress'
 	When the user clicks on the Record checks link 'Record HMI checks'
 	Then the Record HMI checks page should be displayed
 	And the Commodities HMI check status should be 'To do'
