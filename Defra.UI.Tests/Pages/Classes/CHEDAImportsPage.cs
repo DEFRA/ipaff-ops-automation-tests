@@ -14,6 +14,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='CHED-A imports']"), true);
         private IWebElement lnkBulkUploadCommodityRules => _driver.WaitForElement(By.XPath("//a[normalize-space()='Bulk upload commodity rules']"));
         private IWebElement lnkImportsCommodityRulesReport => _driver.WaitForElement(By.XPath("//a[normalize-space()='Imports commodity rules report']"));
+        private IWebElement lnkIndividualCommodityRules => _driver.WaitForElement(By.XPath("//a[normalize-space()='Individual commodity rules']"));
+        private IWebElement lnkCountryRules => _driver.WaitForElement(By.XPath("//a[normalize-space()='Country rules']"));
         #endregion
 
         public CHEDAImportsPage(IObjectContainer container)
@@ -26,5 +28,9 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickBulkUploadCommodityRulesLink() => lnkBulkUploadCommodityRules.Click();
 
         public void ClickImportsCommodityRulesReportLink() => lnkImportsCommodityRulesReport.Click();
+
+        public void ClickIndividualCommodityRulesLink() => lnkIndividualCommodityRules.Click();
+
+        public void ClickCountryRulesLink() => lnkCountryRules.Click();
     }
 }

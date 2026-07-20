@@ -171,6 +171,7 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CsvFileDetailsAndStatusPage, ICsvFileDetailsAndStatusPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDPReportsPage, ICHEDPReportsPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDPImportsPage, ICHEDPImportsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDPImportCommodityRulesPage, ICHEDPImportCommodityRulesPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ViewAllCHEDPImportCommodityRulesPage, IViewAllCHEDPImportCommodityRulesPage>()); 
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDAReportsPage, ICHEDAReportsPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDAImportsPage, ICHEDAImportsPage>());
@@ -214,6 +215,8 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CheckAndSubmitCommodityRulePage, ICheckAndSubmitCommodityRulePage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CommodityRuleSubmittedPage, ICommodityRuleSubmittedPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<EUImportCountryRulesPage, IEUImportCountryRulesPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SelectTheCHEDACommodityYouWantToAddARuleForPage, ISelectTheCHEDACommodityYouWantToAddARuleForPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<WhichAnimalCertificationsWillThisCommodityRuleApplyToPage, IWhichAnimalCertificationsWillThisCommodityRuleApplyToPage>());
 
             // Exporter Portal pages
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterYourApplicationsPage, IExporterYourApplicationsPage>());

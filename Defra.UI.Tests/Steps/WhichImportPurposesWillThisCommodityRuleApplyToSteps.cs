@@ -39,5 +39,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             whichImportPurposesWillThisCommodityRuleApplyToPage?.ClickContinueButton();
         }
+
+        [When("the user ticks the {string} checkbox on the Which import purposes will this commodity rule apply to? page")]
+        public void WhenTheUserTicksTheCheckboxOnTheWhichImportPurposesWillThisCommodityRuleApplyToPage(string checkboxLabel)
+        {
+            whichImportPurposesWillThisCommodityRuleApplyToPage?.TickCheckbox(checkboxLabel);
+        }
     }
 }
