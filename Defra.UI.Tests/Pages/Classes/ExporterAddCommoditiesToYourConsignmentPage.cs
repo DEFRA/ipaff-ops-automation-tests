@@ -12,7 +12,8 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects with all the element locators
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='Add commodities to your consignment']"), true);
-        private IWebElement varietyTypeOption(string option) => _driver.WaitForElement(By.XPath($"//label[contains(normalize-space(),'{option}')]"), true);
+        private IWebElement varietyTypeOption(string option) => _driver.WaitForElement(
+            By.XPath($"//label[contains(@class,'govuk-radios__label') and normalize-space()='{option}']"), true);
         private IWebElement txtVarietyAutocomplete => _driver.WaitForElement(By.Id("autocomplete-variety"), true);
         private IWebElement varietyAutocompleteOption(string variety) => _driver.WaitForElement(By.XPath($"//ul[contains(@id,'autocomplete-variety__listbox')]//li[normalize-space()='{variety}'] | //li[contains(@class,'autocomplete__option') and normalize-space()='{variety}']"), true);
         private IWebElement rdoQualityClass(string qualityClass) => _driver.WaitForElementExists(By.XPath($"//input[@name='commodityClass' and @value='{qualityClass}']"), true);
@@ -87,26 +88,34 @@ namespace Defra.UI.Tests.Pages.Classes
 
         private void SelectVarietyType(string varietyType)
         {
-            varietyTypeOption(varietyType).Click();
+            var label = varietyTypeOption(varietyType);
+            ScrollIntoView(label);
+            SafeClick(label);
         }
 
         private void EnterSpecificVariety(string specificVariety)
         {
             txtVarietyAutocomplete.Clear();
             txtVarietyAutocomplete.SendKeys(specificVariety);
-            varietyAutocompleteOption(specificVariety).Click();
+            var option = varietyAutocompleteOption(specificVariety);
+            ScrollIntoView(option);
+            SafeClick(option);
         }
 
         private void SelectQualityClass(string qualityClass)
         {
-            rdoQualityClass(qualityClass).Click();
+            var el = rdoQualityClass(qualityClass);
+            ScrollIntoView(el);
+            SafeClick(el);
         }
 
         private void SelectCountryOfOrigin(string countryOfOrigin)
         {
             txtCountryOfOriginAutocomplete.Clear();
             txtCountryOfOriginAutocomplete.SendKeys(countryOfOrigin);
-            countryOfOriginOption(countryOfOrigin).Click();
+            var option = countryOfOriginOption(countryOfOrigin);
+            ScrollIntoView(option);
+            SafeClick(option);
         }
 
         private void EnterNetWeightPerPackage(string netWeightPerPackage)
@@ -125,13 +134,17 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             txtTypeOfPackagingAutocomplete.Clear();
             txtTypeOfPackagingAutocomplete.SendKeys(typeOfPackaging);
-            typeOfPackagingOption(typeOfPackaging).Click();
+            var option = typeOfPackagingOption(typeOfPackaging);
+            ScrollIntoView(option);
+            SafeClick(option);
         }
 
         private void SelectReusablePackagingOption(string reusablePackagingOptionValue)
         {
             var yesNoValue = reusablePackagingOptionValue.ToLower() == "yes" ? "true" : "false";
-            rdoPackagingReusable(yesNoValue).Click();
+            var el = rdoPackagingReusable(yesNoValue);
+            ScrollIntoView(el);
+            SafeClick(el);
         }
 
         private void EnterCommonName(string commonName)
@@ -144,7 +157,33 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             txtBotanicalNameAutocomplete.Clear();
             txtBotanicalNameAutocomplete.SendKeys(botanicalName);
-            botanicalNameOption($"({botanicalName})").Click();
+            var option = botanicalNameOption($"({botanicalName})");
+            ScrollIntoView(option);
+            SafeClick(option);
+        }
+
+        // Centers the element in the viewport so it can't be covered by the
+        // cookie banner at the top of the page.
+        private void ScrollIntoView(IWebElement element) =>
+            ((IJavaScriptExecutor)_driver).ExecuteScript(
+                "arguments[0].scrollIntoView({block:'center', inline:'center'});", element);
+
+        // Native click, with a JS-click fallback if something (e.g. the banner
+        // during a scroll animation) intercepts the click.
+        private void SafeClick(IWebElement element)
+        {
+            try
+            {
+                element.Click();
+            }
+            catch (ElementClickInterceptedException)
+            {
+                ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", element);
+            }
+            catch (ElementNotInteractableException)
+            {
+                ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", element);
+            }
         }
 
         #endregion
