@@ -98,8 +98,7 @@ namespace Defra.UI.Tests.Pages.Classes
             txtVarietyAutocomplete.Clear();
             txtVarietyAutocomplete.SendKeys(specificVariety);
             var option = varietyAutocompleteOption(specificVariety);
-            ScrollIntoView(option);
-            SafeClick(option);
+            SelectAutocompleteOption(option);
         }
 
         private void SelectQualityClass(string qualityClass)
@@ -114,8 +113,7 @@ namespace Defra.UI.Tests.Pages.Classes
             txtCountryOfOriginAutocomplete.Clear();
             txtCountryOfOriginAutocomplete.SendKeys(countryOfOrigin);
             var option = countryOfOriginOption(countryOfOrigin);
-            ScrollIntoView(option);
-            SafeClick(option);
+            SelectAutocompleteOption(option);
         }
 
         private void EnterNetWeightPerPackage(string netWeightPerPackage)
@@ -135,8 +133,7 @@ namespace Defra.UI.Tests.Pages.Classes
             txtTypeOfPackagingAutocomplete.Clear();
             txtTypeOfPackagingAutocomplete.SendKeys(typeOfPackaging);
             var option = typeOfPackagingOption(typeOfPackaging);
-            ScrollIntoView(option);
-            SafeClick(option);
+            SelectAutocompleteOption(option);
         }
 
         private void SelectReusablePackagingOption(string reusablePackagingOptionValue)
@@ -153,23 +150,60 @@ namespace Defra.UI.Tests.Pages.Classes
             txtCommonName.SendKeys(commonName);
         }
 
+        // Hardening: accessible-autocomplete commits selection on the option's
+        // mousedown handler. If the commit doesn't happen (e.g. option was briefly
+        // covered during scroll, or Chrome's hit-testing raced the listbox
+        // re-render), the widget auto-picks the first suggestion on blur — which
+        // for "PEBAM" is "Ebenopsis ebano (EBPEB)". We verify the input's value
+        // contains "(CODE)" after selection and retry the whole entry a few times
+        // before failing this step (rather than the downstream page-check step).
         private void EnterBotanicalName(string botanicalName)
         {
-            txtBotanicalNameAutocomplete.Clear();
-            txtBotanicalNameAutocomplete.SendKeys(botanicalName);
-            var option = botanicalNameOption($"({botanicalName})");
-            ScrollIntoView(option);
-            SafeClick(option);
+            const int maxAttempts = 3;
+            var expectedCodeToken = $"({botanicalName})";
+
+            for (var attempt = 1; attempt <= maxAttempts; attempt++)
+            {
+                txtBotanicalNameAutocomplete.Clear();
+                txtBotanicalNameAutocomplete.SendKeys(botanicalName);
+
+                var option = botanicalNameOption(expectedCodeToken);
+                SelectAutocompleteOption(option);
+
+                if (IsBotanicalCommitted(expectedCodeToken))
+                    return;
+
+                // Not committed — dismiss any open listbox and try again.
+                try { txtBotanicalNameAutocomplete.SendKeys(Keys.Escape); } catch { /* best effort */ }
+            }
+
+            var committed = GetInputValue(txtBotanicalNameAutocomplete);
+            throw new WebDriverException(
+                $"Botanical name selection failed to commit after {maxAttempts} attempts. " +
+                $"Expected the autocomplete value to contain '{expectedCodeToken}' but it was '{committed}'.");
         }
 
-        // Centers the element in the viewport so it can't be covered by the
-        // cookie banner at the top of the page.
+        private bool IsBotanicalCommitted(string expectedCodeToken)
+        {
+            for (var i = 0; i < 10; i++)
+            {
+                var value = GetInputValue(txtBotanicalNameAutocomplete) ?? string.Empty;
+                var expanded = txtBotanicalNameAutocomplete.GetAttribute("aria-expanded");
+                if (value.Contains(expectedCodeToken, System.StringComparison.OrdinalIgnoreCase)
+                    && string.Equals(expanded, "false", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+                Thread.Sleep(100);
+            }
+            return false;
+        }
+
         private void ScrollIntoView(IWebElement element) =>
             ((IJavaScriptExecutor)_driver).ExecuteScript(
                 "arguments[0].scrollIntoView({block:'center', inline:'center'});", element);
 
-        // Native click, with a JS-click fallback if something (e.g. the banner
-        // during a scroll animation) intercepts the click.
+        // For plain radio/label clicks: native click first, JS click fallback.
         private void SafeClick(IWebElement element)
         {
             try
@@ -185,6 +219,30 @@ namespace Defra.UI.Tests.Pages.Classes
                 ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", element);
             }
         }
+
+        // accessible-autocomplete commits the selection on the option's mousedown
+        // handler (not click). A plain JS .click() therefore never commits and on
+        // blur the widget auto-picks the first suggestion still in the listbox.
+        // Dispatch mousedown -> mouseup -> click explicitly so the selection is
+        // always committed, regardless of whether a native click would have been
+        // intercepted after scroll.
+        private void SelectAutocompleteOption(IWebElement option)
+        {
+            ScrollIntoView(option);
+            ((IJavaScriptExecutor)_driver).ExecuteScript(
+                @"var el = arguments[0];
+                  var rect = el.getBoundingClientRect();
+                  var opts = { bubbles: true, cancelable: true, view: window,
+                               button: 0, clientX: rect.left + rect.width/2,
+                               clientY: rect.top + rect.height/2 };
+                  el.dispatchEvent(new MouseEvent('mousedown', opts));
+                  el.dispatchEvent(new MouseEvent('mouseup',   opts));
+                  el.dispatchEvent(new MouseEvent('click',     opts));",
+                option);
+        }
+
+        private string GetInputValue(IWebElement input) =>
+            (string)((IJavaScriptExecutor)_driver).ExecuteScript("return arguments[0].value;", input);
 
         #endregion
     }
