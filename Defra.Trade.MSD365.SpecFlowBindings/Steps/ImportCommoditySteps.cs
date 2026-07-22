@@ -19,8 +19,17 @@ using System.Linq;
 [Binding]
 public sealed class ImportCommoditySteps : PowerAppsStepDefiner
 {
+    public const string HmiInspectionRequiredKey = "JointCommodityHmiInspectionRequired";
+
     private static readonly string[] ValidInspectionClassifications =
         ["Mandatory", "Controlled", "Reduced", "Not Notifiable"];
+
+    private readonly ScenarioContext scenarioContext;
+
+    public ImportCommoditySteps(ScenarioContext scenarioContext)
+    {
+        this.scenarioContext = scenarioContext;
+    }
 
     [Then("the Import Commodity Line page is displayed")]
     public void ThenTheImportCommodityLinePageIsDisplayed()
@@ -51,6 +60,19 @@ public sealed class ImportCommoditySteps : PowerAppsStepDefiner
         string actualPhsi = null;
         string actualClassification = null;
 
+        // Parse '/'-separated accepted values (trimmed). Any of them is considered a valid match.
+        // Enables feature lines such as: HMI Inspection Required 'Yes / No'.
+        static string[] ParseAccepted(string raw) =>
+            (raw ?? string.Empty)
+                .Split('/')
+                .Select(v => v.Trim())
+                .Where(v => v.Length > 0)
+                .ToArray();
+
+        var acceptedHmi = ParseAccepted(expectedHmiInspectionRequired);
+        var acceptedPhsi = ParseAccepted(expectedPhsiInspectionRequired);
+        var acceptedClassifications = ParseAccepted(expectedInspectionClassifications);
+
         Policy
             .Handle<Exception>()
             .OrResult<bool>(allMatch => !allMatch)
@@ -65,45 +87,40 @@ public sealed class ImportCommoditySteps : PowerAppsStepDefiner
                 actualPhsi = GetHeaderFieldValue("PHSI Inspection Required");
                 actualClassification = GetHeaderFieldValue("Inspection Classification");
 
-                var hmiMatch = actualHmi == expectedHmiInspectionRequired;
-                var phsiMatch = actualPhsi == expectedPhsiInspectionRequired;
+                var hmiMatch = acceptedHmi.Contains(actualHmi, StringComparer.OrdinalIgnoreCase);
+                var phsiMatch = acceptedPhsi.Contains(actualPhsi, StringComparer.OrdinalIgnoreCase);
 
-                var classificationMatch = string.IsNullOrWhiteSpace(expectedInspectionClassifications)
+                var classificationMatch = acceptedClassifications.Length == 0
                     ? actualClassification is "---" or ""
-                    : expectedInspectionClassifications
-                        .Split('/')
-                        .Select(v => v.Trim())
-                        .Contains(actualClassification, StringComparer.OrdinalIgnoreCase);
+                    : acceptedClassifications.Contains(actualClassification, StringComparer.OrdinalIgnoreCase);
 
                 return hmiMatch && phsiMatch && classificationMatch;
             });
 
         // Final assertions — at this point all values have stabilised or the retry budget is exhausted.
-        actualHmi.Should().Be(expectedHmiInspectionRequired,
-            $"Expected HMI Inspection Required to be '{expectedHmiInspectionRequired}' but found '{actualHmi}'.");
+        actualHmi.Should().BeOneOf(acceptedHmi,
+            $"Expected HMI Inspection Required to be one of '{expectedHmiInspectionRequired}' but found '{actualHmi}'.");
 
-        actualPhsi.Should().Be(expectedPhsiInspectionRequired,
-            $"Expected PHSI Inspection Required to be '{expectedPhsiInspectionRequired}' but found '{actualPhsi}'.");
+        actualPhsi.Should().BeOneOf(acceptedPhsi,
+            $"Expected PHSI Inspection Required to be one of '{expectedPhsiInspectionRequired}' but found '{actualPhsi}'.");
 
-        if (string.IsNullOrWhiteSpace(expectedInspectionClassifications))
+        if (acceptedClassifications.Length == 0)
         {
             actualClassification.Should().BeOneOf("---", string.Empty,
                 $"Expected Inspection Classification to be blank but found '{actualClassification}'.");
         }
         else
         {
-            var acceptedValues = expectedInspectionClassifications
-                .Split('/')
-                .Select(v => v.Trim())
-                .ToArray();
-
-            acceptedValues.Should().AllSatisfy(v =>
+            acceptedClassifications.Should().AllSatisfy(v =>
                 ValidInspectionClassifications.Should().Contain(v,
                     $"'{v}' is not a recognised Inspection Classification value."));
 
-            actualClassification.Should().BeOneOf(acceptedValues,
+            actualClassification.Should().BeOneOf(acceptedClassifications,
                 $"Expected Inspection Classification to be one of '{expectedInspectionClassifications}' but found '{actualClassification}'.");
         }
+
+        // Persist the resolved (actual) HMI value so downstream steps can branch strictly on it.
+        this.scenarioContext[HmiInspectionRequiredKey] = actualHmi;
     }
 
     /// <summary>
