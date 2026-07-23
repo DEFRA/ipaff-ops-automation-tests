@@ -8,6 +8,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
     [Binding]
     public class DecisionHubSteps
     {
+        private const string HmiInspectionRequiredKey = "JointCommodityHmiInspectionRequired";
+
         private readonly IObjectContainer _objectContainer;
         private readonly ScenarioContext _scenarioContext;
 
@@ -136,9 +138,65 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the {string} status is {string}")]
         public void ThenTheRecordChecksStatusIs(string checkName, string expectedStatus)
         {
+            var resolvedExpectedStatus = ResolveExpectedStatus(checkName, expectedStatus);
+
             Assert.True(
-                decisionHubPage?.VerifyRecordChecksStatus(checkName, expectedStatus),
-                $"Expected '{checkName}' status to be '{expectedStatus}'.");
+                decisionHubPage?.VerifyRecordChecksStatus(checkName, resolvedExpectedStatus),
+                $"Expected '{checkName}' status to be '{resolvedExpectedStatus}'" +
+                (resolvedExpectedStatus != expectedStatus ? $" (resolved from HMI value, original: '{expectedStatus}')" : string.Empty) +
+                ".");
+        }
+
+        /// <summary>
+        /// Resolves the expected status. The HMI-conditional mapping is applied ONLY when ALL of
+        /// the following hold, otherwise <paramref name="expectedStatus"/> is returned unchanged:
+        ///   1. The check is the HMI check (name contains "HMI").
+        ///   2. Slash-separated alternatives were supplied (e.g. 'To do / In progress').
+        ///   3. An HMI Inspection Required value was captured earlier in the scenario.
+        ///   4. The value derived from the HMI result is one of the supplied alternatives.
+        /// This guarantees single-value usages and non-HMI multi-value checks are unaffected.
+        /// </summary>
+        /// <remarks>
+        /// HMI mapping:
+        ///   Yes → "To do"       (check required, not yet started)
+        ///   No  → "In progress" (check not required, treated as already in progress)
+        /// </remarks>
+        private string ResolveExpectedStatus(string checkName, string expectedStatus)
+        {
+            // Guard 1: only the HMI check is HMI-conditional.
+            if (checkName?.IndexOf("HMI", StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                return expectedStatus;
+            }
+
+            // Guard 2: only slash-separated alternatives are candidates for resolution.
+            var alternatives = expectedStatus
+                .Split('/')
+                .Select(s => s.Trim())
+                .Where(s => s.Length > 0)
+                .ToArray();
+
+            if (alternatives.Length <= 1)
+            {
+                return expectedStatus;
+            }
+
+            // Guard 3: an HMI value must have been captured upstream.
+            if (!_scenarioContext.ContainsKey(HmiInspectionRequiredKey))
+            {
+                return expectedStatus;
+            }
+
+            var hmiValue = _scenarioContext.Get<string>(HmiInspectionRequiredKey);
+
+            var derivedStatus = hmiValue?.Equals("Yes", StringComparison.OrdinalIgnoreCase) == true
+                ? "To do"
+                : "In progress";
+
+            // Guard 4: only substitute if the derived status is one the feature actually offered.
+            return alternatives.Contains(derivedStatus, StringComparer.OrdinalIgnoreCase)
+                ? derivedStatus
+                : expectedStatus;
         }
 
         [When("the user clicks on the Record checks link {string}")]
