@@ -30,9 +30,36 @@ namespace Defra.UI.Tests.Pages.Classes
             countrySelectionInput.Clear();
             countrySelectionInput.SendKeys(country);
             Thread.Sleep(1000);
-            countryOption(country).Click();
+
+            var option = countryOption(country);
+            ScrollIntoView(option);
+            SafeClick(option);
         }
 
         public void ClickContinueButton() => btnContinue.Click();
+
+        // Centres the option inside its scrollable dropdown container so it
+        // isn't hidden behind the container's edge (which would otherwise
+        // intercept the click on longer country names further down the list,
+        // e.g. Turkmenistan).
+        private void ScrollIntoView(IWebElement element) =>
+            ((IJavaScriptExecutor)_driver).ExecuteScript(
+                "arguments[0].scrollIntoView({block:'center', inline:'center'});", element);
+
+        private void SafeClick(IWebElement element)
+        {
+            try
+            {
+                element.Click();
+            }
+            catch (ElementClickInterceptedException)
+            {
+                ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", element);
+            }
+            catch (ElementNotInteractableException)
+            {
+                ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", element);
+            }
+        }
     }
 }
