@@ -552,7 +552,7 @@ namespace Defra.UI.Tests.Tools
 
             var operatorDetails = new OperatorDetails
             {
-                OperatorName = faker.Company.CompanyName().Replace(",", ""),
+                OperatorName = faker.Company.CompanyName().Replace(",", "").Replace("'", ""),
                 AddressLine1 = faker.Address.StreetAddress().Replace(",", ""),
                 CityOrTown = faker.Address.City().Replace(",", ""),
                 Postcode = postcode,
