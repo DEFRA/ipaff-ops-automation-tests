@@ -53,27 +53,162 @@ parameters:
 
 stages:
 
-  - stage: IPAFF_OPS_RISK_ENGINE
-    displayName: IPAFF OPS - Risk Engine
-    variables:
-      - template: 'variables/IPAFF/${{ parameters.environment }}.yml'
-    jobs:
-      - template: run-test-template.yml
-        parameters:
-          jobName: IPAFF_OPS_RISK_ENGINE
-          environment: ${{ parameters.environment }}
-          branchName: $(Build.SourceBranch)
-          seleniumGrid: ${{ parameters.seleniumGrid }}
-          deviceName: ${{ parameters.deviceName }}
-          bsOSVersion: ${{ parameters.bsOSVersion }}
-          workers: ${{ parameters.workers }}
-          bsBrowserVersion: 'latest'
-          target: ${{ parameters.target }}
-          isEmulationEnabled: ${{ parameters.isEmulationEnabled }}
-          emulateDeviceInfo: ${{ parameters.emulateDeviceInfo }}
-          isAccessibilityEnabled: ${{ parameters.isAccessibilityEnabled }}
-          enableRetry: ${{ parameters.enableRetry }}
-          application: 'IPAFF'
-          dependsOn: ''
-          filterTestCases: 'TestCategory=RiskEngine'
-          featureFilter: ${{ parameters.featureFilter }}
+  - ${{ if eq(parameters.featureFilter, 'all') }}:
+    - stage: IPAFF_OPS_RISK_ENGINE_BULK_UPLOAD
+      displayName: IPAFF OPS - Risk Engine - Bulk Uploads
+      variables:
+        - template: 'variables/IPAFF/${{ parameters.environment }}.yml'
+      jobs:
+        - template: run-test-template.yml
+          parameters:
+            jobName: IPAFF_OPS_RISK_ENGINE_BULK_UPLOAD
+            environment: ${{ parameters.environment }}
+            branchName: $(Build.SourceBranch)
+            seleniumGrid: ${{ parameters.seleniumGrid }}
+            deviceName: ${{ parameters.deviceName }}
+            bsOSVersion: ${{ parameters.bsOSVersion }}
+            workers: ${{ parameters.workers }}
+            bsBrowserVersion: 'latest'
+            target: ${{ parameters.target }}
+            isEmulationEnabled: ${{ parameters.isEmulationEnabled }}
+            emulateDeviceInfo: ${{ parameters.emulateDeviceInfo }}
+            isAccessibilityEnabled: ${{ parameters.isAccessibilityEnabled }}
+            enableRetry: ${{ parameters.enableRetry }}
+            application: 'IPAFF'
+            dependsOn: ''
+            filterTestCases: ''
+            featureFilter: 'BulkUpload'
+
+    - stage: IPAFF_OPS_RISK_ENGINE_CHEDA
+      displayName: IPAFF OPS - Risk Engine - CHEDA
+      dependsOn: IPAFF_OPS_RISK_ENGINE_BULK_UPLOAD
+      condition: always()
+      variables:
+        - template: 'variables/IPAFF/${{ parameters.environment }}.yml'
+      jobs:
+        - template: run-test-template.yml
+          parameters:
+            jobName: IPAFF_OPS_RISK_ENGINE_CHEDA
+            environment: ${{ parameters.environment }}
+            branchName: $(Build.SourceBranch)
+            seleniumGrid: ${{ parameters.seleniumGrid }}
+            deviceName: ${{ parameters.deviceName }}
+            bsOSVersion: ${{ parameters.bsOSVersion }}
+            workers: '1'
+            bsBrowserVersion: 'latest'
+            target: ${{ parameters.target }}
+            isEmulationEnabled: ${{ parameters.isEmulationEnabled }}
+            emulateDeviceInfo: ${{ parameters.emulateDeviceInfo }}
+            isAccessibilityEnabled: ${{ parameters.isAccessibilityEnabled }}
+            enableRetry: ${{ parameters.enableRetry }}
+            application: 'IPAFF'
+            dependsOn: ''
+            filterTestCases: ''
+            featureFilter: 'SPS-9523,SPS-9524'
+
+    - stage: IPAFF_OPS_RISK_ENGINE_CHEDD
+      displayName: IPAFF OPS - Risk Engine - CHEDD
+      dependsOn: IPAFF_OPS_RISK_ENGINE_CHEDA
+      condition: always()
+      variables:
+        - template: 'variables/IPAFF/${{ parameters.environment }}.yml'
+      jobs:
+        - template: run-test-template.yml
+          parameters:
+            jobName: IPAFF_OPS_RISK_ENGINE_CHEDD
+            environment: ${{ parameters.environment }}
+            branchName: $(Build.SourceBranch)
+            seleniumGrid: ${{ parameters.seleniumGrid }}
+            deviceName: ${{ parameters.deviceName }}
+            bsOSVersion: ${{ parameters.bsOSVersion }}
+            workers: '1'
+            bsBrowserVersion: 'latest'
+            target: ${{ parameters.target }}
+            isEmulationEnabled: ${{ parameters.isEmulationEnabled }}
+            emulateDeviceInfo: ${{ parameters.emulateDeviceInfo }}
+            isAccessibilityEnabled: ${{ parameters.isAccessibilityEnabled }}
+            enableRetry: ${{ parameters.enableRetry }}
+            application: 'IPAFF'
+            dependsOn: ''
+            filterTestCases: ''
+            featureFilter: 'SPS-9521,SPS-9522'
+
+    - stage: IPAFF_OPS_RISK_ENGINE_CHEDP
+      displayName: IPAFF OPS - Risk Engine - CHEDP
+      dependsOn: IPAFF_OPS_RISK_ENGINE_CHEDD
+      condition: always()
+      variables:
+        - template: 'variables/IPAFF/${{ parameters.environment }}.yml'
+      jobs:
+        - template: run-test-template.yml
+          parameters:
+            jobName: IPAFF_OPS_RISK_ENGINE_CHEDP
+            environment: ${{ parameters.environment }}
+            branchName: $(Build.SourceBranch)
+            seleniumGrid: ${{ parameters.seleniumGrid }}
+            deviceName: ${{ parameters.deviceName }}
+            bsOSVersion: ${{ parameters.bsOSVersion }}
+            workers: '1'
+            bsBrowserVersion: 'latest'
+            target: ${{ parameters.target }}
+            isEmulationEnabled: ${{ parameters.isEmulationEnabled }}
+            emulateDeviceInfo: ${{ parameters.emulateDeviceInfo }}
+            isAccessibilityEnabled: ${{ parameters.isAccessibilityEnabled }}
+            enableRetry: ${{ parameters.enableRetry }}
+            application: 'IPAFF'
+            dependsOn: ''
+            filterTestCases: ''
+            featureFilter: 'SPS-9519,SPS-9520'
+
+    - stage: IPAFF_OPS_RISK_ENGINE_CHEDPP
+      displayName: IPAFF OPS - Risk Engine - CHEDPP
+      dependsOn: IPAFF_OPS_RISK_ENGINE_CHEDP
+      condition: always()
+      variables:
+        - template: 'variables/IPAFF/${{ parameters.environment }}.yml'
+      jobs:
+        - template: run-test-template.yml
+          parameters:
+            jobName: IPAFF_OPS_RISK_ENGINE_CHEDPP
+            environment: ${{ parameters.environment }}
+            branchName: $(Build.SourceBranch)
+            seleniumGrid: ${{ parameters.seleniumGrid }}
+            deviceName: ${{ parameters.deviceName }}
+            bsOSVersion: ${{ parameters.bsOSVersion }}
+            workers: '1'
+            bsBrowserVersion: 'latest'
+            target: ${{ parameters.target }}
+            isEmulationEnabled: ${{ parameters.isEmulationEnabled }}
+            emulateDeviceInfo: ${{ parameters.emulateDeviceInfo }}
+            isAccessibilityEnabled: ${{ parameters.isAccessibilityEnabled }}
+            enableRetry: ${{ parameters.enableRetry }}
+            application: 'IPAFF'
+            dependsOn: ''
+            filterTestCases: ''
+            featureFilter: 'SPS-9449,SPS-9450,SPS-9507,SPS-9508,SPS-9509,SPS-9510,SPS-9512,SPS-9513,SPS-9514'
+
+  - ${{ if ne(parameters.featureFilter, 'all') }}:
+    - stage: IPAFF_OPS_RISK_ENGINE_CUSTOM
+      displayName: 'IPAFF OPS - Risk Engine - ${{ parameters.featureFilter }}'
+      variables:
+        - template: 'variables/IPAFF/${{ parameters.environment }}.yml'
+      jobs:
+        - template: run-test-template.yml
+          parameters:
+            jobName: IPAFF_OPS_RISK_ENGINE_CUSTOM
+            environment: ${{ parameters.environment }}
+            branchName: $(Build.SourceBranch)
+            seleniumGrid: ${{ parameters.seleniumGrid }}
+            deviceName: ${{ parameters.deviceName }}
+            bsOSVersion: ${{ parameters.bsOSVersion }}
+            workers: ${{ parameters.workers }}
+            bsBrowserVersion: 'latest'
+            target: ${{ parameters.target }}
+            isEmulationEnabled: ${{ parameters.isEmulationEnabled }}
+            emulateDeviceInfo: ${{ parameters.emulateDeviceInfo }}
+            isAccessibilityEnabled: ${{ parameters.isAccessibilityEnabled }}
+            enableRetry: ${{ parameters.enableRetry }}
+            application: 'IPAFF'
+            dependsOn: ''
+            filterTestCases: 'TestCategory=RiskEngine'
+            featureFilter: ${{ parameters.featureFilter }}

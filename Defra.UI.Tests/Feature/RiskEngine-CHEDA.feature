@@ -3,7 +3,7 @@ Feature: Risk Engine CHEDA
 
 Bulk upload, Update and Test rules with end-to-end validation for a CHEDA notification
 
-@SPS-9427
+@SPS-9427 @BulkUpload
 Scenario: Bulk upload initial load for CHEDA - SPS-9427
 	# ---------- Iteration 1: Start ----------
 	# Upload the rules
@@ -743,7 +743,7 @@ Scenario: Bulk upload initial load for CHEDA - SPS-9427
 	And 'Iteration_5' is complete
 	# ---------- Iteration 5: Complete ----------
 
-@SPS-9428
+@SPS-9428 @BulkUpload
 Scenario: Bulk upload update existing rules for CHEDA - SPS-9428
 	# ---------- Iteration 1: Start ----------
 	# Upload the update rules
