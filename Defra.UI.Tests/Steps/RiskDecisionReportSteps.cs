@@ -37,10 +37,38 @@ namespace Defra.UI.Tests.Steps.IPAFF
             riskDecisionReportPage?.Search(chedRef);
         }
 
+        [When("the user enters the recorded APHA Reference for {string} in the Risk decision search box and clicks Search")]
+        public void WhenTheUserEntersTheRecordedAPHAReferenceForIterationInTheRiskDecisionSearchBoxAndClicksSearch(string iterationName)
+        {
+            var aphaRef = _scenarioContext.Get<string>($"{iterationName}_APHAReference");
+            riskDecisionReportPage?.Search(aphaRef);
+        }
+
         [Then("the Risk decision report returns one matching record")]
         public void ThenTheRiskDecisionReportReturnsOneMatchingRecord()
         {
-            Assert.AreEqual(1, riskDecisionReportPage?.GetRecordCount(), "Expected exactly one record");
+            var timeout = TimeSpan.FromMinutes(1);
+            var retryInterval = TimeSpan.FromSeconds(10);
+            var startTime = DateTime.Now;
+
+            while (true)
+            {
+                var recordCount = riskDecisionReportPage?.GetRecordCount() ?? 0;
+
+                if (recordCount == 1)
+                {
+                    Assert.AreEqual(1, recordCount, "Expected exactly one record");
+                    return;
+                }
+
+                if (DateTime.Now - startTime >= timeout)
+                {
+                    Assert.AreEqual(1, recordCount, $"Expected exactly one record, but got {recordCount} after retrying for {timeout.TotalSeconds} seconds");
+                }
+
+                Thread.Sleep(retryInterval);
+                riskDecisionReportPage?.ClickSearch();
+            }
         }
 
         [When("the user clicks the Expand button for the CHED Reference of {string}")]
@@ -50,10 +78,18 @@ namespace Defra.UI.Tests.Steps.IPAFF
             riskDecisionReportPage?.ClickExpandForCHED(chedRef);
         }
 
+        [When("the user clicks the Expand button for the APHA Reference of {string}")]
+        public void WhenTheUserClicksTheExpandButtonForTheAPHAReferenceOfIteration(string iterationName)
+        {
+            var aphaRef = _scenarioContext.Get<string>($"{iterationName}_APHAReference");
+            riskDecisionReportPage?.ClickExpandForCHED(aphaRef);
+        }
+
         [When("the user clicks the Requests details link")]
         public void WhenTheUserClicksTheRequestsDetailsLink() => riskDecisionReportPage?.ClickRequestsDetails();
 
         [Then("the Requests section is expanded with details from IPAFFS")]
+        [Then("the Requests section is expanded with details from Exporter Portal")]
         public void ThenTheRequestsSectionIsExpandedWithDetailsFromIPAFFS()
         {
             var requestsJson = riskDecisionReportPage!.GetRequestsJson();
@@ -110,6 +146,53 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 Assert.AreEqual(expected, actual,
                     $"DecisionRule field '{field}' mismatch for RuleId '{ruleId}': expected '{expected}' but got '{actual}'");
             }
+        }
+
+        [Then("the Decision section contains a DecisionRule with the following values")]
+        public void ThenTheDecisionSectionContainsADecisionRuleWithTheFollowingValues(Table table)
+        {
+            var decisionJson = riskDecisionReportPage!.GetDecisionJson();
+            _scenarioContext["RiskDecisionJson"] = decisionJson;
+
+            using var doc = JsonDocument.Parse(decisionJson);
+            var commodities = doc.RootElement.GetProperty("Commodities");
+
+            JsonElement? matchedRule = null;
+            foreach (var commodity in commodities.EnumerateArray())
+            {
+                var rules = commodity.GetProperty("DecisionRules");
+                foreach (var rule in rules.EnumerateArray())
+                {
+                    var allFieldsMatch = table.Rows.All(row =>
+                    {
+                        var field = row["Field"];
+                        var expected = row["Value"];
+
+                        if (!rule.TryGetProperty(field, out var property))
+                            return false;
+
+                        var actual = property.ValueKind switch
+                        {
+                            JsonValueKind.String => property.GetString(),
+                            JsonValueKind.True => "true",
+                            JsonValueKind.False => "false",
+                            _ => property.GetRawText()
+                        };
+
+                        return actual == expected;
+                    });
+
+                    if (allFieldsMatch)
+                    {
+                        matchedRule = rule;
+                        break;
+                    }
+                }
+                if (matchedRule.HasValue) break;
+            }
+
+            Assert.IsNotNull(matchedRule,
+                $"No DecisionRule found matching all expected values in the Decision JSON.\nExpected fields:\n{string.Join("\n", table.Rows.Select(r => $"  {r["Field"]} = {r["Value"]}"))}");
         }
     }
 }

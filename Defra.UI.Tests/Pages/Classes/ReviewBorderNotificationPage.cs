@@ -39,7 +39,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement lastUpdatedDate => _driver.FindElement(By.Id("last-updated-date"));
         private IWebElement lastUpdatedTime => _driver.FindElement(By.Id("last-updated-time"));
         private IWebElement btnSubmit => _driver.FindElement(By.Id("submit-button"));
-        private IWebElement lnkAttachedDocument => _driver.FindElement(By.Id("attachment-name-0"));
+        private IWebElement lnkAttachedDocument => _driver.FindElement(By.XPath("//*[@id='attachment-name-0' or @id='additional-document-attachment-value-0']"));
         private IWebElement lnkDocument => _driver.FindElement(By.XPath("//a[contains(@id,'download-attachment') or contains(@id,'attachment-download')]"));
 
         //private IReadOnlyCollection <IWebElement> lnkDownloadedFile => _driver.FindElements(By.Id("file-link"));
@@ -89,8 +89,8 @@ namespace Defra.UI.Tests.Pages.Classes
         }
 
         public void ClickDocumentLink()
-        {
-            var fileName = lnkDocument.Text.Trim();
+        {  
+            var fileName = lnkAttachedDocument.Text.Trim();
             lnkDocument.Click();
             Thread.Sleep(1000);
             Utils.RetrieveFileFromGrid(_driver, fileName);

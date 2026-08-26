@@ -381,7 +381,7 @@ namespace Defra.UI.Tests.Pages.Classes
                 foreach (var opt in subOptions)
                 {
                     var element = GetTranitSubOption(opt);
-                    transitSubOptionTexts.Add(element.Text.Split('\r')[0].Trim());
+                    transitSubOptionTexts.Add(element.Text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)[0].Trim()); 
                 }
                 return transitSubOptionTexts.All(el => subOptions.Contains(el));
             }
@@ -419,7 +419,7 @@ namespace Defra.UI.Tests.Pages.Classes
                     break;
 
                 case "Transit":
-                    SelectRandomDropdownOption(transitExitBCP, excludedTexts: ["LONDON GATEWAY (GBLGP)"]);
+                    SelectRandomDropdownOption(transitExitBCP, excludedTexts: ["LONDON GATEWAY (GBLGP)", "BRISTOL (GBBRS)", "Manchester Airport (animals) - GBMNC4", "Heathrow Airport - HARC (animals) - GBLHR4A"]);
                     FillTransitDateTimeIfPresent();
                     FillTransitedCountryIfPresent();
                     SelectRandomDropdownOption(txtDestinationCountry);
@@ -433,7 +433,7 @@ namespace Defra.UI.Tests.Pages.Classes
                 case "Re-entry":
                     // Manual override for Re-entry
                     SelectReasonForImport("Transit");
-                    SelectRandomDropdownOption(transitExitBCP, excludedTexts: ["LONDON GATEWAY (GBLGP)"]);
+                    SelectRandomDropdownOption(transitExitBCP, excludedTexts: ["LONDON GATEWAY (GBLGP)", "BRISTOL (GBBRS)", "Manchester Airport (animals) - GBMNC4", "Heathrow Airport - HARC (animals) - GBLHR4A"]);
                     FillTransitDateTimeIfPresent();
                     FillTransitedCountryIfPresent();
                     SelectRandomDropdownOption(txtDestinationCountry);

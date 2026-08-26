@@ -68,6 +68,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _driver?.Navigate().GoToUrl(url);
         }
 
+        [Given(@"that I navigate to the Exporter Portal")]
+        [When(@"I navigate to the Exporter Portal")]
+        public void GivenThatINavigateToTheExporterPortal()
+        {
+            var url = urlBuilder.ExporterPortalDefault().BuildExporterPortalApp();
+            _driver?.Navigate().GoToUrl(url);
+        }
+
         [When(@"I click signin button on port checker application")]
         [Given(@"I click signin button on port checker application")]
         public void GivenIClickSigninButtonOnPortCheckerApplication()
@@ -93,6 +101,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             governmentGatewayTypePage?.ClickContinueButton();
         }
 
+        [Then(@"I should be redirected to the Exporter Portal Sign in using Government Gateway page")]
         [Then(@"I should redirected to the BTMS Sign in using Government Gateway page")]
         [Then(@"I should redirected to the IPAFF Sign in using Government Gateway page")]
         public void ThenIShouldRedirectedToTheIPAFFSignInUsingGovernmentGatewayPage()
@@ -163,6 +172,21 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             string userRole = "Trader";
             var jsonData = UserObject?.GetUser("IPAFF", userRole);
+            _scenarioContext["UserRole"] = userRole;
+            var userObject = new User
+            {
+                UserName = jsonData.UserName,
+                Credential = jsonData.Credential
+            };
+
+            _signInPage?.SignIn(userObject.UserName, userObject.Credential);
+        }
+
+        [When(@"I have provided the Exporter Trader credentials and signin")]
+        public void WhenIHaveProvidedTheExporterTraderCredentialsAndSignin()
+        {
+            string userRole = "Trader";
+            var jsonData = UserObject?.GetUser("Exporter", userRole);
             _scenarioContext["UserRole"] = userRole;
             var userObject = new User
             {

@@ -7,7 +7,7 @@
         bool IsAddAnotherDocumentLinkDisplayed();
         bool VerifyNoDocumentsInInspectorSection();
         (string? documentType, string? documentReference, string? dateOfIssue) GetInspectorDocumentDetails(int index = 0);
-        void ClickDownloadAllDocumentsLink();
+        void ClickDownloadAllDocumentsLink(string chedReference);
         void ClickDownloadUrlLink();
         bool IsSingleCertificagteDownloaded(string chedReference);
         bool IsCatchCertificateSummaryUrlDisplayed();

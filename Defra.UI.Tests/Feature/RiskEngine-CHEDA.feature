@@ -3,7 +3,7 @@ Feature: Risk Engine CHEDA
 
 Bulk upload, Update and Test rules with end-to-end validation for a CHEDA notification
 
-@SPS-9427
+@SPS-9427 @BulkUpload
 Scenario: Bulk upload initial load for CHEDA - SPS-9427
 	# ---------- Iteration 1: Start ----------
 	# Upload the rules
@@ -14,7 +14,7 @@ Scenario: Bulk upload initial load for CHEDA - SPS-9427
 	Then the Risk Engine Reports page should be displayed
 	When the user clicks the CHED-A reports link
 	Then the CHED-A reports page should be displayed
-	When the user clicks the Imports commodity rules report link
+	When the user clicks the CHED-A Imports commodity rules report link
 	Then the View all CHED-A (Import) Commodity Rules report page should be displayed
 	When the user scrolls to the bottom of the View all CHED-A (Import) Commodity Rules report page
 	Then the count of CHED-A import commodity rules is recorded as 'InitialRuleCount'
@@ -190,7 +190,7 @@ Scenario: Bulk upload initial load for CHEDA - SPS-9427
 	Then the Risk Engine Reports page should be displayed
 	When the user clicks the CHED-A reports link
 	Then the CHED-A reports page should be displayed
-	When the user clicks the Imports commodity rules report link
+	When the user clicks the CHED-A Imports commodity rules report link
 	Then the View all CHED-A (Import) Commodity Rules report page should be displayed
 	When the user enters '03074290' in the CHED-A import commodity rules search field
 	Then the top CHED-A import commodity rule row should match the following details
@@ -329,7 +329,7 @@ Scenario: Bulk upload initial load for CHEDA - SPS-9427
 	Then the Risk Engine Reports page should be displayed
 	When the user clicks the CHED-A reports link
 	Then the CHED-A reports page should be displayed
-	When the user clicks the Imports commodity rules report link
+	When the user clicks the CHED-A Imports commodity rules report link
 	Then the View all CHED-A (Import) Commodity Rules report page should be displayed
 	When the user enters '0101' in the CHED-A import commodity rules search field
 	Then the top CHED-A import commodity rule row should match the following details
@@ -468,7 +468,7 @@ Scenario: Bulk upload initial load for CHEDA - SPS-9427
 	Then the Risk Engine Reports page should be displayed
 	When the user clicks the CHED-A reports link
 	Then the CHED-A reports page should be displayed
-	When the user clicks the Imports commodity rules report link
+	When the user clicks the CHED-A Imports commodity rules report link
 	Then the View all CHED-A (Import) Commodity Rules report page should be displayed
 	When the user enters '05119190' in the CHED-A import commodity rules search field
 	Then the top CHED-A import commodity rule row should match the following details
@@ -607,7 +607,7 @@ Scenario: Bulk upload initial load for CHEDA - SPS-9427
 	Then the Risk Engine Reports page should be displayed
 	When the user clicks the CHED-A reports link
 	Then the CHED-A reports page should be displayed
-	When the user clicks the Imports commodity rules report link
+	When the user clicks the CHED-A Imports commodity rules report link
 	Then the View all CHED-A (Import) Commodity Rules report page should be displayed
 	When the user enters '950810' in the CHED-A import commodity rules search field
 	Then the top CHED-A import commodity rule row should match the following details
@@ -743,7 +743,7 @@ Scenario: Bulk upload initial load for CHEDA - SPS-9427
 	And 'Iteration_5' is complete
 	# ---------- Iteration 5: Complete ----------
 
-@SPS-9428
+@SPS-9428 @BulkUpload
 Scenario: Bulk upload update existing rules for CHEDA - SPS-9428
 	# ---------- Iteration 1: Start ----------
 	# Upload the update rules
@@ -754,7 +754,7 @@ Scenario: Bulk upload update existing rules for CHEDA - SPS-9428
 	Then the Risk Engine Reports page should be displayed
 	When the user clicks the CHED-A reports link
 	Then the CHED-A reports page should be displayed
-	When the user clicks the Imports commodity rules report link
+	When the user clicks the CHED-A Imports commodity rules report link
 	Then the View all CHED-A (Import) Commodity Rules report page should be displayed
 	When the user scrolls to the bottom of the View all CHED-A (Import) Commodity Rules report page
 	Then the count of CHED-A import commodity rules is recorded as 'InitialRuleCount'
@@ -929,7 +929,7 @@ Scenario: Bulk upload update existing rules for CHEDA - SPS-9428
 	Then the Risk Engine Reports page should be displayed
 	When the user clicks the CHED-A reports link
 	Then the CHED-A reports page should be displayed
-	When the user clicks the Imports commodity rules report link
+	When the user clicks the CHED-A Imports commodity rules report link
 	Then the View all CHED-A (Import) Commodity Rules report page should be displayed
 	When the user enters '03074290' in the CHED-A import commodity rules search field
 	Then the top CHED-A import commodity rule row should match the following details
@@ -1066,7 +1066,7 @@ Scenario: Bulk upload update existing rules for CHEDA - SPS-9428
 	Then the Risk Engine Reports page should be displayed
 	When the user clicks the CHED-A reports link
 	Then the CHED-A reports page should be displayed
-	When the user clicks the Imports commodity rules report link
+	When the user clicks the CHED-A Imports commodity rules report link
 	Then the View all CHED-A (Import) Commodity Rules report page should be displayed
 	When the user enters '0101' in the CHED-A import commodity rules search field
 	Then the top CHED-A import commodity rule row should match the following details
@@ -1203,7 +1203,7 @@ Scenario: Bulk upload update existing rules for CHEDA - SPS-9428
 	Then the Risk Engine Reports page should be displayed
 	When the user clicks the CHED-A reports link
 	Then the CHED-A reports page should be displayed
-	When the user clicks the Imports commodity rules report link
+	When the user clicks the CHED-A Imports commodity rules report link
 	Then the View all CHED-A (Import) Commodity Rules report page should be displayed
 	When the user enters '05119190' in the CHED-A import commodity rules search field
 	Then the top CHED-A import commodity rule row should match the following details
@@ -1340,7 +1340,7 @@ Scenario: Bulk upload update existing rules for CHEDA - SPS-9428
 	Then the Risk Engine Reports page should be displayed
 	When the user clicks the CHED-A reports link
 	Then the CHED-A reports page should be displayed
-	When the user clicks the Imports commodity rules report link
+	When the user clicks the CHED-A Imports commodity rules report link
 	Then the View all CHED-A (Import) Commodity Rules report page should be displayed
 	When the user enters '950810' in the CHED-A import commodity rules search field
 	Then the top CHED-A import commodity rule row should match the following details
@@ -1477,7 +1477,7 @@ Scenario: Bulk upload update existing rules for CHEDA - SPS-9428
 	Then the Risk Engine Reports page should be displayed
 	When the user clicks the CHED-A reports link
 	Then the CHED-A reports page should be displayed
-	When the user clicks the Imports commodity rules report link
+	When the user clicks the CHED-A Imports commodity rules report link
 	Then the View all CHED-A (Import) Commodity Rules report page should be displayed
 	When the user clicks the Remove rule link for CHED-A import commodity rule Id recorded as 'Iteration_1_RuleId'
 	Then the CHED-A import commodity rule Id recorded as 'Iteration_1_RuleId' should no longer be present in the rules table
@@ -1491,3 +1491,1065 @@ Scenario: Bulk upload update existing rules for CHEDA - SPS-9428
 	Then the CHED-A import commodity rule Id recorded as 'Iteration_5_RuleId' should no longer be present in the rules table
 	When the user scrolls to the bottom of the View all CHED-A (Import) Commodity Rules report page
 	Then the count of CHED-A import commodity rules should be 5 less than 'InitialRuleCount'
+
+@SPS-9523
+Scenario: New import commodity rule for CHEDA - SPS-9523
+	# Create a new import commodity rule
+	Given that I navigate to the Risk Engine application
+	When I have provided the Risk Engine admin credentials and signed in
+	Then the Risk Engine Home page should be displayed
+	When the user clicks the 'CHED-A' link from the Risk Engine header menu
+	Then the CHED-A imports page should be displayed
+	When the user clicks the Individual commodity rules link under the CHED-A rules header
+	Then the Select the CHED-A commodity you want to add a rule for page should be displayed
+	When the user searches for commodity '0511' with name 'Animal products not elsewhere specified or included; dead animals of Chapter 1 or 3, unfit for human consumption' on the Select the CHED-A commodity you want to add a rule for page
+	Then the You have selected a commodity page should be displayed showing commodity '0511' with description 'Animal products not elsewhere specified or included; dead animals of Chapter 1 or 3, unfit for human consumption'
+	When the user clicks the Continue button on the You have selected a commodity page
+	Then the Which countries will this commodity rule apply to? page should be displayed
+	When the user selects 'Turkmenistan' in the Countries field on the Which countries will this commodity rule apply to? page
+	And the user clicks the Continue button on the Which countries will this commodity rule apply to? page
+	Then the Will this commodity rule apply to all border control posts? page should be displayed
+	When the user selects the 'Yes' radio button on the Will this commodity rule apply to all border control posts? page
+	And the user clicks the Continue button on the Will this commodity rule apply to all border control posts? page
+	Then the Which import purposes will this commodity rule apply to? page should be displayed
+	When the user ticks the 'All' checkbox on the Which import purposes will this commodity rule apply to? page
+	And the user clicks the Continue button on the Which import purposes will this commodity rule apply to? page
+	Then the Which animal certifications will this commodity rule apply to? page is displayed page should be displayed
+	When the user ticks the 'All' checkbox on the Which animal certifications will this commodity rule apply to? page
+	And the user clicks the Continue button on the Which animal certifications will this commodity rule apply to? page
+	Then the Does this commodity rule have a start or end date? page should be displayed
+	When the user selects the 'No' radio button on the Does this commodity rule have a start or end date? page
+	And the user clicks the Continue button on the Does this commodity rule have a start or end date? page
+	Then the Set the inspection rate page should be displayed
+	When the user enters '50' as the inspection rate on the Set the inspection rate page
+	And the user clicks the Continue button on the Set the inspection rate page
+	Then the Check and submit commodity rule page should be displayed showing the following details
+		| Field                | Value                                                                                                            |
+		| Commodity code       | 0511                                                                                                             |
+		| Description          | Animal products not elsewhere specified or included; dead animals of Chapter 1 or 3, unfit for human consumption |
+		| Country groups       | None                                                                                                             |
+		| Countries            | Turkmenistan                                                                                                     |
+		| Countries to exclude | None                                                                                                             |
+		| Border control posts | All border control posts                                                                                         |
+		| Import purposes      | All import purposes                                                                                              |
+		| Certified for        | ALL                                                                                                              |
+		| Start date           | Immediately                                                                                                      |
+		| End date             | None                                                                                                             |
+		| Inspection rate      | 50%                                                                                                              |
+	When the user clicks the Confirm and submit rule button on the Check and submit commodity rule page
+	Then the Commodity rule submitted page should be displayed
+	# Verify the rule in the imports commodity rules report
+	When the user clicks the View all CHED-A imports commodity rules link on the Commodity rule submitted page
+	Then the View all CHED-A (Import) Commodity Rules report page should be displayed
+	When the user scrolls to the bottom of the View all CHED-A (Import) Commodity Rules report page
+	Then the count of CHED-A import commodity rules is recorded as 'CommodityRuleCount'
+	When the user enters '0511' in the CHED-A import commodity rules search field
+	Then the top CHED-A import commodity rule row should match the following details
+		| Field               | Value                                                                                                            |
+		| Description         | Animal products not elsewhere specified or included; dead animals of Chapter 1 or 3, unfit for human consumption |
+		| Commodity code      | 0511                                                                                                             |
+		| Rate %              | 50                                                                                                               |
+		| Previous rate %     | 0                                                                                                                |
+		| Permanent           | Yes                                                                                                              |
+		| End date            |                                                                                                                  |
+		| Countries           | Turkmenistan                                                                                                     | 
+		| Country groups      | None                                                                                                             |
+		| Country exceptions  | None                                                                                                             |
+		| Certified For       | All                                                                                                              |
+		| Purpose             | All                                                                                                              |
+		| Border Control Post | All                                                                                                              |
+		| Reason              |                                                                                                                  |
+	And the top CHED-A import commodity rule row should have Start date as today's date
+	And the user records the Id of the top CHED-D import commodity rule row as 'NewCommodityRuleId'
+	# Submit 4 matching CHED-A notifications in IPAFFS (Turkmenistan / 05119190)
+	# --- APP-A ---
+	When I navigate to the IPAFF application
+	Then I should see type of Gateway login page
+	And I have selected 'Sign in with Government Gateway' as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF credentials and signin
+	Then the user should be logged into Notification page
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Live animals' option
+	And the user clicks Save and continue
+	Then the Origin of the animal or product page should be displayed
+	When the user chooses 'Turkmenistan' from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing 'Turkmenistan' as the Country of origin and Country from where consigned
+	When the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '05119190' commodity code
+	Then the commodity details should be populated '05119190' 'Other'
+	When the user selects species of commodity 'Acipenser spp.'
+	And the user clicks Save and continue
+	Then What is the main reason for importing the animals? page should be displayed with radio buttons
+	When the user randomly selects a purpose from 'Any'
+	And the user clicks Save and continue
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Commodity page should be displayed with the commodity and description entered
+	When the user populates Number of animals as '1'
+	And the user populates Number of packages as '1'
+	And the user clicks Save and continue in commodity page
+	Then the Enter animal identification details page should be displayed
+	When the user populates Idenitification details as 'EGG1234'
+	And the user populates the Description as 'Medium'
+	And the user clicks Save and continue
+	Then the Additional animal details page should be displayed
+	When the user randomly selects a certification from 'Any'
+	And the user clicks Save and continue
+	Then the Latest Health Certificate page should be displayed
+	When the user clicks Save and continue
+	Then the Accompanying documents page should be displayed
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter should be displayed
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee 'DEF'
+	Then the chosen consignee should be displayed
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee
+	When the user clicks Same as consignee for Place of destination
+	Then the place of destination should be populated with the same details as the consignee
+	When the user clicks Save and continue
+	Then the Transport to the BCP or Port of entry page should be displayed
+	When the user enters BCP or Port of entry 'Manchester Airport (animals) - GBMNC4'
+	And the user selects means of transport to BCP or Port of entry 'Airplane'
+	And the user enters transport identification 'BA1234'
+	And the user selects 'No' for Are any road trailers or shipping containers being used to transport the consignment
+	And the user enters transport document reference 'Doc1234'
+	And the user enters arrival date at BCP or Port of entry as today's date
+	And the user enters estimated arrival time at BCP with future time
+	And the user enters estimated total journey time of the animals '8' hours
+	And the user clicks Save and continue
+	Then the Transport after the BCP or Port of entry page should be displayed
+	When the user selects means of transport after BCP 'Road vehicle'
+	And the user enters transport identification after BCP 'ER58 AUT'
+	And the user enters transport document reference after BCP 'Doc5678'
+	And the user enters departure date from BCP '2' days later than arrival date
+	And the user enters departure time from BCP or Port of entry with future time
+	And the user clicks Save and continue
+	Then the Transporter page should be displayed
+	When the user clicks Add a transporter
+	Then the Search for an existing transporter page should be displayed
+	When the user selects any one of the displayed transporters
+	Then the chosen transporter should be displayed on the Transporter page
+	When the user clicks Save and continue in Transporter page
+	Then the Should we notify any transport contacts about inspections? page should be displayed
+	When the user selects 'No' for Should we notify any transport contacts about inspections?
+	And the user clicks Save and continue
+	Then the Contact address for consignment page should be displayed without the secondary title
+	And the user selects a contact address for the consignment
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user ticks the checkbox to declare that the information is true and correct
+	And the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the CHED Reference for 'APP_A'
+	# --- APP-B ---
+	When I navigate to the IPAFF application
+	Then the Your import notifications page is displayed
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Live animals' option
+	And the user clicks Save and continue
+	Then the Origin of the animal or product page should be displayed
+	When the user chooses 'Turkmenistan' from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing 'Turkmenistan' as the Country of origin and Country from where consigned
+	When the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '05119190' commodity code
+	Then the commodity details should be populated '05119190' 'Other'
+	When the user selects species of commodity 'Acipenser spp.'
+	And the user clicks Save and continue
+	Then What is the main reason for importing the animals? page should be displayed with radio buttons
+	When the user randomly selects a purpose from 'Any'
+	And the user clicks Save and continue
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Commodity page should be displayed with the commodity and description entered
+	When the user populates Number of animals as '1'
+	And the user populates Number of packages as '1'
+	And the user clicks Save and continue in commodity page
+	Then the Enter animal identification details page should be displayed
+	When the user populates Idenitification details as 'EGG1234'
+	And the user populates the Description as 'Medium'
+	And the user clicks Save and continue
+	Then the Additional animal details page should be displayed
+	When the user randomly selects a certification from 'Any'
+	And the user clicks Save and continue
+	Then the Latest Health Certificate page should be displayed
+	When the user clicks Save and continue
+	Then the Accompanying documents page should be displayed
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter should be displayed
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee 'DEF'
+	Then the chosen consignee should be displayed
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee
+	When the user clicks Same as consignee for Place of destination
+	Then the place of destination should be populated with the same details as the consignee
+	When the user clicks Save and continue
+	Then the Transport to the BCP or Port of entry page should be displayed
+	When the user enters BCP or Port of entry 'Manchester Airport (animals) - GBMNC4'
+	And the user selects means of transport to BCP or Port of entry 'Airplane'
+	And the user enters transport identification 'BA1234'
+	And the user selects 'No' for Are any road trailers or shipping containers being used to transport the consignment
+	And the user enters transport document reference 'Doc1234'
+	And the user enters arrival date at BCP or Port of entry as today's date
+	And the user enters estimated arrival time at BCP with future time
+	And the user enters estimated total journey time of the animals '8' hours
+	And the user clicks Save and continue
+	Then the Transport after the BCP or Port of entry page should be displayed
+	When the user selects means of transport after BCP 'Road vehicle'
+	And the user enters transport identification after BCP 'ER58 AUT'
+	And the user enters transport document reference after BCP 'Doc5678'
+	And the user enters departure date from BCP '2' days later than arrival date
+	And the user enters departure time from BCP or Port of entry with future time
+	And the user clicks Save and continue
+	Then the Transporter page should be displayed
+	When the user clicks Add a transporter
+	Then the Search for an existing transporter page should be displayed
+	When the user selects any one of the displayed transporters
+	Then the chosen transporter should be displayed on the Transporter page
+	When the user clicks Save and continue in Transporter page
+	Then the Should we notify any transport contacts about inspections? page should be displayed
+	When the user selects 'No' for Should we notify any transport contacts about inspections?
+	And the user clicks Save and continue
+	Then the Contact address for consignment page should be displayed without the secondary title
+	And the user selects a contact address for the consignment
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user ticks the checkbox to declare that the information is true and correct
+	And the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the CHED Reference for 'APP_B'
+	# --- APP-C ---
+	When I navigate to the IPAFF application
+	Then the Your import notifications page is displayed
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Live animals' option
+	And the user clicks Save and continue
+	Then the Origin of the animal or product page should be displayed
+	When the user chooses 'Turkmenistan' from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing 'Turkmenistan' as the Country of origin and Country from where consigned
+	When the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '05119190' commodity code
+	Then the commodity details should be populated '05119190' 'Other'
+	When the user selects species of commodity 'Acipenser spp.'
+	And the user clicks Save and continue
+	Then What is the main reason for importing the animals? page should be displayed with radio buttons
+	When the user randomly selects a purpose from 'Any'
+	And the user clicks Save and continue
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Commodity page should be displayed with the commodity and description entered
+	When the user populates Number of animals as '1'
+	And the user populates Number of packages as '1'
+	And the user clicks Save and continue in commodity page
+	Then the Enter animal identification details page should be displayed
+	When the user populates Idenitification details as 'EGG1234'
+	And the user populates the Description as 'Medium'
+	And the user clicks Save and continue
+	Then the Additional animal details page should be displayed
+	When the user randomly selects a certification from 'Any'
+	And the user clicks Save and continue
+	Then the Latest Health Certificate page should be displayed
+	When the user clicks Save and continue
+	Then the Accompanying documents page should be displayed
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter should be displayed
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee 'DEF'
+	Then the chosen consignee should be displayed
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee
+	When the user clicks Same as consignee for Place of destination
+	Then the place of destination should be populated with the same details as the consignee
+	When the user clicks Save and continue
+	Then the Transport to the BCP or Port of entry page should be displayed
+	When the user enters BCP or Port of entry 'Manchester Airport (animals) - GBMNC4'
+	And the user selects means of transport to BCP or Port of entry 'Airplane'
+	And the user enters transport identification 'BA1234'
+	And the user selects 'No' for Are any road trailers or shipping containers being used to transport the consignment
+	And the user enters transport document reference 'Doc1234'
+	And the user enters arrival date at BCP or Port of entry as today's date
+	And the user enters estimated arrival time at BCP with future time
+	And the user enters estimated total journey time of the animals '8' hours
+	And the user clicks Save and continue
+	Then the Transport after the BCP or Port of entry page should be displayed
+	When the user selects means of transport after BCP 'Road vehicle'
+	And the user enters transport identification after BCP 'ER58 AUT'
+	And the user enters transport document reference after BCP 'Doc5678'
+	And the user enters departure date from BCP '2' days later than arrival date
+	And the user enters departure time from BCP or Port of entry with future time
+	And the user clicks Save and continue
+	Then the Transporter page should be displayed
+	When the user clicks Add a transporter
+	Then the Search for an existing transporter page should be displayed
+	When the user selects any one of the displayed transporters
+	Then the chosen transporter should be displayed on the Transporter page
+	When the user clicks Save and continue in Transporter page
+	Then the Should we notify any transport contacts about inspections? page should be displayed
+	When the user selects 'No' for Should we notify any transport contacts about inspections?
+	And the user clicks Save and continue
+	Then the Contact address for consignment page should be displayed without the secondary title
+	And the user selects a contact address for the consignment
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user ticks the checkbox to declare that the information is true and correct
+	And the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the CHED Reference for 'APP_C'
+	# --- APP-D ---
+	When I navigate to the IPAFF application
+	Then the Your import notifications page is displayed
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Live animals' option
+	And the user clicks Save and continue
+	Then the Origin of the animal or product page should be displayed
+	When the user chooses 'Turkmenistan' from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing 'Turkmenistan' as the Country of origin and Country from where consigned
+	When the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '05119190' commodity code
+	Then the commodity details should be populated '05119190' 'Other'
+	When the user selects species of commodity 'Acipenser spp.'
+	And the user clicks Save and continue
+	Then What is the main reason for importing the animals? page should be displayed with radio buttons
+	When the user randomly selects a purpose from 'Any'
+	And the user clicks Save and continue
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Commodity page should be displayed with the commodity and description entered
+	When the user populates Number of animals as '1'
+	And the user populates Number of packages as '1'
+	And the user clicks Save and continue in commodity page
+	Then the Enter animal identification details page should be displayed
+	When the user populates Idenitification details as 'EGG1234'
+	And the user populates the Description as 'Medium'
+	And the user clicks Save and continue
+	Then the Additional animal details page should be displayed
+	When the user randomly selects a certification from 'Any'
+	And the user clicks Save and continue
+	Then the Latest Health Certificate page should be displayed
+	When the user clicks Save and continue
+	Then the Accompanying documents page should be displayed
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter should be displayed
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee 'DEF'
+	Then the chosen consignee should be displayed
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee
+	When the user clicks Same as consignee for Place of destination
+	Then the place of destination should be populated with the same details as the consignee
+	When the user clicks Save and continue
+	Then the Transport to the BCP or Port of entry page should be displayed
+	When the user enters BCP or Port of entry 'Manchester Airport (animals) - GBMNC4'
+	And the user selects means of transport to BCP or Port of entry 'Airplane'
+	And the user enters transport identification 'BA1234'
+	And the user selects 'No' for Are any road trailers or shipping containers being used to transport the consignment
+	And the user enters transport document reference 'Doc1234'
+	And the user enters arrival date at BCP or Port of entry as today's date
+	And the user enters estimated arrival time at BCP with future time
+	And the user enters estimated total journey time of the animals '8' hours
+	And the user clicks Save and continue
+	Then the Transport after the BCP or Port of entry page should be displayed
+	When the user selects means of transport after BCP 'Road vehicle'
+	And the user enters transport identification after BCP 'ER58 AUT'
+	And the user enters transport document reference after BCP 'Doc5678'
+	And the user enters departure date from BCP '2' days later than arrival date
+	And the user enters departure time from BCP or Port of entry with future time
+	And the user clicks Save and continue
+	Then the Transporter page should be displayed
+	When the user clicks Add a transporter
+	Then the Search for an existing transporter page should be displayed
+	When the user selects any one of the displayed transporters
+	Then the chosen transporter should be displayed on the Transporter page
+	When the user clicks Save and continue in Transporter page
+	Then the Should we notify any transport contacts about inspections? page should be displayed
+	When the user selects 'No' for Should we notify any transport contacts about inspections?
+	And the user clicks Save and continue
+	Then the Contact address for consignment page should be displayed without the secondary title
+	And the user selects a contact address for the consignment
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user ticks the checkbox to declare that the information is true and correct
+	And the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the CHED Reference for 'APP_D'
+	# Validate via Risk Decision Report - APP-A (Total=1, Triggered=1, IsTriggered=true)
+	When I navigate to the Risk Engine application
+	Then the Risk Engine Home page should be displayed
+	When the user clicks the 'Reports' link from the Risk Engine header menu
+	Then the Risk Engine Reports page should be displayed
+	When the user clicks the CHED-A reports link
+	Then the CHED-A reports page should be displayed
+	When the user clicks the Risk decision report link
+	Then the Risk decision report page should be displayed
+	When the user enters the recorded CHED Reference for 'APP_A' in the Risk decision search box and clicks Search
+	Then the Risk decision report returns one matching record
+	When the user clicks the Expand button for the CHED Reference of 'APP_A'
+	And the user clicks the Requests details link
+	Then the Requests section is expanded with details from IPAFFS
+	When the user clicks the Decision details link
+	Then the Decision section contains a DecisionRule matching the recorded 'NewCommodityRuleId' with the following values
+		| Field          | Value         |
+		| RuleType       | CommodityRule |
+		| RegulatorType  | EUImport      |
+		| Rate           | 50            |
+		| Total          | 1             |
+		| Triggered      | 1             |
+		| IsTriggered    | true          |
+	And 'APP_A' is complete
+	# Validate via Risk Decision Report - APP-B (Total=2, Triggered=1, IsTriggered=false)
+	When the user enters the recorded CHED Reference for 'APP_B' in the Risk decision search box and clicks Search
+	Then the Risk decision report returns one matching record
+	When the user clicks the Expand button for the CHED Reference of 'APP_B'
+	And the user clicks the Requests details link
+	Then the Requests section is expanded with details from IPAFFS
+	When the user clicks the Decision details link
+	Then the Decision section contains a DecisionRule matching the recorded 'NewCommodityRuleId' with the following values
+		| Field          | Value         |
+		| RuleType       | CommodityRule |
+		| RegulatorType  | EUImport      |
+		| Rate           | 50            |
+		| Total          | 2             |
+		| Triggered      | 1             |
+		| IsTriggered    | false         |
+	And 'APP_B' is complete
+	# Validate via Risk Decision Report - APP-C (Total=3, Triggered=1, IsTriggered=false)
+	When the user enters the recorded CHED Reference for 'APP_C' in the Risk decision search box and clicks Search
+	Then the Risk decision report returns one matching record
+	When the user clicks the Expand button for the CHED Reference of 'APP_C'
+	And the user clicks the Requests details link
+	Then the Requests section is expanded with details from IPAFFS
+	When the user clicks the Decision details link
+	Then the Decision section contains a DecisionRule matching the recorded 'NewCommodityRuleId' with the following values
+		| Field          | Value         |
+		| RuleType       | CommodityRule |
+		| RegulatorType  | EUImport      |
+		| Rate           | 50            |
+		| Total          | 3             |
+		| Triggered      | 1             |
+		| IsTriggered    | false         |
+	And 'APP_C' is complete
+	# Validate via Risk Decision Report - APP-D (Total=4, Triggered=2, IsTriggered=true)
+	When the user enters the recorded CHED Reference for 'APP_D' in the Risk decision search box and clicks Search
+	Then the Risk decision report returns one matching record
+	When the user clicks the Expand button for the CHED Reference of 'APP_D'
+	And the user clicks the Requests details link
+	Then the Requests section is expanded with details from IPAFFS
+	When the user clicks the Decision details link
+	Then the Decision section contains a DecisionRule matching the recorded 'NewCommodityRuleId' with the following values
+		| Field          | Value         |
+		| RuleType       | CommodityRule |
+		| RegulatorType  | EUImport      |
+		| Rate           | 50            |
+		| Total          | 4             |
+		| Triggered      | 2             |
+		| IsTriggered    | true          |
+	And 'APP_D' is complete
+	# Delete the rule created by this test
+	When the user clicks the 'Reports' link from the Risk Engine header menu
+	Then the Risk Engine Reports page should be displayed
+	When the user clicks the CHED-A reports link
+	Then the CHED-A reports page should be displayed
+	When the user clicks the CHED-A Imports commodity rules report link
+	Then the View all CHED-A (Import) Commodity Rules report page should be displayed
+	When the user clicks the Remove rule link for CHED-A import commodity rule Id recorded as 'NewCommodityRuleId'
+	Then the CHED-A import commodity rule Id recorded as 'NewCommodityRuleId' should no longer be present in the rules table
+	When the user scrolls to the bottom of the View all CHED-A (Import) Commodity Rules report page
+	Then the count of CHED-A import commodity rules should be 1 less than 'CommodityRuleCount'
+
+@SPS-9524
+Scenario: New EU import country rule for CHEDA - SPS-9524
+	# Create a new import commodity rule
+	Given that I navigate to the Risk Engine application
+	When I have provided the Risk Engine admin credentials and signed in
+	Then the Risk Engine Home page should be displayed
+	When the user clicks the 'CHED-A' link from the Risk Engine header menu
+	Then the CHED-A imports page should be displayed
+	When the user clicks the Individual commodity rules link under the CHED-A rules header
+	Then the Select the CHED-A commodity you want to add a rule for page should be displayed
+	When the user searches for commodity '0511' with name 'Animal products not elsewhere specified or included; dead animals of Chapter 1 or 3, unfit for human consumption' on the Select the CHED-A commodity you want to add a rule for page
+	Then the You have selected a commodity page should be displayed showing commodity '0511' with description 'Animal products not elsewhere specified or included; dead animals of Chapter 1 or 3, unfit for human consumption'
+	When the user clicks the Continue button on the You have selected a commodity page
+	Then the Which countries will this commodity rule apply to? page should be displayed
+	When the user selects 'Yemen' in the Countries field on the Which countries will this commodity rule apply to? page
+	And the user clicks the Continue button on the Which countries will this commodity rule apply to? page
+	Then the Will this commodity rule apply to all border control posts? page should be displayed
+	When the user selects the 'Yes' radio button on the Will this commodity rule apply to all border control posts? page
+	And the user clicks the Continue button on the Will this commodity rule apply to all border control posts? page
+	Then the Which import purposes will this commodity rule apply to? page should be displayed
+	When the user ticks the 'All' checkbox on the Which import purposes will this commodity rule apply to? page
+	And the user clicks the Continue button on the Which import purposes will this commodity rule apply to? page
+	Then the Which animal certifications will this commodity rule apply to? page is displayed page should be displayed
+	When the user ticks the 'All' checkbox on the Which animal certifications will this commodity rule apply to? page
+	And the user clicks the Continue button on the Which animal certifications will this commodity rule apply to? page
+	Then the Does this commodity rule have a start or end date? page should be displayed
+	When the user selects the 'No' radio button on the Does this commodity rule have a start or end date? page
+	And the user clicks the Continue button on the Does this commodity rule have a start or end date? page
+	Then the Set the inspection rate page should be displayed
+	When the user enters '25' as the inspection rate on the Set the inspection rate page
+	And the user clicks the Continue button on the Set the inspection rate page
+	Then the Check and submit commodity rule page should be displayed showing the following details
+		| Field                | Value                                                                                                            |
+		| Commodity code       | 0511                                                                                                             |
+		| Description          | Animal products not elsewhere specified or included; dead animals of Chapter 1 or 3, unfit for human consumption |
+		| Country groups       | None                                                                                                             |
+		| Countries            | Yemen                                                                                                            |
+		| Countries to exclude | None                                                                                                             |
+		| Border control posts | All border control posts                                                                                         |
+		| Import purposes      | All import purposes                                                                                              |
+		| Certified for        | ALL                                                                                                              |
+		| Start date           | Immediately                                                                                                      |
+		| End date             | None                                                                                                             |
+		| Inspection rate      | 25%                                                                                                              |
+	When the user clicks the Confirm and submit rule button on the Check and submit commodity rule page
+	Then the Commodity rule submitted page should be displayed
+	# Verify the rule in the imports commodity rules report
+	When the user clicks the View all CHED-A imports commodity rules link on the Commodity rule submitted page
+	Then the View all CHED-A (Import) Commodity Rules report page should be displayed
+	When the user scrolls to the bottom of the View all CHED-A (Import) Commodity Rules report page
+	Then the count of CHED-A import commodity rules is recorded as 'CommodityRuleCount'
+	When the user enters '0511' in the CHED-A import commodity rules search field
+	Then the top CHED-A import commodity rule row should match the following details
+		| Field               | Value                                                                                                            |
+		| Description         | Animal products not elsewhere specified or included; dead animals of Chapter 1 or 3, unfit for human consumption |
+		| Commodity code      | 0511                                                                                                             |
+		| Rate %              | 25                                                                                                               |
+		| Previous rate %     | 0                                                                                                                |
+		| Permanent           | Yes                                                                                                              |
+		| End date            |                                                                                                                  |
+		| Countries           | Yemen                                                                                                            | 
+		| Country groups      | None                                                                                                             |
+		| Country exceptions  | None                                                                                                             |
+		| Certified For       | All                                                                                                              |
+		| Purpose             | All                                                                                                              |
+		| Border Control Post | All                                                                                                              |
+		| Reason              |                                                                                                                  |
+	And the top CHED-A import commodity rule row should have Start date as today's date
+	And the user records the Id of the top CHED-D import commodity rule row as 'NewCommodityRuleId'
+	# Create a new EU import country rule
+	When the user clicks the 'CHED-A' link from the Risk Engine header menu
+	Then the CHED-A imports page should be displayed
+	When the user clicks the Country rules link under the CHED-A rules header
+	Then the EU (Import) Country Rules page should be displayed
+	When the user selects 'Yemen' from the country dropdown on the EU import country rules page
+	And the user sets the inspection rate to 50 on the EU import country rules page
+	And the user ensures the Permanent checkbox is checked on the EU import country rules page
+	And the user clicks the Confirm and send button on the EU import country rules page
+	Then the Confirmation of country rate change page should be displayed with the following details
+		| Field | Value |
+		| From  | 0%    |
+		| To    | 50%   |
+	When the user clicks the Confirm and send button on the confirmation of country rate change page
+	Then the Rule change complete page should be displayed
+	# Verify the rule in the country rules report
+	When the user clicks the 'Reports' link from the Risk Engine header menu
+	Then the Risk Engine Reports page should be displayed
+	When the user clicks the CHED-A reports link
+	Then the CHED-A reports page should be displayed
+	When the user clicks the Country rules report link under the CHED-A reports header
+	Then the View rules for all countries page should be displayed
+	When the user scrolls to the bottom of the View rules for all countries page
+	Then the EU import country rule count is recorded as 'CountryRuleCount'
+	When the user enters 'Yemen' in the EU import country rules search field
+	And the user sorts the EU import country rules table by Id descending
+	Then the top EU import country rule row should match the following details
+		| Field           | Value |
+		| Country         | Yemen |
+		| Rate %          | 50    |
+		| Previous rate % | 0     |
+		| Permanent rule  | YES   |
+		| Start Date      |       |
+		| End Date        |       |
+	And the top EU import country rule row should have Last Updated date as today's date
+	And the top EU import country rule row should have Created date as today's date
+	And the user records the Id of the top EU import country rule row as 'NewCountryRuleId'
+	# Submit 4 matching CHED-A notifications in IPAFFS (Yemen / 05119190)
+	# --- APP-A ---
+	When I navigate to the IPAFF application
+	Then I should see type of Gateway login page
+	And I have selected 'Sign in with Government Gateway' as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the IPAFF Sign in using Government Gateway page
+	When I have provided the IPAFF credentials and signin
+	Then the user should be logged into Notification page
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Live animals' option
+	And the user clicks Save and continue
+	Then the Origin of the animal or product page should be displayed
+	When the user chooses 'Yemen' from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing 'Yemen' as the Country of origin and Country from where consigned
+	When the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '05119190' commodity code
+	Then the commodity details should be populated '05119190' 'Other'
+	When the user selects species of commodity 'Acipenser spp.'
+	And the user clicks Save and continue
+	Then What is the main reason for importing the animals? page should be displayed with radio buttons
+	When the user randomly selects a purpose from 'Any'
+	And the user clicks Save and continue
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Commodity page should be displayed with the commodity and description entered
+	When the user populates Number of animals as '1'
+	And the user populates Number of packages as '1'
+	And the user clicks Save and continue in commodity page
+	Then the Enter animal identification details page should be displayed
+	When the user populates Idenitification details as 'EGG1234'
+	And the user populates the Description as 'Medium'
+	And the user clicks Save and continue
+	Then the Additional animal details page should be displayed
+	When the user randomly selects a certification from 'Any'
+	And the user clicks Save and continue
+	Then the Latest Health Certificate page should be displayed
+	When the user clicks Save and continue
+	Then the Accompanying documents page should be displayed
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter should be displayed
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee 'DEF'
+	Then the chosen consignee should be displayed
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee
+	When the user clicks Same as consignee for Place of destination
+	Then the place of destination should be populated with the same details as the consignee
+	When the user clicks Save and continue
+	Then the Transport to the BCP or Port of entry page should be displayed
+	When the user enters BCP or Port of entry 'Manchester Airport (animals) - GBMNC4'
+	And the user selects means of transport to BCP or Port of entry 'Airplane'
+	And the user enters transport identification 'BA1234'
+	And the user selects 'No' for Are any road trailers or shipping containers being used to transport the consignment
+	And the user enters transport document reference 'Doc1234'
+	And the user enters arrival date at BCP or Port of entry as today's date
+	And the user enters estimated arrival time at BCP with future time
+	And the user enters estimated total journey time of the animals '8' hours
+	And the user clicks Save and continue
+	Then the Transport after the BCP or Port of entry page should be displayed
+	When the user selects means of transport after BCP 'Road vehicle'
+	And the user enters transport identification after BCP 'ER58 AUT'
+	And the user enters transport document reference after BCP 'Doc5678'
+	And the user enters departure date from BCP '2' days later than arrival date
+	And the user enters departure time from BCP or Port of entry with future time
+	And the user clicks Save and continue
+	Then the Transporter page should be displayed
+	When the user clicks Add a transporter
+	Then the Search for an existing transporter page should be displayed
+	When the user selects any one of the displayed transporters
+	Then the chosen transporter should be displayed on the Transporter page
+	When the user clicks Save and continue in Transporter page
+	Then the Should we notify any transport contacts about inspections? page should be displayed
+	When the user selects 'No' for Should we notify any transport contacts about inspections?
+	And the user clicks Save and continue
+	Then the Contact address for consignment page should be displayed without the secondary title
+	And the user selects a contact address for the consignment
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user ticks the checkbox to declare that the information is true and correct
+	And the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the CHED Reference for 'APP_A'
+	# --- APP-B ---
+	When I navigate to the IPAFF application
+	Then the Your import notifications page is displayed
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Live animals' option
+	And the user clicks Save and continue
+	Then the Origin of the animal or product page should be displayed
+	When the user chooses 'Yemen' from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing 'Yemen' as the Country of origin and Country from where consigned
+	When the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '05119190' commodity code
+	Then the commodity details should be populated '05119190' 'Other'
+	When the user selects species of commodity 'Acipenser spp.'
+	And the user clicks Save and continue
+	Then What is the main reason for importing the animals? page should be displayed with radio buttons
+	When the user randomly selects a purpose from 'Any'
+	And the user clicks Save and continue
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Commodity page should be displayed with the commodity and description entered
+	When the user populates Number of animals as '1'
+	And the user populates Number of packages as '1'
+	And the user clicks Save and continue in commodity page
+	Then the Enter animal identification details page should be displayed
+	When the user populates Idenitification details as 'EGG1234'
+	And the user populates the Description as 'Medium'
+	And the user clicks Save and continue
+	Then the Additional animal details page should be displayed
+	When the user randomly selects a certification from 'Any'
+	And the user clicks Save and continue
+	Then the Latest Health Certificate page should be displayed
+	When the user clicks Save and continue
+	Then the Accompanying documents page should be displayed
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter should be displayed
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee 'DEF'
+	Then the chosen consignee should be displayed
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee
+	When the user clicks Same as consignee for Place of destination
+	Then the place of destination should be populated with the same details as the consignee
+	When the user clicks Save and continue
+	Then the Transport to the BCP or Port of entry page should be displayed
+	When the user enters BCP or Port of entry 'Manchester Airport (animals) - GBMNC4'
+	And the user selects means of transport to BCP or Port of entry 'Airplane'
+	And the user enters transport identification 'BA1234'
+	And the user selects 'No' for Are any road trailers or shipping containers being used to transport the consignment
+	And the user enters transport document reference 'Doc1234'
+	And the user enters arrival date at BCP or Port of entry as today's date
+	And the user enters estimated arrival time at BCP with future time
+	And the user enters estimated total journey time of the animals '8' hours
+	And the user clicks Save and continue
+	Then the Transport after the BCP or Port of entry page should be displayed
+	When the user selects means of transport after BCP 'Road vehicle'
+	And the user enters transport identification after BCP 'ER58 AUT'
+	And the user enters transport document reference after BCP 'Doc5678'
+	And the user enters departure date from BCP '2' days later than arrival date
+	And the user enters departure time from BCP or Port of entry with future time
+	And the user clicks Save and continue
+	Then the Transporter page should be displayed
+	When the user clicks Add a transporter
+	Then the Search for an existing transporter page should be displayed
+	When the user selects any one of the displayed transporters
+	Then the chosen transporter should be displayed on the Transporter page
+	When the user clicks Save and continue in Transporter page
+	Then the Should we notify any transport contacts about inspections? page should be displayed
+	When the user selects 'No' for Should we notify any transport contacts about inspections?
+	And the user clicks Save and continue
+	Then the Contact address for consignment page should be displayed without the secondary title
+	And the user selects a contact address for the consignment
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user ticks the checkbox to declare that the information is true and correct
+	And the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the CHED Reference for 'APP_B'
+	# --- APP-C ---
+	When I navigate to the IPAFF application
+	Then the Your import notifications page is displayed
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Live animals' option
+	And the user clicks Save and continue
+	Then the Origin of the animal or product page should be displayed
+	When the user chooses 'Yemen' from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing 'Yemen' as the Country of origin and Country from where consigned
+	When the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '05119190' commodity code
+	Then the commodity details should be populated '05119190' 'Other'
+	When the user selects species of commodity 'Acipenser spp.'
+	And the user clicks Save and continue
+	Then What is the main reason for importing the animals? page should be displayed with radio buttons
+	When the user randomly selects a purpose from 'Any'
+	And the user clicks Save and continue
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Commodity page should be displayed with the commodity and description entered
+	When the user populates Number of animals as '1'
+	And the user populates Number of packages as '1'
+	And the user clicks Save and continue in commodity page
+	Then the Enter animal identification details page should be displayed
+	When the user populates Idenitification details as 'EGG1234'
+	And the user populates the Description as 'Medium'
+	And the user clicks Save and continue
+	Then the Additional animal details page should be displayed
+	When the user randomly selects a certification from 'Any'
+	And the user clicks Save and continue
+	Then the Latest Health Certificate page should be displayed
+	When the user clicks Save and continue
+	Then the Accompanying documents page should be displayed
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter should be displayed
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee 'DEF'
+	Then the chosen consignee should be displayed
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee
+	When the user clicks Same as consignee for Place of destination
+	Then the place of destination should be populated with the same details as the consignee
+	When the user clicks Save and continue
+	Then the Transport to the BCP or Port of entry page should be displayed
+	When the user enters BCP or Port of entry 'Manchester Airport (animals) - GBMNC4'
+	And the user selects means of transport to BCP or Port of entry 'Airplane'
+	And the user enters transport identification 'BA1234'
+	And the user selects 'No' for Are any road trailers or shipping containers being used to transport the consignment
+	And the user enters transport document reference 'Doc1234'
+	And the user enters arrival date at BCP or Port of entry as today's date
+	And the user enters estimated arrival time at BCP with future time
+	And the user enters estimated total journey time of the animals '8' hours
+	And the user clicks Save and continue
+	Then the Transport after the BCP or Port of entry page should be displayed
+	When the user selects means of transport after BCP 'Road vehicle'
+	And the user enters transport identification after BCP 'ER58 AUT'
+	And the user enters transport document reference after BCP 'Doc5678'
+	And the user enters departure date from BCP '2' days later than arrival date
+	And the user enters departure time from BCP or Port of entry with future time
+	And the user clicks Save and continue
+	Then the Transporter page should be displayed
+	When the user clicks Add a transporter
+	Then the Search for an existing transporter page should be displayed
+	When the user selects any one of the displayed transporters
+	Then the chosen transporter should be displayed on the Transporter page
+	When the user clicks Save and continue in Transporter page
+	Then the Should we notify any transport contacts about inspections? page should be displayed
+	When the user selects 'No' for Should we notify any transport contacts about inspections?
+	And the user clicks Save and continue
+	Then the Contact address for consignment page should be displayed without the secondary title
+	And the user selects a contact address for the consignment
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user ticks the checkbox to declare that the information is true and correct
+	And the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the CHED Reference for 'APP_C'
+	# --- APP-D ---
+	When I navigate to the IPAFF application
+	Then the Your import notifications page is displayed
+	When the user clicks Create a new notification
+	Then the About the consignment/What are you importing? page should be displayed with radio buttons
+	When the user chooses 'Live animals' option
+	And the user clicks Save and continue
+	Then the Origin of the animal or product page should be displayed
+	When the user chooses 'Yemen' from the dropdown for Country of origin
+	And the user clicks Save and continue
+	Then the Origin of the import page should be displayed, showing 'Yemen' as the Country of origin and Country from where consigned
+	When the user clicks Save and continue
+	Then the Description of the goods/Commodity page should be displayed
+	When the user searches '05119190' commodity code
+	Then the commodity details should be populated '05119190' 'Other'
+	When the user selects species of commodity 'Acipenser spp.'
+	And the user clicks Save and continue
+	Then What is the main reason for importing the animals? page should be displayed with radio buttons
+	When the user randomly selects a purpose from 'Any'
+	And the user clicks Save and continue
+	Then the Notification Hub page should be displayed
+	When the user clicks the Commodity hyperlink
+	Then the Commodity page should be displayed with the commodity and description entered
+	When the user populates Number of animals as '1'
+	And the user populates Number of packages as '1'
+	And the user clicks Save and continue in commodity page
+	Then the Enter animal identification details page should be displayed
+	When the user populates Idenitification details as 'EGG1234'
+	And the user populates the Description as 'Medium'
+	And the user clicks Save and continue
+	Then the Additional animal details page should be displayed
+	When the user randomly selects a certification from 'Any'
+	And the user clicks Save and continue
+	Then the Latest Health Certificate page should be displayed
+	When the user clicks Save and continue
+	Then the Accompanying documents page should be displayed
+	When the user clicks Save and continue
+	Then the Addresses page should be displayed
+	When the user clicks Add a consignor or exporter
+	Then the Search for an existing consignor or exporter page should be displayed
+	When the user selects a consignor or exporter 'ABC'
+	Then the chosen consignor or exporter should be displayed
+	When the user clicks Add a consignee
+	Then the Search for an existing consignee page should be displayed
+	When the user selects a consignee 'DEF'
+	Then the chosen consignee should be displayed
+	When the user clicks Same as consignee for the Importer
+	Then the importer should be populated with the same details as the consignee
+	When the user clicks Same as consignee for Place of destination
+	Then the place of destination should be populated with the same details as the consignee
+	When the user clicks Save and continue
+	Then the Transport to the BCP or Port of entry page should be displayed
+	When the user enters BCP or Port of entry 'Manchester Airport (animals) - GBMNC4'
+	And the user selects means of transport to BCP or Port of entry 'Airplane'
+	And the user enters transport identification 'BA1234'
+	And the user selects 'No' for Are any road trailers or shipping containers being used to transport the consignment
+	And the user enters transport document reference 'Doc1234'
+	And the user enters arrival date at BCP or Port of entry as today's date
+	And the user enters estimated arrival time at BCP with future time
+	And the user enters estimated total journey time of the animals '8' hours
+	And the user clicks Save and continue
+	Then the Transport after the BCP or Port of entry page should be displayed
+	When the user selects means of transport after BCP 'Road vehicle'
+	And the user enters transport identification after BCP 'ER58 AUT'
+	And the user enters transport document reference after BCP 'Doc5678'
+	And the user enters departure date from BCP '2' days later than arrival date
+	And the user enters departure time from BCP or Port of entry with future time
+	And the user clicks Save and continue
+	Then the Transporter page should be displayed
+	When the user clicks Add a transporter
+	Then the Search for an existing transporter page should be displayed
+	When the user selects any one of the displayed transporters
+	Then the chosen transporter should be displayed on the Transporter page
+	When the user clicks Save and continue in Transporter page
+	Then the Should we notify any transport contacts about inspections? page should be displayed
+	When the user selects 'No' for Should we notify any transport contacts about inspections?
+	And the user clicks Save and continue
+	Then the Contact address for consignment page should be displayed without the secondary title
+	And the user selects a contact address for the consignment
+	When the user clicks Save and continue
+	Then the Review your notification page should be displayed
+	When the user clicks Save and continue
+	Then the Declaration page should be displayed
+	When the user ticks the checkbox to declare that the information is true and correct
+	And the user clicks Submit notification
+	Then the Confirmation page should be displayed with the initial risk assessment
+	And the user records the CHED Reference for 'APP_D'
+	# Validate via Risk Decision Report - APP-A (Total=1, Triggered=1, IsTriggered=true)
+	When I navigate to the Risk Engine application
+	Then the Risk Engine Home page should be displayed
+	When the user clicks the 'Reports' link from the Risk Engine header menu
+	Then the Risk Engine Reports page should be displayed
+	When the user clicks the CHED-A reports link
+	Then the CHED-A reports page should be displayed
+	When the user clicks the Risk decision report link
+	Then the Risk decision report page should be displayed
+	When the user enters the recorded CHED Reference for 'APP_A' in the Risk decision search box and clicks Search
+	Then the Risk decision report returns one matching record
+	When the user clicks the Expand button for the CHED Reference of 'APP_A'
+	And the user clicks the Requests details link
+	Then the Requests section is expanded with details from IPAFFS
+	When the user clicks the Decision details link
+	Then the Decision section contains a DecisionRule matching the recorded 'NewCountryRuleId' with the following values
+		| Field         | Value       |
+		| RuleType      | CountryRule |
+		| RegulatorType | EUImport    |
+		| Rate          | 50          |
+		| Total         | 1           |
+		| Triggered     | 1           |
+		| IsTriggered   | true        |
+	And 'APP_A' is complete
+	# Validate via Risk Decision Report - APP-B (Total=2, Triggered=1, IsTriggered=false)
+	When the user enters the recorded CHED Reference for 'APP_B' in the Risk decision search box and clicks Search
+	Then the Risk decision report returns one matching record
+	When the user clicks the Expand button for the CHED Reference of 'APP_B'
+	And the user clicks the Requests details link
+	Then the Requests section is expanded with details from IPAFFS
+	When the user clicks the Decision details link
+	Then the Decision section contains a DecisionRule matching the recorded 'NewCountryRuleId' with the following values
+		| Field         | Value       |
+		| RuleType      | CountryRule |
+		| RegulatorType | EUImport    |
+		| Rate          | 50          |
+		| Total         | 2           |
+		| Triggered     | 1           |
+		| IsTriggered   | false       |
+	And 'APP_B' is complete
+	# Validate via Risk Decision Report - APP-C (Total=3, Triggered=1, IsTriggered=false)
+	When the user enters the recorded CHED Reference for 'APP_C' in the Risk decision search box and clicks Search
+	Then the Risk decision report returns one matching record
+	When the user clicks the Expand button for the CHED Reference of 'APP_C'
+	And the user clicks the Requests details link
+	Then the Requests section is expanded with details from IPAFFS
+	When the user clicks the Decision details link
+	Then the Decision section contains a DecisionRule matching the recorded 'NewCountryRuleId' with the following values
+		| Field         | Value       |
+		| RuleType      | CountryRule |
+		| RegulatorType | EUImport    |
+		| Rate          | 50          |
+		| Total         | 3           |
+		| Triggered     | 1           |
+		| IsTriggered   | false       |
+	And 'APP_C' is complete
+	# Validate via Risk Decision Report - APP-D (Total=4, Triggered=2, IsTriggered=true)
+	When the user enters the recorded CHED Reference for 'APP_D' in the Risk decision search box and clicks Search
+	Then the Risk decision report returns one matching record
+	When the user clicks the Expand button for the CHED Reference of 'APP_D'
+	And the user clicks the Requests details link
+	Then the Requests section is expanded with details from IPAFFS
+	When the user clicks the Decision details link
+	Then the Decision section contains a DecisionRule matching the recorded 'NewCountryRuleId' with the following values
+		| Field         | Value       |
+		| RuleType      | CountryRule |
+		| RegulatorType | EUImport    |
+		| Rate          | 50          |
+		| Total         | 4           |
+		| Triggered     | 2           |
+		| IsTriggered   | true        |
+	And 'APP_D' is complete
+	# Delete the country rule created by this test
+	When the user clicks the 'Reports' link from the Risk Engine header menu
+	Then the Risk Engine Reports page should be displayed
+	When the user clicks the CHED-A reports link
+	Then the CHED-A reports page should be displayed
+	When the user clicks the Country rules report link under the CHED-A reports header
+	Then the View rules for all countries page should be displayed
+	When the user clicks the Remove rule link for EU import country rule Id recorded as 'NewCountryRuleId'
+	Then the EU import country rule Id recorded as 'NewCountryRuleId' should no longer be present in the rules table
+	When the user scrolls to the bottom of the View rules for all countries page
+	Then the EU import country rule count should be 1 less than 'CountryRuleCount'
+	# Delete the commodity rule created by this test
+	When the user clicks the 'Reports' link from the Risk Engine header menu
+	Then the Risk Engine Reports page should be displayed
+	When the user clicks the CHED-A reports link
+	Then the CHED-A reports page should be displayed
+	When the user clicks the CHED-A Imports commodity rules report link
+	Then the View all CHED-A (Import) Commodity Rules report page should be displayed
+	When the user clicks the Remove rule link for CHED-A import commodity rule Id recorded as 'NewCommodityRuleId'
+	Then the CHED-A import commodity rule Id recorded as 'NewCommodityRuleId' should no longer be present in the rules table
+	When the user scrolls to the bottom of the View all CHED-A (Import) Commodity Rules report page
+	Then the count of CHED-A import commodity rules should be 1 less than 'CommodityRuleCount'

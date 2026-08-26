@@ -7,14 +7,15 @@ namespace Defra.Trade.Plants.SpecFlowBindings.Hooks;
 using AventStack.ExtentReports;
 using AventStack.ExtentReports.Gherkin;
 using Capgemini.PowerApps.SpecFlowBindings;
+using Defra.UI.Tests.Shared.Tools;
 using Reqnroll;
 using System;
 using System.IO;
 using System.Reflection;
-using System.Text;
 
 /// <summary>
-/// After scenario hooks.
+/// After scenario hooks for Dynamics applications.
+/// Handles scenario-level reporting and screenshot capture when IsDynamicsActive is true.
 /// </summary>
 [Binding]
 public class AfterScenarioHooks : PowerAppsStepDefiner
@@ -58,7 +59,7 @@ public class AfterScenarioHooks : PowerAppsStepDefiner
             try
             {
                 var scenario = scenarioContext.Get<ExtentTest>("ExtentScenario");
-                var log = CreateLogForContextValues();
+                var log = ScreenshotService.CreateLogForContextValues(scenarioContext);
                 if (!string.IsNullOrWhiteSpace(log) && log != "<pre></pre>")
                 {
                     scenario.CreateNode(new GherkinKeyword("*"), "LOG: Captured Scenario Context Values")
@@ -86,7 +87,7 @@ public class AfterScenarioHooks : PowerAppsStepDefiner
             return;
         }
 
-        var fileName = SanitiseFileName(scenarioContext.ScenarioInfo.Title);
+        var fileName = ScreenshotService.SanitiseFileName(scenarioContext.ScenarioInfo.Title);
         var screenshotPath = Path.Combine(ScreenshotsFolder.FullName, $"{fileName}.jpg");
 
         if (!File.Exists(screenshotPath))
@@ -98,71 +99,5 @@ public class AfterScenarioHooks : PowerAppsStepDefiner
         var screenshotBase64 = Convert.ToBase64String(File.ReadAllBytes(screenshotPath));
         Console.WriteLine("SCREENSHOT");
         Console.WriteLine($"SCREENSHOT[ {screenshotBase64} ]SCREENSHOT");
-    }
-
-    private string CreateLogForContextValues()
-    {
-        var internalKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-        {
-            "ExtentScenario",
-            "IsDynamicsActive",
-            "DynamicsWindowHandle",
-            "IpaffsInDynamicsBrowserHandle",
-            "DynamicsIpaffsDriver"
-        };
-
-        var log = new StringBuilder("<pre>");
-        try
-        {
-            foreach (var context in scenarioContext)
-            {
-                if (!internalKeys.Contains(context.Key))
-                {
-                    log.AppendLine($"{context.Key} : <b>{FormatValue(context.Value)}</b><br>");
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            log.AppendLine($"Error capturing context values: {ex.Message}<br>");
-        }
-
-        log.Append("</pre>");
-        return log.ToString();
-    }
-
-    private static string FormatValue(object value)
-    {
-        if (value == null)
-            return "null";
-
-        if (value is Array array)
-            return string.Join(", ", array.Cast<object>());
-
-        if (value is IEnumerable<object> list)
-            return string.Join(", ", list);
-
-        if (value is System.Collections.IEnumerable enumerable && value is not string)
-            return string.Join(", ", enumerable.Cast<object>());
-
-        return value.ToString();
-    }
-
-    /// <summary>
-    /// Removes invalid file name characters, replaces spaces with underscores,
-    /// and truncates to 80 characters to avoid path-length issues.
-    /// </summary>
-    private static string SanitiseFileName(string input)
-    {
-        var invalidChars = Path.GetInvalidFileNameChars();
-        var sanitised = new string(input.Where(c => !invalidChars.Contains(c)).ToArray());
-        sanitised = sanitised.Replace(' ', '_');
-
-        if (sanitised.Length > 80)
-        {
-            sanitised = sanitised[..80];
-        }
-
-        return sanitised;
     }
 }

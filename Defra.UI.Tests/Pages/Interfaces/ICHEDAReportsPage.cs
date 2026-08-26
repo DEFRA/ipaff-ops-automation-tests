@@ -5,5 +5,6 @@
         bool IsPageLoaded();
         void ClickImportsCommodityRulesReportLink();
         void ClickRiskDecisionReportLink();
+        void ClickCountryRulesReportLink();
     }
 }

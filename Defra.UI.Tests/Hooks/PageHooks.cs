@@ -171,6 +171,7 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CsvFileDetailsAndStatusPage, ICsvFileDetailsAndStatusPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDPReportsPage, ICHEDPReportsPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDPImportsPage, ICHEDPImportsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDPImportCommodityRulesPage, ICHEDPImportCommodityRulesPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ViewAllCHEDPImportCommodityRulesPage, IViewAllCHEDPImportCommodityRulesPage>()); 
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDAReportsPage, ICHEDAReportsPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDAImportsPage, ICHEDAImportsPage>());
@@ -194,7 +195,50 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<PHSIImportCommodityRulesPage, IPHSIImportCommodityRulesPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ConfirmationOfCountryRateChangePage, IConfirmationOfCountryRateChangePage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<HMIImportCountryRulesPage, IHMIImportCountryRulesPage>());
-            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ViewRulesForAllCountriesPage, IViewRulesForAllCountriesPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ViewRulesForAllCountriesHMIImportPage, IViewRulesForAllCountriesHMIImportPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ViewRulesForAllCountriesEUImportPage, IViewRulesForAllCountriesEUImportPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDPPHMISystemConfigPage, ICHEDPPHMISystemConfigPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ConfirmHMISystemConfigChangesPage, IConfirmHMISystemConfigChangesPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CHEDPPHMISystemConfigUpdateCompletePage, ICHEDPPHMISystemConfigUpdateCompletePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<HMIExportCommodityRulesPage, IHMIExportCommodityRulesPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ConfirmationOfCommodityRateChangePage, IConfirmationOfCommodityRateChangePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ViewAllHMIExportCommodityRulesPage, IViewAllHMIExportCommodityRulesPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<DefaultRulesForCHEDPPPage, IDefaultRulesForCHEDPPPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ConfirmationOfDefaultRateChangePage, IConfirmationOfDefaultRateChangePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SelectTheCHEDDCommodityYouWantToAddARuleForPage, ISelectTheCHEDDCommodityYouWantToAddARuleForPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<YouHaveSelectedACommodityPage, IYouHaveSelectedACommodityPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<WhichCountriesWillThisCommodityRuleApplyToPage, IWhichCountriesWillThisCommodityRuleApplyToPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<WillThisCommodityRuleApplyToAllBorderControlPostsPage, IWillThisCommodityRuleApplyToAllBorderControlPostsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<WhichImportPurposesWillThisCommodityRuleApplyToPage, IWhichImportPurposesWillThisCommodityRuleApplyToPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<DoesThisCommodityRuleHaveAStartOrEndDatePage, IDoesThisCommodityRuleHaveAStartOrEndDatePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SetTheInspectionRatePage, ISetTheInspectionRatePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CheckAndSubmitCommodityRulePage, ICheckAndSubmitCommodityRulePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<CommodityRuleSubmittedPage, ICommodityRuleSubmittedPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<EUImportCountryRulesPage, IEUImportCountryRulesPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<SelectTheCHEDACommodityYouWantToAddARuleForPage, ISelectTheCHEDACommodityYouWantToAddARuleForPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<WhichAnimalCertificationsWillThisCommodityRuleApplyToPage, IWhichAnimalCertificationsWillThisCommodityRuleApplyToPage>());
+
+            // Exporter Portal pages
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterYourApplicationsPage, IExporterYourApplicationsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterWhatAreYouExportingPage, IExporterWhatAreYouExportingPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterWhatDoYouNeedToDoPage, IExporterWhatDoYouNeedToDoPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterDestinationCountryPage, IExporterDestinationCountryPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterCreateAReferencePage, IExporterCreateAReferencePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterYourApplicationPage, IExporterYourApplicationPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterHowDoYouWantToAddCommoditiesToYourConsignmentPage, IExporterHowDoYouWantToAddCommoditiesToYourConsignmentPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterWhatAreYouExportingSelectOneCommodityAtATimePage, IExporterWhatAreYouExportingSelectOneCommodityAtATimePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterAddCommoditiesToYourConsignmentPage, IExporterAddCommoditiesToYourConsignmentPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterYourCommoditiesPage, IExporterYourCommoditiesPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterWhatAreTheInspectionDetailsPage, IExporterWhatAreTheInspectionDetailsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterDoYouWantToSelectThisInspectionAddressPage, IExporterDoYouWantToSelectThisInspectionAddressPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterWhoIsTheContactForThisApplicationPage, IExporterWhoIsTheContactForThisApplicationPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterWhenAndWhereWillTheConsignmentBeReadyPage, IExporterWhenAndWhereWillTheConsignmentBeReadyPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterHowWillThisConsignmentBeTransportedPage, IExporterHowWillThisConsignmentBeTransportedPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterWhatAreThePackingDetailsAsTheyAppearOnThePackagingPage, IExporterWhatAreThePackingDetailsAsTheyAppearOnThePackagingPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterReviewYourAnswersPage, IExporterReviewYourAnswersPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterWhenDoYouNeedTheCertificatePage, IExporterWhenDoYouNeedTheCertificatePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterDeclarationPage, IExporterDeclarationPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterYouHaveSuccessfullySubmittedYourApplicationPage, IExporterYouHaveSuccessfullySubmittedYourApplicationPage>());
 
             //Read Email
             _objectContainer.RegisterInstanceAs(GetBaseWithScenarioContext<FetchCodeFromEmail, IFetchCodeFromEmail>());

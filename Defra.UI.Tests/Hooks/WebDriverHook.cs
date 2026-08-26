@@ -6,21 +6,21 @@ using Defra.UI.Tests.Capabilities;
 using Defra.UI.Tests.Configuration;
 using Defra.UI.Tests.HelperMethods;
 using Defra.UI.Tests.Tools;
+using Defra.UI.Tests.Shared.Tools;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 using Reqnroll;
 using Reqnroll.BoDi;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.Net.Http.Headers;
 using System.Reflection;
-using System.Text;
 
 namespace Defra.UI.Tests.Hooks
 {
     [Binding]
     public class WebDriverHook
     {
+        private const string FailureScreenshotPathKey = "FailureScreenshotPath";
+
         public IWebDriver Driver { get; set; }
 
         private ScenarioContext _scenarioContext;
@@ -56,11 +56,26 @@ namespace Defra.UI.Tests.Hooks
                 ? _objectContainer.Resolve<IWebDriver>()
                 : Driver;
 
+        /// <summary>
+        /// Selenium Grid hub URL pulled from configuration. Required by the screenshot service
+        /// to issue CDP commands against the grid when the driver is a RemoteWebDriver.
+        /// </summary>
+        private static string GridUrl =>
+            ConfigSetup.BaseConfiguration?.UiFrameworkConfiguration?.SeleniumGrid;
+
         [BeforeTestRun]
         public static void BeforeTestRun()
         {
             _extent = ExtentReportManager.GetInstance();
             isRunOnce = true;
+        }
+
+        [AfterTestRun]
+        public static void AfterTestRun()
+        {
+            // Collapse duplicate scenarios (created by earlier retry attempts) so the final
+            // HTML report shows only the latest outcome per test, annotated with retry history.
+            ExtentReportManager.FinalizeReport();
         }
 
         [BeforeFeature]
@@ -119,7 +134,7 @@ namespace Defra.UI.Tests.Hooks
             {
                 if (_scenarioContext.TestError == null)
                 {
-                    var log = CreateLogForContextValues();
+                    var log = ScreenshotService.CreateLogForContextValues(_scenarioContext);
                     if (!string.IsNullOrWhiteSpace(log) && log != "<pre></pre>")
                     {
                         _scenario.CreateNode(new GherkinKeyword("*"), "LOG: Captured Scenario Context Values")
@@ -164,30 +179,68 @@ namespace Defra.UI.Tests.Hooks
             }
         }
 
+        /// <summary>
+        /// Attaches the failure screenshot to the TRX report.
+        /// Prefers the full-page image captured during <see cref="AfterStep"/> (stashed in
+        /// ScenarioContext) so the rich screenshot already on the Extent report is reused.
+        /// Falls back to a viewport capture only when the step-level capture is missing AND
+        /// the Dynamics hook is not the owner of this scenario — re-capturing in a pure-Dynamics
+        /// run would shoot Browser 1 (unused IPAFFS browser) and overwrite the Dynamics image
+        /// the Extent report already references.
+        /// </summary>
         private void AttachScreenShotToXmlReport()
         {
-            string filePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            filePath = Path.Combine(filePath, "TestResults");
+            string fullScreenshotPath = null;
 
-            if (!Directory.Exists(filePath))
+            if (_scenarioContext.ContainsKey(FailureScreenshotPathKey))
             {
-                Directory.CreateDirectory(filePath);
-                Logger.Debug($"{filePath} directory created....");
+                var stashed = _scenarioContext.Get<string>(FailureScreenshotPathKey);
+                if (!string.IsNullOrWhiteSpace(stashed) && File.Exists(stashed))
+                {
+                    fullScreenshotPath = stashed;
+                }
             }
 
-            var fileTitle = _scenarioContext.ScenarioInfo.Title;
-            var fileName = Path.Combine(filePath, $"{fileTitle}_TestFailures_{DateTime.Now:yyyyMMdd_hhss}" + ".png");
+            if (fullScreenshotPath == null)
+            {
+                var isDynamicsActive = _scenarioContext.ContainsKey("IsDynamicsActive")
+                                       && _scenarioContext.Get<bool>("IsDynamicsActive");
 
-            try
-            {
-                ((ITakesScreenshot)ActiveDriver).GetScreenshot().SaveAsFile(fileName);
-                _reqnrollOutputHelper.AddAttachment(fileName);
-                Logger.Debug($"SCREENSHOT {fileName} ");
+                if (isDynamicsActive)
+                {
+                    // Defensive: AfterStepHooks should have written the screenshot at the canonical
+                    // path. Reuse the file if it exists rather than re-capturing through ActiveDriver,
+                    // which in a pure-Dynamics run is Browser 1 (wrong window).
+                    var dynamicsPath = ScreenshotService.GetScreenshotPathForScenario(_scenarioContext.ScenarioInfo.Title);
+                    if (File.Exists(dynamicsPath))
+                    {
+                        fullScreenshotPath = dynamicsPath;
+                    }
+                    else
+                    {
+                        // No screenshot is available and capturing here would shoot the wrong browser.
+                        // Skip the attachment rather than corrupt the report.
+                        return;
+                    }
+                }
+                else
+                {
+                    // No step-level capture available — take a viewport screenshot as a fallback.
+                    var relativePath = ScreenshotService.CaptureScreenshot(ActiveDriver, _scenarioContext.ScenarioInfo.Title);
+                    if (string.IsNullOrWhiteSpace(relativePath))
+                    {
+                        return;
+                    }
+
+                    fullScreenshotPath = Path.Combine(
+                        Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                        "Reports",
+                        relativePath.TrimStart('.', '/'));
+                }
             }
-            catch (Exception ex)
-            {
-                Logger.Debug($"Screenshot skipped — driver unavailable during teardown: {ex.Message}");
-            }
+
+            _reqnrollOutputHelper.AddAttachment(fullScreenshotPath);
+            Logger.Debug($"SCREENSHOT {fullScreenshotPath}");
         }
 
         private DriverOptions GetDriverOptions()
@@ -237,16 +290,25 @@ namespace Defra.UI.Tests.Hooks
             else
             {
                 // Use ActiveDriver so the screenshot is taken on the correct browser
-                // (Browser 2 IPAFFS tab after hand-off, Browser 1 before)
-                var screenshotPath = CaptureScreenshotFullPage();
+                // (Browser 2 IPAFFS tab after hand-off, Browser 1 before).
+                // GridUrl enables full-page CDP capture when running against the dockerized Selenium Grid.
+                var screenshotPath = ScreenshotService.CaptureScreenshotFullPage(
+                    ActiveDriver,
+                    _scenarioContext.ScenarioInfo.Title,
+                    GridUrl);
 
                 if (!string.IsNullOrWhiteSpace(screenshotPath))
                 {
+                    // Stash the absolute path so AfterScenario can reuse this full-page image for
+                    // the TRX attachment instead of overwriting it with a viewport screenshot.
+                    _scenarioContext[FailureScreenshotPathKey] = ScreenshotService.GetScreenshotPathForScenario(
+                        _scenarioContext.ScenarioInfo.Title);
+
                     var stepNode = _scenario.CreateNode(new GherkinKeyword(stepType), stepInfo)
                                  .Fail(_scenarioContext.TestError.Message)
                                  .AddScreenCaptureFromPath(screenshotPath);
 
-                    var log = CreateLogForContextValues();
+                    var log = ScreenshotService.CreateLogForContextValues(_scenarioContext);
                     if (!string.IsNullOrWhiteSpace(log) && log != "<pre></pre>")
                     {
                         stepNode.Info(log);
@@ -258,7 +320,7 @@ namespace Defra.UI.Tests.Hooks
                     var stepNode = _scenario.CreateNode(new GherkinKeyword(stepType), stepInfo)
                                  .Fail(_scenarioContext.TestError.Message);
 
-                    var log = CreateLogForContextValues();
+                    var log = ScreenshotService.CreateLogForContextValues(_scenarioContext);
                     if (!string.IsNullOrWhiteSpace(log) && log != "<pre></pre>")
                     {
                         stepNode.Info(log);
@@ -267,55 +329,6 @@ namespace Defra.UI.Tests.Hooks
             }
 
             Thread.Sleep(1000);
-        }
-
-        private string CreateLogForContextValues()
-        {
-            // Keys used internally for the browser hand-off mechanism — not useful test diagnostics
-            var internalKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                "ExtentScenario",
-                "IsDynamicsActive",
-                "DynamicsWindowHandle",
-                "IpaffsInDynamicsBrowserHandle",
-                "DynamicsIpaffsDriver"
-            };
-
-            var log = new StringBuilder("<pre>");
-            try
-            {
-                foreach (var context in _scenarioContext)
-                {
-                    if (!internalKeys.Contains(context.Key))
-                    {
-                        log.AppendLine($"{context.Key} : <b>{FormatValue(context.Value)}</b><br>");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                log.AppendLine($"Error capturing context values: {ex.Message}<br>");
-            }
-
-            log.Append("</pre>");
-            return log.ToString();
-        }
-
-        private string FormatValue(object value)
-        {
-            if (value == null)
-                return "null";
-
-            if (value is Array array)
-                return string.Join(", ", array.Cast<object>());
-
-            if (value is IEnumerable<object> list)
-                return string.Join(", ", list);
-
-            if (value is System.Collections.IEnumerable enumerable && value is not string)
-                return string.Join(", ", enumerable.Cast<object>());
-
-            return value.ToString();
         }
 
         private void CloseBrowsers()
@@ -327,233 +340,6 @@ namespace Defra.UI.Tests.Hooks
                 AfterScenarioHooks.TestCleanup();
             }
             catch { }
-        }
-
-        /// <summary>
-        /// Captures a full-page screenshot using the currently active driver.
-        /// Uses ActiveDriver so that after the IPAFFS tab hand-off, screenshots are
-        /// taken on Browser 2's IPAFFS tab rather than the disposed Browser 1.
-        /// Falls back to a viewport screenshot, and returns an empty string if
-        /// the driver is unavailable — callers must guard against an empty return value.
-        /// </summary>
-        private string CaptureScreenshotFullPage()
-        {
-            var screenshotsDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Reports", "Screenshots");
-
-            if (!Directory.Exists(screenshotsDir))
-            {
-                Directory.CreateDirectory(screenshotsDir);
-            }
-
-            var uniqueFileName = GenerateScreenshotFileName();
-            var filePath = Path.Combine(screenshotsDir, uniqueFileName);
-
-            var driver = ActiveDriver;
-
-            try
-            {
-                SwitchToValidWindow(driver);
-
-                // Guard against PDF tabs and other non-HTML contexts where document.body is null,
-                // which causes NullReferenceException inside Convert.ToInt32 before the outer
-                // catch can protect it.
-                var js = (IJavaScriptExecutor)driver;
-
-                var bodyExists = js.ExecuteScript("return document.body !== null && document.body !== undefined");
-                if (bodyExists == null || !(bool)bodyExists)
-                {
-                    ((ITakesScreenshot)driver).GetScreenshot().SaveAsFile(filePath);
-                    return $"./Screenshots/{uniqueFileName}";
-                }
-
-                int totalHeight = Convert.ToInt32(js.ExecuteScript(
-                    "return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight)"));
-                int viewportHeight = Convert.ToInt32(js.ExecuteScript("return window.innerHeight"));
-                int viewportWidth = Convert.ToInt32(js.ExecuteScript("return window.innerWidth"));
-
-                if (totalHeight <= viewportHeight)
-                {
-                    ((ITakesScreenshot)driver).GetScreenshot().SaveAsFile(filePath);
-                    return $"./Screenshots/{uniqueFileName}";
-                }
-
-                js.ExecuteScript("window.scrollTo(0, 0)");
-                Thread.Sleep(200);
-
-                var screenshots = new List<Bitmap>();
-                int scrollPosition = 0;
-
-                while (scrollPosition < totalHeight)
-                {
-                    js.ExecuteScript($"window.scrollTo(0, {scrollPosition})");
-                    Thread.Sleep(200);
-
-                    var screenshotBytes = ((ITakesScreenshot)driver).GetScreenshot().AsByteArray;
-                    using var ms = new MemoryStream(screenshotBytes);
-                    var bmp = new Bitmap(ms);
-
-                    if (scrollPosition + viewportHeight > totalHeight && scrollPosition > 0)
-                    {
-                        int overlap = (scrollPosition + viewportHeight) - totalHeight;
-                        var cropped = bmp.Clone(new Rectangle(0, overlap, bmp.Width, bmp.Height - overlap), bmp.PixelFormat);
-                        screenshots.Add(cropped);
-                        bmp.Dispose();
-                    }
-                    else
-                    {
-                        screenshots.Add(bmp);
-                    }
-
-                    scrollPosition += viewportHeight;
-                }
-
-                int finalHeight = screenshots.Sum(s => s.Height);
-                int finalWidth = screenshots.Max(s => s.Width);
-
-                using var finalImage = new Bitmap(finalWidth, finalHeight);
-                using (var graphics = Graphics.FromImage(finalImage))
-                {
-                    graphics.Clear(Color.White);
-                    int yOffset = 0;
-
-                    foreach (var screenshot in screenshots)
-                    {
-                        graphics.DrawImage(screenshot, 0, yOffset);
-                        yOffset += screenshot.Height;
-                    }
-                }
-
-                finalImage.Save(filePath, ImageFormat.Png);
-
-                foreach (var screenshot in screenshots)
-                {
-                    screenshot.Dispose();
-                }
-
-                js.ExecuteScript("window.scrollTo(0, 0)");
-
-                return $"./Screenshots/{uniqueFileName}";
-            }
-            catch (Exception ex)
-            {
-                Logger.Debug($"Full-page screenshot failed, using viewport screenshot: {ex.Message}");
-
-                try
-                {
-                    ((ITakesScreenshot)driver).GetScreenshot().SaveAsFile(filePath);
-                    return $"./Screenshots/{uniqueFileName}";
-                }
-                catch
-                {
-                    return string.Empty;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Switches to a valid browser window handle on the given driver.
-        /// </summary>
-        private static void SwitchToValidWindow(IWebDriver driver)
-        {
-            try
-            {
-                var handles = driver.WindowHandles;
-                if (handles != null && handles.Count > 0)
-                {
-                    var currentHandle = driver.CurrentWindowHandle;
-                    if (!handles.Contains(currentHandle))
-                    {
-                        driver.SwitchTo().Window(handles.Last());
-                    }
-                }
-            }
-            catch
-            {
-                // Silently handle window switch errors
-            }
-        }
-
-        /// <summary>
-        /// Retained for backwards compatibility in case revert to original method is needed.
-        /// </summary>
-        private string CaptureScreenshot()
-        {
-            var screenshotsDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Reports", "Screenshots");
-
-            if (!Directory.Exists(screenshotsDir))
-            {
-                Directory.CreateDirectory(screenshotsDir);
-            }
-
-            var driver = ActiveDriver;
-
-            try
-            {
-                var handles = driver.WindowHandles;
-                if (handles != null && handles.Count > 0)
-                {
-                    var currentHandle = driver.CurrentWindowHandle;
-                    if (handles.Contains(currentHandle))
-                    {
-                        driver.SwitchTo().Window(currentHandle);
-                    }
-                    else
-                    {
-                        driver.SwitchTo().Window(handles.Last());
-                    }
-                }
-            }
-            catch
-            {
-                // Silently handle window switch errors
-            }
-
-            var screenshot = ((ITakesScreenshot)driver).GetScreenshot();
-            var uniqueFileName = GenerateScreenshotFileName();
-            var filePath = Path.Combine(screenshotsDir, uniqueFileName);
-
-            screenshot.SaveAsFile(filePath);
-
-            return $"./Screenshots/{uniqueFileName}";
-        }
-
-        /// <summary>
-        /// Generates a screenshot filename using the scenario title and current timestamp.
-        /// Falls back to a GUID if the scenario title is unavailable.
-        /// </summary>
-        private string GenerateScreenshotFileName()
-        {
-            try
-            {
-                var scenarioTitle = _scenarioContext.ScenarioInfo.Title;
-                var sanitised = SanitiseFileName(scenarioTitle);
-                var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");
-                return $"{sanitised}_{timestamp}.png";
-            }
-            catch
-            {
-                return $"{Guid.NewGuid()}.png";
-            }
-        }
-
-        /// <summary>
-        /// Removes invalid file name characters and truncates to a reasonable length.
-        /// </summary>
-        private static string SanitiseFileName(string input)
-        {
-            var invalidChars = Path.GetInvalidFileNameChars();
-            var sanitised = new string(input.Where(c => !invalidChars.Contains(c)).ToArray());
-
-            // Replace spaces with underscores for readability
-            sanitised = sanitised.Replace(' ', '_');
-
-            // Truncate to avoid path-length issues (max 80 chars for the title portion)
-            if (sanitised.Length > 80)
-            {
-                sanitised = sanitised.Substring(0, 80);
-            }
-
-            return sanitised;
         }
     }
 }

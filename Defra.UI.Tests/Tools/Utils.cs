@@ -119,21 +119,7 @@ namespace Defra.UI.Tests.Tools
 
         public static bool IsDownloaded(string fileName, string extension)
         {
-            //var downloadedFilePath = Path.Combine(Path.GetTempPath(), "automation-downloads", $"{fileName}.{extension}");
-
-            /*var basePath = Environment.GetEnvironmentVariable("DOWNLOAD_DIR")
-              ?? Path.Combine(Path.GetTempPath(), "automation-downloads");
-
-            Directory.CreateDirectory(basePath);
-
-            var downloadedFilePath = Path.Combine(basePath, $"{fileName}.{extension}");*/
-
-
-            var basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"automation-downloads");
-
-            Directory.CreateDirectory(basePath);
-
-            var downloadedFilePath = Path.Combine(basePath, $"{fileName}.{extension}");
+            var downloadRoot = Path.Combine(Path.GetTempPath(), "automation-downloads");
 
             var timeout = TimeSpan.FromSeconds(30);
 
@@ -141,7 +127,16 @@ namespace Defra.UI.Tests.Tools
 
             while (stopwatch.Elapsed < timeout)
             {
-                if (File.Exists(downloadedFilePath))
+                Console.WriteLine($"Looking for: {fileName}*.{extension}");
+                Console.WriteLine($"Folder: {downloadRoot}");
+
+                foreach (var file in Directory.GetFiles(downloadRoot))
+                {
+                    Console.WriteLine($"Found: {Path.GetFileName(file)}");
+                }
+
+                if (Directory.GetFiles(downloadRoot,
+                        $"{fileName}*.{extension}").Any())
                 {
                     return true;
                 }
@@ -557,7 +552,7 @@ namespace Defra.UI.Tests.Tools
 
             var operatorDetails = new OperatorDetails
             {
-                OperatorName = faker.Company.CompanyName().Replace(",", ""),
+                OperatorName = faker.Company.CompanyName().Replace(",", "").Replace("'", ""),
                 AddressLine1 = faker.Address.StreetAddress().Replace(",", ""),
                 CityOrTown = faker.Address.City().Replace(",", ""),
                 Postcode = postcode,
