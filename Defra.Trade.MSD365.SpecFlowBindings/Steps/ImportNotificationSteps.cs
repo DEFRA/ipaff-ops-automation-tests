@@ -336,7 +336,8 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
             {
                 var candidates = Driver.FindElements(
                     By.XPath($"//div[contains(@data-id,'LookupResultsDropdown_trd_workorderid_selected_tag')" +
-                             $" and @aria-label='{expectedChedReference}']"));
+                             $" and (contains(@aria-label,'{expectedChedReference}')" +
+                             $" or @title='{expectedChedReference}')]"));
 
                 if (candidates.Count > 0)
                 {
