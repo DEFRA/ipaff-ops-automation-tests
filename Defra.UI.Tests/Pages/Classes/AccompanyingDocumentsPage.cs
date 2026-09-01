@@ -25,6 +25,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtYear => _driver.WaitForElement(By.Name("document-issue-date-year"));
         private IWebElement datePickerIcon => _driver.WaitForElement(By.ClassName("date-picker__reveal__icon"));
         private IWebElement nextMonthButton => _driver.WaitForElement(By.ClassName("date-picker__button__next-month"));
+        private IWebElement previousMonthButton => _driver.WaitForElement(By.ClassName("date-picker__button__previous-month"));
         private IWebElement firstDateOfTheMonth => _driver.WaitForElement(By.XPath("//td/button[text()='1']"));
         private IWebElement selectDate(string previousDay) => _driver.FindElement(By.XPath($"//td/button[text()='{previousDay}' and not(contains(@class, 'inactive'))]"));
         private By documentDateBy => By.XPath("//div[contains(@id,'additional-document-date-value')]");
@@ -225,7 +226,17 @@ namespace Defra.UI.Tests.Pages.Classes
         public void SelectPreviousDateFromDatePicker(string previousDay)
         {
             _driver.WaitForElementCondition(ExpectedConditions.ElementToBeClickable(datePickerIcon)).Click();
-            selectDate(previousDay).Click();
+
+            // If the previous day's number is greater than today's day, the date must be
+            // in the previous month (e.g. today is 1st Sept, previous day is 31st Aug),
+            // so navigate back one month before selecting the date.
+            var wrappedToPreviousMonth = int.Parse(previousDay) > DateTime.Now.Day;
+            if (wrappedToPreviousMonth)
+            {
+                _driver.WaitForElementCondition(ExpectedConditions.ElementToBeClickable(previousMonthButton)).Click();
+            }
+
+            _driver.WaitForElementCondition(ExpectedConditions.ElementToBeClickable(selectDate(previousDay))).Click();
         }
 
         public bool AreDocumentsPresent()
