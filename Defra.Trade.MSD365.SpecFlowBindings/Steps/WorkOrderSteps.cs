@@ -156,17 +156,122 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
         Driver.WaitForTransaction();
     }
 
+    /// <summary>
+    /// Reads a header field's current display text, handling two possible render states:
+    /// 1. Inline: the field is rendered directly in the header as a &lt;uci-header-control-list-item&gt;
+    ///    Web Component, where the value is projected via a &lt;slot&gt; into a light-DOM anchor.
+    /// 2. Collapsed: when there isn't enough horizontal space, Dynamics moves the field into the
+    ///    "More Header Editable Fields" overflow flyout, where it renders instead as a classic
+    ///    Dynamics lookup field control (&lt;div data-id="...LookupResultsDropdown_{fieldSchemaName}
+    ///    _selected_tag_text"&gt;).
+    /// The flyout (if opened) is collapsed again before returning, to leave the header in a clean
+    /// state for subsequent calls — so the text is captured here, before the element can go stale.
+    /// </summary>
+    private string GetHeaderFieldValueText(
+    string headerDataName,
+    string flyoutFieldSchemaName,
+    string slotName = "value",
+    int flyoutTimeoutSeconds = 15)
+    {
+        Driver.SwitchTo().DefaultContent();
+
+        var findInlineScript = $@"
+            var host = document.querySelector(""uci-header-control-list-item[data-name='{headerDataName}']"");
+            if (!host) return null;
+            return host.querySelector(""a[slot='{slotName}']"") || host.querySelector(""a.value-link"");
+        ";
+
+        var inlineElement = (IWebElement)((IJavaScriptExecutor)Driver).ExecuteScript(findInlineScript);
+
+        if (inlineElement != null)
+        {
+            return inlineElement.Text.Trim();
+        }
+
+        // Not rendered inline — collapsed into the "More Header Editable Fields" overflow flyout.
+        // Note: when a modal (e.g. a Work Order Task popup) is open over the underlying record page,
+        // BOTH the background page's and the modal's overflow buttons exist in the DOM. The active/
+        // topmost one is the last in document order, so we target that one specifically and click it
+        // via JavaScript to avoid "element click intercepted" failures from the covered background button.
+        var expandButton = GetActiveHeaderOverflowButton();
+
+        if (expandButton == null)
+        {
+            return null;
+        }
+
+        var wasAlreadyExpanded = expandButton.GetAttribute("aria-expanded") == "true";
+
+        if (!wasAlreadyExpanded)
+        {
+            ClickViaJavaScript(expandButton);
+            Driver.WaitForTransaction();
+        }
+
+        string valueText = null;
+        var deadline = DateTime.UtcNow.AddSeconds(flyoutTimeoutSeconds);
+
+        while (DateTime.UtcNow < deadline && valueText == null)
+        {
+            var candidates = Driver.FindElements(By.XPath(
+                $"//div[contains(@data-id,'LookupResultsDropdown_{flyoutFieldSchemaName}_selected_tag_text')]"));
+
+            if (candidates.Count > 0)
+            {
+                valueText = candidates[^1].Text.Trim();
+                break;
+            }
+
+            Thread.Sleep(TimeSpan.FromMilliseconds(500));
+        }
+
+        CollapseHeaderFieldsFlyoutIfOpen();
+
+        return valueText;
+    }
+
+    private void CollapseHeaderFieldsFlyoutIfOpen()
+    {
+        var expandButton = GetActiveHeaderOverflowButton();
+
+        if (expandButton != null && expandButton.GetAttribute("aria-expanded") == "true")
+        {
+            ClickViaJavaScript(expandButton);
+            Driver.WaitForTransaction();
+        }
+    }
+
+    /// <summary>
+    /// Returns the "More Header Editable Fields" overflow button for whichever header is currently
+    /// active/topmost. When a modal dialog (e.g. a Work Order Task popup) is open over an underlying
+    /// record page, multiple overflow buttons can exist in the DOM simultaneously — the background
+    /// page's (now covered/non-interactable) and the modal's own. The active one is consistently the
+    /// last in document order, since Dynamics appends dialog content after the underlying page markup.
+    /// </summary>
+    private IWebElement GetActiveHeaderOverflowButton()
+    {
+        var expandButtons = Driver.FindElements(By.XPath("//button[@data-id='header_overflowButton']"));
+        return expandButtons.Count > 0 ? expandButtons[^1] : null;
+    }
+
+    private void ClickViaJavaScript(IWebElement element)
+    {
+        ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].click();", element);
+    }
+
     [Then("the Substatus of the Work Order should be Assigned")]
     public void ThenTheSubstatusOfTheWorkOrderShouldBeAssigned()
     {
         Driver.WaitForTransaction();
 
-        var substatusLink = Driver.WaitUntilAvailable(
-            By.XPath("//a[@aria-label='Assigned']"),
-            "Substatus 'Assigned' could not be found in the Work Order header.");
+        var substatusText = GetHeaderFieldValueText("header_msdyn_substatus", "msdyn_substatus");
 
-        substatusLink.Text.Trim().Should().Be("Assigned",
-            $"Expected Substatus to be 'Assigned' but found '{substatusLink.Text.Trim()}'.");
+        substatusText.Should().NotBeNull(
+            "Substatus 'Assigned' could not be found in the Work Order header, even after expanding " +
+            "the 'More Header Editable Fields' overflow flyout.");
+
+        substatusText.Should().Be("Assigned",
+            $"Expected Substatus to be 'Assigned' but found '{substatusText}'.");
     }
 
     [Then("the Owner of the Work Order should be me")]
@@ -174,17 +279,19 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
     {
         Driver.WaitForTransaction();
 
-        var currentUser = TestConfig.GetUser("Inspector",useCurrentUser: true);
+        var currentUser = TestConfig.GetUser("Inspector", useCurrentUser: true);
         var localPart = currentUser.Username.Split('@')[0];
         var expectedOwner = string.Join(" ", localPart.Split('.')
             .Select(p => char.ToUpper(p[0]) + p.Substring(1)));
 
-        var ownerLink = Driver.WaitUntilAvailable(
-            By.XPath($"//a[@aria-label='{expectedOwner}']"),
-            $"Owner '{expectedOwner}' could not be found in the Work Order header.");
+        var ownerText = GetHeaderFieldValueText("header_ownerid", "ownerid");
 
-        ownerLink.Text.Trim().Should().Be(expectedOwner,
-            $"Expected Owner to be '{expectedOwner}' but found '{ownerLink.Text.Trim()}'.");
+        ownerText.Should().NotBeNull(
+            $"Owner '{expectedOwner}' could not be found in the Work Order header, even after expanding " +
+            "the 'More Header Editable Fields' overflow flyout.");
+
+        ownerText.Should().Contain(expectedOwner,
+            $"Expected Owner to contain '{expectedOwner}' but found '{ownerText}'.");
     }
 
     [When(@"I check that the Commodity Lines frame shows '(.*)'")]

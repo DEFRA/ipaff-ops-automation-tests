@@ -127,26 +127,102 @@ public sealed class ImportCommoditySteps : PowerAppsStepDefiner
     /// Reads the value of a named header field by matching the label text in the page header band.
     /// </summary>
     /// <remarks>
-    /// Dynamics CSS-in-JS class names are unstable and regenerate on each deployment.
-    /// The only stable anchor is the structural pattern within each header column container:
-    ///   div[@data-preview_orientation='column']
-    ///     div (first child)  — contains the value div as its only child
-    ///       div              — the actual value text
-    ///     div (last child)   — contains the label text directly
+    /// Handles two render states:
+    /// 1. Collapsed: when there isn't enough horizontal space, Dynamics moves header fields into the
+    ///    "More Header Editable Fields" overflow flyout (opened via the header_overflowButton).
+    /// 2. Rendering: these OptionSet-backed fields render as Fluent UI readonly &lt;input&gt; controls
+    ///    (PowerApps.CoreControls.OptionSetControl), so the displayed text lives in the input's
+    ///    'value' attribute rather than as rendered element text.
     /// </remarks>
     private string GetHeaderFieldValue(string fieldLabel)
     {
-        // Find the column container whose last-child div contains the label text,
-        // then return the text of the div nested inside the first-child div (the value).
-        var valueXPath =
-            $"//div[@data-preview_orientation='column']" +
-            $"[div[last()][normalize-space(text())='{fieldLabel}']]" +
-            $"/div[1]/div";
+        Driver.SwitchTo().DefaultContent();
 
-        var valueElement = Driver.WaitUntilAvailable(
-            By.XPath(valueXPath),
-            $"Header field '{fieldLabel}' could not be found on the Import Commodity Line page.");
+        var valueText = TryGetHeaderFieldValue(fieldLabel);
 
-        return valueElement.Text.Trim();
+        if (valueText != null)
+        {
+            return valueText;
+        }
+
+        // Not found inline — likely collapsed into the "More Header Editable Fields" overflow flyout.
+        var expandButtons = Driver.FindElements(By.XPath("//button[@data-id='header_overflowButton']"));
+
+        if (expandButtons.Count > 0)
+        {
+            var expandButton = expandButtons[0];
+            var wasAlreadyExpanded = expandButton.GetAttribute("aria-expanded") == "true";
+
+            if (!wasAlreadyExpanded)
+            {
+                expandButton.Click();
+                Driver.WaitForTransaction();
+            }
+
+            var deadline = DateTime.UtcNow.AddSeconds(15);
+
+            while (DateTime.UtcNow < deadline && valueText == null)
+            {
+                valueText = TryGetHeaderFieldValue(fieldLabel);
+
+                if (valueText == null)
+                {
+                    Thread.Sleep(TimeSpan.FromMilliseconds(500));
+                }
+            }
+
+            // Collapse the flyout again so subsequent header field lookups start from a
+            // known, clean state rather than toggling an already-open flyout closed.
+            if (expandButton.GetAttribute("aria-expanded") == "true")
+            {
+                expandButton.Click();
+                Driver.WaitForTransaction();
+            }
+        }
+
+        valueText.Should().NotBeNull(
+            $"Header field '{fieldLabel}' could not be found on the Import Commodity Line page, " +
+            "even after expanding the 'More Header Editable Fields' overflow flyout.");
+
+        return valueText;
+    }
+
+    /// <summary>
+    /// Attempts to locate and read a header field's current value without expanding the overflow
+    /// flyout, covering both known render shapes: readonly Fluent UI &lt;input&gt; controls
+    /// (OptionSet fields) and plain text/lookup-tag divs. Returns null if not currently present.
+    /// </summary>
+    private string TryGetHeaderFieldValue(string fieldLabel)
+    {
+        var containerXPath =
+            $"//div[@data-control-name][.//label[normalize-space(text())='{fieldLabel}']]";
+
+        var containers = Driver.FindElements(By.XPath(containerXPath));
+
+        if (containers.Count == 0)
+        {
+            return null;
+        }
+
+        var container = containers[0];
+
+        // OptionSet fields render as a readonly Fluent UI <input>, where the display value
+        // lives in the 'value' attribute rather than as rendered text.
+        var inputs = container.FindElements(By.XPath(".//input[@readonly]"));
+
+        if (inputs.Count > 0)
+        {
+            return inputs[0].GetAttribute("value")?.Trim();
+        }
+
+        // Fallback: lookup/tag-style fields render the value as plain text in a nested div.
+        var valueDivs = container.FindElements(By.XPath(".//div[@data-id[contains(.,'selected_tag_text')]]"));
+
+        if (valueDivs.Count > 0)
+        {
+            return valueDivs[0].Text.Trim();
+        }
+
+        return null;
     }
 }
