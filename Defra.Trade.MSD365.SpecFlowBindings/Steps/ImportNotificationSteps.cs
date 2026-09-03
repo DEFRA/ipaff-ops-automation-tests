@@ -6,6 +6,7 @@ namespace Defra.Trade.Plants.SpecFlowBindings.Steps;
 
 using Capgemini.PowerApps.SpecFlowBindings;
 using Capgemini.PowerApps.SpecFlowBindings.Steps;
+using Defra.Trade.MSD365.SpecFlowBindings.Helpers;
 using Defra.Trade.Plants.Model;
 using Defra.Trade.Plants.SpecFlowBindings.Context;
 using Defra.Trade.Plants.SpecFlowBindings.Extensions;
@@ -227,47 +228,52 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
 
     /// <summary>
     /// Verifies that the Import Notification Status header field displays the expected value.
-    /// Uses data-preview_orientation='column' as the stable anchor — CSS class names (pa-*) are
-    /// dynamically generated and must not be used as locators.
-    /// Structure: div[@data-preview_orientation='column'] → div[value] + div[label text only]
     /// </summary>
+    /// <remarks>
+    /// Status now renders as a readonly Fluent UI &lt;input&gt; (OptionSet control), collapsed into
+    /// the "More Header Editable Fields" overflow flyout when there isn't enough horizontal space.
+    /// See <see cref="DynamicsHeaderHelper.GetHeaderFieldValueByLabel"/> for the inline/flyout dual lookup.
+    /// </remarks>
     /// <param name="expectedStatus">The expected status value e.g. 'Inactive'.</param>
     [Then(@"the Import Notification Status is '(.*)'")]
     public void ThenTheImportNotificationStatusIs(string expectedStatus)
     {
         Driver.WaitForTransaction();
 
-        // The label div is a direct child leaf div with text 'Status' (no child elements).
-        // The value div is the first sibling div and contains the actual status text as a leaf descendant.
-        var statusValue = Driver.WaitUntilAvailable(
-            By.XPath("//div[@data-preview_orientation='column']" +
-                     "[child::div[not(*) and normalize-space(text())='Status']]" +
-                     "/div[1]/descendant::div[not(*) and normalize-space(.)!=''][1]"),
-            "Import Notification Status value could not be found in the page header.");
+        var headerHelper = new DynamicsHeaderHelper(Driver);
+        var statusValue = headerHelper.GetHeaderFieldValueByLabel("Status");
 
-        statusValue.Text.Trim().Should().Be(expectedStatus,
-            $"Expected Import Notification Status to be '{expectedStatus}' but found '{statusValue.Text.Trim()}'.");
+        statusValue.Should().NotBeNull(
+            "Import Notification Status value could not be found in the page header, even after " +
+            "expanding the 'More Header Editable Fields' overflow flyout.");
+
+        statusValue.Should().Be(expectedStatus,
+            $"Expected Import Notification Status to be '{expectedStatus}' but found '{statusValue}'.");
     }
 
     /// <summary>
     /// Verifies that the Import Notification Status Reason header field displays the expected value.
-    /// Uses data-preview_orientation='column' as the stable anchor — CSS class names (pa-*) are
-    /// dynamically generated and must not be used as locators.
     /// </summary>
+    /// <remarks>
+    /// Status Reason now renders as a readonly Fluent UI &lt;input&gt; (OptionSet control), collapsed
+    /// into the "More Header Editable Fields" overflow flyout when there isn't enough horizontal space.
+    /// See <see cref="DynamicsHeaderHelper.GetHeaderFieldValueByLabel"/> for the inline/flyout dual lookup.
+    /// </remarks>
     /// <param name="expectedStatusReason">The expected status reason value e.g. 'Completed'.</param>
     [Then(@"the Import Notification Status Reason is '(.*)'")]
     public void ThenTheImportNotificationStatusReasonIs(string expectedStatusReason)
     {
         Driver.WaitForTransaction();
 
-        var statusReasonValue = Driver.WaitUntilAvailable(
-            By.XPath("//div[@data-preview_orientation='column']" +
-                     "[child::div[not(*) and normalize-space(text())='Status Reason']]" +
-                     "/div[1]/descendant::div[not(*) and normalize-space(.)!=''][1]"),
-            "Import Notification Status Reason value could not be found in the page header.");
+        var headerHelper = new DynamicsHeaderHelper(Driver);
+        var statusReasonValue = headerHelper.GetHeaderFieldValueByLabel("Status Reason");
 
-        statusReasonValue.Text.Trim().Should().Be(expectedStatusReason,
-            $"Expected Import Notification Status Reason to be '{expectedStatusReason}' but found '{statusReasonValue.Text.Trim()}'.");
+        statusReasonValue.Should().NotBeNull(
+            "Import Notification Status Reason value could not be found in the page header, even " +
+            "after expanding the 'More Header Editable Fields' overflow flyout.");
+
+        statusReasonValue.Should().Be(expectedStatusReason,
+            $"Expected Import Notification Status Reason to be '{expectedStatusReason}' but found '{statusReasonValue}'.");
     }
 
     /// <summary>
@@ -336,7 +342,8 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
             {
                 var candidates = Driver.FindElements(
                     By.XPath($"//div[contains(@data-id,'LookupResultsDropdown_trd_workorderid_selected_tag')" +
-                             $" and @aria-label='{expectedChedReference}']"));
+                             $" and (contains(@aria-label,'{expectedChedReference}')" +
+                             $" or @title='{expectedChedReference}')]"));
 
                 if (candidates.Count > 0)
                 {

@@ -33,6 +33,25 @@ public class BrowserOptionsWithProfileSupport : BrowserOptions, ICloneable
         // built-in PDF viewer — which breaks IPAFFS Show CHED verification steps.
         options.AddUserProfilePreference("plugins.always_open_pdf_externally", false);
 
+        // Suppress "wants to access devices on your local network" permission popup
+        // which blocks the Dynamics 365 command bar from loading during automation.
+        // Disable both the prompt feature and the underlying private network blocking.
+        options.AddArgument("--disable-features=PrivateNetworkAccessPermissionPrompt,BlockInsecurePrivateNetworkRequests");
+
+        // Pre-grant local network access permission for all origins via Chrome
+        // content settings so the popup is never shown regardless of Chrome
+        // version behaviour on the feature flag above. URL-agnostic via wildcard.
+        // Setting value: 1 = Allow, 2 = Block
+        options.AddUserProfilePreference(
+            "profile.content_settings.exceptions.local_network_access",
+            new Dictionary<string, object>
+            {
+                ["*,*"] = new Dictionary<string, object>
+                {
+                    ["setting"] = 1,
+                },
+            });
+
         if (!string.IsNullOrEmpty(this.ProfileDirectory))
         {
             options.AddArgument($"--user-data-dir={this.ProfileDirectory}");

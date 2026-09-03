@@ -5,6 +5,7 @@
 namespace Defra.Trade.Plants.SpecFlowBindings.Steps;
 
 using Capgemini.PowerApps.SpecFlowBindings;
+using Defra.Trade.MSD365.SpecFlowBindings.Helpers;
 using Defra.Trade.Plants.Model;
 using Defra.Trade.Plants.SpecFlowBindings.Context;
 using Defra.Trade.Plants.SpecFlowBindings.Extensions;
@@ -18,12 +19,12 @@ using Microsoft.Xrm.Tooling.Connector;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using Polly;
+using Reqnroll;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using Reqnroll;
 
 /// <summary>
 /// Step bindings relating to the work order functional area.
@@ -161,12 +162,15 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
     {
         Driver.WaitForTransaction();
 
-        var substatusLink = Driver.WaitUntilAvailable(
-            By.XPath("//a[@aria-label='Assigned']"),
-            "Substatus 'Assigned' could not be found in the Work Order header.");
+        var headerHelper = new DynamicsHeaderHelper(Driver);
+        var substatusText = headerHelper.GetHeaderFieldValueText("header_msdyn_substatus", "msdyn_substatus");
 
-        substatusLink.Text.Trim().Should().Be("Assigned",
-            $"Expected Substatus to be 'Assigned' but found '{substatusLink.Text.Trim()}'.");
+        substatusText.Should().NotBeNull(
+            "Substatus 'Assigned' could not be found in the Work Order header, even after expanding " +
+            "the 'More Header Editable Fields' overflow flyout.");
+
+        substatusText.Should().Be("Assigned",
+            $"Expected Substatus to be 'Assigned' but found '{substatusText}'.");
     }
 
     [Then("the Owner of the Work Order should be me")]
@@ -174,17 +178,20 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
     {
         Driver.WaitForTransaction();
 
-        var currentUser = TestConfig.GetUser("Inspector",useCurrentUser: true);
+        var currentUser = TestConfig.GetUser("Inspector", useCurrentUser: true);
         var localPart = currentUser.Username.Split('@')[0];
         var expectedOwner = string.Join(" ", localPart.Split('.')
             .Select(p => char.ToUpper(p[0]) + p.Substring(1)));
 
-        var ownerLink = Driver.WaitUntilAvailable(
-            By.XPath($"//a[@aria-label='{expectedOwner}']"),
-            $"Owner '{expectedOwner}' could not be found in the Work Order header.");
+        var headerHelper = new DynamicsHeaderHelper(Driver);
+        var ownerText = headerHelper.GetHeaderFieldValueText("header_ownerid", "ownerid");
 
-        ownerLink.Text.Trim().Should().Be(expectedOwner,
-            $"Expected Owner to be '{expectedOwner}' but found '{ownerLink.Text.Trim()}'.");
+        ownerText.Should().NotBeNull(
+            $"Owner '{expectedOwner}' could not be found in the Work Order header, even after expanding " +
+            "the 'More Header Editable Fields' overflow flyout.");
+
+        ownerText.Should().Contain(expectedOwner,
+            $"Expected Owner to contain '{expectedOwner}' but found '{ownerText}'.");
     }
 
     [When(@"I check that the Commodity Lines frame shows '(.*)'")]

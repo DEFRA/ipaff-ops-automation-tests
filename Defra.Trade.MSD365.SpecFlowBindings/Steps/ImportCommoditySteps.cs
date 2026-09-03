@@ -5,6 +5,7 @@
 namespace Defra.Trade.Plants.SpecFlowBindings.Steps;
 
 using Capgemini.PowerApps.SpecFlowBindings;
+using Defra.Trade.MSD365.SpecFlowBindings.Helpers;
 using FluentAssertions;
 using Microsoft.Dynamics365.UIAutomation.Browser;
 using OpenQA.Selenium;
@@ -52,6 +53,8 @@ public sealed class ImportCommoditySteps : PowerAppsStepDefiner
     {
         Driver.WaitForTransaction();
 
+        var headerHelper = new DynamicsHeaderHelper(Driver);
+
         // The header field values are populated asynchronously after navigation and can briefly
         // render with stale data before the form fully resolves. Retry for up to 30 seconds
         // to allow the fields to settle without issuing a full page Refresh (which would
@@ -83,9 +86,9 @@ public sealed class ImportCommoditySteps : PowerAppsStepDefiner
                         $"HMI='{actualHmi}', PHSI='{actualPhsi}', Classification='{actualClassification}' — retrying..."))
             .Execute(() =>
             {
-                actualHmi = GetHeaderFieldValue("HMI Inspection Required");
-                actualPhsi = GetHeaderFieldValue("PHSI Inspection Required");
-                actualClassification = GetHeaderFieldValue("Inspection Classification");
+                actualHmi = headerHelper.GetHeaderFieldValueByLabel("HMI Inspection Required");
+                actualPhsi = headerHelper.GetHeaderFieldValueByLabel("PHSI Inspection Required");
+                actualClassification = headerHelper.GetHeaderFieldValueByLabel("Inspection Classification");
 
                 var hmiMatch = acceptedHmi.Contains(actualHmi, StringComparer.OrdinalIgnoreCase);
                 var phsiMatch = acceptedPhsi.Contains(actualPhsi, StringComparer.OrdinalIgnoreCase);
@@ -121,32 +124,5 @@ public sealed class ImportCommoditySteps : PowerAppsStepDefiner
 
         // Persist the resolved (actual) HMI value so downstream steps can branch strictly on it.
         this.scenarioContext[HmiInspectionRequiredKey] = actualHmi;
-    }
-
-    /// <summary>
-    /// Reads the value of a named header field by matching the label text in the page header band.
-    /// </summary>
-    /// <remarks>
-    /// Dynamics CSS-in-JS class names are unstable and regenerate on each deployment.
-    /// The only stable anchor is the structural pattern within each header column container:
-    ///   div[@data-preview_orientation='column']
-    ///     div (first child)  — contains the value div as its only child
-    ///       div              — the actual value text
-    ///     div (last child)   — contains the label text directly
-    /// </remarks>
-    private string GetHeaderFieldValue(string fieldLabel)
-    {
-        // Find the column container whose last-child div contains the label text,
-        // then return the text of the div nested inside the first-child div (the value).
-        var valueXPath =
-            $"//div[@data-preview_orientation='column']" +
-            $"[div[last()][normalize-space(text())='{fieldLabel}']]" +
-            $"/div[1]/div";
-
-        var valueElement = Driver.WaitUntilAvailable(
-            By.XPath(valueXPath),
-            $"Header field '{fieldLabel}' could not be found on the Import Commodity Line page.");
-
-        return valueElement.Text.Trim();
     }
 }
