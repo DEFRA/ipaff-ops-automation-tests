@@ -1,7 +1,7 @@
 # Defra.UI.Tests
 
 ## Overview
-`Defra.UI.Tests` is the core UI automation test project for the **IPAFFS Test Team**, covering the **IPAFFS** and **Risk Engine** applications. It contains **Reqnroll** (Gherkin/BDD) feature files, step definitions, page objects, and supporting tools used to validate CHED (Common Health Entry Document) notification and risk engine workflows — including CHEDA, CHEDD, CHEDP, and CHEDPP — via a page-object driven Selenium WebDriver framework. Tests run against a **Dockerized Selenium Grid by default** (see `docker-compose-grid.yml`), with optional execution against **BrowserStack's** cloud device grid for cross-browser/cross-device coverage.
+`Defra.UI.Tests` is the core UI automation test project for the **IPAFFS Test Team**, covering the **IPAFFS** and **Risk Engine** applications. It contains **Reqnroll** (Gherkin/BDD) feature files, step definitions, page objects, and supporting tools used to validate CHED (Common Health Entry Document) notification and risk engine workflows — including CHEDA, CHEDD, CHEDP, and CHEDPP — via a page-object driven Selenium WebDriver framework. Tests run against a **Dockerised Selenium Grid by default** (see `docker-compose-grid.yml`), with optional execution against **BrowserStack's** cloud device grid for cross-browser/cross-device coverage.
 
 
 ## Features
@@ -26,7 +26,7 @@ flowchart TD
 	B --> E["Hooks (WebDriverHook, CapabilityHook, PageHooks)"]
 	E --> D
 	D --> F["Local Browser (Developer Machine, Test Explorer)"]
-	D --> G["Local/Dockerized Selenium Grid (docker-compose-grid.yml, Azure Pipelines)"]
+	D --> G["Local/Dockerised Selenium Grid (docker-compose-grid.yml, Azure Pipelines)"]
 	D --> H["BrowserStack Cloud Device Grid (Azure Pipelines)"]
 	F --> I["IPAFFS / Risk Engine Applications (ApplicationUrl, InspectorUrl, ExporterPortalUrl, BTMSApplicationUrl, etc.)"]
 	G --> I
@@ -66,7 +66,7 @@ Pipeline definitions live under the [`CI`](../CI) folder:
 - **`CI/run-test-template.yml`** — shared job template invoked by both regression pipelines for each stage; downloads the build artifact, extracts it, and runs the test suite against the selected environment/browser/device configuration.
 - **`CI/variables/IPAFF/*.yml`** — per-environment (e.g. `pre`) and `global.yml` variable definitions (environment URL, Selenium Grid/BrowserStack settings, worker count, PIMS/IDCOMS credentials sourced from the `IPAFFPREPROD` variable group).
 
-There are two manually-triggered (`trigger: none`, `pr: none`), parameterized **regression** test pipelines, both sharing the same parameter set (`environment`, `workers`, `seleniumGrid`, `deviceName`, `bsOSVersion`, `bsBrowserVersion`, `target`, `isEmulationEnabled`, `emulateDeviceInfo`, `isAccessibilityEnabled`, `enableRetry`, `featureFilter`):
+There are two manually-triggered (`trigger: none`, `pr: none`), parameterised **regression** test pipelines, both sharing the same parameter set (`environment`, `workers`, `seleniumGrid`, `deviceName`, `bsOSVersion`, `bsBrowserVersion`, `target`, `isEmulationEnabled`, `emulateDeviceInfo`, `isAccessibilityEnabled`, `enableRetry`, `featureFilter`):
 
 1. **IPAFFS_Regression** — `CI/ipaffs-test-execution.yml`. Downloads the latest `drop` artifact and executes tests per CHED stage (CHEDA, CHEDD, CHEDP, CHEDPP) as sequential stages, or a single custom stage filtered by tag/feature (`featureFilter` parameter, e.g. `SPS-9104` or `CHEDA`).
 2. **RiskEngine_Regression** — `CI/risk-engine-test-execution.yml`. Downloads the latest `drop` artifact and executes Risk Engine stages (Bulk Upload, then CHEDA/CHEDD/CHEDP/CHEDPP Risk Engine scenarios) as sequential stages, or a single custom stage filtered by tag/feature (`featureFilter` parameter, e.g. `SPS-9414` or `RiskEngine-CHEDPP`).
