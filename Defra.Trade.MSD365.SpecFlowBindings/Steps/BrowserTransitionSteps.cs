@@ -59,12 +59,27 @@ public class BrowserTransitionSteps : PowerAppsStepDefiner
         Driver.WaitForTransaction();
         var handlesBefore = dynamicsDriver.WindowHandles.ToList();
 
-        CommandSteps.WhenISelectTheCommand("IPAFFS");
-        Driver.WaitForTransaction();
+        // The ribbon click occasionally doesn't register (e.g. the command isn't yet
+        // interactable), which means the new tab never opens and we'd otherwise time out
+        // after 30s with no recourse. Retry the click once before giving up.
+        const int maxAttempts = 2;
+        for (var attempt = 1; attempt <= maxAttempts; attempt++)
+        {
+            CommandSteps.WhenISelectTheCommand("IPAFFS");
+            Driver.WaitForTransaction();
 
-        // Wait for the new IPAFFS tab to open
-        var wait = new WebDriverWait(dynamicsDriver, TimeSpan.FromSeconds(30));
-        wait.Until(d => d.WindowHandles.Count > handlesBefore.Count);
+            try
+            {
+                // Wait for the new IPAFFS tab to open
+                var wait = new WebDriverWait(dynamicsDriver, TimeSpan.FromSeconds(30));
+                wait.Until(d => d.WindowHandles.Count > handlesBefore.Count);
+                break;
+            }
+            catch (WebDriverTimeoutException) when (attempt < maxAttempts)
+            {
+                Console.WriteLine("[BrowserTransition] IPAFFS tab did not open within 30s, retrying ribbon click.");
+            }
+        }
 
         // Switch to the new tab
         var ipaffsHandle = dynamicsDriver.WindowHandles.Except(handlesBefore).Single();
