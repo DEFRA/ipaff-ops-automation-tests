@@ -1,6 +1,7 @@
 ﻿namespace Defra.Trade.Plants.SpecFlowBindings.Steps;
 
 using Capgemini.PowerApps.SpecFlowBindings;
+using Defra.Trade.Plants.SpecFlowBindings.Helpers;
 using Microsoft.Dynamics365.UIAutomation.Browser;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
@@ -65,6 +66,10 @@ public class BrowserTransitionSteps : PowerAppsStepDefiner
         const int maxAttempts = 2;
         for (var attempt = 1; attempt <= maxAttempts; attempt++)
         {
+            // A "Sign in to continue" prompt can reappear (e.g. after switching back from
+            // IPAFFS) and intercepts the ribbon click if left unhandled. Dismiss it first.
+            SignInPromptHelper.DismissSignInPrompts(dynamicsDriver, "pre-ipaffs-click");
+
             CommandSteps.WhenISelectTheCommand("IPAFFS");
             Driver.WaitForTransaction();
 
@@ -161,6 +166,10 @@ public class BrowserTransitionSteps : PowerAppsStepDefiner
             && ((IJavaScriptExecutor)d).ExecuteScript("return document.readyState").ToString() == "complete");
 
         Driver.WaitForTransaction();
+
+        // The "Sign in to continue" prompt can appear as soon as we land back on Dynamics
+        // (before the next step tries to interact with the ribbon), so clear it here too.
+        SignInPromptHelper.DismissSignInPrompts(dynamicsDriver, "post-return-to-dynamics");
 
         // Restore Dynamics reporting ownership for any steps after this point.
         _scenarioContext["IsDynamicsActive"] = true;
