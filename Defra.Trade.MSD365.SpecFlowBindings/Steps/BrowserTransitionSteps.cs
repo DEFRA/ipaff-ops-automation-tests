@@ -1,6 +1,7 @@
 ﻿namespace Defra.Trade.Plants.SpecFlowBindings.Steps;
 
 using Capgemini.PowerApps.SpecFlowBindings;
+using Defra.Trade.Plants.SpecFlowBindings.Helpers;
 using Microsoft.Dynamics365.UIAutomation.Browser;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
@@ -59,12 +60,31 @@ public class BrowserTransitionSteps : PowerAppsStepDefiner
         Driver.WaitForTransaction();
         var handlesBefore = dynamicsDriver.WindowHandles.ToList();
 
-        CommandSteps.WhenISelectTheCommand("IPAFFS");
-        Driver.WaitForTransaction();
+        // The ribbon click occasionally doesn't register (e.g. the command isn't yet
+        // interactable), which means the new tab never opens and we'd otherwise time out
+        // after 30s with no recourse. Retry the click once before giving up.
+        const int maxAttempts = 2;
+        for (var attempt = 1; attempt <= maxAttempts; attempt++)
+        {
+            // A "Sign in to continue" prompt can reappear (e.g. after switching back from
+            // IPAFFS) and intercepts the ribbon click if left unhandled. Dismiss it first.
+            SignInPromptHelper.DismissSignInPrompts(dynamicsDriver, "pre-ipaffs-click");
 
-        // Wait for the new IPAFFS tab to open
-        var wait = new WebDriverWait(dynamicsDriver, TimeSpan.FromSeconds(30));
-        wait.Until(d => d.WindowHandles.Count > handlesBefore.Count);
+            CommandSteps.WhenISelectTheCommand("IPAFFS");
+            Driver.WaitForTransaction();
+
+            try
+            {
+                // Wait for the new IPAFFS tab to open
+                var wait = new WebDriverWait(dynamicsDriver, TimeSpan.FromSeconds(30));
+                wait.Until(d => d.WindowHandles.Count > handlesBefore.Count);
+                break;
+            }
+            catch (WebDriverTimeoutException) when (attempt < maxAttempts)
+            {
+                Console.WriteLine("[BrowserTransition] IPAFFS tab did not open within 30s, retrying ribbon click.");
+            }
+        }
 
         // Switch to the new tab
         var ipaffsHandle = dynamicsDriver.WindowHandles.Except(handlesBefore).Single();
@@ -146,6 +166,10 @@ public class BrowserTransitionSteps : PowerAppsStepDefiner
             && ((IJavaScriptExecutor)d).ExecuteScript("return document.readyState").ToString() == "complete");
 
         Driver.WaitForTransaction();
+
+        // The "Sign in to continue" prompt can appear as soon as we land back on Dynamics
+        // (before the next step tries to interact with the ribbon), so clear it here too.
+        SignInPromptHelper.DismissSignInPrompts(dynamicsDriver, "post-return-to-dynamics");
 
         // Restore Dynamics reporting ownership for any steps after this point.
         _scenarioContext["IsDynamicsActive"] = true;

@@ -718,8 +718,7 @@ Scenario: User submits B2C consignment notification, inspector rejects and creat
 	When the user clicks Save and continue
 	Then the Transport to the port of entry page should be displayed
 	When the user populates the transport details 'LONDON GATEWAY (GBLGP)' 'No' 'Road vehicle' '123456' 'Doc1234'
-	And the user enters arrival date at BCP or Port of entry as today's date
-	When the user clicks Save and continue
+	And the user clicks Save and continue
 	Then the Goods movement services page should be displayed
 	When the user selects "No" for Are you using the Common Transit Convention (CTC)?
 	And the user selects 'No' for Will the transport use the Goods Vehicle Movement Service (GVMS)?

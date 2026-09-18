@@ -103,12 +103,23 @@ public class ImportNotificationSteps : PowerAppsStepDefiner
         // Retry to handle transient UI delays where the grid has not yet filtered
         // down to the expected result — the footer row count is the most reliable
         // indicator that the search has completed and the grid has refreshed.
+        // Occasionally the search runs before the notification has landed in Dynamics,
+        // so clear and re-search on each retry rather than just re-checking the count.
+        // There can be a processing delay of up to ~10 minutes before the notification
+        // appears, so retry for 20 attempts at 30-second intervals.
         Policy
             .Handle<Exception>()
             .OrResult<int?>(count => count == null || count != 1)
             .WaitAndRetry(
-                retryCount: 10,
-                sleepDurationProvider: _ => TimeSpan.FromSeconds(3))
+                retryCount: 20,
+                sleepDurationProvider: _ => TimeSpan.FromSeconds(30),
+                onRetry: (_, _, _, _) =>
+                {
+                    XrmApp.Grid.ClearSearch();
+                    Driver.WaitForTransaction();
+                    XrmApp.Grid.Search(expectedChedReference);
+                    Driver.WaitForTransaction();
+                })
             .Execute(() =>
             {
                 Driver.WaitForTransaction();
