@@ -649,6 +649,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             if (chedDocumentPages != null)
             {
+                // Part II is normally page 3, but moves back when the goods table spans several pages
+                var partIIIndex = chedDocumentPages.FindIndex(2, p => p.Sections?.II2ChedReference != null);
+                var partIIPageNumber = partIIIndex >= 0 ? partIIIndex + 1 : 3;
+
                 for (int pageNumber = 1; pageNumber <= chedDocumentPages.Count; pageNumber++)
                 {
                     var page = chedDocumentPages[pageNumber - 1];
@@ -705,26 +709,52 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         {
                             var allCommodityDetails = _scenarioContext["AllCommodityDetails"] as Reqnroll.DataTable;
                             var list = allCommodityDetails.Rows.Select(r => r.ToDictionary(k => k.Key, v => v.Value)).ToList();
-                            int rowIndex = 0;
 
-                            foreach (var row in list)
+                            // Commodity rows may continue onto subsequent pages of the certificate
+                            var allGoods = chedDocumentPages
+                                .Skip(pageNumber - 1)
+                                .Where(p => p.Sections?.DescriptionOfTheGoods != null)
+                                .SelectMany(p => p.Sections.DescriptionOfTheGoods)
+                                .ToList();
+
+                            if (allGoods.Count < list.Count)
                             {
-                                foreach (var kv in row)
+                                allDataMatches = false;
+                                mismatches.Add($"Commodity count: expected {list.Count} but found {allGoods.Count} in certificate");
+                            }
+
+                            // The certificate groups goods by commodity code, so pair each entered row with the first
+                            // unused certificate row for the same commodity code and EPPO code (or genus), falling back
+                            // to positional order when no such row exists.
+                            var usedGoods = new bool[allGoods.Count];
+
+                            for (int rowIndex = 0; rowIndex < Math.Min(list.Count, allGoods.Count); rowIndex++)
+                            {
+                                foreach (var kv in list[rowIndex])
                                 {
                                     _scenarioContext[$"Commodity_{kv.Key}"] = kv.Value;
                                 }
-                                ValidateContains("Commodity_Commodity code", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
-                                ValidateContains("Commodity_Genus and Species", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
-                                ValidateContains("Commodity_EPPO code", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
-                                ValidateContains("Commodity_Variety", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Variety, ref allDataMatches, mismatches);
-                                ValidateContains("Commodity_Class", (string)page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).AdditionalData.ElementAt(0).Value, ref allDataMatches, mismatches);
-                                ValidateContains("Commodity_Net weight (kg)", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
-                                ValidateContains("Commodity_Number of packages", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
-                                ValidateContains("CountryOfOrigin", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Value, ref allDataMatches, mismatches);
-                                ValidateContains("Commodity_Quantity", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).Quantity, ref allDataMatches, mismatches);
-                                ValidateContains("Commodity_Controlled atmosphere container", page.Sections.DescriptionOfTheGoods.ElementAt(rowIndex).ControlledAtmosphereContainer, ref allDataMatches, mismatches);
 
-                                rowIndex++;
+                                // The certificate shows the 8-digit CN code even when a longer code was entered
+                                if (list[rowIndex].TryGetValue("Commodity code", out var enteredCode) && enteredCode?.Trim().Length > 8)
+                                    _scenarioContext["Commodity_Commodity code"] = enteredCode.Trim().Substring(0, 8);
+
+                                var goodsIndex = FindMatchingGoodsIndex(allGoods, usedGoods, list[rowIndex]);
+                                if (goodsIndex < 0)
+                                    goodsIndex = Array.FindIndex(usedGoods, used => !used);
+                                usedGoods[goodsIndex] = true;
+
+                                var goods = allGoods[goodsIndex];
+                                ValidateContains("Commodity_Commodity code", goods.Value, ref allDataMatches, mismatches);
+                                ValidateContains("Commodity_Genus and Species", goods.Value, ref allDataMatches, mismatches);
+                                ValidateContains("Commodity_EPPO code", goods.Value, ref allDataMatches, mismatches);
+                                ValidateContains("Commodity_Variety", goods.Variety, ref allDataMatches, mismatches);
+                                ValidateContains("Commodity_Class", (string)goods.AdditionalData?.ElementAtOrDefault(0).Value, ref allDataMatches, mismatches);
+                                ValidateContains("Commodity_Net weight (kg)", goods.Value, ref allDataMatches, mismatches);
+                                ValidateContains("Commodity_Number of packages", goods.Value, ref allDataMatches, mismatches);
+                                ValidateContains("CountryOfOrigin", goods.Value, ref allDataMatches, mismatches);
+                                ValidateContains("Commodity_Quantity", goods.Quantity, ref allDataMatches, mismatches);
+                                ValidateContains("Commodity_Controlled atmosphere container", goods.ControlledAtmosphereContainer, ref allDataMatches, mismatches);
                             }                           
                         }
                         ValidateContains("TotalNetWeight", page.Sections.TotalNetWeight?.Value, ref allDataMatches, mismatches);
@@ -734,9 +764,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
                         ValidateContains("ContactEmail", (string)page.Sections.Transporter.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches);
                         ValidateContains("ContactTelephone", (string)page.Sections.Transporter.AdditionalData.ElementAt(1).Value, ref allDataMatches, mismatches);
                     }
-                    else if (pageNumber == 3)
+                    else if (pageNumber == partIIPageNumber)
                     {
-                        Console.WriteLine("********************** Page 3 *********************************");
+                        Console.WriteLine($"********************** Page {pageNumber} *********************************");
 
                         ValidateIfExists("CHEDReference", page.Sections.II2ChedReference.Id, ref allDataMatches, mismatches);
                         ValidateContains("BorderControlPost", (string)page.Sections.IdentificationOfBcp.AdditionalData.ElementAt(2).Value, ref allDataMatches, mismatches, true);
@@ -845,13 +875,19 @@ namespace Defra.UI.Tests.Steps.IPAFF
                                         var code = codeItems.ElementAt(0).Values.ElementAt(0);
                                         if (codeItem == null && code == null)
                                             continue;
-                                       
+
+                                        // Several rows can share a commodity code: pick the entry for this row's EPPO code
+                                        var eppoCode = _scenarioContext.ContainsKey("Commodity_EPPO code") ? _scenarioContext.Get<string>("Commodity_EPPO code")?.Trim() : null;
+                                        var values = codeItems.ElementAt(0).Values;
+                                        if (!string.IsNullOrEmpty(eppoCode) && values.Count > 1)
+                                            code = values.FirstOrDefault(v => string.Equals(v?.EppoCode?.Trim(), eppoCode, StringComparison.OrdinalIgnoreCase));
+
                                         if (!valueIndexes.ContainsKey(commodityCode))
                                             valueIndexes[commodityCode] = 0;
 
                                         int index = valueIndexes[commodityCode];
 
-                                        if (commodityCode.Equals(codeItem))
+                                        if (code != null && commodityCode.Equals(codeItem))
                                         {   
                                             ValidateContains("Commodity_Genus and Species", code.GenusAndSpecies, ref allDataMatches, mismatches);
                                             ValidateContains("Commodity_EPPO code", code.EppoCode, ref allDataMatches, mismatches);
@@ -1301,6 +1337,35 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
         private void LogSkip(string key, string reason) => Console.WriteLine($"[PDF VALIDATION] ⊘ {key}: Skipped ({reason})");
 
+
+        private static int FindMatchingGoodsIndex(List<ChedSection> goods, bool[] used, Dictionary<string, string> row)
+        {
+            row.TryGetValue("Commodity code", out var code);
+            row.TryGetValue("EPPO code", out var eppo);
+            row.TryGetValue("Genus and Species", out var genus);
+
+            code = code?.Trim() ?? "";
+            if (code.Length > 8)
+                code = code.Substring(0, 8);
+            var key = !string.IsNullOrWhiteSpace(eppo) ? eppo.Trim() : genus?.Trim();
+
+            if (string.IsNullOrEmpty(code) || string.IsNullOrEmpty(key))
+                return -1;
+
+            for (int i = 0; i < goods.Count; i++)
+            {
+                if (used[i])
+                    continue;
+
+                var value = goods[i].Value ?? "";
+                var codeMatches = string.Equals(goods[i].Commodity?.Trim(), code, StringComparison.OrdinalIgnoreCase)
+                                  || value.StartsWith(code, StringComparison.OrdinalIgnoreCase);
+                if (codeMatches && Regex.IsMatch(value, $@"(^|\s){Regex.Escape(key)}(\s|$)", RegexOptions.IgnoreCase))
+                    return i;
+            }
+
+            return -1;
+        }
 
         private void ValidateContains(string contextKey, string? actual, ref bool allDataMatches, List<string> mismatches, bool contextContainsPDF = false)
         {

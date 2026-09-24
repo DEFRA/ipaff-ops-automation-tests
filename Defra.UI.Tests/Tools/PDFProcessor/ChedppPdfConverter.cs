@@ -23,6 +23,11 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
 
             using (var document = PdfDocument.Open(pdfPath))
             {
+                // Part II normally starts on page 3; large consignments push it further back
+                // because the goods table continues over several pages.
+                var partIIPage = document.GetPages()
+                    .FirstOrDefault(p => p.Number >= 3 && Regex.IsMatch(p.Text, @"PART\s*II\b", RegexOptions.IgnoreCase))?.Number ?? 3;
+
                 // Pre-scan all pages for binomials and commodity-to-species mappings
                 var globalGenusMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
                 var commoditySpeciesMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -45,9 +50,9 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
                     }
 
                     // Look for Commodity + Species on technical specification page (typically page 3)
-                    if (p.Number == 3)
+                    if (p.Number == partIIPage)
                     {
-                        // Use a very permissive regex to find commodity followed by anything then a capitalized word
+                        // Use a very permissive regex
                         var commMatches = Regex.Matches(p.Text, @"(\d{8}).*?(x\s+)?([A-Z][a-z]{3,})", RegexOptions.IgnoreCase);
                         foreach (Match m in commMatches)
                         {
@@ -77,7 +82,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
 
                 foreach (var page in document.GetPages())
                 {
-                    var pageData = ExtractPageData(page, document, globalGenusMap, commoditySpeciesMap);
+                    var pageData = ExtractPageData(page, document, globalGenusMap, commoditySpeciesMap, partIIPage);
                     pages.Add(pageData);
                     
                     // DEBUG: Log page numbers
@@ -93,7 +98,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
             return JsonConvert.SerializeObject(pages, Formatting.Indented);
         }
 
-        private PageData ExtractPageData(UglyToad.PdfPig.Content.Page page, PdfDocument document, Dictionary<string, string> globalGenusMap, Dictionary<string, string> commoditySpeciesMap)
+        private PageData ExtractPageData(UglyToad.PdfPig.Content.Page page, PdfDocument document, Dictionary<string, string> globalGenusMap, Dictionary<string, string> commoditySpeciesMap, int partIIPage = 3)
         {
             var pageData = new PageData
             {
@@ -137,27 +142,32 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
             }
 
 
-            var words = page.GetWords().OrderByDescending(w => w.BoundingBox.Top).ThenBy(w => w.BoundingBox.Left).ToList();
-            var lines = new List<string>();
-            string currentLine = "";
-            double lastTop = -1;
-
-            foreach (var w in words)
+            string BuildLineText(UglyToad.PdfPig.Content.Page source)
             {
-                if (lastTop == -1 || Math.Abs(lastTop - w.BoundingBox.Top) > 5)
-                {
-                    if (!string.IsNullOrEmpty(currentLine)) lines.Add(currentLine);
-                    currentLine = w.Text;
-                }
-                else
-                {
-                    currentLine += " " + w.Text;
-                }
-                lastTop = w.BoundingBox.Top;
-            }
-            if (!string.IsNullOrEmpty(currentLine)) lines.Add(currentLine);
+                var words = source.GetWords().OrderByDescending(w => w.BoundingBox.Top).ThenBy(w => w.BoundingBox.Left).ToList();
+                var lines = new List<string>();
+                string currentLine = "";
+                double lastTop = -1;
 
-            var text = string.Join(" \n ", lines);
+                foreach (var w in words)
+                {
+                    if (lastTop == -1 || Math.Abs(lastTop - w.BoundingBox.Top) > 5)
+                    {
+                        if (!string.IsNullOrEmpty(currentLine)) lines.Add(currentLine);
+                        currentLine = w.Text;
+                    }
+                    else
+                    {
+                        currentLine += " " + w.Text;
+                    }
+                    lastTop = w.BoundingBox.Top;
+                }
+                if (!string.IsNullOrEmpty(currentLine)) lines.Add(currentLine);
+
+                return string.Join(" \n ", lines);
+            }
+
+            var text = BuildLineText(page);
 
             if (page.Number == 1)
             {
@@ -357,7 +367,17 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
             {
                 pageData.Sections["I27MeansOfTransportAfterBcpStorage"] = new { InternationalTransportDocument = "", Identification = "", Mode = "" };
 
-                var contactRaw = Regex.Match(page.Text, @"Contact\s*details\s*(.*?)(?=Name of signatory|Date of signature|$)", RegexOptions.Singleline | RegexOptions.IgnoreCase).Groups[1].Value.Trim();
+                // Large consignments: totals, contact details and declaration follow the goods table
+                // on the last page before Part II instead of page 2.
+                var summaryText = page.Text;
+                if (partIIPage > 3)
+                {
+                    var summaryPage = document.GetPages().FirstOrDefault(p => p.Number == partIIPage - 1);
+                    if (summaryPage != null && Regex.IsMatch(summaryPage.Text, @"Total\s*number\s*of\s*packages", RegexOptions.IgnoreCase))
+                        summaryText = summaryPage.Text;
+                }
+
+                var contactRaw = Regex.Match(summaryText, @"Contact\s*details\s*(.*?)(?=Name of signatory|Date of signature|$)", RegexOptions.Singleline | RegexOptions.IgnoreCase).Groups[1].Value.Trim();
                 var contactName = "";
                 var contactAddress = "";
                 var contactCountry = "";
@@ -431,12 +451,20 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
                     if (page1 != null)
                         descriptions = BuildPage2GoodsRows(page1, commoditySpeciesMap);
                 }
+                else
+                {
+                    // Large consignments: the goods table continues on the pages before Part II.
+                    foreach (var next in document.GetPages().Where(p => p.Number > page.Number && p.Number < partIIPage))
+                    {
+                        descriptions.AddRange(BuildPage2GoodsRows(next, commoditySpeciesMap, page));
+                    }
+                }
 
                 pageData.Sections["I31DescriptionOfTheGoods"] = descriptions;
 
                 // I32: PackageCount = "NNN packages" total, value = comma-separated list of types
-                var i32Raw = Regex.Match(page.Text, @"Total number of packages\s*(.*?)\s*Total Net Weight", RegexOptions.Singleline | RegexOptions.IgnoreCase).Groups[1].Value.Trim();
-                // i32Raw is the comma-separated list e.g. "10 Box, 10 Case, ..."
+                var i32Raw = Regex.Match(summaryText, @"Total number of packages\s*(.*?)\s*Total Net Weight", RegexOptions.Singleline | RegexOptions.IgnoreCase).Groups[1].Value.Trim();
+                // i32Raw is the comma-separated list
                 int i32TotalPkgs = descriptions.Count > 0
                     ? descriptions.Cast<dynamic>().Sum(d =>
                     {
@@ -451,21 +479,21 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
                     value = i32Raw
                 };
                 // I33TotalQuantity not in CHEDPP sample — omitted
-                pageData.Sections["I34TotalNetWeight"] = new { value = Regex.Match(page.Text, @"Total Net Weight\s*(.*?)\s*Total Gross Weight", RegexOptions.Singleline | RegexOptions.IgnoreCase).Groups[1].Value.Trim() };
-                pageData.Sections["I34TotalGrossWeight"] = new { value = Regex.Match(page.Text, @"Total Gross Weight\s*(.*?)\s*(?:Contact|Agent|Description|$)", RegexOptions.Singleline | RegexOptions.IgnoreCase).Groups[1].Value.Trim() };
+                pageData.Sections["I34TotalNetWeight"] = new { value = Regex.Match(summaryText, @"Total Net Weight\s*(.*?)\s*Total Gross Weight", RegexOptions.Singleline | RegexOptions.IgnoreCase).Groups[1].Value.Trim() };
+                pageData.Sections["I34TotalGrossWeight"] = new { value = Regex.Match(summaryText, @"Total Gross Weight\s*(.*?)\s*(?:Contact|Agent|Description|$)", RegexOptions.Singleline | RegexOptions.IgnoreCase).Groups[1].Value.Trim() };
 
-                var sName = Regex.Match(page.Text, @"Name of signatory\s*(.*?)\s*(?:Signature|$)", RegexOptions.Singleline | RegexOptions.IgnoreCase).Groups[1].Value.Trim();
-                var sDate = Regex.Match(page.Text, @"Date of signature\s*([0-9\.\s\+A-Z:]+?)(?:Name|$)", RegexOptions.Singleline | RegexOptions.IgnoreCase).Groups[1].Value.Trim();
+                var sName = Regex.Match(summaryText, @"Name of signatory\s*(.*?)\s*(?:Signature|$)", RegexOptions.Singleline | RegexOptions.IgnoreCase).Groups[1].Value.Trim();
+                var sDate = Regex.Match(summaryText, @"Date of signature\s*([0-9\.\s\+A-Z:]+?)(?:Name|$)", RegexOptions.Singleline | RegexOptions.IgnoreCase).Groups[1].Value.Trim();
                 pageData.Sections["I35Declaration"] = new { DateOfSignature = sDate, NameOfSignatory = sName, Signature = "", value = $"Declaration signed by {sName} on {sDate}".Trim() };
             }
-            else if (page.Number >= 3)
+            else if (page.Number >= partIIPage)
             {
                 // DEBUG: Check what page we're on and save page text
                 //System.IO.File.WriteAllText($@"C:\Dev\pdftojson\debug_page{page.Number}_text.txt", $"Page {page.Number} text:\n\n{text}");
                 ExtractDynamicChecksSections(page, pageData);
 
-                // If page 3, also process the II sections from before
-                if (page.Number == 3)
+                // On the first Part II page, also process the II sections from before
+                if (page.Number == partIIPage)
                 {
                     var chedRef = ExtractRegex(text, @"(CHEDPP\.[A-Z]{2}\.\d{4}\.\d{7})") ?? ExtractRegex(text, @"(CHEDPP\.[A-Z0-9\.]+)") ?? "";
                     pageData.Sections["PartIIControls"] = new { value = "" };
@@ -573,20 +601,32 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
                     string ii16DateTime = ExtractRegex(page.Text, @"(?:Date/time|Date\s+and\s+time)[\r\n\s]*([0-9\.\s\+A-Z:]+)") ?? "";
                     pageData.Sections["II16NotAcceptable"] = new { value = "", Ischecked = ii16IsChecked, Text = ii16Text, Datetime = ii16DateTime };
                     pageData.Sections["II17ReasonForRefusal"] = new { value = "" };
+
+                    // Large consignments: Part II spans several pages and the BCP / certifying officer
+                    // block sits on a later page than the Part II header.
+                    var bcpText = text;
+                    if (partIIPage > 3 && !Regex.IsMatch(text, @"Identification\s+of\s+BCP", RegexOptions.IgnoreCase))
+                    {
+                        var bcpPage = document.GetPages().LastOrDefault(p => p.Number > page.Number
+                            && Regex.IsMatch(p.Text, @"Identification\s*of\s*BCP", RegexOptions.IgnoreCase));
+                        if (bcpPage != null)
+                            bcpText = BuildLineText(bcpPage);
+                    }
+
                     pageData.Sections["II20IdentificationOfBcp"] = new
                     {
-                        UnitNumber = ExtractRegex(text, @"Unit number\s*([A-Z0-9]+)")?.Trim() ?? "",
+                        UnitNumber = ExtractRegex(bcpText, @"Unit number\s*([A-Z0-9]+)")?.Trim() ?? "",
                         Stamp = "",
                         Bcp = Regex.Replace(
-                                  ExtractRegex(text, @"BCP\s+BCP\s+([A-Za-z][A-Za-z\s]+?)(?:\s+(?:Inspection|Full|Signature|Unit|$))")?.Trim()
-                                  ?? ExtractRegex(text, @"BCP\s+([A-Za-z][A-Za-z\s]+?)(?:\s+(?:Inspection|Full|Signature|Unit|$))")?.Trim()
+                                  ExtractRegex(bcpText, @"BCP\s+BCP\s+([A-Za-z][A-Za-z\s]+?)(?:\s+(?:Inspection|Full|Signature|Unit|$))")?.Trim()
+                                  ?? ExtractRegex(bcpText, @"BCP\s+([A-Za-z][A-Za-z\s]+?)(?:\s+(?:Inspection|Full|Signature|Unit|$))")?.Trim()
                                   ?? "",
                                   @"\bBCP\b", "", RegexOptions.IgnoreCase).Trim()
                     };
                     pageData.Sections["II21CertifyingOfficer"] = new
                     {
-                        Name = ExtractBetween(text, "Full name", "Signature", "").Trim() ?? ExtractRegex(text, @"Full name[\r\n\s]*([A-Za-z\s]+?)[\r\n\s]*Signature")?.Trim() ?? "",
-                        DateOfSignature = ExtractBetween(text, "Date of signature", "\n", "").Trim() ?? ExtractRegex(text, @"Date of signature[\r\n\s]*([0-9\.\s\+A-Z]+)")?.Trim() ?? "",
+                        Name = ExtractBetween(bcpText, "Full name", "Signature", "").Trim() ?? ExtractRegex(bcpText, @"Full name[\r\n\s]*([A-Za-z\s]+?)[\r\n\s]*Signature")?.Trim() ?? "",
+                        DateOfSignature = ExtractBetween(bcpText, "Date of signature", "\n", "").Trim() ?? ExtractRegex(bcpText, @"Date of signature[\r\n\s]*([0-9\.\s\+A-Z]+)")?.Trim() ?? "",
                         Signature = ""
                     };
                     pageData.Sections["II22InspectionFeesFullNameLondon"] = new { };
@@ -597,28 +637,41 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
             return pageData;
         }
 
-        private List<object> BuildPage2GoodsRows(UglyToad.PdfPig.Content.Page page, Dictionary<string, string> commoditySpeciesMap)
+        private List<object> BuildPage2GoodsRows(UglyToad.PdfPig.Content.Page page, Dictionary<string, string> commoditySpeciesMap, UglyToad.PdfPig.Content.Page headerPage = null)
         {
             var result = new List<object>();
             var words = page.GetWords().ToList();
 
-            var headerY = FindWord(words, "Commodity")?.BoundingBox.Bottom ?? 632;
+            // Continuation pages carry no table header row: take column anchors from the header page
+            // and start reading rows just below the "Page X of Y" banner at the top of the page.
+            var headerWords = headerPage != null ? headerPage.GetWords().ToList() : words;
+            var headerY = FindWord(headerWords, "Commodity")?.BoundingBox.Bottom ?? 632;
 
             // Column anchors from table headers; constrain to the table header row's Y because
             // labels like "Country" and "Variety" also appear in Part I sections on page 1
             // when the goods table flows onto page 1 (small consignment layouts).
             var columnX = new Dictionary<string, double>
             {
-                ["Commodity"] = FindWord(words, "Commodity", headerY: headerY)?.BoundingBox.Left ?? 35,
-                ["Genus"] = FindWord(words, "Genus", headerY: headerY)?.BoundingBox.Left ?? 79,
-                ["Variety"] = FindWord(words, "Variety", headerY: headerY)?.BoundingBox.Left ?? 150,
-                ["Class"] = FindWord(words, "Class", headerY: headerY)?.BoundingBox.Left ?? 214,
-                ["NetWeight"] = FindWord(words, "Net", headerY: headerY)?.BoundingBox.Left ?? 247,
-                ["PackageCount"] = FindWord(words, "Package", headerY: headerY)?.BoundingBox.Left ?? 280,
-                ["Country"] = FindWord(words, "Country", headerY: headerY)?.BoundingBox.Left ?? 386,
-                ["Quantity"] = FindWord(words, "Quantity", headerY: headerY)?.BoundingBox.Left ?? 435,
-                ["ControlledAtmosphere"] = FindWord(words, "Controlled", headerY: headerY)?.BoundingBox.Left ?? 506
+                ["Commodity"] = FindWord(headerWords, "Commodity", headerY: headerY)?.BoundingBox.Left ?? 35,
+                ["Genus"] = FindWord(headerWords, "Genus", headerY: headerY)?.BoundingBox.Left ?? 79,
+                ["Variety"] = FindWord(headerWords, "Variety", headerY: headerY)?.BoundingBox.Left ?? 150,
+                ["Class"] = FindWord(headerWords, "Class", headerY: headerY)?.BoundingBox.Left ?? 214,
+                ["NetWeight"] = FindWord(headerWords, "Net", headerY: headerY)?.BoundingBox.Left ?? 247,
+                ["PackageCount"] = FindWord(headerWords, "Package", headerY: headerY)?.BoundingBox.Left ?? 280,
+                ["Country"] = FindWord(headerWords, "Country", headerY: headerY)?.BoundingBox.Left ?? 386,
+                ["Quantity"] = FindWord(headerWords, "Quantity", headerY: headerY)?.BoundingBox.Left ?? 435,
+                ["ControlledAtmosphere"] = FindWord(headerWords, "Controlled", headerY: headerY)?.BoundingBox.Left ?? 506
             };
+
+            if (headerPage != null)
+            {
+                var banner = words
+                    .Where(w => w.Text.Equals("Page", StringComparison.OrdinalIgnoreCase)
+                                && w.BoundingBox.Bottom > page.Height / 2)
+                    .OrderByDescending(w => w.BoundingBox.Bottom)
+                    .FirstOrDefault();
+                headerY = banner != null ? banner.BoundingBox.Bottom : page.Height;
+            }
 
             var sortedColumns = columnX.OrderBy(k => k.Value).ToList();
             var bounds = new Dictionary<string, (double Left, double Right)>();
@@ -658,7 +711,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
             }
 
             var commodityRows = words
-                .Where(w => Regex.IsMatch(w.Text, @"^\d{8}$")
+                .Where(w => Regex.IsMatch(w.Text, @"^\d{8}")
                             && w.BoundingBox.Left >= bounds["Commodity"].Left
                             && w.BoundingBox.Left < bounds["Commodity"].Right
                             && w.BoundingBox.Bottom < headerY - 10
