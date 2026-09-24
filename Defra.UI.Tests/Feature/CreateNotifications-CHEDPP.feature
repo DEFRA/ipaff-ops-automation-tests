@@ -1180,305 +1180,306 @@ Scenario: Trader creates CHEDPP notification via CSV upload and completes end-to
 	Then the certificate should be displayed in a new browser tab
 	When the user downloads the PDF for validation
 	And the user checks that the data in the certificate matches the data entered into the CHED PP notification
-	#When the user closes the PDF browser tab
-	#Then the browser tab is closed
-	#And the dashboard page should be displayed
-	#When the user logs out of IPAFFS Part 1
-	#Then the user should be logged out successfully
-	#When the user navigate to the BTMS application
-	#Then I click Sign in button
-	#And I should see type of Gateway login page
-	#And I have selected "Government Gateway" as login type
-	#And I click Sign in button
-	#And I should see type of Gateway login page
-	#And I have selected "Sign in with Government Gateway" as login type
-	#When I click Continue button from How do you want to sign in page
-	#Then I should redirected to the BTMS Sign in using Government Gateway page
-	#When I have provided the BTMS credentials and signin
-	#Then the BTMS search screen should be displayed
-	#When the user searches for the CHED created earlier
-	#Then the BTMS search result screen should be displayed
-	#And the user checks commodity code "06012030", description "Calanthe biloba", quantity "3.0", authority "PHSI" and decision "Decision not given"
-	#And the user checks commodity code "06029045", description "Abutilon indicum", quantity "3.0", authority "PHSI" and decision "Decision not given"
-	#And the user checks commodity code "06029045", description "Acaciella angustissima", quantity "3.0", authority "PHSI" and decision "Decision not given"
-	#And the user checks commodity code "06029045", description "Acer maximowiczii", quantity "3.0", authority "PHSI" and decision "Decision not given"
-	#And the user checks commodity code "0709999020", description "Abelmoschus esculentus", quantity "3.0", authority "HMI" and decision "Decision not given"
-	#And the user checks commodity code "0810907590", description "Ardisia crenata", quantity "3.0", authority "PHSI,HMI" and decision "Decision not given,Decision not given"
-	#When the user logs out of BTMS
-	#Then the user should be logged out successfully
-	#When I am logged in to the 'IDCOMS' app as 'Inspector'
-	#And I click on 'Import Notifications' under the 'Imports' area
-	#Then the 'Active Import Notifications' view is displayed
-	#When I search Import Notifications for the notification created in IPAFFS
-	#Then the notification created in IPAFFS should be returned
-	#When I open the record in the grid
-	#Then I verify the Import Notification page is displayed for the notification created in IPAFFS
-	#And the 'Summary' tab is displayed and selected
-	#When I click the reference number in the Work Order field for the notification created in IPAFFS
-	#Then I verify the Work Order page is displayed for the notification created in IPAFFS
-	#And the 'Import' tab is displayed and selected
-	#When I click the Assign command
-	#Then I can see the Assign Work Order popup is displayed
-	#When I click the Assign button
-	#Then the Substatus of the Work Order should be Assigned
-	#And the Owner of the Work Order should be me
-	#When I check that the Commodity Lines frame shows 'Active Import Commodity Lines'
-	#Then all the Commodity Lines should be validated with the values given in the input
-	#When I sort Commodity Lines by Regulatory Authority
-	#And I double click on a Commodity Line with Regulatory Authority set to 'PHSI'
-	#Then the Import Commodity Line page is displayed
-	#And the settings are displayed as HMI Inspection Required 'No', PHSI Inspection Required 'Yes' and Inspection Classification 'Mandatory / Controlled / Reduced / Not Notifiable'
-	#When I click the Back button in the command bar
-	#Then I verify the Work Order page is displayed for the notification created in IPAFFS
-	#And the 'Import' tab is displayed and selected
-	#When I sort Commodity Lines by Regulatory Authority
-	#And I double click on a Commodity Line with Regulatory Authority set to 'HMI'
-	#Then the Import Commodity Line page is displayed
-	#And the settings are displayed as HMI Inspection Required 'Yes', PHSI Inspection Required 'No' and Inspection Classification ''
-	#When I click the Back button in the command bar
-	#Then I verify the Work Order page is displayed for the notification created in IPAFFS
-	#And the 'Import' tab is displayed and selected
-	#When I sort Commodity Lines by Regulatory Authority
-	#And I double click on a Commodity Line with Regulatory Authority set to 'Joint'
-	#Then the Import Commodity Line page is displayed
-	#And the settings are displayed as HMI Inspection Required 'Yes / No', PHSI Inspection Required 'No' and Inspection Classification 'Mandatory / Controlled / Reduced / Not Notifiable'
-	#When I click the Back button in the command bar
-	#Then I verify the Work Order page is displayed for the notification created in IPAFFS
-	#And the 'Import' tab is displayed and selected
-	#When I select the 'Work Order Tasks' tab
-	#Then I can see following Work Order Tasks 'HMI Check' 'Document Check' 'Imports Phyto Certificate Audit' 'Identity & Physical Check'
-	#When I click on the 'Document Check' task
-	#And I maximise the popup
-	#Then I verify the 'Document Check' popup is displayed
-	#And the 'Summary' tab is displayed and selected
-	#When I click the Assign command
-	#Then I can see the Assign Work Order Task popup is displayed
-	#When I click the Assign button
-	#Then the Owner of the Work Order should be me
-	#When I click Add my time within the Time Recording section
-	#Then a new row appears in the grid containing my name
-	#And the entry status is 'Draft'
-	#When I enter '20' in the Admin column
-	#And I click the Save icon
-	#Then the details are saved 
-	#And the entry status is 'Draft'
-	#When I select the new row in the grid
-	#And I click Submit Time
-	#Then I can see the Confirm Time Entries popup is displayed
-	#When I click the OK button
-	#Then the entry status is 'Submitted'
-	#When I click Mark Complete
-	#Then a grey banner is displayed 'Read-only This record’s status: Inactive'
-	#When I close the popup
-	#Then I verify the Work Order page is displayed for the notification created in IPAFFS
-	#And I can see following Work Order Tasks 'HMI Check' 'Document Check' 'Imports Phyto Certificate Audit' 'Identity & Physical Check'
-	#And the Work Order Task 'Document Check' Status is 'Inactive'
-	#And the Work Order Task 'Document Check' % Complete is '100.00'
-	#When I click on the 'Imports Phyto Certificate Audit' task
-	#And I maximise the popup
-	#Then I verify the 'Imports Phyto Certificate Audit' popup is displayed
-	#And the 'Summary' tab is displayed and selected
-	#When I click the Assign command
-	#Then I can see the Assign Work Order Task popup is displayed
-	#When I click the Assign button
-	#Then the Owner of the Work Order should be me
-	#When I click Add my time within the Time Recording section
-	#Then a new row appears in the grid containing my name
-	#And the entry status is 'Draft'
-	#When I enter '599' in the Admin column
-	#And I click the Save icon
-	#Then the details are saved 
-	#And the entry status is 'Draft'
-	#When I select the new row in the grid
-	#And I click Submit Time
-	#Then I can see the Confirm Time Entries popup is displayed
-	#When I click the OK button
-	#Then the entry status is 'Submitted'
-	#When I update the Audit status to 'Audited'
-	#And I update the Date documents received to today's date
-	#And I update the Documents match electronic copy? to 'Yes'
-	#Then the Audit status field is 'Audited'
-	#And the Date documents received field is today's date
-	#And the Documents match electronic copy? field is 'Yes'
-	#When I click the Save icon above the Accompanying Documents grid
-	#Then the Accompanying Documents grid details are saved
-	#When I click Mark Complete
-	#Then a grey banner is displayed 'Read-only This record’s status: Inactive'
-	#When I close the popup
-	#Then I verify the Work Order page is displayed for the notification created in IPAFFS
-	#And I can see following Work Order Tasks 'HMI Check' 'Document Check' 'Imports Phyto Certificate Audit' 'Identity & Physical Check'
-	#And the Work Order Task 'Imports Phyto Certificate Audit' Status is 'Inactive'
-	#And the Work Order Task 'Imports Phyto Certificate Audit' % Complete is '100.00'
-	#When I click on the 'Identity & Physical Check' task
-	#And I maximise the popup
-	#Then I verify the 'Identity & Physical Check' popup is displayed
-	#And the 'Summary' tab is displayed and selected
-	#When I select the 'Samples' tab
-	#Then the 'Samples' tab is displayed and selected
-	#And the Import Commodity Lines grid is populated with the commodity lines from the notification created in IPAFFS
-	#And the Lab Samples grid is empty
-	#When I close the popup
-	#Then I verify the Work Order page is displayed for the notification created in IPAFFS
-	#And the Work Order Task 'Identity & Physical Check' Status is 'Active'
-	#And the Work Order Task 'Identity & Physical Check' % Complete is '0.00'
-	#When I click on the 'Identity & Physical Check' task
-	#And I maximise the popup
-	#Then I verify the 'Identity & Physical Check' popup is displayed
-	#And the 'Summary' tab is displayed and selected
-	#When I click Add my time within the Time Recording section
-	#Then a new row appears in the grid containing my name
-	#And the entry status is 'Draft'
-	#When I enter '10' in the Admin column
-	#And I enter '120' in the Travel column
-	#And I enter '60' in the Inspection column
-	#And I click the Save icon
-	#Then the details are saved 
-	#And the entry status is 'Draft'
-	#When I select the new row in the grid
-	#And I click Submit Time
-	#Then I can see the Confirm Time Entries popup is displayed
-	#When I click the OK button
-	#Then the entry status is 'Submitted'
-	#When I click Mark Complete
-	#Then a grey banner is displayed 'Read-only This record’s status: Inactive'
-	#When I close the popup
-	#Then I verify the Work Order page is displayed for the notification created in IPAFFS
-	#And I can see following Work Order Tasks 'HMI Check' 'Document Check' 'Imports Phyto Certificate Audit' 'Identity & Physical Check'
-	#And the Work Order Task 'Identity & Physical Check' Status is 'Inactive'
-	#And the Work Order Task 'Identity & Physical Check' % Complete is '100.00'
-	#When I click IPAFFS from the header ribbon
-	#And I switch to the IPAFFS tab
-	#Then the user can see the Decision Hub for the notification created in IPAFFS
-	#And the user can see 2 hypertext links 'Record PHSI checks' 'Record HMI checks'
-	#When the user clicks Save and set as in progress
-	#Then the notification status should change from 'New' to 'In progress'
-	#And the 'Record HMI checks' status is 'To do / In progress'
-	#When the user clicks on the Record checks link 'Record HMI checks'
-	#Then the Record HMI checks page should be displayed
-	#And the Commodities HMI check status should be 'To do'
-	#When the user sets the Commodities status to 'Compliant'
-	#And the Validity period is 7 days
-	#And the user clicks Save and return to work order
-	#And I switch back to the Dynamics tab
-	#Then I verify the Work Order page is displayed for the notification created in IPAFFS
-	#And the 'Import' tab is displayed and selected
-	#When I click IPAFFS from the header ribbon
-	#And I switch to the IPAFFS tab
-	#Then the user can see the Decision Hub for the notification created in IPAFFS
-	#And the 'Record HMI checks' status is 'Completed'
-	#And the 'Record PHSI checks' status is 'In progress'
-	#When the user clicks on the Record checks link 'Record PHSI checks'
-	#Then the Select which checks to record page should be displayed
-	#And there are 'documentary checks' still to do
-	#And there are 'identity checks' still to do
-	#And there are 'physical checks' still to do
-	#When the user ticks all 3 checkboxes
-	#And the user clicks Continue on the Select which checks to record page
-	#Then the Record PHSI checks page should be displayed
-	#When the user records 'Compliant' for all documentary, identity and physical checks across all pages
-	#Then the Your checks have been submitted page is displayed
-	#When the user clicks Return to Decision hub
-	#Then the CHED overview page should be displayed
-	#And the notification status is 'Valid' for the notification created in IPAFFS
-	#When the user switches to 'Checks' tab in CHED Overview page
-	#Then all the checks are 'Compliant' or 'Auto cleared' showing 10 of 500
-	#When the user logs out of IPAFFS Part 2
-	#Then the Inspector is logged out of IPAFFS successfully
-	#When the user closes the IPAFFS tab
-	#And I switch back to the Dynamics tab
-	#Then I verify the Work Order page is displayed for the notification created in IPAFFS
-	#When I click on 'Import Notifications' under the 'Imports' area
-	#Then the 'Active Import Notifications' view is displayed
-	#When I search Import Notifications for the notification created in IPAFFS
-	#Then the notification created in IPAFFS should not be returned
-	#When I change the Import Notifications view to 'Inactive Import Notifications'
-	#Then the 'Inactive Import Notifications' view is displayed
-	#When I search Import Notifications for the notification created in IPAFFS
-	#Then the notification created in IPAFFS should be returned
-	#When I open the record in the grid
-	#Then I verify the Import Notification page is displayed for the notification created in IPAFFS
-	#And the 'Summary' tab is displayed and selected
-	#And the Import Notification Status is 'Inactive'
-	#And the Import Notification Status Reason is 'Completed'
-	#When I select the 'Commodity Lines' tab
-	#Then the 'Commodity Lines' tab is displayed and selected
-	#When I sort Commodity Lines by Regulatory Authority
-	#And I double click on a Commodity Line with Regulatory Authority set to 'PHSI'
-	#Then the Import Commodity Line page is displayed
-	#When I select the 'Inspection Results' tab
-	#Then the 'Inspection Results' tab is displayed and selected
-	#And the 'PHSI Doc Check' Status is 'Compliant' or 'Auto cleared'
-	#And the 'PHSI Identity Check' Status is 'Compliant' or 'Auto cleared'
-	#And the 'PHSI Physical Check' Status is 'Compliant' or 'Auto cleared'
-	#And the 'HMI Inspection Results' section is blank
-	#When I click the Back button in the command bar
-	#Then I verify the Import Notification page is displayed for the notification created in IPAFFS
-	#And the 'Commodity Lines' tab is displayed and selected
-	#When I sort Commodity Lines by Regulatory Authority
-	#And I double click on a Commodity Line with Regulatory Authority set to 'HMI'
-	#Then the Import Commodity Line page is displayed
-	#When I select the 'Inspection Results' tab
-	#Then the 'Inspection Results' tab is displayed and selected
-	#And the 'PHSI Inspection Results' section is blank
-	#And the 'HMI Check' Status is 'Compliant' or 'Auto cleared'
-	#When I click the Back button in the command bar
-	#Then I verify the Import Notification page is displayed for the notification created in IPAFFS
-	#And the 'Commodity Lines' tab is displayed and selected
-	#When I sort Commodity Lines by Regulatory Authority
-	#And I double click on a Commodity Line with Regulatory Authority set to 'Joint'
-	#Then the Import Commodity Line page is displayed
-	#When I select the 'Inspection Results' tab
-	#Then the 'Inspection Results' tab is displayed and selected
-	#And the 'PHSI Doc Check' Status is 'Compliant' or 'Auto cleared'
-	#And the 'PHSI Identity Check' Status is 'Compliant' or 'Auto cleared'
-	#And the 'PHSI Physical Check' Status is 'Compliant' or 'Auto cleared'
-	#And the 'HMI Check' Status is 'Compliant' or 'Auto cleared'
-	#When I click the Back button in the command bar
-	#Then I verify the Import Notification page is displayed for the notification created in IPAFFS
-	#And the 'Commodity Lines' tab is displayed and selected
-	#When I select the 'Summary' tab
-	#Then the 'Summary' tab is displayed and selected
-	#When I click the reference number in the Work Order field for the notification created in IPAFFS
-	#Then I verify the Work Order page is displayed for the notification created in IPAFFS
-	#And the 'Import' tab is displayed and selected
-	#When I select the 'Related' tab
-	#And I select the 'Charges' tab from the Related tab dropdown
-	#Then the 'Charges' tab is displayed and selected
-	#And I check that the Charges tab shows 'Charge Associated View'
-	#And the 'Identity & Physical Check' Charges records have been created
-	#And the 'Document Check' Charges records have been created
-	#When I click IPAFFS from the header ribbon
-	#And I switch to the IPAFFS tab
-	#And I have provided the IPAFFS credentials and signin via Dynamics
-	#Then the CHED overview page should be displayed
-	#When the user clicks on the Show CHED button
-	#Then the certificate should be displayed in a new browser tab
-	##When the user checks that the data in the certificate matches the data entered into the notification
-	#When the user closes the PDF browser tab
-	#Then the browser tab is closed
-	#When the user logs out of IPAFFS Part 2
-	#Then the Inspector is logged out of IPAFFS successfully
-	#When the user closes the IPAFFS tab
-	#And I switch back to the Dynamics tab
-	#Then I verify the Work Order page is displayed for the notification created in IPAFFS
-	#When I sign out
-	#Then the Inspector is logged out of Dynamics successfully
-	#When I switch to BTMS
-	#And the user navigate to the BTMS application
-	#Then I click Sign in button
-	#And I should see type of Gateway login page
-	#And I have selected "Government Gateway" as login type
-	#And I click Sign in button
-	#And I should see type of Gateway login page
-	#And I have selected "Sign in with Government Gateway" as login type
-	#When I click Continue button from How do you want to sign in page
-	#Then I should redirected to the BTMS Sign in using Government Gateway page
-	#When I have provided the BTMS credentials and signin
-	#Then the BTMS search screen should be displayed
-	#When the user searches for the CHED created earlier
-	#Then the BTMS search result screen should be displayed
-	#And the user checks commodity code "06029045", description "Acer maximowiczii", quantity "3.0", authority "PHSI" and decision "Compliant"
-	#And the user checks commodity code "0709999020", description "Abelmoschus esculentus", quantity "3.0", authority "HMI" and decision "Compliant"
-	#And the user checks commodity code "0810907590", description "Ardisia crenata", quantity "3.0", authority "PHSI,HMI" and decision "Compliant,Compliant"
-	#When the user logs out of BTMS
-	#Then the user should be logged out successfully
+	And the user closes the PDF browser tab
+	Then the browser tab is closed
+	And the dashboard page should be displayed
+	When the user logs out of IPAFFS Part 1
+	Then the user should be logged out successfully
+	When the user navigate to the BTMS application
+	Then I click Sign in button
+	And I should see type of Gateway login page
+	And I have selected "Government Gateway" as login type
+	And I click Sign in button
+	And I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the BTMS Sign in using Government Gateway page
+	When I have provided the BTMS credentials and signin
+	Then the BTMS search screen should be displayed
+	When the user searches for the CHED created earlier
+	Then the BTMS search result screen should be displayed
+	And the user checks commodity code "06012030", description "Calanthe biloba", quantity "3.0", authority "PHSI" and decision "Decision not given"
+	And the user checks commodity code "06029045", description "Abutilon indicum", quantity "3.0", authority "PHSI" and decision "Decision not given"
+	And the user checks commodity code "06029045", description "Acaciella angustissima", quantity "3.0", authority "PHSI" and decision "Decision not given"
+	And the user checks commodity code "06029045", description "Acer maximowiczii", quantity "3.0", authority "PHSI" and decision "Decision not given"
+	And the user checks commodity code "0709999020", description "Abelmoschus esculentus", quantity "3.0", authority "HMI" and decision "Decision not given"
+	And the user checks commodity code "0810907590", description "Ardisia crenata", quantity "3.0", authority "PHSI,HMI" and decision "Decision not given,Decision not given"
+	When the user logs out of BTMS
+	Then the user should be logged out successfully
+	When I am logged in to the 'IDCOMS' app as 'Inspector'
+	And I click on 'Import Notifications' under the 'Imports' area
+	Then the 'Active Import Notifications' view is displayed
+	When I search Import Notifications for the notification created in IPAFFS
+	Then the notification created in IPAFFS should be returned
+	When I open the record in the grid
+	Then I verify the Import Notification page is displayed for the notification created in IPAFFS
+	And the 'Summary' tab is displayed and selected
+	When I click the reference number in the Work Order field for the notification created in IPAFFS
+	Then I verify the Work Order page is displayed for the notification created in IPAFFS
+	And the 'Import' tab is displayed and selected
+	When I click the Assign command
+	Then I can see the Assign Work Order popup is displayed
+	When I click the Assign button
+	Then the Substatus of the Work Order should be Assigned
+	And the Owner of the Work Order should be me
+	When I check that the Commodity Lines frame shows 'Active Import Commodity Lines'
+	Then all the Commodity Lines should be validated with the values given in the input
+	When I sort Commodity Lines by Regulatory Authority
+	And I double click on a Commodity Line with Regulatory Authority set to 'PHSI'
+	Then the Import Commodity Line page is displayed
+	And the settings are displayed as HMI Inspection Required 'No', PHSI Inspection Required 'Yes' and Inspection Classification 'Mandatory / Controlled / Reduced / Not Notifiable'
+	When I click the Back button in the command bar
+	Then I verify the Work Order page is displayed for the notification created in IPAFFS
+	And the 'Import' tab is displayed and selected
+	When I sort Commodity Lines by Regulatory Authority
+	And I double click on a Commodity Line with Regulatory Authority set to 'HMI'
+	Then the Import Commodity Line page is displayed
+	And the settings are displayed as HMI Inspection Required 'Yes', PHSI Inspection Required 'No' and Inspection Classification ''
+	When I click the Back button in the command bar
+	Then I verify the Work Order page is displayed for the notification created in IPAFFS
+	And the 'Import' tab is displayed and selected
+	When I sort Commodity Lines by Regulatory Authority
+	And I double click on a Commodity Line with Regulatory Authority set to 'Joint'
+	Then the Import Commodity Line page is displayed
+	And the settings are displayed as HMI Inspection Required 'Yes / No', PHSI Inspection Required 'No' and Inspection Classification 'Mandatory / Controlled / Reduced / Not Notifiable'
+	When I click the Back button in the command bar
+	Then I verify the Work Order page is displayed for the notification created in IPAFFS
+	And the 'Import' tab is displayed and selected
+	When I select the 'Work Order Tasks' tab
+	Then I can see following Work Order Tasks 'HMI Check' 'Document Check' 'Imports Phyto Certificate Audit' 'Identity & Physical Check'
+	When I click on the 'Document Check' task
+	And I maximise the popup
+	Then I verify the 'Document Check' popup is displayed
+	And the 'Summary' tab is displayed and selected
+	When I click the Assign command
+	Then I can see the Assign Work Order Task popup is displayed
+	When I click the Assign button
+	Then the Owner of the Work Order should be me
+	When I click Add my time within the Time Recording section
+	Then a new row appears in the grid containing my name
+	And the entry status is 'Draft'
+	When I enter '20' in the Admin column
+	And I click the Save icon
+	Then the details are saved 
+	And the entry status is 'Draft'
+	When I select the new row in the grid
+	And I click Submit Time
+	Then I can see the Confirm Time Entries popup is displayed
+	When I click the OK button
+	Then the entry status is 'Submitted'
+	When I click Mark Complete
+	Then a grey banner is displayed 'Read-only This record’s status: Inactive'
+	When I close the popup
+	Then I verify the Work Order page is displayed for the notification created in IPAFFS
+	And I can see following Work Order Tasks 'HMI Check' 'Document Check' 'Imports Phyto Certificate Audit' 'Identity & Physical Check'
+	And the Work Order Task 'Document Check' Status is 'Inactive'
+	And the Work Order Task 'Document Check' % Complete is '100.00'
+	When I click on the 'Imports Phyto Certificate Audit' task
+	And I maximise the popup
+	Then I verify the 'Imports Phyto Certificate Audit' popup is displayed
+	And the 'Summary' tab is displayed and selected
+	When I click the Assign command
+	Then I can see the Assign Work Order Task popup is displayed
+	When I click the Assign button
+	Then the Owner of the Work Order should be me
+	When I click Add my time within the Time Recording section
+	Then a new row appears in the grid containing my name
+	And the entry status is 'Draft'
+	When I enter '599' in the Admin column
+	And I click the Save icon
+	Then the details are saved 
+	And the entry status is 'Draft'
+	When I select the new row in the grid
+	And I click Submit Time
+	Then I can see the Confirm Time Entries popup is displayed
+	When I click the OK button
+	Then the entry status is 'Submitted'
+	When I update the Audit status to 'Audited'
+	And I update the Date documents received to today's date
+	And I update the Documents match electronic copy? to 'Yes'
+	Then the Audit status field is 'Audited'
+	And the Date documents received field is today's date
+	And the Documents match electronic copy? field is 'Yes'
+	When I click the Save icon above the Accompanying Documents grid
+	Then the Accompanying Documents grid details are saved
+	When I click Mark Complete
+	Then a grey banner is displayed 'Read-only This record’s status: Inactive'
+	When I close the popup
+	Then I verify the Work Order page is displayed for the notification created in IPAFFS
+	And I can see following Work Order Tasks 'HMI Check' 'Document Check' 'Imports Phyto Certificate Audit' 'Identity & Physical Check'
+	And the Work Order Task 'Imports Phyto Certificate Audit' Status is 'Inactive'
+	And the Work Order Task 'Imports Phyto Certificate Audit' % Complete is '100.00'
+	When I click on the 'Identity & Physical Check' task
+	And I maximise the popup
+	Then I verify the 'Identity & Physical Check' popup is displayed
+	And the 'Summary' tab is displayed and selected
+	When I select the 'Samples' tab
+	Then the 'Samples' tab is displayed and selected
+	And the Import Commodity Lines grid is populated with the commodity lines from the notification created in IPAFFS
+	And the Lab Samples grid is empty
+	When I close the popup
+	Then I verify the Work Order page is displayed for the notification created in IPAFFS
+	And the Work Order Task 'Identity & Physical Check' Status is 'Active'
+	And the Work Order Task 'Identity & Physical Check' % Complete is '0.00'
+	When I click on the 'Identity & Physical Check' task
+	And I maximise the popup
+	Then I verify the 'Identity & Physical Check' popup is displayed
+	And the 'Summary' tab is displayed and selected
+	When I click Add my time within the Time Recording section
+	Then a new row appears in the grid containing my name
+	And the entry status is 'Draft'
+	When I enter '10' in the Admin column
+	And I enter '120' in the Travel column
+	And I enter '60' in the Inspection column
+	And I click the Save icon
+	Then the details are saved 
+	And the entry status is 'Draft'
+	When I select the new row in the grid
+	And I click Submit Time
+	Then I can see the Confirm Time Entries popup is displayed
+	When I click the OK button
+	Then the entry status is 'Submitted'
+	When I click Mark Complete
+	Then a grey banner is displayed 'Read-only This record’s status: Inactive'
+	When I close the popup
+	Then I verify the Work Order page is displayed for the notification created in IPAFFS
+	And I can see following Work Order Tasks 'HMI Check' 'Document Check' 'Imports Phyto Certificate Audit' 'Identity & Physical Check'
+	And the Work Order Task 'Identity & Physical Check' Status is 'Inactive'
+	And the Work Order Task 'Identity & Physical Check' % Complete is '100.00'
+	When I click IPAFFS from the header ribbon
+	And I switch to the IPAFFS tab
+	Then the user can see the Decision Hub for the notification created in IPAFFS
+	And the user can see 2 hypertext links 'Record PHSI checks' 'Record HMI checks'
+	When the user clicks Save and set as in progress
+	Then the notification status should change from 'New' to 'In progress'
+	And the 'Record HMI checks' status is 'To do / In progress'
+	When the user clicks on the Record checks link 'Record HMI checks'
+	Then the Record HMI checks page should be displayed
+	And the Commodities HMI check status should be 'To do'
+	When the user sets the Commodities status to 'Compliant'
+	And the Validity period is 7 days
+	And the user clicks Save and return to work order
+	And I switch back to the Dynamics tab
+	Then I verify the Work Order page is displayed for the notification created in IPAFFS
+	And the 'Import' tab is displayed and selected
+	When I click IPAFFS from the header ribbon
+	And I switch to the IPAFFS tab
+	Then the user can see the Decision Hub for the notification created in IPAFFS
+	And the 'Record HMI checks' status is 'Completed'
+	And the 'Record PHSI checks' status is 'In progress'
+	When the user clicks on the Record checks link 'Record PHSI checks'
+	Then the Select which checks to record page should be displayed
+	And there are 'documentary checks' still to do
+	And there are 'identity checks' still to do
+	And there are 'physical checks' still to do
+	When the user ticks all 3 checkboxes
+	And the user clicks Continue on the Select which checks to record page
+	Then the Record PHSI checks page should be displayed
+	When the user records 'Compliant' for all documentary, identity and physical checks across all pages
+	Then the Your checks have been submitted page is displayed
+	When the user clicks Return to Decision hub
+	Then the CHED overview page should be displayed
+	And the notification status is 'Valid' for the notification created in IPAFFS
+	When the user switches to 'Checks' tab in CHED Overview page
+	Then all the checks are 'Compliant' or 'Auto cleared' showing 10 of 500
+	When the user logs out of IPAFFS Part 2
+	Then the Inspector is logged out of IPAFFS successfully
+	When the user closes the IPAFFS tab
+	And I switch back to the Dynamics tab
+	Then I verify the Work Order page is displayed for the notification created in IPAFFS
+	When I click on 'Import Notifications' under the 'Imports' area
+	Then the 'Active Import Notifications' view is displayed
+	When I search Import Notifications for the notification created in IPAFFS
+	Then the notification created in IPAFFS should not be returned
+	When I change the Import Notifications view to 'Inactive Import Notifications'
+	Then the 'Inactive Import Notifications' view is displayed
+	When I search Import Notifications for the notification created in IPAFFS
+	Then the notification created in IPAFFS should be returned
+	When I open the record in the grid
+	Then I verify the Import Notification page is displayed for the notification created in IPAFFS
+	And the 'Summary' tab is displayed and selected
+	And the Import Notification Status is 'Inactive'
+	And the Import Notification Status Reason is 'Completed'
+	When I select the 'Commodity Lines' tab
+	Then the 'Commodity Lines' tab is displayed and selected
+	When I sort Commodity Lines by Regulatory Authority
+	And I double click on a Commodity Line with Regulatory Authority set to 'PHSI'
+	Then the Import Commodity Line page is displayed
+	When I select the 'Inspection Results' tab
+	Then the 'Inspection Results' tab is displayed and selected
+	And the 'PHSI Doc Check' Status is 'Compliant' or 'Auto cleared'
+	And the 'PHSI Identity Check' Status is 'Compliant' or 'Auto cleared'
+	And the 'PHSI Physical Check' Status is 'Compliant' or 'Auto cleared'
+	And the 'HMI Inspection Results' section is blank
+	When I click the Back button in the command bar
+	Then I verify the Import Notification page is displayed for the notification created in IPAFFS
+	And the 'Commodity Lines' tab is displayed and selected
+	When I sort Commodity Lines by Regulatory Authority
+	And I double click on a Commodity Line with Regulatory Authority set to 'HMI'
+	Then the Import Commodity Line page is displayed
+	When I select the 'Inspection Results' tab
+	Then the 'Inspection Results' tab is displayed and selected
+	And the 'PHSI Inspection Results' section is blank
+	And the 'HMI Check' Status is 'Compliant' or 'Auto cleared'
+	When I click the Back button in the command bar
+	Then I verify the Import Notification page is displayed for the notification created in IPAFFS
+	And the 'Commodity Lines' tab is displayed and selected
+	When I sort Commodity Lines by Regulatory Authority
+	And I double click on a Commodity Line with Regulatory Authority set to 'Joint'
+	Then the Import Commodity Line page is displayed
+	When I select the 'Inspection Results' tab
+	Then the 'Inspection Results' tab is displayed and selected
+	And the 'PHSI Doc Check' Status is 'Compliant' or 'Auto cleared'
+	And the 'PHSI Identity Check' Status is 'Compliant' or 'Auto cleared'
+	And the 'PHSI Physical Check' Status is 'Compliant' or 'Auto cleared'
+	And the 'HMI Check' Status is 'Compliant' or 'Auto cleared'
+	When I click the Back button in the command bar
+	Then I verify the Import Notification page is displayed for the notification created in IPAFFS
+	And the 'Commodity Lines' tab is displayed and selected
+	When I select the 'Summary' tab
+	Then the 'Summary' tab is displayed and selected
+	When I click the reference number in the Work Order field for the notification created in IPAFFS
+	Then I verify the Work Order page is displayed for the notification created in IPAFFS
+	And the 'Import' tab is displayed and selected
+	When I select the 'Related' tab
+	And I select the 'Charges' tab from the Related tab dropdown
+	Then the 'Charges' tab is displayed and selected
+	And I check that the Charges tab shows 'Charge Associated View'
+	And the 'Identity & Physical Check' Charges records have been created
+	And the 'Document Check' Charges records have been created
+	When I click IPAFFS from the header ribbon
+	And I switch to the IPAFFS tab
+	And I have provided the IPAFFS credentials and signin via Dynamics
+	Then the CHED overview page should be displayed
+	When the user clicks on the Show CHED button
+	Then the certificate should be displayed in a new browser tab
+	When the user downloads the PDF for validation
+	And the user checks that the data in the certificate matches the data entered into the CHED PP notification
+	And the user closes the PDF browser tab
+	Then the browser tab is closed
+	When the user logs out of IPAFFS Part 2
+	Then the Inspector is logged out of IPAFFS successfully
+	When the user closes the IPAFFS tab
+	And I switch back to the Dynamics tab
+	Then I verify the Work Order page is displayed for the notification created in IPAFFS
+	When I sign out
+	Then the Inspector is logged out of Dynamics successfully
+	When I switch to BTMS
+	And the user navigate to the BTMS application
+	Then I click Sign in button
+	And I should see type of Gateway login page
+	And I have selected "Government Gateway" as login type
+	And I click Sign in button
+	And I should see type of Gateway login page
+	And I have selected "Sign in with Government Gateway" as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should redirected to the BTMS Sign in using Government Gateway page
+	When I have provided the BTMS credentials and signin
+	Then the BTMS search screen should be displayed
+	When the user searches for the CHED created earlier
+	Then the BTMS search result screen should be displayed
+	And the user checks commodity code "06029045", description "Acer maximowiczii", quantity "3.0", authority "PHSI" and decision "Compliant"
+	And the user checks commodity code "0709999020", description "Abelmoschus esculentus", quantity "3.0", authority "HMI" and decision "Compliant"
+	And the user checks commodity code "0810907590", description "Ardisia crenata", quantity "3.0", authority "PHSI,HMI" and decision "Compliant,Compliant"
+	When the user logs out of BTMS
+	Then the user should be logged out successfully
