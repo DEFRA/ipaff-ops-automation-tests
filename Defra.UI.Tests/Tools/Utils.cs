@@ -207,6 +207,59 @@ namespace Defra.UI.Tests.Tools
             }
         }
 
+        /// <summary>
+        /// Downloads a PDF using the authenticated session of an existing WebDriver.
+        /// Used for IPAFFS Part 2 (inspector) certificates, which sign in via Azure AD SSO
+        /// rather than Government Gateway, so the fresh-browser login flow cannot be used.
+        /// </summary>
+        public static string DownloadPDFUsingSession(IWebDriver driver, string fileName, string pdfUrl)
+        {
+            const int maxRetries = 3;
+
+            for (int attempt = 1; ; attempt++)
+            {
+                Console.WriteLine($"🔁 Attempt {attempt} of {maxRetries} (session download)");
+                var downloadDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                Directory.CreateDirectory(downloadDirectory);
+
+                try
+                {
+                    var cookieContainer = new System.Net.CookieContainer();
+                    var uri = new Uri(pdfUrl);
+                    foreach (var cookie in driver.Manage().Cookies.AllCookies)
+                    {
+                        cookieContainer.Add(uri, new System.Net.Cookie(cookie.Name, cookie.Value, "/"));
+                    }
+
+                    using var handler = new HttpClientHandler { CookieContainer = cookieContainer, AllowAutoRedirect = true };
+                    using var client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(60) };
+                    var bytes = client.GetByteArrayAsync(pdfUrl).Result;
+
+                    if (bytes.Length > 4 && bytes[0] == '%' && bytes[1] == 'P' && bytes[2] == 'D' && bytes[3] == 'F')
+                    {
+                        var filePath = Path.Combine(downloadDirectory, $"{fileName}.pdf");
+                        File.WriteAllBytes(filePath, bytes);
+                        Console.WriteLine("Download complete: " + filePath);
+                        Console.WriteLine("✅ PDF successfully downloaded.");
+                        return downloadDirectory;
+                    }
+
+                    Console.WriteLine($"❌ Response was not a PDF after attempt {attempt}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"⚠️ Attempt {attempt} failed: {ex.Message}");
+                }
+
+                SafeDeleteDirectory(downloadDirectory);
+
+                if (attempt >= maxRetries)
+                    throw new Exception("PDF failed to download using the browser session after all retry attempts.");
+
+                Thread.Sleep(attempt * 1000);
+            }
+        }
+
         private static void SafeDeleteDirectory(string path)
         {
             if (string.IsNullOrWhiteSpace(path))

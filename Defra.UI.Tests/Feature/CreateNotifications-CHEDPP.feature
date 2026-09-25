@@ -1453,7 +1453,7 @@ Scenario: Trader creates CHEDPP notification via CSV upload and completes end-to
 	Then the CHED overview page should be displayed
 	When the user clicks on the Show CHED button
 	Then the certificate should be displayed in a new browser tab
-	When the user downloads the PDF for validation
+	When the user downloads the PDF for validation using the current browser session
 	And the user checks that the data in the certificate matches the data entered into the CHED PP notification
 	And the user closes the PDF browser tab
 	Then the browser tab is closed

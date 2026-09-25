@@ -86,6 +86,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["PDFDownloadedDirectory"] = Utils.DownloadPDF(chedReferenceFileName, pdfUrl, UserObject, _scenarioContext.Get<string>("UserRole"));
         }
 
+        [When("the user downloads the PDF for validation using the current browser session")]
+        public void WhenTheUserDownloadsThePDFForValidationUsingTheCurrentBrowserSession()
+        {
+            string pdfUrl = importNotificationsPage?.getPDFUrl();
+            var chedReferenceFileName = _scenarioContext.Get<string>("CHEDReference") + "-certificate";
+            var driver = _objectContainer.Resolve<OpenQA.Selenium.IWebDriver>();
+            _scenarioContext["PDFDownloadedDirectory"] = Utils.DownloadPDFUsingSession(driver, chedReferenceFileName, pdfUrl);
+        }
+
         [When("verifies laboratory tests should be displayed as No and Reasons for testing with no boxes selected")]
         [Then("the new Consignor, Consignee, Importer, Place of destination and Transporter should be displayed in the certificate")]
         [When("the user checks that the data in the certificate matches the data entered into the notification")]
