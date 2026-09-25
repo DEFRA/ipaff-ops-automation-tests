@@ -28,6 +28,15 @@ public static class SignInPromptHelper
         "normalize-space(text())='Sign in to continue')]]" +
         "//button[@data-id='okButton']");
 
+    // Global notification banner: "Some components of this app require you to sign in...".
+    private static readonly By SignInBannerLocator = By.XPath(
+        "//ul[@data-id='notificationList']//li[.//span[@data-id='warningNotification' and " +
+        "contains(normalize-space(.),'require you to sign in')]]");
+
+    private static readonly By SignInBannerButtonLocator = By.XPath(
+        "//ul[@data-id='notificationList']//li[.//span[@data-id='warningNotification' and " +
+        "contains(normalize-space(.),'require you to sign in')]]//button[@aria-label='Sign in']");
+
     /// <summary>
     /// Dismisses all visible sign-in prompts, waiting until none remain or until the timeout is reached.
     /// Uses a short grace period to catch late-appearing prompts. If a dialog is stuck, refreshes the page.
@@ -43,6 +52,70 @@ public static class SignInPromptHelper
         int timeoutSeconds = 90,
         int gracePeriodMs = 3000,
         int stuckThresholdSeconds = 15)
+    {
+        DismissSignInDialogs(driver, timeoutSeconds, gracePeriodMs, stuckThresholdSeconds);
+        DismissSignInBanner(driver);
+    }
+
+    /// <summary>
+    /// Clicks "Sign in" on the global "Some components of this app require you to sign in" banner, if present.
+    /// Without this, command bar buttons (e.g. Assign) on work order task popups do not render.
+    /// </summary>
+    /// <param name="driver">Selenium WebDriver instance.</param>
+    /// <param name="timeoutSeconds">Time to wait for the banner to clear after clicking (default: 30s).</param>
+    public static void DismissSignInBanner(IWebDriver driver, int timeoutSeconds = 30)
+    {
+        var buttons = driver.FindElements(SignInBannerButtonLocator);
+        if (buttons.Count == 0)
+        {
+            return;
+        }
+
+        var originalHandle = driver.CurrentWindowHandle;
+
+        try
+        {
+            buttons[0].Click();
+        }
+        catch (StaleElementReferenceException)
+        {
+            return;
+        }
+        catch (ElementNotInteractableException)
+        {
+            return;
+        }
+
+        var deadline = DateTime.UtcNow.AddSeconds(timeoutSeconds);
+        while (DateTime.UtcNow < deadline)
+        {
+            // Sign-in may open a transient auth popup window; always operate on the app window.
+            if (driver.WindowHandles.Contains(originalHandle) && driver.CurrentWindowHandle != originalHandle)
+            {
+                driver.SwitchTo().Window(originalHandle);
+            }
+
+            try
+            {
+                if (driver.FindElements(SignInBannerLocator).Count == 0)
+                {
+                    return;
+                }
+            }
+            catch (NoSuchWindowException)
+            {
+                driver.SwitchTo().Window(originalHandle);
+            }
+
+            Thread.Sleep(TimeSpan.FromMilliseconds(500));
+        }
+    }
+
+    private static void DismissSignInDialogs(
+        IWebDriver driver,
+        int timeoutSeconds,
+        int gracePeriodMs,
+        int stuckThresholdSeconds)
     {
         // Grace-period poll: wait up to gracePeriodMs for a sign-in dialog to appear.
         var graceDeadline = DateTime.UtcNow.AddMilliseconds(gracePeriodMs);

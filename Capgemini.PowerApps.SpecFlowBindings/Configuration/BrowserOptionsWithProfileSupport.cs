@@ -52,6 +52,13 @@ public class BrowserOptionsWithProfileSupport : BrowserOptions, ICloneable
                 },
             });
 
+        // Allow third-party cookies so Dynamics 365 embedded components can authenticate
+        // silently, preventing the "Some components of this app require you to sign in"
+        // banner which stops command bar buttons (e.g. Assign) rendering on popups.
+        // cookie_controls_mode: 0 = Allow all cookies.
+        options.AddUserProfilePreference("profile.cookie_controls_mode", 0);
+        options.AddUserProfilePreference("profile.block_third_party_cookies", false);
+
         if (!string.IsNullOrEmpty(this.ProfileDirectory))
         {
             options.AddArgument($"--user-data-dir={this.ProfileDirectory}");
