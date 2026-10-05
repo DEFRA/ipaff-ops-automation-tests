@@ -35,9 +35,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
         [Then("the user records the APHA reference number for {string}")]
-        public void ThenTheUserRecordsTheAPHAReferenceNumberForSPS9510(string iterationName)
+        public void ThenTheUserRecordsTheAPHAReferenceNumberFor(string iterationName)
         {
             _scenarioContext[$"{iterationName}_APHAReference"] = exporterYouHaveSuccessfullySubmittedYourApplicationPage?.GetAphaReferenceNumber();
+        }
+
+        [Then("the user records the APHA reference number")]
+        public void ThenTheUserRecordsTheAPHAReferenceNumber()
+        {
+            _scenarioContext["APHAReference"] = exporterYouHaveSuccessfullySubmittedYourApplicationPage?.GetAphaReferenceNumber();
         }
     }
 }

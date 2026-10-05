@@ -4,6 +4,7 @@ End-to-end PHES regression Test
 
 @PHES
 Scenario: New exporter application for a phytosanitary certificate
+	# Exporter Portal - New exporter application for a phytosanitary certificate
 	Given that I navigate to the Exporter Portal
 	Then I should see type of Gateway login page
 	And I have selected 'Sign in with Government Gateway' as login type
@@ -76,4 +77,145 @@ Scenario: New exporter application for a phytosanitary certificate
 	When the user ticks the exporter declaration checkbox
 	And the user clicks the Submit application button
 	Then the You have successfully submitted your application for a phytosanitary certificate page is displayed
-	And the user records the APHA reference number for 'PHES'
+	And the user records the APHA reference number
+	# Dynamics Portal - Caseworker processes an application for a phytosanitary certificate
+	When I am logged in to the 'IDCOMS' app as 'Inspector'
+	And I click on 'Export Applications' under the 'Exports' area
+	Then the 'Active Export Applications' view is displayed
+	When I search Import Notifications for the notification created in IPAFFS
+	Then the notification created in IPAFFS should be returned
+	When I open the record in the grid
+	Then I verify the Import Notification page is displayed for the notification created in IPAFFS
+	And the 'Summary' tab is displayed and selected
+	When I click the reference number in the Work Order field for the notification created in IPAFFS
+	Then I verify the Work Order page is displayed for the notification created in IPAFFS
+	And the 'Import' tab is displayed and selected
+	When I click the Assign command
+	Then I can see the Assign Work Order popup is displayed
+	When I click the Assign button
+	Then the Substatus of the Work Order should be Assigned
+	And the Owner of the Work Order should be me
+	When I check that the Commodity Lines frame shows 'Active Import Commodity Lines'
+	Then all the Commodity Lines should be validated with the values given in the input
+	When I sort Commodity Lines by Regulatory Authority
+	And I double click on a Commodity Line with Regulatory Authority set to 'PHSI'
+	Then the Import Commodity Line page is displayed
+	And the settings are displayed as HMI Inspection Required 'No', PHSI Inspection Required 'Yes' and Inspection Classification 'Mandatory / Controlled / Reduced / Not Notifiable'
+	When I click the Back button in the command bar
+	Then I verify the Work Order page is displayed for the notification created in IPAFFS
+	And the 'Import' tab is displayed and selected
+	When I sort Commodity Lines by Regulatory Authority
+	And I double click on a Commodity Line with Regulatory Authority set to 'HMI'
+	Then the Import Commodity Line page is displayed
+	And the settings are displayed as HMI Inspection Required 'Yes', PHSI Inspection Required 'No' and Inspection Classification ''
+	When I click the Back button in the command bar
+	Then I verify the Work Order page is displayed for the notification created in IPAFFS
+	And the 'Import' tab is displayed and selected
+	When I sort Commodity Lines by Regulatory Authority
+	And I double click on a Commodity Line with Regulatory Authority set to 'Joint'
+	Then the Import Commodity Line page is displayed
+	And the settings are displayed as HMI Inspection Required 'Yes / No', PHSI Inspection Required 'No' and Inspection Classification 'Mandatory / Controlled / Reduced / Not Notifiable'
+	When I click the Back button in the command bar
+	Then I verify the Work Order page is displayed for the notification created in IPAFFS
+	And the 'Import' tab is displayed and selected
+	When I select the 'Work Order Tasks' tab
+	Then I can see following Work Order Tasks 'HMI Check' 'Document Check' 'Imports Phyto Certificate Audit' 'Identity & Physical Check'
+	When I click on the 'Document Check' task
+	And I maximise the popup
+	Then I verify the 'Document Check' popup is displayed
+	And the 'Summary' tab is displayed and selected
+	When I click the Assign command
+	Then I can see the Assign Work Order Task popup is displayed
+	When I click the Assign button
+	Then the Owner of the Work Order should be me
+	When I click Add my time within the Time Recording section
+	Then a new row appears in the grid containing my name
+	And the entry status is 'Draft'
+	When I enter '20' in the Admin column
+	And I click the Save icon
+	Then the details are saved 
+	And the entry status is 'Draft'
+	When I select the new row in the grid
+	And I click Submit Time
+	Then I can see the Confirm Time Entries popup is displayed
+	When I click the OK button
+	Then the entry status is 'Submitted'
+	When I click Mark Complete
+	Then a grey banner is displayed 'Read-only This record’s status: Inactive'
+	When I close the popup
+	Then I verify the Work Order page is displayed for the notification created in IPAFFS
+	And I can see following Work Order Tasks 'HMI Check' 'Document Check' 'Imports Phyto Certificate Audit' 'Identity & Physical Check'
+	And the Work Order Task 'Document Check' Status is 'Inactive'
+	And the Work Order Task 'Document Check' % Complete is '100.00'
+	When I click on the 'Imports Phyto Certificate Audit' task
+	And I maximise the popup
+	Then I verify the 'Imports Phyto Certificate Audit' popup is displayed
+	And the 'Summary' tab is displayed and selected
+	When I click the Assign command
+	Then I can see the Assign Work Order Task popup is displayed
+	When I click the Assign button
+	Then the Owner of the Work Order should be me
+	When I click Add my time within the Time Recording section
+	Then a new row appears in the grid containing my name
+	And the entry status is 'Draft'
+	When I enter '599' in the Admin column
+	And I click the Save icon
+	Then the details are saved 
+	And the entry status is 'Draft'
+	When I select the new row in the grid
+	And I click Submit Time
+	Then I can see the Confirm Time Entries popup is displayed
+	When I click the OK button
+	Then the entry status is 'Submitted'
+	When I update the Audit status to 'Audited'
+	And I update the Date documents received to today's date
+	And I update the Documents match electronic copy? to 'Yes'
+	Then the Audit status field is 'Audited'
+	And the Date documents received field is today's date
+	And the Documents match electronic copy? field is 'Yes'
+	When I click the Save icon above the Accompanying Documents grid
+	Then the Accompanying Documents grid details are saved
+	When I click Mark Complete
+	Then a grey banner is displayed 'Read-only This record’s status: Inactive'
+	When I close the popup
+	Then I verify the Work Order page is displayed for the notification created in IPAFFS
+	And I can see following Work Order Tasks 'HMI Check' 'Document Check' 'Imports Phyto Certificate Audit' 'Identity & Physical Check'
+	And the Work Order Task 'Imports Phyto Certificate Audit' Status is 'Inactive'
+	And the Work Order Task 'Imports Phyto Certificate Audit' % Complete is '100.00'
+	When I click on the 'Identity & Physical Check' task
+	And I maximise the popup
+	Then I verify the 'Identity & Physical Check' popup is displayed
+	And the 'Summary' tab is displayed and selected
+	When I select the 'Samples' tab
+	Then the 'Samples' tab is displayed and selected
+	And the Import Commodity Lines grid is populated with the commodity lines from the notification created in IPAFFS
+	And the Lab Samples grid is empty
+	When I close the popup
+	Then I verify the Work Order page is displayed for the notification created in IPAFFS
+	And the Work Order Task 'Identity & Physical Check' Status is 'Active'
+	And the Work Order Task 'Identity & Physical Check' % Complete is '0.00'
+	When I click on the 'Identity & Physical Check' task
+	And I maximise the popup
+	Then I verify the 'Identity & Physical Check' popup is displayed
+	And the 'Summary' tab is displayed and selected
+	When I click Add my time within the Time Recording section
+	Then a new row appears in the grid containing my name
+	And the entry status is 'Draft'
+	When I enter '10' in the Admin column
+	And I enter '120' in the Travel column
+	And I enter '60' in the Inspection column
+	And I click the Save icon
+	Then the details are saved 
+	And the entry status is 'Draft'
+	When I select the new row in the grid
+	And I click Submit Time
+	Then I can see the Confirm Time Entries popup is displayed
+	When I click the OK button
+	Then the entry status is 'Submitted'
+	When I click Mark Complete
+	Then a grey banner is displayed 'Read-only This record’s status: Inactive'
+	When I close the popup
+	Then I verify the Work Order page is displayed for the notification created in IPAFFS
+	And I can see following Work Order Tasks 'HMI Check' 'Document Check' 'Imports Phyto Certificate Audit' 'Identity & Physical Check'
+	And the Work Order Task 'Identity & Physical Check' Status is 'Inactive'
+	And the Work Order Task 'Identity & Physical Check' % Complete is '100.00'
