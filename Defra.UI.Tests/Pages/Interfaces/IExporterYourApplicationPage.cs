@@ -8,5 +8,8 @@
         void ClickHowWillThisConsignmentBeTransportedLink();
         void ClickWhatAreThePackerDetailsLink();
         void ClickCheckYourAnswersAndSubmitYourApplicationLink();
+        void ClickWhatIsTheExporterAddressLink();
+        void ClickWhoAreYouSendingThisConsignmentToLink();
+        void ClickSupportingDocumentsLink();
     }
 }

@@ -239,6 +239,12 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterWhenDoYouNeedTheCertificatePage, IExporterWhenDoYouNeedTheCertificatePage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterDeclarationPage, IExporterDeclarationPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterYouHaveSuccessfullySubmittedYourApplicationPage, IExporterYouHaveSuccessfullySubmittedYourApplicationPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterRegulationsForExportingPage, IExporterRegulationsForExportingPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterIsThisTheExporterAddressPage, IExporterIsThisTheExporterAddressPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterAddBulbsToYourConsignmentPage, IExporterAddBulbsToYourConsignmentPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterWhenWillTheConsignmentBeReadyPage, IExporterWhenWillTheConsignmentBeReadyPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterWhoAreYouSendingThisConsignmentToPage, IExporterWhoAreYouSendingThisConsignmentToPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterSupportingDocumentsPage, IExporterSupportingDocumentsPage>());
 
             //Read Email
             _objectContainer.RegisterInstanceAs(GetBaseWithScenarioContext<FetchCodeFromEmail, IFetchCodeFromEmail>());

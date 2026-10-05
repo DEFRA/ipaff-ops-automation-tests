@@ -37,6 +37,18 @@ namespace Defra.UI.Tests.Pages.Classes
             txtPhoneNumber.SendKeys(telephone);
         }
 
+        public void EnterContactName(string contactName)
+        {
+            txtContactName.Clear();
+            txtContactName.SendKeys(contactName);
+        }
+
+        public void EnterPhoneNumber(string telephone)
+        {
+            txtPhoneNumber.Clear();
+            txtPhoneNumber.SendKeys(telephone);
+        }
+
         public void ClickSaveAndContinueButton() => btnSaveAndContinue.Click();
     }
 }

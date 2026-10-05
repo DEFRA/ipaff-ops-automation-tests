@@ -16,6 +16,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement lnkInspectionDetails => _driver.WaitForElement(By.XPath("//a[normalize-space()='What are the inspection details?']"));
         private IWebElement lnkTransport => _driver.WaitForElement(By.XPath("//a[normalize-space()='How will this consignment be transported?']"));
         private IWebElement lnkPackerDetails => _driver.WaitForElement(By.XPath("//a[normalize-space()='What are the packer details?']"));
+        private IWebElement lnkExporterAddress => _driver.WaitForElement(By.XPath("//a[normalize-space()='What is the exporter address?']"));
+        private IWebElement lnkWhoAreYouSendingTo => _driver.WaitForElement(By.XPath("//a[normalize-space()='Who are you sending this consignment to?']"));
+        private IWebElement lnkSupportingDocuments => _driver.WaitForElement(By.XPath("//a[normalize-space()='Supporting documents']"));
         private IWebElement lnkCheckAnswers => _driver.WaitForElement(By.XPath("//a[normalize-space()='Check your answers and submit your application']"));
         #endregion
 
@@ -30,5 +33,8 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickHowWillThisConsignmentBeTransportedLink() => lnkTransport.Click();
         public void ClickWhatAreThePackerDetailsLink() => lnkPackerDetails.Click();
         public void ClickCheckYourAnswersAndSubmitYourApplicationLink() => lnkCheckAnswers.Click();
+        public void ClickWhatIsTheExporterAddressLink() => lnkExporterAddress.Click();
+        public void ClickWhoAreYouSendingThisConsignmentToLink() => lnkWhoAreYouSendingTo.Click();
+        public void ClickSupportingDocumentsLink() => lnkSupportingDocuments.Click();
     }
 }

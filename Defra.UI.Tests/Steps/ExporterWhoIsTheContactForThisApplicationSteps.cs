@@ -37,5 +37,23 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             exporterWhoIsTheContactForThisApplicationPage?.ClickSaveAndContinueButton();
         }
+
+        [When("the user enters a contact name for the inspector to contact about the application")]
+        public void WhenTheUserEntersAContactNameForTheInspectorToContactAboutTheApplication()
+        {
+            exporterWhoIsTheContactForThisApplicationPage?.EnterContactName("Automation User");
+        }
+
+        [When("the user enters a phone number for the inspector to contact about the application")]
+        public void WhenTheUserEntersAPhoneNumberForTheInspectorToContactAboutTheApplication()
+        {
+            exporterWhoIsTheContactForThisApplicationPage?.EnterPhoneNumber(Utils.GenerateRandomUKPhonenumber());
+        }
+
+        [When("the user clicks the Save and continue button on the Who is the contact for this application? page")]
+        public void WhenTheUserClicksTheSaveAndContinueButtonOnTheWhoIsTheContactForThisApplicationPage()
+        {
+            exporterWhoIsTheContactForThisApplicationPage?.ClickSaveAndContinueButton();
+        }
     }
 }

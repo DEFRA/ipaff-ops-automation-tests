@@ -13,6 +13,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects with all the element locators
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[contains(normalize-space(),'You have successfully submitted your application for a certificate of conformity')]"), true);
+        private IWebElement confirmationTitle => _driver.WaitForElement(By.Id("confirmation-title"), true);
         private IWebElement lblAphaReference => _driver.WaitForElement(By.Id("applicationFormId"), true);
         #endregion
 
@@ -22,6 +23,8 @@ namespace Defra.UI.Tests.Pages.Classes
         }
 
         public bool IsPageLoaded() => pageTitle.Text.Trim().Contains("You have successfully submitted your application");
+
+        public bool IsPhytosanitaryConfirmationPageLoaded() => confirmationTitle.Text.Trim().Equals("Application complete") && lblAphaReference.Displayed;
 
         public string GetAphaReferenceNumber()
         {

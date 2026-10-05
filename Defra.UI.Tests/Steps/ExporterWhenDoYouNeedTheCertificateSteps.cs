@@ -1,4 +1,5 @@
 ﻿using Defra.UI.Tests.Pages.Interfaces;
+using DocumentFormat.OpenXml.Bibliography;
 using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;
@@ -34,6 +35,18 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 "11:00",
                 "am");
 
+            exporterWhenDoYouNeedTheCertificatePage?.ClickContinueButton();
+        }
+
+        [When("the user enters a valid date for when the certificate is needed at least {int} days in the future")]
+        public void WhenTheUserEntersAValidDateForWhenTheCertificateIsNeededAtLeastDaysInTheFuture(int days)
+        {
+            exporterWhenDoYouNeedTheCertificatePage?.EnterNeededDate(DateTime.Today.AddDays(days));
+        }
+
+        [When("the user clicks the Continue button on the When do you need the certificate? page")]
+        public void WhenTheUserClicksTheContinueButtonOnTheWhenDoYouNeedTheCertificatePage()
+        {
             exporterWhenDoYouNeedTheCertificatePage?.ClickContinueButton();
         }
     }

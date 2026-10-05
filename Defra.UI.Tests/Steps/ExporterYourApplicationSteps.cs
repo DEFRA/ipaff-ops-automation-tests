@@ -55,5 +55,23 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             exporterYourApplicationPage?.ClickCheckYourAnswersAndSubmitYourApplicationLink();
         }
+
+        [When("the user clicks the What is the exporter address? link")]
+        public void WhenTheUserClicksTheWhatIsTheExporterAddressLink()
+        {
+            exporterYourApplicationPage?.ClickWhatIsTheExporterAddressLink();
+        }
+
+        [When("the user clicks the Who are you sending this consignment to? link")]
+        public void WhenTheUserClicksTheWhoAreYouSendingThisConsignmentToLink()
+        {
+            exporterYourApplicationPage?.ClickWhoAreYouSendingThisConsignmentToLink();
+        }
+
+        [When("the user clicks the Supporting documents link")]
+        public void WhenTheUserClicksTheSupportingDocumentsLink()
+        {
+            exporterYourApplicationPage?.ClickSupportingDocumentsLink();
+        }
     }
 }

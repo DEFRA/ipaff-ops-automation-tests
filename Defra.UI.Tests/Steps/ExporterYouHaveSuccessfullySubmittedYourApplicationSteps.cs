@@ -28,6 +28,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(exporterYouHaveSuccessfullySubmittedYourApplicationPage?.IsPageLoaded(), "Submission confirmation page is not displayed");
         }
 
+        [Then("the You have successfully submitted your application for a phytosanitary certificate page is displayed")]
+        public void ThenTheYouHaveSuccessfullySubmittedYourApplicationForAPhytosanitaryCertificatePageIsDisplayed()
+        {
+            Assert.True(exporterYouHaveSuccessfullySubmittedYourApplicationPage?.IsPhytosanitaryConfirmationPageLoaded(), "Phytosanitary certificate submission confirmation page is not displayed");
+        }
+
         [Then("the user records the APHA reference number for {string}")]
         public void ThenTheUserRecordsTheAPHAReferenceNumberForSPS9510(string iterationName)
         {

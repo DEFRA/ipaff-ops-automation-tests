@@ -104,6 +104,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then(@"I should be redirected to the Exporter Portal Sign in using Government Gateway page")]
         [Then(@"I should redirected to the BTMS Sign in using Government Gateway page")]
         [Then(@"I should redirected to the IPAFF Sign in using Government Gateway page")]
+        [Then(@"I should be redirected to the Sign in using Government Gateway page")]
         public void ThenIShouldRedirectedToTheIPAFFSignInUsingGovernmentGatewayPage()
         {
             Assert.True(_signInPage?.IsPageLoaded(), "Application page not loaded");

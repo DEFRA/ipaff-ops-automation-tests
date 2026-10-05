@@ -3,6 +3,7 @@
     public interface IExporterYouHaveSuccessfullySubmittedYourApplicationPage
     {
         bool IsPageLoaded();
+        bool IsPhytosanitaryConfirmationPageLoaded();
         string GetAphaReferenceNumber();
     }
 }
