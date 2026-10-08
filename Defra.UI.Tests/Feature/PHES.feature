@@ -1,9 +1,9 @@
 ﻿Feature: PHES
 
-End-to-end PHES regression Test
+End-to-end PHES regression tests
 
-@PHES
-Scenario: New exporter application for a phytosanitary certificate
+@PHES-Happy-Path
+Scenario: New exporter application for a phytosanitary certificate - PHES Happy Path
 	# Exporter Portal - New exporter application for a phytosanitary certificate
 	Given that I navigate to the Exporter Portal
 	Then I should see type of Gateway login page
@@ -78,144 +78,314 @@ Scenario: New exporter application for a phytosanitary certificate
 	And the user clicks the Submit application button
 	Then the You have successfully submitted your application for a phytosanitary certificate page is displayed
 	And the user records the APHA reference number
-	# Dynamics Portal - Caseworker processes an application for a phytosanitary certificate
+
+@SPS-4289
+Scenario: Exporter application for seed sampling followed by a phytosanitary certificate application using the stock - SPS-4289
+	# Exporter Portal - Arrange seed sampling
+	Given that I navigate to the Exporter Portal
+	Then I should see type of Gateway login page
+	And I have selected 'Sign in with Government Gateway' as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should be redirected to the Sign in using Government Gateway page
+	When I have provided the Exporter Trader credentials and signin
+	Then the Exporter Portal homepage should be displayed
+	When the user clicks the Start a new application button
+	Then the What are you exporting? page is displayed
+	When the user selects 'Seeds for planting' and clicks the Continue button on the What are you exporting? page
+	Then the What do you need to do? page is displayed
+	When the user selects 'Arrange seed sampling' and clicks the Continue button on the What do you need to do? page
+	Then the Create a reference page is displayed
+	When the user enters a reference number and clicks the Save and continue button
+	Then the Your application for seed sampling page is displayed
+	And the 'Create a reference' task is marked as 'COMPLETE'
+	When the user clicks the Seeds to be sampled link
+	Then the How do you want to add commodities to this application? page is displayed
+	When the user selects 'All at once, by uploading a file' and clicks the Continue button on the How do you want to add commodities to this application? page
+	Then the Upload a file page is displayed
+	When the user downloads the CSV template
+	Then the CSV template is downloaded
+	And the only units of measurements listed in the template are 'grams' kilograms' 'tonnes'
+	When the user closes the CSV template
+	Then the Upload a file page is displayed
+	When the user clicks the Back link on the Upload a file page
+	Then the How do you want to add commodities to this application? page is displayed
+	When the user selects 'Manually, by adding one at a time' and clicks the Continue button on the How do you want to add commodities to this application? page
+	Then the Add seeds to your consignment page is displayed
+ 	When the user describes the seed commodity with botanical name 'FLUTI', variety 'special', lot reference '12345', quantity '10000', unit of measurement 'Grams', chemically treated 'Yes', chemicals used 'Pesticide', country where grown 'United Kingdom', destination countries 'Netherlands'
+	And the only options available for Unit of measurement are 'Grams' 'Kilograms' 'Tonnes'
+	Then the seed commodity details are displayed with botanical name 'FLUTI', variety 'special', lot reference '12345', quantity '10000', unit of measurement 'Grams', chemically treated 'Yes', chemicals used 'Pesticide', country where grown 'United Kingdom', destination countries 'Netherlands'
+	When the user clicks the Save and continue button on the Add seeds to your consignment page
+	Then the Your commodities page is displayed
+	And the commodity table is displayed for arranging for seed sampling before exporting seeds for planting
+	And the 'Do you want to add more seeds to be sampled?' question is displayed on the Your commodities page
+	And there are radio buttons present on the Your commodities page
+	And there is no option to Save and continue later on the Your commodities page
+	When the user selects 'No, I have finished adding commodities' and clicks the Save and continue button on the Your commodities page
+	Then the Your application for seed sampling page is displayed
+	And the 'Seeds to be sampled' task is marked as 'COMPLETE'
+	When the user clicks the Inspection details link
+	Then the Where are the seeds? page is displayed
+	When the user selects an inspection address and continues
+	Then the Do you want to select this inspection address? page is displayed
+	When the user selects 'Yes, select this inspection address' and clicks the Continue button on the Do you want to select this inspection address? page
+	Then the Who is the contact for this application? page is displayed
+	And the fields available on the Who is the contact for this application? page are 'Contact name, Phone number, Email address'
+	When the user enters a contact name for the inspector to contact about the application
+	And the user enters a phone number for the inspector to contact about the application
+	And the user enters an email address for the inspector to contact about the application
+	And the user clicks the Save and continue button on the Who is the contact for this application? page
+	Then the When will the seeds be ready for sampling? page is displayed
+	When the user enters a valid date for when the seeds will be ready for sampling at least 4 days in the future
+	And the user clicks the Save and continue button on the When will the seeds be ready for sampling? page
+	Then the Your application for seed sampling page is displayed
+	And the 'Inspection details' task is marked as 'COMPLETE'
+	When the user clicks the Check your answers and submit your application link
+	Then the Review your answers page is displayed
+	When the user clicks the Continue button on the Review your answers page
+	Then the Declaration page is displayed
+	When the user ticks the exporter declaration checkbox
+	And the user clicks the Submit application button
+	Then the You have successfully submitted your seed sampling application page is displayed
+	And the user records the APHA reference number
+	# Dynamics Portal - Process the seed sampling inspection tasks
 	When I am logged in to the 'IDCOMS' app as 'Inspector'
-	And I click on 'Export Applications' under the 'Exports' area
-	Then the 'Active Export Applications' view is displayed
-	When I search Import Notifications for the notification created in IPAFFS
-	Then the notification created in IPAFFS should be returned
+	And I click on 'Work Orders' under the 'Common' area
+	# @agent - Use this step definition to help implement the step below: And I change the Import Notifications view to 'Inactive Import Notifications'
+	And I change the Work Orders view to 'All Work Order - Exports'
+	# @agent - Use this step definition to help implement the step below: Then the 'Inactive Import Notifications' view is displayed
+	Then the 'All Work Orders - Exports' view is displayed on the Work Orders page
+	# @agent - Use this step definition to help implement the step below: When I search Import Notifications for the notification created in IPAFFS
+	When I search Work Orders for the notification created in the Exporter Portal
+	# @agent - Use this step definition to help implement the step below: Then the notification created in IPAFFS should be returned
+	Then the application submitted in the Exporter Portal should be returned
+	# @agent - Use this method to help implement the step below since it may need a similar helper to scroll untill the Application Type is visible: private void ScrollGridUntilBothColumnsVisible()
+	And the Application Type is set to Pre-Export Application
 	When I open the record in the grid
-	Then I verify the Import Notification page is displayed for the notification created in IPAFFS
-	And the 'Summary' tab is displayed and selected
-	When I click the reference number in the Work Order field for the notification created in IPAFFS
-	Then I verify the Work Order page is displayed for the notification created in IPAFFS
-	And the 'Import' tab is displayed and selected
+	# @agent - Use this step definition to help implement the step below: Then the 'Import' tab is displayed and selected
+	Then the 'Pre-Export' tab is displayed and selected on the Work Order page
+	# @agent - Use this step definition to help implement the step below: And the Substatus of the Work Order should be Assigned
+	And the Substatus of the Work Order should be Unassigned
 	When I click the Assign command
 	Then I can see the Assign Work Order popup is displayed
 	When I click the Assign button
 	Then the Substatus of the Work Order should be Assigned
 	And the Owner of the Work Order should be me
-	When I check that the Commodity Lines frame shows 'Active Import Commodity Lines'
-	Then all the Commodity Lines should be validated with the values given in the input
-	When I sort Commodity Lines by Regulatory Authority
-	And I double click on a Commodity Line with Regulatory Authority set to 'PHSI'
-	Then the Import Commodity Line page is displayed
-	And the settings are displayed as HMI Inspection Required 'No', PHSI Inspection Required 'Yes' and Inspection Classification 'Mandatory / Controlled / Reduced / Not Notifiable'
-	When I click the Back button in the command bar
-	Then I verify the Work Order page is displayed for the notification created in IPAFFS
-	And the 'Import' tab is displayed and selected
-	When I sort Commodity Lines by Regulatory Authority
-	And I double click on a Commodity Line with Regulatory Authority set to 'HMI'
-	Then the Import Commodity Line page is displayed
-	And the settings are displayed as HMI Inspection Required 'Yes', PHSI Inspection Required 'No' and Inspection Classification ''
-	When I click the Back button in the command bar
-	Then I verify the Work Order page is displayed for the notification created in IPAFFS
-	And the 'Import' tab is displayed and selected
-	When I sort Commodity Lines by Regulatory Authority
-	And I double click on a Commodity Line with Regulatory Authority set to 'Joint'
-	Then the Import Commodity Line page is displayed
-	And the settings are displayed as HMI Inspection Required 'Yes / No', PHSI Inspection Required 'No' and Inspection Classification 'Mandatory / Controlled / Reduced / Not Notifiable'
-	When I click the Back button in the command bar
-	Then I verify the Work Order page is displayed for the notification created in IPAFFS
-	And the 'Import' tab is displayed and selected
 	When I select the 'Work Order Tasks' tab
-	Then I can see following Work Order Tasks 'HMI Check' 'Document Check' 'Imports Phyto Certificate Audit' 'Identity & Physical Check'
-	When I click on the 'Document Check' task
+	# @agent - Use this step definition to help implement the step below: Then the 'Import' tab is displayed and selected
+	Then the 'Work Order Tasks' tab is displayed and selected on the Work Order page
+	And I can see following Work Order Tasks 'Pre Inspection Task' 'Seed Sampling Inspection Task' 'Issue a Report Task'
+	When I click on the 'Seed Sampling Inspection Task' task
 	And I maximise the popup
-	Then I verify the 'Document Check' popup is displayed
+	Then I verify the 'Seed Sampling Inspection Task' popup is displayed
 	And the 'Summary' tab is displayed and selected
-	When I click the Assign command
-	Then I can see the Assign Work Order Task popup is displayed
-	When I click the Assign button
-	Then the Owner of the Work Order should be me
-	When I click Add my time within the Time Recording section
-	Then a new row appears in the grid containing my name
+	# @agent - Use this step definition to help implement the step below but we only want to check for visibility/displayed: [Then(@"the '(.*)' tab is displayed and selected")]
+	And the 'Summary' 'Inspection Results' 'Notes' 'Related' tabs are displayed for the Work Order Task 
+	When I select the 'Inspection Results' tab
+	Then the 'Inspection Results' tab is displayed and selected
+	# @agent - Add to WorkOrderTasksSteps
+	When I select the Visit field on the Work Order Task page
+	And I select the New button on the Visits dropdown
+	# @agent - Add to QuickCreateFormSteps
+	Then the Quick Create Visit form is displayed
+	When I add my name to the Quick Create form
+	And I add a valid date scheduled to the Quick Create form at least 2 days in the future
+	And I click the Save and Close button on the Quick Create form
+	Then the Quick Create Visit form is closed
+	And the 'Inspection Results' tab is displayed and selected
+	# @agent - Add to WorkOrderTasksSteps
+	When I scroll down to the Inspection Results grid on the Work Order Task page
+	Then I can see 1 row in the Inspection Results grid
+	And I can see the following columns are present in the Inspection Results grid 'Status Reason' 'Sample ID (Consignment Item)' 'Lot reference (Consignment Item)' 'Genus (Consignment Item)' 'Species (Consignment Item)' 'Variety (Consignment Item)' 'Description (Consignment Item)' 'Total Quantity (Consignment Item)' 'Unit of Measurement (Consignment Item)' 'Inspection Result' 'Reason' 'Task Type'
+	# @agent - Use this step definition to help implement the step below: [When(@"I select the new row in the grid")]
+	When I select the row in the Inspection Results grid
+	Then I can only edit the 'Inspection Result' column in the Inspection Results grid 
+	When I expand the row in the Inspection Results grid
+	Then a nested row is displayed under the Inspection Results grid
+	And I can see the following columns are present in the nested row 'Country' 'Commodity Line' 'Passed Destination Countries' 'Reason for Country Not Valid'
+	When I contract row in the Inspection Results grid
+	Then the nested row is hidden under the Inspection Results grid
+	When I select the row in the Inspection Results grid
+	# @agent - Use this step definition to help implement the step below: [When(@"I click Submit Time")]
+	And I click the Pass Selected button above the Inspection Results grid
+	# @agent - Use this step definition to help implement the step below: [Then(@"the entry status is '(.*)'")]
+	Then the Inspection Result is Pass
+	When I select the row in the Inspection Results grid
+	# @agent - Use this step definition to help implement the step below: [When(@"I click Submit Time")]
+	And I click the Submit Results button above the Inspection Results grid
+	# @agent - Use this step definition to help implement the step below: [Then(@"the entry status is '(.*)'")]
+	Then the Status Reason is Submitted
+	When I select the 'Summary' tab
+	Then the 'Summary' tab is displayed and selected
+	# @agent - Add to WorkOrderTasksSteps
+	When I select the Time Recording Inspectors field on the Work Order Task page
+	And I search for my name
+	# @agent - Use this step definition to help implement the step below: [Then(@"a new row appears in the grid containing my name")]
+	Then a new row appears in the Time Recording grid containing my name
 	And the entry status is 'Draft'
-	When I enter '20' in the Admin column
-	And I click the Save icon
-	Then the details are saved 
-	And the entry status is 'Draft'
+	# @agent - Use this step definition to help implement the step below: [When(@"I enter '(.*)' in the (Admin|Travel|Inspection) column")]
+	When I enter 5 in the 'Travel' column
+	And I enter 5 in the 'Inspection' column
+	And I enter 5 in the 'Admin' column
+	And I enter 5 in the 'Training given (Client)' column
+	And I enter 5 in the 'Training given (Inspector)' column
+	And I enter 5 in the 'Training received' column
 	When I select the new row in the grid
 	And I click Submit Time
 	Then I can see the Confirm Time Entries popup is displayed
 	When I click the OK button
-	Then the entry status is 'Submitted'
+	Then the 'Summary' tab is displayed and selected
+	And the entry status is 'Submitted'
 	When I click Mark Complete
 	Then a grey banner is displayed 'Read-only This record’s status: Inactive'
 	When I close the popup
-	Then I verify the Work Order page is displayed for the notification created in IPAFFS
-	And I can see following Work Order Tasks 'HMI Check' 'Document Check' 'Imports Phyto Certificate Audit' 'Identity & Physical Check'
-	And the Work Order Task 'Document Check' Status is 'Inactive'
-	And the Work Order Task 'Document Check' % Complete is '100.00'
-	When I click on the 'Imports Phyto Certificate Audit' task
+	Then the 'Work Order Tasks' tab is displayed and selected
+	And I can see following Work Order Tasks 'Pre Inspection Task' 'Issue a Report Task'
+	# @agent - Use this step definition to help implement the step below: [Then(@"I can see following Work Order Tasks
+	And the 'Seed Sampling Inspection Task' is no longer visible in the Active Work Order Service Tasks - Exports subgrid
+	When I click on the 'Issue a Report Task' task
 	And I maximise the popup
-	Then I verify the 'Imports Phyto Certificate Audit' popup is displayed
+	Then I verify the 'Issue a Report Task' popup is displayed
 	And the 'Summary' tab is displayed and selected
-	When I click the Assign command
-	Then I can see the Assign Work Order Task popup is displayed
-	When I click the Assign button
-	Then the Owner of the Work Order should be me
-	When I click Add my time within the Time Recording section
-	Then a new row appears in the grid containing my name
+	# @agent - Add to WorkOrderTasksSteps
+	When I select the Time Recording Inspectors field on the Work Order Task page
+	And I search for my name
+	# @agent - Use this step definition to help implement the step below: [Then(@"a new row appears in the grid containing my name")]
+	Then a new row appears in the Time Recording grid containing my name
 	And the entry status is 'Draft'
-	When I enter '599' in the Admin column
-	And I click the Save icon
-	Then the details are saved 
-	And the entry status is 'Draft'
-	When I select the new row in the grid
+	# @agent - Use this step definition to help implement the step below: [When(@"I enter '(.*)' in the (Admin|Travel|Inspection) column")]
+	When I enter 5 in the 'Admin' column
+	And I select the new row in the grid
 	And I click Submit Time
 	Then I can see the Confirm Time Entries popup is displayed
 	When I click the OK button
-	Then the entry status is 'Submitted'
-	When I update the Audit status to 'Audited'
-	And I update the Date documents received to today's date
-	And I update the Documents match electronic copy? to 'Yes'
-	Then the Audit status field is 'Audited'
-	And the Date documents received field is today's date
-	And the Documents match electronic copy? field is 'Yes'
-	When I click the Save icon above the Accompanying Documents grid
-	Then the Accompanying Documents grid details are saved
+	Then the 'Summary' tab is displayed and selected
+	And the entry status is 'Submitted'
 	When I click Mark Complete
 	Then a grey banner is displayed 'Read-only This record’s status: Inactive'
 	When I close the popup
-	Then I verify the Work Order page is displayed for the notification created in IPAFFS
-	And I can see following Work Order Tasks 'HMI Check' 'Document Check' 'Imports Phyto Certificate Audit' 'Identity & Physical Check'
-	And the Work Order Task 'Imports Phyto Certificate Audit' Status is 'Inactive'
-	And the Work Order Task 'Imports Phyto Certificate Audit' % Complete is '100.00'
-	When I click on the 'Identity & Physical Check' task
-	And I maximise the popup
-	Then I verify the 'Identity & Physical Check' popup is displayed
-	And the 'Summary' tab is displayed and selected
-	When I select the 'Samples' tab
-	Then the 'Samples' tab is displayed and selected
-	And the Import Commodity Lines grid is populated with the commodity lines from the notification created in IPAFFS
-	And the Lab Samples grid is empty
-	When I close the popup
-	Then I verify the Work Order page is displayed for the notification created in IPAFFS
-	And the Work Order Task 'Identity & Physical Check' Status is 'Active'
-	And the Work Order Task 'Identity & Physical Check' % Complete is '0.00'
-	When I click on the 'Identity & Physical Check' task
-	And I maximise the popup
-	Then I verify the 'Identity & Physical Check' popup is displayed
-	And the 'Summary' tab is displayed and selected
-	When I click Add my time within the Time Recording section
-	Then a new row appears in the grid containing my name
-	And the entry status is 'Draft'
-	When I enter '10' in the Admin column
-	And I enter '120' in the Travel column
-	And I enter '60' in the Inspection column
-	And I click the Save icon
-	Then the details are saved 
-	And the entry status is 'Draft'
-	When I select the new row in the grid
-	And I click Submit Time
-	Then I can see the Confirm Time Entries popup is displayed
-	When I click the OK button
-	Then the entry status is 'Submitted'
-	When I click Mark Complete
-	Then a grey banner is displayed 'Read-only This record’s status: Inactive'
-	When I close the popup
-	Then I verify the Work Order page is displayed for the notification created in IPAFFS
-	And I can see following Work Order Tasks 'HMI Check' 'Document Check' 'Imports Phyto Certificate Audit' 'Identity & Physical Check'
-	And the Work Order Task 'Identity & Physical Check' Status is 'Inactive'
-	And the Work Order Task 'Identity & Physical Check' % Complete is '100.00'
+	Then the 'Work Order Tasks' tab is displayed and selected
+	And I can see following Work Order Tasks 'Pre Inspection Task'
+	# @agent - Use this step definition to help implement the step below: [Then(@"I can see following Work Order Tasks
+	And the 'Issue a Report Task' is no longer visible in the Active Work Order Service Tasks - Exports subgrid
+	When I select the 'Pre-Export' tab
+	Then the 'Pre-Export' tab is displayed and selected
+	# @agent - Use this step definition to help implement the step below: [When("I click the reference number in the Work Order field for the notification created in IPAFFS")]
+	When I click the Export Application link in the Application & Inspection Address section
+	# @agent - Use this step definition to help implement the step below: [Then("I verify the Import Notification page is displayed for the notification created in IPAFFS")]
+	Then the Export Application page is displayed for the notification created in the Exporter Portal
+	# @agent - Use this step definition to help implement the 2 steps below: And the Substatus of the Work Order should be Assigned
+	And the Status of the Export Application should be Inactive
+	And the Status Reason of the Export Application should be Completed
+	When I select the 'Related' tab
+	And I select the 'Stocks' tab from the Related tab dropdown
+	Then the 'Stocks' tab is displayed and selected
+	And I can see 1 record displayed within the Stock subgrid
+	And I make a note of the stock name
+	# Exporter Portal - Apply for a phytosanitary certificate using the stock
+	# @agent - Use this step definition to help implement the step below: [When("I switch to the IPAFFS tab")]
+	When I switch to the Exporter Portal window
+	And I navigate to the Exporter Portal
+	Then the Exporter Portal homepage should be displayed
+	When the user clicks the Start a new application button
+	Then the What are you exporting? page is displayed
+	When the user selects 'Seeds for planting' and clicks the Continue button on the What are you exporting? page
+	Then the What do you need to do? page is displayed
+	When the user selects 'Apply for a phytosanitary certificate' and clicks the Continue button on the What do you need to do? page
+	Then the Destination country page is displayed
+	When the user searches for destination country 'Netherlands' and clicks the Continue button
+	Then the Regulations for exporting 'seeds' to 'Netherlands' page is displayed
+	And the guidance needs you to have a phytosanitary certificate to export seeds to 'Netherlands'
+	And the guidance needs you to describe your consignment using the botanical name (genus and species)
+	When the user ticks the exporting regulations checkbox 
+	And the user clicks the Continue button on the Regulations for exporting page
+	Then the Create a reference page is displayed
+	When the user enters a reference number and clicks the Save and continue button
+	Then the Your application page is displayed
+	And the 'Create a reference' task is marked as 'COMPLETE'
+	When the user clicks the What is the exporter address? link
+	Then the Is this the exporter address? page is displayed
+	And the guidance is This is the address saved to your Defra account.
+	And the 'Yes' and 'No' radio buttons are displayed and unselected by default
+	When the user selects 'Yes' and clicks the Save and continue button on the Is this the exporter address? page
+	Then the Your application page is displayed
+	And the 'What is the exporter address?' task is marked as 'COMPLETE'
+	When the user clicks the What's in your consignment? link
+	Then the How do you want to add commodities to your consignment? page is displayed
+	When the user selects 'Manually, by adding one at a time' and clicks the Continue button on the How do you want to add commodities to your consignment? page
+	Then the Add seeds to your consignment page is displayed
+	When the user describes the seed commodity with botanical name 'FLUTI', variety 'special', lot reference '12345', sample reference, quantity '7', unit of measurement 'Kilograms', number of packages '7', type of packaging 'Box', countries of origin 'United Kingdom'
+	And the user clicks the Save and continue button on the Add seeds to your consignment page
+	Then the Your commodities page is displayed
+	And the commodity table is displayed for applying for a phytosanitary certificate exporting seeds for planting
+	When the user selects 'No, I have finished adding commodities' and clicks the Save and continue button on the Your commodities page
+	Then the Your application page is displayed
+	And the 'What's in your consignment' task is marked as 'COMPLETE'
+	When the user clicks the Who are you sending this consignment to? link
+	Then the Who are you sending this consignment to? page is displayed
+	When the user enters the conisgnee details and clicks the Continue button on the Who are you sending this consignment to? page
+	Then the Your application page is displayed
+	And the 'Who are you sending this consignment to?' task is marked as 'COMPLETE'
+	When the user clicks the How will this consignment be transported? link
+	Then the How will this consignment be transported? page is displayed
+	When the user enters the value of the consignment in pounds 1200.00
+	And the user selects 'Yes' for Do you know the point of entry?
+	And the user enters the point of entry 'NL AMS'
+	And the user selects a transport method 'Road or ferry'
+	And the user clicks the Save and continue button on the How will this consignment be transported? page
+	Then the Your application page is displayed
+	And the 'How will this consignment be transported?' task is marked as 'COMPLETE'
+	When the user clicks the Check your answers and submit your application link
+	Then the Review your answers page is displayed
+	# @agent - Use this step definition to help implement the step below: [Then("the data presented for review matches the data entered into the notification for CHED PP")]
+	And the data presented for review matches the data entered into the Exporter Portal for a phytosanitary certificate applicationge
+	When the user clicks the Continue button on the Review your answers page
+	Then the When do you need the certificate? page is displayed
+	When the user enters a valid date for when the certificate is needed at least 4 days in the future 
+	And the user clicks the Continue button on the When do you need the certificate? page
+	Then the Exporter declaration page is displayed
+	When the user ticks the exporter declaration checkbox
+	And the user clicks the Submit application button
+	Then the Application complete page is displayed
+	And the user records the APHA reference number
+	# Dynamics Portal - Process the phytosanitary certificate export application
+	When I switch back to the Dynamics tab
+	And I click on 'Export Applications' under the 'Exports' area
+
+###############################################################
+# @agent - Use this step definition to help implement the step below: 
+
+	And I search for the recorded APHA reference number
+	Then the General tab of the Export Application is displayed with status 'Active' and Status Reason 'Submitted'
+	When I select the 'Stock Requests' tab
+	Then 1 stock request record is auto generated and visible in the Stock Requests subgrid
+	When I select the General tab and click the Work Order link
+	Then the Export tab of the Work Order page is displayed with the Stock Requests tab present
+	And the Work Order owner is the 'CIT Triage Team' and the Substatus is 'Unassigned'
+	When I click Assign on the Work Order form and assign the Work Order to myself
+	Then the Work Order Substatus is updated to 'Assigned' with the Owner set to the current user
+	When I select the 'Stock Requests' tab
+	And I highlight the Stock request record and click 'Accept Request'
+	Then the Stock request Status Reason is updated to 'Accepted'
+	When I select the link in the Stock field on the Stock Request record
+	Then the Summary tab for the Stock record is displayed
+	When I select the 'Phyto Commodities' tab
+	Then 1 stock request record is visible in the Selected Commodity Lines subgrid
+	When I select the 'Work Order Tasks' tab
+	Then I can see following Work Order Tasks 'Pre Inspection Task' 'Issue Phyto Task'
+	When I double click the Pre Inspection Task link
+	And I enter an Inspector into the Time Recording Inspectors field and submit the time entries
+	Then the Confirm Time Entries popup is displayed
+	When I click OK on the Confirm Time Entries popup
+	And I click Mark Complete and close the Pre Inspection Task
+	Then the Pre Inspection Task is no longer visible in the Active Work Order Tasks subgrid
+	When I double click the Issue Phyto Task link
+	Then the Summary tab of the Issue Phyto Task is displayed
+	When I select the 'Phyto Commodities' tab
+	# Exporter Portal - Search for the Phytosanitary certificate
+	Given that I navigate to the Exporter Portal
+	Then I should see type of Gateway login page
+	And I have selected 'Sign in with Government Gateway' as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should be redirected to the Sign in using Government Gateway page
+	When I have provided the Exporter Trader credentials and signin
+	Then the Exporter Portal homepage should be displayed
