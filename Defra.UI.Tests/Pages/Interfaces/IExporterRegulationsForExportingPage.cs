@@ -5,5 +5,6 @@ namespace Defra.UI.Tests.Pages.Interfaces
         bool IsPageLoaded(string commodity, string country);
         void TickConfirmRegulationsCheckbox();
         void ClickContinueButton();
+        bool IsGuidanceDisplayed(string guidance);
     }
 }

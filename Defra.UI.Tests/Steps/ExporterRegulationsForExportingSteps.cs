@@ -26,6 +26,20 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(exporterRegulationsForExportingPage?.IsPageLoaded(commodity, country), $"Regulations for exporting {commodity} to {country} page is not displayed");
         }
 
+        [Then("the guidance needs you to have a phytosanitary certificate to export seeds to {string}")]
+        public void ThenTheGuidanceNeedsYouToHaveAPhytosanitaryCertificateToExportSeedsTo(string country)
+        {
+            var guidance = $"needs you to have a phytosanitary certificate to export seeds to {country}";
+            Assert.True(exporterRegulationsForExportingPage?.IsGuidanceDisplayed(guidance), $"Guidance '{guidance}' is not displayed");
+        }
+
+        [Then("the guidance needs you to describe your consignment using the botanical name \\(genus and species)")]
+        public void ThenTheGuidanceNeedsYouToDescribeYourConsignmentUsingTheBotanicalName()
+        {
+            var guidance = "needs you to describe your consignment using the botanical name (genus and species)";
+            Assert.True(exporterRegulationsForExportingPage?.IsGuidanceDisplayed(guidance), $"Guidance '{guidance}' is not displayed");
+        }
+
         [When("the user ticks the exporting regulations checkbox")]
         public void WhenTheUserTicksTheExportingRegulationsCheckbox()
         {

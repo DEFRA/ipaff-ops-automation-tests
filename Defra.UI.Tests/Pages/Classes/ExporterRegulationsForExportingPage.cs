@@ -14,6 +14,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement pageTitle => _driver.WaitForElement(By.Id("regulation-page-heading"), true);
         private IWebElement chkConfirm => _driver.WaitForElementExists(By.Id("confirm"), true);
         private IWebElement btnContinue => _driver.WaitForElement(By.Id("Button-Confirm_regulations"));
+        private By guidanceText(string text) => By.XPath($"//main//li[contains(normalize-space(),\"{text}\")] | //main//p[contains(normalize-space(),\"{text}\")]");
         #endregion
 
         public ExporterRegulationsForExportingPage(IObjectContainer container)
@@ -31,5 +32,7 @@ namespace Defra.UI.Tests.Pages.Classes
         }
 
         public void ClickContinueButton() => btnContinue.Click();
+
+        public bool IsGuidanceDisplayed(string guidance) => _driver.IsElementDisplayed(guidanceText(guidance));
     }
 }

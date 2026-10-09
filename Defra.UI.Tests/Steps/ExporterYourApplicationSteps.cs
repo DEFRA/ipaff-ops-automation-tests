@@ -26,6 +26,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(exporterYourApplicationPage?.IsPageLoaded(), "Your application page is not displayed");
         }
 
+        [Then("the {string} task is marked as {string}")]
+        public void ThenTheTaskIsMarkedAs(string taskName, string status)
+        {
+            var actualStatus = exporterYourApplicationPage?.GetTaskStatus(taskName);
+            Assert.AreEqual(status, actualStatus, $"Task '{taskName}' status is '{actualStatus}', expected '{status}'");
+        }
+
         [When("the user clicks the What's in your consignment? link")]
         public void WhenTheUserClicksTheWhatsInYourConsignmentLink()
         {

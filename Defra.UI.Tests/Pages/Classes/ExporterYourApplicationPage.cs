@@ -20,7 +20,11 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement lnkWhoAreYouSendingTo => _driver.WaitForElement(By.XPath("//a[normalize-space()='Who are you sending this consignment to?']"));
         private IWebElement lnkSupportingDocuments => _driver.WaitForElement(By.XPath("//a[normalize-space()='Supporting documents']"));
         private IWebElement lnkCheckAnswers => _driver.WaitForElement(By.XPath("//a[normalize-space()='Check your answers and submit your application']"));
+        private IWebElement TaskStatus(string taskName) => _driver.WaitForElement(By.XPath($"//li[.//a[contains(normalize-space(),{ToXPathLiteral(taskName)})]]//strong[contains(@class,'govuk-tag')]"));
         #endregion
+
+        private static string ToXPathLiteral(string value) =>
+            value.Contains('\'') ? $"\"{value}\"" : $"'{value}'";
 
         public ExporterYourApplicationPage(IObjectContainer container)
         {
@@ -36,5 +40,6 @@ namespace Defra.UI.Tests.Pages.Classes
         public void ClickWhatIsTheExporterAddressLink() => lnkExporterAddress.Click();
         public void ClickWhoAreYouSendingThisConsignmentToLink() => lnkWhoAreYouSendingTo.Click();
         public void ClickSupportingDocumentsLink() => lnkSupportingDocuments.Click();
+        public string GetTaskStatus(string taskName) => TaskStatus(taskName).Text.Trim();
     }
 }

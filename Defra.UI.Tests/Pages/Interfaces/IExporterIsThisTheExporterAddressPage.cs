@@ -5,5 +5,7 @@ namespace Defra.UI.Tests.Pages.Interfaces
         bool IsPageLoaded();
         void SelectOption(string option);
         void ClickSaveAndContinueButton();
+        bool IsGuidanceDisplayed(string guidance);
+        bool IsRadioButtonPresentAndUnselected(string option);
     }
 }

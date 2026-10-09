@@ -4,5 +4,9 @@
     {
         bool IsPageLoaded();
         void ClickContinueButton();
+        string GetCommodityTableText();
+        string GetConsignmentValue();
+        string GetPointOfEntry();
+        string GetTransportMode();
     }
 }

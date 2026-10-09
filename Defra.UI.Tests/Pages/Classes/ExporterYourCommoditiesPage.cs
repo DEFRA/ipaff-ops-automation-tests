@@ -15,6 +15,10 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement tblCommodities => _driver.WaitForElement(By.Id("commodity-table"), true);
         private IWebElement finishedAddingOption(string option) => _driver.WaitForElement(By.XPath($"//label[contains(normalize-space(),'{option}')]"), true);
         private IWebElement btnSaveAndContinue => _driver.WaitForElement(By.Id("Button-SaveAndContinue"));
+        private IReadOnlyCollection<IWebElement> tblCommodityHeaders => _driver.WaitForElements(By.XPath("//table[@id='commodity-table']//th"));
+        private IWebElement addMoreQuestion(string question) => _driver.WaitForElement(By.XPath($"//h2[contains(@class,'govuk-fieldset__heading') and normalize-space()='{question}']"), true);
+        private IReadOnlyCollection<IWebElement> rdoAddMoreCommodities => _driver.FindElements(By.XPath("//input[@name='add_more_commodities' and @type='radio']"));
+        private By btnSaveAndContinueLaterBy => By.Id("Button-SaveAndResumeLater");
         #endregion
 
         public ExporterYourCommoditiesPage(IObjectContainer container)
@@ -29,5 +33,14 @@ namespace Defra.UI.Tests.Pages.Classes
         public void SelectFinishedAddingCommoditiesOption(string option) => finishedAddingOption(option).Click();
 
         public void ClickSaveAndContinueButton() => btnSaveAndContinue.Click();
+
+        public List<string> GetCommodityTableHeaders() =>
+            tblCommodityHeaders.Select(h => System.Text.RegularExpressions.Regex.Replace(h.Text, @"\s+", " ").Trim()).ToList();
+
+        public bool IsAddMoreQuestionDisplayed(string question) => addMoreQuestion(question).Displayed;
+
+        public bool AreAddMoreRadioButtonsPresent() => rdoAddMoreCommodities.Count > 0;
+
+        public bool IsSaveAndContinueLaterDisplayed() => _driver.IsElementDisplayed(btnSaveAndContinueLaterBy);
     }
 }

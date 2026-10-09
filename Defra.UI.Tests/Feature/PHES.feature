@@ -105,8 +105,6 @@ Scenario: Exporter application for seed sampling followed by a phytosanitary cer
 	When the user downloads the CSV template
 	Then the CSV template is downloaded
 	And the only units of measurements listed in the template are 'grams' kilograms' 'tonnes'
-	When the user closes the CSV template
-	Then the Upload a file page is displayed
 	When the user clicks the Back link on the Upload a file page
 	Then the How do you want to add commodities to this application? page is displayed
 	When the user selects 'Manually, by adding one at a time' and clicks the Continue button on the How do you want to add commodities to this application? page
@@ -116,7 +114,7 @@ Scenario: Exporter application for seed sampling followed by a phytosanitary cer
 	Then the seed commodity details are displayed with botanical name 'FLUTI', variety 'special', lot reference '12345', quantity '10000', unit of measurement 'Grams', chemically treated 'Yes', chemicals used 'Pesticide', country where grown 'United Kingdom', destination countries 'Netherlands'
 	When the user clicks the Save and continue button on the Add seeds to your consignment page
 	Then the Your commodities page is displayed
-	And the commodity table is displayed for arranging for seed sampling before exporting seeds for planting
+	And the commodity table is displayed for arranging for seed sampling to export seeds for planting
 	And the 'Do you want to add more seeds to be sampled?' question is displayed on the Your commodities page
 	And there are radio buttons present on the Your commodities page
 	And there is no option to Save and continue later on the Your commodities page
@@ -146,7 +144,7 @@ Scenario: Exporter application for seed sampling followed by a phytosanitary cer
 	When the user ticks the exporter declaration checkbox
 	And the user clicks the Submit application button
 	Then the You have successfully submitted your seed sampling application page is displayed
-	And the user records the APHA reference number
+	And the user records the APHA reference number for 'Seed Sampling Application'
 	# ---------- Dynamics Portal - Process the seed sampling inspection tasks ----------
 	When I am logged in to the 'IDCOMS' app as 'Inspector'
 	And I click on 'Work Orders' under the 'Common' area
@@ -315,7 +313,7 @@ Scenario: Exporter application for seed sampling followed by a phytosanitary cer
 	When the user describes the seed commodity with botanical name 'FLUTI', variety 'special', lot reference '12345', sample reference, quantity '7', unit of measurement 'Kilograms', number of packages '7', type of packaging 'Box', countries of origin 'United Kingdom'
 	And the user clicks the Save and continue button on the Add seeds to your consignment page
 	Then the Your commodities page is displayed
-	And the commodity table is displayed for applying for a phytosanitary certificate exporting seeds for planting
+	And the commodity table is displayed for applying for a phytosanitary certificate to export seeds for planting
 	When the user selects 'No, I have finished adding commodities' and clicks the Save and continue button on the Your commodities page
 	Then the Your application page is displayed
 	And the 'What's in your consignment' task is marked as 'COMPLETE'
@@ -345,7 +343,7 @@ Scenario: Exporter application for seed sampling followed by a phytosanitary cer
 	When the user ticks the exporter declaration checkbox
 	And the user clicks the Submit application button
 	Then the Application complete page is displayed
-	And the user records the APHA reference number
+	And the user records the APHA reference number for 'Phytosanitary Certificate Application'
 	# ---------- Dynamics Portal - Process the phytosanitary certificate export application ----------
 	When I switch back to the Dynamics tab
 	# @agent: Include dismissal of the sign in banner after clicking Discard changes if it's there
@@ -529,18 +527,13 @@ Scenario: Exporter application for seed sampling followed by a phytosanitary cer
 	# ---------- Exporter Portal - Search for the Phytosanitary certificate ----------
 	When I navigate to the Exporter Portal	
 	Then the Exporter Portal homepage should be displayed
-	When the user enters the recorded APHA reference for '' in the search box
+	# @agent: Search by scenario context
+	When the user enters the recorded APHA reference for 'Seed Sampling Application' in the search box
 	Then the Export Application portal search returns one matching record
-	When the user clicks the APHA reference link for the CHED Reference of ''
+	When the user clicks the APHA reference link for 'Seed Sampling Application'
 	Then the Manage application page should be displayed
-	When the user clicks the Sampling report (csv) link
-	# @agent: Use this step definition to help implement the step below: [Then("the certificate should be displayed in a new browser tab")]
-	Then the Sampling report is displayed in a new window
-	# @agent: Use this step definition to help implement the step below: [When("the user downloads the PDF for validation using the current browser session")]
-	When I download the Sampling report CSV
-	# @agent: Use this step definition to help implement the step below:  [When("the user checks that the data in the certificate matches the data entered into the CHED PP notification")]
-	And the Remaining Approved Stock quantity is '3000.00'
-	# @agent: Use this step definition to help implement the step below: [When("the user closes the PDF browser tab")]
-	When I close the CSV window
-	# @agent: Use this step definition to help implement the step below: [Then("the browser tab is closed")]
-	Then the window is closed
+	When the user clicks the Sampling report (csv) link on the Manage application page
+	# @agent: Use this step definition to help implement the step below: [When("the user clicks Download the CSV template and read the guide on how to complete this \\(opens in new tab)")]
+	Then the Sampling report (csv) file is downloaded
+	# @agent: Use this step definition to help implement the step below: [When("the user updates the bulk update CSV {string} setting the Id for commodity code {string} to the recorded {string}")]
+	And the Remaining Approved Stock quantity is '3000.0'

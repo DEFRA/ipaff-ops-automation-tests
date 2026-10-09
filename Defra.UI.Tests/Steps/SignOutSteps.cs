@@ -67,6 +67,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
             SwapDriver(_objectContainer, dynamicsDriver);
         }
 
+        [When("I switch to the Exporter Portal window")]
+        public void WhenISwitchToTheExporterPortalWindow()
+        {
+            var driver = _objectContainer.Resolve<IWebDriver>();
+            driver.SwitchTo().Window(driver.WindowHandles.First());
+        }
+
         private static void SwapDriver(IObjectContainer container, IWebDriver newDriver)
         {
             var containerType = container.GetType();

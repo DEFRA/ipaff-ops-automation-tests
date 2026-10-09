@@ -26,6 +26,20 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(exporterIsThisTheExporterAddressPage?.IsPageLoaded(), "Is this the exporter address? page is not displayed");
         }
 
+        [Then("the guidance is This is the address saved to your Defra account.")]
+        public void ThenTheGuidanceIsThisIsTheAddressSavedToYourDefraAccount()
+        {
+            const string guidance = "This is the address saved to your Defra account.";
+            Assert.True(exporterIsThisTheExporterAddressPage?.IsGuidanceDisplayed(guidance), $"Guidance '{guidance}' is not displayed");
+        }
+
+        [Then("the {string} and {string} radio buttons are displayed and unselected by default")]
+        public void ThenTheAndRadioButtonsAreDisplayedAndUnselectedByDefault(string option1, string option2)
+        {
+            Assert.True(exporterIsThisTheExporterAddressPage?.IsRadioButtonPresentAndUnselected(option1), $"'{option1}' radio button is not displayed or is selected");
+            Assert.True(exporterIsThisTheExporterAddressPage?.IsRadioButtonPresentAndUnselected(option2), $"'{option2}' radio button is not displayed or is selected");
+        }
+
         [When("the user selects {string} and clicks the Save and continue button on the Is this the exporter address? page")]
         public void WhenTheUserSelectsAndClicksTheSaveAndContinueButtonOnTheIsThisTheExporterAddressPage(string option)
         {

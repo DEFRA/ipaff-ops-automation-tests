@@ -15,6 +15,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement rdoYes => _driver.WaitForElementExists(By.Id("default_exporter_address-yes"), true);
         private IWebElement rdoNo => _driver.WaitForElementExists(By.Id("default_exporter_address-no"), true);
         private IWebElement btnSaveAndContinue => _driver.WaitForElement(By.Id("ExporterAddressConfirmation-Continue"));
+        private By guidanceText(string text) => By.XPath($"//main//*[self::p or self::div or self::span][normalize-space()=\"{text}\"]");
         #endregion
 
         public ExporterIsThisTheExporterAddressPage(IObjectContainer container)
@@ -33,5 +34,13 @@ namespace Defra.UI.Tests.Pages.Classes
         }
 
         public void ClickSaveAndContinueButton() => btnSaveAndContinue.Click();
+
+        public bool IsGuidanceDisplayed(string guidance) => _driver.IsElementDisplayed(guidanceText(guidance));
+
+        public bool IsRadioButtonPresentAndUnselected(string option)
+        {
+            var radio = option.Trim().Equals("Yes", StringComparison.OrdinalIgnoreCase) ? rdoYes : rdoNo;
+            return radio != null && !radio.Selected;
+        }
     }
 }
