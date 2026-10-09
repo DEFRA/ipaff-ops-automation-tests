@@ -81,7 +81,7 @@ Scenario: New exporter application for a phytosanitary certificate - PHES Happy 
 
 @SPS-4289
 Scenario: Exporter application for seed sampling followed by a phytosanitary certificate application using the stock - SPS-4289
-	# Exporter Portal - Arrange seed sampling
+	# ---------- Exporter Portal - Arrange seed sampling ----------
 	Given that I navigate to the Exporter Portal
 	Then I should see type of Gateway login page
 	And I have selected 'Sign in with Government Gateway' as login type
@@ -147,7 +147,7 @@ Scenario: Exporter application for seed sampling followed by a phytosanitary cer
 	And the user clicks the Submit application button
 	Then the You have successfully submitted your seed sampling application page is displayed
 	And the user records the APHA reference number
-	# Dynamics Portal - Process the seed sampling inspection tasks
+	# ---------- Dynamics Portal - Process the seed sampling inspection tasks ----------
 	When I am logged in to the 'IDCOMS' app as 'Inspector'
 	And I click on 'Work Orders' under the 'Common' area
 	# @agent: Use this step definition to help implement the step below: And I change the Import Notifications view to 'Inactive Import Notifications'
@@ -280,7 +280,7 @@ Scenario: Exporter application for seed sampling followed by a phytosanitary cer
 	Then the 'Stocks' tab is displayed and selected
 	And I can see 1 record displayed within the Stock subgrid
 	And I make a note of the stock name
-	# Exporter Portal - Apply for a phytosanitary certificate using the stock
+	# ---------- Exporter Portal - Apply for a phytosanitary certificate using the stock ----------
 	# @agent: Use this step definition to help implement the step below: [When("I switch to the IPAFFS tab")]
 	When I switch to the Exporter Portal window
 	And I navigate to the Exporter Portal
@@ -346,7 +346,7 @@ Scenario: Exporter application for seed sampling followed by a phytosanitary cer
 	And the user clicks the Submit application button
 	Then the Application complete page is displayed
 	And the user records the APHA reference number
-	# Dynamics Portal - Process the phytosanitary certificate export application
+	# ---------- Dynamics Portal - Process the phytosanitary certificate export application ----------
 	When I switch back to the Dynamics tab
 	# @agent: Include dismissal of the sign in banner after clicking Discard changes if it's there
 	And I click the Discard changes button on the Unsaved changes popup 
@@ -526,7 +526,7 @@ Scenario: Exporter application for seed sampling followed by a phytosanitary cer
 	When I close the PDF window
 	# @agent: Use this step definition to help implement the step below: [Then("the browser tab is closed")]
 	Then the window is closed
-	# Exporter Portal - Search for the Phytosanitary certificate
+	# ---------- Exporter Portal - Search for the Phytosanitary certificate ----------
 	When I navigate to the Exporter Portal	
 	Then the Exporter Portal homepage should be displayed
 	When the user enters the recorded APHA reference for '' in the search box
