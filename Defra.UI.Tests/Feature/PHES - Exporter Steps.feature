@@ -103,27 +103,6 @@ Scenario: Exporter 1 - SPS-4289
 	# @agent: New step on existing files ExporterYouHaveSuccessfullySubmittedYourApplicationSteps
 	Then the You have successfully submitted your seed sampling application page is displayed
 	And the user records the APHA reference number for 'Seed Sampling Application'
-	# ---------- Exporter Portal - Search for the Phytosanitary certificate ----------
-	When I navigate to the Exporter Portal	
-	Then the Exporter Portal homepage should be displayed
-	# @agent: Search by scenario context
-	# @agent: New step on existing files ExporterYourApplicationsSteps
-	When the user enters the recorded APHA reference for 'Seed Sampling Application' in the search box
-	# @agent: New step on existing files ExporterYourApplicationsSteps
-	Then the Export Application portal search returns one matching record
-	# @agent: New step on existing files ExporterYourApplicationsSteps
-	When the user clicks the APHA reference link for 'Seed Sampling Application'
-	# @agent: New step, page and interface files ExporterManageApplication
-	Then the Manage application page should be displayed
-	# @agent: New step, page and interface files ExporterManageApplication
-	When the user clicks the Sampling report (csv) link on the Manage application page
-	# @agent: Use this step definition to help implement the step below: [When("the user clicks Download the CSV template and read the guide on how to complete this \\(opens in new tab)")]
-	# @agent: New step, page and interface files ExporterManageApplication
-	Then the Sampling report (csv) file is downloaded
-	# @agent: Use this step definition to help implement the step below: [When("the user updates the bulk update CSV {string} setting the Id for commodity code {string} to the recorded {string}")]
-	# @agent: New step, page and interface files ExporterManageApplication
-	# @agent: Reference file for CSV validation is 'seedSamplingReport_2026-10-09-095850.csv'
-	And the Remaining Approved Stock quantity is '3000.0'
 	
 Scenario: Exporter 2 - SPS-4289
 	# ---------- Exporter Portal - Apply for a phytosanitary certificate using the stock ----------

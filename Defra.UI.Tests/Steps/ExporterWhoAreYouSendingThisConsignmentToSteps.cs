@@ -10,14 +10,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
     public class ExporterWhoAreYouSendingThisConsignmentToSteps
     {
         private readonly IObjectContainer _objectContainer;
+        private readonly ScenarioContext _scenarioContext;
 
         private IExporterWhoAreYouSendingThisConsignmentToPage? exporterWhoAreYouSendingThisConsignmentToPage =>
             _objectContainer.IsRegistered<IExporterWhoAreYouSendingThisConsignmentToPage>()
                 ? _objectContainer.Resolve<IExporterWhoAreYouSendingThisConsignmentToPage>()
                 : null;
 
-        public ExporterWhoAreYouSendingThisConsignmentToSteps(IObjectContainer container)
+        public ExporterWhoAreYouSendingThisConsignmentToSteps(ScenarioContext context, IObjectContainer container)
         {
+            _scenarioContext = context;
             _objectContainer = container;
         }
 
@@ -31,6 +33,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserEntersTheConisgneeDetailsAndClicksTheContinueButtonOnTheWhoAreYouSendingThisConsignmentToPage()
         {
             var consignee = Utils.GenerateOperatorDetails();
+            _scenarioContext["ExporterConsigneeName"] = consignee.OperatorName;
+            _scenarioContext["ExporterConsigneeAddress"] = $"{consignee.AddressLine1}, {consignee.CityOrTown}, {consignee.Postcode}";
 
             exporterWhoAreYouSendingThisConsignmentToPage?.EnterConsigneeDetails(
                 consignee.OperatorName,

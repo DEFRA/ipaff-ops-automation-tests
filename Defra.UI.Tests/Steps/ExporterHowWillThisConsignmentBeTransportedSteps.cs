@@ -9,14 +9,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
     public class ExporterHowWillThisConsignmentBeTransportedSteps
     {
         private readonly IObjectContainer _objectContainer;
+        private readonly ScenarioContext _scenarioContext;
 
         private IExporterHowWillThisConsignmentBeTransportedPage? exporterHowWillThisConsignmentBeTransportedPage =>
             _objectContainer.IsRegistered<IExporterHowWillThisConsignmentBeTransportedPage>()
                 ? _objectContainer.Resolve<IExporterHowWillThisConsignmentBeTransportedPage>()
                 : null;
 
-        public ExporterHowWillThisConsignmentBeTransportedSteps(IObjectContainer container)
+        public ExporterHowWillThisConsignmentBeTransportedSteps(ScenarioContext context, IObjectContainer container)
         {
+            _scenarioContext = context;
             _objectContainer = container;
         }
 
@@ -36,6 +38,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user enters the value of the consignment in pounds {float}")]
         public void WhenTheUserEntersTheValueOfTheConsignmentInPounds(decimal value)
         {
+            _scenarioContext["ExporterConsignmentValue"] = value.ToString("0.00");
             exporterHowWillThisConsignmentBeTransportedPage?.EnterConsignmentValue(value);
         }
 
@@ -48,12 +51,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user enters the point of entry {string}")]
         public void WhenTheUserEntersThePointOfEntry(string pointOfEntry)
         {
+            _scenarioContext["ExporterPointOfEntry"] = pointOfEntry;
             exporterHowWillThisConsignmentBeTransportedPage?.EnterPointOfEntry(pointOfEntry);
         }
 
         [When("the user selects a transport method {string}")]
         public void WhenTheUserSelectsATransportMethod(string method)
         {
+            _scenarioContext["ExporterTransportMode"] = method;
             exporterHowWillThisConsignmentBeTransportedPage?.SelectTransportMethod(method);
         }
 

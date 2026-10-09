@@ -31,24 +31,110 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the data presented for review matches the data entered into the Exporter Portal for a phytosanitary certificate application")]
         public void ThenTheDataPresentedForReviewMatchesTheDataEnteredForAPhytosanitaryCertificateApplication()
         {
-            var commodityText = exporterReviewYourAnswersPage?.GetCommodityTableText() ?? string.Empty;
-            var expectedCommodityValues = new[]
+            var allDataMatches = true;
+            var mismatches = new List<string>();
+
+            // Application summary
+            ValidateIfExists("ExporterDestinationCountry", exporterReviewYourAnswersPage?.GetDestinationCountry(), ref allDataMatches, mismatches);
+            ValidateIfExists("Reference", exporterReviewYourAnswersPage?.GetYourReference(), ref allDataMatches, mismatches);
+
+            // Your consignment
+            ValidateIfExists("Commodity", exporterReviewYourAnswersPage?.GetCommodityDescription(), ref allDataMatches, mismatches);
+            ValidateIfExists("SeedVariety", exporterReviewYourAnswersPage?.GetCommodityVariety(), ref allDataMatches, mismatches);
+            ValidateIfExists("SeedLotReference", exporterReviewYourAnswersPage?.GetCommodityLotReference(), ref allDataMatches, mismatches);
+            ValidateIfExists("SeedCountriesOfOrigin", exporterReviewYourAnswersPage?.GetCommodityOrigin(), ref allDataMatches, mismatches);
+            ValidateQuantity(exporterReviewYourAnswersPage?.GetCommodityQuantity(), ref allDataMatches, mismatches);
+            ValidateNumberOfPackages(exporterReviewYourAnswersPage?.GetCommodityNumberOfPackages(), ref allDataMatches, mismatches);
+            ValidateIfExists("SeedPackaging", exporterReviewYourAnswersPage?.GetCommodityPackaging(), ref allDataMatches, mismatches);
+
+            // Transportation
+            ValidateIfExists("ExporterConsignmentValue", exporterReviewYourAnswersPage?.GetConsignmentValue(), ref allDataMatches, mismatches);
+            ValidateContains("ExporterPointOfEntry", exporterReviewYourAnswersPage?.GetPointOfEntry(), ref allDataMatches, mismatches);
+            ValidateIfExists("ExporterTransportMode", exporterReviewYourAnswersPage?.GetTransportMode(), ref allDataMatches, mismatches);
+
+            // Consignee details
+            ValidateIfExists("ExporterConsigneeName", exporterReviewYourAnswersPage?.GetConsigneeName(), ref allDataMatches, mismatches);
+            ValidateIfExists("ExporterConsigneeAddress", exporterReviewYourAnswersPage?.GetConsigneeAddress(), ref allDataMatches, mismatches);
+
+            if (!allDataMatches)
             {
-                _scenarioContext.Get<string>("Commodity"),
-                _scenarioContext.Get<string>("SeedVariety"),
-                $"Lot reference: {_scenarioContext.Get<string>("SeedLotReference")}",
-                _scenarioContext.Get<string>("SeedCountriesOfOrigin"),
-                $"{_scenarioContext.Get<string>("SeedQuantity")} {_scenarioContext.Get<string>("SeedUnit")}",
-                _scenarioContext.Get<string>("SeedPackaging")
-            };
-            foreach (var expected in expectedCommodityValues)
-            {
-                Assert.True(commodityText.Contains(expected, StringComparison.OrdinalIgnoreCase), $"Review commodity table does not contain '{expected}'. Actual: '{commodityText}'");
+                Console.WriteLine("[REVIEW VALIDATION] Data mismatches found:");
+                foreach (var mismatch in mismatches)
+                {
+                    Console.WriteLine($"[REVIEW VALIDATION] {mismatch}");
+                }
             }
 
-            Assert.AreEqual("1200.00", exporterReviewYourAnswersPage?.GetConsignmentValue(), "Consignment value does not match");
-            StringAssert.Contains("NL AMS", exporterReviewYourAnswersPage?.GetPointOfEntry(), "Point of entry does not match");
-            Assert.AreEqual("Road or ferry", exporterReviewYourAnswersPage?.GetTransportMode(), "Transport mode does not match");
+            Assert.True(allDataMatches, $"Review page data validation failed. Mismatches: {string.Join(", ", mismatches)}");
+        }
+
+        private void ValidateIfExists(string contextKey, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
+        {
+            if (!TryGetExpected(contextKey, out var expectedValue))
+                return;
+
+            CompareValues(contextKey, expectedValue, reviewValue?.Trim(), expectedValue.Equals(reviewValue?.Trim(), StringComparison.OrdinalIgnoreCase), ref allDataMatches, mismatches);
+        }
+
+        /// <summary>
+        /// Point of entry is displayed with its full name, e.g. "NL AMS" displays as "Amsterdam (NL AMS)"
+        /// </summary>
+        private void ValidateContains(string contextKey, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
+        {
+            if (!TryGetExpected(contextKey, out var expectedValue))
+                return;
+
+            var actualValue = reviewValue?.Trim() ?? string.Empty;
+            CompareValues(contextKey, expectedValue, actualValue, actualValue.Contains(expectedValue, StringComparison.OrdinalIgnoreCase), ref allDataMatches, mismatches);
+        }
+
+        private void ValidateQuantity(string? reviewValue, ref bool allDataMatches, List<string> mismatches)
+        {
+            if (!TryGetExpected("SeedQuantity", out var quantity) || !TryGetExpected("SeedUnit", out var unit))
+                return;
+
+            var expectedValue = $"{quantity} {unit}";
+            CompareValues("SeedQuantity", expectedValue, reviewValue?.Trim(), expectedValue.Equals(reviewValue?.Trim(), StringComparison.OrdinalIgnoreCase), ref allDataMatches, mismatches);
+        }
+
+        private void ValidateNumberOfPackages(string? reviewValue, ref bool allDataMatches, List<string> mismatches)
+        {
+            if (!TryGetExpected("SeedNumberOfPackages", out var packages))
+                return;
+
+            var expectedValue = packages == "1" ? "1 package" : $"{packages} packages";
+            CompareValues("SeedNumberOfPackages", expectedValue, reviewValue?.Trim(), expectedValue.Equals(reviewValue?.Trim(), StringComparison.OrdinalIgnoreCase), ref allDataMatches, mismatches);
+        }
+
+        private bool TryGetExpected(string contextKey, out string expectedValue)
+        {
+            expectedValue = string.Empty;
+            if (!_scenarioContext.ContainsKey(contextKey))
+            {
+                Console.WriteLine($"[REVIEW VALIDATION] ⊘ {contextKey}: Skipped (not in context)");
+                return false;
+            }
+
+            expectedValue = _scenarioContext[contextKey]?.ToString()?.Trim() ?? string.Empty;
+            if (string.IsNullOrEmpty(expectedValue))
+            {
+                Console.WriteLine($"[REVIEW VALIDATION] ⊘ {contextKey}: Skipped (empty value in context)");
+                return false;
+            }
+            return true;
+        }
+
+        private static void CompareValues(string contextKey, string expectedValue, string? actualValue, bool isMatch, ref bool allDataMatches, List<string> mismatches)
+        {
+            if (!isMatch)
+            {
+                allDataMatches = false;
+                mismatches.Add($"{contextKey}: Expected '{expectedValue}', Found '{actualValue}'");
+            }
+            else
+            {
+                Console.WriteLine($"[REVIEW VALIDATION] ✓ {contextKey}: '{expectedValue}' matches");
+            }
         }
 
         [When("the user clicks the Continue button on the Review your answers page")]

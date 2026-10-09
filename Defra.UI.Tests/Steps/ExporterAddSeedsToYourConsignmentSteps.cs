@@ -63,6 +63,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["SeedLotReference"] = lotReference;
             _scenarioContext["SeedQuantity"] = quantity;
             _scenarioContext["SeedUnit"] = unit;
+            _scenarioContext["SeedNumberOfPackages"] = numberOfPackages;
             _scenarioContext["SeedPackaging"] = typeOfPackaging;
             _scenarioContext["SeedCountriesOfOrigin"] = countriesOfOrigin;
         }
