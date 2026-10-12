@@ -173,10 +173,11 @@ namespace Defra.UI.Tests.Pages.Classes
         }
 
         // accessible-autocomplete commits the selection on mousedown, not click
-        // The suggestion list re-renders while filtering, so the option is re-located on every attempt
+        // The suggestion list re-renders while filtering (debounced), so the option is re-located on every attempt
+        // and both StaleElementReferenceException and NoSuchElementException (list not yet rendered) are retried
         private void SelectAutocompleteOption(Func<IWebElement> getOption)
         {
-            const int maxAttempts = 5;
+            const int maxAttempts = 10;
 
             for (var attempt = 1; attempt <= maxAttempts; attempt++)
             {
@@ -197,7 +198,7 @@ namespace Defra.UI.Tests.Pages.Classes
                         option);
                     return;
                 }
-                catch (StaleElementReferenceException) when (attempt < maxAttempts)
+                catch (Exception ex) when ((ex is StaleElementReferenceException || ex is NoSuchElementException) && attempt < maxAttempts)
                 {
                     Thread.Sleep(250);
                 }

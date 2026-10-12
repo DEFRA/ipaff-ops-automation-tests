@@ -173,6 +173,97 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
             $"Expected Substatus to be 'Assigned' but found '{substatusText}'.");
     }
 
+    [Then(@"the Substatus of the Work Order should be '(.*)'")]
+    public void ThenTheSubstatusOfTheWorkOrderShouldBe(string expectedSubstatus)
+    {
+        Driver.WaitForTransaction();
+
+        var headerHelper = new DynamicsHeaderHelper(Driver);
+        var substatusText = headerHelper.GetHeaderFieldValueText("header_msdyn_substatus", "msdyn_substatus");
+
+        substatusText.Should().NotBeNull(
+            $"Substatus '{expectedSubstatus}' could not be found in the Work Order header, even after expanding " +
+            "the 'More Header Editable Fields' overflow flyout.");
+
+        substatusText.Should().Be(expectedSubstatus,
+            $"Expected Substatus to be '{expectedSubstatus}' but found '{substatusText}'.");
+    }
+
+    /// <summary>
+    /// Verifies that the specified Work Order Task is no longer present in the
+    /// Active Work Order Service Tasks - Exports subgrid. Refreshes the subgrid between
+    /// attempts as task deactivation is processed asynchronously.
+    /// </summary>
+    /// <param name="taskName">The name of the task e.g. 'Seed Sampling Inspection Task'.</param>
+    [Then(@"the '(.*)' is no longer visible in the Active Work Order Service Tasks - Exports subgrid")]
+    public void ThenTheTaskIsNoLongerVisibleInTheActiveWorkOrderServiceTasksExportsSubgrid(string taskName)
+    {
+        Driver.WaitForTransaction();
+
+        var taskLinkXPath = $"//div[@data-id='dataSetRoot_workorderservicetasksgrid']//div[@col-id='msdyn_name']//a[@role='link' and @aria-label='{taskName}']";
+
+        var remaining = Policy
+            .Handle<Exception>()
+            .OrResult<int>(count => count > 0)
+            .WaitAndRetry(6, _ =>
+            {
+                XrmApp.Entity.SubGrid.ClickCommand("workorderservicetasksgrid", "Refresh");
+                Driver.WaitForTransaction();
+                return TimeSpan.FromSeconds(5);
+            })
+            .Execute(() =>
+            {
+                Driver.WaitForTransaction();
+
+                Driver.WaitUntilAvailable(
+                    By.XPath("//div[@data-id='dataSetRoot_workorderservicetasksgrid']"),
+                    "Work Order Service Tasks grid could not be found.");
+
+                return Driver.FindElements(By.XPath(taskLinkXPath)).Count;
+            });
+
+        remaining.Should().Be(0,
+            $"Expected Work Order Task '{taskName}' to no longer be visible in the Active Work Order Service Tasks - Exports subgrid " +
+            $"but it was still present after retrying.");
+    }
+
+    /// <summary>
+    /// Clicks the Export Application lookup link in the Application &amp; Inspection Address section
+    /// of the Work Order. Scrolls the field into view first as the lookup tag is lazy-rendered.
+    /// </summary>
+    [When("I click the Export Application link in the Application & Inspection Address section")]
+    public void WhenIClickTheExportApplicationLinkInTheApplicationInspectionAddressSection()
+    {
+        Driver.WaitForTransaction();
+
+        Policy
+            .Handle<StaleElementReferenceException>()
+            .Or<NoSuchElementException>()
+            .Or<WebDriverTimeoutException>()
+            .Or<ElementClickInterceptedException>()
+            .WaitAndRetry(5, _ => TimeSpan.FromSeconds(3))
+            .Execute(() =>
+            {
+                var fieldContainers = Driver.FindElements(By.XPath("//div[@data-id='trd_exportapplicationid']"));
+
+                if (fieldContainers.Count > 0)
+                {
+                    Driver.ExecuteScript("arguments[0].scrollIntoView({block:'center'});", fieldContainers[0]);
+                    Driver.WaitForTransaction();
+                }
+
+                var exportApplicationLink = Driver.WaitUntilAvailable(
+                    By.XPath("//div[@data-id='trd_exportapplicationid.fieldControl-LookupResultsDropdown_trd_exportapplicationid_selected_tag_text']"),
+                    "Export Application link could not be found in the Application & Inspection Address section.");
+
+                exportApplicationLink.Click();
+            });
+
+        Driver.WaitForTransaction();
+
+        SignInPromptHelper.DismissSignInPrompts(Driver, "post-navigation");
+    }
+
     [Then("the Owner of the Work Order should be me")]
     public void ThenTheOwnerOfTheWorkOrderShouldBeMe()
     {
