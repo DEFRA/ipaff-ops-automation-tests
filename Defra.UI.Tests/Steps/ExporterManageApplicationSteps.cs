@@ -38,8 +38,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(exporterManageApplicationPage?.IsSamplingReportDownloaded(), "Sampling report (csv) file was not downloaded");
         }
 
-        [Then("the Remaining Approved Stock quantity is {string}")]
-        public void ThenTheRemainingApprovedStockQuantityIs(string expectedQuantity)
+        [Then("the Remaining Approved Stock quantity in the CSV is {string}")]
+        public void ThenTheRemainingApprovedStockQuantityInTheCsvIs(string expectedQuantity)
         {
             var actual = exporterManageApplicationPage?.GetRemainingApprovedStockQuantity();
             Assert.AreEqual(expectedQuantity, actual, $"Remaining approved stock quantity is '{actual}', expected '{expectedQuantity}'");

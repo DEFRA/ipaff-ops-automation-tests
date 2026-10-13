@@ -285,6 +285,541 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
             $"Expected Owner to contain '{expectedOwner}' but found '{ownerText}'.");
     }
 
+    [Then(@"the Owner of the Work Order should be '(.*)'")]
+    public void ThenTheOwnerOfTheWorkOrderShouldBe(string expectedOwner)
+    {
+        Driver.WaitForTransaction();
+
+        var headerHelper = new DynamicsHeaderHelper(Driver);
+        var ownerText = headerHelper.GetHeaderFieldValueText("header_ownerid", "ownerid");
+
+        ownerText.Should().NotBeNull(
+            $"Owner '{expectedOwner}' could not be found in the Work Order header, even after expanding " +
+            "the 'More Header Editable Fields' overflow flyout.");
+
+        ownerText.Should().Be(expectedOwner,
+            $"Expected Owner to be '{expectedOwner}' but found '{ownerText}'.");
+    }
+
+    /// <summary>
+    /// Verifies the Work Order page is displayed for the named application, using the APHA
+    /// reference stored in the scenario context as '{applicationName}_APHAReference'.
+    /// </summary>
+    /// <param name="applicationName">The application name e.g. 'Phytosanitary Certificate Application'.</param>
+    [Then(@"the Work Order page is displayed for the '(.*)' created in the Exporter Portal")]
+    public void ThenTheWorkOrderPageIsDisplayedForTheApplicationCreatedInTheExporterPortal(string applicationName)
+    {
+        Driver.WaitForTransaction();
+
+        SignInPromptHelper.DismissSignInPrompts(Driver, "post-navigation");
+
+        scenarioContext.TryGetValue($"{applicationName}_APHAReference", out string expectedAphaReference);
+
+        if (string.IsNullOrEmpty(expectedAphaReference))
+        {
+            scenarioContext.TryGetValue("APHAReference", out expectedAphaReference);
+        }
+
+        expectedAphaReference.Should().NotBeNullOrEmpty(
+            $"No APHA reference was found in the scenario context under '{applicationName}_APHAReference'.");
+
+        var pageHeader = Driver.WaitUntilAvailable(
+            By.XPath("//span[@data-id='entity_name_span']"),
+            "Work Order page header could not be found.");
+
+        var actualPageHeader = pageHeader.Text.Trim();
+        actualPageHeader.Should().Be("Work Order",
+            $"Expected page header to be 'Work Order' but found '{actualPageHeader}'.");
+
+        var referenceHeader = Driver.WaitUntilAvailable(
+            By.XPath("//h1[@data-id='header_title']"),
+            "Application reference header could not be found on the Work Order page.");
+
+        var actualReference = (referenceHeader.GetAttribute("title") ?? referenceHeader.Text)
+            .Replace("- Saved", string.Empty)
+            .Trim();
+
+        actualReference.Should().Be(expectedAphaReference,
+            $"Expected Work Order header to be '{expectedAphaReference}' but found '{actualReference}'.");
+    }
+
+    [Then(@"the Application Type should be '(.*)' in the General section")]
+    public void ThenTheApplicationTypeShouldBeInTheGeneralSection(string expectedApplicationType)
+    {
+        var actual = GetLookupSelectedTagText(
+            "msdyn_workordertype",
+            "msdyn_workordertype.fieldControl-LookupResultsDropdown_msdyn_workordertype_selected_tag_text");
+
+        actual.Should().Be(expectedApplicationType,
+            $"Expected Application Type to be '{expectedApplicationType}' but found '{actual}'.");
+    }
+
+    [Then(@"the Commodity Group should be '(.*)' in the General section")]
+    public void ThenTheCommodityGroupShouldBeInTheGeneralSection(string expectedCommodityGroup)
+    {
+        var actual = GetLookupSelectedTagText(
+            "msdyn_primaryincidenttype",
+            "msdyn_primaryincidenttype.fieldControl-LookupResultsDropdown_msdyn_primaryincidenttype_selected_tag_text");
+
+        actual.Should().Be(expectedCommodityGroup,
+            $"Expected Commodity Group to be '{expectedCommodityGroup}' but found '{actual}'.");
+    }
+
+    /// <summary>
+    /// Clicks the Work Order lookup link in the Application Details section of the Export Application.
+    /// The Work Order is linked asynchronously, so the record is refreshed between attempts.
+    /// </summary>
+    [When("I click the Work Order link in the Application Details section")]
+    public void WhenIClickTheWorkOrderLinkInTheApplicationDetailsSection()
+    {
+        Driver.WaitForTransaction();
+
+        Policy
+            .Handle<StaleElementReferenceException>()
+            .Or<NoSuchElementException>()
+            .Or<WebDriverTimeoutException>()
+            .Or<ElementClickInterceptedException>()
+            .WaitAndRetry(
+                retryCount: 10,
+                sleepDurationProvider: _ => TimeSpan.FromSeconds(30),
+                onRetry: (_, _, _, _) =>
+                {
+                    CommandSteps.WhenISelectTheCommand("Refresh");
+                    Driver.WaitForTransaction();
+                    SignInPromptHelper.DismissSignInPrompts(Driver, "post-refresh");
+                })
+            .Execute(() =>
+            {
+                var fieldContainers = Driver.FindElements(By.XPath("//div[@data-id='trd_workorderid']"));
+
+                if (fieldContainers.Count > 0)
+                {
+                    Driver.ExecuteScript("arguments[0].scrollIntoView({block:'center'});", fieldContainers[0]);
+                    Driver.WaitForTransaction();
+                }
+
+                var workOrderLink = Driver.WaitUntilAvailable(
+                    By.XPath("//div[@data-id='trd_workorderid.fieldControl-LookupResultsDropdown_trd_workorderid_selected_tag_text']"),
+                    "Work Order link could not be found in the Application Details section.");
+
+                workOrderLink.Click();
+            });
+
+        Driver.WaitForTransaction();
+
+        SignInPromptHelper.DismissSignInPrompts(Driver, "post-navigation");
+    }
+
+    private const string StockRequestsSubGridName = "stockrequests_subgrid";
+    private const string StockRequestsSubgridXPath = "//div[@data-control-name='stockrequests_subgrid']";
+    private const string CommodityLinesSubgridXPath = "//div[@data-control-name='subgrid_selected_commodities']";
+    private const string StockRequestsStockColumnId = "trd_stock";
+    private const string StockRequestsStatusReasonColumnId = "statuscode";
+    private const string StockRequestsRowStatusColumnId = "__row_status";
+
+    private static readonly Dictionary<string, string> StockRequestsColumnIds = new()
+    {
+        ["Stock"] = StockRequestsStockColumnId,
+        ["Status Reason"] = StockRequestsStatusReasonColumnId,
+    };
+
+    /// <summary>
+    /// Verifies the number of rows in the Stock Requests subgrid, refreshing the subgrid between
+    /// attempts to allow asynchronously created stock requests to render.
+    /// </summary>
+    [Then(@"I can see (\d+) rows? in the Stock Requests subgrid")]
+    public void ThenICanSeeRowInTheStockRequestsSubgrid(int expectedRowCount)
+    {
+        var actualRowCount = GetStockRequestsRowCountWithRefresh(expectedRowCount);
+
+        actualRowCount.Should().Be(expectedRowCount,
+            $"Expected {expectedRowCount} row(s) in the Stock Requests subgrid but found {actualRowCount}.");
+    }
+
+    [Then("I cannot see any row in the Stock Requests subgrid")]
+    public void ThenICannotSeeAnyRowInTheStockRequestsSubgrid()
+    {
+        var actualRowCount = GetStockRequestsRowCountWithRefresh(0);
+
+        actualRowCount.Should().Be(0,
+            $"Expected no rows in the Stock Requests subgrid but found {actualRowCount}.");
+    }
+
+    [Then(@"I can see (\d+) rows? in the Commodity Lines subgrid")]
+    public void ThenICanSeeRowInTheCommodityLinesSubgrid(int expectedRowCount)
+    {
+        Driver.WaitForTransaction();
+
+        var actualRowCount = Policy
+            .Handle<Exception>()
+            .OrResult<int?>(count => count != expectedRowCount)
+            .WaitAndRetry(6, _ => TimeSpan.FromSeconds(5))
+            .Execute(() =>
+            {
+                Driver.WaitForTransaction();
+                return GetSubgridRowCount(CommodityLinesSubgridXPath);
+            });
+
+        actualRowCount.Should().Be(expectedRowCount,
+            $"Expected {expectedRowCount} row(s) in the Commodity Lines subgrid but found {actualRowCount}.");
+    }
+
+    /// <summary>
+    /// Verifies the Status Reason column of the Stock Requests subgrid row for the stock reference
+    /// created in the Exporter Portal.
+    /// </summary>
+    [Then("the Status Reason of the Stock Request in the Stock Requests subgrid should be {string}")]
+    public void ThenTheStatusReasonOfTheStockRequestInTheStockRequestsSubgridShouldBe(string expectedStatusReason)
+    {
+        Driver.WaitForTransaction();
+
+        string actual = null;
+
+        Policy
+            .Handle<Exception>()
+            .OrResult<string>(value => value != expectedStatusReason)
+            .WaitAndRetry(6, _ =>
+            {
+                XrmApp.Entity.SubGrid.ClickCommand(StockRequestsSubGridName, "Refresh");
+                Driver.WaitForTransaction();
+                return TimeSpan.FromSeconds(5);
+            })
+            .Execute(() =>
+            {
+                Driver.WaitForTransaction();
+                return actual = GetStockRequestRowCell(StockRequestsStatusReasonColumnId).Text.Trim();
+            });
+
+        actual.Should().Be(expectedStatusReason,
+            $"Expected Stock Request Status Reason to be '{expectedStatusReason}' but found '{actual}' after retrying.");
+    }
+
+    [When("I select the record for the stock reference created in the Exporter Portal")]
+    public void WhenISelectTheRecordForTheStockReferenceCreatedInTheExporterPortal()
+    {
+        Driver.WaitForTransaction();
+
+        Policy
+            .Handle<StaleElementReferenceException>()
+            .Or<NoSuchElementException>()
+            .Or<WebDriverTimeoutException>()
+            .Or<ElementClickInterceptedException>()
+            .WaitAndRetry(5, _ => TimeSpan.FromSeconds(2))
+            .Execute(() =>
+            {
+                var row = GetStockRequestRow();
+
+                if (row.GetAttribute("aria-selected") != "true")
+                {
+                    GetStockRequestRowCell(StockRequestsRowStatusColumnId).Click();
+                }
+            });
+
+        Driver.WaitForTransaction();
+    }
+
+    [Then("the Accept Request button should be displayed")]
+    public void ThenTheAcceptRequestButtonShouldBeDisplayed()
+    {
+        Driver.WaitForTransaction();
+
+        var acceptRequestButton = Driver.WaitUntilAvailable(
+            By.XPath("//button[@data-id='trd_stockrequest|NoRelationship|SubGridStandard|trd.trd_stockrequest.AcceptRequest.Button']"),
+            "Accept Request button could not be found above the Stock Requests subgrid.");
+
+        acceptRequestButton.Displayed.Should().BeTrue("Expected the Accept Request button to be displayed.");
+    }
+
+    [When("I click the Accept Request button")]
+    public void WhenIClickTheAcceptRequestButton()
+    {
+        Driver.WaitForTransaction();
+
+        var acceptRequestButton = Driver.WaitUntilAvailable(
+            By.XPath("//button[@data-id='trd_stockrequest|NoRelationship|SubGridStandard|trd.trd_stockrequest.AcceptRequest.Button']"),
+            "Accept Request button could not be found above the Stock Requests subgrid.");
+
+        Driver.ExecuteScript("arguments[0].click();", acceptRequestButton);
+        Driver.WaitForTransaction();
+    }
+
+    /// <summary>
+    /// Clicks the link in the given column of the Stock Requests subgrid row for the stock
+    /// reference created in the Exporter Portal.
+    /// </summary>
+    /// <param name="columnName">The column display name e.g. 'Stock'.</param>
+    [When(@"I click the link in the '(.*)' column")]
+    public void WhenIClickTheLinkInTheColumn(string columnName)
+    {
+        StockRequestsColumnIds.TryGetValue(columnName, out var colId).Should().BeTrue(
+            $"No col-id mapping is defined for Stock Requests column '{columnName}'.");
+
+        Driver.WaitForTransaction();
+
+        Policy
+            .Handle<StaleElementReferenceException>()
+            .Or<NoSuchElementException>()
+            .Or<WebDriverTimeoutException>()
+            .Or<ElementClickInterceptedException>()
+            .WaitAndRetry(5, _ => TimeSpan.FromSeconds(2))
+            .Execute(() =>
+            {
+                var link = GetStockRequestRowCell(colId).FindElement(By.XPath(".//a"));
+                link.Click();
+            });
+
+        Driver.WaitForTransaction();
+
+        SignInPromptHelper.DismissSignInPrompts(Driver, "post-navigation");
+    }
+
+    /// <summary>
+    /// Switches the Stock Requests subgrid to the specified view.
+    /// </summary>
+    /// <param name="viewName">The name of the view e.g. 'All Stock Requests'.</param>
+    [When(@"I change the view to '(.*)' in the Stock Requests subgrid")]
+    public void WhenIChangeTheViewToInTheStockRequestsSubgrid(string viewName)
+    {
+        Driver.WaitForTransaction();
+
+        XrmApp.Entity.SubGrid.SwitchView(StockRequestsSubGridName, viewName);
+
+        Driver.WaitForTransaction();
+    }
+
+    [Then(@"the '(.*)' view is displayed in the Stock Requests subgrid")]
+    public void ThenTheViewIsDisplayedInTheStockRequestsSubgrid(string expectedViewName)
+    {
+        Driver.WaitForTransaction();
+
+        string actualViewName = null;
+
+        Policy
+            .Handle<StaleElementReferenceException>()
+            .Or<NoSuchElementException>()
+            .Or<WebDriverTimeoutException>()
+            .OrResult<string>(value => value != expectedViewName)
+            .WaitAndRetry(5, _ => TimeSpan.FromSeconds(2))
+            .Execute(() =>
+            {
+                var viewLabel = Driver.WaitUntilAvailable(
+                    By.XPath($"{StockRequestsSubgridXPath}//span[contains(@id,'ViewSelector_') and contains(@id,'_text-value')]"),
+                    "Stock Requests subgrid view selector could not be found.");
+
+                return actualViewName = viewLabel.Text.Trim();
+            });
+
+        actualViewName.Should().Be(expectedViewName,
+            $"Expected Stock Requests subgrid view to be '{expectedViewName}' but found '{actualViewName}'.");
+    }
+
+    [When("I open the record for the stock reference created in the Exporter Portal")]
+    public void WhenIOpenTheRecordForTheStockReferenceCreatedInTheExporterPortal()
+    {
+        Driver.WaitForTransaction();
+
+        Policy
+            .Handle<StaleElementReferenceException>()
+            .Or<NoSuchElementException>()
+            .Or<WebDriverTimeoutException>()
+            .Or<ElementClickInterceptedException>()
+            .WaitAndRetry(5, _ => TimeSpan.FromSeconds(2))
+            .Execute(() =>
+            {
+                var cell = GetStockRequestRowCell(StockRequestsStatusReasonColumnId);
+                new Actions(Driver).DoubleClick(cell).Perform();
+            });
+
+        Driver.WaitForTransaction();
+
+        SignInPromptHelper.DismissSignInPrompts(Driver, "post-navigation");
+    }
+
+    private int? GetStockRequestsRowCountWithRefresh(int expectedRowCount)
+    {
+        Driver.WaitForTransaction();
+
+        return Policy
+            .Handle<Exception>()
+            .OrResult<int?>(count => count != expectedRowCount)
+            .WaitAndRetry(6, _ =>
+            {
+                XrmApp.Entity.SubGrid.ClickCommand(StockRequestsSubGridName, "Refresh");
+                Driver.WaitForTransaction();
+                return TimeSpan.FromSeconds(5);
+            })
+            .Execute(() =>
+            {
+                Driver.WaitForTransaction();
+                return GetSubgridRowCount(StockRequestsSubgridXPath);
+            });
+    }
+
+    /// <summary>
+    /// Returns the row count of a subgrid, preferring the "Rows: X" footer, falling back to
+    /// the rendered data rows. Returns null if the subgrid grid has not rendered yet.
+    /// </summary>
+    private int? GetSubgridRowCount(string containerXPath)
+    {
+        var containers = Driver.FindElements(By.XPath(containerXPath));
+
+        if (containers.Count == 0 || containers[0].FindElements(By.XPath(".//div[@role='grid']")).Count == 0)
+        {
+            return null;
+        }
+
+        var container = containers[0];
+
+        var footerElements = container.FindElements(
+            By.XPath(".//span[contains(@class,'statusTextContainer') and contains(text(),'Rows:')]"));
+
+        if (footerElements.Count > 0 &&
+            int.TryParse(footerElements[0].Text.Replace("Rows:", string.Empty).Trim(), out var footerCount))
+        {
+            return footerCount;
+        }
+
+        if (container.FindElements(By.XPath(".//div[contains(@class,'ag-center-cols-container')]")).Count > 0)
+        {
+            return container.FindElements(
+                By.XPath(".//div[contains(@class,'ag-center-cols-container')]//div[@role='row']")).Count;
+        }
+
+        return container.FindElements(By.XPath(".//div[@role='row'][.//div[@role='gridcell']]")).Count;
+    }
+
+    /// <summary>
+    /// Locates the Stock Requests subgrid row whose Stock column matches the stock reference
+    /// stored in the scenario context as 'StockRequestName'.
+    /// </summary>
+    private IWebElement GetStockRequestRow()
+    {
+        var stockName = scenarioContext.Get<string>("StockRequestName");
+
+        return Driver.WaitUntilAvailable(
+            By.XPath($"{StockRequestsSubgridXPath}//div[@col-id='{StockRequestsStockColumnId}' and " +
+                     $"(normalize-space(.)='{stockName}' or .//a[@aria-label='{stockName}'])]/ancestor::div[@role='row'][1]"),
+            $"Stock Requests subgrid row for stock reference '{stockName}' could not be found.");
+    }
+
+    /// <summary>
+    /// Returns the cell for the given col-id in the Stock Requests subgrid row for the stock reference.
+    /// AG grid renders pinned and centre columns in separate row elements sharing the same row-index,
+    /// so the cell is resolved by row-index rather than within the matched row element.
+    /// </summary>
+    private IWebElement GetStockRequestRowCell(string colId)
+    {
+        ScrollStockRequestsGridUntilColumnVisible(colId);
+
+        var row = GetStockRequestRow();
+        var rowIndex = row.GetAttribute("row-index");
+
+        if (string.IsNullOrEmpty(rowIndex))
+        {
+            return row.FindElement(By.XPath($".//div[@col-id='{colId}']"));
+        }
+
+        return Driver.WaitUntilAvailable(
+            By.XPath($"{StockRequestsSubgridXPath}//div[@role='row' and @row-index='{rowIndex}']//div[@col-id='{colId}']"),
+            $"Cell '{colId}' could not be found in the Stock Requests subgrid row {rowIndex}.");
+    }
+
+    /// <summary>
+    /// Horizontally scrolls the Stock Requests AG grid until a cell for the given col-id is rendered.
+    /// </summary>
+    private void ScrollStockRequestsGridUntilColumnVisible(string colId)
+    {
+        var findAndCheckScript = $@"
+            var container = document.querySelector('div[data-control-name=""{StockRequestsSubGridName}""]');
+            if (!container) return null;
+            var viewport = container.querySelector('.ag-body-horizontal-scroll-viewport')
+                || container.querySelector('.ag-center-cols-viewport');
+            if (!viewport) return null;
+            return container.querySelector('div[role=""row""] div[col-id=""{colId}""]') !== null ? 'visible' : 'hidden';";
+
+        var scrollIncrementScript = $@"
+            var container = document.querySelector('div[data-control-name=""{StockRequestsSubGridName}""]');
+            if (!container) return;
+            var viewport = container.querySelector('.ag-body-horizontal-scroll-viewport')
+                || container.querySelector('.ag-center-cols-viewport');
+            if (viewport) {{ viewport.scrollLeft += 300; }}";
+
+        const int gridReadyAttempts = 20;
+        const int maxScrollAttempts = 40;
+
+        string result = null;
+        for (var waitAttempt = 0; waitAttempt < gridReadyAttempts && result == null; waitAttempt++)
+        {
+            result = Driver.ExecuteScript(findAndCheckScript) as string;
+
+            if (result == null)
+            {
+                Driver.WaitForTransaction();
+            }
+        }
+
+        if (result == null)
+        {
+            throw new InvalidOperationException(
+                $"The Stock Requests subgrid scroll container could not be found after waiting " +
+                $"{gridReadyAttempts} attempts. The grid may not have finished rendering.");
+        }
+
+        for (var scrollAttempt = 0; scrollAttempt < maxScrollAttempts; scrollAttempt++)
+        {
+            if (result == "visible")
+            {
+                return;
+            }
+
+            Driver.ExecuteScript(scrollIncrementScript);
+            Driver.WaitForTransaction();
+
+            result = Driver.ExecuteScript(findAndCheckScript) as string
+                ?? throw new InvalidOperationException(
+                    "The Stock Requests subgrid scroll container disappeared during scrolling.");
+        }
+
+        throw new InvalidOperationException(
+            $"Could not scroll the Stock Requests subgrid to show column '{colId}' after {maxScrollAttempts} scroll attempts.");
+    }
+
+    /// <summary>
+    /// Reads the selected tag text of a lookup field.
+    /// as the lookup tag is lazy-rendered, retrying on stale elements.
+    /// </summary>
+    private string GetLookupSelectedTagText(string fieldSchemaName, string selectedTagTextDataId)
+    {
+        Driver.WaitForTransaction();
+
+        string text = null;
+
+        Policy
+            .Handle<StaleElementReferenceException>()
+            .Or<NoSuchElementException>()
+            .Or<WebDriverTimeoutException>()
+            .OrResult<string>(string.IsNullOrWhiteSpace)
+            .WaitAndRetry(5, _ => TimeSpan.FromSeconds(3))
+            .Execute(() =>
+            {
+                var fieldContainers = Driver.FindElements(By.XPath($"//div[@data-id='{fieldSchemaName}']"));
+
+                if (fieldContainers.Count > 0)
+                {
+                    Driver.ExecuteScript("arguments[0].scrollIntoView({block:'center'});", fieldContainers[0]);
+                    Driver.WaitForTransaction();
+                }
+
+                var tag = Driver.WaitUntilAvailable(
+                    By.XPath($"//div[@data-id='{selectedTagTextDataId}']"),
+                    $"Lookup value '{selectedTagTextDataId}' could not be found.");
+
+                return text = tag.Text.Trim();
+            });
+
+        return text;
+    }
+
     [When(@"I check that the Commodity Lines frame shows '(.*)'")]
     public void WhenICheckThatTheCommodityLinesFrameShows(string expectedViewName)
     {

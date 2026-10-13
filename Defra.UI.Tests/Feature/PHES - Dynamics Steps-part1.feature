@@ -9,7 +9,7 @@ Scenario: Dynamics 1 - SPS-4289
 	And I click on 'Work Orders' under the 'Common' area
 	And I change the Work Orders view to 'All Work Orders - Exports'	
 	Then the 'All Work Orders - Exports' view is displayed on the Work Orders page	
-	When I search Work Orders for the application created in the Exporter Portal	
+	When I search Work Orders for the 'Seed Sampling Application' created in the Exporter Portal
 	Then the work order submitted in the Exporter Portal should be returned	
 	And the Application Type is set to Pre-Export Application
 	When I open the record in the grid
@@ -103,7 +103,7 @@ Scenario: Dynamics 1 - SPS-4289
 	When I select the 'Pre-Export' tab
 	Then the 'Pre-Export' tab is displayed and selected
 	When I click the Export Application link in the Application & Inspection Address section	
-	Then the Export Application page is displayed for the application created in the Exporter Portal	
+	Then the Export Application page is displayed for the 'Seed Sampling Application' created in the Exporter Portal
 	And the Status of the Export Application should be 'Inactive'
 	And the Status Reason of the Export Application should be 'Completed'
 	When I select the 'Related' tab

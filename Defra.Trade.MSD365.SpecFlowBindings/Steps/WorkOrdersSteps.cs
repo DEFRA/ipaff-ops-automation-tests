@@ -25,6 +25,7 @@ public sealed class WorkOrdersSteps : PowerAppsStepDefiner
     private const string WorkOrderTypeColumnId = "msdyn_workordertype";
 
     private readonly ScenarioContext scenarioContext;
+    private string searchedAphaReference;
 
     public WorkOrdersSteps(ScenarioContext scenarioContext)
     {
@@ -62,10 +63,15 @@ public sealed class WorkOrdersSteps : PowerAppsStepDefiner
             $"Expected view to be '{expectedViewName}' but found '{actualViewName}'");
     }
 
-    [When("I search Work Orders for the application created in the Exporter Portal")]
-    public void WhenISearchWorkOrdersForTheApplicationCreatedInTheExporterPortal()
+    [When("I search Work Orders for the {string} created in the Exporter Portal")]
+    public void WhenISearchWorkOrdersForTheCreatedInTheExporterPortal(string applicationName)
     {
-        var aphaReference = GetAphaReference();
+        SearchWorkOrders(GetAphaReference(applicationName));
+    }
+
+    private void SearchWorkOrders(string aphaReference)
+    {
+        searchedAphaReference = aphaReference;
 
         var searchBox = Driver.WaitUntilAvailable(
             By.XPath("//input[@aria-label='Work Order Filter by keyword']"),
@@ -83,7 +89,7 @@ public sealed class WorkOrdersSteps : PowerAppsStepDefiner
     [Then("the work order submitted in the Exporter Portal should be returned")]
     public void ThenTheWorkOrderSubmittedInTheExporterPortalShouldBeReturned()
     {
-        var expectedAphaReference = GetAphaReference();
+        var expectedAphaReference = searchedAphaReference ?? GetAphaReference();
 
         // Retry to handle the delay between the Exporter Portal submission and the Work Order
         // landing in Dynamics — the footer row count indicates the grid has finished refreshing.
@@ -243,6 +249,21 @@ public sealed class WorkOrdersSteps : PowerAppsStepDefiner
     /// Resolves the APHA reference recorded in the Exporter Portal. References are stored as
     /// '{applicationName}_APHAReference'; falls back to 'APHAReference' if no named key exists.
     /// </summary>
+    private string GetAphaReference(string applicationName)
+    {
+        scenarioContext.TryGetValue($"{applicationName}_APHAReference", out string aphaReference);
+
+        if (string.IsNullOrEmpty(aphaReference))
+        {
+            scenarioContext.TryGetValue("APHAReference", out aphaReference);
+        }
+
+        aphaReference.Should().NotBeNullOrEmpty(
+            $"No APHA reference was found in the scenario context under '{applicationName}_APHAReference'.");
+
+        return aphaReference;
+    }
+
     private string GetAphaReference()
     {
         var namedKeys = scenarioContext.Keys

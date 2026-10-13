@@ -31,15 +31,110 @@ public sealed class ExportApplicationSteps : PowerAppsStepDefiner
         this.scenarioContext = scenarioContext;
     }
 
-    [Then("the Export Application page is displayed for the application created in the Exporter Portal")]
-    public void ThenTheExportApplicationPageIsDisplayedForTheApplicationCreatedInTheExporterPortal()
+    /// <summary>
+    /// Verifies the Export Application page is displayed for the named application
+    /// reference stored in the scenario context as '{applicationName}_APHAReference'.
+    /// </summary>
+    /// <param name="applicationName">The application name e.g. 'Phytosanitary Certificate Application'.</param>
+    [Then(@"the Export Application page is displayed for the '(.*)' created in the Exporter Portal")]
+    public void ThenTheExportApplicationPageIsDisplayedForTheNamedApplicationCreatedInTheExporterPortal(string applicationName)
     {
         Driver.WaitForTransaction();
 
         SignInPromptHelper.DismissSignInPrompts(Driver, "post-navigation");
 
-        var expectedAphaReference = GetAphaReference();
+        scenarioContext.TryGetValue($"{applicationName}_APHAReference", out string expectedAphaReference);
 
+        if (string.IsNullOrEmpty(expectedAphaReference))
+        {
+            scenarioContext.TryGetValue("APHAReference", out expectedAphaReference);
+        }
+
+        expectedAphaReference.Should().NotBeNullOrEmpty(
+            $"No APHA reference was found in the scenario context under '{applicationName}_APHAReference'.");
+
+        AssertExportApplicationPageIsDisplayed(expectedAphaReference);
+    }
+
+    [Then(@"the Commodity Group should be '(.*)'")]
+    public void ThenTheCommodityGroupShouldBe(string expectedCommodityGroup)
+    {
+        var actual = GetLookupFieldText("trd_commoditygroupid", "trd_commoditygroupid.fieldControl-Lookup_trd_commoditygroupid");
+
+        actual.Should().Be(expectedCommodityGroup,
+            $"Expected Commodity Group to be '{expectedCommodityGroup}' but found '{actual}'.");
+    }
+
+    [Then(@"the Application Method should be '(.*)'")]
+    public void ThenTheApplicationMethodShouldBe(string expectedApplicationMethod)
+    {
+        Driver.WaitForTransaction();
+
+        string actual = null;
+
+        Policy
+            .Handle<StaleElementReferenceException>()
+            .Or<NoSuchElementException>()
+            .Or<WebDriverTimeoutException>()
+            .OrResult<string>(string.IsNullOrWhiteSpace)
+            .WaitAndRetry(5, _ => TimeSpan.FromSeconds(2))
+            .Execute(() =>
+            {
+                var control = Driver.WaitUntilAvailable(
+                    By.XPath("//*[(self::select or self::input or self::button) and @aria-label='Application Method']"),
+                    "Application Method field could not be found on the Export Application page.");
+
+                Driver.ExecuteScript("arguments[0].scrollIntoView({block:'center'});", control);
+
+                actual = control.TagName.Equals("select", StringComparison.OrdinalIgnoreCase)
+                    ? new OpenQA.Selenium.Support.UI.SelectElement(control).SelectedOption.Text.Trim()
+                    : control.TagName.Equals("input", StringComparison.OrdinalIgnoreCase)
+                        ? control.GetAttribute("value")?.Trim()
+                        : (control.GetAttribute("title") ?? control.Text)?.Trim();
+
+                return actual;
+            });
+
+        actual.Should().Be(expectedApplicationMethod,
+            $"Expected Application Method to be '{expectedApplicationMethod}' but found '{actual}'.");
+    }
+
+    [Then(@"the Application Type should be '(.*)'")]
+    public void ThenTheApplicationTypeShouldBe(string expectedApplicationType)
+    {
+        var actual = GetLookupFieldText("trd_applicationtypeid", "trd_applicationtypeid.fieldControl-LookupResultsDropdown_trd_applicationtypeid_SelectedRecordList");
+
+        actual.Should().Be(expectedApplicationType,
+            $"Expected Application Type to be '{expectedApplicationType}' but found '{actual}'.");
+    }
+
+    /// <summary>
+    /// Verifies that the specified tab is displayed on the current form (selection is not checked).
+    /// </summary>
+    /// <param name="tabName">The name of the tab e.g. 'Stock Requests'.</param>
+    [Then(@"the '(.*)' tab is displayed")]
+    public void ThenTheTabIsDisplayed(string tabName)
+    {
+        Driver.WaitForTransaction();
+
+        var isDisplayed = Policy
+            .Handle<Exception>()
+            .OrResult<bool>(displayed => !displayed)
+            .WaitAndRetry(6, _ => TimeSpan.FromSeconds(5))
+            .Execute(() =>
+            {
+                var tab = Driver.WaitUntilAvailable(
+                    By.XPath($"//ul[@role='tablist']//li[@role='tab' and @aria-label='{tabName}']"),
+                    $"'{tabName}' tab could not be found on the form.");
+
+                return tab.Displayed;
+            });
+
+        isDisplayed.Should().BeTrue($"Expected the '{tabName}' tab to be displayed but it was not after retrying.");
+    }
+
+    private void AssertExportApplicationPageIsDisplayed(string expectedAphaReference)
+    {
         var pageHeader = Driver.WaitUntilAvailable(
             By.XPath("//span[@data-id='entity_name_span']"),
             "Export Application page header could not be found.");
@@ -148,6 +243,44 @@ public sealed class ExportApplicationSteps : PowerAppsStepDefiner
         scenarioContext["StockRequestName"] = stockName;
     }
 
+    /// <summary>
+    /// Reads the display text of a lookup field. Scrolls the field container into view first as
+    /// lookup tags are lazy-rendered, retrying on stale elements.
+    /// </summary>
+    private string GetLookupFieldText(string fieldSchemaName, string valueDataId)
+    {
+        Driver.WaitForTransaction();
+
+        string text = null;
+
+        Policy
+            .Handle<StaleElementReferenceException>()
+            .Or<NoSuchElementException>()
+            .Or<WebDriverTimeoutException>()
+            .OrResult<string>(string.IsNullOrWhiteSpace)
+            .WaitAndRetry(5, _ => TimeSpan.FromSeconds(3))
+            .Execute(() =>
+            {
+                var fieldContainers = Driver.FindElements(By.XPath($"//div[@data-id='{fieldSchemaName}']"));
+
+                if (fieldContainers.Count > 0)
+                {
+                    Driver.ExecuteScript("arguments[0].scrollIntoView({block:'center'});", fieldContainers[0]);
+                    Driver.WaitForTransaction();
+                }
+
+                var valueElement = Driver.WaitUntilAvailable(
+                    By.XPath($"//*[@data-id='{valueDataId}']"),
+                    $"Lookup value element '{valueDataId}' could not be found.");
+
+                var tagTexts = valueElement.FindElements(By.XPath(".//div[contains(@data-id,'_selected_tag_text')]"));
+
+                return text = (tagTexts.Count > 0 ? tagTexts[0].Text : valueElement.Text)?.Trim();
+            });
+
+        return text;
+    }
+
     private int? GetStockSubgridRowCount()
     {
         var subgrid = Driver.WaitUntilAvailable(
@@ -169,35 +302,5 @@ public sealed class ExportApplicationSteps : PowerAppsStepDefiner
 
         return subgrid.FindElements(
             By.XPath(".//div[contains(@class,'ag-center-cols-container')]//div[@role='row']")).Count;
-    }
-
-    /// <summary>
-    /// Resolves the APHA reference recorded in the Exporter Portal. References are stored as
-    /// '{applicationName}_APHAReference'; falls back to 'APHAReference' if no named key exists.
-    /// </summary>
-    private string GetAphaReference()
-    {
-        var namedKeys = scenarioContext.Keys
-            .Where(k => k.EndsWith("_APHAReference", StringComparison.Ordinal))
-            .ToList();
-
-        if (namedKeys.Count == 1)
-        {
-            return scenarioContext.Get<string>(namedKeys[0]);
-        }
-
-        if (namedKeys.Count > 1)
-        {
-            throw new InvalidOperationException(
-                $"Multiple APHA references found in the scenario context [{string.Join(", ", namedKeys)}] — " +
-                "unable to determine which application was created in the Exporter Portal.");
-        }
-
-        scenarioContext.TryGetValue("APHAReference", out string aphaReference);
-
-        aphaReference.Should().NotBeNullOrEmpty(
-            "No APHA reference was found in the scenario context. Ensure the Exporter Portal application reference was recorded.");
-
-        return aphaReference;
     }
 }
