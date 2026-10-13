@@ -72,6 +72,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             var driver = _objectContainer.Resolve<IWebDriver>();
             driver.SwitchTo().Window(driver.WindowHandles.First());
+
+            _scenarioContext["IsDynamicsActive"] = false;
         }
 
         private static void SwapDriver(IObjectContainer container, IWebDriver newDriver)
