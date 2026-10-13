@@ -20,6 +20,8 @@ using System.Linq;
 [Binding]
 public sealed class ExportApplicationsSteps : PowerAppsStepDefiner
 {
+    private const string ApplicationReferenceColumnId = "trd_applicationreference";
+
     private readonly ScenarioContext scenarioContext;
     private string searchedAphaReference;
 
@@ -96,16 +98,23 @@ public sealed class ExportApplicationsSteps : PowerAppsStepDefiner
         rowCount.Should().Be(1,
             $"Expected exactly 1 Export Application for APHA reference '{expectedAphaReference}' but found {rowCount}.");
 
-        var matchingCellCount = Policy
+        string actualReference = null;
+
+        Policy
             .Handle<StaleElementReferenceException>()
             .Or<NoSuchElementException>()
-            .OrResult<int>(count => count == 0)
             .WaitAndRetry(5, _ => TimeSpan.FromSeconds(2))
-            .Execute(() => Driver.FindElements(
-                By.XPath($"//div[contains(@class,'ag-center-cols-container')]//div[@role='row'][1]//div[@role='gridcell' and normalize-space(.)='{expectedAphaReference}']")).Count);
+            .Execute(() =>
+            {
+                var referenceCell = Driver.WaitUntilAvailable(
+                    By.XPath($"(//div[@role='gridcell' and @col-id='{ApplicationReferenceColumnId}'])[1]"),
+                    "Application reference cell could not be found in the Export Applications grid.");
 
-        matchingCellCount.Should().BeGreaterThan(0,
-            $"Expected the returned Export Application row to contain APHA reference '{expectedAphaReference}'.");
+                actualReference = referenceCell.Text.Trim();
+            });
+
+        actualReference.Should().Be(expectedAphaReference,
+            $"Expected Application reference '{expectedAphaReference}' but found '{actualReference}'.");
     }
 
     /// <summary>

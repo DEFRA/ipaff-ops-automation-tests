@@ -411,7 +411,7 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
     }
 
     private const string StockRequestsSubGridName = "stockrequests_subgrid";
-    private const string StockRequestsSubgridXPath = "//div[@data-control-name='stockrequests_subgrid']";
+    private const string StockRequestsSubgridXPath = "//div[@data-id='stockrequests_subgrid-powerapps_onegrid_control_container']";
     private const string CommodityLinesSubgridXPath = "//div[@data-control-name='subgrid_selected_commodities']";
     private const string StockRequestsStockColumnId = "trd_stock";
     private const string StockRequestsStatusReasonColumnId = "statuscode";
@@ -663,7 +663,7 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
     {
         var containers = Driver.FindElements(By.XPath(containerXPath));
 
-        if (containers.Count == 0 || containers[0].FindElements(By.XPath(".//div[@role='grid']")).Count == 0)
+        if (containers.Count == 0 || containers[0].FindElements(By.XPath(".//div[@role='grid' or @role='treegrid']")).Count == 0)
         {
             return null;
         }
