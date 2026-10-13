@@ -1341,7 +1341,7 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
 
                 searchInput.SendKeys(expectedName);
                 Driver.WaitForTransaction();
-                Thread.Sleep(1000); 
+                Thread.Sleep(3000); 
 
                 searchInput.SendKeys(Keys.Tab);
             });
