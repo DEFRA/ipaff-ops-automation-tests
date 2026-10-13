@@ -66,8 +66,7 @@ public sealed class ExportApplicationSteps : PowerAppsStepDefiner
         Driver.WaitForTransaction();
 
         var headerHelper = new DynamicsHeaderHelper(Driver);
-        var statusText = headerHelper.GetHeaderFieldValueText("header_statecode", "statecode")
-            ?? headerHelper.GetHeaderFieldValueByLabel("Status");
+        var statusText = headerHelper.GetHeaderFieldValueByLabel("Status");
 
         statusText.Should().NotBeNull(
             $"Status '{expectedStatus}' could not be found in the Export Application header, even after expanding " +
@@ -83,8 +82,7 @@ public sealed class ExportApplicationSteps : PowerAppsStepDefiner
         Driver.WaitForTransaction();
 
         var headerHelper = new DynamicsHeaderHelper(Driver);
-        var statusReasonText = headerHelper.GetHeaderFieldValueText("header_statuscode", "statuscode")
-            ?? headerHelper.GetHeaderFieldValueByLabel("Status Reason");
+        var statusReasonText = headerHelper.GetHeaderFieldValueByLabel("Status Reason");
 
         statusReasonText.Should().NotBeNull(
             $"Status Reason '{expectedStatusReason}' could not be found in the Export Application header, even after expanding " +

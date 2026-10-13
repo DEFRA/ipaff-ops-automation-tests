@@ -1341,7 +1341,7 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
 
                 searchInput.SendKeys(expectedName);
                 Driver.WaitForTransaction();
-                Thread.Sleep(2000); // Temp Wait
+                Thread.Sleep(1000); 
 
                 searchInput.SendKeys(Keys.Tab);
             });
@@ -1390,20 +1390,36 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
 
                 var ariaColIndex = ScrollTimeRecordingGridUntilColumnVisible(columnName);
 
-                var targetCell = GetTimeRecordingGrid().FindElement(
-                    By.XPath($".//div[@role='row'][@aria-label='Data'][@aria-rowindex='{rowIndex}']//div[@role='gridcell'][@aria-colindex='{ariaColIndex}']"));
+                var cellXPath = $".//div[@role='row'][@aria-label='Data'][@aria-rowindex='{rowIndex}']//div[@role='gridcell'][@aria-colindex='{ariaColIndex}']";
 
-                targetCell.Click();
+                // Wijmo re-renders cells after a scroll/click, so always re-locate rather than reuse references.
+                // Bring the cell fully into view first so the click does not trigger a further scroll/re-render.
+                Driver.ExecuteScript(
+                    "arguments[0].scrollIntoView({block:'nearest',inline:'nearest'});",
+                    GetTimeRecordingGrid().FindElement(By.XPath(cellXPath)));
+                Thread.Sleep(500);
+
+                GetTimeRecordingGrid().FindElement(By.XPath(cellXPath)).Click();
+                Thread.Sleep(500);
                 Driver.WaitForTransaction();
 
-                var numericInput = targetCell.FindElement(
-                    By.XPath(".//input[@wj-part='input' and contains(@class,'wj-numeric')]"));
+                var inputXPath = cellXPath + "//input[@wj-part='input' and contains(@class,'wj-numeric')]";
 
-                numericInput.SendKeys(Keys.Control + "a");
-                numericInput.SendKeys(Keys.Delete);
-                numericInput.SendKeys(value.ToString());
-                numericInput.SendKeys(Keys.Tab);
+                // The editor can be re-rendered between keystrokes, so re-locate it for each action.
+                void SendToEditor(string keys) =>
+                    Policy
+                        .Handle<StaleElementReferenceException>()
+                        .WaitAndRetry(3, _ => TimeSpan.FromMilliseconds(300))
+                        .Execute(() => GetTimeRecordingGrid().FindElement(By.XPath(inputXPath)).SendKeys(keys));
+
+                SendToEditor(Keys.Control + "a");
+                SendToEditor(Keys.Delete);
+                SendToEditor(value.ToString());
+                SendToEditor(Keys.Tab);
                 Driver.WaitForTransaction();
+
+                // Leave the grid at the far left so later steps relying on the Inspector column still work.
+                ScrollTimeRecordingGridToStart();
             });
     }
 
