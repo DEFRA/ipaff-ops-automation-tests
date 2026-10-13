@@ -902,9 +902,17 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
                         $"tab='{tabName}', aria-selected='{actualAriaSelected}' — retrying..."))
             .Execute(() =>
             {
-                var tab = Driver.WaitUntilAvailable(
+                Driver.WaitUntilAvailable(
                     By.XPath($"//ul[@role='tablist']//li[@role='tab' and @aria-label='{tabName}']"),
                     $"'{tabName}' tab could not be found on the form.");
+
+                // A parent form (e.g. the Work Order behind a Work Order Task popup) can have a tab with
+                // the same name. The active form is the last displayed match in the DOM.
+                var tab = Driver.FindElements(
+                        By.XPath($"//ul[@role='tablist']//li[@role='tab' and @aria-label='{tabName}']"))
+                    .Where(e => e.Displayed)
+                    .LastOrDefault()
+                    ?? throw new NoSuchElementException($"'{tabName}' tab is not displayed on the form.");
 
                 actualAriaSelected = tab.GetAttribute("aria-selected");
                 return actualAriaSelected == "true";

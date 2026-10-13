@@ -131,10 +131,6 @@ Scenario: Dynamics 2 - SPS-4289
 	And the Remaining Approved Stock quantity is '3,000.000'
 	And the Remaining Approved Stock Including Pending quantity is '3,000.000'
 	When I click the Back button in the command bar
-	Then the 'Stock Requests' tab is displayed and selected
-	When I select the 'Export' tab
-	Then the 'Export' tab is displayed and selected
-	When I click the Back button in the command bar
 	Then the Work Order page is displayed for the 'Phytosanitary Certificate Application' created in the Exporter Portal
 	And the 'Stock Requests' tab is displayed and selected
 	When I select the 'Export' tab
@@ -145,7 +141,7 @@ Scenario: Dynamics 2 - SPS-4289
 	And the Status Reason of the Export Application should be 'Completed'
 	When I click the Back button in the command bar
 	Then the Work Order page is displayed for the 'Phytosanitary Certificate Application' created in the Exporter Portal
-	And the 'Exports' tab is displayed and selected
+	And the 'Export' tab is displayed and selected
 	# @agent: Add new step to existing step class WorkOrderSteps.cs
 	# @agent: Use this step definition to help implement the step below: [When("I click the Assign command")]
 	When I click View Phyto command from the header ribbon

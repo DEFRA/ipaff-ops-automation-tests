@@ -412,7 +412,7 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
 
     private const string StockRequestsSubGridName = "stockrequests_subgrid";
     private const string StockRequestsSubgridXPath = "//div[@data-id='stockrequests_subgrid-powerapps_onegrid_control_container']";
-    private const string CommodityLinesSubgridXPath = "//div[@data-control-name='subgrid_selected_commodities']";
+    private const string CommodityLinesSubgridXPath = "//div[starts-with(@data-id,'PhytoCommodities-subgrid_selected_commodities')]";
     private const string StockRequestsStockColumnId = "trd_stock";
     private const string StockRequestsStatusReasonColumnId = "statuscode";
     private const string StockRequestsRowStatusColumnId = "__row_status";
@@ -603,7 +603,7 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
             .Execute(() =>
             {
                 var viewLabel = Driver.WaitUntilAvailable(
-                    By.XPath($"{StockRequestsSubgridXPath}//span[contains(@id,'ViewSelector_') and contains(@id,'_text-value')]"),
+                    By.XPath($"{StockRequestsSubgridXPath}/ancestor::div[.//div[starts-with(@data-id,'ViewSelector_')]][1]//span[contains(@id,'ViewSelector_') and contains(@id,'_text-value')]"),
                     "Stock Requests subgrid view selector could not be found.");
 
                 return actualViewName = viewLabel.Text.Trim();
@@ -661,7 +661,7 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
     /// </summary>
     private int? GetSubgridRowCount(string containerXPath)
     {
-        var containers = Driver.FindElements(By.XPath(containerXPath));
+        var containers = Driver.FindElements(By.XPath(containerXPath)).Where(e => e.Displayed).ToList();
 
         if (containers.Count == 0 || containers[0].FindElements(By.XPath(".//div[@role='grid' or @role='treegrid']")).Count == 0)
         {
