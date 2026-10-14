@@ -1,4 +1,4 @@
-﻿// <copyright file="AlertSteps.cs" company="DEFRA">
+// <copyright file="AlertSteps.cs" company="DEFRA">
 // Copyright (c) DEFRA. All rights reserved.
 // </copyright>
 
@@ -18,11 +18,13 @@ using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Tooling.Connector;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
+using OpenQA.Selenium.Support.UI;
 using Polly;
 using Reqnroll;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading;
 
@@ -2311,6 +2313,121 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
         Driver.LastWindow();
         var actualURL = Driver.Url;
         actualURL.Should().Contain(expectedURL);
+    }
+
+    /// <summary>
+    /// Clicks View Phyto in the Work Order ribbon and switches the Dynamics driver to the new
+    /// tab containing the Phytosanitary certificate PDF. The PDF stays in Browser 2, so
+    /// IsDynamicsActive remains true and the Dynamics hooks keep ownership of screenshots.
+    /// </summary>
+    [When("I click View Phyto command from the header ribbon")]
+    public void WhenIClickViewPhytoCommandFromTheHeaderRibbon()
+    {
+        Driver.WaitForTransaction();
+        var dynamicsHandle = Driver.CurrentWindowHandle;
+        var handlesBefore = Driver.WindowHandles.ToList();
+
+        const int maxAttempts = 2;
+        for (var attempt = 1; attempt <= maxAttempts; attempt++)
+        {
+            SignInPromptHelper.DismissSignInPrompts(Driver, "pre-view-phyto-click");
+
+            CommandSteps.WhenISelectTheCommand("View Phyto");
+            Driver.WaitForTransaction();
+
+            try
+            {
+                new WebDriverWait(Driver, TimeSpan.FromSeconds(30))
+                    .Until(d => d.WindowHandles.Count > handlesBefore.Count);
+                break;
+            }
+            catch (WebDriverTimeoutException) when (attempt < maxAttempts)
+            {
+                Console.WriteLine("[ViewPhyto] Phyto certificate tab did not open within 30s, retrying ribbon click.");
+            }
+        }
+
+        var phytoHandle = Driver.WindowHandles.Except(handlesBefore).Single();
+        Driver.SwitchTo().Window(phytoHandle);
+
+        scenarioContext["DynamicsWindowHandle"] = dynamicsHandle;
+        scenarioContext["PhytoCertificateWindowHandle"] = phytoHandle;
+    }
+
+    [Then("the Phytosanitary certificate is displayed in a new window")]
+    public void ThenThePhytosanitaryCertificateIsDisplayedInANewWindow()
+    {
+        var phytoHandle = scenarioContext.Get<string>("PhytoCertificateWindowHandle");
+        Driver.CurrentWindowHandle.Should().Be(phytoHandle, "the driver should be focused on the Phytosanitary certificate tab");
+
+        var reference = scenarioContext.Get<string>("Phytosanitary Certificate Application_APHAReference");
+        var expectedUrlPattern = new System.Text.RegularExpressions.Regex(
+            $@"/protected/application/{System.Text.RegularExpressions.Regex.Escape(reference)}/r-numbers/\d+/certificate/?(\?.*)?$",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+        try
+        {
+            new WebDriverWait(Driver, TimeSpan.FromSeconds(60)).Until(d =>
+                expectedUrlPattern.IsMatch(d.Url)
+                && ((IJavaScriptExecutor)d).ExecuteScript("return document.readyState").ToString() == "complete");
+        }
+        catch (WebDriverTimeoutException)
+        {
+            throw new InvalidOperationException(
+                $"The Phytosanitary certificate window did not load the certificate URL for application '{reference}'. Actual URL: {Driver.Url}");
+        }
+
+        // Chromium (Chrome / Edge) renders a PDF as a viewer document wrapping an <embed type='application/pdf'>,
+        // so check both the document content type and the embedded viewer.
+        var isPdf = (bool)((IJavaScriptExecutor)Driver).ExecuteScript(
+            "return document.contentType === 'application/pdf' || !!document.querySelector(\"embed[type='application/pdf']\");");
+        isPdf.Should().BeTrue($"the new window should display the Phytosanitary certificate PDF. URL: {Driver.Url}");
+
+        scenarioContext["PhytoCertificateUrl"] = Driver.Url;
+    }
+
+    /// <summary>
+    /// Downloads the certificate PDF via PdfDownloadHelper, which re-uses the driver session cookies
+    /// from the test host. Works locally and against the Selenium Grid (no browser download needed).
+    /// The file path is stored under PhytoCertificatePdfPath for the PDF validation step in Defra.UI.Tests.
+    /// </summary>
+    [When("I download the Phytosanitary certificate PDF")]
+    public void WhenIDownloadThePhytosanitaryCertificatePdf()
+    {
+        var pdfUrl = scenarioContext.TryGetValue("PhytoCertificateUrl", out string url) ? url : Driver.Url;
+        var reference = scenarioContext.Get<string>("Phytosanitary Certificate Application_APHAReference");
+
+        var pdfPath = PdfDownloadHelper.DownloadPdfUsingSession(Driver, pdfUrl, $"{reference}-certificate");
+
+        scenarioContext["PDFDownloadedDirectory"] = Path.GetDirectoryName(pdfPath);
+        scenarioContext["PhytoCertificatePdfPath"] = pdfPath;
+    }
+
+    [When("I close the PDF window")]
+    public void WhenIClosePdfWindow()
+    {
+        var phytoHandle = scenarioContext.Get<string>("PhytoCertificateWindowHandle");
+        var dynamicsHandle = scenarioContext.Get<string>("DynamicsWindowHandle");
+
+        if (Driver.WindowHandles.Contains(phytoHandle))
+        {
+            Driver.SwitchTo().Window(phytoHandle);
+            Driver.Close();
+        }
+
+        Driver.SwitchTo().Window(dynamicsHandle);
+        Driver.WaitForTransaction();
+        SignInPromptHelper.DismissSignInPrompts(Driver, "post-close-phyto-window");
+    }
+
+    [Then("the window is closed")]
+    public void ThenTheWindowIsClosed()
+    {
+        var phytoHandle = scenarioContext.Get<string>("PhytoCertificateWindowHandle");
+        var dynamicsHandle = scenarioContext.Get<string>("DynamicsWindowHandle");
+
+        Driver.WindowHandles.Should().NotContain(phytoHandle, "the Phytosanitary certificate window should be closed");
+        Driver.CurrentWindowHandle.Should().Be(dynamicsHandle, "focus should return to the Dynamics window");
     }
 
     [Then(@"I open and view the phyto certificate")]
