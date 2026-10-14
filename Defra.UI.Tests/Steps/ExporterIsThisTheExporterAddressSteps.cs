@@ -9,15 +9,17 @@ namespace Defra.UI.Tests.Steps.IPAFF
     public class ExporterIsThisTheExporterAddressSteps
     {
         private readonly IObjectContainer _objectContainer;
+        private readonly ScenarioContext _scenarioContext;
 
         private IExporterIsThisTheExporterAddressPage? exporterIsThisTheExporterAddressPage =>
             _objectContainer.IsRegistered<IExporterIsThisTheExporterAddressPage>()
                 ? _objectContainer.Resolve<IExporterIsThisTheExporterAddressPage>()
                 : null;
 
-        public ExporterIsThisTheExporterAddressSteps(IObjectContainer container)
+        public ExporterIsThisTheExporterAddressSteps(IObjectContainer container, ScenarioContext scenarioContext)
         {
             _objectContainer = container;
+            _scenarioContext = scenarioContext;
         }
 
         [Then("the Is this the exporter address? page is displayed")]
@@ -44,6 +46,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserSelectsAndClicksTheSaveAndContinueButtonOnTheIsThisTheExporterAddressPage(string option)
         {
             exporterIsThisTheExporterAddressPage?.SelectOption(option);
+            _scenarioContext["ExporterName"] = exporterIsThisTheExporterAddressPage?.GetExporterName();
+            _scenarioContext["ExporterAddress"] = exporterIsThisTheExporterAddressPage?.GetExporterAddress();
             exporterIsThisTheExporterAddressPage?.ClickSaveAndContinueButton();
         }
     }

@@ -15,6 +15,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement rdoYes => _driver.WaitForElementExists(By.Id("default_exporter_address-yes"), true);
         private IWebElement rdoNo => _driver.WaitForElementExists(By.Id("default_exporter_address-no"), true);
         private IWebElement btnSaveAndContinue => _driver.WaitForElement(By.Id("ExporterAddressConfirmation-Continue"));
+        private IWebElement exporterDetails => _driver.WaitForElement(By.Id("exporter-address"));
         private By guidanceText(string text) => By.XPath($"//main//*[self::p or self::div or self::span][normalize-space()=\"{text}\"]");
         #endregion
 
@@ -34,6 +35,15 @@ namespace Defra.UI.Tests.Pages.Classes
         }
 
         public void ClickSaveAndContinueButton() => btnSaveAndContinue.Click();
+
+        private List<string> GetExporterLines() =>
+            exporterDetails.Text
+                .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .ToList();
+
+        public string GetExporterName() => GetExporterLines().First();
+
+        public string GetExporterAddress() => string.Join(", ", GetExporterLines().TakeLast(5));
 
         public bool IsGuidanceDisplayed(string guidance) => _driver.IsElementDisplayed(guidanceText(guidance));
 

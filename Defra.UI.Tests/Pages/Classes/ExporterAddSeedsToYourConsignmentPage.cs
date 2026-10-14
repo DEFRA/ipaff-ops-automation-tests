@@ -74,6 +74,13 @@ namespace Defra.UI.Tests.Pages.Classes
             return Regex.Replace(description, @"\s+", " ");
         }
 
+        public string GetSelectedCommodityEppoCode()
+        {
+            var committed = GetInputValue(txtBotanicalNameAutocomplete) ?? string.Empty;
+            var match = Regex.Match(committed, @"\(([^()]*)\)\s*$");
+            return match.Success ? match.Groups[1].Value.Trim() : string.Empty;
+        }
+
         public void EnterVariety(string variety) => ClearAndType(txtVariety, variety);
 
         public void EnterLotReference(string lotReference) => ClearAndType(txtLotReference, lotReference);

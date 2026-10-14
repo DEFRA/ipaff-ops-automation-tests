@@ -453,22 +453,22 @@ Scenario: Exporter application for seed sampling followed by a phytosanitary cer
 	When I click the Back button in the command bar
 	Then the Work Order page is displayed for the 'Phytosanitary Certificate Application' created in the Exporter Portal
 	And the 'Export' tab is displayed and selected
-	## @agent: Add new step to existing step class WorkOrderSteps.cs
-	## @agent: Use this step definition to help implement the step below: [When("I click the Assign command")]
-	#When I click View Phyto command from the header ribbon
-	## @agent: Add new step to existing step class WorkOrderSteps.cs
-	## @agent: Use this step definition to help implement the step below: [Then("the certificate should be displayed in a new browser tab")]
-	#Then the Phytosanitary certificate is displayed in a new window
-	## @agent: Add new step to existing step class WorkOrderSteps.cs
-	## @agent: Use this step definition to help implement the step below: [When("the user downloads the PDF for validation using the current browser session")]
-	#When I download the Phytosanitary certificate PDF
-	## @agent: Add new step to existing step class WorkOrderSteps.cs
-	## @agent: Use this step definition to help implement the step below:  [When("the user checks that the data in the certificate matches the data entered into the CHED PP notification")]
-	#Then the Phytosanitary certificate displays the details of the application submitted
-	## @agent: Use this step definition to help implement the step below: [When("the user closes the PDF browser tab")]
-	#When I close the PDF window
-	## @agent: Use this step definition to help implement the step below: [Then("the browser tab is closed")]
-	#Then the window is closed
+	# @agent: Add new step to existing step class WorkOrderSteps.cs
+	# @agent: Use this step definition to help implement the step below: [When("I click the Assign command")]
+	When I click View Phyto command from the header ribbon
+	# @agent: Add new step to existing step class WorkOrderSteps.cs
+	# @agent: Use this step definition to help implement the step below: [Then("the certificate should be displayed in a new browser tab")]
+	Then the Phytosanitary certificate is displayed in a new window
+	# @agent: Add new step to existing step class WorkOrderSteps.cs
+	# @agent: Use this step definition to help implement the step below: [When("the user downloads the PDF for validation using the current browser session")]
+	When I download the Phytosanitary certificate PDF
+	# @agent: Add new step to existing step class Defra.UI.Tests.Steps.IPAFF.ExporterManageApplicationSteps.cs
+	# @agent: Use this step definition to help implement the step below:  [When("the user checks that the data in the certificate matches the data entered into the CHED PP notification")]
+	Then the Phytosanitary Certificate displays the details of the application submitted
+	# @agent: Use this step definition to help implement the step below: [When("the user closes the PDF browser tab")]
+	When I close the PDF window
+	# @agent: Use this step definition to help implement the step below: [Then("the browser tab is closed")]
+	Then the window is closed
 	# ---------- Exporter Portal - Search for the Phytosanitary certificate ----------
 	When I switch to the Exporter Portal window
 	And I navigate to the Exporter Portal	

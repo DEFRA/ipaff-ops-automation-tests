@@ -5,6 +5,7 @@ namespace Defra.UI.Tests.Pages.Interfaces
         bool IsPageLoaded();
         void EnterBotanicalName(string botanicalName);
         string GetSelectedCommodityDescription();
+        string GetSelectedCommodityEppoCode();
         void EnterVariety(string variety);
         void EnterLotReference(string lotReference);
         void EnterSampleReference(string sampleReference);

@@ -50,6 +50,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         {
             exporterAddSeedsToYourConsignmentPage?.EnterBotanicalName(botanicalName);
             _scenarioContext["Commodity"] = exporterAddSeedsToYourConsignmentPage?.GetSelectedCommodityDescription();
+            _scenarioContext["EppoCode"] = exporterAddSeedsToYourConsignmentPage?.GetSelectedCommodityEppoCode();
             exporterAddSeedsToYourConsignmentPage?.EnterVariety(variety);
             exporterAddSeedsToYourConsignmentPage?.EnterLotReference(lotReference);
             exporterAddSeedsToYourConsignmentPage?.EnterSampleReference(_scenarioContext.Get<string>("StockRequestName"));
