@@ -121,8 +121,7 @@ namespace Defra.UI.Tests.Pages.Classes
                 txtPointOfEntry.Clear();
                 txtPointOfEntry.SendKeys(pointOfEntry);
 
-                var option = pointOfEntryOption(pointOfEntry);
-                SelectAutocompleteOption(option);
+                SelectAutocompleteOption(() => pointOfEntryOption(pointOfEntry));
 
                 if (IsAutocompleteCommitted(txtPointOfEntry, pointOfEntry))
                     return;
@@ -146,21 +145,36 @@ namespace Defra.UI.Tests.Pages.Classes
         // Dispatch mousedown -> mouseup -> click explicitly so the selection is
         // always committed, regardless of whether a native click would have been
         // intercepted after scroll.
-        private void SelectAutocompleteOption(IWebElement option)
+        // The suggestion list re-renders while filtering (debounced), so the option is re-located on every attempt
+        // and both StaleElementReferenceException and NoSuchElementException (list not yet rendered) are retried
+        private void SelectAutocompleteOption(Func<IWebElement> getOption)
         {
-            ((IJavaScriptExecutor)_driver).ExecuteScript(
-                "arguments[0].scrollIntoView({block:'center', inline:'center'});", option);
+            const int maxAttempts = 10;
 
-            ((IJavaScriptExecutor)_driver).ExecuteScript(
-                @"var el = arguments[0];
-                  var rect = el.getBoundingClientRect();
-                  var opts = { bubbles: true, cancelable: true, view: window,
-                               button: 0, clientX: rect.left + rect.width/2,
-                               clientY: rect.top + rect.height/2 };
-                  el.dispatchEvent(new MouseEvent('mousedown', opts));
-                  el.dispatchEvent(new MouseEvent('mouseup',   opts));
-                  el.dispatchEvent(new MouseEvent('click',     opts));",
-                option);
+            for (var attempt = 1; attempt <= maxAttempts; attempt++)
+            {
+                try
+                {
+                    var option = getOption();
+
+                    ((IJavaScriptExecutor)_driver).ExecuteScript(
+                        @"var el = arguments[0];
+                          el.scrollIntoView({block:'center', inline:'center'});
+                          var rect = el.getBoundingClientRect();
+                          var opts = { bubbles: true, cancelable: true, view: window,
+                                       button: 0, clientX: rect.left + rect.width/2,
+                                       clientY: rect.top + rect.height/2 };
+                          el.dispatchEvent(new MouseEvent('mousedown', opts));
+                          el.dispatchEvent(new MouseEvent('mouseup',   opts));
+                          el.dispatchEvent(new MouseEvent('click',     opts));",
+                        option);
+                    return;
+                }
+                catch (Exception ex) when ((ex is StaleElementReferenceException || ex is NoSuchElementException) && attempt < maxAttempts)
+                {
+                    System.Threading.Thread.Sleep(250);
+                }
+            }
         }
 
         private bool IsAutocompleteCommitted(IWebElement input, string expectedToken)

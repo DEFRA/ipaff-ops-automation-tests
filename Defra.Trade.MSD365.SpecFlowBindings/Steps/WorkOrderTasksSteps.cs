@@ -1347,9 +1347,37 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
                     By.XPath("//div[@data-id='trd_timerecordinginspectorids.fieldControl_container']//input"),
                     "Time Recording Inspectors search input could not be found.");
 
+                searchInput.SendKeys(Keys.Control + "a");
+                searchInput.SendKeys(Keys.Backspace);
                 searchInput.SendKeys(expectedName);
                 Driver.WaitForTransaction();
-                Thread.Sleep(3000); 
+
+                var wait = new OpenQA.Selenium.Support.UI.WebDriverWait(Driver, TimeSpan.FromSeconds(20))
+                {
+                    PollingInterval = TimeSpan.FromMilliseconds(250),
+                };
+                wait.IgnoreExceptionTypes(typeof(StaleElementReferenceException), typeof(NoSuchElementException));
+
+                // Wait until the input holds the full typed text.
+                wait.Until(_ => string.Equals(searchInput.GetAttribute("value"), expectedName, StringComparison.OrdinalIgnoreCase));
+
+                // Wait until the filtered drop down has settled: every visible option contains the name
+                // and the first (auto focused) option is the match. Tab then locks in that option.
+                wait.Until(_ =>
+                {
+                    var options = Driver.FindElements(By.XPath("//div[contains(@class,'-menu')]//div[contains(@class,'-option')]"));
+                    return options.Count > 0
+                        && options.All(o => o.Text.Contains(expectedName, StringComparison.OrdinalIgnoreCase));
+                });
+
+                Thread.Sleep(500);
+
+                // Re-check after a short pause in case a late refresh changed the list.
+                var firstOption = Driver.FindElements(By.XPath("//div[contains(@class,'-menu')]//div[contains(@class,'-option')]")).FirstOrDefault();
+                if (firstOption == null || !firstOption.Text.Contains(expectedName, StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new WebDriverTimeoutException($"Drop down did not settle on '{expectedName}'.");
+                }
 
                 searchInput.SendKeys(Keys.Tab);
             });

@@ -1,4 +1,5 @@
-﻿Feature: PHES
+﻿@PHES
+Feature: PHES
 
 End-to-end PHES regression tests
 
@@ -196,7 +197,7 @@ Scenario: Exporter application for seed sampling followed by a phytosanitary cer
 	And I click the Submit Results button above the Inspection Results grid	
 	Then the Status Reason is 'Submitted'
 	When I select the 'Summary' tab
-	Then the 'Summary' tab is displayed and selected	
+	Then the 'Summary' tab is displayed and selected
 	When I select the Time Recording Inspectors field on the Work Order Task page
 	And I search for my name in the Time Recording Inspectors field	
 	Then a new row appears in the Time Recording grid containing my name
@@ -317,8 +318,8 @@ Scenario: Exporter application for seed sampling followed by a phytosanitary cer
 	And the user records the APHA reference number for 'Phytosanitary Certificate Application'
 	# ---------- Dynamics Portal - Process the phytosanitary certificate export application ----------
 	When I switch back to the Dynamics window
-	And I click the Discard changes button on the Unsaved changes popup 
 	And I click on 'Export Applications' under the 'Exports' area
+	And I click the Discard changes button on the Unsaved changes popup 
 	Then the 'Active Export Applications' view is displayed on the Export Applications page
 	When I search Export Applications for the 'Phytosanitary Certificate Application' created in the Exporter Portal
 	Then the export application submitted in the Exporter Portal should be returned
@@ -353,7 +354,6 @@ Scenario: Exporter application for seed sampling followed by a phytosanitary cer
 	Then the 'Stock Requests' tab is displayed and selected
 	And I can see 1 row in the Stock Requests subgrid
 	And the Status Reason of the Stock Request in the Stock Requests subgrid should be 'Pending'
-	And the Status Reason of the Stock Request should be 'Pending'
 	When I select the record for the stock reference created in the Exporter Portal
 	Then the Accept Request button should be displayed
 	When I click the Accept Request button
@@ -453,22 +453,22 @@ Scenario: Exporter application for seed sampling followed by a phytosanitary cer
 	When I click the Back button in the command bar
 	Then the Work Order page is displayed for the 'Phytosanitary Certificate Application' created in the Exporter Portal
 	And the 'Export' tab is displayed and selected
-	# @agent: Add new step to existing step class WorkOrderSteps.cs
-	# @agent: Use this step definition to help implement the step below: [When("I click the Assign command")]
-	When I click View Phyto command from the header ribbon
-	# @agent: Add new step to existing step class WorkOrderSteps.cs
-	# @agent: Use this step definition to help implement the step below: [Then("the certificate should be displayed in a new browser tab")]
-	Then the Phytosanitary certificate is displayed in a new window
-	# @agent: Add new step to existing step class WorkOrderSteps.cs
-	# @agent: Use this step definition to help implement the step below: [When("the user downloads the PDF for validation using the current browser session")]
-	When I download the Phytosanitary certificate PDF
-	# @agent: Add new step to existing step class WorkOrderSteps.cs
-	# @agent: Use this step definition to help implement the step below:  [When("the user checks that the data in the certificate matches the data entered into the CHED PP notification")]
-	Then the Phytosanitary certificate displays the details of the application submitted
-	# @agent: Use this step definition to help implement the step below: [When("the user closes the PDF browser tab")]
-	When I close the PDF window
-	# @agent: Use this step definition to help implement the step below: [Then("the browser tab is closed")]
-	Then the window is closed
+	## @agent: Add new step to existing step class WorkOrderSteps.cs
+	## @agent: Use this step definition to help implement the step below: [When("I click the Assign command")]
+	#When I click View Phyto command from the header ribbon
+	## @agent: Add new step to existing step class WorkOrderSteps.cs
+	## @agent: Use this step definition to help implement the step below: [Then("the certificate should be displayed in a new browser tab")]
+	#Then the Phytosanitary certificate is displayed in a new window
+	## @agent: Add new step to existing step class WorkOrderSteps.cs
+	## @agent: Use this step definition to help implement the step below: [When("the user downloads the PDF for validation using the current browser session")]
+	#When I download the Phytosanitary certificate PDF
+	## @agent: Add new step to existing step class WorkOrderSteps.cs
+	## @agent: Use this step definition to help implement the step below:  [When("the user checks that the data in the certificate matches the data entered into the CHED PP notification")]
+	#Then the Phytosanitary certificate displays the details of the application submitted
+	## @agent: Use this step definition to help implement the step below: [When("the user closes the PDF browser tab")]
+	#When I close the PDF window
+	## @agent: Use this step definition to help implement the step below: [Then("the browser tab is closed")]
+	#Then the window is closed
 	# ---------- Exporter Portal - Search for the Phytosanitary certificate ----------
 	When I switch to the Exporter Portal window
 	And I navigate to the Exporter Portal	
