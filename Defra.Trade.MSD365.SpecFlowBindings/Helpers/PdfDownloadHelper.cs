@@ -24,6 +24,7 @@ public static class PdfDownloadHelper
         if (string.IsNullOrWhiteSpace(pdfUrl)) throw new ArgumentException("PDF url must be provided.", nameof(pdfUrl));
 
         var uri = new Uri(pdfUrl);
+        string lastError = null;
 
         for (var attempt = 1; ; attempt++)
         {
@@ -33,15 +34,17 @@ public static class PdfDownloadHelper
 
             try
             {
-                var cookieContainer = new CookieContainer();
-                foreach (var cookie in driver.Manage().Cookies.AllCookies)
-                {
-                    cookieContainer.Add(uri, new System.Net.Cookie(cookie.Name, cookie.Value, "/"));
-                }
+                // Send cookies as a raw header, exactly as the browser would. System.Net.Cookie /
+                // CookieContainer reject valid browser cookies whose values contain ',' or ';'
+                // (e.g. the JSON cookie-consent cookie set by the phytosanitary service).
+                var cookieHeader = string.Join("; ", driver.Manage().Cookies.AllCookies
+                    .Select(c => $"{c.Name}={c.Value}"));
 
-                using var handler = new HttpClientHandler { CookieContainer = cookieContainer, AllowAutoRedirect = true };
+                using var handler = new HttpClientHandler { UseCookies = false, AllowAutoRedirect = true };
                 using var client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(60) };
                 client.DefaultRequestHeaders.Accept.ParseAdd("application/pdf");
+                if (!string.IsNullOrEmpty(cookieHeader))
+                    client.DefaultRequestHeaders.TryAddWithoutValidation("Cookie", cookieHeader);
 
                 var userAgent = GetUserAgent(driver);
                 if (!string.IsNullOrWhiteSpace(userAgent))
@@ -57,17 +60,19 @@ public static class PdfDownloadHelper
                     return filePath;
                 }
 
-                Console.WriteLine($"[PdfDownload] Response was not a PDF on attempt {attempt} ({bytes.Length} bytes).");
+                lastError = $"Response was not a PDF ({bytes.Length} bytes).";
+                Console.WriteLine($"[PdfDownload] Attempt {attempt}: {lastError}");
             }
             catch (Exception ex)
             {
+                lastError = ex.Message;
                 Console.WriteLine($"[PdfDownload] Attempt {attempt} failed: {ex.Message}");
             }
 
             TryDeleteDirectory(downloadDirectory);
 
             if (attempt >= maxRetries)
-                throw new InvalidOperationException($"PDF failed to download from '{pdfUrl}' using the browser session after {maxRetries} attempts.");
+                throw new InvalidOperationException($"PDF failed to download from '{pdfUrl}' using the browser session after {maxRetries} attempts. Last error: {lastError}");
 
             Thread.Sleep(attempt * 1000);
         }

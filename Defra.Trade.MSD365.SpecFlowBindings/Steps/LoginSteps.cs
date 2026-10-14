@@ -33,8 +33,8 @@ public class LoginSteps : PowerAppsStepDefiner
     [When("I am logged in to the {string} app as {string}")]
     public void GivenIAmLoggedInToTheAppAs(string appName, string userAlias)
     {
-        //scenarioContext["Seed Sampling Application_APHAReference"] = "1762431094228";
-        //scenarioContext["Phytosanitary Certificate Application_APHAReference"] = "1762431094177";
+        //scenarioContext["Seed Sampling Application_APHAReference"] = "1762431094387";
+        //scenarioContext["Phytosanitary Certificate Application_APHAReference"] = "1762431094387";
         //scenarioContext["StockRequestName"] = "10162725";
         scenarioContext["IsDynamicsActive"] = true;
         SelectApplication(appName);
