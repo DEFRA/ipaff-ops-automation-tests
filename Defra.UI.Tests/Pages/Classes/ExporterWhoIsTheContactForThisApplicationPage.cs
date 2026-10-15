@@ -15,6 +15,8 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtOrganisationName => _driver.WaitForElement(By.Id("inspection-organisation-name"), true);
         private IWebElement txtContactName => _driver.WaitForElement(By.Id("inspection-contact-name"), true);
         private IWebElement txtPhoneNumber => _driver.WaitForElement(By.Id("inspection-contact-phone-number"), true);
+        private IWebElement txtEmailAddress => _driver.WaitForElement(By.Id("inspection-contact-email"), true);
+        private IReadOnlyCollection<IWebElement> lblContactFields => _driver.WaitForElements(By.XPath("//label[starts-with(@for,'inspection-contact-')]"));
         private IWebElement btnSaveAndContinue => _driver.WaitForElement(By.Id("Button-SaveAndContinue"));
         #endregion
 
@@ -36,6 +38,27 @@ namespace Defra.UI.Tests.Pages.Classes
             txtPhoneNumber.Clear();
             txtPhoneNumber.SendKeys(telephone);
         }
+
+        public void EnterContactName(string contactName)
+        {
+            txtContactName.Clear();
+            txtContactName.SendKeys(contactName);
+        }
+
+        public void EnterPhoneNumber(string telephone)
+        {
+            txtPhoneNumber.Clear();
+            txtPhoneNumber.SendKeys(telephone);
+        }
+
+        public void EnterEmailAddress(string email)
+        {
+            txtEmailAddress.Clear();
+            txtEmailAddress.SendKeys(email);
+        }
+
+        public List<string> GetContactFieldLabels() =>
+            lblContactFields.Select(l => System.Text.RegularExpressions.Regex.Replace(l.Text, @"\s*\(optional\)", "", System.Text.RegularExpressions.RegexOptions.IgnoreCase).Trim()).ToList();
 
         public void ClickSaveAndContinueButton() => btnSaveAndContinue.Click();
     }
