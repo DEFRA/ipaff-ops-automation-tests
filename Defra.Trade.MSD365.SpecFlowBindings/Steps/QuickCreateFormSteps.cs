@@ -178,7 +178,9 @@ public sealed class QuickCreateFormSteps : PowerAppsStepDefiner
     {
         Driver.WaitForTransaction();
 
-        var scheduledTime = DateTime.Now.ToString("HH:mm");
+        var ukTimeZone = TimeZoneInfo.FindSystemTimeZoneById(
+            OperatingSystem.IsWindows() ? "GMT Standard Time" : "Europe/London");
+        var scheduledTime = TimeZoneInfo.ConvertTime(DateTime.UtcNow, ukTimeZone).ToString("HH:mm");
 
         var timeInput = Driver.WaitUntilAvailable(
             By.XPath("//div[@data-id='trd_datescheduled.fieldControl._timecontrol-datetime-container']//input"),
