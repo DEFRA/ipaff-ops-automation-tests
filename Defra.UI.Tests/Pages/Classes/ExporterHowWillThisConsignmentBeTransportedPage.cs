@@ -118,7 +118,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
             for (var attempt = 1; attempt <= maxAttempts; attempt++)
             {
-                txtPointOfEntry.Clear();
+                ClearInput(txtPointOfEntry);
                 txtPointOfEntry.SendKeys(pointOfEntry);
 
                 SelectAutocompleteOption(() => pointOfEntryOption(pointOfEntry));
@@ -184,13 +184,29 @@ namespace Defra.UI.Tests.Pages.Classes
                 var value = GetInputValue(input) ?? string.Empty;
                 var expanded = input.GetAttribute("aria-expanded");
                 if (value.Contains(expectedToken, System.StringComparison.OrdinalIgnoreCase)
-                    && string.Equals(expanded, "false", System.StringComparison.OrdinalIgnoreCase))
+                    && (string.Equals(expanded, "false", System.StringComparison.OrdinalIgnoreCase)
+                        || !value.Trim().Equals(expectedToken.Trim(), System.StringComparison.OrdinalIgnoreCase)))
                 {
                     return true;
                 }
                 System.Threading.Thread.Sleep(100);
             }
             return false;
+        }
+
+        private void ClearInput(IWebElement input)
+        {
+            input.Clear();
+            if (!string.IsNullOrEmpty(GetInputValue(input)))
+            {
+                input.SendKeys(Keys.Control + "a");
+                input.SendKeys(Keys.Delete);
+            }
+            if (!string.IsNullOrEmpty(GetInputValue(input)))
+            {
+                ((IJavaScriptExecutor)_driver).ExecuteScript(
+                    "arguments[0].value='';arguments[0].dispatchEvent(new Event('input',{bubbles:true}));", input);
+            }
         }
 
         private string GetInputValue(IWebElement input) =>

@@ -117,20 +117,37 @@ public sealed class ExportApplicationSteps : PowerAppsStepDefiner
     {
         Driver.WaitForTransaction();
 
-        var isDisplayed = Policy
-            .Handle<Exception>()
-            .OrResult<bool>(displayed => !displayed)
-            .WaitAndRetry(6, _ => TimeSpan.FromSeconds(5))
-            .Execute(() =>
+        // Retry every 30 seconds for up to 5 minutes, refreshing the page between attempts.
+        // Only used on full form pages (Export Application / Work Order), not on Work Order Task pop-ups,
+        // as a refresh would downsize the pop-up.
+        const int maxRetries = 10;
+        var isDisplayed = false;
+
+        for (var attempt = 0; attempt <= maxRetries && !isDisplayed; attempt++)
+        {
+            if (attempt > 0)
+            {
+                System.Threading.Thread.Sleep(TimeSpan.FromSeconds(30));
+                Driver.Navigate().Refresh();
+                Driver.WaitForTransaction();
+            }
+
+            try
             {
                 var tab = Driver.WaitUntilAvailable(
                     By.XPath($"//ul[@role='tablist']//li[@role='tab' and @aria-label='{tabName}']"),
+                    TimeSpan.FromSeconds(5),
                     $"'{tabName}' tab could not be found on the form.");
 
-                return tab.Displayed;
-            });
+                isDisplayed = tab.Displayed;
+            }
+            catch (Exception)
+            {
+                isDisplayed = false;
+            }
+        }
 
-        isDisplayed.Should().BeTrue($"Expected the '{tabName}' tab to be displayed but it was not after retrying.");
+        isDisplayed.Should().BeTrue($"Expected the '{tabName}' tab to be displayed but it was not after retrying for 5 minutes.");
     }
 
     private void AssertExportApplicationPageIsDisplayed(string expectedAphaReference)
