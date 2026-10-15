@@ -470,3 +470,411 @@ Scenario: Exporter application for seed sampling followed by a phytosanitary cer
 	When the user clicks the Sampling report (csv) link on the Manage application page
 	Then the Sampling report (csv) file is downloaded
 	And the Remaining Approved Stock quantity in the CSV is '3000.0'
+
+@SPS-3951
+Scenario: Exporter phytosanitary certificate application creating stock, followed by draw down applications - SPS-3951
+	# ---------- Exporter Portal - Application 1 (qualifying application) ----------
+	Given that I navigate to the Exporter Portal
+	Then I should see type of Gateway login page
+	And I have selected 'Sign in with Government Gateway' as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should be redirected to the Sign in using Government Gateway page
+	When I have provided the Exporter Trader credentials and signin
+	Then the Exporter Portal homepage should be displayed
+	When the user clicks the Start a new application button
+	Then the What are you exporting? page is displayed
+	When the user selects 'Plants and fresh produce' and clicks the Continue button on the What are you exporting? page
+	Then the What do you need to do? page is displayed
+	When the user selects 'Apply for a phytosanitary certificate' and clicks the Continue button on the What do you need to do? page
+	Then the Destination country page is displayed
+	When the user searches for destination country 'France' and clicks the Continue button
+	Then the Regulations for exporting 'plants and fresh produce' to 'France' page is displayed
+	When the user ticks the exporting regulations checkbox
+	And the user clicks the Continue button on the Regulations for exporting page
+	Then the Create a reference page is displayed
+	When the user enters a reference number and clicks the Save and continue button
+	Then the Your application page is displayed
+	When the user clicks the What is the exporter address? link
+	Then the Is this the exporter address? page is displayed
+	When the user selects 'Yes' and clicks the Save and continue button on the Is this the exporter address? page
+	Then the Your application page is displayed
+	When the user clicks the What's in your consignment? link
+	Then the How do you want to add commodities to your consignment? page is displayed
+	When the user selects 'Manually, by adding one at a time' and clicks the Continue button on the How do you want to add commodities to your consignment? page
+	# @agent: Consolidate the step/page/interface files for ExporterAddBulbsToYourConsignment and ExporterAddSeedsToYourConsignment into to new step/page/interface class called ExporterAddToYourConsignment
+	# @agent: Add to new step/page/interface class for ExporterAddToYourConsignment
+	Then the Add 'plants and fresh produce' to your consignment page is displayed
+	When the user describes the commodity with botanical name 'LAVVI', commodity type 'Plants', quantity '10', unit of measurement 'Units', number of packages '10', type of packaging 'Box', countries of origin 'United Kingdom'
+	# @agent: New step/page/interface class for ExporterAddToYourConsignment
+	And the user clicks the Save and continue button on the Add 'plants and fresh produce' to your consignment page
+	Then the Your commodities page is displayed with the commodity line just entered
+	When the user selects 'No, I have finished adding commodities' and clicks the Save and continue button on the Your commodities page
+	Then the Your application page is displayed
+	When the user clicks the What are the inspection details? link
+	# @agent: New step/page/interface class for DoYouWantToApplyUnderThePheats
+	Then the Do you want to apply under the plant health exports audited trader scheme (PHEATS)? page is displayed
+	# @agent: New step/page/interface class for DoYouWantToApplyUnderThePheats
+	When the user selects 'No' and clicks the Save and continue button on the Do you want to apply under the plant health exports audited trader scheme (PHEATS)? page
+	Then the What are the inspection details? page is displayed
+	When the user selects an inspection address and continues
+	Then the Do you want to select this inspection address? page is displayed
+	When the user selects 'Yes, select this inspection address' and clicks the Continue button on the Do you want to select this inspection address? page
+	Then the Who is the contact for this application? page is displayed
+	When the user enters a contact name for the inspector to contact about the application
+	And the user enters a phone number for the inspector to contact about the application
+	And the user clicks the Save and continue button on the Who is the contact for this application? page
+	Then the When will the consignment be ready? page is displayed
+	When the user enters a valid date for when the consignment will be ready for inspection at least 5 days in the future
+	And the user clicks the Save and continue button on the When will the consignment be ready? page
+	Then the Your application page is displayed
+	When the user clicks the Who are you sending this consignment to? link
+	Then the Who are you sending this consignment to? page is displayed
+	When the user enters the conisgnee details and clicks the Continue button on the Who are you sending this consignment to? page
+	Then the Your application page is displayed
+	When the user clicks the How will this consignment be transported? link
+	Then the How will this consignment be transported? page is displayed
+	When the user enters the value of the consignment in pounds 2000.00
+	And the user selects 'Yes' for Do you know the point of entry?
+	And the user enters the point of entry 'FR CQF'
+	And the user selects a transport method 'Road or ferry'
+	And the user clicks the Save and continue button on the How will this consignment be transported? page
+	Then the Your application page is displayed
+	When the user clicks the Supporting documents link
+	Then the Supporting documents page is displayed
+	When the user uploads a supporting document and clicks the Save and continue button
+	Then the Your application page is displayed
+	When the user clicks the Check your answers and submit your application link
+	Then the Review your answers page is displayed
+	And the data presented for review matches the data entered into the Exporter Portal for a phytosanitary certificate application
+	When the user clicks the Continue button on the Review your answers page
+	Then the When do you need the certificate? page is displayed
+	When the user enters a valid date for when the certificate is needed at least 5 days in the future
+	And the user clicks the Continue button on the When do you need the certificate? page
+	Then the Exporter declaration page is displayed
+	When the user ticks the exporter declaration checkbox
+	And the user clicks the Submit application button
+	Then the You have successfully submitted your application for a phytosanitary certificate page is displayed
+	And the user records the APHA reference number for 'Application 1'
+	# ---------- Dynamics Portal - Process Application 1 and create stock ----------
+	When I am logged in to the 'IDCOMS' app as 'Inspector'
+	And I click on 'Export Applications' under the 'Exports' area
+	Then the 'Active Export Applications' view is displayed on the Export Applications page
+	When I search Export Applications for the 'Application 1' created in the Exporter Portal
+	Then the export application submitted in the Exporter Portal should be returned
+	When I open the record in the grid
+	Then the Export Application page is displayed for the 'Application 1' created in the Exporter Portal
+	And the 'General' tab is displayed and selected
+	When I click the Work Order link in the Application Details section
+	Then the Work Order page is displayed for the 'Application 1' created in the Exporter Portal
+	And the 'Export' tab is displayed and selected
+	When I click the Assign command
+	Then I can see the Assign Work Order popup is displayed
+	When I click the Assign button
+	Then the Substatus of the Work Order should be 'Assigned'
+	And the Owner of the Work Order should be me
+	When I select the 'Work Order Tasks' tab
+	Then the 'Work Order Tasks' tab is displayed and selected
+	When I click on the 'Plants Inspection Task' task
+	And I maximise the popup
+	Then I verify the 'Plants Inspection Task' popup is displayed
+	And the 'Summary' tab is displayed and selected
+	When I select the 'Inspection Results' tab
+	Then the 'Inspection Results' tab is displayed and selected
+	When I select the Visit field on the Work Order Task page
+	And I select the New button on the Visits dropdown
+	Then the Quick Create Visit form is displayed
+	When I add my name to the Quick Create form
+	And I add a valid date scheduled to the Quick Create form at least 2 days in the future
+	And I add a valid time scheduled to the Quick Create form
+	And I click the Save and Close button on the Quick Create form
+	Then the Quick Create Visit form is closed
+	# @agent: New step in WorkOrderTasksSteps.cs
+	When I click the Save button on the Work Order Task page
+	And I select the 'Summary' tab
+	Then the 'Summary' tab is displayed and selected
+	# @agent: New step in WorkOrderTasksSteps.cs
+	And the Status of the Work Order should be 'Scheduled'
+	When I select the 'Inspection Results' tab
+	Then the 'Inspection Results' tab is displayed and selected
+	When I scroll down to the Inspection Results grid on the Work Order Task page
+	Then I can see 1 row in the Inspection Results grid	
+	When I select the row in the Inspection Results grid
+	And I click the Pass Selected button above the Inspection Results grid	
+	Then the Inspection Result is 'Pass'
+	When I select the row in the Inspection Results grid	
+	And I click the Submit Results button above the Inspection Results grid	
+	Then the Status Reason is 'Submitted'
+	When I select the 'Summary' tab
+	Then the 'Summary' tab is displayed and selected
+	When I select the Time Recording Inspectors field on the Work Order Task page
+	And I search for my name in the Time Recording Inspectors field
+	Then a new row appears in the Time Recording grid containing my name
+	When I enter 5 in the 'Travel' column
+	And I enter 5 in the 'Inspection' column
+	And I enter 5 in the 'Admin' column
+	And I enter 5 in the 'Training given (Client)' column
+	And I enter 5 in the 'Training given (Inspector)' column
+	And I enter 5 in the 'Training received' column
+	And I select the new row in the grid
+	And I click Submit Time
+	Then I can see the Confirm Time Entries popup is displayed
+	When I click the OK button
+	Then the entry status is 'Submitted'
+	When I click Mark Complete
+	Then a grey banner is displayed 'Read-only This record’s status: Inactive'
+	When I close the popup
+	Then the 'Work Order Tasks' tab is displayed and selected
+	When I select the 'Export' tab
+	Then the 'Export' tab is displayed and selected
+	# @agent: New step in WorkOrderSteps.cs
+	# Reference the step [Then(@"I can see (\d+) rows? in the Commodity Lines subgrid")]
+	# data-id="Commoditylines-powerapps_onegrid_control_container"
+	# col-id="__row_status"
+	When I select a row in the Commodity Lines subgrid
+	# @agent: New step in WorkOrderSteps.cs
+	# data-id="trd_consignmentitem|NoRelationship|SubGridStandard|trd.trd_consignmentitem.CreateStock.Button"
+	And I click the Create Stock button
+	# @agent: New step in QuickCreateFormSteps.cs
+	# <h1 data-id="quickHeaderTitle" class="pa-un pa-ce pa-k pa-hk pa-hl pa-ul pa-xn pa-ec pa-afs ">Quick Create: Stock</h1>
+	Then the Quick Create Stock form is displayed
+	# @agent: New step in QuickCreateFormSteps.cs
+	# aria-label="Site / Batch ID"
+	When I enter the Site / Batch ID to the Quick Create form
+	# @agent: New step in QuickCreateFormSteps.cs
+	# aria-label="Approved Stock"
+	And I enter the Approved Stock '100' on the Quick Create form
+	And I click the Save and Close button on the Quick Create form
+	Then the Quick Create Visit form is closed
+	# @agent: New step in QuickCreateFormSteps.cs
+	# Brief popup containing: View changes
+	Then the Stock record created confirmation is displayed
+	And the 'Export' tab is displayed and selected
+	When I select the 'Work Order Tasks' tab
+	Then the 'Work Order Tasks' tab is displayed and selected
+	When I click on the 'Issue Phyto Task' task
+	And I maximise the popup
+	Then I verify the 'Issue Phyto Task' popup is displayed
+	And the 'Summary' tab is displayed and selected
+	When I select the Time Recording Inspectors field on the Work Order Task page
+	And I search for my name in the Time Recording Inspectors field
+	Then a new row appears in the Time Recording grid containing my name
+	When I enter 5 in the 'Admin' column
+	And I select the new row in the grid
+	And I click Submit Time
+	Then I can see the Confirm Time Entries popup is displayed
+	When I click the OK button
+	Then the entry status is 'Submitted'
+	When I click Mark Complete
+	Then a grey banner is displayed 'Read-only This record’s status: Inactive'
+	When I close the popup
+	Then the Substatus of the Work Order should be 'Certificate Issued'
+	When I click View Phyto command from the header ribbon
+	Then the Phytosanitary certificate is displayed in a new window
+	When I download the Phytosanitary certificate PDF
+	Then the Phytosanitary Certificate displays the details of the application submitted
+	When I close the PDF window
+	Then the window is closed
+	# ---------- Exporter Portal - Application 2 (draw down from stock) ----------
+	When I switch to the Exporter Portal window
+	# Line 32 of Test Case
+	# 1510261536
+	And the user clicks the View your applications link
+	Then the Your applications page is displayed
+	When the user searches for and selects the application reference for 'Application 1'
+	Then the Application page is displayed for 'Application 1'
+	And the message 'Draw down stock is available' is displayed on the Application page
+	When the user clicks the Draw down or view stock link in the Commodities in this application section
+	Then the Stock details page is displayed
+	And the stock details show the commodity description, variety, location, inspected on, valid until, quantity inspected and amount drawn down of 0
+	When the user clicks the Draw down button
+	Then the Do you want to reuse the same application reference? page is displayed
+	When the user selects 'No, a different reference' and enters a new draw down reference
+	And the user clicks the Save and continue button on the Do you want to reuse the same application reference? page
+	Then the How much stock are you exporting? page is displayed
+	And the stock inspected and draw down expiry dates are displayed on the How much stock are you exporting? page
+	When the user enters a valid draw down quantity
+	And the user clicks the Save and continue button on the How much stock are you exporting? page
+	Then the Upload supporting photographs page is displayed
+	When the user uploads a JPEG supporting photograph with a file description
+	Then the photograph is added to the supporting photographs table with View and Delete options
+	When the user clicks the Save and continue button on the Upload supporting photographs page
+	Then the Make changes to your application page is displayed
+	When the user clicks the Change link next to the Destination field
+	Then the Destination country page is displayed
+	When the user searches for destination country 'Germany' and clicks the Save and continue button
+	Then the Review your answers page is displayed
+	When the user clicks the Continue button on the Review your answers page
+	Then the When do you need the certificate? page is displayed
+	When the user enters a valid date for when the certificate is needed at least 5 days in the future
+	And the user clicks the Continue button on the When do you need the certificate? page
+	Then the Exporter declaration page is displayed
+	When the user ticks the exporter declaration checkbox
+	And the user clicks the Submit application button
+	Then the You have successfully submitted your application for a phytosanitary certificate page is displayed
+	And the user records the APHA reference number for 'Application 2'
+	# ---------- Dynamics Portal - Process Application 2 ----------
+	When I switch back to the Dynamics window
+	And I click on 'Export Applications' under the 'Exports' area
+	And I click the Discard changes button on the Unsaved changes popup
+	Then the 'Active Export Applications' view is displayed on the Export Applications page
+	When I search Export Applications for the 'Application 2' created in the Exporter Portal
+	Then the export application submitted in the Exporter Portal should be returned
+	When I open the record in the grid
+	Then the Export Application page is displayed for the 'Application 2' created in the Exporter Portal
+	When I click the Work Order link in the Application Details section
+	Then the Work Order page is displayed for the 'Application 2' created in the Exporter Portal
+	When I click the Assign command
+	Then I can see the Assign Work Order popup is displayed
+	When I click the Assign button
+	Then the Substatus of the Work Order should be 'Assigned'
+	When I select the 'Stock Requests' tab
+	Then the 'Stock Requests' tab is displayed and selected
+	When I click the link in the 'Stock' column
+	Then the Stock page is displayed for the stock reference created in the Exporter Portal
+	And the 'Summary' tab is displayed and selected
+	And the Total Draw Down quantity is '0.000'
+	And the Total Draw Down Including Pending quantity is the quantity entered for 'Application 2'
+	And the Remaining Approved Stock quantity is the Approved Stock created on 'Application 1'
+	And the Remaining Approved Stock Including Pending quantity is the Approved Stock less the quantity entered for 'Application 2'
+	When I click the Back button in the command bar
+	Then the 'Stock Requests' tab is displayed and selected
+	When I select the record for the stock reference created in the Exporter Portal
+	Then the Accept Request button should be displayed
+	When I click the Accept Request button
+	Then the Status Reason of the Stock Request in the Stock Requests subgrid should be 'Accepted'
+	When I click the link in the 'Stock' column
+	Then the Stock page is displayed for the stock reference created in the Exporter Portal
+	And the Total Draw Down quantity is the accepted draw down quantity for 'Application 2'
+	And the Total Draw Down Including Pending quantity is the quantity entered for 'Application 2'
+	And the Remaining Approved Stock quantity is the Approved Stock less the accepted draw down quantity for 'Application 2'
+	And the Remaining Approved Stock Including Pending quantity is the Approved Stock less the accepted draw down quantity for 'Application 2'
+	When I click the Back button in the command bar
+	Then the 'Stock Requests' tab is displayed and selected
+	When I select the 'Work Order Tasks' tab
+	Then the 'Work Order Tasks' tab is displayed and selected
+	And the 'Plants Inspection Task' is no longer visible in the Active Work Order Service Tasks - Exports subgrid
+	When I change the view to 'All Work Order Service Tasks' in the Work Order Tasks subgrid
+	Then the 'Plants Inspection Task' is displayed in the Work Order Tasks subgrid with a status of 'Inactive'
+	When I click on the 'Issue Phyto Task' task
+	And I maximise the popup
+	Then I verify the 'Issue Phyto Task' popup is displayed
+	And the 'Summary' tab is displayed and selected
+	When I select the Time Recording Inspectors field on the Work Order Task page
+	And I search for my name in the Time Recording Inspectors field
+	Then a new row appears in the Time Recording grid containing my name
+	When I enter 5 in the 'Admin' column
+	And I select the new row in the grid
+	And I click Submit Time
+	Then I can see the Confirm Time Entries popup is displayed
+	When I click the OK button
+	Then the entry status is 'Submitted'
+	When I click Mark Complete
+	Then a grey banner is displayed 'Read-only This record’s status: Inactive'
+	When I close the popup
+	Then the Substatus of the Work Order should be 'Certificate Issued'
+	When I click View Phyto command from the header ribbon
+	Then the Phytosanitary certificate is displayed in a new window
+	When I download the Phytosanitary certificate PDF
+	Then the Phytosanitary Certificate displays the details of the 'Application 2' draw down application
+	When I close the PDF window
+	Then the window is closed
+	# ---------- Exporter Portal - Application 3 (copy of Application 2) ----------
+	When I switch to the Exporter Portal window
+	And I navigate to the Exporter Portal
+	Then the Exporter Portal homepage should be displayed
+	When the user clicks the View your applications link
+	Then the Your applications page is displayed
+	When the user searches for and selects the application reference for 'Application 2'
+	Then the Application page is displayed for 'Application 2'
+	And the message 'This application has been drawn down from draw down stock' is displayed on the Application page
+	When the user clicks the Copy as new application link
+	Then the Are you sure you want to copy this application? page is displayed
+	When the user selects 'Yes, copy this application' and clicks the Continue button on the Are you sure you want to copy this application? page
+	Then the Do you want to reuse the same application reference? page is displayed
+	When the user selects 'No, a different reference' and enters a new draw down reference
+	And the user clicks the Save and continue button on the Do you want to reuse the same application reference? page
+	Then the Make changes to your application page is displayed
+	When the user clicks the Change link next to the Destination field in the Application summary section
+	Then the Destination country page is displayed
+	When the user searches for destination country 'Spain' and clicks the Save and continue button
+	Then the Review your answers page is displayed
+	When the user clicks the Change link in the Supporting photographs section
+	Then the Upload supporting photographs page is displayed
+	When the user uploads a JPEG supporting photograph with a file description
+	Then the photograph is added to the supporting photographs table with View and Delete options
+	When the user clicks the Save and continue button on the Upload supporting photographs page
+	Then the Review your answers page is displayed
+	When the user clicks the Continue button on the Review your answers page
+	Then the When do you need the certificate? page is displayed
+	When the user enters a valid date for when the certificate is needed at least 5 days in the future
+	And the user clicks the Continue button on the When do you need the certificate? page
+	Then the Exporter declaration page is displayed
+	When the user ticks the exporter declaration checkbox
+	And the user clicks the Submit application button
+	Then the You have successfully submitted your application for a phytosanitary certificate page is displayed
+	And the user records the APHA reference number for 'Application 3'
+	# ---------- Dynamics Portal - Process Application 3 ----------
+	When I switch back to the Dynamics window
+	And I click on 'Export Applications' under the 'Exports' area
+	And I click the Discard changes button on the Unsaved changes popup
+	Then the 'Active Export Applications' view is displayed on the Export Applications page
+	When I search Export Applications for the 'Application 3' created in the Exporter Portal
+	Then the export application submitted in the Exporter Portal should be returned
+	When I open the record in the grid
+	Then the Export Application page is displayed for the 'Application 3' created in the Exporter Portal
+	When I click the Work Order link in the Application Details section
+	Then the Work Order page is displayed for the 'Application 3' created in the Exporter Portal
+	When I click the Assign command
+	Then I can see the Assign Work Order popup is displayed
+	When I click the Assign button
+	Then the Substatus of the Work Order should be 'Assigned'
+	When I select the 'Stock Requests' tab
+	Then the 'Stock Requests' tab is displayed and selected
+	When I click the link in the 'Stock' column
+	Then the Stock page is displayed for the stock reference created in the Exporter Portal
+	And the Total Draw Down quantity is the accepted draw down quantity for 'Application 2'
+	And the Total Draw Down Including Pending quantity is the quantity entered for 'Application 2' plus the quantity entered for 'Application 3'
+	And the Remaining Approved Stock quantity is the Approved Stock less the accepted draw down quantity for 'Application 2'
+	And the Remaining Approved Stock Including Pending quantity is the Approved Stock less the quantities entered for 'Application 2' and 'Application 3'
+	When I click the Back button in the command bar
+	Then the 'Stock Requests' tab is displayed and selected
+	When I select the record for the stock reference created in the Exporter Portal
+	Then the Accept Request button should be displayed
+	When I click the Accept Request button
+	Then the Status Reason of the Stock Request in the Stock Requests subgrid should be 'Accepted'
+	When I click the link in the 'Stock' column
+	Then the Stock page is displayed for the stock reference created in the Exporter Portal
+	And the Total Draw Down quantity is the accepted draw down quantities for 'Application 2' and 'Application 3'
+	And the Total Draw Down Including Pending quantity is the quantities entered for 'Application 2' and 'Application 3'
+	And the Remaining Approved Stock quantity is the Approved Stock less the accepted draw down quantities for 'Application 2' and 'Application 3'
+	And the Remaining Approved Stock Including Pending quantity is the Approved Stock less the accepted draw down quantities for 'Application 2' and 'Application 3'
+	When I click the Back button in the command bar
+	Then the 'Stock Requests' tab is displayed and selected
+	When I select the 'Work Order Tasks' tab
+	Then the 'Work Order Tasks' tab is displayed and selected
+	And the 'Plants Inspection Task' is no longer visible in the Active Work Order Service Tasks - Exports subgrid
+	When I change the view to 'All Work Order Service Tasks' in the Work Order Tasks subgrid
+	Then the 'Plants Inspection Task' is displayed in the Work Order Tasks subgrid with a status of 'Inactive'
+	When I click on the 'Issue Phyto Task' task
+	And I maximise the popup
+	Then I verify the 'Issue Phyto Task' popup is displayed
+	And the 'Summary' tab is displayed and selected
+	When I select the Time Recording Inspectors field on the Work Order Task page
+	And I search for my name in the Time Recording Inspectors field
+	Then a new row appears in the Time Recording grid containing my name
+	When I enter 5 in the 'Admin' column
+	And I select the new row in the grid
+	And I click Submit Time
+	Then I can see the Confirm Time Entries popup is displayed
+	When I click the OK button
+	Then the entry status is 'Submitted'
+	When I click Mark Complete
+	Then a grey banner is displayed 'Read-only This record’s status: Inactive'
+	When I close the popup
+	Then the Substatus of the Work Order should be 'Certificate Issued'
+	When I click View Phyto command from the header ribbon
+	Then the Phytosanitary certificate is displayed in a new window
+	When I download the Phytosanitary certificate PDF
+	Then the Phytosanitary Certificate displays the details of the 'Application 3' draw down application
+	When I close the PDF window
+	Then the window is closed
