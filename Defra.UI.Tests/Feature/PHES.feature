@@ -678,37 +678,57 @@ Scenario: Exporter phytosanitary certificate application creating stock, followe
 	Then the window is closed
 	# ---------- Exporter Portal - Application 2 (draw down from stock) ----------
 	When I switch to the Exporter Portal window
+	# @agent: New step in existing step/page/interface files ExporterYouHaveSuccessfullySubmittedYourApplication
 	And the user clicks the View your applications button
 	Then the Your applications page is displayed
 	When the user enters the recorded APHA reference for 'Application 1' in the search box
 	Then the Export Application portal search returns one matching record
 	When the user clicks the APHA reference link for 'Application 1'
 	Then the Manage application page should be displayed
+	# @agent: New step in existing step/page/interface files ExporterManageApplication
 	# <p class="govuk-body"> Draw down stock is available </p>
 	And the 'Draw down stock is available' message is displayed on the Manage application page
+	# @agent: New step in existing step/page/interface files ExporterManageApplication
 	# <a class="govuk-link govuk-link--no-visited-state" href="/protected/application/1762431094489/stock-summary/4a66306f-aec8-f111-aaaf-e4fb1ef789ec">Draw down or view stock</a>
 	When the user clicks the 'Draw down or view stock' link on the Manage application page
+	# @agent: New step in new step/page/interface files ExporterStockDetails
 	# <h1 class="govuk-heading-xl" id="ssdd-summary-heading">Stock details <br> Stock-1316</h1>
 	Then the Stock details page is displayed
+	# @agent: New step in new step/page/interface files ExporterStockDetails
 	# Validate from scenario context: Description, Variety, Location, Inspected on, Quantity (amount + unit of measure), 
 	# Validate as int: 0 Units
 	# Validate format: Valid until DD MMM YYYY
 	And the stock details show the commodity description, variety, location, inspected on, valid until, quantity inspected and amount drawn down of 0
+	# @agent: New step in new step/page/interface files ExporterStockDetails
 	When the user clicks the Draw down button
+	# @agent: New step in new step/page/interface files ExporterDoYouWantToReuseTheSameApplicationReference
 	Then the Do you want to reuse the same application reference? page is displayed
+	# @agent: New step in new step/page/interface files ExporterDoYouWantToReuseTheSameApplicationReference
 	When the user selects 'No, a different reference' and enters a new reference
+	# @agent: New step in new step/page/interface files ExporterDoYouWantToReuseTheSameApplicationReference
 	And the user clicks the Save and continue button on the Do you want to reuse the same application reference? page
+	# @agent: New step in new step/page/interface files ExporterHowMuchStockAreYouExporting
 	Then the How much stock are you exporting? page is displayed
+	# @agent: New step in new step/page/interface files ExporterHowMuchStockAreYouExporting
 	And the Quantity, Inspected on date and Valid until date are displayed on the How much stock are you exporting? page
+	# @agent: New step in new step/page/interface files ExporterHowMuchStockAreYouExporting
 	When the user enters the draw down quantity 20 on the How much stock are you exporting? page 
+	# @agent: New step in new step/page/interface files ExporterHowMuchStockAreYouExporting
 	And the user clicks the Save and continue button on the How much stock are you exporting? page
+	# @agent: New step in new step/page/interface files ExporterUploadSupportingPhotographs
 	Then the Upload supporting photographs page is displayed
+	# @agent: New step in new step/page/interface files ExporterUploadSupportingPhotographs
 	When the user uploads a JPEG supporting photograph with a file description
+	# @agent: New step in new step/page/interface files ExporterUploadSupportingPhotographs
 	Then the photograph is added to the supporting photographs table with the Download and Delete actions
+	# @agent: New step in new step/page/interface files ExporterUploadSupportingPhotographs
 	When the user clicks the Save and continue button on the Upload supporting photographs page
+	# @agent: New step in new step/page/interface files ExporterMakeChangesToYourApplicationPage
 	Then the Make changes to your application page is displayed
+	# @agent: New step in new step/page/interface files ExporterMakeChangesToYourApplicationPage
 	When the user clicks the Change link next to the 'Destination' field on the Make changes to your application page
 	Then the Destination country page is displayed
+	# @agent: New step in existing step file ExporterDestinationCountrySteps
 	When the user searches for destination country 'Germany' and clicks the Save and continue button
 	Then the Review your answers page is displayed
 	When the user clicks the Continue button on the Review your answers page
@@ -767,6 +787,7 @@ Scenario: Exporter phytosanitary certificate application creating stock, followe
 	Then the 'Work Order Tasks' tab is displayed and selected
 	And I can see following Work Order Tasks 'Pre Inspection Task' 'Issue Phyto Task'
 	And the 'Plants Inspection Task' is no longer visible in the Active Work Order Service Tasks - Exports subgrid
+	# @agent: New step in existing step file WorkOrderSteps.cs
 	When I change the view to 'All Work Order Service Tasks' in the Work Order Tasks subgrid
 	Then I can see following Work Order Tasks 'Pre Inspection Task' 'Plants Inspection Task' 'Issue Phyto Task'
 	And the Work Order Task 'Plants Inspection Task' Status is 'Inactive'
@@ -795,15 +816,20 @@ Scenario: Exporter phytosanitary certificate application creating stock, followe
 	Then the window is closed
 	# ---------- Exporter Portal - Application 3 (copy of Application 2) ----------
 	When I switch to the Exporter Portal window
+	# @agent: New step in existing step/page/interface files ExporterYouHaveSuccessfullySubmittedYourApplication
 	And the user clicks the View your applications button
 	Then the Your applications page is displayed
 	When the user enters the recorded APHA reference for 'Application 2' in the search box
 	Then the Export Application portal search returns one matching record
 	When the user clicks the APHA reference link for 'Application 2'
 	Then the Manage application page should be displayed
+	# @agent: New step in existing step/page/interface files ExporterManageApplication
 	And the 'This application has been drawn down from draw down stock' message is displayed on the Manage application page
+	# @agent: New step in existing step/page/interface files ExporterManageApplication
 	When the user clicks the Copy as new application link on the Manage application page
+	# @agent: New step in new step/page/interface files ExporterAreYouSureYouWantToCopyThisApplication
 	Then the Are you sure you want to copy this application? page is displayed
+	# @agent: New step in new step/page/interface files ExporterAreYouSureYouWantToCopyThisApplication
 	When the user selects 'Yes, copy this application' and clicks the Continue button on the Are you sure you want to copy this application? page
 	Then the Do you want to reuse the same application reference? page is displayed
 	When the user selects 'No, a different reference' and enters a new reference
@@ -813,6 +839,7 @@ Scenario: Exporter phytosanitary certificate application creating stock, followe
 	Then the Destination country page is displayed
 	When the user searches for destination country 'Spain' and clicks the Save and continue button
 	Then the Review your answers page is displayed
+	# @agent: New step in existing step file ExporterReviewYourAnswersSteps
 	When the user clicks the Change link next to the 'File name' field on the Review your answers page
 	Then the Upload supporting photographs page is displayed
 	When the user uploads a JPEG supporting photograph with a file description
@@ -874,6 +901,7 @@ Scenario: Exporter phytosanitary certificate application creating stock, followe
 	Then the 'Work Order Tasks' tab is displayed and selected
 	And I can see following Work Order Tasks 'Pre Inspection Task' 'Issue Phyto Task'
 	And the 'Plants Inspection Task' is no longer visible in the Active Work Order Service Tasks - Exports subgrid
+	# @agent: New step in existing step file WorkOrderSteps.cs
 	When I change the view to 'All Work Order Service Tasks' in the Work Order Tasks subgrid
 	Then I can see following Work Order Tasks 'Pre Inspection Task' 'Plants Inspection Task' 'Issue Phyto Task'
 	And the Work Order Task 'Plants Inspection Task' Status is 'Inactive'
