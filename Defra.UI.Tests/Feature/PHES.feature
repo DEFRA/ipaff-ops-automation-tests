@@ -639,10 +639,12 @@ Scenario: Exporter phytosanitary certificate application creating stock, followe
 	Then the Quick Create Stock form is displayed
 	# @agent: New step in QuickCreateFormSteps.cs
 	# aria-label="Site / Batch ID"
+	# store in scenario context as Location
 	When I enter the Site / Batch ID to the Quick Create form
 	# @agent: New step in QuickCreateFormSteps.cs
 	# aria-label="Approved Stock"
-	And I enter the Approved Stock '100' on the Quick Create form
+	# store in scenario context as QuantityInspected
+	And I enter the Approved Stock 100 on the Quick Create form
 	And I click the Save and Close button on the Quick Create form
 	Then the Quick Create Visit form is closed
 	# @agent: New step in QuickCreateFormSteps.cs
@@ -676,30 +678,36 @@ Scenario: Exporter phytosanitary certificate application creating stock, followe
 	Then the window is closed
 	# ---------- Exporter Portal - Application 2 (draw down from stock) ----------
 	When I switch to the Exporter Portal window
-	# Line 32 of Test Case
-	# 1510261536
-	And the user clicks the View your applications link
+	And the user clicks the View your applications button
 	Then the Your applications page is displayed
-	When the user searches for and selects the application reference for 'Application 1'
-	Then the Application page is displayed for 'Application 1'
-	And the message 'Draw down stock is available' is displayed on the Application page
-	When the user clicks the Draw down or view stock link in the Commodities in this application section
+	When the user enters the recorded APHA reference for 'Application 1' in the search box
+	Then the Export Application portal search returns one matching record
+	When the user clicks the APHA reference link for 'Application 1'
+	Then the Manage application page should be displayed
+	# <p class="govuk-body"> Draw down stock is available </p>
+	And the 'Draw down stock is available' message is displayed on the Manage application page
+	# <a class="govuk-link govuk-link--no-visited-state" href="/protected/application/1762431094489/stock-summary/4a66306f-aec8-f111-aaaf-e4fb1ef789ec">Draw down or view stock</a>
+	When the user clicks the 'Draw down or view stock' link on the Manage application page
+	# <h1 class="govuk-heading-xl" id="ssdd-summary-heading">Stock details <br> Stock-1316</h1>
 	Then the Stock details page is displayed
+	# Validate from scenario context: Description, Variety, Location, Inspected on, Quantity (amount + unit of measure), 
+	# Validate as int: 0 Units
+	# Validate format: Valid until DD MMM YYYY
 	And the stock details show the commodity description, variety, location, inspected on, valid until, quantity inspected and amount drawn down of 0
 	When the user clicks the Draw down button
 	Then the Do you want to reuse the same application reference? page is displayed
 	When the user selects 'No, a different reference' and enters a new draw down reference
 	And the user clicks the Save and continue button on the Do you want to reuse the same application reference? page
 	Then the How much stock are you exporting? page is displayed
-	And the stock inspected and draw down expiry dates are displayed on the How much stock are you exporting? page
-	When the user enters a valid draw down quantity
+	And the Quantity, Inspected on date and Valid until date are displayed on the How much stock are you exporting? page
+	When the user enters the draw down quantity 20 on the How much stock are you exporting? page 
 	And the user clicks the Save and continue button on the How much stock are you exporting? page
 	Then the Upload supporting photographs page is displayed
 	When the user uploads a JPEG supporting photograph with a file description
-	Then the photograph is added to the supporting photographs table with View and Delete options
+	Then the photograph is added to the supporting photographs table with the Download and Delete actions
 	When the user clicks the Save and continue button on the Upload supporting photographs page
 	Then the Make changes to your application page is displayed
-	When the user clicks the Change link next to the Destination field
+	When the user clicks the Change link next to the 'Destination' field on the Make changes to your application page
 	Then the Destination country page is displayed
 	When the user searches for destination country 'Germany' and clicks the Save and continue button
 	Then the Review your answers page is displayed
@@ -721,40 +729,46 @@ Scenario: Exporter phytosanitary certificate application creating stock, followe
 	Then the export application submitted in the Exporter Portal should be returned
 	When I open the record in the grid
 	Then the Export Application page is displayed for the 'Application 2' created in the Exporter Portal
+	And the 'General' tab is displayed and selected
 	When I click the Work Order link in the Application Details section
 	Then the Work Order page is displayed for the 'Application 2' created in the Exporter Portal
 	When I click the Assign command
 	Then I can see the Assign Work Order popup is displayed
 	When I click the Assign button
 	Then the Substatus of the Work Order should be 'Assigned'
+	And the Owner of the Work Order should be me
 	When I select the 'Stock Requests' tab
 	Then the 'Stock Requests' tab is displayed and selected
+	And the 'Active Stock Requests' view is displayed in the Stock Requests subgrid
 	When I click the link in the 'Stock' column
 	Then the Stock page is displayed for the stock reference created in the Exporter Portal
 	And the 'Summary' tab is displayed and selected
 	And the Total Draw Down quantity is '0.000'
-	And the Total Draw Down Including Pending quantity is the quantity entered for 'Application 2'
-	And the Remaining Approved Stock quantity is the Approved Stock created on 'Application 1'
-	And the Remaining Approved Stock Including Pending quantity is the Approved Stock less the quantity entered for 'Application 2'
+	And the Total Draw Down Including Pending quantity is '20.000'
+	And the Remaining Approved Stock quantity is '100.00'
+	And the Remaining Approved Stock Including Pending quantity is '80.000'
 	When I click the Back button in the command bar
 	Then the 'Stock Requests' tab is displayed and selected
+	And the 'Active Stock Requests' view is displayed in the Stock Requests subgrid
+	And the Status Reason of the Stock Request in the Stock Requests subgrid should be 'Pending'
 	When I select the record for the stock reference created in the Exporter Portal
 	Then the Accept Request button should be displayed
 	When I click the Accept Request button
 	Then the Status Reason of the Stock Request in the Stock Requests subgrid should be 'Accepted'
 	When I click the link in the 'Stock' column
 	Then the Stock page is displayed for the stock reference created in the Exporter Portal
-	And the Total Draw Down quantity is the accepted draw down quantity for 'Application 2'
-	And the Total Draw Down Including Pending quantity is the quantity entered for 'Application 2'
-	And the Remaining Approved Stock quantity is the Approved Stock less the accepted draw down quantity for 'Application 2'
-	And the Remaining Approved Stock Including Pending quantity is the Approved Stock less the accepted draw down quantity for 'Application 2'
+	And the Total Draw Down quantity is '20.000'
+	And the Total Draw Down Including Pending quantity is '20.000'
+	And the Remaining Approved Stock quantity is '80.00'
+	And the Remaining Approved Stock Including Pending quantity is '80.00'
 	When I click the Back button in the command bar
 	Then the 'Stock Requests' tab is displayed and selected
 	When I select the 'Work Order Tasks' tab
 	Then the 'Work Order Tasks' tab is displayed and selected
 	And the 'Plants Inspection Task' is no longer visible in the Active Work Order Service Tasks - Exports subgrid
 	When I change the view to 'All Work Order Service Tasks' in the Work Order Tasks subgrid
-	Then the 'Plants Inspection Task' is displayed in the Work Order Tasks subgrid with a status of 'Inactive'
+	Then I can see following Work Order Tasks 'Pre Inspection Task' 'Plants Inspection Task' 'Issue Phyto Task'
+	And the Work Order Task 'Plants Inspection Task' Status is 'Inactive'
 	When I click on the 'Issue Phyto Task' task
 	And I maximise the popup
 	Then I verify the 'Issue Phyto Task' popup is displayed
@@ -775,18 +789,18 @@ Scenario: Exporter phytosanitary certificate application creating stock, followe
 	When I click View Phyto command from the header ribbon
 	Then the Phytosanitary certificate is displayed in a new window
 	When I download the Phytosanitary certificate PDF
-	Then the Phytosanitary Certificate displays the details of the 'Application 2' draw down application
+	Then the Phytosanitary Certificate displays the details of the application submitted
 	When I close the PDF window
 	Then the window is closed
 	# ---------- Exporter Portal - Application 3 (copy of Application 2) ----------
 	When I switch to the Exporter Portal window
-	And I navigate to the Exporter Portal
-	Then the Exporter Portal homepage should be displayed
-	When the user clicks the View your applications link
+	And the user clicks the View your applications button
 	Then the Your applications page is displayed
-	When the user searches for and selects the application reference for 'Application 2'
-	Then the Application page is displayed for 'Application 2'
-	And the message 'This application has been drawn down from draw down stock' is displayed on the Application page
+	When the user enters the recorded APHA reference for 'Application 2' in the search box
+	Then the Export Application portal search returns one matching record
+	When the user clicks the APHA reference link for 'Application 2'
+	Then the Manage application page should be displayed
+	And the 'This application has been drawn down from draw down stock' message is displayed on the Manage application page
 	When the user clicks the Copy as new application link
 	Then the Are you sure you want to copy this application? page is displayed
 	When the user selects 'Yes, copy this application' and clicks the Continue button on the Are you sure you want to copy this application? page
@@ -794,14 +808,14 @@ Scenario: Exporter phytosanitary certificate application creating stock, followe
 	When the user selects 'No, a different reference' and enters a new draw down reference
 	And the user clicks the Save and continue button on the Do you want to reuse the same application reference? page
 	Then the Make changes to your application page is displayed
-	When the user clicks the Change link next to the Destination field in the Application summary section
+	When the user clicks the Change link next to the 'Destination' field on the Make changes to your application page
 	Then the Destination country page is displayed
 	When the user searches for destination country 'Spain' and clicks the Save and continue button
 	Then the Review your answers page is displayed
 	When the user clicks the Change link in the Supporting photographs section
 	Then the Upload supporting photographs page is displayed
 	When the user uploads a JPEG supporting photograph with a file description
-	Then the photograph is added to the supporting photographs table with View and Delete options
+	Then the photograph is added to the supporting photographs table with the Download and Delete actions
 	When the user clicks the Save and continue button on the Upload supporting photographs page
 	Then the Review your answers page is displayed
 	When the user clicks the Continue button on the Review your answers page
@@ -828,33 +842,39 @@ Scenario: Exporter phytosanitary certificate application creating stock, followe
 	Then I can see the Assign Work Order popup is displayed
 	When I click the Assign button
 	Then the Substatus of the Work Order should be 'Assigned'
+	And the Owner of the Work Order should be me
 	When I select the 'Stock Requests' tab
 	Then the 'Stock Requests' tab is displayed and selected
+	And the 'Active Stock Requests' view is displayed in the Stock Requests subgrid
 	When I click the link in the 'Stock' column
 	Then the Stock page is displayed for the stock reference created in the Exporter Portal
-	And the Total Draw Down quantity is the accepted draw down quantity for 'Application 2'
-	And the Total Draw Down Including Pending quantity is the quantity entered for 'Application 2' plus the quantity entered for 'Application 3'
-	And the Remaining Approved Stock quantity is the Approved Stock less the accepted draw down quantity for 'Application 2'
-	And the Remaining Approved Stock Including Pending quantity is the Approved Stock less the quantities entered for 'Application 2' and 'Application 3'
+	And the 'Summary' tab is displayed and selected
+	And the Total Draw Down quantity is '20.000'
+	And the Total Draw Down Including Pending quantity is '40.000'
+	And the Remaining Approved Stock quantity is '80.00'
+	And the Remaining Approved Stock Including Pending quantity is '60.000'
 	When I click the Back button in the command bar
 	Then the 'Stock Requests' tab is displayed and selected
+	And the 'Active Stock Requests' view is displayed in the Stock Requests subgrid
+	And the Status Reason of the Stock Request in the Stock Requests subgrid should be 'Pending'
 	When I select the record for the stock reference created in the Exporter Portal
 	Then the Accept Request button should be displayed
 	When I click the Accept Request button
 	Then the Status Reason of the Stock Request in the Stock Requests subgrid should be 'Accepted'
 	When I click the link in the 'Stock' column
 	Then the Stock page is displayed for the stock reference created in the Exporter Portal
-	And the Total Draw Down quantity is the accepted draw down quantities for 'Application 2' and 'Application 3'
-	And the Total Draw Down Including Pending quantity is the quantities entered for 'Application 2' and 'Application 3'
-	And the Remaining Approved Stock quantity is the Approved Stock less the accepted draw down quantities for 'Application 2' and 'Application 3'
-	And the Remaining Approved Stock Including Pending quantity is the Approved Stock less the accepted draw down quantities for 'Application 2' and 'Application 3'
+	And the Total Draw Down quantity is '40.000'
+	And the Total Draw Down Including Pending quantity is '40.000'
+	And the Remaining Approved Stock quantity is '60.00'
+	And the Remaining Approved Stock Including Pending quantity is '60.00'
 	When I click the Back button in the command bar
 	Then the 'Stock Requests' tab is displayed and selected
 	When I select the 'Work Order Tasks' tab
 	Then the 'Work Order Tasks' tab is displayed and selected
 	And the 'Plants Inspection Task' is no longer visible in the Active Work Order Service Tasks - Exports subgrid
 	When I change the view to 'All Work Order Service Tasks' in the Work Order Tasks subgrid
-	Then the 'Plants Inspection Task' is displayed in the Work Order Tasks subgrid with a status of 'Inactive'
+	Then I can see following Work Order Tasks 'Pre Inspection Task' 'Plants Inspection Task' 'Issue Phyto Task'
+	And the Work Order Task 'Plants Inspection Task' Status is 'Inactive'
 	When I click on the 'Issue Phyto Task' task
 	And I maximise the popup
 	Then I verify the 'Issue Phyto Task' popup is displayed
@@ -875,6 +895,6 @@ Scenario: Exporter phytosanitary certificate application creating stock, followe
 	When I click View Phyto command from the header ribbon
 	Then the Phytosanitary certificate is displayed in a new window
 	When I download the Phytosanitary certificate PDF
-	Then the Phytosanitary Certificate displays the details of the 'Application 3' draw down application
+	Then the Phytosanitary Certificate displays the details of the application submitted
 	When I close the PDF window
 	Then the window is closed
