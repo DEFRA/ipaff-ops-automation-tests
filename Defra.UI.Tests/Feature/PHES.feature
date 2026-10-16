@@ -696,7 +696,7 @@ Scenario: Exporter phytosanitary certificate application creating stock, followe
 	And the stock details show the commodity description, variety, location, inspected on, valid until, quantity inspected and amount drawn down of 0
 	When the user clicks the Draw down button
 	Then the Do you want to reuse the same application reference? page is displayed
-	When the user selects 'No, a different reference' and enters a new draw down reference
+	When the user selects 'No, a different reference' and enters a new reference
 	And the user clicks the Save and continue button on the Do you want to reuse the same application reference? page
 	Then the How much stock are you exporting? page is displayed
 	And the Quantity, Inspected on date and Valid until date are displayed on the How much stock are you exporting? page
@@ -765,6 +765,7 @@ Scenario: Exporter phytosanitary certificate application creating stock, followe
 	Then the 'Stock Requests' tab is displayed and selected
 	When I select the 'Work Order Tasks' tab
 	Then the 'Work Order Tasks' tab is displayed and selected
+	And I can see following Work Order Tasks 'Pre Inspection Task' 'Issue Phyto Task'
 	And the 'Plants Inspection Task' is no longer visible in the Active Work Order Service Tasks - Exports subgrid
 	When I change the view to 'All Work Order Service Tasks' in the Work Order Tasks subgrid
 	Then I can see following Work Order Tasks 'Pre Inspection Task' 'Plants Inspection Task' 'Issue Phyto Task'
@@ -801,18 +802,18 @@ Scenario: Exporter phytosanitary certificate application creating stock, followe
 	When the user clicks the APHA reference link for 'Application 2'
 	Then the Manage application page should be displayed
 	And the 'This application has been drawn down from draw down stock' message is displayed on the Manage application page
-	When the user clicks the Copy as new application link
+	When the user clicks the Copy as new application link on the Manage application page
 	Then the Are you sure you want to copy this application? page is displayed
 	When the user selects 'Yes, copy this application' and clicks the Continue button on the Are you sure you want to copy this application? page
 	Then the Do you want to reuse the same application reference? page is displayed
-	When the user selects 'No, a different reference' and enters a new draw down reference
+	When the user selects 'No, a different reference' and enters a new reference
 	And the user clicks the Save and continue button on the Do you want to reuse the same application reference? page
 	Then the Make changes to your application page is displayed
 	When the user clicks the Change link next to the 'Destination' field on the Make changes to your application page
 	Then the Destination country page is displayed
 	When the user searches for destination country 'Spain' and clicks the Save and continue button
 	Then the Review your answers page is displayed
-	When the user clicks the Change link in the Supporting photographs section
+	When the user clicks the Change link next to the 'File name' field on the Review your answers page
 	Then the Upload supporting photographs page is displayed
 	When the user uploads a JPEG supporting photograph with a file description
 	Then the photograph is added to the supporting photographs table with the Download and Delete actions
@@ -871,6 +872,7 @@ Scenario: Exporter phytosanitary certificate application creating stock, followe
 	Then the 'Stock Requests' tab is displayed and selected
 	When I select the 'Work Order Tasks' tab
 	Then the 'Work Order Tasks' tab is displayed and selected
+	And I can see following Work Order Tasks 'Pre Inspection Task' 'Issue Phyto Task'
 	And the 'Plants Inspection Task' is no longer visible in the Active Work Order Service Tasks - Exports subgrid
 	When I change the view to 'All Work Order Service Tasks' in the Work Order Tasks subgrid
 	Then I can see following Work Order Tasks 'Pre Inspection Task' 'Plants Inspection Task' 'Issue Phyto Task'
