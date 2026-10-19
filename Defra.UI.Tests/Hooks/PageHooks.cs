@@ -227,7 +227,7 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterYourApplicationPage, IExporterYourApplicationPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterHowDoYouWantToAddCommoditiesToYourConsignmentPage, IExporterHowDoYouWantToAddCommoditiesToYourConsignmentPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterWhatAreYouExportingSelectOneCommodityAtATimePage, IExporterWhatAreYouExportingSelectOneCommodityAtATimePage>());
-            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterAddCommoditiesToYourConsignmentPage, IExporterAddCommoditiesToYourConsignmentPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterAddToYourConsignmentPage, IExporterAddToYourConsignmentPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterYourCommoditiesPage, IExporterYourCommoditiesPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterWhatAreTheInspectionDetailsPage, IExporterWhatAreTheInspectionDetailsPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterDoYouWantToSelectThisInspectionAddressPage, IExporterDoYouWantToSelectThisInspectionAddressPage>());
@@ -241,14 +241,12 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterYouHaveSuccessfullySubmittedYourApplicationPage, IExporterYouHaveSuccessfullySubmittedYourApplicationPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterRegulationsForExportingPage, IExporterRegulationsForExportingPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterIsThisTheExporterAddressPage, IExporterIsThisTheExporterAddressPage>());
-            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterAddBulbsToYourConsignmentPage, IExporterAddBulbsToYourConsignmentPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterWhenWillTheConsignmentBeReadyPage, IExporterWhenWillTheConsignmentBeReadyPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterWhoAreYouSendingThisConsignmentToPage, IExporterWhoAreYouSendingThisConsignmentToPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterSupportingDocumentsPage, IExporterSupportingDocumentsPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterYourApplicationForSeedSamplingPage, IExporterYourApplicationForSeedSamplingPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterHowDoYouWantToAddCommoditiesToThisApplicationPage, IExporterHowDoYouWantToAddCommoditiesToThisApplicationPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterUploadAFilePage, IExporterUploadAFilePage>());
-            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterAddSeedsToYourConsignmentPage, IExporterAddSeedsToYourConsignmentPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterWhereAreTheSeedsPage, IExporterWhereAreTheSeedsPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterWhenWillTheSeedsBeReadyForSamplingPage, IExporterWhenWillTheSeedsBeReadyForSamplingPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterManageApplicationPage, IExporterManageApplicationPage>());

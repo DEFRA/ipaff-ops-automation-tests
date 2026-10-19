@@ -1,11 +1,12 @@
 namespace Defra.UI.Tests.Pages.Interfaces
 {
-    public interface IExporterAddSeedsToYourConsignmentPage
+    public interface IExporterAddToYourConsignmentPage
     {
-        bool IsPageLoaded();
+        bool IsPageLoaded(string commodity);
         void EnterBotanicalName(string botanicalName);
         string GetSelectedCommodityDescription();
         string GetSelectedCommodityEppoCode();
+        void SelectCommodityType(string commodityType);
         void EnterVariety(string variety);
         void EnterLotReference(string lotReference);
         void EnterSampleReference(string sampleReference);
@@ -21,6 +22,10 @@ namespace Defra.UI.Tests.Pages.Interfaces
         List<string> GetUnitOfMeasurementOptions();
         bool AreSeedCommodityDetailsDisplayed(string botanicalName, string variety, string lotReference, string quantity, string unit,
             string chemicallyTreated, string chemicalsUsed, string countryWhereGrown, string destinationCountries);
+        void EnterCommodityDetails(string varietyType, string specificVariety, string qualityClass, string countryOfOrigin,
+            string netWeightPerPackage, string numberOfPackages, string typeOfPackaging, string reusablePackagingOptionValue);
+        void DescribeCommodity(string commonName, string botanicalName, string countryOfOrigin, string netWeightPerPackage,
+            string numberOfPackages, string typeOfPackaging, string reusablePackagingOptionValue);
         void ClickSaveAndContinueButton();
     }
 }

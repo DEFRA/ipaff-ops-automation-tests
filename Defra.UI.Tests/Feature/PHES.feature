@@ -1,4 +1,4 @@
-﻿@PHES
+@PHES
 Feature: PHES
 
 End-to-end PHES regression tests
@@ -32,9 +32,9 @@ Scenario: New exporter application for a phytosanitary certificate - PHES Happy 
 	When the user clicks the What's in your consignment? link
 	Then the How do you want to add commodities to your consignment? page is displayed
 	When the user selects 'Manually, by adding one at a time' and clicks the Continue button on the How do you want to add commodities to your consignment? page
-	Then the Add bulbs to your consignment page is displayed
+	Then the Add 'bulbs' to your consignment page is displayed
 	When the user describes the commodity with botanical name 'TULYA', commodity type 'Bulbs', quantity '10', unit of measurement 'Units', number of packages '10', type of packaging 'Box', countries of origin 'Netherlands'
-	And the user clicks the Save and continue button on the Add bulbs to your consignment page
+	And the user clicks the Save and continue button on the Add 'bulbs' to your consignment page
 	Then the Your commodities page is displayed with the commodity line just entered
 	When the user selects 'No, I have finished adding commodities' and clicks the Save and continue button on the Your commodities page
 	Then the Your application page is displayed
@@ -108,11 +108,11 @@ Scenario: Exporter application for seed sampling followed by a phytosanitary cer
 	When the user clicks the Back link on the Upload a file page
 	Then the How do you want to add commodities to this application? page is displayed
 	When the user selects 'Manually, by adding one at a time' and clicks the Continue button on the How do you want to add commodities to this application? page
-	Then the Add seeds to your consignment page is displayed
+	Then the Add 'seeds' to your consignment page is displayed
  	When the user describes the seed commodity with botanical name 'FLUTI', variety 'special', lot reference '12345', quantity '10000', unit of measurement 'Grams', chemically treated 'Yes', chemicals used 'Pesticide', country where grown 'United Kingdom', destination countries 'Netherlands'
 	And the only options available for Unit of measurement are 'Grams' 'Kilograms' 'Tonnes'
 	Then the seed commodity details are displayed with botanical name 'FLUTI', variety 'special', lot reference '12345', quantity '10000', unit of measurement 'Grams', chemically treated 'Yes', chemicals used 'Pesticide', country where grown 'United Kingdom', destination countries 'Netherlands'
-	When the user clicks the Save and continue button on the Add seeds to your consignment page
+	When the user clicks the Save and continue button on the Add 'seeds' to your consignment page
 	Then the Your commodities page is displayed
 	And the commodity table is displayed for arranging for seed sampling to export seeds for planting
 	And the 'Do you want to add more seeds to be sampled?' question is displayed on the Your commodities page
@@ -282,9 +282,9 @@ Scenario: Exporter application for seed sampling followed by a phytosanitary cer
 	When the user clicks the What's in your consignment? link
 	Then the How do you want to add commodities to your consignment? page is displayed
 	When the user selects 'Manually, by adding one at a time' and clicks the Continue button on the How do you want to add commodities to your consignment? page
-	Then the Add seeds to your consignment page is displayed
+	Then the Add 'seeds' to your consignment page is displayed
 	When the user describes the seed commodity with botanical name 'FLUTI', variety 'special', lot reference '12345', sample reference, quantity '7', unit of measurement 'Kilograms', number of packages '7', type of packaging 'Box', countries of origin 'United Kingdom'
-	And the user clicks the Save and continue button on the Add seeds to your consignment page
+	And the user clicks the Save and continue button on the Add 'seeds' to your consignment page
 	Then the Your commodities page is displayed
 	And the commodity table is displayed for applying for a phytosanitary certificate to export seeds for planting
 	When the user selects 'No, I have finished adding commodities' and clicks the Save and continue button on the Your commodities page
@@ -501,11 +501,8 @@ Scenario: Exporter phytosanitary certificate application creating stock, followe
 	When the user clicks the What's in your consignment? link
 	Then the How do you want to add commodities to your consignment? page is displayed
 	When the user selects 'Manually, by adding one at a time' and clicks the Continue button on the How do you want to add commodities to your consignment? page
-	# @agent: Consolidate the step/page/interface files for ExporterAddBulbsToYourConsignment and ExporterAddSeedsToYourConsignment into to new step/page/interface class called ExporterAddToYourConsignment
-	# @agent: Add to new step/page/interface class for ExporterAddToYourConsignment
 	Then the Add 'plants and fresh produce' to your consignment page is displayed
 	When the user describes the commodity with botanical name 'LAVVI', commodity type 'Plants', quantity '10', unit of measurement 'Units', number of packages '10', type of packaging 'Box', countries of origin 'United Kingdom'
-	# @agent: New step/page/interface class for ExporterAddToYourConsignment
 	And the user clicks the Save and continue button on the Add 'plants and fresh produce' to your consignment page
 	Then the Your commodities page is displayed with the commodity line just entered
 	When the user selects 'No, I have finished adding commodities' and clicks the Save and continue button on the Your commodities page
