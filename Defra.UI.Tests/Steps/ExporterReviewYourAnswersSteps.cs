@@ -137,6 +137,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
             }
         }
 
+        [When("the user clicks the Change link next to the {string} field on the Review your answers page")]
+        public void WhenTheUserClicksTheChangeLinkNextToTheFieldOnTheReviewYourAnswersPage(string fieldName)
+        {
+            exporterReviewYourAnswersPage?.ClickChangeLink(fieldName);
+        }
+
         [When("the user clicks the Continue button on the Review your answers page")]
         public void WhenTheUserClicksTheContinueButtonOnTheReviewYourAnswersPage()
         {

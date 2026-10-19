@@ -2143,4 +2143,61 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
         GridSteps.WhenIClickCommandInTheSubgrid("Activate", "workorderservicetasksgrid");
         DialogSteps.WhenIClickTheButtonOnTheDialog("OK");
     }
+
+    [When(@"I click the Save button on the Work Order Task page")]
+    public void WhenIClickTheSaveButtonOnTheWorkOrderTaskPage()
+    {
+        Driver.WaitForTransaction();
+
+        Policy
+            .Handle<StaleElementReferenceException>()
+            .Or<ElementClickInterceptedException>()
+            .Or<WebDriverTimeoutException>()
+            .WaitAndRetry(3, _ => TimeSpan.FromSeconds(2))
+            .Execute(() =>
+            {
+                var saveButton = Driver.WaitUntilAvailable(
+                    By.XPath("//section[contains(@id,'popupContainer')]//button[contains(@data-id,'SavePrimary') or starts-with(@aria-label,'Save (CTRL+S)')]"
+                        + " | //button[contains(@data-id,'SavePrimary') or starts-with(@aria-label,'Save (CTRL+S)')]"),
+                    "Save button could not be found on the Work Order Task page.");
+
+                saveButton.Click();
+            });
+
+        Driver.WaitForTransaction();
+    }
+
+    [Then(@"the Status of the Work Order should be '(.*)'")]
+    public void ThenTheStatusOfTheWorkOrderShouldBe(string expectedStatus)
+    {
+        Driver.WaitForTransaction();
+
+        string actualStatus = null;
+
+        Policy
+            .Handle<Exception>()
+            .OrResult<string>(value => value != expectedStatus)
+            .WaitAndRetry(6, _ => TimeSpan.FromSeconds(5))
+            .Execute(() =>
+            {
+                Driver.WaitForTransaction();
+                var statusControl = Driver.WaitUntilAvailable(
+                    By.XPath("//*[(self::select or self::button or self::input) and @aria-label='Status' and contains(@data-id,'fieldControl')]"),
+                    "Status field could not be found on the Work Order Task page.");
+
+                var value = statusControl.TagName == "input"
+                    ? statusControl.GetAttribute("value")
+                    : statusControl.GetAttribute("title") ?? statusControl.Text;
+
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    value = statusControl.Text;
+                }
+
+                return actualStatus = value?.Trim();
+            });
+
+        actualStatus.Should().Be(expectedStatus,
+            $"Expected Status to be '{expectedStatus}' but found '{actualStatus}'.");
+    }
 }

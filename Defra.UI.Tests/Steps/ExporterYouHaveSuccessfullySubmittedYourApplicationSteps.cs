@@ -58,5 +58,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var reference = exporterYouHaveSuccessfullySubmittedYourApplicationPage?.GetAphaReferenceNumber();
             _scenarioContext["APHAReference"] = reference;
         }
+
+        [When("the user clicks the View your applications button")]
+        public void WhenTheUserClicksTheViewYourApplicationsButton()
+        {
+            exporterYouHaveSuccessfullySubmittedYourApplicationPage?.ClickViewYourApplicationsButton();
+        }
     }
 }

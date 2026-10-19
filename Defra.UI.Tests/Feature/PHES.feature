@@ -508,9 +508,9 @@ Scenario: Exporter phytosanitary certificate application creating stock, followe
 	When the user selects 'No, I have finished adding commodities' and clicks the Save and continue button on the Your commodities page
 	Then the Your application page is displayed
 	When the user clicks the What are the inspection details? link
-	# @agent: New step/page/interface class for DoYouWantToApplyUnderThePheats
+	# @agent: New step in new step/page/interface class for DoYouWantToApplyUnderThePheats
 	Then the Do you want to apply under the plant health exports audited trader scheme (PHEATS)? page is displayed
-	# @agent: New step/page/interface class for DoYouWantToApplyUnderThePheats
+	# @agent: New step in new step/page/interface class for DoYouWantToApplyUnderThePheats
 	When the user selects 'No' and clicks the Save and continue button on the Do you want to apply under the plant health exports audited trader scheme (PHEATS)? page
 	Then the What are the inspection details? page is displayed
 	When the user selects an inspection address and continues
@@ -785,6 +785,7 @@ Scenario: Exporter phytosanitary certificate application creating stock, followe
 	And I can see following Work Order Tasks 'Pre Inspection Task' 'Issue Phyto Task'
 	And the 'Plants Inspection Task' is no longer visible in the Active Work Order Service Tasks - Exports subgrid
 	# @agent: New step in existing step file WorkOrderSteps.cs
+	# data-id="ViewSelector_cbbd90f6-1ad0-eb11-bacc-002248821d6e"
 	When I change the view to 'All Work Order Service Tasks' in the Work Order Tasks subgrid
 	Then I can see following Work Order Tasks 'Pre Inspection Task' 'Plants Inspection Task' 'Issue Phyto Task'
 	And the Work Order Task 'Plants Inspection Task' Status is 'Inactive'

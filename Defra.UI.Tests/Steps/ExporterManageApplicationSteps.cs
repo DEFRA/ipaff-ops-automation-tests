@@ -29,6 +29,24 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(exporterManageApplicationPage?.IsPageLoaded(), "Manage application page is not displayed");
         }
 
+        [Then("the {string} message is displayed on the Manage application page")]
+        public void ThenTheMessageIsDisplayedOnTheManageApplicationPage(string message)
+        {
+            Assert.True(exporterManageApplicationPage?.IsMessageDisplayed(message), $"'{message}' message is not displayed on the Manage application page");
+        }
+
+        [When("the user clicks the {string} link on the Manage application page")]
+        public void WhenTheUserClicksTheLinkOnTheManageApplicationPage(string linkText)
+        {
+            exporterManageApplicationPage?.ClickLink(linkText);
+        }
+
+        [When("the user clicks the Copy as new application link on the Manage application page")]
+        public void WhenTheUserClicksTheCopyAsNewApplicationLinkOnTheManageApplicationPage()
+        {
+            exporterManageApplicationPage?.ClickCopyAsNewApplicationLink();
+        }
+
         [When("the user clicks the Sampling report \\(csv) link on the Manage application page")]
         public void WhenTheUserClicksTheSamplingReportCsvLinkOnTheManageApplicationPage()
         {

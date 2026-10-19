@@ -18,6 +18,9 @@ namespace Defra.UI.Tests.Pages.Classes
         #region Page Objects with all the element locators
         private IWebElement pageTitle => _driver.WaitForElement(By.Id("application-summary-heading"), true);
         private IWebElement lnkSamplingReport => _driver.WaitForElement(By.Id("seed-sampling-report-link"));
+        private IWebElement lnkCopyAsNewApplication => _driver.WaitForElement(By.Id("clone-link"));
+        private IWebElement lnkByText(string linkText) => _driver.WaitForElement(By.XPath($"//main//a[normalize-space()='{linkText}']"));
+        private By messageText(string message) => By.XPath($"//main//p[contains(@class,'govuk-body') and normalize-space()='{message}']");
         #endregion
 
         public ExporterManageApplicationPage(IObjectContainer container)
@@ -40,6 +43,12 @@ namespace Defra.UI.Tests.Pages.Classes
         }
 
         public bool IsSamplingReportDownloaded() => GetDownloadedReportPath() != null;
+
+        public bool IsMessageDisplayed(string message) => _driver.IsElementDisplayed(messageText(message));
+
+        public void ClickLink(string linkText) => lnkByText(linkText).Click();
+
+        public void ClickCopyAsNewApplicationLink() => lnkCopyAsNewApplication.Click();
 
         public string GetRemainingApprovedStockQuantity()
         {

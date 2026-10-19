@@ -36,6 +36,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             exporterAddToYourConsignmentPage?.SelectCommodityType(commodityType);
             exporterAddToYourConsignmentPage?.EnterQuantity(quantity);
             exporterAddToYourConsignmentPage?.SelectUnitOfMeasurement(unitOfMeasurement);
+            _scenarioContext["UnitOfMeasurement"] = unitOfMeasurement;
             exporterAddToYourConsignmentPage?.EnterNumberOfPackages(numberOfPackages);
             exporterAddToYourConsignmentPage?.SelectTypeOfPackaging(packagingType);
             exporterAddToYourConsignmentPage?.SelectCountriesOfOrigin(countriesOfOrigin);

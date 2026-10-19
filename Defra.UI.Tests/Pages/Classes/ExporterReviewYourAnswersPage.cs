@@ -52,6 +52,15 @@ namespace Defra.UI.Tests.Pages.Classes
         public string GetConsigneeName() => GetConsigneeLines().FirstOrDefault() ?? string.Empty;
         public string GetConsigneeAddress() => GetConsigneeLines().Skip(1).FirstOrDefault() ?? string.Empty;
 
+        public void ClickChangeLink(string fieldName)
+        {
+            // Supporting files are listed in a table headed 'File name' rather than a summary list key
+            var locator = fieldName.Trim().Equals("File name", StringComparison.OrdinalIgnoreCase)
+                ? By.Id("change_file_0")
+                : By.XPath($"//dt[normalize-space()='{fieldName}']/following-sibling::dd[contains(@class,'govuk-summary-list__actions')][1]//a[starts-with(normalize-space(),'Change')]");
+            _driver.WaitForElement(locator).Click();
+        }
+
         private string[] GetConsigneeLines() =>
             lblConsigneeDetails.Text.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
     }

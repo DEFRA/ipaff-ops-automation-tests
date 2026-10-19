@@ -226,4 +226,60 @@ public sealed class QuickCreateFormSteps : PowerAppsStepDefiner
 
         headerCount.Should().Be(0, "Expected the Quick Create: Visit form to be closed but it is still displayed.");
     }
+
+    [Then(@"the Quick Create Stock form is displayed")]
+    public void ThenTheQuickCreateStockFormIsDisplayed()
+    {
+        Driver.WaitForTransaction();
+
+        var headerTitle = Driver.WaitUntilVisible(
+            By.XPath("//h1[@data-id='quickHeaderTitle']"),
+            TimeSpan.FromSeconds(30),
+            "Quick Create form header could not be found.");
+
+        headerTitle.Text.Trim().Should().Be("Quick Create: Stock",
+            $"Expected Quick Create form header to be 'Quick Create: Stock' but found '{headerTitle.Text.Trim()}'.");
+    }
+
+    [When(@"I enter the Site / Batch ID to the Quick Create form")]
+    public void WhenIEnterTheSiteBatchIDToTheQuickCreateForm()
+    {
+        var siteBatchId = DateTime.Now.ToString("ddMMHHmmss");
+        EnterQuickCreateText("Site / Batch ID", siteBatchId);
+        this._scenarioContext["Location"] = siteBatchId;
+    }
+
+    [When(@"I enter the Approved Stock (\d+) on the Quick Create form")]
+    public void WhenIEnterTheApprovedStockOnTheQuickCreateForm(int approvedStock)
+    {
+        EnterQuickCreateText("Approved Stock", approvedStock.ToString());
+        this._scenarioContext["QuantityInspected"] = approvedStock;
+    }
+
+    [Then(@"the Stock record created confirmation is displayed")]
+    public void ThenTheStockRecordCreatedConfirmationIsDisplayed()
+    {
+        var notification = Driver.WaitUntilVisible(
+            By.XPath("//*[contains(normalize-space(.),'View changes') and (self::button or self::a or self::span)]"),
+            TimeSpan.FromSeconds(30),
+            "Stock record created confirmation ('View changes') was not displayed.");
+
+        notification.Displayed.Should().BeTrue("Expected the Stock record created confirmation to be displayed.");
+    }
+
+    private void EnterQuickCreateText(string ariaLabel, string value)
+    {
+        Driver.WaitForTransaction();
+
+        var input = Driver.WaitUntilAvailable(
+            By.XPath($"//section[.//h1[@data-id='quickHeaderTitle']]//input[@aria-label='{ariaLabel}'] | //input[@aria-label='{ariaLabel}']"),
+            $"'{ariaLabel}' field could not be found on the Quick Create form.");
+
+        input.Click();
+        input.SendKeys(Keys.Control + "a");
+        input.SendKeys(Keys.Delete);
+        input.SendKeys(value);
+        input.SendKeys(Keys.Tab);
+        Driver.WaitForTransaction();
+    }
 }

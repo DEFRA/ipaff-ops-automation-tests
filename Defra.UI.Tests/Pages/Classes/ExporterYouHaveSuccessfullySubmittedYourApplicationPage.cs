@@ -15,6 +15,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[contains(normalize-space(),'You have successfully submitted your application for a certificate of conformity')]"), true);
         private IWebElement confirmationTitle => _driver.WaitForElement(By.Id("confirmation-title"), true);
         private IWebElement lblAphaReference => _driver.WaitForElement(By.Id("applicationFormId"), true);
+        private IWebElement btnViewYourApplications => _driver.WaitForElement(By.Id("Link-ViewYourApplications"));
         #endregion
 
         public ExporterYouHaveSuccessfullySubmittedYourApplicationPage(IObjectContainer container)
@@ -43,5 +44,7 @@ namespace Defra.UI.Tests.Pages.Classes
             Console.WriteLine("[APPLICATION SUBMITTED] APHA Reference: " + reference);
             return reference;
         }
+
+        public void ClickViewYourApplicationsButton() => btnViewYourApplications.Click();
     }
 }

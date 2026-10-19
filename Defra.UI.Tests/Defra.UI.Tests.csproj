@@ -87,6 +87,9 @@
     <None Update="Data\Documents\IPAFFS Test Document - Exceeds size.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Data\Documents\IPAFFS Supporting Photograph.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Data\Documents\Catch Certificate 1.docx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

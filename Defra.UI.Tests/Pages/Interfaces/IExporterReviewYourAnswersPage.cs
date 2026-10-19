@@ -19,5 +19,6 @@
         string GetCommodityPackaging();
         string GetConsigneeName();
         string GetConsigneeAddress();
+        void ClickChangeLink(string fieldName);
     }
 }

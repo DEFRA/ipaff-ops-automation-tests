@@ -6,5 +6,8 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void ClickSamplingReportLink();
         bool IsSamplingReportDownloaded();
         string GetRemainingApprovedStockQuantity();
+        bool IsMessageDisplayed(string message);
+        void ClickLink(string linkText);
+        void ClickCopyAsNewApplicationLink();
     }
 }

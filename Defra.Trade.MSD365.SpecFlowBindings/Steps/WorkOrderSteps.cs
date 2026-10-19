@@ -589,6 +589,60 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
         Driver.WaitForTransaction();
     }
 
+    /// <summary>
+    /// Switches the Work Order Tasks subgrid to the specified view.
+    /// </summary>
+    /// <param name="viewName">The name of the view e.g. 'All Work Order Service Tasks'.</param>
+    [When(@"I change the view to '(.*)' in the Work Order Tasks subgrid")]
+    public void WhenIChangeTheViewToInTheWorkOrderTasksSubgrid(string viewName)
+    {
+        Driver.WaitForTransaction();
+
+        XrmApp.Entity.SubGrid.SwitchView("workorderservicetasksgrid", viewName);
+
+        Driver.WaitForTransaction();
+    }
+
+    [When("I select a row in the Commodity Lines subgrid")]
+    public void WhenISelectARowInTheCommodityLinesSubgrid()
+    {
+        Driver.WaitForTransaction();
+
+        Policy
+            .Handle<StaleElementReferenceException>()
+            .Or<NoSuchElementException>()
+            .Or<WebDriverTimeoutException>()
+            .Or<ElementClickInterceptedException>()
+            .WaitAndRetry(5, _ => TimeSpan.FromSeconds(2))
+            .Execute(() =>
+            {
+                var rowStatusCell = Driver.WaitUntilAvailable(
+                    By.XPath("(//div[@data-id='Commoditylines-powerapps_onegrid_control_container']//div[@role='gridcell' and @col-id='__row_status'])[1]"),
+                    "Row selector could not be found in the Commodity Lines subgrid.");
+
+                var row = rowStatusCell.FindElement(By.XPath("./ancestor::div[@role='row'][1]"));
+                if (row.GetAttribute("aria-selected") != "true")
+                {
+                    rowStatusCell.Click();
+                }
+            });
+
+        Driver.WaitForTransaction();
+    }
+
+    [When("I click the Create Stock button")]
+    public void WhenIClickTheCreateStockButton()
+    {
+        Driver.WaitForTransaction();
+
+        var createStockButton = Driver.WaitUntilAvailable(
+            By.XPath("//button[@data-id='trd_consignmentitem|NoRelationship|SubGridStandard|trd.trd_consignmentitem.CreateStock.Button']"),
+            "Create Stock button could not be found above the Commodity Lines subgrid.");
+
+        Driver.ExecuteScript("arguments[0].click();", createStockButton);
+        Driver.WaitForTransaction();
+    }
+
     [Then(@"the '(.*)' view is displayed in the Stock Requests subgrid")]
     public void ThenTheViewIsDisplayedInTheStockRequestsSubgrid(string expectedViewName)
     {

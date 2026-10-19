@@ -250,6 +250,13 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterWhereAreTheSeedsPage, IExporterWhereAreTheSeedsPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterWhenWillTheSeedsBeReadyForSamplingPage, IExporterWhenWillTheSeedsBeReadyForSamplingPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterManageApplicationPage, IExporterManageApplicationPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterDoYouWantToApplyUnderThePheatsPage, IExporterDoYouWantToApplyUnderThePheatsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterStockDetailsPage, IExporterStockDetailsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterDoYouWantToReuseTheSameApplicationReferencePage, IExporterDoYouWantToReuseTheSameApplicationReferencePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterHowMuchStockAreYouExportingPage, IExporterHowMuchStockAreYouExportingPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterUploadSupportingPhotographsPage, IExporterUploadSupportingPhotographsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterMakeChangesToYourApplicationPage, IExporterMakeChangesToYourApplicationPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterAreYouSureYouWantToCopyThisApplicationPage, IExporterAreYouSureYouWantToCopyThisApplicationPage>());
 
             //Read Email
             _objectContainer.RegisterInstanceAs(GetBaseWithScenarioContext<FetchCodeFromEmail, IFetchCodeFromEmail>());

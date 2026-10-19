@@ -35,5 +35,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
             exporterDestinationCountryPage?.SearchAndSelectCountry(country);
             exporterDestinationCountryPage?.ClickContinueButton();
         }
+
+        [When(@"^the user searches for destination country '([^']*)' and clicks the Save and continue button$")]
+        public void WhenTheUserSearchesForDestinationCountryAndClicksTheSaveAndContinueButton(string country)
+        {
+            _scenarioContext["ExporterDestinationCountry"] = country;
+            exporterDestinationCountryPage?.SearchAndSelectCountry(country);
+            exporterDestinationCountryPage?.ClickContinueButton();
+        }
     }
 }
