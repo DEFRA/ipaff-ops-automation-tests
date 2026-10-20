@@ -89,10 +89,24 @@ public sealed class StockSteps : PowerAppsStepDefiner
     [Then(@"the Total Draw Down quantity is '(.*)'")]
     public void ThenTheTotalDrawDownQuantityIs(string expectedQuantity)
     {
-        var actual = GetDecimalFieldValue(TotalDrawDownFieldId);
+        string actual = null;
+
+        Policy
+            .Handle<Exception>()
+            .OrResult<string>(value => !string.Equals(value, expectedQuantity, StringComparison.Ordinal))
+            .WaitAndRetry(6, _ =>
+            {
+                Driver.WaitUntilClickable(
+                    By.XPath("//li[contains(@id,'|NoRelationship|Form|Mscrm.Modern.refreshCommand')]//button | //button[contains(@data-id,'|NoRelationship|Form|Mscrm.Modern.refreshCommand')]"),
+                    TimeSpan.FromSeconds(10),
+                    "Refresh button could not be found in the command bar.").Click();
+                Driver.WaitForTransaction();
+                return TimeSpan.FromSeconds(5);
+            })
+            .Execute(() => actual = GetDecimalFieldValue(TotalDrawDownFieldId));
 
         actual.Should().Be(expectedQuantity,
-            $"Expected Total Draw Down quantity to be '{expectedQuantity}' but found '{actual}'.");
+            $"Expected Total Draw Down quantity to be '{expectedQuantity}' but found '{actual}' after retrying.");
     }
 
     [Then(@"the Total Draw Down Including Pending quantity is '(.*)'")]

@@ -653,6 +653,8 @@ Scenario: Exporter phytosanitary certificate application creating stock, followe
 	#Then the Phytosanitary Certificate displays the details of the application submitted
 	#When I close the PDF window
 	#Then the window is closed
+	When I select the 'Export' tab
+	Then the 'Export' tab is displayed and selected
 	When I click the Export Application link in the Application & Inspection Address section	
 	Then the Export Application page is displayed for the 'Application 1' created in the Exporter Portal	
 	When I select the 'Related' tab
@@ -671,6 +673,7 @@ Scenario: Exporter phytosanitary certificate application creating stock, followe
 	And the 'Draw down stock is available' message is displayed on the Manage application page
 	When the user clicks the 'Draw down or view stock' link on the Manage application page
 	Then the Stock details page is displayed
+	And the stock request name is displayed on the Stock details page
 	And the stock details show the commodity description, variety, location, inspected on, valid until, quantity inspected and amount drawn down of 0
 	When the user clicks the Draw down button
 	Then the Do you want to reuse the same application reference? page is displayed
@@ -722,7 +725,7 @@ Scenario: Exporter phytosanitary certificate application creating stock, followe
 	And the 'Summary' tab is displayed and selected
 	And the Total Draw Down quantity is '0.000'
 	And the Total Draw Down Including Pending quantity is '20.000'
-	And the Remaining Approved Stock quantity is '100.00'
+	And the Remaining Approved Stock quantity is '100.000'
 	And the Remaining Approved Stock Including Pending quantity is '80.000'
 	When I click the Back button in the command bar
 	Then the 'Stock Requests' tab is displayed and selected
@@ -736,8 +739,8 @@ Scenario: Exporter phytosanitary certificate application creating stock, followe
 	Then the Stock page is displayed for the stock reference created in the Exporter Portal
 	And the Total Draw Down quantity is '20.000'
 	And the Total Draw Down Including Pending quantity is '20.000'
-	And the Remaining Approved Stock quantity is '80.00'
-	And the Remaining Approved Stock Including Pending quantity is '80.00'
+	And the Remaining Approved Stock quantity is '80.000'
+	And the Remaining Approved Stock Including Pending quantity is '80.000'
 	When I click the Back button in the command bar
 	Then the 'Stock Requests' tab is displayed and selected
 	When I select the 'Work Order Tasks' tab
@@ -828,7 +831,7 @@ Scenario: Exporter phytosanitary certificate application creating stock, followe
 	And the 'Summary' tab is displayed and selected
 	And the Total Draw Down quantity is '20.000'
 	And the Total Draw Down Including Pending quantity is '40.000'
-	And the Remaining Approved Stock quantity is '80.00'
+	And the Remaining Approved Stock quantity is '80.000'
 	And the Remaining Approved Stock Including Pending quantity is '60.000'
 	When I click the Back button in the command bar
 	Then the 'Stock Requests' tab is displayed and selected
@@ -842,8 +845,8 @@ Scenario: Exporter phytosanitary certificate application creating stock, followe
 	Then the Stock page is displayed for the stock reference created in the Exporter Portal
 	And the Total Draw Down quantity is '40.000'
 	And the Total Draw Down Including Pending quantity is '40.000'
-	And the Remaining Approved Stock quantity is '60.00'
-	And the Remaining Approved Stock Including Pending quantity is '60.00'
+	And the Remaining Approved Stock quantity is '60.000'
+	And the Remaining Approved Stock Including Pending quantity is '60.000'
 	When I click the Back button in the command bar
 	Then the 'Stock Requests' tab is displayed and selected
 	When I select the 'Work Order Tasks' tab

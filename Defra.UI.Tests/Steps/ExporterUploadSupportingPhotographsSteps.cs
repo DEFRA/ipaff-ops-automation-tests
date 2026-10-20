@@ -8,7 +8,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
     [Binding]
     public class ExporterUploadSupportingPhotographsSteps
     {
-        private const string PhotographFileName = "IPAFFS Supporting Photograph.jpg";
+        private const string PhotographFileName = "Exporter Supporting Photograph.jpg";
         private const string PhotographDescription = "Automation supporting photograph";
 
         private readonly IObjectContainer _objectContainer;

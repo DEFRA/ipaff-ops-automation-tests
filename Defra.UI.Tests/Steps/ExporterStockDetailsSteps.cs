@@ -29,7 +29,6 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void ThenTheStockDetailsPageIsDisplayed()
         {
             Assert.True(exporterStockDetailsPage?.IsPageLoaded(), "Stock details page is not displayed");
-            _scenarioContext["StockReference"] = exporterStockDetailsPage?.GetStockReference();
         }
 
         [Then("the stock details show the commodity description, variety, location, inspected on, valid until, quantity inspected and amount drawn down of {int}")]
@@ -55,6 +54,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 mismatches.Add($"Valid until: '{validUntil}' is not in the format DD MMM YYYY");
 
             Assert.IsEmpty(mismatches, $"Stock details validation failed. Mismatches: {string.Join(", ", mismatches)}");
+        }
+
+        [Then("the stock request name is displayed on the Stock details page")]
+        public void ThenTheStockRequestNameIsDisplayedOnTheStockDetailsPage()
+        {
+            var expected = _scenarioContext.Get<string>("StockRequestName").Trim();
+            var actual = exporterStockDetailsPage?.GetStockReference() ?? string.Empty;
+            Assert.AreEqual(expected, actual, "Stock request name displayed on the Stock details page does not match");
         }
 
         [When("the user clicks the Draw down button")]
