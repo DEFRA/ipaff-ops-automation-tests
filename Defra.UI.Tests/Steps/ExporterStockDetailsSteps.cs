@@ -44,9 +44,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Compare("Amount drawn down", $"{amountDrawnDown} {unit}".Trim(), mismatches);
 
             var inspectedOn = exporterStockDetailsPage?.GetSummaryValue("Inspected on")?.Trim() ?? string.Empty;
-            _scenarioContext["StockInspectedOn"] = inspectedOn;
-            if (!TryParseDisplayDate(inspectedOn, out _))
+            var expectedInspectedOn = DateTime.ParseExact(_scenarioContext.Get<string>("VisitDateScheduled"), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            if (!TryParseDisplayDate(inspectedOn, out var actualInspectedOn))
                 mismatches.Add($"Inspected on: '{inspectedOn}' is not in the format DD MMM YYYY");
+            else if (actualInspectedOn.Date != expectedInspectedOn.Date)
+                mismatches.Add($"Inspected on: Expected '{expectedInspectedOn:d MMM yyyy}', Found '{inspectedOn}'");
 
             var validUntil = exporterStockDetailsPage?.GetSummaryValue("Valid until")?.Trim() ?? string.Empty;
             _scenarioContext["StockValidUntil"] = validUntil;

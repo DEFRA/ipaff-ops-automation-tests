@@ -44,8 +44,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(summary.StartsWith(expectedQuantity, StringComparison.OrdinalIgnoreCase),
                 $"Quantity displayed does not match. Expected to start with '{expectedQuantity}', Found '{summary}'");
 
-            Assert.AreEqual(_scenarioContext.Get<string>("StockInspectedOn"), match.Groups["inspected"].Value,
-                "Inspected on date does not match the Stock details page");
+            var expectedInspectedOn = DateTime.ParseExact(_scenarioContext.Get<string>("VisitDateScheduled"), "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture);
+            var inspectedParsed = DateTime.TryParseExact(match.Groups["inspected"].Value, new[] { "d MMM yyyy", "dd MMM yyyy" },
+                System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out var actualInspectedOn);
+            Assert.True(inspectedParsed && actualInspectedOn.Date == expectedInspectedOn.Date,
+                $"Inspected on date does not match the Visit Date Scheduled. Expected '{expectedInspectedOn:d MMM yyyy}', Found '{match.Groups["inspected"].Value}'");
             Assert.AreEqual(_scenarioContext.Get<string>("StockValidUntil"), match.Groups["valid"].Value,
                 "Valid until date does not match the Stock details page");
         }
