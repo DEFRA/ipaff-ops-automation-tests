@@ -44,7 +44,16 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public bool IsSamplingReportDownloaded() => GetDownloadedReportPath() != null;
 
-        public bool IsMessageDisplayed(string message) => _driver.IsElementDisplayed(messageText(message));
+        public bool IsMessageDisplayed(string message)
+        {
+            if (_driver.IsElementDisplayed(messageText(message)))
+                return true;
+
+            // Messages split across text and a link (e.g. "...drawn down from" + "draw down stock" link)
+            return _driver.FindElements(By.XPath("//main//div[contains(@class,'govuk-inset-text')]"))
+                .Any(e => e.Displayed &&
+                          System.Text.RegularExpressions.Regex.Replace(e.Text, @"\s+", " ").Trim() == message);
+        }
 
         public void ClickLink(string linkText) => lnkByText(linkText).Click();
 

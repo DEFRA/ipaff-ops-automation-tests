@@ -922,8 +922,14 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
             $"Expected the '{tabName}' tab to be selected but it was not (aria-selected='{actualAriaSelected}') after retrying.");
     }
 
-    private const string InspectionResultsSubGridName = "InspectionResults";
-    private const string InspectionResultsContainerXPath = "//div[@data-id='dataSetRoot_InspectionResults']";
+    private const string InspectionResultsDefaultSubGridName = "InspectionResults";
+    private const string InspectionResultsQuantityBasedSubGridName = "InspectionResultQuantityBased";
+
+    private static string InspectionResultsSubGridName =>
+        Driver.FindElements(By.XPath($"//div[@data-id='dataSetRoot_{InspectionResultsQuantityBasedSubGridName}']")).Count > 0
+            ? InspectionResultsQuantityBasedSubGridName
+            : InspectionResultsDefaultSubGridName;
+    private const string InspectionResultsContainerXPath = "//div[@data-id='dataSetRoot_InspectionResults' or @data-id='dataSetRoot_InspectionResultQuantityBased']";
     private const string InspectionResultColumnDataId = "trd_fminspectionresult";
     private const string StatusReasonColumnDataId = "statuscode";
 
@@ -2157,8 +2163,7 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
             .Execute(() =>
             {
                 var saveButton = Driver.WaitUntilAvailable(
-                    By.XPath("//section[contains(@id,'popupContainer')]//button[contains(@data-id,'SavePrimary') or starts-with(@aria-label,'Save (CTRL+S)')]"
-                        + " | //button[contains(@data-id,'SavePrimary') or starts-with(@aria-label,'Save (CTRL+S)')]"),
+                    By.XPath("//button[@data-id='msdyn_workorderservicetask|NoRelationship|Form|Mscrm.Form.msdyn_workorderservicetask.Save']"),
                     "Save button could not be found on the Work Order Task page.");
 
                 saveButton.Click();
@@ -2182,19 +2187,17 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
             {
                 Driver.WaitForTransaction();
                 var statusControl = Driver.WaitUntilAvailable(
-                    By.XPath("//*[(self::select or self::button or self::input) and @aria-label='Status' and contains(@data-id,'fieldControl')]"),
-                    "Status field could not be found on the Work Order Task page.");
+                    By.XPath("//*[@data-id='QV_Work_Order_Sub_Status.msdyn_substatus.fieldControl-Lookup_msdyn_substatus']"),
+                    "Work Order Status field could not be found on the Work Order Task page.");
 
-                var value = statusControl.TagName == "input"
-                    ? statusControl.GetAttribute("value")
-                    : statusControl.GetAttribute("title") ?? statusControl.Text;
-
+                var value = statusControl.Text;
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    value = statusControl.Text;
+                    var titled = statusControl.FindElements(By.XPath(".//*[@title]"));
+                    value = titled.Count > 0 ? titled[0].GetAttribute("title") : statusControl.GetAttribute("title");
                 }
 
-                return actualStatus = value?.Trim();
+                return actualStatus = value?.Split('\n', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim();
             });
 
         actualStatus.Should().Be(expectedStatus,

@@ -40,10 +40,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             Assert.True(match.Success, $"Quantity, Inspected on date and Valid until date not displayed as expected. Found '{summary}'");
 
-            if (_scenarioContext.TryGetValue("QuantityInspected", out object? quantityInspected))
-            {
-                Assert.AreEqual(quantityInspected?.ToString(), match.Groups["quantity"].Value, "Quantity displayed does not match the approved stock quantity");
-            }
+            var expectedQuantity = $"{_scenarioContext.Get<object>("QuantityInspected")} {_scenarioContext.Get<object>("UnitOfMeasurement")}".Trim();
+            Assert.True(summary.StartsWith(expectedQuantity, StringComparison.OrdinalIgnoreCase),
+                $"Quantity displayed does not match. Expected to start with '{expectedQuantity}', Found '{summary}'");
+
+            Assert.AreEqual(_scenarioContext.Get<string>("StockInspectedOn"), match.Groups["inspected"].Value,
+                "Inspected on date does not match the Stock details page");
+            Assert.AreEqual(_scenarioContext.Get<string>("StockValidUntil"), match.Groups["valid"].Value,
+                "Valid until date does not match the Stock details page");
         }
 
         [When("the user enters the draw down quantity {int} on the How much stock are you exporting? page")]

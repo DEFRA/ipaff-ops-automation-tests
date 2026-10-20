@@ -241,18 +241,18 @@ public sealed class QuickCreateFormSteps : PowerAppsStepDefiner
             $"Expected Quick Create form header to be 'Quick Create: Stock' but found '{headerTitle.Text.Trim()}'.");
     }
 
-    [When(@"I enter the Site / Batch ID to the Quick Create form")]
+    [When(@"I enter the Site \/\ Batch ID to the Quick Create form")]
     public void WhenIEnterTheSiteBatchIDToTheQuickCreateForm()
     {
         var siteBatchId = DateTime.Now.ToString("ddMMHHmmss");
-        EnterQuickCreateText("Site / Batch ID", siteBatchId);
+        EnterQuickCreateText("trd_batchlocation.fieldControl-pcf-container-id", "Site / Batch ID", siteBatchId);
         this._scenarioContext["Location"] = siteBatchId;
     }
 
     [When(@"I enter the Approved Stock (\d+) on the Quick Create form")]
     public void WhenIEnterTheApprovedStockOnTheQuickCreateForm(int approvedStock)
     {
-        EnterQuickCreateText("Approved Stock", approvedStock.ToString());
+        EnterQuickCreateText("trd_quantity.fieldControl-pcf-container-id", "Approved Stock", approvedStock.ToString());
         this._scenarioContext["QuantityInspected"] = approvedStock;
     }
 
@@ -260,20 +260,20 @@ public sealed class QuickCreateFormSteps : PowerAppsStepDefiner
     public void ThenTheStockRecordCreatedConfirmationIsDisplayed()
     {
         var notification = Driver.WaitUntilVisible(
-            By.XPath("//*[contains(normalize-space(.),'View changes') and (self::button or self::a or self::span)]"),
+            By.XPath("//div[starts-with(@data-id,'ToastNotification_quickcreate_')][.//p[normalize-space()='Your changes were saved.']][.//p[normalize-space()='View Record']]"),
             TimeSpan.FromSeconds(30),
-            "Stock record created confirmation ('View changes') was not displayed.");
+            "Stock record created confirmation ('Your changes were saved.' toast) was not displayed.");
 
         notification.Displayed.Should().BeTrue("Expected the Stock record created confirmation to be displayed.");
     }
 
-    private void EnterQuickCreateText(string ariaLabel, string value)
+    private void EnterQuickCreateText(string containerDataId, string fieldName, string value)
     {
         Driver.WaitForTransaction();
 
         var input = Driver.WaitUntilAvailable(
-            By.XPath($"//section[.//h1[@data-id='quickHeaderTitle']]//input[@aria-label='{ariaLabel}'] | //input[@aria-label='{ariaLabel}']"),
-            $"'{ariaLabel}' field could not be found on the Quick Create form.");
+            By.XPath($"//div[@data-id='{containerDataId}']//input"),
+            $"'{fieldName}' field could not be found on the Quick Create form.");
 
         input.Click();
         input.SendKeys(Keys.Control + "a");

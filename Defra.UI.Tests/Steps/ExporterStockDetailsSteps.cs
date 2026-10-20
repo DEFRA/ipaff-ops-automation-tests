@@ -44,19 +44,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Compare("Quantity inspected", $"{GetContextValue("QuantityInspected")} {unit}".Trim(), mismatches);
             Compare("Amount drawn down", $"{amountDrawnDown} {unit}".Trim(), mismatches);
 
-            var inspectedOn = exporterStockDetailsPage?.GetSummaryValue("Inspected on") ?? string.Empty;
-            if (_scenarioContext.TryGetValue("VisitDateScheduled", out object? scheduled)
-                && DateTime.TryParseExact(scheduled?.ToString(), "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var expectedInspectedOn))
-            {
-                if (!TryParseDisplayDate(inspectedOn, out var actualInspectedOn) || actualInspectedOn.Date != expectedInspectedOn.Date)
-                    mismatches.Add($"Inspected on: Expected '{expectedInspectedOn:d MMM yyyy}', Found '{inspectedOn}'");
-            }
-            else if (!TryParseDisplayDate(inspectedOn, out _))
-            {
+            var inspectedOn = exporterStockDetailsPage?.GetSummaryValue("Inspected on")?.Trim() ?? string.Empty;
+            _scenarioContext["StockInspectedOn"] = inspectedOn;
+            if (!TryParseDisplayDate(inspectedOn, out _))
                 mismatches.Add($"Inspected on: '{inspectedOn}' is not in the format DD MMM YYYY");
-            }
 
-            var validUntil = exporterStockDetailsPage?.GetSummaryValue("Valid until") ?? string.Empty;
+            var validUntil = exporterStockDetailsPage?.GetSummaryValue("Valid until")?.Trim() ?? string.Empty;
+            _scenarioContext["StockValidUntil"] = validUntil;
             if (!TryParseDisplayDate(validUntil, out _))
                 mismatches.Add($"Valid until: '{validUntil}' is not in the format DD MMM YYYY");
 

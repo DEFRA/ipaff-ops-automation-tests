@@ -30,6 +30,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
         [When("the user enters the conisgnee details and clicks the Continue button on the Who are you sending this consignment to? page")]
+        [When("the user enters the conisgnee details and clicks the Save and continue button on the Who are you sending this consignment to? page")]
         public void WhenTheUserEntersTheConisgneeDetailsAndClicksTheContinueButtonOnTheWhoAreYouSendingThisConsignmentToPage()
         {
             var consignee = Utils.GenerateOperatorDetails();

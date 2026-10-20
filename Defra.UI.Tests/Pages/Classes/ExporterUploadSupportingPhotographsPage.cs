@@ -17,9 +17,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement fileInput => _driver.WaitForElementExists(By.Id("file"), true);
         private IWebElement txtDescription => _driver.WaitForElement(By.Id("description"), true);
         private IWebElement btnUpload => _driver.WaitForElement(By.Id("Upload"));
-        private IWebElement btnSaveAndContinue => _driver.WaitForElement(By.Id("Button-SaveAndContinue"));
-        private By uploadedFileRow(string fileName) =>
-            By.XPath($"//table[@id='file-upload-table']//tr[td[contains(normalize-space(),'{fileName}')]]");
+        private IWebElement btnSaveAndContinue => _driver.WaitForElement(By.Id("Button-SaveAndContinue"));        
         #endregion
 
         public ExporterUploadSupportingPhotographsPage(IObjectContainer container)
@@ -34,33 +32,33 @@ namespace Defra.UI.Tests.Pages.Classes
             var dirPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             var sourcePath = Path.Combine(dirPath!, "Data", "Documents", sourceFileName);
 
-            // Each photograph must have a unique file name
-            var uniqueFileName = $"{Path.GetFileNameWithoutExtension(sourceFileName)} {DateTime.Now:ddMMyyyyHHmmss}{Path.GetExtension(sourceFileName)}";
-            var uploadPath = Path.Combine(Path.GetTempPath(), uniqueFileName);
-            File.Copy(sourcePath, uploadPath, true);
-
             if (_driver is IAllowsFileDetection allowsDetection)
                 allowsDetection.FileDetector = new LocalFileDetector();
 
-            fileInput.SendKeys(uploadPath);
+            fileInput.SendKeys(sourcePath);
             txtDescription.Clear();
             txtDescription.SendKeys(description);
             btnUpload.Click();
 
-            return uniqueFileName;
+            return sourceFileName;
         }
 
         public bool IsPhotographListedWithActions(string fileName, string description)
         {
-            var row = _driver.WaitForElement(uploadedFileRow(fileName), true);
-            if (row == null)
+            var fileNameCell = _driver.WaitForElement(By.Id($"file_{fileName}"), true);
+            if (fileNameCell == null || !fileNameCell.Text.Trim().Equals(fileName))
                 return false;
 
-            var rowText = row.Text;
-            var hasDownload = row.FindElements(By.XPath(".//*[self::a or self::button or self::input][contains(normalize-space(.),'Download') or @value='Download']")).Count > 0;
-            var hasDelete = row.FindElements(By.XPath(".//*[self::a or self::button or self::input][contains(normalize-space(.),'Delete') or @value='Delete']")).Count > 0;
+            var descriptionCell = _driver.FindElements(By.Id($"description_{fileName}"));
+            var hasDescription = descriptionCell.Count > 0 && descriptionCell[0].Text.Trim().Equals(description);
 
-            return rowText.Contains(description) && hasDownload && hasDelete;
+            var downloadLink = _driver.FindElements(By.Id($"view_link_{fileName}"));
+            var hasDownload = downloadLink.Count > 0 && downloadLink[0].Text.Trim().StartsWith("Download");
+
+            var deleteLink = _driver.FindElements(By.Id($"delete_link_{fileName}"));
+            var hasDelete = deleteLink.Count > 0 && deleteLink[0].Text.Trim().StartsWith("Delete");
+
+            return hasDescription && hasDownload && hasDelete;
         }
 
         public void ClickSaveAndContinueButton() => btnSaveAndContinue.Click();

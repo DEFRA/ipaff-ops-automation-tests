@@ -616,14 +616,15 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
             .WaitAndRetry(5, _ => TimeSpan.FromSeconds(2))
             .Execute(() =>
             {
-                var rowStatusCell = Driver.WaitUntilAvailable(
-                    By.XPath("(//div[@data-id='Commoditylines-powerapps_onegrid_control_container']//div[@role='gridcell' and @col-id='__row_status'])[1]"),
-                    "Row selector could not be found in the Commodity Lines subgrid.");
+                var rowCheckMark = Driver.WaitUntilAvailable(
+                    By.XPath("(//div[@data-id='Commoditylines-powerapps_onegrid_control_container']//div[@role='row'][.//div[@role='gridcell']]//i[@data-icon-name='CheckMark'])[1]"),
+                    "Row selector checkbox could not be found in the Commodity Lines subgrid.");
 
-                var row = rowStatusCell.FindElement(By.XPath("./ancestor::div[@role='row'][1]"));
+                var row = rowCheckMark.FindElement(By.XPath("./ancestor::div[@role='row'][1]"));
                 if (row.GetAttribute("aria-selected") != "true")
                 {
-                    rowStatusCell.Click();
+                    var checkbox = rowCheckMark.FindElement(By.XPath("./ancestor::*[contains(@class,'ms-Checkbox')][1]"));
+                    checkbox.Click();
                 }
             });
 
