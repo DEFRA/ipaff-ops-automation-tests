@@ -540,7 +540,7 @@ Scenario: Exporter phytosanitary certificate application creating stock, followe
 	Then the Your application page is displayed
 	When the user clicks the Check your answers and submit your application link
 	Then the Review your answers page is displayed
-	#And the data presented for review matches the data entered into the Exporter Portal for a phytosanitary certificate application
+	And the data presented for review matches the data entered into the Exporter Portal for a phytosanitary certificate application
 	When the user clicks the Continue button on the Review your answers page
 	Then the When do you need the certificate? page is displayed
 	When the user enters a valid date for when the certificate is needed at least 5 days in the future

@@ -12,6 +12,7 @@
         string GetYourReference();
         string GetCommodityDescription();
         string GetCommodityVariety();
+        string GetCommodityType();
         string GetCommodityLotReference();
         string GetCommodityOrigin();
         string GetCommodityQuantity();
@@ -19,6 +20,10 @@
         string GetCommodityPackaging();
         string GetConsigneeName();
         string GetConsigneeAddress();
+        string GetExporterName();
+        string GetExporterAddress();
+        string GetSupportingDocumentFileName();
+        string GetSupportingDocumentDescription();
         void ClickChangeLink(string fieldName);
     }
 }

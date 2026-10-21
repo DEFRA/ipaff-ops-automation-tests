@@ -28,12 +28,12 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
             var actualExporterAddress = string.Join(", ", exporterLines.Skip(1));
 
             var exporterName = Expected("ExporterName");
-            if (exporterName == null || Normalise(exporterName) != Normalise(actualExporterName))
-                mismatches.Add($"Box 1 (Exporter name): expected '{exporterName}', actual '{actualExporterName}'");
+            Check("Box 1 (Exporter name)", exporterName != null && Normalise(exporterName) == Normalise(actualExporterName), actualExporterName,
+                $"Box 1 (Exporter name): expected '{exporterName}', actual '{actualExporterName}'", mismatches);
 
             var exporterAddress = Expected("ExporterAddress");
-            if (exporterAddress == null || NormaliseSeparators(exporterAddress) != NormaliseSeparators(actualExporterAddress))
-                mismatches.Add($"Box 1 (Exporter address): expected '{exporterAddress}', actual '{actualExporterAddress}'");
+            Check("Box 1 (Exporter address)", exporterAddress != null && NormaliseSeparators(exporterAddress) == NormaliseSeparators(actualExporterAddress), actualExporterAddress,
+                $"Box 1 (Exporter address): expected '{exporterAddress}', actual '{actualExporterAddress}'", mismatches);
 
             // 2 Phytosanitary Certificate - UK/GB/E&W/<YEAR>/<Application Reference>
             if (!string.IsNullOrWhiteSpace(applicationReference))
@@ -45,13 +45,20 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
                 else if (DateTime.TryParseExact(certificate.DateOfIssue, "d MMMM yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var issued)
                          && issued.Year.ToString() != match.Groups["year"].Value)
                     mismatches.Add($"Box 2 (Certificate number): year '{match.Groups["year"].Value}' does not match date of issue '{certificate.DateOfIssue}'");
+                else
+                    LogMatch("Box 2 (Certificate number)", certificate.CertificateNumber);
             }
+            else
+                LogSkipped("Box 2 (Certificate number)");
 
             // 3 Declared name and address of consignee
             CompareEquals("Box 3 (Consignee name)", Expected("ExporterConsigneeName"), certificate.ConsigneeName, mismatches);
             var consigneeAddress = Expected("ExporterConsigneeAddress");
-            if (consigneeAddress != null && NormaliseAddress(consigneeAddress) != NormaliseAddress(certificate.ConsigneeAddress))
-                mismatches.Add($"Box 3 (Consignee address): expected '{consigneeAddress}', actual '{certificate.ConsigneeAddress}'");
+            if (consigneeAddress == null)
+                LogSkipped("Box 3 (Consignee address)");
+            else
+                Check("Box 3 (Consignee address)", NormaliseAddress(consigneeAddress) == NormaliseAddress(certificate.ConsigneeAddress), certificate.ConsigneeAddress,
+                    $"Box 3 (Consignee address): expected '{consigneeAddress}', actual '{certificate.ConsigneeAddress}'", mismatches);
 
             // 4 Plant Protection Organisation of UNITED KINGDOM - destination country
             CompareEquals("Box 4 (Destination country)", Expected("ExporterDestinationCountry"), certificate.DestinationCountry, mismatches);
@@ -65,14 +72,19 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
             {
                 var actual = Normalise(certificate.TransportMode);
                 var expectedMode = Normalise(transportMode);
-                if (actual.Length == 0 || !(expectedMode.Contains(actual) || actual.Contains(expectedMode)))
-                    mismatches.Add($"Box 6 (Means of conveyance): expected '{transportMode}', actual '{certificate.TransportMode}'");
+                Check("Box 6 (Means of conveyance)", actual.Length > 0 && (expectedMode.Contains(actual) || actual.Contains(expectedMode)), certificate.TransportMode,
+                    $"Box 6 (Means of conveyance): expected '{transportMode}', actual '{certificate.TransportMode}'", mismatches);
             }
+            else
+                LogSkipped("Box 6 (Means of conveyance)");
 
             // 7 Declared point of entry
             var pointOfEntry = Expected("ExporterPointOfEntry");
-            if (pointOfEntry != null && !Normalise(certificate.PointOfEntry).Contains(Normalise(pointOfEntry)))
-                mismatches.Add($"Box 7 (Point of entry): expected to contain '{pointOfEntry}', actual '{certificate.PointOfEntry}'");
+            if (pointOfEntry != null)
+                Check("Box 7 (Point of entry)", Normalise(certificate.PointOfEntry).Contains(Normalise(pointOfEntry)), certificate.PointOfEntry,
+                    $"Box 7 (Point of entry): expected to contain '{pointOfEntry}', actual '{certificate.PointOfEntry}'", mismatches);
+            else
+                LogSkipped("Box 7 (Point of entry)");
 
             // 8 Commodity details
             ValidateCommodityDetails(certificate, Expected, mismatches);
@@ -85,9 +97,11 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
             if (quantityKg != null)
             {
                 var expectedQuantity = quantityKg.Value.ToString("0.000", CultureInfo.InvariantCulture);
-                if (!Regex.IsMatch(Normalise(certificate.QuantityDeclared), $@"^{Regex.Escape(expectedQuantity)}( KILOGRAMS)?$"))
-                    mismatches.Add($"Box 9 (Quantity declared): expected '{expectedQuantity} KILOGRAMS', actual '{certificate.QuantityDeclared}'");
+                Check("Box 9 (Quantity declared)", Regex.IsMatch(Normalise(certificate.QuantityDeclared), $@"^{Regex.Escape(expectedQuantity)}( KILOGRAMS)?$"), certificate.QuantityDeclared,
+                    $"Box 9 (Quantity declared): expected '{expectedQuantity} KILOGRAMS', actual '{certificate.QuantityDeclared}'", mismatches);
             }
+            else
+                LogSkipped("Box 9 (Quantity declared)");
 
             // 11 - 17 fields filled with X's
             ValidateFilledWithX("Box 11 (Additional declaration)", certificate.AdditionalDeclaration, mismatches);
@@ -108,7 +122,10 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
         {
             var commodity = expected("Commodity");
             if (commodity == null)
+            {
+                LogSkipped("Box 8 (Commodity details)");
                 return;
+            }
 
             if (IsPlantsCommodity(expected))
             {
@@ -136,12 +153,10 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
             var pattern = $@"^(\d+\)\s*)?{Regex.Escape(NormaliseSeparators(commodity) + eppoPart)} {Regex.Escape(expectedRemainder)}$";
 
             var actual = NormaliseSeparators(certificate.CommodityDetails);
-            if (!Regex.IsMatch(actual, pattern))
-            {
-                var eppoDisplay = eppoCode != null ? $" ({eppoCode})" : string.Empty;
-                var expectedDisplay = $"{commodity}{eppoDisplay}, {JoinNonEmpty(", ", parts)}".ToUpperInvariant();
-                mismatches.Add($"Box 8 (Commodity details): expected '{expectedDisplay}', actual '{certificate.CommodityDetails}'");
-            }
+            var eppoDisplay = eppoCode != null ? $" ({eppoCode})" : string.Empty;
+            var expectedDisplay = $"{commodity}{eppoDisplay}, {JoinNonEmpty(", ", parts)}".ToUpperInvariant();
+            Check("Box 8 (Commodity details)", Regex.IsMatch(actual, pattern), certificate.CommodityDetails,
+                $"Box 8 (Commodity details): expected '{expectedDisplay}', actual '{certificate.CommodityDetails}'", mismatches);
         }
 
         /// <summary>
@@ -170,6 +185,8 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
 
             if (!Regex.IsMatch(NormaliseSeparators(certificate.CommodityDetails), pattern))
                 mismatches.Add($"Box 8 (Commodity details): expected '{expectedDetails.ToUpperInvariant()}', actual '{certificate.CommodityDetails}'");
+            else
+                LogMatch("Box 8 (Commodity details)", certificate.CommodityDetails);
         }
 
         private static bool IsPlantsCommodity(Func<string, string?> expected) =>
@@ -195,13 +212,33 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
         {
             if (string.IsNullOrWhiteSpace(actual) || !Regex.IsMatch(actual, @"^[X\s]+$"))
                 mismatches.Add($"{label}: expected a field filled with X's, actual '{actual}'");
+            else
+                Console.WriteLine($"{LogPrefix} \u2713 {label}: filled with X's");
         }
 
         private static void CompareEquals(string label, string? expected, string? actual, List<string> mismatches)
         {
-            if (expected != null && Normalise(expected) != Normalise(actual))
-                mismatches.Add($"{label}: expected '{expected}', actual '{actual}'");
+            if (expected == null)
+                LogSkipped(label);
+            else
+                Check(label, Normalise(expected) == Normalise(actual), actual, $"{label}: expected '{expected}', actual '{actual}'", mismatches);
         }
+
+        private const string LogPrefix = "[PHYTO CERTIFICATE VALIDATION]";
+
+        private static void Check(string label, bool isMatch, string? actual, string mismatchMessage, List<string> mismatches)
+        {
+            if (isMatch)
+                LogMatch(label, actual);
+            else
+                mismatches.Add(mismatchMessage);
+        }
+
+        private static void LogMatch(string label, string? actual) =>
+            Console.WriteLine($"{LogPrefix} \u2713 {label}: '{Regex.Replace(actual ?? string.Empty, @"\s*\r?\n\s*", " ").Trim()}' matches");
+
+        private static void LogSkipped(string label) =>
+            Console.WriteLine($"{LogPrefix} \u2298 {label}: Skipped (not in context)");
 
         private static string JoinNonEmpty(string separator, params string?[] values) =>
             string.Join(separator, values.Where(v => !string.IsNullOrWhiteSpace(v)));

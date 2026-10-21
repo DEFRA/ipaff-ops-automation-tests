@@ -22,11 +22,16 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement lblCommodityDescription => _driver.WaitForElement(By.XPath("//table[@id='commodity-table']/tbody/tr[1]/td[1]/strong"), true);
         private IWebElement lblCommodityVariety => _driver.WaitForElement(By.XPath("//table[@id='commodity-table']/tbody/tr[1]/td[1]/div[1]"), true);
         private IWebElement lblCommodityLotReference => _driver.WaitForElement(By.XPath("//table[@id='commodity-table']/tbody/tr[1]/td[1]/div[2]"), true);
+        private IWebElement lblCommodityType => _driver.WaitForElement(By.XPath("//table[@id='commodity-table']/tbody/tr[1]/td[1]/div[contains(normalize-space(),'Commodity type:')]"), true);
         private IWebElement lblCommodityOrigin => _driver.WaitForElement(By.XPath("//table[@id='commodity-table']/tbody/tr[1]/td[2]"), true);
         private IWebElement lblCommodityQuantity => _driver.WaitForElement(By.XPath("//table[@id='commodity-table']/tbody/tr[1]/td[3]/div[1]"), true);
         private IWebElement lblCommodityNumberOfPackages => _driver.WaitForElement(By.XPath("//table[@id='commodity-table']/tbody/tr[1]/td[3]/div[2]"), true);
         private IWebElement lblCommodityPackaging => _driver.WaitForElement(By.XPath("//table[@id='commodity-table']/tbody/tr[1]/td[4]/div[1]"), true);
         private IWebElement lblConsigneeDetails => _driver.WaitForElement(By.XPath("//dl[@id='consignee-details-section']/div[1]/dd[contains(@class,'govuk-summary-list__value')]"), true);
+        private IWebElement lblExporterName => _driver.WaitForElement(By.Id("nameValue"), true);
+        private IWebElement lblExporterAddress => _driver.WaitForElement(By.Id("addressValue"), true);
+        private IWebElement lblSupportingDocumentFileName => _driver.WaitForElement(By.Id("file_0"), true);
+        private IWebElement lblSupportingDocumentDescription => _driver.WaitForElement(By.Id("description_0"), true);
         #endregion
 
         public ExporterReviewYourAnswersPage(IObjectContainer container)
@@ -45,12 +50,17 @@ namespace Defra.UI.Tests.Pages.Classes
         public string GetCommodityDescription() => lblCommodityDescription.Text.Trim();
         public string GetCommodityVariety() => lblCommodityVariety.Text.Trim();
         public string GetCommodityLotReference() => lblCommodityLotReference.Text.Replace("Lot reference:", "").Trim();
+        public string GetCommodityType() => lblCommodityType.Text.Replace("Commodity type:", "").Trim();
         public string GetCommodityOrigin() => lblCommodityOrigin.Text.Trim();
         public string GetCommodityQuantity() => lblCommodityQuantity.Text.Trim();
         public string GetCommodityNumberOfPackages() => lblCommodityNumberOfPackages.Text.Trim();
         public string GetCommodityPackaging() => lblCommodityPackaging.Text.Trim();
         public string GetConsigneeName() => GetConsigneeLines().FirstOrDefault() ?? string.Empty;
         public string GetConsigneeAddress() => GetConsigneeLines().Skip(1).FirstOrDefault() ?? string.Empty;
+        public string GetExporterName() => lblExporterName.Text.Trim();
+        public string GetExporterAddress() => lblExporterAddress.Text.Trim();
+        public string GetSupportingDocumentFileName() => lblSupportingDocumentFileName.Text.Trim();
+        public string GetSupportingDocumentDescription() => lblSupportingDocumentDescription.Text.Replace('\u00A0', ' ').Trim();
 
         public void ClickChangeLink(string fieldName)
         {

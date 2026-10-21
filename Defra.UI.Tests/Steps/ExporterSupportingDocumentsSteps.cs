@@ -9,14 +9,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
     public class ExporterSupportingDocumentsSteps
     {
         private readonly IObjectContainer _objectContainer;
+        private readonly ScenarioContext _scenarioContext;
 
         private IExporterSupportingDocumentsPage? exporterSupportingDocumentsPage =>
             _objectContainer.IsRegistered<IExporterSupportingDocumentsPage>()
                 ? _objectContainer.Resolve<IExporterSupportingDocumentsPage>()
                 : null;
 
-        public ExporterSupportingDocumentsSteps(IObjectContainer container)
+        public ExporterSupportingDocumentsSteps(ScenarioContext context, IObjectContainer container)
         {
+            _scenarioContext = context;
             _objectContainer = container;
         }
 
@@ -29,7 +31,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user uploads a supporting document and clicks the Save and continue button")]
         public void WhenTheUserUploadsASupportingDocumentAndClicksTheSaveAndContinueButton()
         {
-            exporterSupportingDocumentsPage?.UploadDocument("IPAFFS Test Document 1.docx", "Automation supporting document");
+            const string fileName = "IPAFFS Test Document 1.docx";
+            const string fileDescription = "Automation supporting document";
+
+            exporterSupportingDocumentsPage?.UploadDocument(fileName, fileDescription);
+            _scenarioContext["SupportingDocumentFileName"] = fileName;
+            _scenarioContext["SupportingDocumentDescription"] = fileDescription;
             exporterSupportingDocumentsPage?.ClickSaveAndContinueButton();
         }
     }

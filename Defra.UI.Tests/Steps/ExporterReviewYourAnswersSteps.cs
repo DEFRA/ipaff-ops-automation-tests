@@ -38,14 +38,30 @@ namespace Defra.UI.Tests.Steps.IPAFF
             ValidateIfExists("ExporterDestinationCountry", exporterReviewYourAnswersPage?.GetDestinationCountry(), ref allDataMatches, mismatches);
             ValidateIfExists("Reference", exporterReviewYourAnswersPage?.GetYourReference(), ref allDataMatches, mismatches);
 
+            // Exporter details
+            ValidateIfExists("ExporterName", exporterReviewYourAnswersPage?.GetExporterName(), ref allDataMatches, mismatches);
+            ValidateExporterAddress(exporterReviewYourAnswersPage?.GetExporterAddress(), ref allDataMatches, mismatches);
+
             // Your consignment
             ValidateIfExists("Commodity", exporterReviewYourAnswersPage?.GetCommodityDescription(), ref allDataMatches, mismatches);
-            ValidateIfExists("SeedVariety", exporterReviewYourAnswersPage?.GetCommodityVariety(), ref allDataMatches, mismatches);
-            ValidateIfExists("SeedLotReference", exporterReviewYourAnswersPage?.GetCommodityLotReference(), ref allDataMatches, mismatches);
-            ValidateIfExists("SeedCountriesOfOrigin", exporterReviewYourAnswersPage?.GetCommodityOrigin(), ref allDataMatches, mismatches);
-            ValidateQuantity(exporterReviewYourAnswersPage?.GetCommodityQuantity(), ref allDataMatches, mismatches);
-            ValidateNumberOfPackages(exporterReviewYourAnswersPage?.GetCommodityNumberOfPackages(), ref allDataMatches, mismatches);
-            ValidateIfExists("SeedPackaging", exporterReviewYourAnswersPage?.GetCommodityPackaging(), ref allDataMatches, mismatches);
+            if (_scenarioContext.ContainsKey("PlantCommodityType"))
+            {
+                ValidateIfExists("PlantCommodityType", exporterReviewYourAnswersPage?.GetCommodityType(), ref allDataMatches, mismatches);
+                ValidateIfExists("PlantCountriesOfOrigin", exporterReviewYourAnswersPage?.GetCommodityOrigin(), ref allDataMatches, mismatches);
+                var quantityKey = _scenarioContext.ContainsKey("DrawDownQuantity") ? "DrawDownQuantity" : "PlantQuantity";
+                ValidateQuantity(quantityKey, "PlantUnit", exporterReviewYourAnswersPage?.GetCommodityQuantity(), ref allDataMatches, mismatches);
+                ValidateNumberOfPackages("PlantNumberOfPackages", exporterReviewYourAnswersPage?.GetCommodityNumberOfPackages(), ref allDataMatches, mismatches);
+                ValidateIfExists("PlantPackaging", exporterReviewYourAnswersPage?.GetCommodityPackaging(), ref allDataMatches, mismatches);
+            }
+            else
+            {
+                ValidateIfExists("SeedVariety", exporterReviewYourAnswersPage?.GetCommodityVariety(), ref allDataMatches, mismatches);
+                ValidateIfExists("SeedLotReference", exporterReviewYourAnswersPage?.GetCommodityLotReference(), ref allDataMatches, mismatches);
+                ValidateIfExists("SeedCountriesOfOrigin", exporterReviewYourAnswersPage?.GetCommodityOrigin(), ref allDataMatches, mismatches);
+                ValidateQuantity("SeedQuantity", "SeedUnit", exporterReviewYourAnswersPage?.GetCommodityQuantity(), ref allDataMatches, mismatches);
+                ValidateNumberOfPackages("SeedNumberOfPackages", exporterReviewYourAnswersPage?.GetCommodityNumberOfPackages(), ref allDataMatches, mismatches);
+                ValidateIfExists("SeedPackaging", exporterReviewYourAnswersPage?.GetCommodityPackaging(), ref allDataMatches, mismatches);
+            }
 
             // Transportation
             ValidateIfExists("ExporterConsignmentValue", exporterReviewYourAnswersPage?.GetConsignmentValue(), ref allDataMatches, mismatches);
@@ -55,6 +71,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
             // Consignee details
             ValidateIfExists("ExporterConsigneeName", exporterReviewYourAnswersPage?.GetConsigneeName(), ref allDataMatches, mismatches);
             ValidateIfExists("ExporterConsigneeAddress", exporterReviewYourAnswersPage?.GetConsigneeAddress(), ref allDataMatches, mismatches);
+
+            // Supporting documents
+            if (_scenarioContext.ContainsKey("SupportingDocumentFileName"))
+            {
+                ValidateIfExists("SupportingDocumentFileName", exporterReviewYourAnswersPage?.GetSupportingDocumentFileName(), ref allDataMatches, mismatches);
+                ValidateIfExists("SupportingDocumentDescription", exporterReviewYourAnswersPage?.GetSupportingDocumentDescription(), ref allDataMatches, mismatches);
+            }
 
             if (!allDataMatches)
             {
@@ -88,22 +111,40 @@ namespace Defra.UI.Tests.Steps.IPAFF
             CompareValues(contextKey, expectedValue, actualValue, actualValue.Contains(expectedValue, StringComparison.OrdinalIgnoreCase), ref allDataMatches, mismatches);
         }
 
-        private void ValidateQuantity(string? reviewValue, ref bool allDataMatches, List<string> mismatches)
+        /// <summary>
+        /// The review page shows the exporter address prefixed with the organisation name and without the country,
+        /// e.g. 'DEPARTMENT FOR ... (D E F R A), HORNBEAM HOUSE, ELECTRA WAY, CREWE, CHESHIRE, CW1 6GJ'.
+        /// </summary>
+        private void ValidateExporterAddress(string? reviewValue, ref bool allDataMatches, List<string> mismatches)
         {
-            if (!TryGetExpected("SeedQuantity", out var quantity) || !TryGetExpected("SeedUnit", out var unit))
+            if (!TryGetExpected("ExporterAddress", out var expectedValue))
+                return;
+
+            var lastComma = expectedValue.LastIndexOf(',');
+            var expectedWithoutCountry = lastComma >= 0 ? expectedValue[..lastComma] : expectedValue;
+            var isMatch = NormaliseAddress(reviewValue).Contains(NormaliseAddress(expectedWithoutCountry));
+            CompareValues("ExporterAddress", expectedValue, reviewValue?.Trim(), isMatch, ref allDataMatches, mismatches);
+        }
+
+        private static string NormaliseAddress(string? value) =>
+            System.Text.RegularExpressions.Regex.Replace(value ?? string.Empty, @"[\s,]+", " ").Trim().ToUpperInvariant();
+
+        private void ValidateQuantity(string quantityKey, string unitKey, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
+        {
+            if (!TryGetExpected(quantityKey, out var quantity) || !TryGetExpected(unitKey, out var unit))
                 return;
 
             var expectedValue = $"{quantity} {unit}";
-            CompareValues("SeedQuantity", expectedValue, reviewValue?.Trim(), expectedValue.Equals(reviewValue?.Trim(), StringComparison.OrdinalIgnoreCase), ref allDataMatches, mismatches);
+            CompareValues(quantityKey, expectedValue, reviewValue?.Trim(), expectedValue.Equals(reviewValue?.Trim(), StringComparison.OrdinalIgnoreCase), ref allDataMatches, mismatches);
         }
 
-        private void ValidateNumberOfPackages(string? reviewValue, ref bool allDataMatches, List<string> mismatches)
+        private void ValidateNumberOfPackages(string packagesKey, string? reviewValue, ref bool allDataMatches, List<string> mismatches)
         {
-            if (!TryGetExpected("SeedNumberOfPackages", out var packages))
+            if (!TryGetExpected(packagesKey, out var packages))
                 return;
 
             var expectedValue = packages == "1" ? "1 package" : $"{packages} packages";
-            CompareValues("SeedNumberOfPackages", expectedValue, reviewValue?.Trim(), expectedValue.Equals(reviewValue?.Trim(), StringComparison.OrdinalIgnoreCase), ref allDataMatches, mismatches);
+            CompareValues(packagesKey, expectedValue, reviewValue?.Trim(), expectedValue.Equals(reviewValue?.Trim(), StringComparison.OrdinalIgnoreCase), ref allDataMatches, mismatches);
         }
 
         private bool TryGetExpected(string contextKey, out string expectedValue)
