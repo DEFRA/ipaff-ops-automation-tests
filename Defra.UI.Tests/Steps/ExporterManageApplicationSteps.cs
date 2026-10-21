@@ -66,14 +66,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.AreEqual(expectedQuantity, actual, $"Remaining approved stock quantity is '{actual}', expected '{expectedQuantity}'");
         }
 
-        [Then("the Phytosanitary Certificate displays the details of the application submitted")]
-        public void ThenThePhytosanitaryCertificateDisplaysTheDetailsOfTheApplicationSubmitted()
+        [Then("the Phytosanitary Certificate displays the details of {string} submitted")]
+        public void ThenThePhytosanitaryCertificateDisplaysTheDetailsOfSubmitted(string applicationName)
         {
-            var pdfPath = GetPhytoCertificatePdfPath();
+            var applicationReference = _scenarioContext.Get<string>($"{applicationName}_APHAReference");
+            var pdfPath = GetPhytoCertificatePdfPath(applicationReference);
 
             var certificate = new PhytoCertificatePdfConverter().Convert(pdfPath);
             var expected = _scenarioContext.ToDictionary(kvp => kvp.Key, kvp => (object?)kvp.Value);
-            var mismatches = PhytoCertificateValidator.Validate(certificate, expected);
+            var mismatches = PhytoCertificateValidator.Validate(certificate, expected, applicationReference);
 
             if (mismatches.Any())
             {
@@ -87,13 +88,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.IsEmpty(mismatches, $"Phytosanitary certificate data validation failed. Mismatches: {string.Join(", ", mismatches)}");
         }
 
-        private string GetPhytoCertificatePdfPath()
+        private string GetPhytoCertificatePdfPath(string applicationReference)
         {
             if (_scenarioContext.TryGetValue("PhytoCertificatePdfPath", out string? pdfPath) && !string.IsNullOrWhiteSpace(pdfPath))
                 return pdfPath;
 
             var downloadDirectory = _scenarioContext.Get<string>("PDFDownloadedDirectory");
-            var applicationReference = _scenarioContext.Get<string>("Phytosanitary Certificate Application_APHAReference");
             return Path.Combine(downloadDirectory, applicationReference + "-certificate.pdf");
         }
     }

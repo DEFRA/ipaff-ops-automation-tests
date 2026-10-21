@@ -40,6 +40,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
             exporterAddToYourConsignmentPage?.EnterNumberOfPackages(numberOfPackages);
             exporterAddToYourConsignmentPage?.SelectTypeOfPackaging(packagingType);
             exporterAddToYourConsignmentPage?.SelectCountriesOfOrigin(countriesOfOrigin);
+
+            _scenarioContext["PlantCommodityType"] = commodityType;
+            _scenarioContext["PlantQuantity"] = quantity;
+            _scenarioContext["PlantUnit"] = unitOfMeasurement;
+            _scenarioContext["PlantNumberOfPackages"] = numberOfPackages;
+            _scenarioContext["PlantPackaging"] = packagingType;
+            _scenarioContext["PlantCountriesOfOrigin"] = countriesOfOrigin;
+            _scenarioContext.Remove("DrawDownQuantity");
         }
 
         [When("the user describes the seed commodity with botanical name {string}, variety {string}, lot reference {string}, quantity {string}, unit of measurement {string}, chemically treated {string}, chemicals used {string}, country where grown {string}, destination countries {string}")]

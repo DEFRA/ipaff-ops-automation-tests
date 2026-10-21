@@ -76,6 +76,7 @@ public sealed class ExportApplicationSteps : PowerAppsStepDefiner
             .Handle<StaleElementReferenceException>()
             .Or<NoSuchElementException>()
             .Or<WebDriverTimeoutException>()
+            .Or<InvalidOperationException>()
             .OrResult<string>(string.IsNullOrWhiteSpace)
             .WaitAndRetry(5, _ => TimeSpan.FromSeconds(2))
             .Execute(() =>
@@ -274,6 +275,7 @@ public sealed class ExportApplicationSteps : PowerAppsStepDefiner
             .Handle<StaleElementReferenceException>()
             .Or<NoSuchElementException>()
             .Or<WebDriverTimeoutException>()
+            .Or<InvalidOperationException>()
             .OrResult<string>(string.IsNullOrWhiteSpace)
             .WaitAndRetry(5, _ => TimeSpan.FromSeconds(3))
             .Execute(() =>

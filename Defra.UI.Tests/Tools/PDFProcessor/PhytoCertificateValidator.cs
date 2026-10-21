@@ -12,7 +12,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
     {
         public const string PlaceOfOriginText = "SEE SECTION 8 FOR DETAILS ON COUNTRIES OF ORIGIN";
 
-        public static List<string> Validate(PhytoCertificate certificate, IDictionary<string, object?> expected)
+        public static List<string> Validate(PhytoCertificate certificate, IDictionary<string, object?> expected, string? applicationReference)
         {
             var mismatches = new List<string>();
 
@@ -36,8 +36,7 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
                 mismatches.Add($"Box 1 (Exporter address): expected '{exporterAddress}', actual '{actualExporterAddress}'");
 
             // 2 Phytosanitary Certificate - UK/GB/E&W/<YEAR>/<Application Reference>
-            var applicationReference = Expected("Phytosanitary Certificate Application_APHAReference");
-            if (applicationReference != null)
+            if (!string.IsNullOrWhiteSpace(applicationReference))
             {
                 var match = Regex.Match(certificate.CertificateNumber ?? string.Empty,
                     $@"^UK/GB/E&W/(?<year>\d{{4}})/{Regex.Escape(applicationReference)}$");
@@ -79,7 +78,10 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
             ValidateCommodityDetails(certificate, Expected, mismatches);
 
             // 9 Quantity declared - in kilograms to 3 decimal places
-            var quantityKg = GetQuantityInKilograms(Expected("SeedQuantity"), Expected("SeedUnit"));
+            var (declaredQuantity, declaredUnit) = IsPlantsCommodity(Expected)
+                ? (GetPlantsQuantity(Expected), Expected("PlantUnit"))
+                : (Expected("SeedQuantity"), Expected("SeedUnit"));
+            var quantityKg = GetQuantityInKilograms(declaredQuantity, declaredUnit);
             if (quantityKg != null)
             {
                 var expectedQuantity = quantityKg.Value.ToString("0.000", CultureInfo.InvariantCulture);
@@ -108,6 +110,12 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
             if (commodity == null)
                 return;
 
+            if (IsPlantsCommodity(expected))
+            {
+                ValidatePlantsCommodityDetails(certificate, commodity, expected, mismatches);
+                return;
+            }
+
             var quantity = decimal.TryParse(expected("SeedQuantity"), NumberStyles.Number, CultureInfo.InvariantCulture, out var q)
                 ? q.ToString("0.000", CultureInfo.InvariantCulture)
                 : expected("SeedQuantity");
@@ -135,6 +143,40 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
                 mismatches.Add($"Box 8 (Commodity details): expected '{expectedDisplay}', actual '{certificate.CommodityDetails}'");
             }
         }
+
+        /// <summary>
+        /// Plants and fresh produce Box 8 format: '&lt;name&gt;, &lt;origin&gt;, &lt;commodity type&gt;, &lt;packages&gt;, &lt;packaging&gt;, &lt;quantity&gt; &lt;units&gt;'.
+        /// For draw down applications the quantity is the drawn down amount rather than the quantity originally entered.
+        /// </summary>
+        private static void ValidatePlantsCommodityDetails(PhytoCertificate certificate, string commodity, Func<string, string?> expected, List<string> mismatches)
+        {
+            var plantsQuantity = GetPlantsQuantity(expected);
+            var quantity = decimal.TryParse(plantsQuantity, NumberStyles.Number, CultureInfo.InvariantCulture, out var q)
+                ? q.ToString("0.000", CultureInfo.InvariantCulture)
+                : plantsQuantity;
+
+            var parts = new[]
+            {
+                commodity,
+                expected("PlantCountriesOfOrigin"),
+                expected("PlantCommodityType"),
+                expected("PlantNumberOfPackages"),
+                expected("PlantPackaging"),
+                JoinNonEmpty(" ", quantity, expected("PlantUnit"))
+            };
+
+            var expectedDetails = JoinNonEmpty(", ", parts);
+            var pattern = $@"^(\d+\)\s*)?{Regex.Escape(NormaliseSeparators(expectedDetails))}$";
+
+            if (!Regex.IsMatch(NormaliseSeparators(certificate.CommodityDetails), pattern))
+                mismatches.Add($"Box 8 (Commodity details): expected '{expectedDetails.ToUpperInvariant()}', actual '{certificate.CommodityDetails}'");
+        }
+
+        private static bool IsPlantsCommodity(Func<string, string?> expected) =>
+            expected("PlantCommodityType") != null;
+
+        private static string? GetPlantsQuantity(Func<string, string?> expected) =>
+            expected("DrawDownQuantity") ?? expected("PlantQuantity");
 
         private static decimal? GetQuantityInKilograms(string? quantity, string? unit)
         {

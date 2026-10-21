@@ -1,4 +1,4 @@
-@PHES
+﻿@PHES
 Feature: PHES
 
 End-to-end PHES regression tests
@@ -454,9 +454,9 @@ Scenario: Exporter application for seed sampling followed by a phytosanitary cer
 	Then the Work Order page is displayed for the 'Phytosanitary Certificate Application' created in the Exporter Portal
 	And the 'Export' tab is displayed and selected
 	When I click View Phyto command from the header ribbon
-	Then the Phytosanitary certificate is displayed in a new window
-	When I download the Phytosanitary certificate PDF
-	Then the Phytosanitary Certificate displays the details of the application submitted
+	Then the Phytosanitary certificate for 'Phytosanitary Certificate Application' is displayed in a new window
+	When I download the Phytosanitary certificate PDF for 'Phytosanitary Certificate Application'
+	Then the Phytosanitary Certificate displays the details of 'Phytosanitary Certificate Application' submitted
 	When I close the PDF window
 	Then the window is closed
 	# ---------- Exporter Portal - Search for the Phytosanitary certificate ----------
@@ -550,7 +550,7 @@ Scenario: Exporter phytosanitary certificate application creating stock, followe
 	And the user clicks the Submit application button
 	Then the You have successfully submitted your application for a phytosanitary certificate page is displayed
 	And the user records the APHA reference number for 'Application 1'
-	# ---------- Dynamics Portal - Process Application 1 and create stock ---------- 1762 43109 4567
+	# ---------- Dynamics Portal - Process Application 1 and create stock ----------
 	When I am logged in to the 'IDCOMS' app as 'Inspector'
 	And I click on 'Export Applications' under the 'Exports' area
 	Then the 'Active Export Applications' view is displayed on the Export Applications page
@@ -647,12 +647,12 @@ Scenario: Exporter phytosanitary certificate application creating stock, followe
 	Then a grey banner is displayed 'Read-only This record’s status: Inactive'
 	When I close the popup
 	Then the Substatus of the Work Order should be 'Certificate Issued'
-	#When I click View Phyto command from the header ribbon
-	#Then the Phytosanitary certificate is displayed in a new window
-	#When I download the Phytosanitary certificate PDF
-	#Then the Phytosanitary Certificate displays the details of the application submitted
-	#When I close the PDF window
-	#Then the window is closed
+	When I click View Phyto command from the header ribbon
+	Then the Phytosanitary certificate for 'Application 1' is displayed in a new window
+	When I download the Phytosanitary certificate PDF for 'Application 1'
+	Then the Phytosanitary Certificate displays the details of 'Application 1' submitted
+	When I close the PDF window
+	Then the window is closed
 	When I select the 'Export' tab
 	Then the 'Export' tab is displayed and selected
 	When I click the Export Application link in the Application & Inspection Address section	
@@ -701,7 +701,7 @@ Scenario: Exporter phytosanitary certificate application creating stock, followe
 	And the user clicks the Submit application button
 	Then the You have successfully submitted your application for a phytosanitary certificate page is displayed
 	And the user records the APHA reference number for 'Application 2'
-	# ---------- Dynamics Portal - Process Application 2 ---------- 1762 43109 4591
+	# ---------- Dynamics Portal - Process Application 2 ----------
 	When I switch back to the Dynamics window
 	And I click on 'Export Applications' under the 'Exports' area
 	Then the 'Active Export Applications' view is displayed on the Export Applications page
@@ -767,12 +767,12 @@ Scenario: Exporter phytosanitary certificate application creating stock, followe
 	Then a grey banner is displayed 'Read-only This record’s status: Inactive'
 	When I close the popup
 	Then the Substatus of the Work Order should be 'Certificate Issued'
-	#When I click View Phyto command from the header ribbon
-	#Then the Phytosanitary certificate is displayed in a new window
-	#When I download the Phytosanitary certificate PDF
-	#Then the Phytosanitary Certificate displays the details of the application submitted
-	#When I close the PDF window
-	#Then the window is closed
+	When I click View Phyto command from the header ribbon
+	Then the Phytosanitary certificate for 'Application 2' is displayed in a new window
+	When I download the Phytosanitary certificate PDF for 'Application 2'
+	Then the Phytosanitary Certificate displays the details of 'Application 2' submitted
+	When I close the PDF window
+	Then the window is closed
 	# ---------- Exporter Portal - Application 3 (copy of Application 2) ----------
 	When I switch to the Exporter Portal window
 	And the user clicks the View your applications button
@@ -808,7 +808,7 @@ Scenario: Exporter phytosanitary certificate application creating stock, followe
 	And the user clicks the Submit application button
 	Then the You have successfully submitted your application for a phytosanitary certificate page is displayed
 	And the user records the APHA reference number for 'Application 3'
-	# ---------- Dynamics Portal - Process Application 3 ---------- 1762 43109 4594
+	# ---------- Dynamics Portal - Process Application 3 ----------
 	When I switch back to the Dynamics window
 	And I click on 'Export Applications' under the 'Exports' area
 	Then the 'Active Export Applications' view is displayed on the Export Applications page
@@ -873,9 +873,9 @@ Scenario: Exporter phytosanitary certificate application creating stock, followe
 	Then a grey banner is displayed 'Read-only This record’s status: Inactive'
 	When I close the popup
 	Then the Substatus of the Work Order should be 'Certificate Issued'
-	#When I click View Phyto command from the header ribbon
-	#Then the Phytosanitary certificate is displayed in a new window
-	#When I download the Phytosanitary certificate PDF
-	#Then the Phytosanitary Certificate displays the details of the application submitted
-	#When I close the PDF window
-	#Then the window is closed
+	When I click View Phyto command from the header ribbon
+	Then the Phytosanitary certificate for 'Application 3' is displayed in a new window
+	When I download the Phytosanitary certificate PDF for 'Application 3'
+	Then the Phytosanitary Certificate displays the details of 'Application 3' submitted
+	When I close the PDF window
+	Then the window is closed

@@ -242,6 +242,7 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
             .Handle<StaleElementReferenceException>()
             .Or<NoSuchElementException>()
             .Or<WebDriverTimeoutException>()
+            .Or<InvalidOperationException>()
             .Or<ElementClickInterceptedException>()
             .WaitAndRetry(5, _ => TimeSpan.FromSeconds(3))
             .Execute(() =>
@@ -381,9 +382,10 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
             .Or<NoSuchElementException>()
             .Or<WebDriverTimeoutException>()
             .Or<ElementClickInterceptedException>()
+            .Or<InvalidOperationException>()
             .WaitAndRetry(
                 retryCount: 10,
-                sleepDurationProvider: _ => TimeSpan.FromSeconds(30),
+                sleepDurationProvider: _ => TimeSpan.FromSeconds(10),
                 onRetry: (_, _, _, _) =>
                 {
                     CommandSteps.WhenISelectTheCommand("Refresh");
@@ -402,6 +404,7 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
 
                 var workOrderLink = Driver.WaitUntilAvailable(
                     By.XPath("//div[@data-id='trd_workorderid.fieldControl-LookupResultsDropdown_trd_workorderid_selected_tag_text']"),
+                    TimeSpan.FromSeconds(10),
                     "Work Order link could not be found in the Application Details section.");
 
                 workOrderLink.Click();
@@ -505,6 +508,7 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
             .Handle<StaleElementReferenceException>()
             .Or<NoSuchElementException>()
             .Or<WebDriverTimeoutException>()
+            .Or<InvalidOperationException>()
             .Or<ElementClickInterceptedException>()
             .WaitAndRetry(5, _ => TimeSpan.FromSeconds(2))
             .Execute(() =>
@@ -562,6 +566,7 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
             .Handle<StaleElementReferenceException>()
             .Or<NoSuchElementException>()
             .Or<WebDriverTimeoutException>()
+            .Or<InvalidOperationException>()
             .Or<ElementClickInterceptedException>()
             .WaitAndRetry(5, _ => TimeSpan.FromSeconds(2))
             .Execute(() =>
@@ -612,6 +617,7 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
             .Handle<StaleElementReferenceException>()
             .Or<NoSuchElementException>()
             .Or<WebDriverTimeoutException>()
+            .Or<InvalidOperationException>()
             .Or<ElementClickInterceptedException>()
             .WaitAndRetry(5, _ => TimeSpan.FromSeconds(2))
             .Execute(() =>
@@ -655,6 +661,7 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
             .Handle<StaleElementReferenceException>()
             .Or<NoSuchElementException>()
             .Or<WebDriverTimeoutException>()
+            .Or<InvalidOperationException>()
             .OrResult<string>(value => value != expectedViewName)
             .WaitAndRetry(5, _ => TimeSpan.FromSeconds(2))
             .Execute(() =>
@@ -679,6 +686,7 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
             .Handle<StaleElementReferenceException>()
             .Or<NoSuchElementException>()
             .Or<WebDriverTimeoutException>()
+            .Or<InvalidOperationException>()
             .Or<ElementClickInterceptedException>()
             .WaitAndRetry(5, _ => TimeSpan.FromSeconds(2))
             .Execute(() =>
@@ -855,6 +863,7 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
             .Handle<StaleElementReferenceException>()
             .Or<NoSuchElementException>()
             .Or<WebDriverTimeoutException>()
+            .Or<InvalidOperationException>()
             .OrResult<string>(string.IsNullOrWhiteSpace)
             .WaitAndRetry(5, _ => TimeSpan.FromSeconds(3))
             .Execute(() =>
@@ -2409,13 +2418,13 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
         scenarioContext["PhytoCertificateWindowHandle"] = phytoHandle;
     }
 
-    [Then("the Phytosanitary certificate is displayed in a new window")]
-    public void ThenThePhytosanitaryCertificateIsDisplayedInANewWindow()
+    [Then("the Phytosanitary certificate for {string} is displayed in a new window")]
+    public void ThenThePhytosanitaryCertificateForIsDisplayedInANewWindow(string applicationName)
     {
         var phytoHandle = scenarioContext.Get<string>("PhytoCertificateWindowHandle");
         Driver.CurrentWindowHandle.Should().Be(phytoHandle, "the driver should be focused on the Phytosanitary certificate tab");
 
-        var reference = scenarioContext.Get<string>("Phytosanitary Certificate Application_APHAReference");
+        var reference = scenarioContext.Get<string>($"{applicationName}_APHAReference");
         var expectedUrlPattern = new System.Text.RegularExpressions.Regex(
             $@"/protected/application/{System.Text.RegularExpressions.Regex.Escape(reference)}/r-numbers/\d+/certificate/?(\?.*)?$",
             System.Text.RegularExpressions.RegexOptions.IgnoreCase);
@@ -2446,11 +2455,11 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
     /// from the test host. Works locally and against the Selenium Grid (no browser download needed).
     /// The file path is stored under PhytoCertificatePdfPath for the PDF validation step in Defra.UI.Tests.
     /// </summary>
-    [When("I download the Phytosanitary certificate PDF")]
-    public void WhenIDownloadThePhytosanitaryCertificatePdf()
+    [When("I download the Phytosanitary certificate PDF for {string}")]
+    public void WhenIDownloadThePhytosanitaryCertificatePdfFor(string applicationName)
     {
         var pdfUrl = scenarioContext.TryGetValue("PhytoCertificateUrl", out string url) ? url : Driver.Url;
-        var reference = scenarioContext.Get<string>("Phytosanitary Certificate Application_APHAReference");
+        var reference = scenarioContext.Get<string>($"{applicationName}_APHAReference");
 
         var pdfPath = PdfDownloadHelper.DownloadPdfUsingSession(Driver, pdfUrl, $"{reference}-certificate");
 

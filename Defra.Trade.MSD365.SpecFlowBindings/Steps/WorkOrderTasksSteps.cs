@@ -995,6 +995,7 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
             .Handle<StaleElementReferenceException>()
             .Or<ElementClickInterceptedException>()
             .Or<WebDriverTimeoutException>()
+            .Or<InvalidOperationException>()
             .WaitAndRetry(3, _ => TimeSpan.FromSeconds(2))
             .Execute(() =>
             {
@@ -1018,6 +1019,7 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
             .Handle<StaleElementReferenceException>()
             .Or<ElementClickInterceptedException>()
             .Or<WebDriverTimeoutException>()
+            .Or<InvalidOperationException>()
             .WaitAndRetry(3, _ => TimeSpan.FromSeconds(2))
             .Execute(() =>
             {
@@ -1346,6 +1348,7 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
             .Handle<StaleElementReferenceException>()
             .Or<ElementClickInterceptedException>()
             .Or<WebDriverTimeoutException>()
+            .Or<InvalidOperationException>()
             .WaitAndRetry(3, _ => TimeSpan.FromSeconds(2))
             .Execute(() =>
             {
@@ -2159,6 +2162,7 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
             .Handle<StaleElementReferenceException>()
             .Or<ElementClickInterceptedException>()
             .Or<WebDriverTimeoutException>()
+            .Or<InvalidOperationException>()
             .WaitAndRetry(3, _ => TimeSpan.FromSeconds(2))
             .Execute(() =>
             {
