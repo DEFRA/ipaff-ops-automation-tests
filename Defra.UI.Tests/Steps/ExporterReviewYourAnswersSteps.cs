@@ -53,6 +53,18 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 ValidateNumberOfPackages("PlantNumberOfPackages", exporterReviewYourAnswersPage?.GetCommodityNumberOfPackages(), ref allDataMatches, mismatches);
                 ValidateIfExists("PlantPackaging", exporterReviewYourAnswersPage?.GetCommodityPackaging(), ref allDataMatches, mismatches);
             }
+            else if (_scenarioContext.ContainsKey("PotatoType"))
+            {
+                ValidateIfExists("PotatoVariety", exporterReviewYourAnswersPage?.GetCommodityDetail("Variety"), ref allDataMatches, mismatches);
+                ValidateIfExists("PotatoChemicalUsed", exporterReviewYourAnswersPage?.GetCommodityDetail("Chemicals used"), ref allDataMatches, mismatches);
+                if (_scenarioContext.Get<string>("PotatoType").Equals("Seed", StringComparison.OrdinalIgnoreCase))
+                    ValidateIfExists("PotatoStockNumber", exporterReviewYourAnswersPage?.GetCommodityDetail("Stock number"), ref allDataMatches, mismatches);
+                ValidateIfExists("PotatoCountriesOfOrigin", exporterReviewYourAnswersPage?.GetCommodityOrigin(), ref allDataMatches, mismatches);
+                ValidateQuantity("PotatoQuantity", "PotatoUnit", exporterReviewYourAnswersPage?.GetCommodityQuantity(), ref allDataMatches, mismatches);
+                ValidateNumberOfPackages("PotatoNumberOfPackages", exporterReviewYourAnswersPage?.GetCommodityNumberOfPackages(), ref allDataMatches, mismatches);
+                ValidateIfExists("PotatoPackaging", exporterReviewYourAnswersPage?.GetCommodityPackaging(), ref allDataMatches, mismatches);
+                ValidateIfExists("PotatoPackingMaterial", exporterReviewYourAnswersPage?.GetCommodityPackingMaterial(), ref allDataMatches, mismatches);
+            }
             else
             {
                 ValidateIfExists("SeedVariety", exporterReviewYourAnswersPage?.GetCommodityVariety(), ref allDataMatches, mismatches);
@@ -67,6 +79,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
             ValidateIfExists("ExporterConsignmentValue", exporterReviewYourAnswersPage?.GetConsignmentValue(), ref allDataMatches, mismatches);
             ValidateContains("ExporterPointOfEntry", exporterReviewYourAnswersPage?.GetPointOfEntry(), ref allDataMatches, mismatches);
             ValidateIfExists("ExporterTransportMode", exporterReviewYourAnswersPage?.GetTransportMode(), ref allDataMatches, mismatches);
+            if (_scenarioContext.ContainsKey("ExporterContainerNumber"))
+                ValidateIfExists("ExporterContainerNumber", exporterReviewYourAnswersPage?.GetContainerNumber(), ref allDataMatches, mismatches);
+            if (_scenarioContext.ContainsKey("ExporterInspectionReadyTime"))
+                ValidateIfExists("ExporterInspectionReadyTime", exporterReviewYourAnswersPage?.GetInspectionTime(), ref allDataMatches, mismatches);
 
             // Consignee details
             ValidateIfExists("ExporterConsigneeName", exporterReviewYourAnswersPage?.GetConsigneeName(), ref allDataMatches, mismatches);

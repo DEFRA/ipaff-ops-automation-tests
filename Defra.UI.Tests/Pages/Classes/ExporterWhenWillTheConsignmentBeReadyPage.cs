@@ -1,6 +1,7 @@
 using Defra.UI.Tests.Pages.Interfaces;
 using Defra.UI.Tests.Tools;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using Reqnroll.BoDi;
 
 namespace Defra.UI.Tests.Pages.Classes
@@ -15,6 +16,9 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement txtDateDay => _driver.WaitForElement(By.Id("inspection_date_day"), true);
         private IWebElement txtDateMonth => _driver.WaitForElement(By.Id("inspection_date_month"), true);
         private IWebElement txtDateYear => _driver.WaitForElement(By.Id("inspection_date_year"), true);
+        private IWebElement txtTimeHour => _driver.WaitForElement(By.Id("inspection_time_hour"), true);
+        private IWebElement txtTimeMinute => _driver.WaitForElement(By.Id("inspection_time_minute"), true);
+        private IWebElement drpTimeMeridiem => _driver.WaitForElement(By.Id("inspection_time_meridiem"), true);
         private IWebElement btnSaveAndContinue => _driver.WaitForElement(By.Id("Button-SaveAndContinue"));
         #endregion
 
@@ -35,6 +39,17 @@ namespace Defra.UI.Tests.Pages.Classes
 
             txtDateYear.Clear();
             txtDateYear.SendKeys(date.Year.ToString());
+        }
+
+        public void EnterReadyTime(string hour, string minute, string meridiem)
+        {
+            txtTimeHour.Clear();
+            txtTimeHour.SendKeys(hour);
+
+            txtTimeMinute.Clear();
+            txtTimeMinute.SendKeys(minute);
+
+            new SelectElement(drpTimeMeridiem).SelectByValue(meridiem);
         }
 
         public void ClickSaveAndContinueButton() => btnSaveAndContinue.Click();

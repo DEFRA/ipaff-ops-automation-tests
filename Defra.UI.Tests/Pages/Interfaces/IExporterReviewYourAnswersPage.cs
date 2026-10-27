@@ -24,6 +24,10 @@
         string GetExporterAddress();
         string GetSupportingDocumentFileName();
         string GetSupportingDocumentDescription();
+        string GetCommodityDetail(string label);
+        string GetCommodityPackingMaterial();
+        string GetContainerNumber();
+        string GetInspectionTime();
         void ClickChangeLink(string fieldName);
     }
 }

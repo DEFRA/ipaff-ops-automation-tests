@@ -59,6 +59,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext["APHAReference"] = reference;
         }
 
+        [Then("the guidance {string} is displayed on the Application complete page")]
+        public void ThenTheGuidanceIsDisplayedOnTheApplicationCompletePage(string guidance)
+        {
+            Assert.True(exporterYouHaveSuccessfullySubmittedYourApplicationPage?.IsGuidanceDisplayed(guidance), $"Guidance '{guidance}' is not displayed on the Application complete page");
+        }
+
         [When("the user clicks the View your applications button")]
         public void WhenTheUserClicksTheViewYourApplicationsButton()
         {

@@ -41,6 +41,25 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement rdoPackagingReusable(string yesNoValue) => _driver.WaitForElementExists(By.XPath($"//input[@name='packagingReusableOrReclaimed' and @value='{yesNoValue}']"), true);
         private IWebElement chkCountryOfOrigin(string country) => _driver.WaitForElementExists(By.XPath($"//label[normalize-space()='{country}']/preceding-sibling::input[@name='countriesOfOrigin'] | //input[@name='countriesOfOrigin' and @id=//label[normalize-space()='{country}']/@for]"), true);
         private IWebElement btnSaveAndContinue => _driver.WaitForElement(By.Id("Button-SaveAndContinue"));
+        private IWebElement rdoPotatoType(string potatoType) => _driver.WaitForElementExists(By.Id($"potato-type-{potatoType.Trim().ToLower()}"), true);
+        private IWebElement txtSeedStockNumber => _driver.WaitForElement(By.Id("seed-stock-number"), true);
+        private IWebElement rdoSelectedVariety => _driver.WaitForElementExists(By.Id("selected-variety-radio"), true);
+        private IWebElement txtGsiApplicationReference => _driver.WaitForElement(By.Id("gsi-application-reference"), true);
+        private IWebElement txtChemicalUsedOnTubers => _driver.WaitForElement(By.Id("chemicals-used"), true);
+        private IWebElement txtPackingMaterial => _driver.WaitForElement(By.Id("packaging-material"), true);
+        private IWebElement fieldLabel(string id) => _driver.WaitForElement(By.CssSelector($"label[for='{id}']"), true);
+
+        private static readonly Dictionary<string, string> potatoTextboxFieldIds = new(StringComparer.OrdinalIgnoreCase)
+        {
+            { "Growing season inspection number", "gsi-application-reference" },
+            { "Chemical used on tubers (optional)", "chemicals-used" },
+            { "Quantity", "quantityOrWeightPerPackage" },
+            { "Number of packages", "number-of-packages" },
+            { "Type of packaging", "packaging-type" },
+            { "Packing material (optional)", "packaging-material" },
+            { "Distinguishing marks (optional)", "distinguishing-marks" },
+            { "Countries of origin", "input-countries-of-origin" }
+        };
         #endregion
 
         public ExporterAddToYourConsignmentPage(IObjectContainer container)
@@ -178,6 +197,60 @@ namespace Defra.UI.Tests.Pages.Classes
                 SelectTypeOfPackaging(typeOfPackaging);
             if (!string.IsNullOrWhiteSpace(reusablePackagingOptionValue))
                 SelectReusablePackagingOption(reusablePackagingOptionValue);
+        }
+
+        public bool AreRadioOptionsDisplayed(params string[] radioIds) =>
+            radioIds.All(id => _driver.IsElementDisplayed(By.CssSelector($"label[for='{id}']")));
+
+        public string GetRadioLabelText(string radioId) => fieldLabel(radioId).Text.Trim();
+
+        public bool IsUnitOfMeasurementDropdownDisplayed() =>
+            drpUnitOfMeasurement.Displayed && fieldLabel("unit-of-measurement").Text.Trim().Equals("Unit of measurement");
+
+        public bool IsTextboxFieldDisplayed(string fieldName)
+        {
+            if (!potatoTextboxFieldIds.TryGetValue(fieldName.Trim(), out var id))
+                return false;
+
+            return fieldLabel(id).Text.Trim().Equals(fieldName.Trim(), StringComparison.OrdinalIgnoreCase)
+                && _driver.IsElementDisplayed(By.Id(id));
+        }
+
+        public void DescribePotato(string potatoType, string stockNumber, string variety, string gsiNumber, string chemicalUsed,
+            string quantity, string unit, string numberOfPackages, string typeOfPackaging, string packingMaterial, string countriesOfOrigin)
+        {
+            ScrollAndClick(rdoPotatoType(potatoType));
+            if (potatoType.Trim().Equals("Seed", StringComparison.OrdinalIgnoreCase))
+                ClearAndType(txtSeedStockNumber, stockNumber);
+            ScrollAndClick(rdoSelectedVariety);
+            EnterSpecificVariety(variety);
+            ClearAndType(txtGsiApplicationReference, gsiNumber);
+            ClearAndType(txtChemicalUsedOnTubers, chemicalUsed);
+            EnterQuantity(quantity);
+            SelectUnitOfMeasurement(unit);
+            EnterNumberOfPackages(numberOfPackages);
+            SelectTypeOfPackaging(typeOfPackaging);
+            ClearAndType(txtPackingMaterial, packingMaterial);
+            SelectCountriesOfOrigin(countriesOfOrigin);
+        }
+
+        public bool ArePotatoCommodityDetailsDisplayed(string potatoType, string stockNumber, string variety, string gsiNumber, string chemicalUsed,
+            string quantity, string unit, string numberOfPackages, string typeOfPackaging, string packingMaterial, string countriesOfOrigin)
+        {
+            var isSeed = potatoType.Trim().Equals("Seed", StringComparison.OrdinalIgnoreCase);
+
+            return rdoPotatoType(potatoType).Selected
+                && (!isSeed || GetInputValue(txtSeedStockNumber) == stockNumber)
+                && rdoSelectedVariety.Selected
+                && GetInputValue(txtVarietyAutocomplete) == variety
+                && GetInputValue(txtGsiApplicationReference) == gsiNumber
+                && GetInputValue(txtChemicalUsedOnTubers) == chemicalUsed
+                && GetInputValue(txtQuantity) == quantity
+                && new SelectElement(drpUnitOfMeasurement).SelectedOption.Text.Trim() == unit
+                && GetInputValue(txtNumberOfPackages) == numberOfPackages
+                && GetSelectedText(drpTypeOfPackaging) == typeOfPackaging
+                && GetInputValue(txtPackingMaterial) == packingMaterial
+                && SplitList(countriesOfOrigin).All(c => chkCountryOfOrigin(c).Selected);
         }
 
         public void ClickSaveAndContinueButton() => btnSaveAndContinue.Click();

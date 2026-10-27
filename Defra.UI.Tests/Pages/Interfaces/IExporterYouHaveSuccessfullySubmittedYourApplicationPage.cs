@@ -6,6 +6,7 @@
         bool IsPhytosanitaryConfirmationPageLoaded();
         bool IsSeedSamplingConfirmationPageLoaded();
         string GetAphaReferenceNumber();
+        bool IsGuidanceDisplayed(string guidance);
         void ClickViewYourApplicationsButton();
     }
 }

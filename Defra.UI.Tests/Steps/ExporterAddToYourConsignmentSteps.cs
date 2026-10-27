@@ -153,6 +153,68 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 unit, chemicallyTreated, chemicalsUsed, countryWhereGrown, destinationCountries), "Seed commodity details are not displayed as entered");
         }
 
+        [Then("the {string} and {string} radio buttons are displayed under Type of potato")]
+        public void ThenTheRadioButtonsAreDisplayedUnderTypeOfPotato(string option1, string option2)
+        {
+            Assert.True(exporterAddToYourConsignmentPage?.AreRadioOptionsDisplayed("potato-type-ware", "potato-type-seed"), "Type of potato radio buttons are not displayed");
+            Assert.That(exporterAddToYourConsignmentPage?.GetRadioLabelText("potato-type-ware"), Is.EqualTo(option1));
+            Assert.That(exporterAddToYourConsignmentPage?.GetRadioLabelText("potato-type-seed"), Is.EqualTo(option2));
+        }
+
+        [Then("the {string} and {string} radio buttons are displayed under What variety are your potatoes?")]
+        public void ThenTheRadioButtonsAreDisplayedUnderWhatVarietyAreYourPotatoes(string option1, string option2)
+        {
+            Assert.True(exporterAddToYourConsignmentPage?.AreRadioOptionsDisplayed("selected-variety-radio", "other-variety-radio"), "Variety radio buttons are not displayed");
+            Assert.That(exporterAddToYourConsignmentPage?.GetRadioLabelText("selected-variety-radio"), Is.EqualTo(option1));
+            Assert.That(exporterAddToYourConsignmentPage?.GetRadioLabelText("other-variety-radio"), Is.EqualTo(option2));
+        }
+
+        [Then("the {string} dropdown is displayed under Unit of measurement")]
+        public void ThenTheDropdownIsDisplayedUnderUnitOfMeasurement(string dropdown)
+        {
+            Assert.True(exporterAddToYourConsignmentPage?.IsUnitOfMeasurementDropdownDisplayed(), $"'{dropdown}' dropdown is not displayed");
+        }
+
+        [Then("the following textbox fields are displayed on the Add {string} to your consignment page")]
+        public void ThenTheFollowingTextboxFieldsAreDisplayed(string commodity, Table table)
+        {
+            foreach (var row in table.Rows)
+            {
+                var field = row["Field"];
+                Assert.True(exporterAddToYourConsignmentPage?.IsTextboxFieldDisplayed(field), $"'{field}' field is not displayed on the Add {commodity} to your consignment page");
+            }
+        }
+
+        [When("the user describes the {string} potato with stock number {string}, variety {string}, growing season inspection number {string}, chemical used on tubers {string}, quantity {string}, unit of measurement {string}, number of packages {string}, type of packaging {string}, packing material {string}, countries of origin {string}")]
+        public void WhenTheUserDescribesThePotato(string potatoType, string stockNumber, string variety, string gsiNumber, string chemicalUsed,
+            string quantity, string unit, string numberOfPackages, string typeOfPackaging, string packingMaterial, string countriesOfOrigin)
+        {
+            exporterAddToYourConsignmentPage?.DescribePotato(potatoType, stockNumber, variety, gsiNumber, chemicalUsed,
+                quantity, unit, numberOfPackages, typeOfPackaging, packingMaterial, countriesOfOrigin);
+
+            _scenarioContext["Commodity"] = potatoType;
+            _scenarioContext["PotatoType"] = potatoType;
+            _scenarioContext["PotatoStockNumber"] = stockNumber;
+            _scenarioContext["PotatoVariety"] = variety;
+            _scenarioContext["PotatoGsiNumber"] = gsiNumber;
+            _scenarioContext["PotatoChemicalUsed"] = chemicalUsed;
+            _scenarioContext["PotatoQuantity"] = quantity;
+            _scenarioContext["PotatoUnit"] = unit;
+            _scenarioContext["PotatoNumberOfPackages"] = numberOfPackages;
+            _scenarioContext["PotatoPackaging"] = typeOfPackaging;
+            _scenarioContext["PotatoPackingMaterial"] = packingMaterial;
+            _scenarioContext["PotatoCountriesOfOrigin"] = countriesOfOrigin;
+            _scenarioContext.Remove("DrawDownQuantity");
+        }
+
+        [Then("the potato commodity details are displayed with type of potato {string}, stock number {string}, variety {string}, growing season inspection number {string}, chemical used on tubers {string}, quantity {string}, unit of measurement {string}, number of packages {string}, type of packaging {string}, packing material {string}, countries of origin {string}")]
+        public void ThenThePotatoCommodityDetailsAreDisplayed(string potatoType, string stockNumber, string variety, string gsiNumber, string chemicalUsed,
+            string quantity, string unit, string numberOfPackages, string typeOfPackaging, string packingMaterial, string countriesOfOrigin)
+        {
+            Assert.True(exporterAddToYourConsignmentPage?.ArePotatoCommodityDetailsDisplayed(potatoType, stockNumber, variety, gsiNumber, chemicalUsed,
+                quantity, unit, numberOfPackages, typeOfPackaging, packingMaterial, countriesOfOrigin), "Potato commodity details are not displayed as entered");
+        }
+
         [When("the user clicks the Save and continue button on the Add {string} to your consignment page")]
         public void WhenTheUserClicksTheSaveAndContinueButtonOnTheAddToYourConsignmentPage(string commodity)
         {

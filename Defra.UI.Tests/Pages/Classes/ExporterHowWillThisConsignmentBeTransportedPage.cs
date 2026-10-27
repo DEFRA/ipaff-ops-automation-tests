@@ -23,6 +23,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private IWebElement rdoPointOfEntryNo => _driver.WaitForElementExists(By.Id("poe_selection_no"), true);
         private IWebElement txtPointOfEntry => _driver.WaitForElement(By.Id("port-search-label"), true);
         private IWebElement pointOfEntryOption(string port) => _driver.WaitForElement(By.XPath($"//ul[@id='port-search-label__listbox']/li[contains(.,'{port}')]"), true);
+        private IWebElement txtContainerNumber => _driver.WaitForElement(By.Id("container-number"), true);
         private IWebElement btnSaveAndContinue => _driver.WaitForElement(By.Id("Button-SaveAndContinue"));
         #endregion
 
@@ -133,6 +134,12 @@ namespace Defra.UI.Tests.Pages.Classes
             throw new WebDriverException(
                 $"Point of entry selection failed to commit after {maxAttempts} attempts. " +
                 $"Expected the autocomplete value to contain '{pointOfEntry}' but it was '{committed}'.");
+        }
+
+        public void EnterContainerNumber(string containerNumber)
+        {
+            txtContainerNumber.Clear();
+            txtContainerNumber.SendKeys(containerNumber);
         }
 
         public void ClickSaveAndContinueButton() => btnSaveAndContinue.Click();

@@ -8,6 +8,7 @@
         void EnterConsignmentValue(decimal value);
         void SelectDoYouKnowThePointOfEntry(string option);
         void EnterPointOfEntry(string pointOfEntry);
+        void EnterContainerNumber(string containerNumber);
         void ClickSaveAndContinueButton();
     }
 }

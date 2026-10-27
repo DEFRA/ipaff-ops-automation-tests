@@ -62,6 +62,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
             exporterHowWillThisConsignmentBeTransportedPage?.SelectTransportMethod(method);
         }
 
+        [When("the user enters container number {string} on the How will this consignment be transported? page")]
+        public void WhenTheUserEntersContainerNumberOnTheHowWillThisConsignmentBeTransportedPage(string containerNumber)
+        {
+            _scenarioContext["ExporterContainerNumber"] = containerNumber;
+            exporterHowWillThisConsignmentBeTransportedPage?.EnterContainerNumber(containerNumber);
+        }
+
         [When("the user clicks the Save and continue button on the How will this consignment be transported? page")]
         public void WhenTheUserClicksTheSaveAndContinueButtonOnTheHowWillThisConsignmentBeTransportedPage()
         {

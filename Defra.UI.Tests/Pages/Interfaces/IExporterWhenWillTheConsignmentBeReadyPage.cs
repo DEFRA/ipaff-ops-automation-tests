@@ -4,6 +4,7 @@ namespace Defra.UI.Tests.Pages.Interfaces
     {
         bool IsPageLoaded();
         void EnterReadyDate(DateTime date);
+        void EnterReadyTime(string hour, string minute, string meridiem);
         void ClickSaveAndContinueButton();
     }
 }

@@ -27,5 +27,13 @@ namespace Defra.UI.Tests.Pages.Interfaces
         void DescribeCommodity(string commonName, string botanicalName, string countryOfOrigin, string netWeightPerPackage,
             string numberOfPackages, string typeOfPackaging, string reusablePackagingOptionValue);
         void ClickSaveAndContinueButton();
+        bool AreRadioOptionsDisplayed(params string[] radioIds);
+        string GetRadioLabelText(string radioId);
+        bool IsUnitOfMeasurementDropdownDisplayed();
+        bool IsTextboxFieldDisplayed(string fieldName);
+        void DescribePotato(string potatoType, string stockNumber, string variety, string gsiNumber, string chemicalUsed,
+            string quantity, string unit, string numberOfPackages, string typeOfPackaging, string packingMaterial, string countriesOfOrigin);
+        bool ArePotatoCommodityDetailsDisplayed(string potatoType, string stockNumber, string variety, string gsiNumber, string chemicalUsed,
+            string quantity, string unit, string numberOfPackages, string typeOfPackaging, string packingMaterial, string countriesOfOrigin);
     }
 }

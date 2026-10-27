@@ -61,6 +61,12 @@ namespace Defra.UI.Tests.Pages.Classes
         public string GetExporterAddress() => lblExporterAddress.Text.Trim();
         public string GetSupportingDocumentFileName() => lblSupportingDocumentFileName.Text.Trim();
         public string GetSupportingDocumentDescription() => lblSupportingDocumentDescription.Text.Replace('\u00A0', ' ').Trim();
+        public string GetCommodityDetail(string label) =>
+            _driver.WaitForElement(By.XPath($"//table[@id='commodity-table']/tbody/tr[1]/td[1]/div[starts-with(normalize-space(),'{label}:')]"), true)
+                .Text.Trim().Substring(label.Length + 1).Trim();
+        public string GetCommodityPackingMaterial() => _driver.WaitForElement(By.XPath("//table[@id='commodity-table']/tbody/tr[1]/td[4]/div[2]"), true).Text.Trim();
+        public string GetContainerNumber() => _driver.WaitForElement(By.Id("transport-ref-value"), true).Text.Trim();
+        public string GetInspectionTime() => _driver.WaitForElement(By.Id("inspection-time-value"), true).Text.Trim();
 
         public void ClickChangeLink(string fieldName)
         {

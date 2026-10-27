@@ -5,6 +5,7 @@
         bool IsPageLoaded();
         void EnterNeededDateAndTime(DateTime date, string hhmm, string meridiem);
         void EnterNeededDate(DateTime date);
+        void EnterNeededTime(string hhmm, string meridiem);
         void ClickContinueButton();
     }
 }

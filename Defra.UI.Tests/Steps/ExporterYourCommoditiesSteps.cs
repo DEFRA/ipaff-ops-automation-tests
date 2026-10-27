@@ -48,6 +48,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
             AssertCommodityTable(new[] { "Description", "Quantity and number of packages", "Packaging, packing material and distinguishing marks", "Actions" });
         }
 
+        [Then("the commodity table is displayed for applying for a phytosanitary certificate to export potatoes")]
+        public void ThenTheCommodityTableIsDisplayedForApplyingForAPhytosanitaryCertificateToExportPotatoes()
+        {
+            AssertCommodityTable(new[] { "Description", "Origin", "Quantity and number of packages", "Packaging, packing material and distinguishing marks", "Actions" });
+        }
+
         [Then("the {string} question is displayed on the Your commodities page")]
         public void ThenTheQuestionIsDisplayedOnTheYourCommoditiesPage(string question)
         {

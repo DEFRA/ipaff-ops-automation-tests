@@ -10,14 +10,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
     public class ExporterWhenWillTheConsignmentBeReadySteps
     {
         private readonly IObjectContainer _objectContainer;
+        private readonly ScenarioContext _scenarioContext;
 
         private IExporterWhenWillTheConsignmentBeReadyPage? exporterWhenWillTheConsignmentBeReadyPage =>
             _objectContainer.IsRegistered<IExporterWhenWillTheConsignmentBeReadyPage>()
                 ? _objectContainer.Resolve<IExporterWhenWillTheConsignmentBeReadyPage>()
                 : null;
 
-        public ExporterWhenWillTheConsignmentBeReadySteps(IObjectContainer container)
+        public ExporterWhenWillTheConsignmentBeReadySteps(ScenarioContext context, IObjectContainer container)
         {
+            _scenarioContext = context;
             _objectContainer = container;
         }
 
@@ -31,6 +33,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserEntersAValidDateForWhenTheConsignmentWillBeReadyForInspectionAtLeastDaysInTheFuture(int days)
         {
             exporterWhenWillTheConsignmentBeReadyPage?.EnterReadyDate(DateTime.Today.AddDays(days));
+        }
+
+        [When("the user enters a valid time for when the consignment will be ready for inspection at least {int} hours in the future")]
+        public void WhenTheUserEntersAValidTimeForWhenTheConsignmentWillBeReadyForInspection(int hours)
+        {
+            var time = DateTime.Now.AddHours(hours);
+            var meridiem = time.ToString("tt", System.Globalization.CultureInfo.InvariantCulture).ToLower();
+            exporterWhenWillTheConsignmentBeReadyPage?.EnterReadyTime(time.ToString("%h"), time.ToString("mm"), meridiem);
+            _scenarioContext["ExporterInspectionReadyTime"] = $"{time:%h}:{time:mm}{meridiem}";
         }
 
         [When("the user clicks the Save and continue button on the When will the consignment be ready? page")]

@@ -44,6 +44,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
             exporterWhenDoYouNeedTheCertificatePage?.EnterNeededDate(DateTime.Today.AddDays(days));
         }
 
+        [When("the user enters a valid time for when the certificate is needed at least {int} hours in the future")]
+        public void WhenTheUserEntersAValidTimeForWhenTheCertificateIsNeeded(int hours)
+        {
+            var time = DateTime.Now.AddHours(hours);
+            var meridiem = time.ToString("tt", System.Globalization.CultureInfo.InvariantCulture).ToLower();
+            exporterWhenDoYouNeedTheCertificatePage?.EnterNeededTime($"{time:%h}:{time:mm}", meridiem);
+        }
+
         [When("the user clicks the Continue button on the When do you need the certificate? page")]
         public void WhenTheUserClicksTheContinueButtonOnTheWhenDoYouNeedTheCertificatePage()
         {

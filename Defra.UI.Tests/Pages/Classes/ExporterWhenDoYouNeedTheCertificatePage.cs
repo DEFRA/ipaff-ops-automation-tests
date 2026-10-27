@@ -37,6 +37,8 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void EnterNeededDate(DateTime date) => EnterDate(date);
 
+        public void EnterNeededTime(string hhmm, string meridiem) => EnterTime(hhmm, meridiem);
+
         public void ClickContinueButton() => btnContinue.Click();
 
         private void EnterDate(DateTime date)
