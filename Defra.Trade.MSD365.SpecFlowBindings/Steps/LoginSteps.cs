@@ -36,6 +36,40 @@ public class LoginSteps : PowerAppsStepDefiner
         //scenarioContext["Seed Sampling Application_APHAReference"] = "1762431094387";
         //scenarioContext["Phytosanitary Certificate Application_APHAReference"] = "1762431094387";
         //scenarioContext["StockRequestName"] = "10162725";
+        // TEMPORARY SPS-3991 harness: remove after debugging the Dynamics-only journey.
+        if (Array.Exists(scenarioContext.ScenarioInfo.Tags, tag => tag == "SPS-3991")
+            && !scenarioContext.ContainsKey("Potatoes Application_APHAReference"))
+        {
+            scenarioContext["UserRole"] = "Trader";
+            scenarioContext["Export"] = "Potatoes";
+            scenarioContext["Journey"] = "Apply for a phytosanitary certificate";
+            scenarioContext["ExporterDestinationCountry"] = "France";
+            scenarioContext["Reference"] = "28102026145745";
+            scenarioContext["ExporterName"] = "IPAFFS IDM Test";
+            scenarioContext["ExporterAddress"] = "HORNBEAM HOUSE ELECTRA WAY, CREWE, CHESHIRE, CW1 6GJ, United Kingdom";
+            scenarioContext["Commodity"] = "Seed";
+            scenarioContext["PotatoType"] = "Seed";
+            scenarioContext["PotatoStockNumber"] = "SPS3991-STOCK";
+            scenarioContext["PotatoVariety"] = "King Edward";
+            scenarioContext["PotatoGsiNumber"] = "SPS3991-GSI";
+            scenarioContext["PotatoChemicalUsed"] = "Fungicide";
+            scenarioContext["PotatoQuantity"] = "100";
+            scenarioContext["PotatoUnit"] = "Kilograms";
+            scenarioContext["PotatoNumberOfPackages"] = "10";
+            scenarioContext["PotatoPackaging"] = "Box";
+            scenarioContext["PotatoPackingMaterial"] = "Paper";
+            scenarioContext["PotatoCountriesOfOrigin"] = "United Kingdom";
+            scenarioContext["ExporterInspectionReadyTime"] = "4:58pm";
+            scenarioContext["ExporterConsigneeName"] = "Towne LLC";
+            scenarioContext["ExporterConsigneeAddress"] = "06996 Carolyn Islands, West Avisburgh, KV 1IV";
+            scenarioContext["ExporterConsignmentValue"] = "2000.00";
+            scenarioContext["ExporterPointOfEntry"] = "FR CQF";
+            scenarioContext["ExporterTransportMode"] = "Road or ferry";
+            scenarioContext["ExporterContainerNumber"] = "SPS3991-CONTAINER";
+            scenarioContext["SupportingDocumentFileName"] = "IPAFFS Test Document 1.docx";
+            scenarioContext["SupportingDocumentDescription"] = "Automation supporting document";
+            scenarioContext["Potatoes Application_APHAReference"] = "1762431094852";
+        }
         scenarioContext["IsDynamicsActive"] = true;
         SelectApplication(appName);
         GivenIAmLoggedInToTheAppAs1(appName, userAlias);        

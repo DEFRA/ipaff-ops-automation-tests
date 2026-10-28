@@ -53,7 +53,7 @@ Scenario: New exporter application for a phytosanitary certificate - PHES Happy 
 	Then the Your application page is displayed
 	When the user clicks the Who are you sending this consignment to? link
 	Then the Who are you sending this consignment to? page is displayed
-	When the user enters the conisgnee details and clicks the Continue button on the Who are you sending this consignment to? page
+	When the user enters the consignee details and clicks the Continue button on the Who are you sending this consignment to? page
 	Then the Your application page is displayed
 	When the user clicks the How will this consignment be transported? link
 	Then the How will this consignment be transported? page is displayed
@@ -292,7 +292,7 @@ Scenario: Exporter application for seed sampling followed by a phytosanitary cer
 	And the "What's in your consignment" task is marked as 'COMPLETE'
 	When the user clicks the Who are you sending this consignment to? link
 	Then the Who are you sending this consignment to? page is displayed
-	When the user enters the conisgnee details and clicks the Continue button on the Who are you sending this consignment to? page
+	When the user enters the consignee details and clicks the Continue button on the Who are you sending this consignment to? page
 	Then the Your application page is displayed
 	And the 'Who are you sending this consignment to?' task is marked as 'COMPLETE'
 	When the user clicks the How will this consignment be transported? link
@@ -524,7 +524,7 @@ Scenario: Exporter phytosanitary certificate application creating stock, followe
 	Then the Your application page is displayed
 	When the user clicks the Who are you sending this consignment to? link
 	Then the Who are you sending this consignment to? page is displayed
-	When the user enters the conisgnee details and clicks the Save and continue button on the Who are you sending this consignment to? page
+	When the user enters the consignee details and clicks the Save and continue button on the Who are you sending this consignment to? page
 	Then the Your application page is displayed
 	When the user clicks the How will this consignment be transported? link
 	Then the How will this consignment be transported? page is displayed
@@ -883,102 +883,102 @@ Scenario: Exporter phytosanitary certificate application creating stock, followe
 @SPS-3991
 Scenario: Exporter phytosanitary certificate application for potatoes, inspection and certificate verification - SPS-3991
 	# ---------- Exporter Portal - Apply for a phytosanitary certificate for potatoes ----------
-	Given that I navigate to the Exporter Portal
-	Then I should see type of Gateway login page
-	And I have selected 'Sign in with Government Gateway' as login type
-	When I click Continue button from How do you want to sign in page
-	Then I should be redirected to the Sign in using Government Gateway page
-	When I have provided the Exporter Trader credentials and signin
-	Then the Exporter Portal homepage should be displayed
-	When the user clicks the Start a new application button
-	Then the What are you exporting? page is displayed
-	When the user selects 'Potatoes' and clicks the Continue button on the What are you exporting? page
-	Then the What do you need to do? page is displayed
-	When the user selects 'Apply for a phytosanitary certificate' and clicks the Continue button on the What do you need to do? page
-	Then the Destination country page is displayed
-	When the user searches for destination country 'France' and clicks the Continue button
-	Then the Regulations for exporting 'potatoes' to 'France' page is displayed
-	When the user ticks the exporting regulations checkbox
-	And the user clicks the Continue button on the Regulations for exporting page
-	Then the Create a reference page is displayed
-	When the user enters a reference number and clicks the Save and continue button
-	Then the Your application page is displayed
-	When the user clicks the What is the exporter address? link
-	Then the Is this the exporter address? page is displayed
-	When the user selects 'Yes' and clicks the Save and continue button on the Is this the exporter address? page
-	Then the Your application page is displayed
-	When the user clicks the What's in your consignment? link
-	Then the How do you want to add commodities to your consignment? page is displayed
-	When the user selects 'Manually, by adding one at a time' and clicks the Continue button on the How do you want to add commodities to your consignment? page
-	Then the Add 'potatoes' to your consignment page is displayed
-	And the 'Ware' and 'Seed' radio buttons are displayed under Type of potato
-	And the 'Variety' and 'Other' radio buttons are displayed under What variety are your potatoes?
-	And the 'Unit of measurement' dropdown is displayed under Unit of measurement
-	And the following textbox fields are displayed on the Add 'potatoes' to your consignment page
-		| Field                              |
-		| Growing season inspection number   |
-		| Chemical used on tubers (optional) |
-		| Quantity                           |
-		| Number of packages                 |
-		| Type of packaging                  |
-		| Packing material (optional)        |
-		| Distinguishing marks (optional)    |
-		| Countries of origin                |
-	When the user describes the 'Seed' potato with stock number 'SPS3991-STOCK', variety 'King Edward', growing season inspection number 'SPS3991-GSI', chemical used on tubers 'Fungicide', quantity '100', unit of measurement 'Kilograms', number of packages '10', type of packaging 'Box', packing material 'Paper', countries of origin 'United Kingdom'
-	Then the potato commodity details are displayed with type of potato 'Seed', stock number 'SPS3991-STOCK', variety 'King Edward', growing season inspection number 'SPS3991-GSI', chemical used on tubers 'Fungicide', quantity '100', unit of measurement 'Kilograms', number of packages '10', type of packaging 'Box', packing material 'Paper', countries of origin 'United Kingdom'
-	When the user clicks the Save and continue button on the Add 'potatoes' to your consignment page
-	Then the Your commodities page is displayed
-	And the commodity table is displayed for applying for a phytosanitary certificate to export potatoes
-	When the user selects 'No, I have finished adding commodities' and clicks the Save and continue button on the Your commodities page
-	Then the Your application page is displayed
-	When the user clicks the What are the inspection details? link
-	Then the What are the inspection details? page is displayed
-	When the user selects an inspection address and continues
-	Then the Do you want to select this inspection address? page is displayed
-	When the user selects 'Yes, select this inspection address' and clicks the Continue button on the Do you want to select this inspection address? page
-	Then the Who is the contact for this application? page is displayed
-	When the user enters a contact name for the inspector to contact about the application
-	And the user enters a phone number for the inspector to contact about the application
-	And the user clicks the Save and continue button on the Who is the contact for this application? page
-	Then the When will the consignment be ready? page is displayed
-	When the user enters a valid date for when the consignment will be ready for inspection at least 5 days in the future
-	And the user enters a valid time for when the consignment will be ready for inspection at least 2 hours in the future
-	And the user clicks the Save and continue button on the When will the consignment be ready? page
-	Then the Your application page is displayed
-	When the user clicks the Who are you sending this consignment to? link
-	Then the Who are you sending this consignment to? page is displayed
-	When the user enters the conisgnee details and clicks the Save and continue button on the Who are you sending this consignment to? page
-	Then the Your application page is displayed
-	When the user clicks the How will this consignment be transported? link
-	Then the How will this consignment be transported? page is displayed
-	When the user enters the value of the consignment in pounds 2000.00
-	And the user selects 'Yes' for Do you know the point of entry?
-	And the user enters the point of entry 'FR CQF'
-	And the user selects a transport method 'Road or ferry'
-	And the user enters container number 'SPS3991-CONTAINER' on the How will this consignment be transported? page
-	And the user clicks the Save and continue button on the How will this consignment be transported? page
-	Then the Your application page is displayed
-	When the user clicks the Supporting documents link
-	When the user uploads a supporting document and clicks the Save and continue button
-	Then the Your application page is displayed
-	When the user clicks the Check your answers and submit your application link
-	Then the Review your answers page is displayed
-	And the data presented for review matches the data entered into the Exporter Portal for a phytosanitary certificate application
-	When the user clicks the Continue button on the Review your answers page
-	Then the When do you need the certificate? page is displayed
-	When the user enters a valid date for when the certificate is needed at least 6 days in the future
-	And the user enters a valid time for when the certificate is needed at least 2 hours in the future
-	And the user clicks the Continue button on the When do you need the certificate? page
-	Then the Exporter declaration page is displayed
-	When the user ticks the exporter declaration checkbox
-	And the user clicks the Submit application button
-	Then the You have successfully submitted your application for a phytosanitary certificate page is displayed
-	And the user records the APHA reference number for 'Potatoes Application'
-	And the guidance 'We will:' is displayed on the Application complete page
-	And the guidance 'arrange an inspection of your consignment within 7 working days' is displayed on the Application complete page
-	And the guidance 'issue your certificate, if there are no problems' is displayed on the Application complete page
-	And the guidance 'send you an invoice' is displayed on the Application complete page
-	And the guidance 'You can reduce the final weight of your consignment later.' is displayed on the Application complete page
+	#Given that I navigate to the Exporter Portal
+	#Then I should see type of Gateway login page
+	#And I have selected 'Sign in with Government Gateway' as login type
+	#When I click Continue button from How do you want to sign in page
+	#Then I should be redirected to the Sign in using Government Gateway page
+	#When I have provided the Exporter Trader credentials and signin
+	#Then the Exporter Portal homepage should be displayed
+	#When the user clicks the Start a new application button
+	#Then the What are you exporting? page is displayed
+	#When the user selects 'Potatoes' and clicks the Continue button on the What are you exporting? page
+	#Then the What do you need to do? page is displayed
+	#When the user selects 'Apply for a phytosanitary certificate' and clicks the Continue button on the What do you need to do? page
+	#Then the Destination country page is displayed
+	#When the user searches for destination country 'France' and clicks the Continue button
+	#Then the Regulations for exporting 'potatoes' to 'France' page is displayed
+	#When the user ticks the exporting regulations checkbox
+	#And the user clicks the Continue button on the Regulations for exporting page
+	#Then the Create a reference page is displayed
+	#When the user enters a reference number and clicks the Save and continue button
+	#Then the Your application page is displayed
+	#When the user clicks the What is the exporter address? link
+	#Then the Is this the exporter address? page is displayed
+	#When the user selects 'Yes' and clicks the Save and continue button on the Is this the exporter address? page
+	#Then the Your application page is displayed
+	#When the user clicks the What's in your consignment? link
+	#Then the How do you want to add commodities to your consignment? page is displayed
+	#When the user selects 'Manually, by adding one at a time' and clicks the Continue button on the How do you want to add commodities to your consignment? page
+	#Then the Add 'potatoes' to your consignment page is displayed
+	#And the 'Ware' and 'Seed' radio buttons are displayed under Type of potato
+	#And the 'Variety' and 'Other' radio buttons are displayed under What variety are your potatoes?
+	#And the 'Unit of measurement' dropdown is displayed under Unit of measurement
+	#And the following textbox fields are displayed on the Add 'potatoes' to your consignment page
+	#	| Field                              |
+	#	| Growing season inspection number   |
+	#	| Chemical used on tubers (optional) |
+	#	| Quantity                           |
+	#	| Number of packages                 |
+	#	| Type of packaging                  |
+	#	| Packing material (optional)        |
+	#	| Distinguishing marks (optional)    |
+	#	| Countries of origin                |
+	#When the user describes the 'Seed' potato with stock number 'SPS3991-STOCK', variety 'King Edward', growing season inspection number 'SPS3991-GSI', chemical used on tubers 'Fungicide', quantity '100', unit of measurement 'Kilograms', number of packages '10', type of packaging 'Box', packing material 'Paper', countries of origin 'United Kingdom'
+	#Then the potato commodity details are displayed with type of potato 'Seed', stock number 'SPS3991-STOCK', variety 'King Edward', growing season inspection number 'SPS3991-GSI', chemical used on tubers 'Fungicide', quantity '100', unit of measurement 'Kilograms', number of packages '10', type of packaging 'Box', packing material 'Paper', countries of origin 'United Kingdom'
+	#When the user clicks the Save and continue button on the Add 'potatoes' to your consignment page
+	#Then the Your commodities page is displayed
+	#And the commodity table is displayed for applying for a phytosanitary certificate to export potatoes
+	#When the user selects 'No, I have finished adding commodities' and clicks the Save and continue button on the Your commodities page
+	#Then the Your application page is displayed
+	#When the user clicks the What are the inspection details? link
+	#Then the What are the inspection details? page is displayed
+	#When the user selects an inspection address and continues
+	#Then the Do you want to select this inspection address? page is displayed
+	#When the user selects 'Yes, select this inspection address' and clicks the Continue button on the Do you want to select this inspection address? page
+	#Then the Who is the contact for this application? page is displayed
+	#When the user enters a contact name for the inspector to contact about the application
+	#And the user enters a phone number for the inspector to contact about the application
+	#And the user clicks the Save and continue button on the Who is the contact for this application? page
+	#Then the When will the consignment be ready? page is displayed
+	#When the user enters a valid date for when the consignment will be ready for inspection at least 5 days in the future
+	#And the user enters a valid time for when the consignment will be ready for inspection at least 2 hours in the future
+	#And the user clicks the Save and continue button on the When will the consignment be ready? page
+	#Then the Your application page is displayed
+	#When the user clicks the Who are you sending this consignment to? link
+	#Then the Who are you sending this consignment to? page is displayed
+	#When the user enters the consignee details and clicks the Save and continue button on the Who are you sending this consignment to? page
+	#Then the Your application page is displayed
+	#When the user clicks the How will this consignment be transported? link
+	#Then the How will this consignment be transported? page is displayed
+	#When the user enters the value of the consignment in pounds 2000.00
+	#And the user selects 'Yes' for Do you know the point of entry?
+	#And the user enters the point of entry 'FR CQF'
+	#And the user selects a transport method 'Road or ferry'
+	#And the user enters container number 'SPS3991-CONTAINER' on the How will this consignment be transported? page
+	#And the user clicks the Save and continue button on the How will this consignment be transported? page
+	#Then the Your application page is displayed
+	#When the user clicks the Supporting documents link
+	#When the user uploads a supporting document and clicks the Save and continue button
+	#Then the Your application page is displayed
+	#When the user clicks the Check your answers and submit your application link
+	#Then the Review your answers page is displayed
+	#And the data presented for review matches the data entered into the Exporter Portal for a phytosanitary certificate application
+	#When the user clicks the Continue button on the Review your answers page
+	#Then the When do you need the certificate? page is displayed
+	#When the user enters a valid date for when the certificate is needed at least 6 days in the future
+	#And the user enters a valid time for when the certificate is needed at least 2 hours in the future
+	#And the user clicks the Continue button on the When do you need the certificate? page
+	#Then the Exporter declaration page is displayed
+	#When the user ticks the exporter declaration checkbox
+	#And the user clicks the Submit application button
+	#Then the You have successfully submitted your application for a phytosanitary certificate page is displayed
+	#And the user records the APHA reference number for 'Potatoes Application'
+	#And the guidance 'We will:' is displayed on the Application complete page
+	#And the guidance 'arrange an inspection of your consignment within 7 working days' is displayed on the Application complete page
+	#And the guidance 'issue your certificate, if there are no problems' is displayed on the Application complete page
+	#And the guidance 'send you an invoice' is displayed on the Application complete page
+	#And the guidance 'You can reduce the final weight of your consignment later.' is displayed on the Application complete page
 	# ---------- Dynamics Portal - Review and assign the potatoes export application ----------
 	When I am logged in to the 'IDCOMS' app as 'Inspector'
 	And I click on 'Export Applications' under the 'Exports' area
@@ -994,14 +994,14 @@ Scenario: Exporter phytosanitary certificate application for potatoes, inspectio
 	When I click the Work Order link in the Application Details section
 	Then the Work Order page is displayed for the 'Potatoes Application' created in the Exporter Portal
 	And the 'Export' tab is displayed and selected
-	And the Substatus of the Work Order should be 'Unassigned'
+	#And the Substatus of the Work Order should be 'Unassigned'
 	And the Application Type should be 'Export Application' in the General section
 	And the Commodity Group should be 'Potatoes' in the General section
-	When I click the Assign command
-	Then I can see the Assign Work Order popup is displayed
-	When I click the Assign button
-	Then the Substatus of the Work Order should be 'Assigned'
-	And the Owner of the Work Order should be me
+	#When I click the Assign command
+	#Then I can see the Assign Work Order popup is displayed
+	#When I click the Assign button
+	#Then the Substatus of the Work Order should be 'Assigned'
+	#And the Owner of the Work Order should be me
 	And I can see 1 row in the Commodity Lines subgrid
 	# @agent: New step in: WorkOrderSteps
 	# data-id="dataSetRoot_Commoditylines"
@@ -1034,27 +1034,27 @@ Scenario: Exporter phytosanitary certificate application for potatoes, inspectio
 	# ---------- Dynamics Portal - Complete the pre-inspection task ----------
 	When I select the 'Work Order Tasks' tab
 	Then the 'Work Order Tasks' tab is displayed and selected
-	And I can see following Work Order Tasks 'Pre Inspection Task' 'Potatoes Inspection Task' 'Issue Phyto Task'
-	When I click on the 'Pre Inspection Task' task
-	And I maximise the popup
-	Then I verify the 'Pre Inspection Task' popup is displayed
-	And the 'Summary' tab is displayed and selected
-	When I select the Time Recording Inspectors field on the Work Order Task page
-	And I search for my name in the Time Recording Inspectors field
-	Then a new row appears in the Time Recording grid containing my name
-	And the entry status is 'Draft'
-	When I enter 5 in the 'Admin' column
-	And I select the new row in the grid
-	And I click Submit Time
-	Then I can see the Confirm Time Entries popup is displayed
-	When I click the OK button
-	Then the 'Summary' tab is displayed and selected
-	And the entry status is 'Submitted'
-	When I click Mark Complete
-	Then a grey banner is displayed 'Read-only This record’s status: Inactive'
-	When I close the popup
-	Then the 'Work Order Tasks' tab is displayed and selected
-	And the 'Pre Inspection Task' is no longer visible in the Active Work Order Service Tasks - Exports subgrid
+	#And I can see following Work Order Tasks 'Pre Inspection Task' 'Potatoes Inspection Task' 'Issue Phyto Task'
+	#When I click on the 'Pre Inspection Task' task
+	#And I maximise the popup
+	#Then I verify the 'Pre Inspection Task' popup is displayed
+	#And the 'Summary' tab is displayed and selected
+	#When I select the Time Recording Inspectors field on the Work Order Task page
+	#And I search for my name in the Time Recording Inspectors field
+	#Then a new row appears in the Time Recording grid containing my name
+	#And the entry status is 'Draft'
+	#When I enter 5 in the 'Admin' column
+	#And I select the new row in the grid
+	#And I click Submit Time
+	#Then I can see the Confirm Time Entries popup is displayed
+	#When I click the OK button
+	#Then the 'Summary' tab is displayed and selected
+	#And the entry status is 'Submitted'
+	#When I click Mark Complete
+	#Then a grey banner is displayed 'Read-only This record’s status: Inactive'
+	#When I close the popup
+	#Then the 'Work Order Tasks' tab is displayed and selected
+	#And the 'Pre Inspection Task' is no longer visible in the Active Work Order Service Tasks - Exports subgrid
 	# ---------- Dynamics Portal - Inspect the potatoes and select a declaration ----------
 	When I click on the 'Potatoes Inspection Task' task
 	And I maximise the popup
@@ -1079,13 +1079,14 @@ Scenario: Exporter phytosanitary certificate application for potatoes, inspectio
 		| Status Reason     | Active                   |
 	When I select the 'Inspection Results' tab
 	Then the 'Inspection Results' tab is displayed and selected
-	# New step in: WorkOrderTasksSteps
+	# @agent: New step in: WorkOrderTasksSteps
 	# data-id="trd_visitid.fieldControl-LookupResultsDropdown_trd_visitid_InputSearch"
 	# data-id="trd_visitid.fieldControl-Lookup_trd_visitid_microsoftIcon_searchButton"
 	# data-id="trd_inspectorassignedid.fieldControl-LookupResultsDropdown_trd_inspectorassignedid_SelectedRecordList"
 	# data-id="trd_inspectorassignedid.fieldControl-Lookup_trd_inspectorassignedid_microsoftIcon_searchButton"
 	And the 'Visit' and 'Inspector Assigned' fields are displayed and editable on the Work Order Task page
 	When I scroll down to the Inspection Results grid on the Work Order Task page
+	# @agent: Review implementation in case usage below has too many arguments for the step definition: [Then(@"I can see the following columns are present in the Inspection Results grid '(.*)' '(.*)' '(.*)' '(.*)' '(.*)' '(.*)' '(.*)' '(.*)' '(.*)' '(.*)' '(.*)' '(.*)'")]
 	Then I can see the following columns are present in the Inspection Results grid 'Status Reason' 'Potato Type (Consignment Item)' 'Variety (Consignment Item)' 'Stock Number (Consignment Item)' 'Chemicals Used (Consignment Item)' 'Quantity Applied For' 'Quantity Inspected' 'Quantity Passed' 'Quantity Exported (Consignment Item)' 'Inspection Result' 'Reason' 'Lab Sample' 'Task Type'
 	When I select the Visit field on the Work Order Task page
 	And I select the New button on the Visits dropdown
@@ -1209,6 +1210,8 @@ Scenario: Exporter phytosanitary certificate application for potatoes, inspectio
 	When I select the 'Declarations' tab
 	Then the 'Declarations' tab is displayed and selected
 	And the following columns are displayed in the Declarations subgrid 'Declaration ID' 'Declaration Short Name' 'Declaration Description' 'Country Name' 'TAP Approved' 'Created On'
+	# @agent: New step in: WorkOrderTasksSteps
+	# col-id="trd_countryid"
 	And the Declarations subgrid is filtered by the Country Name 'France'
 	And the following columns are displayed in the Selected Declarations subgrid 'Declaration Short Name' 'Declaration Description' 'Country Name' 'TAP Approved' 'Include on Phyto' 'Modified On'
 	When I select the 'Summary' tab

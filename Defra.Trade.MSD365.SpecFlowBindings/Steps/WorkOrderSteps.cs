@@ -418,9 +418,76 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
     private const string StockRequestsSubGridName = "stockrequests_subgrid";
     private const string StockRequestsSubgridXPath = "//div[@data-id='stockrequests_subgrid-powerapps_onegrid_control_container']";
     private const string CommodityLinesSubgridXPath = "//div[@data-control-name='subgrid_selected_commodities' or starts-with(@data-id,'PhytoCommodities-subgrid_selected_commodities')]";
+    private const string WorkOrderCommodityLinesSubgridXPath = "//div[@data-id='dataSetRoot_Commoditylines']";
     private const string StockRequestsStockColumnId = "trd_stock";
     private const string StockRequestsStatusReasonColumnId = "statuscode";
     private const string StockRequestsRowStatusColumnId = "__row_status";
+
+    private static readonly By PotatoCommodityGrid = By.CssSelector("[data-id='dataSetRoot_Commoditylines']");
+    private static readonly Dictionary<string, string> PotatoCommodityColumnIds = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["Potato Type"] = "trd_potatotype",
+        ["Variety"] = "trd_variety",
+        ["Quantity Exported"] = "trd_finalweight",
+        ["Lot Reference"] = "trd_lotreference",
+        ["Soil Sampling/Stock Number"] = "trd_soilsampleapplicationnumber",
+        ["GSI Number"] = "trd_gsinumber",
+        ["Stock Number"] = "trd_stocknumber",
+        ["Chemicals Used"] = "trd_chemicalused",
+    };
+
+    [Then("I can see the following columns in the Commodity Lines subgrid {string} {string} {string} {string} {string} {string} {string} {string}")]
+    public void ThenICanSeeTheFollowingColumnsInTheCommodityLinesSubgrid(string column1, string column2, string column3, string column4, string column5, string column6, string column7, string column8)
+    {
+        foreach (var column in new[] { column1, column2, column3, column4, column5, column6, column7, column8 })
+        {
+            var text = Policy.Handle<StaleElementReferenceException>().Or<NoSuchElementException>()
+                .WaitAndRetry(4, _ => TimeSpan.FromSeconds(1))
+                .Execute(() => ScrollPotatoCommodityGridUntilColumnVisible(PotatoCommodityColumnIds[column])
+                    .FindElement(By.CssSelector("[data-testid='columnHeader'] label")).Text.Trim());
+            text.Should().Be(column, $"Commodity Lines should contain column '{column}'");
+        }
+    }
+
+    [When("I double click on a commodity line in the Commodity Lines subgrid")]
+    public void WhenIDoubleClickOnACommodityLineInTheCommodityLinesSubgrid()
+    {
+        Policy.Handle<StaleElementReferenceException>().Or<NoSuchElementException>().Or<ElementClickInterceptedException>()
+            .WaitAndRetry(4, _ => TimeSpan.FromSeconds(1)).Execute(() =>
+            {
+                ScrollPotatoCommodityGridUntilColumnVisible("trd_potatotype");
+                var cell = Driver.FindElement(PotatoCommodityGrid)
+                    .FindElement(By.CssSelector("[role='row'][row-index='0'] [role='gridcell'][col-id='trd_potatotype']"));
+                new Actions(Driver).MoveToElement(cell).DoubleClick().Perform();
+            });
+        Driver.WaitForTransaction();
+    }
+
+    private IWebElement ScrollPotatoCommodityGridUntilColumnVisible(string columnId)
+    {
+        for (var attempt = 0; attempt < 40; attempt++)
+        {
+            Driver.WaitForTransaction();
+            var grid = Driver.WaitUntilAvailable(PotatoCommodityGrid, "Commodity Lines grid was not found.");
+            if (grid.FindElements(By.CssSelector("[aria-busy='true'], .ag-overlay-loading-center" )).Any(e => e.Displayed))
+            {
+                Thread.Sleep(250);
+                continue;
+            }
+            var header = grid.FindElements(By.CssSelector($"[role='columnheader'][col-id='{columnId}']"))
+                .FirstOrDefault(e => e.Displayed);
+            if (header != null)
+            {
+                Driver.ExecuteScript("arguments[0].scrollIntoView({block:'nearest', inline:'center'});", header);
+                return Driver.FindElement(PotatoCommodityGrid).FindElement(By.CssSelector($"[role='columnheader'][col-id='{columnId}']"));
+            }
+            Driver.ExecuteScript(@"
+                var root = arguments[0].querySelector('.ag-body-horizontal-scroll-viewport');
+                if (root) { root.scrollLeft = arguments[1] === 0 ? 0 : root.scrollLeft + 250; }", grid, attempt);
+            Thread.Sleep(250);
+        }
+        throw new NoSuchElementException($"Commodity Lines column '{columnId}' was not rendered after scrolling.");
+    }
 
     private static readonly Dictionary<string, string> StockRequestsColumnIds = new()
     {
@@ -462,7 +529,10 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
             .Execute(() =>
             {
                 Driver.WaitForTransaction();
-                return GetSubgridRowCount(CommodityLinesSubgridXPath);
+                var containerXPath = Driver.FindElements(By.XPath(CommodityLinesSubgridXPath)).Any(e => e.Displayed)
+                    ? CommodityLinesSubgridXPath
+                    : WorkOrderCommodityLinesSubgridXPath;
+                return GetSubgridRowCount(containerXPath);
             });
 
         actualRowCount.Should().Be(expectedRowCount,

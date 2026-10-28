@@ -29,9 +29,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(exporterWhoAreYouSendingThisConsignmentToPage?.IsPageLoaded(), "Who are you sending this consignment to? page is not displayed");
         }
 
-        [When("the user enters the conisgnee details and clicks the Continue button on the Who are you sending this consignment to? page")]
-        [When("the user enters the conisgnee details and clicks the Save and continue button on the Who are you sending this consignment to? page")]
-        public void WhenTheUserEntersTheConisgneeDetailsAndClicksTheContinueButtonOnTheWhoAreYouSendingThisConsignmentToPage()
+        [When("the user enters the consignee details and clicks the Continue button on the Who are you sending this consignment to? page")]
+        [When("the user enters the consignee details and clicks the Save and continue button on the Who are you sending this consignment to? page")]
+        public void WhenTheUserEntersTheConsigneeDetailsAndClicksTheContinueButtonOnTheWhoAreYouSendingThisConsignmentToPage()
         {
             var consignee = Utils.GenerateOperatorDetails();
             _scenarioContext["ExporterConsigneeName"] = consignee.OperatorName;

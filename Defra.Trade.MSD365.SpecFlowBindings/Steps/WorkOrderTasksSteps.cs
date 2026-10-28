@@ -1074,26 +1074,28 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
             $"Expected {expectedRowCount} row(s) in the Inspection Results grid but found {actualRowCount}.");
     }
 
-    [Then(@"I can see the following columns are present in the Inspection Results grid '(.*)' '(.*)' '(.*)' '(.*)' '(.*)' '(.*)' '(.*)' '(.*)' '(.*)' '(.*)' '(.*)' '(.*)'")]
+    [Then(@"^I can see the following columns are present in the Inspection Results grid ((?:'[^']+'\s*)+)$")]
     public void ThenICanSeeTheFollowingColumnsArePresentInTheInspectionResultsGrid(
-        string c1, string c2, string c3, string c4, string c5, string c6, string c7, string c8, string c9, string c10, string c11, string c12)
+        string columns)
     {
         Driver.WaitForTransaction();
 
-        foreach (var columnName in new[] { c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12 })
+        foreach (var columnName in System.Text.RegularExpressions.Regex.Matches(columns, "'([^']+)'").Select(m => m.Groups[1].Value))
         {
-            InspectionResultsColumnDataIds.TryGetValue(columnName, out var dataId).Should().BeTrue(
-                $"No data-id mapping is defined for Inspection Results column '{columnName}'.");
+            var headerTitle = ReadPotatoGrid(() =>
+            {
+                var header = InspectionResultsColumnDataIds.TryGetValue(columnName, out var dataId)
+                    ? ScrollInspectionResultsGridUntilColumnVisible(dataId)
+                    : FindTaskGridHeader(InspectionResultsContainerXPath, columnName);
 
-            var header = ScrollInspectionResultsGridUntilColumnVisible(dataId);
+                if (header == null)
+                    throw new NoSuchElementException($"Column '{columnName}' could not be found in the Inspection Results grid.");
 
-            header.Should().NotBeNull(
-                $"Column '{columnName}' (data-id '{dataId}') could not be found in the Inspection Results grid.");
+                return ReadTaskGridHeaderText(header);
+            });
 
-            var headerTitle = (header.GetAttribute("title") ?? header.Text ?? string.Empty).Trim();
-
-            string.Equals(headerTitle, columnName, StringComparison.OrdinalIgnoreCase).Should().BeTrue(
-                $"Expected the Inspection Results column with data-id '{dataId}' to be titled '{columnName}' but found '{headerTitle}'.");
+            headerTitle
+                .Should().BeEquivalentTo(columnName, $"Inspection Results should contain '{columnName}'");
         }
 
         ResetInspectionResultsGridHorizontalScroll();
@@ -1633,7 +1635,7 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
     private static IWebElement ScrollInspectionResultsGridUntilColumnVisible(string dataId)
     {
         const string scrollIncrementScript = @"
-            var container = document.querySelector('div[data-id=""dataSetRoot_InspectionResults""]');
+            var container = Array.from(document.querySelectorAll('div[data-id=""dataSetRoot_InspectionResults""], div[data-id=""dataSetRoot_InspectionResultQuantityBased""]')).find(e => e.getClientRects().length);
             if (!container) return false;
             var grid = container.querySelector('div[role=""grid""]');
             if (!grid) return false;
@@ -1673,7 +1675,7 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
     private static void ResetInspectionResultsGridHorizontalScroll()
     {
         Driver.ExecuteScript(@"
-            var container = document.querySelector('div[data-id=""dataSetRoot_InspectionResults""]');
+            var container = Array.from(document.querySelectorAll('div[data-id=""dataSetRoot_InspectionResults""], div[data-id=""dataSetRoot_InspectionResultQuantityBased""]')).find(e => e.getClientRects().length);
             if (!container) return;
             var grid = container.querySelector('div[role=""grid""]');
             if (!grid) return;
@@ -2175,6 +2177,428 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
 
         Driver.WaitForTransaction();
     }
+
+    #region Potato inspection page objects
+    private const string SelectedCommoditiesXPath = "//*[@data-id='dataSetRoot_subgrid_selected_commodities']";
+    private const string DeclarationsXPath = "//*[@data-id='dataSetRoot_declarations_subgrid']";
+    private const string SelectedDeclarationsXPath = "//*[@data-id='dataSetRoot_SelectedDeclarations_grid']";
+    private const string TimeRecordingXPath = "//*[@data-id='timerecordings_admin_subgrid_container' or @data-id='timerecordings_subgrid_container']";
+    private static readonly By AddDeclarationsButton = By.CssSelector("[data-id='trd_declaration|NoRelationship|SubGridStandard|trd.trd_declaration.Button.AddDeclarations']");
+    private static readonly Dictionary<string, string> SummaryFieldIds = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["Task Type"] = "msdyn_tasktype.fieldControl-Lookup_msdyn_tasktype",
+        ["Work Order Status"] = "QV_Work_Order_Sub_Status.msdyn_substatus.fieldControl-Lookup_msdyn_substatus",
+        ["Date Assigned"] = "trd_dateassigned.fieldControl._datecontrol-date-container",
+        ["% Complete"] = "msdyn_percentcomplete.fieldControl-pcf-container-id",
+        ["Charge"] = "trd_chargeid.fieldControl-Lookup_trd_chargeid",
+        ["Status Reason"] = "statuscode.fieldControl-pcf-container-id",
+    };
+    private static readonly Dictionary<string, string> EditableLookupIds = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["Visit"] = "trd_visitid",
+        ["Inspector Assigned"] = "trd_inspectorassignedid",
+    };
+    #endregion
+
+    [Then("the following fields are displayed and read only on the Work Order Task page")]
+    public void ThenTheFollowingFieldsAreDisplayedAndReadOnlyOnTheWorkOrderTaskPage(Table table)
+    {
+        foreach (var row in table.Rows)
+        {
+            var field = row["Field"];
+            var actual = ReadPotatoGrid(() =>
+            {
+                var control = GetTaskControl(SummaryFieldIds[field]);
+                return (Displayed: control.Displayed, ReadOnly: IsTaskControlReadOnly(control), Value: ReadTaskControlValue(control));
+            });
+            actual.Displayed.Should().BeTrue($"'{field}' should be displayed");
+            actual.ReadOnly.Should().BeTrue($"'{field}' should be read only");
+            var expected = row["Expected value"];
+            if (field == "Date Assigned")
+            {
+                DateTime.ParseExact(actual.Value, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture).Date
+                    .Should().Be(DateTime.Today, "Date Assigned should be today's date");
+            }
+            else if (field == "% Complete")
+            {
+                ParsePotatoQuantity(actual.Value).Should().Be(ParsePotatoQuantity(expected));
+            }
+            else
+            {
+                actual.Value.Should().Be(expected == "Blank" ? string.Empty : expected, $"'{field}' should match the expected value");
+            }
+        }
+    }
+
+    [Then("the {string} and {string} fields are displayed and editable on the Work Order Task page")]
+    public void ThenTheFieldsAreDisplayedAndEditableOnTheWorkOrderTaskPage(string field1, string field2)
+    {
+        foreach (var field in new[] { field1, field2 })
+        {
+            var editable = ReadPotatoGrid(() =>
+            {
+                var id = EditableLookupIds[field];
+                var lookup = GetTaskControl($"{id}.fieldControl-Lookup_{id}");
+                var search = GetTaskControl($"{id}.fieldControl-Lookup_{id}_microsoftIcon_searchButton");
+                return lookup.Displayed && !IsTaskControlReadOnly(lookup) && search.Displayed && search.Enabled
+                    && search.GetAttribute("aria-disabled") != "true";
+            });
+            editable.Should().BeTrue($"'{field}' should be displayed and editable");
+        }
+    }
+
+    [Then("the Potato Type displayed in the Inspection Results grid matches the Exporter Portal {string}")]
+    public void ThenThePotatoTypeDisplayedInTheInspectionResultsGridMatchesTheExporterPortal(string application)
+    {
+        scenarioContext.ContainsKey($"{application}_APHAReference").Should().BeTrue();
+        ReadInspectionValue("Potato Type (Consignment Item)").Should().Be(scenarioContext.Get<string>("PotatoType"));
+    }
+
+    [Then("the Quantity Applied For in the Inspection Results grid matches the Exporter Portal {string}")]
+    public void ThenTheQuantityAppliedForInTheInspectionResultsGridMatchesTheExporterPortal(string application)
+    {
+        scenarioContext.ContainsKey($"{application}_APHAReference").Should().BeTrue();
+        Math.Round(ParsePotatoQuantity(ReadInspectionValue("Quantity Applied For")), 2)
+            .Should().Be(Math.Round(ParsePotatoQuantity(scenarioContext.Get<string>("PotatoQuantity")), 2));
+    }
+
+    [Then("the {string} {string} {string} {string} fields are blank in the Inspection Results grid")]
+    public void ThenTheFieldsAreBlankInTheInspectionResultsGrid(string field1, string field2, string field3, string field4)
+    {
+        foreach (var field in new[] { field1, field2, field3, field4 })
+        {
+            ReadInspectionValue(field).Should().BeNullOrWhiteSpace($"'{field}' should be blank, not zero or a selected option");
+        }
+    }
+
+    [When("I enter the Quantity Applied For into the Quantity Inspected field in the Inspection Results grid")]
+    public void WhenIEnterTheQuantityAppliedForIntoTheQuantityInspectedFieldInTheInspectionResultsGrid()
+    {
+        EnterInspectionQuantity("Quantity Inspected");
+    }
+
+    [When("I enter the Quantity Applied For into the Quantity Passed field in the Inspection Results grid")]
+    public void WhenIEnterTheQuantityAppliedForIntoTheQuantityPassedFieldInTheInspectionResultsGrid()
+    {
+        EnterInspectionQuantity("Quantity Passed");
+    }
+
+    [Then("the Quantity Inspected matches the Quantity Applied For")]
+    public void ThenTheQuantityInspectedMatchesTheQuantityAppliedFor() => AssertInspectionQuantities("Quantity Inspected", "Quantity Applied For");
+
+    [Then("the Quantity Passed matches the Quantity Applied For")]
+    public void ThenTheQuantityPassedMatchesTheQuantityAppliedFor() => AssertInspectionQuantities("Quantity Passed", "Quantity Applied For");
+
+    [Then("the Quantity Exported matches the Quantity Passed")]
+    public void ThenTheQuantityExportedMatchesTheQuantityPassed() => AssertInspectionQuantities("Quantity Exported", "Quantity Passed");
+
+    [Then("the following columns are displayed and read only in the Selected Commodity Lines subgrid {string} {string} {string} {string} {string} {string}")]
+    public void ThenTheFollowingColumnsAreDisplayedAndReadOnlyInTheSelectedCommodityLinesSubgrid(string column1, string column2, string column3, string column4, string column5, string column6)
+    {
+        foreach (var column in new[] { column1, column2, column3, column4, column5, column6 })
+        {
+            var readOnly = ReadPotatoGrid(() =>
+            {
+                var header = FindTaskGridHeader(SelectedCommoditiesXPath, column);
+                var rows = GetTaskGridRows(GetTaskGrid(SelectedCommoditiesXPath));
+                if (rows.Count == 0) throw new NoSuchElementException("Selected Commodity Lines has no data rows.");
+                return rows.All(row => IsTaskControlReadOnly(GetTaskGridCell(row, header)));
+            });
+            readOnly.Should().BeTrue($"'{column}' should be displayed and read only in Selected Commodity Lines");
+        }
+    }
+
+    [Then("the following columns are displayed in the Declarations subgrid {string} {string} {string} {string} {string} {string}")]
+    public void ThenTheFollowingColumnsAreDisplayedInTheDeclarationsSubgrid(string column1, string column2, string column3, string column4, string column5, string column6)
+        => AssertTaskGridColumns(DeclarationsXPath, column1, column2, column3, column4, column5, column6);
+
+    [Then("the following columns are displayed in the Selected Declarations subgrid {string} {string} {string} {string} {string} {string}")]
+    public void ThenTheFollowingColumnsAreDisplayedInTheSelectedDeclarationsSubgrid(string column1, string column2, string column3, string column4, string column5, string column6)
+        => AssertTaskGridColumns(SelectedDeclarationsXPath, column1, column2, column3, column4, column5, column6);
+
+    [Then("the following columns are displayed in the Time Recording grid {string} {string} {string} {string} {string} {string}")]
+    public void ThenTheFollowingColumnsAreDisplayedInTheTimeRecordingGrid(string column1, string column2, string column3, string column4, string column5, string column6)
+        => AssertTaskGridColumns(TimeRecordingXPath, column1, column2, column3, column4, column5, column6);
+
+    [When("I randomly select a declaration from the Declarations subgrid")]
+    public void WhenIRandomlySelectADeclarationFromTheDeclarationsSubgrid()
+    {
+        var rows = ReadPotatoGrid(() =>
+        {
+            FindTaskGridHeader(DeclarationsXPath, "Declaration Short Name");
+            return GetTaskGridRows(GetTaskGrid(DeclarationsXPath)).Select(row => row.GetAttribute("row-id")).ToArray();
+        });
+        if (rows.Length == 0) throw new NoSuchElementException("No declarations are available to select.");
+        var rowId = rows[Random.Shared.Next(rows.Length)];
+        scenarioContext["SelectedDeclarationRowId"] = rowId;
+        scenarioContext["SelectedDeclarationShortName"] = ReadDeclarationCell(rowId, "Declaration Short Name");
+        scenarioContext["SelectedDeclarationDescription"] = ReadDeclarationCell(rowId, "Declaration Description");
+        ReadPotatoGrid(() =>
+        {
+            var row = GetDeclarationRow(rowId);
+            if (row.GetAttribute("aria-selected") != "true")
+                row.FindElement(By.CssSelector("[role='gridcell'][col-id='__row_status']")).Click();
+            return true;
+        });
+        Driver.WaitForTransaction();
+    }
+
+    [When("I record the selected Declaration Description for {string}")]
+    public void WhenIRecordTheSelectedDeclarationDescriptionFor(string application)
+    {
+        var id = scenarioContext.Get<string>("SelectedDeclarationRowId");
+        scenarioContext[$"{application}_DeclarationDescription"] = ReadDeclarationCell(id, "Declaration Description");
+        scenarioContext[$"{application}_DeclarationShortName"] = ReadDeclarationCell(id, "Declaration Short Name");
+    }
+
+    [When("I click the Add Declarations button")]
+    public void WhenIClickTheAddDeclarationsButton()
+    {
+        ReadPotatoGrid(() =>
+        {
+            Driver.FindElements(AddDeclarationsButton).Last(e => e.Displayed).Click();
+            return true;
+        });
+        Driver.WaitForTransaction();
+    }
+
+    [Then("the selected declaration is displayed in the Selected Declarations subgrid")]
+    public void ThenTheSelectedDeclarationIsDisplayedInTheSelectedDeclarationsSubgrid()
+    {
+        var name = scenarioContext.Get<string>("SelectedDeclarationShortName");
+        var description = scenarioContext.Get<string>("SelectedDeclarationDescription");
+        var found = Policy.Handle<StaleElementReferenceException>().Or<NoSuchElementException>()
+            .OrResult<bool>(value => !value).WaitAndRetry(10, _ => TimeSpan.FromSeconds(2)).Execute(() =>
+            {
+                var nameHeader = FindTaskGridHeader(SelectedDeclarationsXPath, "Declaration Short Name");
+                var nameLeft = nameHeader.GetCssValue("left");
+                var descriptionHeader = FindTaskGridHeader(SelectedDeclarationsXPath, "Declaration Description");
+                var descriptionLeft = descriptionHeader.GetCssValue("left");
+                return GetTaskGridRows(GetTaskGrid(SelectedDeclarationsXPath)).Any(row =>
+                {
+                    var cells = row.FindElements(By.CssSelector("[role='gridcell']"));
+                    var nameCell = cells.FirstOrDefault(c => c.GetCssValue("left") == nameLeft);
+                    var descriptionCell = cells.FirstOrDefault(c => c.GetCssValue("left") == descriptionLeft);
+                    return nameCell != null && descriptionCell != null
+                        && ReadTaskGridCell(nameCell) == name && ReadTaskGridCell(descriptionCell) == description;
+                });
+            });
+        found.Should().BeTrue($"selected declaration '{name}' and its full description should appear in the same row");
+    }
+
+    [Then("the date is today's date")]
+    public void ThenTheDateIsTodaysDate()
+    {
+        var currentUser = TestConfig.GetUser("Inspector", useCurrentUser: true);
+        var expectedName = string.Join(" ", currentUser.Username.Split('@')[0].Split('.')
+            .Select(p => char.ToUpper(p[0]) + p.Substring(1)));
+        var date = ReadPotatoGrid(() =>
+        {
+            var inspectorHeader = FindTaskGridHeader(TimeRecordingXPath, "Inspector");
+            var inspectorLeft = inspectorHeader.GetCssValue("left");
+            var dateHeader = FindTaskGridHeader(TimeRecordingXPath, "Date");
+            var row = GetTaskGridRows(GetTaskGrid(TimeRecordingXPath)).FirstOrDefault(r => r
+                .FindElements(By.CssSelector("[role='gridcell']"))
+                .Any(c => c.GetCssValue("left") == inspectorLeft && ReadTaskGridCell(c).Equals(expectedName, StringComparison.OrdinalIgnoreCase)))
+                ?? throw new NoSuchElementException($"Time Recording row for '{expectedName}' was not found.");
+            return ReadTaskGridCell(GetTaskGridCell(row, dateHeader));
+        });
+        DateTime.ParseExact(date, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture).Date.Should().Be(DateTime.Today);
+    }
+
+    [Then("the Declarations subgrid is filtered by the Country Name {string}")]
+    public void ThenTheDeclarationsSubgridIsFilteredByTheCountryName(string country)
+    {
+        ReadPotatoGrid(() => Driver.ExecuteScript("var root = arguments[0].querySelector('.ag-body-viewport'); if (root) root.scrollTop = 0;", GetTaskGrid(DeclarationsXPath)));
+        Thread.Sleep(300);
+        var countries = new Dictionary<string, string>();
+        var complete = false;
+        for (var page = 0; page < 200; page++)
+        {
+            var result = ReadPotatoGrid(() =>
+            {
+                var header = FindTaskGridHeader(DeclarationsXPath, "Country Name");
+                var grid = GetTaskGrid(DeclarationsXPath);
+                foreach (var row in GetTaskGridRows(grid))
+                    countries[row.GetAttribute("row-id")] = ReadTaskGridCell(GetTaskGridCell(row, header));
+                return (bool)Driver.ExecuteScript(@"
+                    var root = arguments[0].querySelector('.ag-body-viewport');
+                    if (!root) return false;
+                    var end = root.scrollTop + root.clientHeight >= root.scrollHeight - 1;
+                    if (!end) root.scrollTop += Math.max(1, root.clientHeight - 42);
+                    return end;", grid);
+            });
+            if (result) { complete = true; break; }
+            Thread.Sleep(300);
+        }
+        complete.Should().BeTrue("all declaration rows should be checked within the scroll limit");
+        countries.Should().NotBeEmpty("the country filter should return declarations");
+        countries.Values.Should().OnlyContain(value => value == country, $"all declarations should be for '{country}'");
+    }
+
+    private static IWebElement GetTaskControl(string dataId) => Driver.FindElements(By.CssSelector($"[data-id='{dataId}']"))
+        .LastOrDefault(e => e.Displayed) ?? throw new NoSuchElementException($"Task control '{dataId}' was not displayed.");
+
+    private static bool IsTaskControlReadOnly(IWebElement control)
+    {
+        if (!control.Enabled || control.GetAttribute("readonly") != null || control.GetAttribute("disabled") != null
+            || control.GetAttribute("aria-readonly") == "true" || control.GetAttribute("aria-disabled") == "true") return true;
+        var inputs = control.FindElements(By.CssSelector("input:not([type='hidden']), select, textarea"));
+        if (inputs.Count > 0) return inputs.All(e => !e.Enabled || e.GetAttribute("readonly") != null || e.GetAttribute("aria-readonly") == "true");
+        return control.FindElements(By.XPath("ancestor-or-self::*[@aria-readonly='true' or @aria-disabled='true' or @disabled] ")).Count > 0;
+    }
+
+    private static string ReadTaskControlValue(IWebElement control)
+    {
+        var selected = control.FindElements(By.CssSelector("[data-id$='_selected_tag_text'], [data-id$='_SelectedRecordList']"))
+            .FirstOrDefault(e => !string.IsNullOrWhiteSpace(e.Text));
+        if (selected != null) return selected.Text.Trim();
+        var input = control.FindElements(By.CssSelector("input:not([type='hidden']), textarea, select")).FirstOrDefault();
+        if (input != null)
+        {
+            if (input.TagName == "select") return new OpenQA.Selenium.Support.UI.SelectElement(input).SelectedOption.Text.Trim();
+            return (input.GetAttribute("value") ?? string.Empty).Trim();
+        }
+        return control.Text.Trim();
+    }
+
+    private static decimal ParsePotatoQuantity(string value) => decimal.Parse(value, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture);
+
+    private static T ReadPotatoGrid<T>(Func<T> action) => Policy.Handle<StaleElementReferenceException>()
+        .Or<NoSuchElementException>().Or<ElementClickInterceptedException>()
+        .WaitAndRetry(5, _ => TimeSpan.FromSeconds(1)).Execute(() =>
+        {
+            Driver.WaitForTransaction();
+            return action();
+        });
+
+    private static IWebElement GetTaskGrid(string xpath)
+    {
+        for (var attempt = 0; attempt < 40; attempt++)
+        {
+            Driver.WaitForTransaction();
+            var grid = Driver.FindElements(By.XPath(xpath)).LastOrDefault(e => e.Displayed);
+            if (grid != null && grid.GetAttribute("aria-busy") != "true"
+                && !grid.FindElements(By.CssSelector("[aria-busy='true'], .ag-overlay-loading-center, [role='progressbar']")).Any(e => e.Displayed))
+                return grid;
+            Thread.Sleep(250);
+        }
+        throw new NoSuchElementException($"Grid '{xpath}' did not finish loading.");
+    }
+
+    private static string ReadTaskGridHeaderText(IWebElement header)
+    {
+        if (!string.IsNullOrEmpty(header.GetAttribute("col-id")))
+            return header.FindElements(By.CssSelector("[data-testid='columnHeader'] label"))
+                .FirstOrDefault(e => e.Displayed)?.Text.Trim() ?? string.Empty;
+
+        return (header.GetAttribute("title") ?? header.Text ?? string.Empty).Trim();
+    }
+
+    // Both AG Grid and Wijmo virtualise columns. Re-find after each scroll rather than retaining cell references.
+    private static IWebElement FindTaskGridHeader(string xpath, string column)
+    {
+        for (var attempt = 0; attempt < 40; attempt++)
+        {
+            var grid = GetTaskGrid(xpath);
+            var header = grid.FindElements(By.CssSelector("[role='columnheader'], .wj-header[data-id]"))
+                .FirstOrDefault(e => e.Displayed
+                    && ReadTaskGridHeaderText(e).Equals(column, StringComparison.OrdinalIgnoreCase));
+            if (header != null) return header;
+            Driver.ExecuteScript(@"
+                var container = arguments[0];
+                var root = container.querySelector('.ag-body-horizontal-scroll-viewport');
+                if (!root) {
+                    var grid = container.querySelector('[role=""grid""]');
+                    root = grid && (grid.closest('[wj-part=""root""]') || grid.querySelector('[wj-part=""root""]') || grid.parentElement);
+                }
+                if (root) root.scrollLeft = arguments[1] === 0 ? 0 : root.scrollLeft + 250;", grid, attempt);
+            Thread.Sleep(200);
+        }
+        throw new NoSuchElementException($"Column '{column}' was not rendered in '{xpath}'.");
+    }
+
+    private static IReadOnlyCollection<IWebElement> GetTaskGridRows(IWebElement grid) => grid.FindElements(
+        By.CssSelector("[role='row'][row-index], [role='row'][aria-label='Data']"));
+
+    private static IWebElement GetTaskGridCell(IWebElement row, IWebElement header)
+    {
+        var columnId = header.GetAttribute("col-id");
+        if (!string.IsNullOrEmpty(columnId)) return row.FindElement(By.CssSelector($"[role='gridcell'][col-id='{columnId}']"));
+        var index = header.GetAttribute("aria-colindex");
+        if (!string.IsNullOrEmpty(index)) return row.FindElement(By.CssSelector($"[role='gridcell'][aria-colindex='{index}']"));
+        var left = header.GetCssValue("left");
+        return row.FindElements(By.CssSelector("[role='gridcell']")).FirstOrDefault(c => c.GetCssValue("left") == left)
+            ?? throw new NoSuchElementException("No cell was found under the grid header.");
+    }
+
+    private static string ReadTaskGridCell(IWebElement cell)
+    {
+        var select = cell.FindElements(By.TagName("select")).FirstOrDefault();
+        if (select != null) return new OpenQA.Selenium.Support.UI.SelectElement(select).SelectedOption.Text.Trim();
+        var input = cell.FindElements(By.CssSelector("input:not([type='checkbox']):not([type='hidden']), textarea")).FirstOrDefault();
+        if (input != null) return (input.GetAttribute("value") ?? string.Empty).Trim();
+        var title = cell.GetAttribute("title");
+        var label = cell.FindElements(By.CssSelector("label[aria-label], a[aria-label]")).FirstOrDefault();
+        return (string.IsNullOrWhiteSpace(title) ? label?.GetAttribute("aria-label") ?? cell.Text : title).Trim();
+    }
+
+    private static void AssertTaskGridColumns(string xpath, params string[] columns)
+    {
+        foreach (var column in columns)
+            ReadPotatoGrid(() => FindTaskGridHeader(xpath, column).Displayed).Should().BeTrue($"'{column}' should be displayed");
+    }
+
+    private static string InspectionColumnName(string column) => column == "Quantity Exported" ? "Quantity Exported (Consignment Item)" : column;
+
+    private static IWebElement GetPotatoInspectionCell(string column)
+    {
+        var header = FindTaskGridHeader(InspectionResultsContainerXPath, InspectionColumnName(column));
+        var row = GetTaskGridRows(GetTaskGrid(InspectionResultsContainerXPath)).FirstOrDefault()
+            ?? throw new NoSuchElementException("Inspection Results has no data row.");
+        return GetTaskGridCell(row, header);
+    }
+
+    private static string ReadInspectionValue(string column) => ReadPotatoGrid(() => ReadTaskGridCell(GetPotatoInspectionCell(column)));
+
+    private void EnterInspectionQuantity(string column)
+    {
+        var quantity = ReadInspectionValue("Quantity Applied For");
+        ReadPotatoGrid(() =>
+        {
+            GetPotatoInspectionCell(column).Click();
+            Driver.WaitForTransaction();
+            var input = GetPotatoInspectionCell(column).FindElements(By.CssSelector("input:not([type='hidden'])"))
+                .FirstOrDefault(e => e.Displayed && e.Enabled)
+                ?? throw new NoSuchElementException($"Numeric editor for '{column}' was not found.");
+            input.SendKeys(Keys.Control + "a");
+            input.SendKeys(Keys.Backspace);
+            input.SendKeys(quantity);
+            input.SendKeys(Keys.Tab);
+            return true;
+        });
+        XrmApp.Entity.Save();
+        Driver.WaitForTransaction();
+    }
+
+    private static void AssertInspectionQuantities(string actualColumn, string expectedColumn)
+    {
+        var expected = ParsePotatoQuantity(ReadInspectionValue(expectedColumn));
+        var actual = Policy.Handle<StaleElementReferenceException>().Or<NoSuchElementException>()
+            .OrResult<string>(value => !decimal.TryParse(value, System.Globalization.NumberStyles.Number,
+                System.Globalization.CultureInfo.InvariantCulture, out var number) || Math.Round(number, 2) != Math.Round(expected, 2))
+            .WaitAndRetry(10, _ => TimeSpan.FromSeconds(2)).Execute(() => ReadInspectionValue(actualColumn));
+        Math.Round(ParsePotatoQuantity(actual), 2).Should().Be(Math.Round(expected, 2), $"'{actualColumn}' should match '{expectedColumn}'");
+    }
+
+    private static IWebElement GetDeclarationRow(string rowId) => GetTaskGrid(DeclarationsXPath)
+        .FindElement(By.CssSelector($"[role='row'][row-id='{rowId}']"));
+
+    private static string ReadDeclarationCell(string rowId, string column) => ReadPotatoGrid(() =>
+    {
+        var header = FindTaskGridHeader(DeclarationsXPath, column);
+        return ReadTaskGridCell(GetTaskGridCell(GetDeclarationRow(rowId), header));
+    });
 
     [Then(@"the Status of the Work Order should be '(.*)'")]
     public void ThenTheStatusOfTheWorkOrderShouldBe(string expectedStatus)
