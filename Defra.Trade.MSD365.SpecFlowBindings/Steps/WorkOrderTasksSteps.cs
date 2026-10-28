@@ -2443,8 +2443,26 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
     {
         if (!control.Enabled || control.GetAttribute("readonly") != null || control.GetAttribute("disabled") != null
             || control.GetAttribute("aria-readonly") == "true" || control.GetAttribute("aria-disabled") == "true") return true;
-        var inputs = control.FindElements(By.CssSelector("input:not([type='hidden']), select, textarea"));
-        if (inputs.Count > 0) return inputs.All(e => !e.Enabled || e.GetAttribute("readonly") != null || e.GetAttribute("aria-readonly") == "true");
+        // Dynamics read-only lookups remain navigable links and expose their state through accessibility metadata.
+        // Nested lookup containers share a data-id; the empty input can be a sibling of the state description.
+        var dataId = control.GetAttribute("data-id");
+        var lookupContainer = !string.IsNullOrEmpty(dataId) && dataId.Contains(".fieldControl-Lookup_", StringComparison.Ordinal)
+            ? control.FindElement(By.XPath($"ancestor-or-self::*[@data-id='{dataId}'][last()]"))
+            : control;
+        var lookupMetadata = lookupContainer.FindElements(By.CssSelector("[data-id$='_a11y_description'], [data-id$='_selected_tag']"));
+        if (lookupMetadata.Any(element =>
+        {
+            var description = element.GetAttribute("data-id").EndsWith("_a11y_description", StringComparison.Ordinal)
+                ? element.GetAttribute("textContent")
+                : element.GetAttribute("aria-label");
+            return (description ?? string.Empty).Split(',')
+                .Any(part => part.Trim().Equals("Readonly", StringComparison.OrdinalIgnoreCase));
+        })) return true;
+
+        var inputs = lookupContainer.FindElements(By.CssSelector("input:not([type='hidden']), select, textarea"));
+        if (inputs.Count > 0) return inputs.All(e => !e.Enabled || e.GetAttribute("readonly") != null
+            || e.GetAttribute("aria-readonly") == "true" || e.GetAttribute("aria-disabled") == "true");
+
         return control.FindElements(By.XPath("ancestor-or-self::*[@aria-readonly='true' or @aria-disabled='true' or @disabled] ")).Count > 0;
     }
 
