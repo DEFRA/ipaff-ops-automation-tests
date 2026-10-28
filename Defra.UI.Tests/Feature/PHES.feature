@@ -1003,26 +1003,26 @@ Scenario: Exporter phytosanitary certificate application for potatoes, inspectio
 	Then the Substatus of the Work Order should be 'Assigned'
 	And the Owner of the Work Order should be me
 	And I can see 1 row in the Commodity Lines subgrid
-	# @agent: New step in:
+	# @agent: New step in: WorkOrderSteps
 	# data-id="dataSetRoot_Commoditylines"
-	# Use HTML file: 
+	# Use HTML file: HTML for 'And I can see the following columns in the Commodity Lines subgrid' step.txt
 	And I can see the following columns in the Commodity Lines subgrid 'Potato Type' 'Variety' 'Quantity Exported' 'Lot Reference' 'Soil Sampling/Stock Number' 'GSI Number' 'Stock Number' 'Chemicals Used'
-	# @agent: New step in:
+	# @agent: New step in: WorkOrderSteps
 	# reference step: [When(@"I double click on a Commodity Line with Regulatory Authority set to '(.*)'")]
 	When I double click on a commodity line in the Commodity Lines subgrid
-	# @agent: New step in new step file: 
+	# @agent: New step in new step file: CommodityLineSteps
 	# <span data-id="entity_name_span" class="pa-er pa-ru pa-rv pa-rw pa-br pa-nk pa-j pa-cr pa-jy ">Commodity Line</span>
 	Then the Commodity Line page is displayed
 	And the 'Potatoes' tab is displayed and selected
-	# @agent: New step in new step file: 
-	# Use HTML file: 
+	# @agent: New step in new step file: CommodityLineSteps 
+	# Use HTML file: HTML for new Commodity Line page.txt
 	And the following fields are displayed on the Commodity Line page 'Container number' 'Potato Type' 'Packaging Material' 'Distinguishing Marks' 'Quantity Exported' 'Total Quantity'
-	# @agent: New step in new step file: 
-	# Use HTML file:
+	# @agent: New step in new step file: CommodityLineSteps
+	# Use HTML file: HTML for new Commodity Line page.txt
 	And the Quantity Exported field is directly below the Total Quantity field
-	# @agent: New step in new step file: 
+	# @agent: New step in new step file: CommodityLineSteps
 	# Validate against scenario context
-	# Use HTML file:
+	# Use HTML file: HTML for new Commodity Line page.txt
 	# data-id="trd_containernumber.fieldControl-text-box-text"
 	# data-id="trd_stocknumber.fieldControl-text-box-text"
 	# data-id="trd_packagingmaterialused.fieldControl-text-box-text"
@@ -1060,13 +1060,15 @@ Scenario: Exporter phytosanitary certificate application for potatoes, inspectio
 	And I maximise the popup
 	Then I verify the 'Potatoes Inspection Task' popup is displayed
 	And the 'Summary' tab is displayed and selected
-	# @agent: New step in:
+	# @agent: New step in: WorkOrderTasksSteps
 	# data-id="msdyn_tasktype.fieldControl-LookupResultsDropdown_msdyn_tasktype_selected_tag_text"
 	# data-id="QV_Work_Order_Sub_Status.msdyn_substatus.fieldControl-LookupResultsDropdown_msdyn_substatus_selected_tag_text"
 	# data-id="trd_dateassigned.fieldControl._datecontrol-date-container"
 	# data-id="msdyn_percentcomplete.fieldControl-pcf-container-id"
 	# data-id="trd_chargeid.fieldControl-Lookup_trd_chargeid"
 	# data-id="statuscode.fieldControl-pcf-container-id"
+	# Date Assigned format is DD/MM/YYYY should just validate against today's date
+	# Charge 'Blank' value just means empty.
 	And the following fields are displayed and read only on the Work Order Task page
 		| Field             | Expected value           |
 		| Task Type         | Potatoes Inspection Task |
@@ -1077,7 +1079,7 @@ Scenario: Exporter phytosanitary certificate application for potatoes, inspectio
 		| Status Reason     | Active                   |
 	When I select the 'Inspection Results' tab
 	Then the 'Inspection Results' tab is displayed and selected
-	# New step in: 
+	# New step in: WorkOrderTasksSteps
 	# data-id="trd_visitid.fieldControl-LookupResultsDropdown_trd_visitid_InputSearch"
 	# data-id="trd_visitid.fieldControl-Lookup_trd_visitid_microsoftIcon_searchButton"
 	# data-id="trd_inspectorassignedid.fieldControl-LookupResultsDropdown_trd_inspectorassignedid_SelectedRecordList"
@@ -1097,7 +1099,7 @@ Scenario: Exporter phytosanitary certificate application for potatoes, inspectio
 	When I click the Save button on the Work Order Task page
 	And I scroll down to the Inspection Results grid on the Work Order Task page
 	Then I can see 1 row in the Inspection Results grid
-	# @agent: New step in:
+	# @agent: New step in: WorkOrderTasksSteps
 	# data-id="a_f4855dca5a0deb11a813000d3a2c32cb.trd_potatotype"
 	# data-id="trd_quantityappliedfor"
 	# data-id="trd_quantityinspected"
@@ -1105,20 +1107,20 @@ Scenario: Exporter phytosanitary certificate application for potatoes, inspectio
 	# data-id="a_f4855dca5a0deb11a813000d3a2c32cb.trd_finalweight"
 	# data-id="trd_fminspectionresult"
 	And the Potato Type displayed in the Inspection Results grid matches the Exporter Portal 'Potatoes Application'
-	# @agent: New step in:
+	# @agent: New step in: WorkOrderTasksSteps
 	# Note that the Quantity in dynamics is displayed to 3 decimal places, while the Exporter Portal displays to 2 decimal places. The values are considered equal if they are equal when rounded to 2 decimal places.	
 	And the Quantity Applied For in the Inspection Results grid matches the Exporter Portal 'Potatoes Application'
-	# @agent: New step in:
+	# @agent: New step in: WorkOrderTasksSteps
 	And the 'Quantity Inspected' 'Quantity Passed' 'Quantity Exported' 'Inspection Result' fields are blank in the Inspection Results grid
-	# @agent: New step in:
+	# @agent: New step in: WorkOrderTasksSteps
 	When I enter the Quantity Applied For into the Quantity Inspected field in the Inspection Results grid
-	# @agent: New step in:
+	# @agent: New step in: WorkOrderTasksSteps
 	Then the Quantity Inspected matches the Quantity Applied For
-	# @agent: New step in:
+	# @agent: New step in: WorkOrderTasksSteps
 	When I enter the Quantity Applied For into the Quantity Passed field in the Inspection Results grid
-	# @agent: New step in:
+	# @agent: New step in: WorkOrderTasksSteps
 	Then the Quantity Passed matches the Quantity Applied For
-	# @agent: New step in:
+	# @agent: New step in: WorkOrderTasksSteps
 	And the Quantity Exported matches the Quantity Passed
 	And the Inspection Result is 'Pass'
 	When I select the row in the Inspection Results grid
@@ -1127,34 +1129,34 @@ Scenario: Exporter phytosanitary certificate application for potatoes, inspectio
 	When I select the 'Phyto Commodities' tab
 	Then the 'Phyto Commodities' tab is displayed and selected
 	And I can see 1 row in the Commodity Lines subgrid
-	# @agent: New step in:
+	# @agent: New step in: WorkOrderTasksSteps
 	# data-id="dataSetRoot_subgrid_selected_commodities"
-	# Use HTML in:
+	# Use HTML in: HTML For Selected Commodity Lines subgrid.txt
 	And the following columns are displayed and read only in the Selected Commodity Lines subgrid 'Include on Phyto' 'Potato Type (Commodity Item)' 'Variety (Commodity Item)' 'Soil Sampling/Stock Number (Commodity Item)' 'Lot Reference (Commodity Item)' 'Stock Number (Commodity Item)'
 	When I select the 'Declarations' tab
 	Then the 'Declarations' tab is displayed and selected
-	# @agent: New step in:
+	# @agent: New step in: WorkOrderTasksSteps
 	# data-id="dataSetRoot_declarations_subgrid"
-	# Use HTML in: 
+	# Use HTML in: HTML for Declarations subgrid.txt
 	And the following columns are displayed in the Declarations subgrid 'Declaration ID' 'Declaration Short Name' 'Declaration Description' 'Country Name' 'TAP Approved' 'Created On'
-	# @agent: New step in: 
+	# @agent: New step in: WorkOrderTasksSteps
 	# store the Declaration Short Name in scenario context too col-id="trd_shortname"
 	# store the Declaration Description in scenario context too col-id="trd_declaration"
 	When I randomly select a declaration from the Declarations subgrid
-	# @agent: New step in: 
+	# @agent: New step in: WorkOrderTasksSteps
 	# col-id="trd_declaration"
 	And I record the selected Declaration Description for 'Potatoes Application'
-	# @agent: New step in: 
+	# @agent: New step in: WorkOrderTasksSteps
 	# data-id="trd_declaration|NoRelationship|SubGridStandard|trd.trd_declaration.Button.AddDeclarations"
 	And I click the Add Declarations button
-	# @agent: New step in:
+	# @agent: New step in: WorkOrderTasksSteps
 	# data-id="dataSetRoot_SelectedDeclarations_grid"
 	# Validate short name appears under column with header data-id="trd_name"
 	# Validate the description under column with header data-id="trd_declaration"
 	# Declaration Description cell value is <div tabindex="0" role="gridcell" aria-selected="true" aria-required="false" class="wj-cell wj-state-selected wj-state-active" data-id="cell-0-3" id="Grid2b707bb4-b286-a6d6-8735-001e70326183-id-cell-0-3" aria-colindex="3" title="The consignment complies with Commission Implementing Decision 2012/270, item (a) the potato tubers have been grown in a pest-free area established by the national plant protection organisation in accordance with relevant international standards for phytosanitary measures; the potato tubers have been found free from the specified organisms concerned and from the signs of infestation by those organisms on potato tubers, and do not contain more than 0,1 % of soil in an official examination carried out immediately prior to export; the packaging material in which potato tubers are imported is clean. [state area in â€œplace of origin]"
-	# Use HTML in:
+	# Use HTML in: HTML for Selected Declaration subgrid.txt
 	Then the selected declaration is displayed in the Selected Declarations subgrid
-	# @agent: New step in:
+	# @agent: New step in: WorkOrderTasksSteps
 	And the following columns are displayed in the Selected Declarations subgrid 'Declaration Short Name' 'Declaration Description' 'Country Name' 'TAP Approved' 'Include on Phyto' 'Modified On'
 	When I select the 'Summary' tab
 	Then the 'Summary' tab is displayed and selected
@@ -1162,13 +1164,13 @@ Scenario: Exporter phytosanitary certificate application for potatoes, inspectio
 	And I search for my name in the Time Recording Inspectors field
 	Then a new row appears in the Time Recording grid containing my name
 	And the entry status is 'Draft'
-	# @agent: New step in:
+	# @agent: New step in: WorkOrderTasksSteps
 	# Date format is DD/MM/YYYY
 	# Column header data-id="trd_date"
 	# <div tabindex="-1" role="gridcell" aria-selected="false" aria-required="false" class="wj-cell" data-id="cell-0-3" id="Gridc107d03e-eed5-4a55-8c8e-734ef1f83229-id-cell-0-3" aria-colindex="3" title="28/10/2026"
 	And the date is today's date
-	# @agent: New step in:
-	# Use HTML in:
+	# @agent: New step in: WorkOrderTasksSteps
+	# Use HTML in: HTML for Time Recording subgrid.txt
 	And the following columns are displayed in the Time Recording grid 'Travel' 'Inspection' 'Admin' 'Training given (Client)' 'Training given (Inspector)' 'Training received'
 	When I enter 5 in the 'Travel' column
 	And I enter 5 in the 'Inspection' column
