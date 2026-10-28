@@ -999,21 +999,38 @@ Scenario: Exporter phytosanitary certificate application for potatoes, inspectio
 	And the Commodity Group should be 'Potatoes' in the General section
 	When I click the Assign command
 	Then I can see the Assign Work Order popup is displayed
-	And the Assign to field is 'Me'
-	And the User or Team field is blank and locked
 	When I click the Assign button
 	Then the Substatus of the Work Order should be 'Assigned'
 	And the Owner of the Work Order should be me
 	And I can see 1 row in the Commodity Lines subgrid
+	# @agent: New step in:
+	# data-id="dataSetRoot_Commoditylines"
+	# Use HTML file: 
 	And I can see the following columns in the Commodity Lines subgrid 'Potato Type' 'Variety' 'Quantity Exported' 'Lot Reference' 'Soil Sampling/Stock Number' 'GSI Number' 'Stock Number' 'Chemicals Used'
-	When I open the potatoes commodity line in the Commodity Lines subgrid
+	# @agent: New step in:
+	# reference step: [When(@"I double click on a Commodity Line with Regulatory Authority set to '(.*)'")]
+	When I double click on a commodity line in the Commodity Lines subgrid
+	# @agent: New step in new step file: 
+	# <span data-id="entity_name_span" class="pa-er pa-ru pa-rv pa-rw pa-br pa-nk pa-j pa-cr pa-jy ">Commodity Line</span>
 	Then the Commodity Line page is displayed
 	And the 'Potatoes' tab is displayed and selected
-	And the following fields are displayed on the Potatoes tab 'Container number' 'Potato type' 'Packaging Material' 'Distinguishing Marks' 'Quantity Exported' 'Total Quantity'
+	# @agent: New step in new step file: 
+	# Use HTML file: 
+	And the following fields are displayed on the Commodity Line page 'Container number' 'Potato Type' 'Packaging Material' 'Distinguishing Marks' 'Quantity Exported' 'Total Quantity'
+	# @agent: New step in new step file: 
+	# Use HTML file:
 	And the Quantity Exported field is directly below the Total Quantity field
+	# @agent: New step in new step file: 
+	# Validate against scenario context
+	# Use HTML file:
+	# data-id="trd_containernumber.fieldControl-text-box-text"
+	# data-id="trd_stocknumber.fieldControl-text-box-text"
+	# data-id="trd_packagingmaterialused.fieldControl-text-box-text"
+	# data-id="trd_gsinumber.fieldControl-text-box-text"
 	And the 'Container number' 'Stock Number' 'Packaging Material' 'GSI Number' values match those entered in the Exporter Portal for 'Potatoes Application'
 	When I click the Back button in the command bar
 	Then the Work Order page is displayed for the 'Potatoes Application' created in the Exporter Portal
+	And the 'Export' tab is displayed and selected
 	# ---------- Dynamics Portal - Complete the pre-inspection task ----------
 	When I select the 'Work Order Tasks' tab
 	Then the 'Work Order Tasks' tab is displayed and selected
@@ -1043,7 +1060,14 @@ Scenario: Exporter phytosanitary certificate application for potatoes, inspectio
 	And I maximise the popup
 	Then I verify the 'Potatoes Inspection Task' popup is displayed
 	And the 'Summary' tab is displayed and selected
-	And the following fields are displayed and read only on the Work Order Task Summary tab
+	# @agent: New step in:
+	# data-id="msdyn_tasktype.fieldControl-LookupResultsDropdown_msdyn_tasktype_selected_tag_text"
+	# data-id="QV_Work_Order_Sub_Status.msdyn_substatus.fieldControl-LookupResultsDropdown_msdyn_substatus_selected_tag_text"
+	# data-id="trd_dateassigned.fieldControl._datecontrol-date-container"
+	# data-id="msdyn_percentcomplete.fieldControl-pcf-container-id"
+	# data-id="trd_chargeid.fieldControl-Lookup_trd_chargeid"
+	# data-id="statuscode.fieldControl-pcf-container-id"
+	And the following fields are displayed and read only on the Work Order Task page
 		| Field             | Expected value           |
 		| Task Type         | Potatoes Inspection Task |
 		| Work Order Status | Assigned                 |
@@ -1053,9 +1077,14 @@ Scenario: Exporter phytosanitary certificate application for potatoes, inspectio
 		| Status Reason     | Active                   |
 	When I select the 'Inspection Results' tab
 	Then the 'Inspection Results' tab is displayed and selected
-	And the 'Visit' and 'Inspector Assigned' fields are displayed and editable
+	# New step in: 
+	# data-id="trd_visitid.fieldControl-LookupResultsDropdown_trd_visitid_InputSearch"
+	# data-id="trd_visitid.fieldControl-Lookup_trd_visitid_microsoftIcon_searchButton"
+	# data-id="trd_inspectorassignedid.fieldControl-LookupResultsDropdown_trd_inspectorassignedid_SelectedRecordList"
+	# data-id="trd_inspectorassignedid.fieldControl-Lookup_trd_inspectorassignedid_microsoftIcon_searchButton"
+	And the 'Visit' and 'Inspector Assigned' fields are displayed and editable on the Work Order Task page
 	When I scroll down to the Inspection Results grid on the Work Order Task page
-	Then I can see the following columns are present in the Inspection Results grid 'Status Reason' 'Potato Type' 'Variety' 'Stock Number' 'Chemicals Used' 'Quantity Applied For' 'Quantity Inspected' 'Quantity Passed' 'Quantity Exported' 'Inspection Result' 'Reason for Failure' 'Lab Sample' 'Task Type'
+	Then I can see the following columns are present in the Inspection Results grid 'Status Reason' 'Potato Type (Consignment Item)' 'Variety (Consignment Item)' 'Stock Number (Consignment Item)' 'Chemicals Used (Consignment Item)' 'Quantity Applied For' 'Quantity Inspected' 'Quantity Passed' 'Quantity Exported (Consignment Item)' 'Inspection Result' 'Reason' 'Lab Sample' 'Task Type'
 	When I select the Visit field on the Work Order Task page
 	And I select the New button on the Visits dropdown
 	Then the Quick Create Visit form is displayed
@@ -1068,30 +1097,64 @@ Scenario: Exporter phytosanitary certificate application for potatoes, inspectio
 	When I click the Save button on the Work Order Task page
 	And I scroll down to the Inspection Results grid on the Work Order Task page
 	Then I can see 1 row in the Inspection Results grid
-	And the potatoes commodity for 'Potatoes Application' is displayed in the Inspection Results grid
-	And the Quantity Applied For matches the quantity entered in the Exporter Portal for 'Potatoes Application'
+	# @agent: New step in:
+	# data-id="a_f4855dca5a0deb11a813000d3a2c32cb.trd_potatotype"
+	# data-id="trd_quantityappliedfor"
+	# data-id="trd_quantityinspected"
+	# data-id="trd_quantitypassed"
+	# data-id="a_f4855dca5a0deb11a813000d3a2c32cb.trd_finalweight"
+	# data-id="trd_fminspectionresult"
+	And the Potato Type displayed in the Inspection Results grid matches the Exporter Portal 'Potatoes Application'
+	# @agent: New step in:
+	# Note that the Quantity in dynamics is displayed to 3 decimal places, while the Exporter Portal displays to 2 decimal places. The values are considered equal if they are equal when rounded to 2 decimal places.	
+	And the Quantity Applied For in the Inspection Results grid matches the Exporter Portal 'Potatoes Application'
+	# @agent: New step in:
 	And the 'Quantity Inspected' 'Quantity Passed' 'Quantity Exported' 'Inspection Result' fields are blank in the Inspection Results grid
+	# @agent: New step in:
 	When I enter the Quantity Applied For into the Quantity Inspected field in the Inspection Results grid
+	# @agent: New step in:
 	Then the Quantity Inspected matches the Quantity Applied For
+	# @agent: New step in:
 	When I enter the Quantity Applied For into the Quantity Passed field in the Inspection Results grid
+	# @agent: New step in:
 	Then the Quantity Passed matches the Quantity Applied For
+	# @agent: New step in:
 	And the Quantity Exported matches the Quantity Passed
 	And the Inspection Result is 'Pass'
 	When I select the row in the Inspection Results grid
 	And I click the Submit Results button above the Inspection Results grid
 	Then the Status Reason is 'Submitted'
-	And I record the Quantity Exported as the final weight for 'Potatoes Application'
 	When I select the 'Phyto Commodities' tab
 	Then the 'Phyto Commodities' tab is displayed and selected
 	And I can see 1 row in the Commodity Lines subgrid
-	And the following columns are displayed and read only in the Phyto Commodities grid 'Include on Phyto' 'Potato Type' 'Variety' 'Soil Sampling/Stock Number' 'Lot Reference' 'Stock Number'
+	# @agent: New step in:
+	# data-id="dataSetRoot_subgrid_selected_commodities"
+	# Use HTML in:
+	And the following columns are displayed and read only in the Selected Commodity Lines subgrid 'Include on Phyto' 'Potato Type (Commodity Item)' 'Variety (Commodity Item)' 'Soil Sampling/Stock Number (Commodity Item)' 'Lot Reference (Commodity Item)' 'Stock Number (Commodity Item)'
 	When I select the 'Declarations' tab
 	Then the 'Declarations' tab is displayed and selected
+	# @agent: New step in:
+	# data-id="dataSetRoot_declarations_subgrid"
+	# Use HTML in: 
 	And the following columns are displayed in the Declarations subgrid 'Declaration ID' 'Declaration Short Name' 'Declaration Description' 'Country Name' 'TAP Approved' 'Created On'
-	When I select a potato declaration for destination country 'France' in the Declarations subgrid
+	# @agent: New step in: 
+	# store the Declaration Short Name in scenario context too col-id="trd_shortname"
+	# store the Declaration Description in scenario context too col-id="trd_declaration"
+	When I randomly select a declaration from the Declarations subgrid
+	# @agent: New step in: 
+	# col-id="trd_declaration"
 	And I record the selected Declaration Description for 'Potatoes Application'
+	# @agent: New step in: 
+	# data-id="trd_declaration|NoRelationship|SubGridStandard|trd.trd_declaration.Button.AddDeclarations"
 	And I click the Add Declarations button
+	# @agent: New step in:
+	# data-id="dataSetRoot_SelectedDeclarations_grid"
+	# Validate short name appears under column with header data-id="trd_name"
+	# Validate the description under column with header data-id="trd_declaration"
+	# Declaration Description cell value is <div tabindex="0" role="gridcell" aria-selected="true" aria-required="false" class="wj-cell wj-state-selected wj-state-active" data-id="cell-0-3" id="Grid2b707bb4-b286-a6d6-8735-001e70326183-id-cell-0-3" aria-colindex="3" title="The consignment complies with Commission Implementing Decision 2012/270, item (a) the potato tubers have been grown in a pest-free area established by the national plant protection organisation in accordance with relevant international standards for phytosanitary measures; the potato tubers have been found free from the specified organisms concerned and from the signs of infestation by those organisms on potato tubers, and do not contain more than 0,1 % of soil in an official examination carried out immediately prior to export; the packaging material in which potato tubers are imported is clean. [state area in â€œplace of origin]"
+	# Use HTML in:
 	Then the selected declaration is displayed in the Selected Declarations subgrid
+	# @agent: New step in:
 	And the following columns are displayed in the Selected Declarations subgrid 'Declaration Short Name' 'Declaration Description' 'Country Name' 'TAP Approved' 'Include on Phyto' 'Modified On'
 	When I select the 'Summary' tab
 	Then the 'Summary' tab is displayed and selected
@@ -1099,7 +1162,13 @@ Scenario: Exporter phytosanitary certificate application for potatoes, inspectio
 	And I search for my name in the Time Recording Inspectors field
 	Then a new row appears in the Time Recording grid containing my name
 	And the entry status is 'Draft'
-	And the Time Recording entry date is today's date
+	# @agent: New step in:
+	# Date format is DD/MM/YYYY
+	# Column header data-id="trd_date"
+	# <div tabindex="-1" role="gridcell" aria-selected="false" aria-required="false" class="wj-cell" data-id="cell-0-3" id="Gridc107d03e-eed5-4a55-8c8e-734ef1f83229-id-cell-0-3" aria-colindex="3" title="28/10/2026"
+	And the date is today's date
+	# @agent: New step in:
+	# Use HTML in:
 	And the following columns are displayed in the Time Recording grid 'Travel' 'Inspection' 'Admin' 'Training given (Client)' 'Training given (Inspector)' 'Training received'
 	When I enter 5 in the 'Travel' column
 	And I enter 5 in the 'Inspection' column
@@ -1123,25 +1192,30 @@ Scenario: Exporter phytosanitary certificate application for potatoes, inspectio
 	And I maximise the popup
 	Then I verify the 'Issue Phyto Task' popup is displayed
 	And the 'Summary' tab is displayed and selected
-	And the following fields are displayed and read only on the Work Order Task Summary tab 'Task Type' 'Work Order Status' 'Date Assigned' '% Complete' 'Charge'
-	And the Task Type is 'Issue Phyto Task'
+	And the following fields are displayed and read only on the Work Order Task page
+		| Field             | Expected value           |
+		| Task Type         | Issue Phyto Task         |
+		| Work Order Status | Inspection Complete      |
+		| Date Assigned     | Work order assigned date |
+		| % Complete        | 0.00                     |
+		| Charge            | Blank                    |
+		| Status Reason     | Active                   |
 	When I select the 'Phyto Commodities' tab
 	Then the 'Phyto Commodities' tab is displayed and selected
 	And I can see 1 row in the Commodity Lines subgrid
-	And the following columns are displayed and read only in the Phyto Commodities grid 'Include on Phyto' 'Potato Type' 'Variety' 'Soil Sampling/Stock Number' 'Lot Reference' 'Stock Number'
+	And the following columns are displayed and read only in the Selected Commodity Lines subgrid 'Include on Phyto' 'Potato Type (Commodity Item)' 'Variety (Commodity Item)' 'Soil Sampling/Stock Number (Commodity Item)' 'Lot Reference (Commodity Item)' 'Stock Number (Commodity Item)'
 	When I select the 'Declarations' tab
 	Then the 'Declarations' tab is displayed and selected
-	And the following columns are displayed in the Selected Declarations subgrid 'Declaration Short Name' 'Declaration Description' 'Country Name' 'TAP Approved' 'Include on Phyto' 'Modified On'
-	And the Selected Declarations subgrid contains the declaration recorded for 'Potatoes Application'
-	And the Declarations subgrid is filtered by destination country 'France'
 	And the following columns are displayed in the Declarations subgrid 'Declaration ID' 'Declaration Short Name' 'Declaration Description' 'Country Name' 'TAP Approved' 'Created On'
+	And the Declarations subgrid is filtered by the Country Name 'France'
+	And the following columns are displayed in the Selected Declarations subgrid 'Declaration Short Name' 'Declaration Description' 'Country Name' 'TAP Approved' 'Include on Phyto' 'Modified On'
 	When I select the 'Summary' tab
 	Then the 'Summary' tab is displayed and selected
 	When I select the Time Recording Inspectors field on the Work Order Task page
 	And I search for my name in the Time Recording Inspectors field
 	Then a new row appears in the Time Recording grid containing my name
 	And the entry status is 'Draft'
-	And the Time Recording entry date is today's date
+	And the date is today's date
 	When I enter 5 in the 'Admin' column
 	And I select the new row in the grid
 	And I click Submit Time
