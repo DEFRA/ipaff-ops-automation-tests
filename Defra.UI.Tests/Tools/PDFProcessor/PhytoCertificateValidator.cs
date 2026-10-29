@@ -90,7 +90,9 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
             ValidateCommodityDetails(certificate, Expected, mismatches);
 
             // 9 Quantity declared - in kilograms to 3 decimal places
-            var (declaredQuantity, declaredUnit) = IsPlantsCommodity(Expected)
+            var (declaredQuantity, declaredUnit) = IsPotatoesCommodity(Expected)
+                ? (Expected("PotatoQuantity"), Expected("PotatoUnit"))
+                : IsPlantsCommodity(Expected)
                 ? (GetPlantsQuantity(Expected), Expected("PlantUnit"))
                 : (Expected("SeedQuantity"), Expected("SeedUnit"));
             var quantityKg = GetQuantityInKilograms(declaredQuantity, declaredUnit);
@@ -103,8 +105,14 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
             else
                 LogSkipped("Box 9 (Quantity declared)");
 
-            // 11 - 17 fields filled with X's
-            ValidateFilledWithX("Box 11 (Additional declaration)", certificate.AdditionalDeclaration, mismatches);
+            // 11 Additional declaration - the selected declaration description when one was added, otherwise X's
+            var declarationDescription = Expected("SelectedDeclarationDescription");
+            if (declarationDescription != null)
+                ValidateAdditionalDeclaration(certificate.AdditionalDeclaration, declarationDescription, mismatches);
+            else
+                ValidateFilledWithX("Box 11 (Additional declaration)", certificate.AdditionalDeclaration, mismatches);
+
+            // 12 - 17 fields filled with X's
             ValidateFilledWithX("Box 12 (Treatment)", certificate.Treatment, mismatches);
             ValidateFilledWithX("Box 13 (Chemical)", certificate.Chemical, mismatches);
             ValidateFilledWithX("Box 14 (Duration and temperature)", certificate.DurationAndTemperature, mismatches);
@@ -124,6 +132,12 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
             if (commodity == null)
             {
                 LogSkipped("Box 8 (Commodity details)");
+                return;
+            }
+
+            if (IsPotatoesCommodity(expected))
+            {
+                ValidatePotatoesCommodityDetails(certificate, expected, mismatches);
                 return;
             }
 
@@ -188,6 +202,68 @@ namespace Defra.UI.Tests.Tools.PDFProcessor
             else
                 LogMatch("Box 8 (Commodity details)", certificate.CommodityDetails);
         }
+
+        public const string PotatoBotanicalName = "Solanum tuberosum";
+        private const string AdditionalDeclarationPrefix = "AD1 - ";
+        private const string AdditionalDeclarationSuffixPattern = @"SEE ATTACHED \d+ SHEET\(S\) FOR DETAILS";
+
+        /// <summary>
+        /// Potatoes Box 8 format: '&lt;genus and species&gt;, &lt;type&gt; POTATOES, &lt;origin&gt;, &lt;stock number&gt;, &lt;variety&gt;, &lt;chemical&gt;,
+        /// &lt;quantity&gt; &lt;units&gt;, &lt;packages&gt;, &lt;packaging&gt;, &lt;packing material&gt;' followed by 'CONTAINER NUMBER: &lt;container&gt;'
+        /// </summary>
+        private static void ValidatePotatoesCommodityDetails(PhytoCertificate certificate, Func<string, string?> expected, List<string> mismatches)
+        {
+            var potatoQuantity = expected("PotatoQuantity");
+            var quantity = decimal.TryParse(potatoQuantity, NumberStyles.Number, CultureInfo.InvariantCulture, out var q)
+                ? q.ToString("0.000", CultureInfo.InvariantCulture)
+                : potatoQuantity;
+
+            var parts = new[]
+            {
+                PotatoBotanicalName,
+                expected("PotatoType") is { } type ? $"{type} Potatoes" : null,
+                expected("PotatoCountriesOfOrigin"),
+                expected("PotatoStockNumber"),
+                expected("PotatoVariety"),
+                expected("PotatoChemicalUsed"),
+                JoinNonEmpty(" ", quantity, expected("PotatoUnit")),
+                expected("PotatoNumberOfPackages"),
+                expected("PotatoPackaging"),
+                expected("PotatoPackingMaterial")
+            };
+
+            var expectedDetails = JoinNonEmpty(", ", parts);
+            var container = expected("ExporterContainerNumber");
+            if (container != null)
+                expectedDetails += $" Container Number: {container}";
+
+            var pattern = $@"^(\d+\)\s*)?{Regex.Escape(NormaliseSeparators(expectedDetails))}$";
+            Check("Box 8 (Commodity details)", Regex.IsMatch(NormaliseSeparators(certificate.CommodityDetails), pattern), certificate.CommodityDetails,
+                $"Box 8 (Commodity details): expected '{expectedDetails.ToUpperInvariant()}', actual '{certificate.CommodityDetails}'", mismatches);
+        }
+
+        /// <summary>
+        /// Box 11 shows the declaration description prefixed with 'AD1 - ' and suffixed with 'SEE ATTACHED n SHEET(S) FOR DETAILS'.
+        /// The text is truncated on the certificate, so the remaining text must be the start of the selected declaration description.
+        /// </summary>
+        private static void ValidateAdditionalDeclaration(string? actual, string expectedDescription, List<string> mismatches)
+        {
+            const string label = "Box 11 (Additional declaration)";
+            var text = NormaliseDeclaration(actual);
+            if (text.StartsWith(Normalise(AdditionalDeclarationPrefix), StringComparison.Ordinal))
+                text = text[Normalise(AdditionalDeclarationPrefix).Length..].Trim();
+            text = Regex.Replace(text, $"{AdditionalDeclarationSuffixPattern}$", string.Empty).Trim();
+
+            Check(label, text.Length > 0 && NormaliseDeclaration(expectedDescription).StartsWith(text, StringComparison.Ordinal), actual,
+                $"{label}: expected the start of '{expectedDescription.ToUpperInvariant()}', actual '{actual}'", mismatches);
+        }
+
+        // The certificate PDF encodes typographic apostrophes as C1 control characters (e.g. U+0090)
+        private static string NormaliseDeclaration(string? value) =>
+            Normalise(Regex.Replace(value ?? string.Empty, "[\u2018\u2019\u02BC`\u0080-\u009F]", "'"));
+
+        private static bool IsPotatoesCommodity(Func<string, string?> expected) =>
+            expected("PotatoType") != null;
 
         private static bool IsPlantsCommodity(Func<string, string?> expected) =>
             expected("PlantCommodityType") != null;

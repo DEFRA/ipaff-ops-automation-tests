@@ -924,12 +924,15 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
 
     private const string InspectionResultsDefaultSubGridName = "InspectionResults";
     private const string InspectionResultsQuantityBasedSubGridName = "InspectionResultQuantityBased";
+    private const string InspectionResultsQuantityBasedWithoutSpeciesSubGridName = "InspectionResultQuantityBasedWithoutSpecies";
 
     private static string InspectionResultsSubGridName =>
         Driver.FindElements(By.XPath($"//div[@data-id='dataSetRoot_{InspectionResultsQuantityBasedSubGridName}']")).Count > 0
             ? InspectionResultsQuantityBasedSubGridName
-            : InspectionResultsDefaultSubGridName;
-    private const string InspectionResultsContainerXPath = "//div[@data-id='dataSetRoot_InspectionResults' or @data-id='dataSetRoot_InspectionResultQuantityBased']";
+            : Driver.FindElements(By.XPath($"//div[@data-id='dataSetRoot_{InspectionResultsQuantityBasedWithoutSpeciesSubGridName}']")).Count > 0
+                ? InspectionResultsQuantityBasedWithoutSpeciesSubGridName
+                : InspectionResultsDefaultSubGridName;
+    private const string InspectionResultsContainerXPath = "//div[@data-id='dataSetRoot_InspectionResults' or @data-id='dataSetRoot_InspectionResultQuantityBased' or @data-id='dataSetRoot_InspectionResultQuantityBasedWithoutSpecies']";
     private const string InspectionResultColumnDataId = "trd_fminspectionresult";
     private const string StatusReasonColumnDataId = "statuscode";
 
@@ -1635,7 +1638,7 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
     private static IWebElement ScrollInspectionResultsGridUntilColumnVisible(string dataId)
     {
         const string scrollIncrementScript = @"
-            var container = Array.from(document.querySelectorAll('div[data-id=""dataSetRoot_InspectionResults""], div[data-id=""dataSetRoot_InspectionResultQuantityBased""]')).find(e => e.getClientRects().length);
+            var container = Array.from(document.querySelectorAll('div[data-id=dataSetRoot_InspectionResults], div[data-id=dataSetRoot_InspectionResultQuantityBased], div[data-id=dataSetRoot_InspectionResultQuantityBasedWithoutSpecies]')).find(e => e.getClientRects().length);
             if (!container) return false;
             var grid = container.querySelector('div[role=""grid""]');
             if (!grid) return false;
@@ -1675,7 +1678,7 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
     private static void ResetInspectionResultsGridHorizontalScroll()
     {
         Driver.ExecuteScript(@"
-            var container = Array.from(document.querySelectorAll('div[data-id=""dataSetRoot_InspectionResults""], div[data-id=""dataSetRoot_InspectionResultQuantityBased""]')).find(e => e.getClientRects().length);
+            var container = Array.from(document.querySelectorAll('div[data-id=dataSetRoot_InspectionResults], div[data-id=dataSetRoot_InspectionResultQuantityBased], div[data-id=dataSetRoot_InspectionResultQuantityBasedWithoutSpecies]')).find(e => e.getClientRects().length);
             if (!container) return;
             var grid = container.querySelector('div[role=""grid""]');
             if (!grid) return;
@@ -2267,7 +2270,9 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
     {
         foreach (var field in new[] { field1, field2, field3, field4 })
         {
-            ReadInspectionValue(field).Should().BeNullOrWhiteSpace($"'{field}' should be blank, not zero or a selected option");
+            var value = ReadInspectionValue(field);
+            (value?.Trim() == "---" ? string.Empty : value)
+                .Should().BeNullOrWhiteSpace($"'{field}' should be blank, not zero or a selected option");
         }
     }
 
@@ -2335,20 +2340,26 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
         scenarioContext["SelectedDeclarationDescription"] = ReadDeclarationCell(rowId, "Declaration Description");
         ReadPotatoGrid(() =>
         {
-            var row = GetDeclarationRow(rowId);
-            if (row.GetAttribute("aria-selected") != "true")
-                row.FindElement(By.CssSelector("[role='gridcell'][col-id='__row_status']")).Click();
+            var statusCell = GetDeclarationRow(rowId).FindElement(By.CssSelector("[role='gridcell'][col-id='__row_status']"));
+            if (IsDeclarationRowChecked(rowId)) return true;
+            Driver.ExecuteScript("arguments[0].scrollIntoView({block:'center'});", statusCell);
+            var checkbox = statusCell.FindElements(By.CssSelector("input[type='checkbox'], [role='checkbox']")).FirstOrDefault(e => e.Displayed) ?? statusCell;
+            checkbox.Click();
+            Driver.WaitForTransaction();
+            if (!IsDeclarationRowChecked(rowId))
+                throw new NoSuchElementException($"Declaration row '{rowId}' was not selected after clicking its checkbox.");
             return true;
         });
         Driver.WaitForTransaction();
     }
 
-    [When("I record the selected Declaration Description for {string}")]
-    public void WhenIRecordTheSelectedDeclarationDescriptionFor(string application)
+    private static bool IsDeclarationRowChecked(string rowId)
     {
-        var id = scenarioContext.Get<string>("SelectedDeclarationRowId");
-        scenarioContext[$"{application}_DeclarationDescription"] = ReadDeclarationCell(id, "Declaration Description");
-        scenarioContext[$"{application}_DeclarationShortName"] = ReadDeclarationCell(id, "Declaration Short Name");
+        var row = GetDeclarationRow(rowId);
+        if (row.GetAttribute("aria-selected") == "true") return true;
+        var statusCell = row.FindElement(By.CssSelector("[role='gridcell'][col-id='__row_status']"));
+        return statusCell.FindElements(By.CssSelector("input[type='checkbox'], [role='checkbox']"))
+            .Any(e => e.Selected || e.GetAttribute("aria-checked") == "true" || e.GetAttribute("checked") != null);
     }
 
     [When("I click the Add Declarations button")]
@@ -2356,7 +2367,8 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
     {
         ReadPotatoGrid(() =>
         {
-            Driver.FindElements(AddDeclarationsButton).Last(e => e.Displayed).Click();
+            (Driver.FindElements(AddDeclarationsButton).LastOrDefault(e => e.Displayed)
+                ?? throw new NoSuchElementException("Add Declarations button is not displayed; ensure a declaration row is selected.")).Click();
             return true;
         });
         Driver.WaitForTransaction();
@@ -2443,7 +2455,10 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
     {
         if (!control.Enabled || control.GetAttribute("readonly") != null || control.GetAttribute("disabled") != null
             || control.GetAttribute("aria-readonly") == "true" || control.GetAttribute("aria-disabled") == "true") return true;
-        // Dynamics read-only lookups remain navigable links and expose their state through accessibility metadata.
+        // Locked fields render a lock icon in their field section container, even when an empty lookup has no input.
+        if (control.FindElements(By.XPath("ancestor::*[contains(@data-id,'-FieldSectionItemContainer')][1]//*[contains(@data-id,'-locked-iconWrapper')]"))
+            .Any(e => e.Displayed)) return true;
+        // Dynamics read-only
         // Nested lookup containers share a data-id; the empty input can be a sibling of the state description.
         var dataId = control.GetAttribute("data-id");
         var lookupContainer = !string.IsNullOrEmpty(dataId) && dataId.Contains(".fieldControl-Lookup_", StringComparison.Ordinal)
