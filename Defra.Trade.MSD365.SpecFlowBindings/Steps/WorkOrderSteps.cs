@@ -436,6 +436,10 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
         ["Chemicals Used"] = "trd_chemicalused",
     };
 
+    /// <summary>
+    /// Maps each column name to its Dynamics schema col-id, scrolls the Commodity Lines grid horizontally until that header renders,
+    /// then asserts the header label text exactly matches the expected column name.
+    /// </summary>
     [Then("I can see the following columns in the Commodity Lines subgrid {string} {string} {string} {string} {string} {string} {string} {string}")]
     public void ThenICanSeeTheFollowingColumnsInTheCommodityLinesSubgrid(string column1, string column2, string column3, string column4, string column5, string column6, string column7, string column8)
     {
@@ -449,6 +453,10 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
         }
     }
 
+    /// <summary>
+    /// Scrolls the Commodity Lines grid to the Potato Type column, then performs a real mouse double-click (Selenium Actions)
+    /// on the first row's Potato Type cell to open the Commodity Line record.
+    /// </summary>
     [When("I double click on a commodity line in the Commodity Lines subgrid")]
     public void WhenIDoubleClickOnACommodityLineInTheCommodityLinesSubgrid()
     {

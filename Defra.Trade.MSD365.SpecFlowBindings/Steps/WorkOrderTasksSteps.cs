@@ -1077,6 +1077,10 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
             $"Expected {expectedRowCount} row(s) in the Inspection Results grid but found {actualRowCount}.");
     }
 
+    /// <summary>
+    /// Accepts any number of quoted column names; for each, scrolls the Inspection Results grid horizontally to the header
+    /// (by schema data-id where mapped, otherwise by label) and asserts the header text matches, then resets the scroll.
+    /// </summary>
     [Then(@"^I can see the following columns are present in the Inspection Results grid ((?:'[^']+'\s*)+)$")]
     public void ThenICanSeeTheFollowingColumnsArePresentInTheInspectionResultsGrid(
         string columns)
@@ -2203,6 +2207,10 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
     };
     #endregion
 
+    /// <summary>
+    /// Locates each Summary field by its Dynamics schema data-id and asserts it is visible, read only (disabled/readonly) and holds the expected value;
+    /// 'Date Assigned' is checked against today's date, '% Complete' numerically, and 'Blank' means an empty value.
+    /// </summary>
     [Then("the following fields are displayed and read only on the Work Order Task page")]
     public void ThenTheFollowingFieldsAreDisplayedAndReadOnlyOnTheWorkOrderTaskPage(Table table)
     {
@@ -2233,6 +2241,10 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
         }
     }
 
+    /// <summary>
+    /// Finds each lookup by its schema id (trd_visitid / trd_inspectorassignedid) and asserts the lookup is visible and not read only,
+    /// and that its search (magnifier) button is displayed and enabled.
+    /// </summary>
     [Then("the {string} and {string} fields are displayed and editable on the Work Order Task page")]
     public void ThenTheFieldsAreDisplayedAndEditableOnTheWorkOrderTaskPage(string field1, string field2)
     {
@@ -2250,6 +2262,10 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
         }
     }
 
+    /// <summary>
+    /// Reads the 'Potato Type (Consignment Item)' cell of the first Inspection Results row and asserts it equals the Potato Type
+    /// captured in scenario context when the application was submitted in the Exporter Portal.
+    /// </summary>
     [Then("the Potato Type displayed in the Inspection Results grid matches the Exporter Portal {string}")]
     public void ThenThePotatoTypeDisplayedInTheInspectionResultsGridMatchesTheExporterPortal(string application)
     {
@@ -2257,6 +2273,10 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
         ReadInspectionValue("Potato Type (Consignment Item)").Should().Be(scenarioContext.Get<string>("PotatoType"));
     }
 
+    /// <summary>
+    /// Reads 'Quantity Applied For' from the first Inspection Results row and compares it numerically (rounded to 2dp)
+    /// with the quantity captured in scenario context from the Exporter Portal.
+    /// </summary>
     [Then("the Quantity Applied For in the Inspection Results grid matches the Exporter Portal {string}")]
     public void ThenTheQuantityAppliedForInTheInspectionResultsGridMatchesTheExporterPortal(string application)
     {
@@ -2265,6 +2285,10 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
             .Should().Be(Math.Round(ParsePotatoQuantity(scenarioContext.Get<string>("PotatoQuantity")), 2));
     }
 
+    /// <summary>
+    /// Reads each named cell from the first Inspection Results row and asserts it is empty (the '---' placeholder counts as blank),
+    /// ensuring no default zero or pre-selected option is present.
+    /// </summary>
     [Then("the {string} {string} {string} {string} fields are blank in the Inspection Results grid")]
     public void ThenTheFieldsAreBlankInTheInspectionResultsGrid(string field1, string field2, string field3, string field4)
     {
@@ -2276,27 +2300,48 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
         }
     }
 
+    /// <summary>
+    /// Reads 'Quantity Applied For' from the grid, clicks the 'Quantity Inspected' cell to open its inline editor, types the value,
+    /// tabs out and saves the record.
+    /// </summary>
     [When("I enter the Quantity Applied For into the Quantity Inspected field in the Inspection Results grid")]
     public void WhenIEnterTheQuantityAppliedForIntoTheQuantityInspectedFieldInTheInspectionResultsGrid()
     {
         EnterInspectionQuantity("Quantity Inspected");
     }
 
+    /// <summary>
+    /// Reads 'Quantity Applied For' from the grid, clicks the 'Quantity Passed' cell to open its inline editor, types the value,
+    /// tabs out and saves the record.
+    /// </summary>
     [When("I enter the Quantity Applied For into the Quantity Passed field in the Inspection Results grid")]
     public void WhenIEnterTheQuantityAppliedForIntoTheQuantityPassedFieldInTheInspectionResultsGrid()
     {
         EnterInspectionQuantity("Quantity Passed");
     }
 
+    /// <summary>
+    /// Re-reads both cells from the first Inspection Results row (retrying while the grid refreshes after save) and asserts they match numerically to 2dp.
+    /// </summary>
     [Then("the Quantity Inspected matches the Quantity Applied For")]
     public void ThenTheQuantityInspectedMatchesTheQuantityAppliedFor() => AssertInspectionQuantities("Quantity Inspected", "Quantity Applied For");
 
+    /// <summary>
+    /// Re-reads both cells from the first Inspection Results row (retrying while the grid refreshes after save) and asserts they match numerically to 2dp.
+    /// </summary>
     [Then("the Quantity Passed matches the Quantity Applied For")]
     public void ThenTheQuantityPassedMatchesTheQuantityAppliedFor() => AssertInspectionQuantities("Quantity Passed", "Quantity Applied For");
 
+    /// <summary>
+    /// Reads the system-calculated 'Quantity Exported (Consignment Item)' cell, retrying until it populates after save, and asserts it equals Quantity Passed to 2dp.
+    /// </summary>
     [Then("the Quantity Exported matches the Quantity Passed")]
     public void ThenTheQuantityExportedMatchesTheQuantityPassed() => AssertInspectionQuantities("Quantity Exported", "Quantity Passed");
 
+    /// <summary>
+    /// Finds each column header by label in the Selected Commodity Lines subgrid, then asserts the corresponding cell in every data row
+    /// is read only (fails if the subgrid has no rows).
+    /// </summary>
     [Then("the following columns are displayed and read only in the Selected Commodity Lines subgrid {string} {string} {string} {string} {string} {string}")]
     public void ThenTheFollowingColumnsAreDisplayedAndReadOnlyInTheSelectedCommodityLinesSubgrid(string column1, string column2, string column3, string column4, string column5, string column6)
     {
@@ -2313,18 +2358,31 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
         }
     }
 
+    /// <summary>
+    /// Finds each column header by its label within the Declarations subgrid and asserts it is displayed.
+    /// </summary>
     [Then("the following columns are displayed in the Declarations subgrid {string} {string} {string} {string} {string} {string}")]
     public void ThenTheFollowingColumnsAreDisplayedInTheDeclarationsSubgrid(string column1, string column2, string column3, string column4, string column5, string column6)
         => AssertTaskGridColumns(DeclarationsXPath, column1, column2, column3, column4, column5, column6);
 
+    /// <summary>
+    /// Finds each column header by its label within the Selected Declarations subgrid and asserts it is displayed.
+    /// </summary>
     [Then("the following columns are displayed in the Selected Declarations subgrid {string} {string} {string} {string} {string} {string}")]
     public void ThenTheFollowingColumnsAreDisplayedInTheSelectedDeclarationsSubgrid(string column1, string column2, string column3, string column4, string column5, string column6)
         => AssertTaskGridColumns(SelectedDeclarationsXPath, column1, column2, column3, column4, column5, column6);
 
+    /// <summary>
+    /// Finds each column header by its label within the Time Recording grid and asserts it is displayed.
+    /// </summary>
     [Then("the following columns are displayed in the Time Recording grid {string} {string} {string} {string} {string} {string}")]
     public void ThenTheFollowingColumnsAreDisplayedInTheTimeRecordingGrid(string column1, string column2, string column3, string column4, string column5, string column6)
         => AssertTaskGridColumns(TimeRecordingXPath, column1, column2, column3, column4, column5, column6);
 
+    /// <summary>
+    /// Picks a random row from the Declarations subgrid, stores its Short Name and Description in scenario context,
+    /// then ticks its row checkbox (click, falling back to SPACE) and waits until the row is confirmed selected.
+    /// </summary>
     [When("I randomly select a declaration from the Declarations subgrid")]
     public void WhenIRandomlySelectADeclarationFromTheDeclarationsSubgrid()
     {
@@ -2381,6 +2439,9 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
             || row.GetAttribute("aria-selected") == "true";
     }
 
+    /// <summary>
+    /// Clicks the visible Add Declarations command (only shown once a declaration row is selected) and waits for the transaction to complete.
+    /// </summary>
     [When("I click the Add Declarations button")]
     public void WhenIClickTheAddDeclarationsButton()
     {
@@ -2393,6 +2454,10 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
         Driver.WaitForTransaction();
     }
 
+    /// <summary>
+    /// Retries until a single row in the Selected Declarations subgrid contains both the Short Name and full Description
+    /// stored when the declaration was randomly selected.
+    /// </summary>
     [Then("the selected declaration is displayed in the Selected Declarations subgrid")]
     public void ThenTheSelectedDeclarationIsDisplayedInTheSelectedDeclarationsSubgrid()
     {
@@ -2417,6 +2482,10 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
         found.Should().BeTrue($"selected declaration '{name}' and its full description should appear in the same row");
     }
 
+    /// <summary>
+    /// Finds the Time Recording row whose Inspector matches the logged-in user's name (derived from their username)
+    /// and asserts its Date cell (dd/MM/yyyy) equals today's date.
+    /// </summary>
     [Then("the date is today's date")]
     public void ThenTheDateIsTodaysDate()
     {
@@ -2437,6 +2506,10 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
         DateTime.ParseExact(date, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture).Date.Should().Be(DateTime.Today);
     }
 
+    /// <summary>
+    /// Scrolls through the whole Declarations subgrid (rows only load as they come into view), recording the Country Name of every row,
+    /// and asserts the grid is not empty and every row is for the expected country.
+    /// </summary>
     [Then("the Declarations subgrid is filtered by the Country Name {string}")]
     public void ThenTheDeclarationsSubgridIsFilteredByTheCountryName(string country)
     {

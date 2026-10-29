@@ -43,6 +43,9 @@ public class CommodityLineSteps : PowerAppsStepDefiner
         this.scenarioContext = scenarioContext;
     }
 
+    /// <summary>
+    /// Reads the entity name in the visible form header and asserts it is exactly 'Commodity Line'.
+    /// </summary>
     [Then("the Commodity Line page is displayed")]
     public void ThenTheCommodityLinePageIsDisplayed()
     {
@@ -50,6 +53,9 @@ public class CommodityLineSteps : PowerAppsStepDefiner
             .Should().Be("Commodity Line");
     }
 
+    /// <summary>
+    /// Maps each field label to its Dynamics schema data-id (e.g. trd_containernumber) and asserts the input control is visible on the form.
+    /// </summary>
     [Then("the following fields are displayed on the Commodity Line page {string} {string} {string} {string} {string} {string}")]
     public void ThenTheFollowingFieldsAreDisplayedOnTheCommodityLinePage(string field1, string field2, string field3, string field4, string field5, string field6)
     {
@@ -59,6 +65,10 @@ public class CommodityLineSteps : PowerAppsStepDefiner
         }
     }
 
+    /// <summary>
+    /// Compares on-screen coordinates: Quantity Exported must start below Total Quantity in the same column (within 5px),
+    /// with no other visible input positioned between them.
+    /// </summary>
     [Then("the Quantity Exported field is directly below the Total Quantity field")]
     public void ThenTheQuantityExportedFieldIsDirectlyBelowTheTotalQuantityField()
     {
@@ -77,6 +87,10 @@ public class CommodityLineSteps : PowerAppsStepDefiner
         positions.Intervening.Should().Be(0, "no field should intervene between Total Quantity and Quantity Exported");
     }
 
+    /// <summary>
+    /// Compares each field's value on the Commodity Line form with the value captured in scenario context when entered in the Exporter Portal
+    /// (e.g. 'PotatoStockNumber'), after confirming the named application was created.
+    /// </summary>
     [Then("the {string} {string} {string} {string} values match those entered in the Exporter Portal for {string}")]
     public void ThenTheValuesMatchThoseEnteredInTheExporterPortalFor(string field1, string field2, string field3, string field4, string application)
     {
