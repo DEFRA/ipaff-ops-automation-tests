@@ -2339,26 +2339,46 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
         scenarioContext["SelectedDeclarationDescription"] = ReadDeclarationCell(rowId, "Declaration Description");
         ReadPotatoGrid(() =>
         {
-            var statusCell = GetDeclarationRow(rowId).FindElement(By.CssSelector("[role='gridcell'][col-id='__row_status']"));
             if (IsDeclarationRowChecked(rowId)) return true;
+            var statusCell = GetDeclarationRow(rowId).FindElement(By.CssSelector("[role='gridcell'][col-id='__row_status']"));
             Driver.ExecuteScript("arguments[0].scrollIntoView({block:'center'});", statusCell);
-            var checkbox = statusCell.FindElements(By.CssSelector("input[type='checkbox'], [role='checkbox']")).FirstOrDefault(e => e.Displayed) ?? statusCell;
-            checkbox.Click();
-            Driver.WaitForTransaction();
-            if (!IsDeclarationRowChecked(rowId))
+            // A mouse click on the status cell can focus the row (ag-row-focus) without selecting it.
+            // The grid selects the focused row on SPACE ("Press SPACE to select this row."), so focus then press SPACE.
+            statusCell.Click();
+            if (WaitForDeclarationRowChecked(rowId, TimeSpan.FromSeconds(1))) return true;
+            GetDeclarationRow(rowId).FindElement(By.CssSelector("[role='gridcell'][col-id='__row_status']")).SendKeys(Keys.Space);
+            // Wait for the selection to register before retrying, as another toggle would deselect the row.
+            if (!WaitForDeclarationRowChecked(rowId, TimeSpan.FromSeconds(5)))
                 throw new NoSuchElementException($"Declaration row '{rowId}' was not selected after clicking its checkbox.");
             return true;
         });
         Driver.WaitForTransaction();
     }
 
+    private static bool WaitForDeclarationRowChecked(string rowId, TimeSpan timeout)
+    {
+        var deadline = DateTime.UtcNow + timeout;
+        do
+        {
+            Driver.WaitForTransaction();
+            try
+            {
+                if (IsDeclarationRowChecked(rowId)) return true;
+            }
+            catch (StaleElementReferenceException)
+            {
+            }
+            Thread.Sleep(250);
+        } while (DateTime.UtcNow < deadline);
+        return false;
+    }
+
     private static bool IsDeclarationRowChecked(string rowId)
     {
+        // Only row-level state is reliable: the status cell carries aria-selected="true" for range focus even when unselected.
         var row = GetDeclarationRow(rowId);
-        if (row.GetAttribute("aria-selected") == "true") return true;
-        var statusCell = row.FindElement(By.CssSelector("[role='gridcell'][col-id='__row_status']"));
-        return statusCell.FindElements(By.CssSelector("input[type='checkbox'], [role='checkbox']"))
-            .Any(e => e.Selected || e.GetAttribute("aria-checked") == "true" || e.GetAttribute("checked") != null);
+        return (row.GetAttribute("class") ?? string.Empty).Split(' ').Contains("ag-row-selected")
+            || row.GetAttribute("aria-selected") == "true";
     }
 
     [When("I click the Add Declarations button")]
