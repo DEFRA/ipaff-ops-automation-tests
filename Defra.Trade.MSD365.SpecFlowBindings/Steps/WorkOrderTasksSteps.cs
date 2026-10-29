@@ -2335,7 +2335,6 @@ public class WorkOrderTasksSteps : PowerAppsStepDefiner
         });
         if (rows.Length == 0) throw new NoSuchElementException("No declarations are available to select.");
         var rowId = rows[Random.Shared.Next(rows.Length)];
-        scenarioContext["SelectedDeclarationRowId"] = rowId;
         scenarioContext["SelectedDeclarationShortName"] = ReadDeclarationCell(rowId, "Declaration Short Name");
         scenarioContext["SelectedDeclarationDescription"] = ReadDeclarationCell(rowId, "Declaration Description");
         ReadPotatoGrid(() =>
