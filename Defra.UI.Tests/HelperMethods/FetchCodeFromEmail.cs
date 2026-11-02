@@ -1,99 +1,93 @@
-﻿using mailinator_csharp_client.Models.Messages.Entities;
-using mailinator_csharp_client.Models.Messages.Requests;
-using mailinator_csharp_client.Models.Responses;
-using mailinator_csharp_client;
-using Reqnroll;
+using System.Diagnostics;
+using System.Net;
+using System.Text.RegularExpressions;
 using Defra.UI.Framework.Object;
+using mailinator_csharp_client;
+using mailinator_csharp_client.Models.Messages.Entities;
+using mailinator_csharp_client.Models.Messages.Requests;
+using Reqnroll;
 
 namespace Defra.UI.Tests.HelperMethods
 {
     public interface IFetchCodeFromEmail
     {
-        public Task<string> GetCodeFromEmail(string inboxIdToReadCode);
-        public Task DeleteMessageFromInbox(string inboxId);
-        public Task DeleteAllMessagesFromInbox();
-        public string DomainName { get; set; }
+        string DomainName { get; }
+        Task<string> GetCodeFromEmail(string inboxIdToReadCode);
     }
 
     public class FetchCodeFromEmail : IFetchCodeFromEmail
     {
-        private ScenarioContext ScenarioContext { get; set; }
-        public string DomainName { get; set; } = "team553512.testinator.com";
+        private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(90);
+        private static readonly TimeSpan PollInterval = TimeSpan.FromSeconds(3);
 
-        private MailinatorClient mailinatorClient = new MailinatorClient("af00c8254afc4c34b3f32ba44a040e73");
+        private readonly MailinatorClient _mailinatorClient = new("33805b1795e14f1c9af8272c25684f49");
 
-        public FetchCodeFromEmail(ScenarioContext _scenarioContext)
+        public string DomainName { get; } = "team707045.testinator.com";
+
+        public FetchCodeFromEmail(ScenarioContext scenarioContext)
         {
-            ScenarioContext = _scenarioContext;
         }
 
         public async Task<string> GetCodeFromEmail(string inboxIdToReadCode)
         {
-            string code = "";
-            try
+            var stopwatch = Stopwatch.StartNew();
+            while (stopwatch.Elapsed < Timeout)
             {
-                //Fetch Inbox
-                Thread.Sleep(5000);
-                FetchInboxRequest fetchInboxRequest = new FetchInboxRequest() { Domain = DomainName, Inbox = "*", Skip = 0, Limit = 30, Sort = Sort.asc };
-                FetchInboxResponse fetchInboxResponse = await mailinatorClient.MessagesClient.FetchInboxAsync(fetchInboxRequest);
-                
-                var inBoxMessage = fetchInboxResponse.Messages.SingleOrDefault(t => t.To.Equals(inboxIdToReadCode));
+                try
+                {
+                    var inbox = await _mailinatorClient.MessagesClient.FetchInboxAsync(new FetchInboxRequest
+                    {
+                        Domain = DomainName,
+                        Inbox = inboxIdToReadCode,
+                        Skip = 0,
+                        Limit = 10,
+                        Sort = Sort.desc
+                    });
 
-                //Fetch Message
-                FetchMessageRequest fetchMessageRequest = new FetchMessageRequest() { Domain = DomainName, Inbox = inBoxMessage?.To, MessageId = inBoxMessage?.Id };
-                FetchMessageResponse fetchMessageResponse = await mailinatorClient.MessagesClient.FetchMessageAsync(fetchMessageRequest);
+                    foreach (var message in inbox?.Messages ?? [])
+                    {
+                        var response = await _mailinatorClient.MessagesClient.FetchMessageAsync(new FetchMessageRequest
+                        {
+                            Domain = DomainName,
+                            Inbox = inboxIdToReadCode,
+                            MessageId = message.Id
+                        });
 
-                var message = fetchMessageResponse.Parts[0];
+                        foreach (var part in response?.Parts ?? [])
+                        {
+                            var code = ExtractCode(part.Body);
+                            if (!string.IsNullOrEmpty(code))
+                                return code;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogMessage("While trying to read the message from Inbox... " + ex.Message);
+                }
 
-                string body = message.Body;
-                int pFrom = body.IndexOf("Your confirmation code is:") + "Your confirmation code is:".Length; ;
-                int pTo = body.LastIndexOf("This code will expire in 30 minutes");
-
-                code = body.Substring(pFrom, pTo - pFrom).Replace("\r", "").Replace("\n", "");
-
+                await Task.Delay(PollInterval);
             }
-            catch (Exception ex)
-            {
-                Logger.LogMessage("While trying to read the message from Inbox... " + ex.Message);
-            }
 
-            return code;
+            throw new TimeoutException($"No confirmation code was received for {inboxIdToReadCode}@{DomainName} within {Timeout.TotalSeconds} seconds.");
         }
 
-        public async Task DeleteMessageFromInbox(string inboxIdToReadCode)
+        private static string ExtractCode(string? rawBody)
         {
-            try
-            {
-                var code = inboxIdToReadCode.Substring(0, inboxIdToReadCode.IndexOf('-'));
-                
-                DeleteMessageRequest deleteMessageRequest = new DeleteMessageRequest()
-                {
-                    Domain = DomainName,
-                    Inbox = "*",
-                    MessageId = code
-                };
+            if (string.IsNullOrEmpty(rawBody))
+                return string.Empty;
 
-                DeleteMessageResponse deleteMessageResponse = await mailinatorClient.MessagesClient.DeleteMessageAsync(deleteMessageRequest);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogMessage("While Deleteing the message from Inbox... " + ex.Message);
-            }
-        }
+            const string startMarker = "Your confirmation code is:";
+            const string endMarker = "This code will expire";
 
-        public async Task DeleteAllMessagesFromInbox()
-        {
-            try
-            {
-                await mailinatorClient.MessagesClient.DeleteAllDomainMessagesAsync(new DeleteAllDomainMessagesRequest
-                {
-                    Domain = DomainName
-                });
-            }
-            catch (Exception ex)
-            {
-                Logger.LogMessage("While Deleteing the message from Inbox... " + ex.Message);
-            }
+            var body = WebUtility.HtmlDecode(Regex.Replace(rawBody, "<[^>]+>", " "));
+            var start = body.IndexOf(startMarker, StringComparison.OrdinalIgnoreCase);
+            if (start < 0)
+                return string.Empty;
+
+            start += startMarker.Length;
+            var end = body.IndexOf(endMarker, start, StringComparison.OrdinalIgnoreCase);
+            return end > start ? Regex.Replace(body[start..end], @"\s+", string.Empty) : string.Empty;
         }
     }
 }

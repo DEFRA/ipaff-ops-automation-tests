@@ -27,15 +27,14 @@ namespace Defra.UI.Tests.Hooks
         private IObjectContainer _objectContainer;
         private IReqnrollOutputHelper _reqnrollOutputHelper;
 
-        private IFetchCodeFromEmail fetchCodeFromEmail => _objectContainer.IsRegistered<IFetchCodeFromEmail>() ? _objectContainer.Resolve<IFetchCodeFromEmail>() : null;
-
-        private static bool isRunOnce = false;
-
         private static ExtentReports _extent;
         [ThreadStatic]
         private static ExtentTest _feature;
         [ThreadStatic]
         private static ExtentTest _scenario;
+
+        private ExtentTest CurrentScenario =>
+            _scenario ??= _scenarioContext.TryGetValue("ExtentScenario", out ExtentTest scenario) ? scenario : null;
 
         public WebDriverHook(ScenarioContext context, ObjectContainer objectContainer,
             IReqnrollOutputHelper reqnrollOutputHelper)
@@ -67,7 +66,6 @@ namespace Defra.UI.Tests.Hooks
         public static void BeforeTestRun()
         {
             _extent = ExtentReportManager.GetInstance();
-            isRunOnce = true;
         }
 
         [AfterTestRun]
@@ -111,19 +109,6 @@ namespace Defra.UI.Tests.Hooks
 
             // Store scenario in ScenarioContext so Dynamics hook can access it
             _scenarioContext.Set(_scenario, "ExtentScenario");
-
-            if (isRunOnce)
-            {
-                GovernmentGateway.Initialize(_objectContainer);
-
-                if (ConfigSetup.BaseConfiguration.TestConfiguration.IsLiveUserAccount)
-                {
-                    fetchCodeFromEmail.DeleteAllMessagesFromInbox();
-                    isRunOnce = false;
-
-                    GovernmentGateway.Instance.GetUserDetails();
-                }
-            }
         }
 
         [AfterScenario]
@@ -137,7 +122,7 @@ namespace Defra.UI.Tests.Hooks
                     var log = ScreenshotService.CreateLogForContextValues(_scenarioContext);
                     if (!string.IsNullOrWhiteSpace(log) && log != "<pre></pre>")
                     {
-                        _scenario.CreateNode(new GherkinKeyword("*"), "LOG: Captured Scenario Context Values")
+                        CurrentScenario.CreateNode(new GherkinKeyword("*"), "LOG: Captured Scenario Context Values")
                                 .Info(log);
                     }
                 }
@@ -285,7 +270,7 @@ namespace Defra.UI.Tests.Hooks
 
             if (_scenarioContext.TestError == null)
             {
-                _scenario.CreateNode(new GherkinKeyword(stepType), stepInfo);
+                CurrentScenario.CreateNode(new GherkinKeyword(stepType), stepInfo);
             }
             else
             {
@@ -304,7 +289,7 @@ namespace Defra.UI.Tests.Hooks
                     _scenarioContext[FailureScreenshotPathKey] = ScreenshotService.GetScreenshotPathForScenario(
                         _scenarioContext.ScenarioInfo.Title);
 
-                    var stepNode = _scenario.CreateNode(new GherkinKeyword(stepType), stepInfo)
+                    var stepNode = CurrentScenario.CreateNode(new GherkinKeyword(stepType), stepInfo)
                                  .Fail(_scenarioContext.TestError.Message)
                                  .AddScreenCaptureFromPath(screenshotPath);
 
@@ -317,7 +302,7 @@ namespace Defra.UI.Tests.Hooks
                 else
                 {
                     // Screenshot not available — log failure and context without it
-                    var stepNode = _scenario.CreateNode(new GherkinKeyword(stepType), stepInfo)
+                    var stepNode = CurrentScenario.CreateNode(new GherkinKeyword(stepType), stepInfo)
                                  .Fail(_scenarioContext.TestError.Message);
 
                     var log = ScreenshotService.CreateLogForContextValues(_scenarioContext);

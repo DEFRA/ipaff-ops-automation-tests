@@ -258,6 +258,33 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterMakeChangesToYourApplicationPage, IExporterMakeChangesToYourApplicationPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterAreYouSureYouWantToCopyThisApplicationPage, IExporterAreYouSureYouWantToCopyThisApplicationPage>());
 
+            // IDM registration pages
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmEnterYourEmailAddressPage, IIdmEnterYourEmailAddressPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmEnterCodeToConfirmYourEmailAddressPage, IIdmEnterCodeToConfirmYourEmailAddressPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmEmailAddressConfirmedPage, IIdmEmailAddressConfirmedPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmWhatIsYourFullNamePage, IIdmWhatIsYourFullNamePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmCreatePasswordPage, IIdmCreatePasswordPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmYourGovernmentGatewayUserIdIsPage, IIdmYourGovernmentGatewayUserIdIsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmYouNeedToRegisterForADefraAccountPage, IIdmYouNeedToRegisterForADefraAccountPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmYourDefraAccountTermsAndConditionsPage, IIdmYourDefraAccountTermsAndConditionsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmWhatWeNeedFromYouPage, IIdmWhatWeNeedFromYouPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmAreYouRegisteringAsABusinessOrOrganisationPage, IIdmAreYouRegisteringAsABusinessOrOrganisationPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmIsTheBusinessRegisteredToTradeInTheUKPage, IIdmIsTheBusinessRegisteredToTradeInTheUKPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmDoYouHaveACompanyRegistrationNumberPage, IIdmDoYouHaveACompanyRegistrationNumberPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmWhatKindOfBusinessOrOrganisationAreYouPage, IIdmWhatKindOfBusinessOrOrganisationAreYouPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmWhatIsTheNameOfYourBusinessPage, IIdmWhatIsTheNameOfYourBusinessPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmWhatsThePostcodeForYourBusinessPage, IIdmWhatsThePostcodeForYourBusinessPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmSelectYourAddressPage, IIdmSelectYourAddressPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmWhatIsYourBusinessAddressPage, IIdmWhatIsYourBusinessAddressPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmWhatAreTheBusinessContactDetailsPage, IIdmWhatAreTheBusinessContactDetailsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmWhatIsYourNamePage, IIdmWhatIsYourNamePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmWhatIsYourPhoneNumberPage, IIdmWhatIsYourPhoneNumberPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmCreateMemorableWordPage, IIdmCreateMemorableWordPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmCheckYourAnswersPage, IIdmCheckYourAnswersPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmTermsAndConditionsPage, IIdmTermsAndConditionsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmManageAccountPage, IIdmManageAccountPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmYourDefraAccountPage, IIdmYourDefraAccountPage>());
+
             //Read Email
             _objectContainer.RegisterInstanceAs(GetBaseWithScenarioContext<FetchCodeFromEmail, IFetchCodeFromEmail>());
         }

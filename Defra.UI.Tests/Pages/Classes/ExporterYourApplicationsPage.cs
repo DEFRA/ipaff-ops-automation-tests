@@ -13,6 +13,8 @@ namespace Defra.UI.Tests.Pages.Classes
         #region Page Objects with all the element locators
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='Your applications']"), true);
         private IWebElement btnStartNewApplication => _driver.WaitForElement(By.Id("link-startNewApplicationLink"));
+        private IWebElement lnkManageAccount => _driver.WaitForElement(By.XPath("//a[translate(normalize-space(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')='manage account']"));
+        private IWebElement lnkSignOut => _driver.WaitForElement(By.Id("Link-SignOut"));
         private IWebElement txtSearch => _driver.WaitForElement(By.Id("filter"), true);
         private IWebElement btnSearch => _driver.WaitForElement(By.Id("Button-Search"));
         private IReadOnlyCollection<IWebElement> tblApplicationRows => _driver.WaitForElements(By.XPath("//table[@id='applications-table']//tbody/tr"));
@@ -27,6 +29,10 @@ namespace Defra.UI.Tests.Pages.Classes
         public bool IsPageLoaded() => pageTitle.Text.Trim().Equals("Your applications");
 
         public void ClickStartNewApplicationButton() => btnStartNewApplication.Click();
+
+        public bool IsStartNewApplicationAvailable() => btnStartNewApplication.Displayed && btnStartNewApplication.Enabled;
+        public void ClickManageAccountLink() => lnkManageAccount.Click();
+        public void ClickSignOutLink() => lnkSignOut.Click();
 
         public void SearchForApplication(string reference)
         {

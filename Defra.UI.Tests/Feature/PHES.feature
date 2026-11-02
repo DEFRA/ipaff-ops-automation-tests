@@ -3,6 +3,78 @@ Feature: PHES
 
 End-to-end PHES regression tests
 
+@SPS-1085
+Scenario Outline: Create a new Government Gateway account and register for the Exporter service - SPS-1085
+	Given that I navigate to the Exporter Portal
+	Then I should see type of Gateway login page
+	And I have selected 'Sign in with Government Gateway' as login type
+	When I click Continue button from How do you want to sign in page
+	Then I should be redirected to the Sign in using Government Gateway page
+	When the user clicks Create sign in details on the Government Gateway sign in page
+	Then the Enter your email address page is displayed
+	When the user enters a unique registration email address for '<country>' and continues
+	Then the Enter code to confirm your email address page is displayed
+	And a confirmation email is received for the new account
+	When the user confirms the email address using the emailed code
+	Then the Email address confirmed page is displayed
+	When the user continues from the Email address confirmed page
+	Then the What is your full name? page is displayed
+	When the user enters their full name for the account and continues
+	Then the Create a password page is displayed
+	When the user enters and confirms the configured Trader 1 password and continues
+	Then the Your Government Gateway user ID is: page is displayed
+	When the user continues from the Your Government Gateway user ID is: page
+	Then the You need to register for a Defra account page is displayed
+	When the user continues registering for a Defra account
+	Then the Your Defra account terms and conditions page is displayed
+	When the user accepts the Defra account terms and continues
+	Then the What we need from you page is displayed
+	When the user continues from the What we need from you page
+	Then the Are you registering as a business or organisation? page is displayed
+	When the user selects '<isBusinessOrOrganisation>' on the Are you registering as a business or organisation? page and continues
+	Then the Is the business registered to trade in the UK? page is displayed
+	When the user selects '<isRegisteredUK>' on the Is the business registered to trade in the UK? page and continues
+	Then the Do you have a company registration number? page is displayed
+	When the user selects '<isCompaniesHouse>' on the Do you have a company registration number? page and continues
+	Then the What kind of business or organisation are you? page is displayed
+	When the user selects '<isSoleTraderOrCharity>' on the What kind of business or organisation are you? page and continues
+	Then the What is the name of your business? page is displayed
+	When the user enters a unique business name and continues
+	Then the What’s the postcode for your business? page is displayed
+	When the user enters the generated postcode for the business and continues
+	Then the address selection or manual business address page is displayed
+	When the user selects a random business address or enters the generated address manually and continues
+	Then the What are the business contact details? page is displayed
+	When the user enters the business contact details and continues
+	Then the What is your name? page is displayed
+	When the user enters their first and last names and continues
+	Then the What is your phone number? page is displayed
+	When the user enters their phone number and continues
+	Then the Create a memorable word page is displayed
+	When the user uses the configured Trader 1 credential as the memorable word and hint and continues
+	Then the Check your answers page is displayed
+	And the registration review matches the entered details and offers change links
+	And the registration review has no reCAPTCHA checkbox
+	When the user completes registration
+	Then the exporter registration Terms and conditions page is displayed
+	When the user accepts the exporter registration terms and continues
+	Then the Exporter Portal homepage should be displayed
+	And the newly registered exporter can start a new application
+	When the user clicks Manage account on the exporter dashboard
+	Then the exporter Manage account page is displayed
+	When the user accesses their Defra account in a new window
+	Then the Your Defra account page shows the registered details and organisation Admin role
+	When the user closes the Defra account window and returns to the exporter
+	Then the exporter Manage account page is displayed
+	When the user clicks Back on the exporter Manage account page
+	Then the Your applications page is displayed
+	When the user signs out of the exporter dashboard
+	Then I should see type of Gateway login page
+
+	Examples:
+		| country | isBusinessOrOrganisation | isRegisteredUK | isCompaniesHouse | isSoleTraderOrCharity |
+		| UK      | Yes                      | Yes            | No               | Sole trader          |
+
 @PHES-Happy-Path
 Scenario: New exporter application for a phytosanitary certificate - PHES Happy Path
 	Given that I navigate to the Exporter Portal
