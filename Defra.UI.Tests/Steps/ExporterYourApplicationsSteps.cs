@@ -59,13 +59,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(exporterYourApplicationsPage?.IsStartNewApplicationAvailable(), "Start a new application is not available");
         }
 
-        [When("the user clicks Manage account on the exporter dashboard")]
+        [When("the user clicks Manage account on the Your applications page")]
         public void WhenTheUserClicksManageAccountOnTheExporterDashboard()
         {
             exporterYourApplicationsPage?.ClickManageAccountLink();
         }
 
-        [When("the user signs out of the exporter dashboard")]
+        [When("the user clicks Sign out on the Your applications page")]
         public void WhenTheUserSignsOutOfTheExporterDashboard()
         {
             exporterYourApplicationsPage?.ClickSignOutLink();

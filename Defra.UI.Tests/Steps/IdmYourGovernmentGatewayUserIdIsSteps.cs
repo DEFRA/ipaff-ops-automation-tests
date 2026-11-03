@@ -1,4 +1,4 @@
-using Defra.UI.Tests.Pages.Interfaces;
+﻿using Defra.UI.Tests.Pages.Interfaces;
 using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;
@@ -27,7 +27,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _scenarioContext.Set(gatewayId, "RegistrationGatewayId");
         }
 
-        [When("the user continues from the Your Government Gateway user ID is: page")]
+        [When("the user clicks Continue on the Your Government Gateway user ID is: page")]
         public void WhenContinueIsClicked() => idmYourGovernmentGatewayUserIdIsPage.ClickContinueButton();
     }
 }

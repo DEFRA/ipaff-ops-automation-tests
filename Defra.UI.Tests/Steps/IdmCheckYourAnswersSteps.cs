@@ -1,4 +1,4 @@
-using Defra.UI.Tests.Data.Users;
+﻿using Defra.UI.Tests.Data.Users;
 using Defra.UI.Tests.Tools;
 using Defra.UI.Tests.Pages.Interfaces;
 using NUnit.Framework;
@@ -120,7 +120,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the registration review has no reCAPTCHA checkbox")]
         public void ThenRecaptchaIsAbsent() => Assert.That(idmCheckYourAnswersPage.IsRecaptchaAbsent(), Is.True, "reCAPTCHA must not be present");
 
-        [When("the user completes registration")]
+        [When("the user clicks Complete on the Check your answers page")]
         public void WhenRegistrationIsCompleted() => idmCheckYourAnswersPage.CompleteRegistration();
 
         private static string NormalizeAddress(string address) => Regex.Replace(address, @"[\s,]+", " ").Trim().ToUpperInvariant();

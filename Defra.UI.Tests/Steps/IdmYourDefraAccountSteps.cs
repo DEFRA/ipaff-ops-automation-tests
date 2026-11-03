@@ -1,4 +1,4 @@
-using Defra.UI.Tests.Tools;
+﻿using Defra.UI.Tests.Tools;
 using Defra.UI.Tests.Pages.Interfaces;
 using NUnit.Framework;
 using Reqnroll;
@@ -18,12 +18,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
             _objectContainer = container;
         }
 
-        [Then("the Your Defra account page shows the registered details and organisation Admin role")]
+        [Then("the Your Defra account page is displayed")]
+        public void ThenPageIsDisplayed() => Assert.That(idmYourDefraAccountPage.IsPageLoaded(), Is.True, "Your Defra account page is not displayed");
+
+        [Then("the details on the Your Defra account page match the registered details")]
         public void ThenAccountDetailsAreCorrect()
         {
             var businessName = _scenarioContext.Get<string>("RegistrationBusinessName");
             var fullName = $"{_scenarioContext.Get<string>("RegistrationFirstName")} {_scenarioContext.Get<string>("RegistrationLastName")}";
-            Assert.That(idmYourDefraAccountPage.IsPageLoaded(), Is.True);
             Assert.Multiple(() =>
             {
                 Assert.That(idmYourDefraAccountPage.GetFullName(), Is.EqualTo(fullName));
@@ -33,7 +35,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             });
         }
 
-        [When("the user closes the Defra account window and returns to the exporter")]
+        [When("the user closes the Your Defra account window")]
         public void WhenAccountWindowIsClosed() => idmYourDefraAccountPage.CloseAndReturnToExporter(_scenarioContext.Get<string>("IdmExporterWindow"));
     }
 }

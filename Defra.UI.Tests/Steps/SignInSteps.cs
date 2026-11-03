@@ -84,6 +84,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
         [Then("I should see type of Gateway login page")]
+        [Then("the How do you want to sign in page? is displayed")]
         public void ThenIShouldSeeTypeOfGatewayLoginPage()
         {
             Assert.True(governmentGatewayTypePage?.IsPageLoaded("How do you want to sign in?"), "How do you want to sign in? page not loaded");

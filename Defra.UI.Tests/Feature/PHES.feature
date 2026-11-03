@@ -23,17 +23,13 @@ Scenario Outline: Create a new Government Gateway account and register for the E
 	Then the Create a password page is displayed
 	When the user enters a password and continues
 	Then the Your Government Gateway user ID is: page is displayed
-	# @agent: Tighten wording for the step below
-	When the user continues from the Your Government Gateway user ID is: page
+	When the user clicks Continue on the Your Government Gateway user ID is: page
 	Then the You need to register for a Defra account page is displayed
-	# @agent: Tighten wording for the step below
-	When the user continues registering for a Defra account
+	When the user clicks Continue on the You need to register for a Defra account page
 	Then the Your Defra account terms and conditions page is displayed
-	# @agent: Tighten wording for the step below
-	When the user accepts the Defra account terms and continues
+	When the user clicks Continue on the Your Defra account terms and conditions page
 	Then the What we need from you page is displayed
-	# @agent: Tighten wording for the step below
-	When the user continues from the What we need from you page
+	When the user clicks Continue on the What we need from you page
 	Then the Are you registering as a business or organisation? page is displayed
 	When the user selects '<isBusinessOrOrganisation>' on the Are you registering as a business or organisation? page and continues
 	Then the Is the business registered to trade in the UK? page is displayed
@@ -60,29 +56,22 @@ Scenario Outline: Create a new Government Gateway account and register for the E
 	And the details on the Check your answers page match the entered details
 	And the Check your answers page offers change links for 'Account type' 'Trading name' 'Trading address' 'Phone number' 'Email' 'Name' 'Phone number' 'Memorable word' 'Hint question'
 	And the registration review has no reCAPTCHA checkbox
-	# @agent: Tighten wording for the step below
-	When the user completes registration
+	When the user clicks Complete on the Check your answers page
 	Then the Terms and conditions page is displayed on the Exporter Portal
-	# @agent: Tighten wording for the step below
 	When the user accepts the exporter registration terms and continues
-	Then the Exporter Portal homepage should be displayed
+	Then the Your applications page is displayed
 	And the newly registered exporter can start a new application
-	# @agent: Refactor step name
-	When the user clicks Manage account on the exporter dashboard
+	When the user clicks Manage account on the Your applications page
 	Then the Manage account page is displayed
-	# @agent: Tighten wording for the step below
-	When the user accesses their Defra account in a new window
-	# @agent: Tighten wording for the step below and split the step
-	Then the Your Defra account page shows the registered details and organisation Admin role
-	# @agent: Tighten wording for the step below and split the step
-	When the user closes the Defra account window and returns to the exporter
+	When the user clicks Access Your DEFRA account on the Manage account page
+	Then the Your Defra account page is displayed
+	And the details on the Your Defra account page match the registered details
+	When the user closes the Your Defra account window
 	Then the Manage account page is displayed
 	When the user clicks Back on the Manage account page
 	Then the Your applications page is displayed
-	# @agent: Tighten wording for the step below
-	When the user signs out of the exporter dashboard
-	# @agent: Tighten wording for the step below
-	Then I should see type of Gateway login page
+	When the user clicks Sign out on the Your applications page
+	Then the How do you want to sign in page? is displayed
 
 	Examples:
 		| country | isBusinessOrOrganisation | isRegisteredUK | isCompaniesHouse | isSoleTraderOrCharity |

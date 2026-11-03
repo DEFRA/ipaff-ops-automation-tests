@@ -1,4 +1,4 @@
-using Defra.UI.Tests.Pages.Interfaces;
+﻿using Defra.UI.Tests.Pages.Interfaces;
 using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;
@@ -18,7 +18,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the What we need from you page is displayed")]
         public void ThenPageIsDisplayed() => Assert.That(idmWhatWeNeedFromYouPage.IsPageLoaded(), Is.True);
 
-        [When("the user continues from the What we need from you page")]
+        [When("the user clicks Continue on the What we need from you page")]
         public void WhenContinueIsClicked() => idmWhatWeNeedFromYouPage.ClickContinueButton();
     }
 }

@@ -1,4 +1,4 @@
-using Defra.UI.Tests.Pages.Interfaces;
+﻿using Defra.UI.Tests.Pages.Interfaces;
 using NUnit.Framework;
 using Reqnroll;
 using Reqnroll.BoDi;
@@ -20,7 +20,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the Manage account page is displayed")]
         public void ThenPageIsDisplayed() => Assert.That(idmManageAccountPage.IsPageLoaded(), Is.True);
 
-        [When("the user accesses their Defra account in a new window")]
+        [When("the user clicks Access Your DEFRA account on the Manage account page")]
         public void WhenDefraAccountIsOpened() => _scenarioContext.Set(idmManageAccountPage.OpenDefraAccountInNewWindow(), "IdmExporterWindow");
 
         [When("the user clicks Back on the Manage account page")]
