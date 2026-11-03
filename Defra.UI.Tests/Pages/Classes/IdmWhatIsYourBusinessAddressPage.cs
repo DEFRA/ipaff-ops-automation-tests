@@ -9,12 +9,15 @@ namespace Defra.UI.Tests.Pages.Classes
     {
         private readonly IObjectContainer _objectContainer;
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
+
+        #region Page Objects
         private By pageTitleBy => By.XPath("//h1[contains(normalize-space(),'What is your business address') or contains(normalize-space(),'What’s the business’s address')]");
         private IWebElement txtBuildingNumber => _driver.WaitForElement(By.Id("buildingNumber"));
         private IWebElement txtStreet => _driver.WaitForElement(By.Id("street"));
         private IWebElement txtTown => _driver.WaitForElement(By.Id("town"));
         private IWebElement txtPostcode => _driver.WaitForElement(By.Id("postcode"));
         private IWebElement btnContinue => _driver.WaitForElementClickable(By.Id("button-continue"));
+        #endregion
 
         public IdmWhatIsYourBusinessAddressPage(IObjectContainer container)
         {

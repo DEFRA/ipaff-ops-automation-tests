@@ -9,10 +9,13 @@ namespace Defra.UI.Tests.Pages.Classes
     {
         private readonly IObjectContainer _objectContainer;
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
+
+        #region Page Objects
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='What is your name?']"));
         private IWebElement txtFirstName => _driver.WaitForElement(By.Id("firstName"));
         private IWebElement txtLastName => _driver.WaitForElement(By.Id("lastName"));
         private IWebElement btnContinue => _driver.WaitForElementClickable(By.Id("button-continue"));
+        #endregion
 
         public IdmWhatIsYourNamePage(IObjectContainer container)
         {

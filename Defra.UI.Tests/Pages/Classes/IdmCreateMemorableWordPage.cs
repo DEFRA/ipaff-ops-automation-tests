@@ -9,10 +9,13 @@ namespace Defra.UI.Tests.Pages.Classes
     {
         private readonly IObjectContainer _objectContainer;
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
+
+        #region Page Objects
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='Create a memorable word']"));
         private IWebElement txtWord => _driver.WaitForElement(By.Id("memorableWord"));
         private IWebElement txtHint => _driver.WaitForElement(By.Id("securityHint"));
         private IWebElement btnContinue => _driver.WaitForElementClickable(By.Id("button-continue"));
+        #endregion
 
         public IdmCreateMemorableWordPage(IObjectContainer container)
         {

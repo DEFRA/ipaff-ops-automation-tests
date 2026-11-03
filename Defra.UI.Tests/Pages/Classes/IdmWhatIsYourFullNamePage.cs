@@ -9,9 +9,12 @@ namespace Defra.UI.Tests.Pages.Classes
     {
         private readonly IObjectContainer _objectContainer;
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
+
+        #region Page Objects
         private IWebElement pageTitle => _driver.WaitForElement(By.CssSelector("label[for='name']"));
         private IWebElement txtName => _driver.WaitForElement(By.Id("name"));
         private IWebElement btnContinue => _driver.WaitForElementClickable(By.Id("continue"));
+        #endregion
 
         public IdmWhatIsYourFullNamePage(IObjectContainer container)
         {

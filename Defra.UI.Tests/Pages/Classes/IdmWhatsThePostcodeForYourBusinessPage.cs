@@ -10,10 +10,14 @@ namespace Defra.UI.Tests.Pages.Classes
     {
         private readonly IObjectContainer _objectContainer;
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
+
+        #region Page Objects
         private By pageTitleBy => By.XPath("//h1[normalize-space()='What’s the postcode for your business?']");
         private IWebElement pageTitle => _driver.WaitForElement(pageTitleBy);
         private IWebElement txtPostcode => _driver.WaitForElement(By.Id("postcode"));
         private IWebElement btnContinue => _driver.WaitForElementClickable(By.Id("button-continue"));
+        private IReadOnlyCollection<IWebElement> errorSummaryElements => _driver.FindElements(By.CssSelector("div.govuk-error-summary"));
+        #endregion
 
         public IdmWhatsThePostcodeForYourBusinessPage(IObjectContainer container)
         {
@@ -21,7 +25,7 @@ namespace Defra.UI.Tests.Pages.Classes
         }
         public bool IsPageLoaded() => pageTitle.Displayed;
         public bool IsDisplayed() => _driver.FindElements(pageTitleBy).Any(element => element.Displayed);
-        public bool IsErrorSummaryDisplayed() => _driver.FindElements(By.CssSelector("div.govuk-error-summary")).Any(element => element.Displayed);
+        public bool IsErrorSummaryDisplayed() => errorSummaryElements.Any(element => element.Displayed);
         public string CurrentUrl => _driver.Url;
 
         public bool ReloadPostcodePage(string url)

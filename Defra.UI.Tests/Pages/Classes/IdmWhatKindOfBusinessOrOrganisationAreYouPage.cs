@@ -9,9 +9,12 @@ namespace Defra.UI.Tests.Pages.Classes
     {
         private readonly IObjectContainer _objectContainer;
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
+
+        #region Page Objects
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='What kind of business or organisation are you?']"));
         private IWebElement rdoOption(string option) => _driver.WaitForElementExists(By.XPath($"//input[@type='radio' and @id=//label[normalize-space()='{option}']/@for]"));
         private IWebElement btnContinue => _driver.WaitForElementClickable(By.Id("button-continue"));
+        #endregion
 
         public IdmWhatKindOfBusinessOrOrganisationAreYouPage(IObjectContainer container)
         {

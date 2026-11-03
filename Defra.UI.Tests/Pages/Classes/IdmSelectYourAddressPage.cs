@@ -10,10 +10,13 @@ namespace Defra.UI.Tests.Pages.Classes
     {
         private readonly IObjectContainer _objectContainer;
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
+
+        #region Page Objects
         private By pageTitleBy => By.XPath("//h1[normalize-space()='Select your address']");
         private IWebElement pageTitle => _driver.WaitForElement(pageTitleBy);
         private IWebElement ddlAddress => _driver.WaitForElement(By.Id("address"));
         private IWebElement btnContinue => _driver.WaitForElementClickable(By.Id("button-continue"));
+        #endregion
 
         public IdmSelectYourAddressPage(IObjectContainer container)
         {

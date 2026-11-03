@@ -10,9 +10,11 @@ namespace Defra.UI.Tests.Pages.Classes
         private readonly IObjectContainer _objectContainer;
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
 
+        #region Page Objects
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='Enter your email address']"));
         private IWebElement txtEmail => _driver.WaitForElement(By.Id("emailAddress"));
         private IWebElement btnContinue => _driver.WaitForElementClickable(By.Id("continue"));
+        #endregion
 
         public IdmEnterYourEmailAddressPage(IObjectContainer container)
         {

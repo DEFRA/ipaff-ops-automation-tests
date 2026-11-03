@@ -9,9 +9,12 @@ namespace Defra.UI.Tests.Pages.Classes
     {
         private readonly IObjectContainer _objectContainer;
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
+
+        #region Page Objects
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='Manage account']"));
         private IWebElement lnkDefraAccount => _driver.WaitForElement(By.Id("link-defra-account"));
         private IWebElement lnkBack => _driver.WaitForElement(By.Id("link-back"));
+        #endregion
 
         public IdmManageAccountPage(IObjectContainer container)
         {

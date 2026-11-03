@@ -36,6 +36,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
         [When("the user closes the Your Defra account window")]
-        public void WhenAccountWindowIsClosed() => idmYourDefraAccountPage.CloseAndReturnToExporter(_scenarioContext.Get<string>("IdmExporterWindow"));
+        public void WhenAccountWindowIsClosed()
+        {
+            idmYourDefraAccountPage.CloseAndReturnToExporter(_scenarioContext.Get<string>("IdmExporterWindow"));
+            _scenarioContext.Remove("IdmExporterWindow");
+        }
     }
 }

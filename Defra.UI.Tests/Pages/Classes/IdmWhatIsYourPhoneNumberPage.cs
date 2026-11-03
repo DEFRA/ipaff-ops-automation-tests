@@ -9,9 +9,12 @@ namespace Defra.UI.Tests.Pages.Classes
     {
         private readonly IObjectContainer _objectContainer;
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
+
+        #region Page Objects
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='What is your phone number?']"));
         private IWebElement txtPhone => _driver.WaitForElement(By.Id("telephoneNumber"));
         private IWebElement btnContinue => _driver.WaitForElementClickable(By.Id("button-continue"));
+        #endregion
 
         public IdmWhatIsYourPhoneNumberPage(IObjectContainer container)
         {

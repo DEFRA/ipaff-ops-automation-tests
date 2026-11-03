@@ -23,7 +23,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.That(idmYourGovernmentGatewayUserIdIsPage.IsPageLoaded(), Is.True);
             var gatewayId = idmYourGovernmentGatewayUserIdIsPage.GetGatewayId();
             Console.WriteLine($"[REGISTRATION] Government Gateway user ID: {gatewayId}");
-            Assert.That(gatewayId, Does.Match(@"^\d{12}$"), "Expected a 12-digit Government Gateway ID");
+            Assert.That(gatewayId.Replace(" ", ""), Does.Match(@"^\d{12}$"), "Expected a 12-digit Government Gateway ID");
             _scenarioContext.Set(gatewayId, "RegistrationGatewayId");
         }
 

@@ -9,19 +9,23 @@ namespace Defra.UI.Tests.Pages.Classes
     {
         private readonly IObjectContainer _objectContainer;
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
-        private IWebElement pageTitle => _driver.WaitForElement(By.CssSelector("main[data-qa-page='Page-ExportApplicationTermsAndConditions'] h1"));
-        private IWebElement chkConfirm => _driver.WaitForElement(By.Id("confirm"));
+
+        #region Page Objects
+        private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='Terms and conditions']"));
+        private IWebElement chkConfirm => _driver.WaitForElementExists(By.Id("confirm"));
         private IWebElement btnContinue => _driver.WaitForElementClickable(By.Id("Button-AcceptTermsAndConditions"));
+        #endregion
 
         public ExporterTermsAndConditionsPage(IObjectContainer container)
         {
             _objectContainer = container;
         }
-        public bool IsPageLoaded() => pageTitle.Text.Trim() == "Terms and conditions";
+        public bool IsPageLoaded() => pageTitle.Displayed;
         public void AcceptAndContinue()
         {
-            if (!chkConfirm.Selected)
-                chkConfirm.Click();
+            var confirm = chkConfirm;
+            if (!confirm.Selected)
+                confirm.Click();
             btnContinue.Click();
         }
     }
