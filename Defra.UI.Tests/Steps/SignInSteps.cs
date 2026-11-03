@@ -110,6 +110,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(_signInPage?.IsPageLoaded(), "Application page not loaded");
         }
 
+        [When("the user clicks Create sign in details on the Government Gateway sign in page")]
+        public void WhenTheUserClicksCreateSignInDetailsOnTheGovernmentGatewaySignInPage()
+        {
+            _signInPage?.ClickCreateSignInDetailsLink();
+        }
+
         [When(@"I have provided the IPAFF credentials and signin")]
         public void WhenIHaveProvidedTheIPAFFCredentialsAndSignin()
         {

@@ -10,20 +10,20 @@ namespace Defra.UI.Tests.Steps.IPAFF
     {
         private readonly IObjectContainer _objectContainer;
         private readonly ScenarioContext _scenarioContext;
-        private IIdmManageAccountPage page => _objectContainer.Resolve<IIdmManageAccountPage>();
+        private IIdmManageAccountPage idmManageAccountPage => _objectContainer.Resolve<IIdmManageAccountPage>();
         public IdmManageAccountSteps(ScenarioContext context, IObjectContainer container)
         {
             _scenarioContext = context;
             _objectContainer = container;
         }
 
-        [Then("the exporter Manage account page is displayed")]
-        public void ThenPageIsDisplayed() => Assert.That(page.IsPageLoaded(), Is.True);
+        [Then("the Manage account page is displayed")]
+        public void ThenPageIsDisplayed() => Assert.That(idmManageAccountPage.IsPageLoaded(), Is.True);
 
         [When("the user accesses their Defra account in a new window")]
-        public void WhenDefraAccountIsOpened() => _scenarioContext.Set(page.OpenDefraAccountInNewWindow(), "IdmExporterWindow");
+        public void WhenDefraAccountIsOpened() => _scenarioContext.Set(idmManageAccountPage.OpenDefraAccountInNewWindow(), "IdmExporterWindow");
 
-        [When("the user clicks Back on the exporter Manage account page")]
-        public void WhenBackIsClicked() => page.ClickBackLink();
+        [When("the user clicks Back on the Manage account page")]
+        public void WhenBackIsClicked() => idmManageAccountPage.ClickBackLink();
     }
 }

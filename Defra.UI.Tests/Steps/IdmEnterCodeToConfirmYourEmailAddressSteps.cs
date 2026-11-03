@@ -12,7 +12,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         private readonly IObjectContainer _objectContainer;
         private readonly ScenarioContext _scenarioContext;
         private string _confirmationCode = "";
-        private IIdmEnterCodeToConfirmYourEmailAddressPage page => _objectContainer.Resolve<IIdmEnterCodeToConfirmYourEmailAddressPage>();
+        private IIdmEnterCodeToConfirmYourEmailAddressPage idmEnterCodeToConfirmYourEmailAddressPage => _objectContainer.Resolve<IIdmEnterCodeToConfirmYourEmailAddressPage>();
 
         public IdmEnterCodeToConfirmYourEmailAddressSteps(ScenarioContext context, IObjectContainer container)
         {
@@ -21,12 +21,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
         [Then("the Enter code to confirm your email address page is displayed")]
-        public void ThenPageIsDisplayed() => Assert.That(page.IsPageLoaded(), Is.True);
+        public void ThenPageIsDisplayed() => Assert.That(idmEnterCodeToConfirmYourEmailAddressPage.IsPageLoaded(), Is.True);
 
         [Then("a confirmation email is received for the new account")]
         public async Task ThenConfirmationEmailIsReceived()
         {
-            var inbox = _scenarioContext.Get<string>("RegistrationInbox");
+            var inbox = _scenarioContext.Get<string>("RegistrationEmail").Split('@')[0];
             _confirmationCode = await _objectContainer.Resolve<IFetchCodeFromEmail>().GetCodeFromEmail(inbox);
             Assert.That(_confirmationCode, Is.Not.Empty, $"No email confirmation code received for {inbox}");
         }
@@ -35,7 +35,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenEmailIsConfirmed()
         {
             Assert.That(_confirmationCode, Is.Not.Empty, "The confirmation email must be received first");
-            page.EnterCodeAndConfirm(_confirmationCode);
+            idmEnterCodeToConfirmYourEmailAddressPage.EnterCodeAndConfirm(_confirmationCode);
         }
     }
 }

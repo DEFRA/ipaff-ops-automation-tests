@@ -11,7 +11,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
     {
         private readonly IObjectContainer _objectContainer;
         private readonly ScenarioContext _scenarioContext;
-        private IIdmYourDefraAccountPage page => _objectContainer.Resolve<IIdmYourDefraAccountPage>();
+        private IIdmYourDefraAccountPage idmYourDefraAccountPage => _objectContainer.Resolve<IIdmYourDefraAccountPage>();
         public IdmYourDefraAccountSteps(ScenarioContext context, IObjectContainer container)
         {
             _scenarioContext = context;
@@ -21,19 +21,19 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then("the Your Defra account page shows the registered details and organisation Admin role")]
         public void ThenAccountDetailsAreCorrect()
         {
-            var business = _scenarioContext.Get<OperatorDetails>("RegistrationBusiness");
+            var businessName = _scenarioContext.Get<string>("RegistrationBusinessName");
             var fullName = $"{_scenarioContext.Get<string>("RegistrationFirstName")} {_scenarioContext.Get<string>("RegistrationLastName")}";
-            Assert.That(page.IsPageLoaded(), Is.True);
+            Assert.That(idmYourDefraAccountPage.IsPageLoaded(), Is.True);
             Assert.Multiple(() =>
             {
-                Assert.That(page.GetFullName(), Is.EqualTo(fullName));
-                Assert.That(page.GetEmail(), Is.EqualTo(_scenarioContext.Get<string>("RegistrationEmail")));
-                Assert.That(page.GetPhone(), Is.EqualTo(_scenarioContext.Get<string>("RegistrationPhone")));
-                Assert.That(page.HasExporterAdminAccount(business.OperatorName), Is.True, "Expected the registered organisation with Admin and Plant Health Exporter roles");
+                Assert.That(idmYourDefraAccountPage.GetFullName(), Is.EqualTo(fullName));
+                Assert.That(idmYourDefraAccountPage.GetEmail(), Is.EqualTo(_scenarioContext.Get<string>("RegistrationEmail")));
+                Assert.That(idmYourDefraAccountPage.GetPhone(), Is.EqualTo(_scenarioContext.Get<string>("RegistrationPhone")));
+                Assert.That(idmYourDefraAccountPage.HasExporterAdminAccount(businessName), Is.True, "Expected the registered organisation with Admin and Plant Health Exporter roles");
             });
         }
 
         [When("the user closes the Defra account window and returns to the exporter")]
-        public void WhenAccountWindowIsClosed() => page.CloseAndReturnToExporter(_scenarioContext.Get<string>("IdmExporterWindow"));
+        public void WhenAccountWindowIsClosed() => idmYourDefraAccountPage.CloseAndReturnToExporter(_scenarioContext.Get<string>("IdmExporterWindow"));
     }
 }

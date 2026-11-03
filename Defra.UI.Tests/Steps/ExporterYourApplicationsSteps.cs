@@ -53,6 +53,24 @@ namespace Defra.UI.Tests.Steps.IPAFF
             exporterYourApplicationsPage?.ClickAphaReferenceLink(GetRecordedReference(applicationName));
         }
 
+        [Then("the newly registered exporter can start a new application")]
+        public void ThenTheNewlyRegisteredExporterCanStartANewApplication()
+        {
+            Assert.True(exporterYourApplicationsPage?.IsStartNewApplicationAvailable(), "Start a new application is not available");
+        }
+
+        [When("the user clicks Manage account on the exporter dashboard")]
+        public void WhenTheUserClicksManageAccountOnTheExporterDashboard()
+        {
+            exporterYourApplicationsPage?.ClickManageAccountLink();
+        }
+
+        [When("the user signs out of the exporter dashboard")]
+        public void WhenTheUserSignsOutOfTheExporterDashboard()
+        {
+            exporterYourApplicationsPage?.ClickSignOutLink();
+        }
+
         private string GetRecordedReference(string applicationName)
         {
             var key = $"{applicationName}_APHAReference";

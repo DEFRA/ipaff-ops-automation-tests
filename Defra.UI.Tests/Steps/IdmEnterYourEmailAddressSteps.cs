@@ -12,7 +12,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
     {
         private readonly IObjectContainer _objectContainer;
         private readonly ScenarioContext _scenarioContext;
-        private IIdmEnterYourEmailAddressPage page => _objectContainer.Resolve<IIdmEnterYourEmailAddressPage>();
+        private IIdmEnterYourEmailAddressPage idmEnterYourEmailAddressPage => _objectContainer.Resolve<IIdmEnterYourEmailAddressPage>();
 
         public IdmEnterYourEmailAddressSteps(ScenarioContext context, IObjectContainer container)
         {
@@ -21,7 +21,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
         [Then("the Enter your email address page is displayed")]
-        public void ThenPageIsDisplayed() => Assert.That(page.IsPageLoaded(), Is.True);
+        public void ThenPageIsDisplayed() => Assert.That(idmEnterYourEmailAddressPage.IsPageLoaded(), Is.True);
 
         [When("the user enters a unique registration email address for {string} and continues")]
         public void WhenEmailIsEntered(string country)
@@ -29,20 +29,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
             if (!country.Equals("UK", StringComparison.OrdinalIgnoreCase))
                 throw new ArgumentException("This registration scenario requires a UK postcode lookup", nameof(country));
 
-            var business = Utils.GenerateOperatorDetails("Importer");
-            business.OperatorName = $"{business.OperatorName} {Utils.GenerateRandomName()[..8]}";
             var inbox = DateTime.Now.ToString("ddMMyyHHmmss");
             var email = $"{inbox}@{_objectContainer.Resolve<IFetchCodeFromEmail>().DomainName}";
-            business.Email = email;
 
-            _scenarioContext.Set(business, "RegistrationBusiness");
-            _scenarioContext.Set(inbox, "RegistrationInbox");
             _scenarioContext.Set(email, "RegistrationEmail");
-            _scenarioContext.Set(Utils.GenerateRandomName(), "RegistrationFirstName");
-            _scenarioContext.Set(Utils.GenerateRandomName(), "RegistrationLastName");
             _scenarioContext.Set(Utils.GenerateRandomUKPhonenumber(), "RegistrationPhone");
-            page.EnterEmailAddress(email);
-            page.ClickContinueButton();
+            idmEnterYourEmailAddressPage.EnterEmailAddress(email);
+            idmEnterYourEmailAddressPage.ClickContinueButton();
         }
     }
 }

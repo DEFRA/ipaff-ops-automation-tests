@@ -680,6 +680,16 @@ namespace Defra.UI.Tests.Tools
         }
 
         /// <summary>
+        /// Generates a realistic first name using Bogus Faker library.
+        /// </summary>
+        public static string GenerateFirstName() => new Bogus.Faker("en_GB").Name.FirstName().Replace("'", "");
+
+        /// <summary>
+        /// Generates a realistic last name using Bogus Faker library.
+        /// </summary>
+        public static string GenerateLastName() => new Bogus.Faker("en_GB").Name.LastName().Replace("'", "");
+
+        /// <summary>
         /// Generates random operator details with realistic data using Bogus Faker library.
         /// For Importer operator type, restricts country selection to Great Britain (England, Scotland, Wales, Northern Ireland).
         /// For other types, randomly selects from all available countries that use Latin scripts.

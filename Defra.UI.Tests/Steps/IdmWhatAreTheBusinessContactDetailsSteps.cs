@@ -11,7 +11,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
     {
         private readonly IObjectContainer _objectContainer;
         private readonly ScenarioContext _scenarioContext;
-        private IIdmWhatAreTheBusinessContactDetailsPage page => _objectContainer.Resolve<IIdmWhatAreTheBusinessContactDetailsPage>();
+        private IIdmWhatAreTheBusinessContactDetailsPage idmWhatAreTheBusinessContactDetailsPage => _objectContainer.Resolve<IIdmWhatAreTheBusinessContactDetailsPage>();
         public IdmWhatAreTheBusinessContactDetailsSteps(ScenarioContext context, IObjectContainer container)
         {
             _scenarioContext = context;
@@ -19,13 +19,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
         [Then("the What are the business contact details? page is displayed")]
-        public void ThenPageIsDisplayed() => Assert.That(page.IsPageLoaded(), Is.True);
+        public void ThenPageIsDisplayed() => Assert.That(idmWhatAreTheBusinessContactDetailsPage.IsPageLoaded(), Is.True);
 
         [When("the user enters the business contact details and continues")]
         public void WhenContactDetailsAreEntered()
         {
-            var business = _scenarioContext.Get<OperatorDetails>("RegistrationBusiness");
-            page.EnterContactDetailsAndContinue(business.TelephoneNumber, business.Email);
+            var businessPhone = Utils.GenerateRandomUKPhonenumber();
+            _scenarioContext.Set(businessPhone, "RegistrationBusinessPhone");
+            idmWhatAreTheBusinessContactDetailsPage.EnterContactDetailsAndContinue(businessPhone, _scenarioContext.Get<string>("RegistrationEmail"));
         }
     }
 }

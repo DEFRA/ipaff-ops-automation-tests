@@ -12,8 +12,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
     {
         private readonly IObjectContainer _objectContainer;
         private readonly ScenarioContext _scenarioContext;
-        private IIdmSelectYourAddressPage page => _objectContainer.Resolve<IIdmSelectYourAddressPage>();
-        private IIdmWhatIsYourBusinessAddressPage manualAddressPage => _objectContainer.Resolve<IIdmWhatIsYourBusinessAddressPage>();
+        private IIdmSelectYourAddressPage idmSelectYourAddressPage => _objectContainer.Resolve<IIdmSelectYourAddressPage>();
+        private IIdmWhatIsYourBusinessAddressPage idmWhatIsYourBusinessAddressPage => _objectContainer.Resolve<IIdmWhatIsYourBusinessAddressPage>();
         public IdmSelectYourAddressSteps(ScenarioContext context, IObjectContainer container)
         {
             _scenarioContext = context;
@@ -21,24 +21,25 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
         [Then("the address selection or manual business address page is displayed")]
-        public void ThenPageIsDisplayed() => Assert.That(page.IsDisplayed() || manualAddressPage.IsDisplayed(), Is.True, "Expected address selection or manual address entry after postcode lookup");
+        public void ThenPageIsDisplayed() => Assert.That(idmSelectYourAddressPage.IsDisplayed() || idmWhatIsYourBusinessAddressPage.IsDisplayed(), Is.True, "Expected address selection or manual address entry after postcode lookup");
 
         [When("the user selects a random business address or enters the generated address manually and continues")]
         public void WhenAddressIsSelected()
         {
-            var business = _scenarioContext.Get<OperatorDetails>("RegistrationBusiness");
-            if (page.IsDisplayed())
+            var postcode = _scenarioContext.Get<string>("RegistrationPostcode");
+            if (idmSelectYourAddressPage.IsDisplayed())
             {
-                _scenarioContext.Set(page.SelectAddressAndContinue(business.Postcode), "RegistrationAddress");
+                _scenarioContext.Set(idmSelectYourAddressPage.SelectAddressAndContinue(postcode), "RegistrationAddress");
                 return;
             }
 
-            Assert.That(manualAddressPage.IsDisplayed(), Is.True, "Manual entry is only allowed when the lookup displays the business address form");
-            var address = Regex.Match(business.AddressLine1, @"^(?<number>\d+\w*)\s+(?<street>.+)$");
+            Assert.That(idmWhatIsYourBusinessAddressPage.IsDisplayed(), Is.True, "Manual entry is only allowed when the lookup displays the business address form");
+            var generated = Utils.GenerateOperatorDetails("Importer");
+            var address = Regex.Match(generated.AddressLine1, @"^(?<number>\d+\w*)\s+(?<street>.+)$");
             var buildingNumber = address.Success ? address.Groups["number"].Value : Random.Shared.Next(1, 1000).ToString();
-            var street = address.Success ? address.Groups["street"].Value : business.AddressLine1;
-            manualAddressPage.EnterAddressAndContinue(buildingNumber, street, business.CityOrTown, business.Postcode);
-            _scenarioContext.Set($"{buildingNumber} {street}, {business.CityOrTown}, {business.Postcode}", "RegistrationAddress");
+            var street = address.Success ? address.Groups["street"].Value : generated.AddressLine1;
+            idmWhatIsYourBusinessAddressPage.EnterAddressAndContinue(buildingNumber, street, generated.CityOrTown, postcode);
+            _scenarioContext.Set($"{buildingNumber} {street}, {generated.CityOrTown}, {postcode}", "RegistrationAddress");
         }
     }
 }

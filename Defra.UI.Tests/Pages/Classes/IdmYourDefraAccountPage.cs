@@ -9,11 +9,18 @@ namespace Defra.UI.Tests.Pages.Classes
     {
         private readonly IObjectContainer _objectContainer;
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
+
+        #region Page Objects
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='Your Defra account']"));
         private IWebElement lblFullName => _driver.WaitForElement(By.Id("personal-details__full-name"));
         private IWebElement lblEmail => _driver.WaitForElement(By.Id("personal-details__email"));
         private IWebElement lblPhone => _driver.WaitForElement(By.Id("personal-details__telephone"));
         private IReadOnlyCollection<IWebElement> accountRows => _driver.WaitForElements(By.CssSelector("#main-content table tbody tr[id]"));
+        private IWebElement accountNameCell(IWebElement row) => row.FindElements(By.TagName("td")).First();
+        private IWebElement accessLevelCell(IWebElement row) => row.FindElement(By.CssSelector(".idm-table__cell--access-level-content"));
+        private IWebElement serviceNameCell(IWebElement row) => row.FindElement(By.CssSelector(".idm-table__cell--service-name-content"));
+        private IWebElement serviceRoleNameCell(IWebElement row) => row.FindElement(By.CssSelector(".idm-table__cell--service-role-name-content"));
+        #endregion
 
         public IdmYourDefraAccountPage(IObjectContainer container)
         {
@@ -25,13 +32,13 @@ namespace Defra.UI.Tests.Pages.Classes
         public string GetPhone() => lblPhone.Text.Trim();
         public bool HasExporterAdminAccount(string businessName)
         {
-            var matchingRows = accountRows.Where(row => row.FindElements(By.TagName("td")).First().Text.Replace("Account:", "").Trim() == businessName).ToList();
+            var matchingRows = accountRows.Where(row => accountNameCell(row).Text.Replace("Account:", "").Trim() == businessName).ToList();
             if (matchingRows.Count != 1)
                 return false;
             var account = matchingRows.Single();
-            return account.FindElement(By.CssSelector(".idm-table__cell--access-level-content")).Text.Trim() == "Admin"
-                && account.FindElement(By.CssSelector(".idm-table__cell--service-name-content")).Text.Trim() == "Apply for a Phytosanitary Certificate"
-                && account.FindElement(By.CssSelector(".idm-table__cell--service-role-name-content")).Text.Trim() == "Plant Health Exporter";
+            return accessLevelCell(account).Text.Trim() == "Admin"
+                && serviceNameCell(account).Text.Trim() == "Apply for a Phytosanitary Certificate"
+                && serviceRoleNameCell(account).Text.Trim() == "Plant Health Exporter";
         }
         public void CloseAndReturnToExporter(string parentHandle)
         {

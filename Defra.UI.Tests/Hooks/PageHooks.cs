@@ -257,6 +257,7 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterUploadSupportingPhotographsPage, IExporterUploadSupportingPhotographsPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterMakeChangesToYourApplicationPage, IExporterMakeChangesToYourApplicationPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterAreYouSureYouWantToCopyThisApplicationPage, IExporterAreYouSureYouWantToCopyThisApplicationPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterTermsAndConditionsPage, IExporterTermsAndConditionsPage>());
 
             // IDM registration pages
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmEnterYourEmailAddressPage, IIdmEnterYourEmailAddressPage>());
@@ -281,7 +282,6 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmWhatIsYourPhoneNumberPage, IIdmWhatIsYourPhoneNumberPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmCreateMemorableWordPage, IIdmCreateMemorableWordPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmCheckYourAnswersPage, IIdmCheckYourAnswersPage>());
-            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmTermsAndConditionsPage, IIdmTermsAndConditionsPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmManageAccountPage, IIdmManageAccountPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmYourDefraAccountPage, IIdmYourDefraAccountPage>());
 

@@ -9,16 +9,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
     public class IdmYouNeedToRegisterForADefraAccountSteps
     {
         private readonly IObjectContainer _objectContainer;
-        private IIdmYouNeedToRegisterForADefraAccountPage page => _objectContainer.Resolve<IIdmYouNeedToRegisterForADefraAccountPage>();
+        private IIdmYouNeedToRegisterForADefraAccountPage idmYouNeedToRegisterForADefraAccountPage => _objectContainer.Resolve<IIdmYouNeedToRegisterForADefraAccountPage>();
         public IdmYouNeedToRegisterForADefraAccountSteps(IObjectContainer container)
         {
             _objectContainer = container;
         }
 
         [Then("the You need to register for a Defra account page is displayed")]
-        public void ThenPageIsDisplayed() => Assert.That(page.IsPageLoaded(), Is.True);
+        public void ThenPageIsDisplayed() => Assert.That(idmYouNeedToRegisterForADefraAccountPage.IsPageLoaded(), Is.True);
 
         [When("the user continues registering for a Defra account")]
-        public void WhenContinueIsClicked() => page.ClickContinueButton();
+        public void WhenContinueIsClicked() => idmYouNeedToRegisterForADefraAccountPage.ClickContinueButton();
     }
 }

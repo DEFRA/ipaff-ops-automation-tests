@@ -1,4 +1,4 @@
-using Defra.UI.Tests.Data.Users;
+﻿using Defra.UI.Tests.Data.Users;
 using Defra.UI.Tests.Pages.Interfaces;
 using NUnit.Framework;
 using Reqnroll;
@@ -10,21 +10,21 @@ namespace Defra.UI.Tests.Steps.IPAFF
     public class IdmCreateMemorableWordSteps
     {
         private readonly IObjectContainer _objectContainer;
-        private IIdmCreateMemorableWordPage page => _objectContainer.Resolve<IIdmCreateMemorableWordPage>();
+        private IIdmCreateMemorableWordPage idmCreateMemorableWordPage => _objectContainer.Resolve<IIdmCreateMemorableWordPage>();
         public IdmCreateMemorableWordSteps(IObjectContainer container)
         {
             _objectContainer = container;
         }
 
         [Then("the Create a memorable word page is displayed")]
-        public void ThenPageIsDisplayed() => Assert.That(page.IsPageLoaded(), Is.True);
+        public void ThenPageIsDisplayed() => Assert.That(idmCreateMemorableWordPage.IsPageLoaded(), Is.True);
 
-        [When("the user uses the configured Trader 1 credential as the memorable word and hint and continues")]
+        [When("the user enters the memorable word and hint and continues")]
         public void WhenMemorableWordIsEntered()
         {
             var credential = _objectContainer.Resolve<IUserObject>().GetUser("IPAFF", "Trader 1").Credential;
             Assert.That(!string.IsNullOrWhiteSpace(credential) && !credential.Contains("#{{"), Is.True, "Trader 1 credential must be configured");
-            page.EnterWordAndHintAndContinue(credential, credential);
+            idmCreateMemorableWordPage.EnterWordAndHintAndContinue(credential, credential);
         }
     }
 }

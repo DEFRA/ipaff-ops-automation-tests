@@ -1,6 +1,7 @@
 using Defra.UI.Tests.Tools;
 using Defra.UI.Tests.Pages.Interfaces;
 using NUnit.Framework;
+using OpenQA.Selenium;
 using Reqnroll;
 using Reqnroll.BoDi;
 
@@ -11,9 +12,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
     {
         private readonly IObjectContainer _objectContainer;
         private readonly ScenarioContext _scenarioContext;
-        private IIdmWhatsThePostcodeForYourBusinessPage page => _objectContainer.Resolve<IIdmWhatsThePostcodeForYourBusinessPage>();
-        private IIdmSelectYourAddressPage selectAddressPage => _objectContainer.Resolve<IIdmSelectYourAddressPage>();
-        private IIdmWhatIsYourBusinessAddressPage manualAddressPage => _objectContainer.Resolve<IIdmWhatIsYourBusinessAddressPage>();
+        private IIdmWhatsThePostcodeForYourBusinessPage idmWhatsThePostcodeForYourBusinessPage => _objectContainer.Resolve<IIdmWhatsThePostcodeForYourBusinessPage>();
+        private IIdmSelectYourAddressPage idmSelectYourAddressPage => _objectContainer.Resolve<IIdmSelectYourAddressPage>();
+        private IIdmWhatIsYourBusinessAddressPage idmWhatIsYourBusinessAddressPage => _objectContainer.Resolve<IIdmWhatIsYourBusinessAddressPage>();
         public IdmWhatsThePostcodeForYourBusinessSteps(ScenarioContext context, IObjectContainer container)
         {
             _scenarioContext = context;
@@ -21,30 +22,32 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
         [Then("the What’s the postcode for your business? page is displayed")]
-        public void ThenPageIsDisplayed() => Assert.That(page.IsPageLoaded(), Is.True);
+        public void ThenPageIsDisplayed() => Assert.That(idmWhatsThePostcodeForYourBusinessPage.IsPageLoaded(), Is.True);
 
         [When("the user enters the generated postcode for the business and continues")]
         public async Task WhenPostcodeIsEntered()
         {
             const int maxAttempts = 5;
             const int lookupWaitSeconds = 45;
-            var business = _scenarioContext.Get<OperatorDetails>("RegistrationBusiness");
-            var postcodePageUrl = page.CurrentUrl;
-            business.Postcode = await Utils.GenerateRandomUKPostcodeAsync();
-            page.EnterPostcodeAndContinue(business.Postcode);
+            var postcodePageUrl = idmWhatsThePostcodeForYourBusinessPage.CurrentUrl;
+            var postcode = await Utils.GenerateRandomUKPostcodeAsync();
+            _scenarioContext.Set(postcode, "RegistrationPostcode");
+            idmWhatsThePostcodeForYourBusinessPage.EnterPostcodeAndContinue(postcode);
 
             for (var attempt = 1; attempt <= maxAttempts; attempt++)
             {
-                if (selectAddressPage.WaitForPage(lookupWaitSeconds))
+                WaitForLookupResult(lookupWaitSeconds);
+
+                if (idmSelectYourAddressPage.IsDisplayed())
                     return;
 
-                if (manualAddressPage.IsDisplayed())
+                if (idmWhatIsYourBusinessAddressPage.IsDisplayed())
                 {
-                    TestContext.Progress.WriteLine($"[RECOVERY] Manual address entry displayed for {business.Postcode} (attempt {attempt}).");
+                    TestContext.Progress.WriteLine($"[RECOVERY] Manual address entry displayed for {postcode} (attempt {attempt}).");
                     return;
                 }
 
-                if (page.IsDisplayed() && !page.IsErrorSummaryDisplayed())
+                if (idmWhatsThePostcodeForYourBusinessPage.IsDisplayed() && !idmWhatsThePostcodeForYourBusinessPage.IsErrorSummaryDisplayed())
                 {
                     TestContext.Progress.WriteLine($"[RECOVERY] Postcode lookup still pending after {lookupWaitSeconds} seconds (attempt {attempt}); waiting without resubmitting.");
                     continue;
@@ -53,20 +56,36 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 if (attempt == maxAttempts)
                     break;
 
-                if (!page.IsDisplayed())
+                if (!idmWhatsThePostcodeForYourBusinessPage.IsDisplayed())
                 {
                     TestContext.Progress.WriteLine($"[RECOVERY] Unexpected page (attempt {attempt}); reloading the postcode page.");
-                    if (!page.ReloadPostcodePage(postcodePageUrl))
+                    if (!idmWhatsThePostcodeForYourBusinessPage.ReloadPostcodePage(postcodePageUrl))
                         continue;
                 }
 
-                var previousPostcode = business.Postcode;
-                business.Postcode = await Utils.GenerateRandomUKPostcodeAsync();
-                TestContext.Progress.WriteLine($"[RECOVERY] Retrying postcode lookup with {business.Postcode} after {previousPostcode} (attempt {attempt + 1}).");
-                page.EnterPostcodeAndContinue(business.Postcode);
+                var previousPostcode = postcode;
+                postcode = await Utils.GenerateRandomUKPostcodeAsync();
+                _scenarioContext.Set(postcode, "RegistrationPostcode");
+                TestContext.Progress.WriteLine($"[RECOVERY] Retrying postcode lookup with {postcode} after {previousPostcode} (attempt {attempt + 1}).");
+                idmWhatsThePostcodeForYourBusinessPage.EnterPostcodeAndContinue(postcode);
             }
 
-            Assert.Fail($"Neither address selection nor manual address entry was displayed after {maxAttempts} lookup attempts. Last postcode: {business.Postcode}");
+            Assert.Fail($"Neither address selection nor manual address entry was displayed after {maxAttempts} lookup attempts. Last postcode: {postcode}");
         }
+
+        private void WaitForLookupResult(int timeoutSeconds) =>
+            SpinWait.SpinUntil(() =>
+            {
+                try
+                {
+                    return idmSelectYourAddressPage.IsDisplayed()
+                        || idmWhatIsYourBusinessAddressPage.IsDisplayed()
+                        || idmWhatsThePostcodeForYourBusinessPage.IsErrorSummaryDisplayed();
+                }
+                catch (WebDriverException)
+                {
+                    return false;
+                }
+            }, TimeSpan.FromSeconds(timeoutSeconds));
     }
 }

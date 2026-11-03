@@ -9,16 +9,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
     public class IdmDoYouHaveACompanyRegistrationNumberSteps
     {
         private readonly IObjectContainer _objectContainer;
-        private IIdmDoYouHaveACompanyRegistrationNumberPage page => _objectContainer.Resolve<IIdmDoYouHaveACompanyRegistrationNumberPage>();
+        private IIdmDoYouHaveACompanyRegistrationNumberPage idmDoYouHaveACompanyRegistrationNumberPage => _objectContainer.Resolve<IIdmDoYouHaveACompanyRegistrationNumberPage>();
         public IdmDoYouHaveACompanyRegistrationNumberSteps(IObjectContainer container)
         {
             _objectContainer = container;
         }
 
         [Then("the Do you have a company registration number? page is displayed")]
-        public void ThenPageIsDisplayed() => Assert.That(page.IsPageLoaded(), Is.True);
+        public void ThenPageIsDisplayed() => Assert.That(idmDoYouHaveACompanyRegistrationNumberPage.IsPageLoaded(), Is.True);
 
         [When("the user selects {string} on the Do you have a company registration number? page and continues")]
-        public void WhenCompanyRegistrationOptionIsSelected(string option) => page.SelectOptionAndContinue(option);
+        public void WhenCompanyRegistrationOptionIsSelected(string option) => idmDoYouHaveACompanyRegistrationNumberPage.SelectOptionAndContinue(option);
     }
 }

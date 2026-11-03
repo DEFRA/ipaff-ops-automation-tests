@@ -11,7 +11,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
     {
         private readonly IObjectContainer _objectContainer;
         private readonly ScenarioContext _scenarioContext;
-        private IIdmWhatIsTheNameOfYourBusinessPage page => _objectContainer.Resolve<IIdmWhatIsTheNameOfYourBusinessPage>();
+        private IIdmWhatIsTheNameOfYourBusinessPage idmWhatIsTheNameOfYourBusinessPage => _objectContainer.Resolve<IIdmWhatIsTheNameOfYourBusinessPage>();
         public IdmWhatIsTheNameOfYourBusinessSteps(ScenarioContext context, IObjectContainer container)
         {
             _scenarioContext = context;
@@ -19,9 +19,14 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
         [Then("the What is the name of your business? page is displayed")]
-        public void ThenPageIsDisplayed() => Assert.That(page.IsPageLoaded(), Is.True);
+        public void ThenPageIsDisplayed() => Assert.That(idmWhatIsTheNameOfYourBusinessPage.IsPageLoaded(), Is.True);
 
         [When("the user enters a unique business name and continues")]
-        public void WhenBusinessNameIsEntered() => page.EnterBusinessNameAndContinue(_scenarioContext.Get<OperatorDetails>("RegistrationBusiness").OperatorName);
+        public void WhenBusinessNameIsEntered()
+        {
+            var businessName = $"{Utils.GenerateOperatorDetails("Importer").OperatorName} {Utils.GenerateRandomName()[..8]}";
+            _scenarioContext.Set(businessName, "RegistrationBusinessName");
+            idmWhatIsTheNameOfYourBusinessPage.EnterBusinessNameAndContinue(businessName);
+        }
     }
 }

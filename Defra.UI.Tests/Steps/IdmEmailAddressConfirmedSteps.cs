@@ -9,16 +9,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
     public class IdmEmailAddressConfirmedSteps
     {
         private readonly IObjectContainer _objectContainer;
-        private IIdmEmailAddressConfirmedPage page => _objectContainer.Resolve<IIdmEmailAddressConfirmedPage>();
+        private IIdmEmailAddressConfirmedPage idmEmailAddressConfirmedPage => _objectContainer.Resolve<IIdmEmailAddressConfirmedPage>();
         public IdmEmailAddressConfirmedSteps(IObjectContainer container)
         {
             _objectContainer = container;
         }
 
         [Then("the Email address confirmed page is displayed")]
-        public void ThenPageIsDisplayed() => Assert.That(page.IsPageLoaded(), Is.True);
+        public void ThenPageIsDisplayed() => Assert.That(idmEmailAddressConfirmedPage.IsPageLoaded(), Is.True);
 
         [When("the user continues from the Email address confirmed page")]
-        public void WhenContinueIsClicked() => page.ClickContinueButton();
+        public void WhenContinueIsClicked() => idmEmailAddressConfirmedPage.ClickContinueButton();
     }
 }

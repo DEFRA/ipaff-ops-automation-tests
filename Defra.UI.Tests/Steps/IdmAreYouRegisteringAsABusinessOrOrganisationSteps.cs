@@ -10,7 +10,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
     {
         private readonly IObjectContainer _objectContainer;
         private readonly ScenarioContext _scenarioContext;
-        private IIdmAreYouRegisteringAsABusinessOrOrganisationPage page => _objectContainer.Resolve<IIdmAreYouRegisteringAsABusinessOrOrganisationPage>();
+        private IIdmAreYouRegisteringAsABusinessOrOrganisationPage idmAreYouRegisteringAsABusinessOrOrganisationPage => _objectContainer.Resolve<IIdmAreYouRegisteringAsABusinessOrOrganisationPage>();
         public IdmAreYouRegisteringAsABusinessOrOrganisationSteps(ScenarioContext context, IObjectContainer container)
         {
             _scenarioContext = context;
@@ -18,12 +18,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
         [Then("the Are you registering as a business or organisation? page is displayed")]
-        public void ThenPageIsDisplayed() => Assert.That(page.IsPageLoaded(), Is.True);
+        public void ThenPageIsDisplayed() => Assert.That(idmAreYouRegisteringAsABusinessOrOrganisationPage.IsPageLoaded(), Is.True);
 
         [When("the user selects {string} on the Are you registering as a business or organisation? page and continues")]
         public void WhenBusinessIsSelected(string option)
         {
-            page.SelectOptionAndContinue(option);
+            idmAreYouRegisteringAsABusinessOrOrganisationPage.SelectOptionAndContinue(option);
             _scenarioContext.Set(option.Equals("Yes", StringComparison.OrdinalIgnoreCase) ? "Business" : "Individual", "RegistrationAccountType");
         }
     }

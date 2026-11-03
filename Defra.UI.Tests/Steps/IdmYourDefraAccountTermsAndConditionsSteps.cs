@@ -9,16 +9,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
     public class IdmYourDefraAccountTermsAndConditionsSteps
     {
         private readonly IObjectContainer _objectContainer;
-        private IIdmYourDefraAccountTermsAndConditionsPage page => _objectContainer.Resolve<IIdmYourDefraAccountTermsAndConditionsPage>();
+        private IIdmYourDefraAccountTermsAndConditionsPage idmYourDefraAccountTermsAndConditionsPage => _objectContainer.Resolve<IIdmYourDefraAccountTermsAndConditionsPage>();
         public IdmYourDefraAccountTermsAndConditionsSteps(IObjectContainer container)
         {
             _objectContainer = container;
         }
 
         [Then("the Your Defra account terms and conditions page is displayed")]
-        public void ThenPageIsDisplayed() => Assert.That(page.IsPageLoaded(), Is.True);
+        public void ThenPageIsDisplayed() => Assert.That(idmYourDefraAccountTermsAndConditionsPage.IsPageLoaded(), Is.True);
 
         [When("the user accepts the Defra account terms and continues")]
-        public void WhenTermsAreAccepted() => page.AcceptAndContinue();
+        public void WhenTermsAreAccepted() => idmYourDefraAccountTermsAndConditionsPage.AcceptAndContinue();
     }
 }

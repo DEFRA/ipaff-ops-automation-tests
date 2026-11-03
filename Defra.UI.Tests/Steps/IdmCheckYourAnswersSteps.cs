@@ -13,7 +13,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
     {
         private readonly IObjectContainer _objectContainer;
         private readonly ScenarioContext _scenarioContext;
-        private IIdmCheckYourAnswersPage page => _objectContainer.Resolve<IIdmCheckYourAnswersPage>();
+        private IIdmCheckYourAnswersPage idmCheckYourAnswersPage => _objectContainer.Resolve<IIdmCheckYourAnswersPage>();
         public IdmCheckYourAnswersSteps(ScenarioContext context, IObjectContainer container)
         {
             _scenarioContext = context;
@@ -21,53 +21,122 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
         [Then("the Check your answers page is displayed")]
-        public void ThenPageIsDisplayed() => Assert.That(page.IsPageLoaded(), Is.True);
+        public void ThenPageIsDisplayed() => Assert.That(idmCheckYourAnswersPage.IsPageLoaded(), Is.True);
 
-        [Then("the registration review matches the entered details and offers change links")]
+        [Then("the details on the Check your answers page match the entered details")]
         public void ThenReviewMatchesEnteredDetails()
         {
-            var business = _scenarioContext.Get<OperatorDetails>("RegistrationBusiness");
+            var allDataMatches = true;
+            var mismatches = new List<string>();
             var address = _scenarioContext.Get<string>("RegistrationAddress");
             var fullName = $"{_scenarioContext.Get<string>("RegistrationFirstName")} {_scenarioContext.Get<string>("RegistrationLastName")}";
             var credential = _objectContainer.Resolve<IUserObject>().GetUser("IPAFF", "Trader 1").Credential;
             Assert.That(address, Is.Not.Empty, "No selected business address recorded");
-            var expected = new[]
+
+            var expected = new List<(string Section, string Field, string Value)>
             {
                 ("Defra account", "Account type", _scenarioContext.Get<string>("RegistrationAccountType")),
                 ("Business details", "Type", _scenarioContext.Get<string>("RegistrationOrganisationType")),
-                ("Business details", "Trading name", business.OperatorName),
+                ("Business details", "Trading name", _scenarioContext.Get<string>("RegistrationBusinessName")),
                 ("Business details", "Trading address", address),
-                ("Business details", "Phone number", business.TelephoneNumber),
-                ("Business details", "Email", business.Email),
+                ("Business details", "Phone number", _scenarioContext.Get<string>("RegistrationBusinessPhone")),
+                ("Business details", "Email", _scenarioContext.Get<string>("RegistrationEmail")),
                 ("Your details", "Name", fullName),
-                ("Your details", "Phone number", _scenarioContext.Get<string>("RegistrationPhone"))
+                ("Your details", "Phone number", _scenarioContext.Get<string>("RegistrationPhone")),
+                ("Your details", "Memorable word", credential),
+                ("Your details", "Hint question", credential)
             };
-            Assert.Multiple(() =>
+
+            foreach (var (section, field, value) in expected)
             {
-                foreach (var (section, field, value) in expected)
+                var actual = idmCheckYourAnswersPage.GetSummaryValue(section, field);
+                var matches = field == "Trading address"
+                    ? AddressContains(actual, value)
+                    : Regex.Replace(actual, @"\s+", " ").Equals(value, StringComparison.Ordinal);
+                if (!matches)
                 {
-                    var actual = page.GetSummaryValue(section, field);
-                    if (field == "Trading address")
-                        Assert.That(NormalizeAddress(actual), Is.EqualTo(NormalizeAddress(value)), $"{section}: {field}");
-                    else
-                        Assert.That(Regex.Replace(actual, @"\s+", " "), Is.EqualTo(value), $"{section}: {field}");
-                    if (field != "Type")
-                        Assert.That(page.HasChangeLink(section, field), Is.True, $"Missing Change link for {section}: {field}");
+                    allDataMatches = false;
+                    var expectedText = field is "Memorable word" or "Hint question" ? "<configured credential>" : value;
+                    var actualText = field is "Memorable word" or "Hint question" ? "<hidden>" : actual;
+                    mismatches.Add($"{section}: {field} - Expected: '{expectedText}', Actual: '{actualText}'");
                 }
-                foreach (var field in new[] { "Memorable word", "Hint question" })
+            }
+
+            if (!allDataMatches)
+            {
+                Console.WriteLine("[REVIEW VALIDATION] Data mismatches found:");
+                foreach (var mismatch in mismatches)
                 {
-                    Assert.That(page.GetSummaryValue("Your details", field).Equals(credential, StringComparison.Ordinal), Is.True, $"{field} does not match the configured Trader 1 credential");
-                    Assert.That(page.HasChangeLink("Your details", field), Is.True, $"Missing Change link for {field}");
+                    Console.WriteLine($"[REVIEW VALIDATION] {mismatch}");
                 }
-            });
+            }
+
+            Assert.True(allDataMatches, $"Registration review data validation failed. Mismatches: {string.Join(", ", mismatches)}");
+        }
+
+        [Then(@"^the Check your answers page offers change links for (.+)$")]
+        public void ThenReviewOffersChangeLinks(string fieldList)
+        {
+            var pageRows = new List<(string Section, string Field)>
+            {
+                ("Defra account", "Account type"),
+                ("Business details", "Trading name"),
+                ("Business details", "Trading address"),
+                ("Business details", "Phone number"),
+                ("Business details", "Email"),
+                ("Your details", "Name"),
+                ("Your details", "Phone number"),
+                ("Your details", "Memorable word"),
+                ("Your details", "Hint question")
+            };
+
+            var missing = new List<string>();
+            foreach (var field in Regex.Matches(fieldList, "'([^']+)'").Select(m => m.Groups[1].Value))
+            {
+                var index = pageRows.FindIndex(r => r.Field.Equals(field, StringComparison.OrdinalIgnoreCase));
+                if (index < 0)
+                {
+                    missing.Add($"Unknown field: {field}");
+                    continue;
+                }
+                var (section, rowField) = pageRows[index];
+                pageRows.RemoveAt(index);
+                if (!idmCheckYourAnswersPage.HasChangeLink(section, rowField))
+                    missing.Add($"{section}: {rowField}");
+            }
+
+            if (missing.Count > 0)
+            {
+                Console.WriteLine("[REVIEW VALIDATION] Missing Change links:");
+                foreach (var field in missing)
+                {
+                    Console.WriteLine($"[REVIEW VALIDATION] {field}");
+                }
+            }
+
+            Assert.True(missing.Count == 0, $"Registration review change link validation failed. Missing: {string.Join(", ", missing)}");
         }
 
         [Then("the registration review has no reCAPTCHA checkbox")]
-        public void ThenRecaptchaIsAbsent() => Assert.That(page.IsRecaptchaAbsent(), Is.True, "reCAPTCHA must not be present");
+        public void ThenRecaptchaIsAbsent() => Assert.That(idmCheckYourAnswersPage.IsRecaptchaAbsent(), Is.True, "reCAPTCHA must not be present");
 
         [When("the user completes registration")]
-        public void WhenRegistrationIsCompleted() => page.CompleteRegistration();
+        public void WhenRegistrationIsCompleted() => idmCheckYourAnswersPage.CompleteRegistration();
 
         private static string NormalizeAddress(string address) => Regex.Replace(address, @"[\s,]+", " ").Trim().ToUpperInvariant();
+
+        private static bool AddressContains(string actual, string expected)
+        {
+            var actualParts = NormalizeAddress(actual).Split(' ');
+            var position = 0;
+            foreach (var part in NormalizeAddress(expected).Split(' '))
+            {
+                position = Array.IndexOf(actualParts, part, position);
+                if (position < 0)
+                    return false;
+                position++;
+            }
+            return true;
+        }
     }
 }

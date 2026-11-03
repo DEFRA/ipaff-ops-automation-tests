@@ -21,14 +21,18 @@ Scenario Outline: Create a new Government Gateway account and register for the E
 	Then the What is your full name? page is displayed
 	When the user enters their full name for the account and continues
 	Then the Create a password page is displayed
-	When the user enters and confirms the configured Trader 1 password and continues
+	When the user enters a password and continues
 	Then the Your Government Gateway user ID is: page is displayed
+	# @agent: Tighten wording for the step below
 	When the user continues from the Your Government Gateway user ID is: page
 	Then the You need to register for a Defra account page is displayed
+	# @agent: Tighten wording for the step below
 	When the user continues registering for a Defra account
 	Then the Your Defra account terms and conditions page is displayed
+	# @agent: Tighten wording for the step below
 	When the user accepts the Defra account terms and continues
 	Then the What we need from you page is displayed
+	# @agent: Tighten wording for the step below
 	When the user continues from the What we need from you page
 	Then the Are you registering as a business or organisation? page is displayed
 	When the user selects '<isBusinessOrOrganisation>' on the Are you registering as a business or organisation? page and continues
@@ -51,29 +55,38 @@ Scenario Outline: Create a new Government Gateway account and register for the E
 	Then the What is your phone number? page is displayed
 	When the user enters their phone number and continues
 	Then the Create a memorable word page is displayed
-	When the user uses the configured Trader 1 credential as the memorable word and hint and continues
+	When the user enters the memorable word and hint and continues
 	Then the Check your answers page is displayed
-	And the registration review matches the entered details and offers change links
+	And the details on the Check your answers page match the entered details
+	And the Check your answers page offers change links for 'Account type' 'Trading name' 'Trading address' 'Phone number' 'Email' 'Name' 'Phone number' 'Memorable word' 'Hint question'
 	And the registration review has no reCAPTCHA checkbox
+	# @agent: Tighten wording for the step below
 	When the user completes registration
-	Then the exporter registration Terms and conditions page is displayed
+	Then the Terms and conditions page is displayed on the Exporter Portal
+	# @agent: Tighten wording for the step below
 	When the user accepts the exporter registration terms and continues
 	Then the Exporter Portal homepage should be displayed
 	And the newly registered exporter can start a new application
+	# @agent: Refactor step name
 	When the user clicks Manage account on the exporter dashboard
-	Then the exporter Manage account page is displayed
+	Then the Manage account page is displayed
+	# @agent: Tighten wording for the step below
 	When the user accesses their Defra account in a new window
+	# @agent: Tighten wording for the step below and split the step
 	Then the Your Defra account page shows the registered details and organisation Admin role
+	# @agent: Tighten wording for the step below and split the step
 	When the user closes the Defra account window and returns to the exporter
-	Then the exporter Manage account page is displayed
-	When the user clicks Back on the exporter Manage account page
+	Then the Manage account page is displayed
+	When the user clicks Back on the Manage account page
 	Then the Your applications page is displayed
+	# @agent: Tighten wording for the step below
 	When the user signs out of the exporter dashboard
+	# @agent: Tighten wording for the step below
 	Then I should see type of Gateway login page
 
 	Examples:
 		| country | isBusinessOrOrganisation | isRegisteredUK | isCompaniesHouse | isSoleTraderOrCharity |
-		| UK      | Yes                      | Yes            | No               | Sole trader          |
+		| UK      | Yes                      | Yes            | No               | Sole trader           |
 
 @PHES-Happy-Path
 Scenario: New exporter application for a phytosanitary certificate - PHES Happy Path

@@ -10,7 +10,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
     {
         private readonly IObjectContainer _objectContainer;
         private readonly ScenarioContext _scenarioContext;
-        private IIdmWhatIsYourPhoneNumberPage page => _objectContainer.Resolve<IIdmWhatIsYourPhoneNumberPage>();
+        private IIdmWhatIsYourPhoneNumberPage idmWhatIsYourPhoneNumberPage => _objectContainer.Resolve<IIdmWhatIsYourPhoneNumberPage>();
         public IdmWhatIsYourPhoneNumberSteps(ScenarioContext context, IObjectContainer container)
         {
             _scenarioContext = context;
@@ -18,9 +18,9 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
         [Then("the What is your phone number? page is displayed")]
-        public void ThenPageIsDisplayed() => Assert.That(page.IsPageLoaded(), Is.True);
+        public void ThenPageIsDisplayed() => Assert.That(idmWhatIsYourPhoneNumberPage.IsPageLoaded(), Is.True);
 
         [When("the user enters their phone number and continues")]
-        public void WhenPhoneIsEntered() => page.EnterPhoneAndContinue(_scenarioContext.Get<string>("RegistrationPhone"));
+        public void WhenPhoneIsEntered() => idmWhatIsYourPhoneNumberPage.EnterPhoneAndContinue(_scenarioContext.Get<string>("RegistrationPhone"));
     }
 }

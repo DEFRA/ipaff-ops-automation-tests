@@ -10,7 +10,7 @@ namespace Defra.UI.Tests.Pages.Classes
         private readonly IObjectContainer _objectContainer;
         private IWebDriver _driver => _objectContainer.Resolve<IWebDriver>();
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='Are you registering as a business or organisation?']"));
-        private IWebElement lblOption(string option) => _driver.WaitForElement(By.XPath($"//label[normalize-space()='{option}']"));
+        private IWebElement rdoOption(string option) => _driver.WaitForElementExists(By.XPath($"//input[@type='radio' and @id=//label[normalize-space()='{option}']/@for]"));
         private IWebElement btnContinue => _driver.WaitForElementClickable(By.Id("button-continue"));
 
         public IdmAreYouRegisteringAsABusinessOrOrganisationPage(IObjectContainer container)
@@ -21,7 +21,7 @@ namespace Defra.UI.Tests.Pages.Classes
         public void SelectOptionAndContinue(string option)
         {
             var label = option.Equals("Yes", StringComparison.OrdinalIgnoreCase) ? "Yes, and I have permission to create an account" : option;
-            _driver.WaitForElement(By.Id(lblOption(label).GetAttribute("for"))).Click();
+            rdoOption(label).Click();
             btnContinue.Click();
         }
     }
