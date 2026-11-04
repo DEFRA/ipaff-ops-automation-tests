@@ -60,6 +60,11 @@ namespace Defra.UI.Tests.Steps.IPAFF
                     var actualText = field is "Memorable word" or "Hint question" ? "<hidden>" : actual;
                     mismatches.Add($"{section}: {field} - Expected: '{expectedText}', Actual: '{actualText}'");
                 }
+                else
+                {
+                    var shownValue = field is "Memorable word" or "Hint question" ? "<hidden>" : value;
+                    Console.WriteLine($"[REVIEW VALIDATION] ✓ {section}: {field}: '{shownValue}' matches");
+                }
             }
 
             if (!allDataMatches)
@@ -103,6 +108,8 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 pageRows.RemoveAt(index);
                 if (!idmCheckYourAnswersPage.HasChangeLink(section, rowField))
                     missing.Add($"{section}: {rowField}");
+                else
+                    Console.WriteLine($"[REVIEW VALIDATION] ✓ {section}: {rowField}: Change link present");
             }
 
             if (missing.Count > 0)

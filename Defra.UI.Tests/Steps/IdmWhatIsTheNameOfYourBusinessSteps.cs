@@ -24,7 +24,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When("the user enters a unique business name and continues")]
         public void WhenBusinessNameIsEntered()
         {
-            var businessName = $"{Utils.GenerateOperatorDetails("Importer").OperatorName} {Utils.GenerateRandomName()[..8]}";
+            var businessName = Utils.GenerateOperatorDetails("Importer").OperatorName;
             _scenarioContext.Set(businessName, "RegistrationBusinessName");
             idmWhatIsTheNameOfYourBusinessPage.EnterBusinessNameAndContinue(businessName);
         }

@@ -32,6 +32,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var postcodePageUrl = idmWhatsThePostcodeForYourBusinessPage.CurrentUrl;
             var postcode = await Utils.GenerateRandomUKPostcodeAsync();
             _scenarioContext.Set(postcode, "RegistrationPostcode");
+            Console.WriteLine($"[POSTCODE LOOKUP] Entering postcode '{postcode}' (attempt 1/{maxAttempts})");
             idmWhatsThePostcodeForYourBusinessPage.EnterPostcodeAndContinue(postcode);
 
             for (var attempt = 1; attempt <= maxAttempts; attempt++)
@@ -39,17 +40,20 @@ namespace Defra.UI.Tests.Steps.IPAFF
                 WaitForLookupResult(lookupWaitSeconds);
 
                 if (idmSelectYourAddressPage.IsDisplayed())
+                {
+                    Console.WriteLine($"[POSTCODE LOOKUP] ✓ Address selection page displayed for '{postcode}' (attempt {attempt}) - no recovery needed");
                     return;
+                }
 
                 if (idmWhatIsYourBusinessAddressPage.IsDisplayed())
                 {
-                    TestContext.Progress.WriteLine($"[RECOVERY] Manual address entry displayed for {postcode} (attempt {attempt}).");
+                    LogRecovery("MANUAL ADDRESS FALLBACK", $"Lookup for '{postcode}' returned no address list; the manual business address form is displayed (attempt {attempt})");
                     return;
                 }
 
                 if (idmWhatsThePostcodeForYourBusinessPage.IsDisplayed() && !idmWhatsThePostcodeForYourBusinessPage.IsErrorSummaryDisplayed())
                 {
-                    TestContext.Progress.WriteLine($"[RECOVERY] Postcode lookup still pending after {lookupWaitSeconds} seconds (attempt {attempt}); waiting without resubmitting.");
+                    LogRecovery("LOOKUP PENDING", $"Lookup for '{postcode}' still pending after {lookupWaitSeconds} seconds (attempt {attempt}); waiting without resubmitting");
                     continue;
                 }
 
@@ -58,19 +62,46 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
                 if (!idmWhatsThePostcodeForYourBusinessPage.IsDisplayed())
                 {
-                    TestContext.Progress.WriteLine($"[RECOVERY] Unexpected page (attempt {attempt}); reloading the postcode page.");
+                    LogRecovery("UNEXPECTED PAGE", $"Unexpected page '{SafeCurrentUrl()}' after lookup for '{postcode}' (attempt {attempt}); reloading the postcode page");
                     if (!idmWhatsThePostcodeForYourBusinessPage.ReloadPostcodePage(postcodePageUrl))
+                    {
+                        LogRecovery("RELOAD FAILED", $"Could not reload the postcode page '{postcodePageUrl}' (attempt {attempt}); waiting for the next lookup result");
                         continue;
+                    }
+                }
+                else
+                {
+                    LogRecovery("POSTCODE REJECTED", $"Error summary displayed for '{postcode}' (attempt {attempt})");
                 }
 
                 var previousPostcode = postcode;
                 postcode = await Utils.GenerateRandomUKPostcodeAsync();
                 _scenarioContext.Set(postcode, "RegistrationPostcode");
-                TestContext.Progress.WriteLine($"[RECOVERY] Retrying postcode lookup with {postcode} after {previousPostcode} (attempt {attempt + 1}).");
+                LogRecovery("NEW POSTCODE RETRY", $"Retrying lookup with '{postcode}' after '{previousPostcode}' (attempt {attempt + 1}/{maxAttempts})");
                 idmWhatsThePostcodeForYourBusinessPage.EnterPostcodeAndContinue(postcode);
             }
 
+            Console.WriteLine($"[POSTCODE LOOKUP] ✗ Lookup failed after {maxAttempts} attempts. Last postcode: '{postcode}'");
             Assert.Fail($"Neither address selection nor manual address entry was displayed after {maxAttempts} lookup attempts. Last postcode: {postcode}");
+        }
+
+        private static void LogRecovery(string recoveryType, string message)
+        {
+            var line = $"[POSTCODE LOOKUP] [RECOVERY: {recoveryType}] {message}";
+            Console.WriteLine(line);
+            TestContext.Progress.WriteLine(line);
+        }
+
+        private string SafeCurrentUrl()
+        {
+            try
+            {
+                return idmWhatsThePostcodeForYourBusinessPage.CurrentUrl;
+            }
+            catch (WebDriverException)
+            {
+                return "<unavailable>";
+            }
         }
 
         private void WaitForLookupResult(int timeoutSeconds) =>

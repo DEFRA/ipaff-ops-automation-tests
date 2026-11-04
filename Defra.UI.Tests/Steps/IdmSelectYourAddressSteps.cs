@@ -29,17 +29,24 @@ namespace Defra.UI.Tests.Steps.IPAFF
             var postcode = _scenarioContext.Get<string>("RegistrationPostcode");
             if (idmSelectYourAddressPage.IsDisplayed())
             {
-                _scenarioContext.Set(idmSelectYourAddressPage.SelectAddressAndContinue(postcode), "RegistrationAddress");
+                var selected = idmSelectYourAddressPage.SelectAddressAndContinue(postcode);
+                Console.WriteLine($"[ADDRESS SELECTION] ✓ Selected address '{selected}' from the lookup list for '{postcode}'");
+                _scenarioContext.Set(selected, "RegistrationAddress");
                 return;
             }
 
             Assert.That(idmWhatIsYourBusinessAddressPage.IsDisplayed(), Is.True, "Manual entry is only allowed when the lookup displays the business address form");
+            Console.WriteLine($"[ADDRESS SELECTION] [RECOVERY: MANUAL ADDRESS ENTRY] No address list for '{postcode}'; entering a generated address manually");
             var generated = Utils.GenerateOperatorDetails("Importer");
             var address = Regex.Match(generated.AddressLine1, @"^(?<number>\d+\w*)\s+(?<street>.+)$");
+            if (!address.Success)
+                Console.WriteLine($"[ADDRESS SELECTION] [RECOVERY: BUILDING NUMBER FALLBACK] Generated address line '{generated.AddressLine1}' has no building number; using a random number");
             var buildingNumber = address.Success ? address.Groups["number"].Value : Random.Shared.Next(1, 1000).ToString();
             var street = address.Success ? address.Groups["street"].Value : generated.AddressLine1;
             idmWhatIsYourBusinessAddressPage.EnterAddressAndContinue(buildingNumber, street, generated.CityOrTown, postcode);
-            _scenarioContext.Set($"{buildingNumber} {street}, {generated.CityOrTown}, {postcode}", "RegistrationAddress");
+            var manualAddress = $"{buildingNumber} {street}, {generated.CityOrTown}, {postcode}";
+            Console.WriteLine($"[ADDRESS SELECTION] ✓ Manually entered address '{manualAddress}'");
+            _scenarioContext.Set(manualAddress, "RegistrationAddress");
         }
     }
 }
