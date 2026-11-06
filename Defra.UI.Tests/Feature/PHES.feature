@@ -77,7 +77,7 @@ Scenario Outline: Create a new Government Gateway account and register for the E
 		| country | isBusinessOrOrganisation | isRegisteredUK | isCompaniesHouse | isSoleTraderOrCharity |
 		| UK      | Yes                      | Yes            | No               | Sole trader           |
 
-@SPS-4289
+@SPS-4289 @Dynamics
 Scenario: Exporter application for seed sampling followed by a phytosanitary certificate application using the stock - SPS-4289
 	# ---------- Exporter Portal - Arrange seed sampling ----------
 	Given that I navigate to the Exporter Portal
@@ -469,7 +469,7 @@ Scenario: Exporter application for seed sampling followed by a phytosanitary cer
 	Then the Sampling report (csv) file is downloaded
 	And the Remaining Approved Stock quantity in the CSV is '3000.0'
 
-@SPS-3951
+@SPS-3951 @Dynamics
 Scenario: Exporter phytosanitary certificate application creating stock, followed by draw down applications - SPS-3951
 	# ---------- Exporter Portal - Application 1 (qualifying application) ----------
 	Given that I navigate to the Exporter Portal
@@ -878,7 +878,7 @@ Scenario: Exporter phytosanitary certificate application creating stock, followe
 	When I close the PDF window
 	Then the window is closed
 
-@SPS-3991
+@SPS-3991 @Dynamics
 Scenario: Exporter phytosanitary certificate application for potatoes, inspection and certificate verification - SPS-3991
 	# ---------- Exporter Portal - Apply for a phytosanitary certificate for potatoes ----------
 	Given that I navigate to the Exporter Portal
