@@ -32,7 +32,7 @@ namespace Defra.UI.Tests.Steps.IPAFFS
         {
             iuuPage?.SelectRecordIUUCheckOption(option, subOption);
             _scenarioContext["IUU"] = option;
-            _scenarioContext["IUUSubOption"] = string.Equals(option, "No") ? "Not Inspected" : subOption;
+            _scenarioContext["IUUSubOption"] = string.Equals(option, "No - exempt") ? "No need to inspect - exempt or not applicable" : subOption;
         }        
     }
 }
