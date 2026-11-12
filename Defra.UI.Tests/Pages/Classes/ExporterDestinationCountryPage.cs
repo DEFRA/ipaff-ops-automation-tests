@@ -26,8 +26,16 @@ namespace Defra.UI.Tests.Pages.Classes
 
         public void SearchAndSelectCountry(string country)
         {
-            txtCountrySearch.Clear();
-            txtCountrySearch.SendKeys(country);
+            var input = txtCountrySearch;
+            input.Click();
+            input.SendKeys(Keys.Control + "a");
+            input.SendKeys(Keys.Backspace);
+            if (!string.IsNullOrEmpty(input.GetAttribute("value")))
+            {
+                ((IJavaScriptExecutor)_driver).ExecuteScript(
+                    "arguments[0].value=''; arguments[0].dispatchEvent(new Event('input',{bubbles:true}));", input);
+            }
+            input.SendKeys(country);
             countryOption(country).Click();
         }
 

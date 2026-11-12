@@ -12,6 +12,7 @@ namespace Defra.UI.Tests.Pages.Classes
 
         #region Page Objects with all the element locators
         private IWebElement pageTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='Exporter declaration']"), true);
+        private IWebElement declarationTitle => _driver.WaitForElement(By.XPath("//h1[normalize-space()='Declaration']"), true);
         private IWebElement chkDeclaration => _driver.WaitForElementExists(By.Id("confirm"), true);
         private IWebElement btnSubmitApplication => _driver.WaitForElement(By.Id("Button-SubmitApplication"));
         #endregion
@@ -22,6 +23,7 @@ namespace Defra.UI.Tests.Pages.Classes
         }
 
         public bool IsPageLoaded() => pageTitle.Text.Trim().Equals("Exporter declaration");
+        public bool IsDeclarationPageLoaded() => declarationTitle.Text.Trim().Equals("Declaration");
         public void TickDeclarationCheckbox() => chkDeclaration.Click();
         public void ClickSubmitApplicationButton() => btnSubmitApplication.Click();
     }

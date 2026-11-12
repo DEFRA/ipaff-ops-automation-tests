@@ -26,6 +26,13 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(exporterYourApplicationPage?.IsPageLoaded(), "Your application page is not displayed");
         }
 
+        [Then("the {string} task is marked as {string}")]
+        public void ThenTheTaskIsMarkedAs(string taskName, string status)
+        {
+            var actualStatus = exporterYourApplicationPage?.GetTaskStatus(taskName);
+            Assert.AreEqual(status, actualStatus, $"Task '{taskName}' status is '{actualStatus}', expected '{status}'");
+        }
+
         [When("the user clicks the What's in your consignment? link")]
         public void WhenTheUserClicksTheWhatsInYourConsignmentLink()
         {
@@ -54,6 +61,24 @@ namespace Defra.UI.Tests.Steps.IPAFF
         public void WhenTheUserClicksTheCheckYourAnswersAndSubmitYourApplicationLink()
         {
             exporterYourApplicationPage?.ClickCheckYourAnswersAndSubmitYourApplicationLink();
+        }
+
+        [When("the user clicks the What is the exporter address? link")]
+        public void WhenTheUserClicksTheWhatIsTheExporterAddressLink()
+        {
+            exporterYourApplicationPage?.ClickWhatIsTheExporterAddressLink();
+        }
+
+        [When("the user clicks the Who are you sending this consignment to? link")]
+        public void WhenTheUserClicksTheWhoAreYouSendingThisConsignmentToLink()
+        {
+            exporterYourApplicationPage?.ClickWhoAreYouSendingThisConsignmentToLink();
+        }
+
+        [When("the user clicks the Supporting documents link")]
+        public void WhenTheUserClicksTheSupportingDocumentsLink()
+        {
+            exporterYourApplicationPage?.ClickSupportingDocumentsLink();
         }
     }
 }

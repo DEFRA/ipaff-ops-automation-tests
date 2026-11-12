@@ -153,6 +153,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
             "Reference",
             "Commodity",
             "Variety",
+            "ExporterDestinationCountry",
         ];
 
         public ConfirmationSteps(ScenarioContext context, IObjectContainer container)

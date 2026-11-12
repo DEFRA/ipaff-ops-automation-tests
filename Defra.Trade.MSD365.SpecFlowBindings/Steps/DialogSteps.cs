@@ -5,6 +5,7 @@
 namespace Defra.Trade.Plants.SpecFlowBindings.Steps;
 
 using Capgemini.PowerApps.SpecFlowBindings;
+using Defra.Trade.Plants.SpecFlowBindings.Helpers;
 using FluentAssertions;
 using Microsoft.Dynamics365.UIAutomation.Api.UCI;
 using Microsoft.Dynamics365.UIAutomation.Browser;
@@ -50,6 +51,21 @@ public class DialogSteps : PowerAppsStepDefiner
         }
 
         button.Click();
+    }
+
+    [When("I click the Discard changes button on the Unsaved changes popup")]
+    public static void WhenIClickTheDiscardChangesButtonOnTheUnsavedChangesPopup()
+    {
+        Driver.WaitForTransaction();
+
+        var discardButton = Driver.WaitUntilAvailable(
+            By.XPath("//div[@data-id='confirmdialog' and .//h1[@data-id='dialogTitleText' and @title='Unsaved changes']]//button[@data-id='cancelButton' and @title='Discard changes']"),
+            "Discard changes button could not be found on the Unsaved changes popup.");
+
+        discardButton.Click();
+        Driver.WaitForTransaction();
+
+        SignInPromptHelper.DismissSignInPrompts(Driver, "post-discard-changes");
     }
 
     [When(@"I click the Close button on the dialog")]

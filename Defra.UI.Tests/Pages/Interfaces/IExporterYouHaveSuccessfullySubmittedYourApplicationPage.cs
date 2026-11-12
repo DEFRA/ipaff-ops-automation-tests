@@ -3,6 +3,10 @@
     public interface IExporterYouHaveSuccessfullySubmittedYourApplicationPage
     {
         bool IsPageLoaded();
+        bool IsPhytosanitaryConfirmationPageLoaded();
+        bool IsSeedSamplingConfirmationPageLoaded();
         string GetAphaReferenceNumber();
+        bool IsGuidanceDisplayed(string guidance);
+        void ClickViewYourApplicationsButton();
     }
 }

@@ -26,6 +26,12 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(exporterDeclarationPage?.IsPageLoaded(), "Exporter declaration page is not displayed");
         }
 
+        [Then("the Declaration page is displayed")]
+        public void ThenTheDeclarationPageIsDisplayed()
+        {
+            Assert.True(exporterDeclarationPage?.IsDeclarationPageLoaded(), "Declaration page is not displayed");
+        }
+
         [When("the user ticks the exporter declaration checkbox")]
         public void WhenTheUserTicksTheExporterDeclarationCheckbox()
         {

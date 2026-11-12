@@ -4,5 +4,30 @@
     {
         bool IsPageLoaded();
         void ClickContinueButton();
+        string GetCommodityTableText();
+        string GetConsignmentValue();
+        string GetPointOfEntry();
+        string GetTransportMode();
+        string GetDestinationCountry();
+        string GetYourReference();
+        string GetCommodityDescription();
+        string GetCommodityVariety();
+        string GetCommodityType();
+        string GetCommodityLotReference();
+        string GetCommodityOrigin();
+        string GetCommodityQuantity();
+        string GetCommodityNumberOfPackages();
+        string GetCommodityPackaging();
+        string GetConsigneeName();
+        string GetConsigneeAddress();
+        string GetExporterName();
+        string GetExporterAddress();
+        string GetSupportingDocumentFileName();
+        string GetSupportingDocumentDescription();
+        string GetCommodityDetail(string label);
+        string GetCommodityPackingMaterial();
+        string GetContainerNumber();
+        string GetInspectionTime();
+        void ClickChangeLink(string fieldName);
     }
 }

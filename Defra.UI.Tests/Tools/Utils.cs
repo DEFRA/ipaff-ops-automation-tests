@@ -5,14 +5,25 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using Reqnroll;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Globalization;
+using System.Net.Http;
 using System.Runtime.InteropServices;
+using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace Defra.UI.Tests.Tools
 {
     public static class Utils
     {
+        private static readonly HttpClient PostcodeClient = new()
+        {
+            BaseAddress = new Uri("https://api.postcodes.io/"),
+            Timeout = TimeSpan.FromSeconds(15)
+        };
+        private static readonly ConcurrentDictionary<string, byte> IssuedPostcodes = new(StringComparer.OrdinalIgnoreCase);
+
         public static string GenerateRandomName()
         {
             var size = 25;
@@ -37,6 +48,44 @@ namespace Defra.UI.Tests.Tools
             var randomDigits = new Random().Next(10000000, 99999999);
             var phoneNumber = "075" + randomDigits.ToString();
             return phoneNumber;
+        }
+
+        public static async Task<string> GenerateRandomUKPostcodeAsync()
+        {
+            const int maxAttempts = 10;
+            Exception? lastError = null;
+            for (var attempt = 1; attempt <= maxAttempts; attempt++)
+            {
+                try
+                {
+                    using var response = await PostcodeClient.GetAsync("random/postcodes");
+                    response.EnsureSuccessStatusCode();
+                    using var document = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+                    var root = document.RootElement;
+                    if (root.ValueKind == JsonValueKind.Object
+                        && root.TryGetProperty("result", out var result)
+                        && result.ValueKind == JsonValueKind.Object
+                        && result.TryGetProperty("postcode", out var value)
+                        && value.ValueKind == JsonValueKind.String)
+                    {
+                        var postcode = Regex.Replace(value.GetString()!.Trim().ToUpperInvariant(), @"\s+", " ");
+                        // Preserve the reference GB flow and reject repeats across parallel scenarios in this process.
+                        if (!postcode.StartsWith("BT", StringComparison.Ordinal)
+                            && Regex.IsMatch(postcode, @"^[A-Z]{1,2}\d[A-Z\d]? \d[A-Z]{2}$")
+                            && IssuedPostcodes.TryAdd(postcode, 0))
+                            return postcode;
+                    }
+                    lastError = new InvalidOperationException("The postcode service returned an invalid, excluded or previously issued postcode.");
+                }
+                catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or JsonException)
+                {
+                    lastError = ex;
+                }
+
+                if (attempt < maxAttempts)
+                    await Task.Delay(TimeSpan.FromSeconds(1));
+            }
+            throw new InvalidOperationException($"Unable to obtain a unique GB postcode from postcodes.io after {maxAttempts} attempts.", lastError);
         }
 
         public static string GenerateRandomNumber()
@@ -629,6 +678,16 @@ namespace Defra.UI.Tests.Tools
         {
             return GenerateOperatorDetails(null);
         }
+
+        /// <summary>
+        /// Generates a realistic first name using Bogus Faker library.
+        /// </summary>
+        public static string GenerateFirstName() => new Bogus.Faker("en_GB").Name.FirstName().Replace("'", "");
+
+        /// <summary>
+        /// Generates a realistic last name using Bogus Faker library.
+        /// </summary>
+        public static string GenerateLastName() => new Bogus.Faker("en_GB").Name.LastName().Replace("'", "");
 
         /// <summary>
         /// Generates random operator details with realistic data using Bogus Faker library.
