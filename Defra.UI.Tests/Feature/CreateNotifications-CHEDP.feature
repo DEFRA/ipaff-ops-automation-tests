@@ -1,4 +1,4 @@
-﻿@Regression @CHEDP
+@Regression @CHEDP
 Feature: Create Notification CHEDP
 
 Create a notification for CHEDP type
@@ -314,7 +314,7 @@ Scenario: User creates and submits a B2C consignment notification for Transit Re
 	Then Local reference number page should be displayed
 	When the user enters a local reference number and clicks Save and continue
 	Then the IUU page should be displayed
-	When the user selects "Yes" and sub-option as "No need to inspect - exempt or not applicable" for the IUU check
+	When the user selects "No - exempt" and sub-option as "" for the IUU check
 	And the user clicks Save and continue
 	Then the Documentary check page should be displayed
 	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
@@ -876,7 +876,7 @@ Scenario: Admin submits a notification and records decision and validate cookies
 	Then Local reference number page should be displayed
 	When the user enters a local reference number and clicks Save and continue
 	Then the IUU page should be displayed
-	When the user selects "Yes" and sub-option as "No need to inspect - exempt or not applicable" for the IUU check
+	When the user selects "No - exempt" and sub-option as "" for the IUU check
 	And the user clicks Save and continue
 	Then the Documentary check page should be displayed
 	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
@@ -1574,7 +1574,7 @@ Scenario: User submits a notification as no inspection required, override the ri
 	Then Local reference number page should be displayed
 	When the user enters a local reference number and clicks Save and continue
 	Then the IUU page should be displayed
-	When the user selects "Yes" and sub-option as "No need to inspect - exempt or not applicable" for the IUU check
+	When the user selects "No - exempt" and sub-option as "" for the IUU check
 	And the user clicks Save and continue
 	Then the Documentary check page should be displayed
 	And the user verifies 'Inspection required' box appears in the page
@@ -2059,7 +2059,7 @@ Scenario: Create and Submit B2C Consignment with Two Commodities and Catch Certi
 	Then Local reference number page should be displayed
 	When the user enters a local reference number and clicks Save and continue
 	Then the IUU page should be displayed
-	When the user selects "No" and sub-option as "" for the IUU check
+	When the user selects "No - exempt" and sub-option as "" for the IUU check
 	And the user clicks Save and continue
 	Then the Documentary check page should be displayed
 	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
@@ -2102,8 +2102,8 @@ Scenario: Create and Submit B2C Consignment with Two Commodities and Catch Certi
 	Then the BTMS search screen should be displayed
 	When the user searches for the CHED created earlier
 	Then the BTMS search result screen should be displayed
-	And the user checks commodity code "03061792", description "Penaeus spp.", quantity "13300", authority "POAO,IUU" and decision "Acceptable for Internal Market,Decision not given" after the decision given
-	And the user checks commodity code "16052190", description "Astacoidae", quantity "3240", authority "POAO,IUU" and decision "Acceptable for Internal Market,Decision not given" after the decision given
+	And the user checks commodity code "03061792", description "Penaeus spp.", quantity "13300", authority "POAO,IUU" and decision "Acceptable for Internal Market,IUU inspection not applicable" after the decision given
+	And the user checks commodity code "16052190", description "Astacoidae", quantity "3240", authority "POAO,IUU" and decision "Acceptable for Internal Market,IUU inspection not applicable" after the decision given
 	When the user logs out of BTMS
 	Then the user should be logged out successfully
 
@@ -2730,7 +2730,7 @@ Scenario: Verify IUU and Catch certificate details for EU and Non-EU countries C
 	And the details reflect the information added
 	When the user Clicks the change link under 'IUU checks'
 	Then the IUU page should be displayed
-	When the user selects "No" and sub-option as "" for the IUU check
+	When the user selects "No - exempt" and sub-option as "" for the IUU check
 	When the user clicks Save and Return
 	Then the Decision Hub page should be displayed
 	When the user clicks Review And Submit link
@@ -4442,7 +4442,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	Then Local reference number page should be displayed
 	When the user clicks Save and continue
 	Then the IUU page should be displayed
-	When the user selects 'No' and sub-option as '' for the IUU check
+	When the user selects 'No - exempt' and sub-option as '' for the IUU check
 	And the user clicks Save and continue
 	Then the Documentary check page should be displayed
 	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
@@ -4506,7 +4506,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	Then Local reference number page should be displayed
 	When the user clicks Save and continue
 	Then the IUU page should be displayed
-	When the user selects 'No' and sub-option as '' for the IUU check
+	When the user selects 'No - exempt' and sub-option as '' for the IUU check
 	And the user clicks Save and continue
 	Then the Documentary check page should be displayed
 	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
@@ -4570,7 +4570,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	Then Local reference number page should be displayed
 	When the user clicks Save and continue
 	Then the IUU page should be displayed
-	When the user selects 'No' and sub-option as '' for the IUU check
+	When the user selects 'No - exempt' and sub-option as '' for the IUU check
 	And the user clicks Save and continue
 	Then the Documentary check page should be displayed
 	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
@@ -4634,7 +4634,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	Then Local reference number page should be displayed
 	When the user clicks Save and continue
 	Then the IUU page should be displayed
-	When the user selects 'No' and sub-option as '' for the IUU check
+	When the user selects 'No - exempt' and sub-option as '' for the IUU check
 	And the user clicks Save and continue
 	Then the Documentary check page should be displayed
 	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
@@ -4698,7 +4698,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	Then Local reference number page should be displayed
 	When the user clicks Save and continue
 	Then the IUU page should be displayed
-	When the user selects 'No' and sub-option as '' for the IUU check
+	When the user selects 'No - exempt' and sub-option as '' for the IUU check
 	And the user clicks Save and continue
 	Then the Documentary check page should be displayed
 	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
@@ -4738,7 +4738,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	Then Local reference number page should be displayed
 	When the user clicks Save and continue
 	Then the IUU page should be displayed
-	When the user selects 'No' and sub-option as '' for the IUU check
+	When the user selects 'No - exempt' and sub-option as '' for the IUU check
 	And the user clicks Save and continue
 	Then the Documentary check page should be displayed
 	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
@@ -4778,7 +4778,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	Then Local reference number page should be displayed
 	When the user clicks Save and continue
 	Then the IUU page should be displayed
-	When the user selects 'No' and sub-option as '' for the IUU check
+	When the user selects 'No - exempt' and sub-option as '' for the IUU check
 	And the user clicks Save and continue
 	Then the Documentary check page should be displayed
 	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
@@ -4831,7 +4831,7 @@ Scenario: User submits a CHEDP notification and creates an Intensified Official 
 	Then Local reference number page should be displayed
 	When the user clicks Save and continue
 	Then the IUU page should be displayed
-	When the user selects 'No' and sub-option as '' for the IUU check
+	When the user selects 'No - exempt' and sub-option as '' for the IUU check
 	And the user clicks Save and continue
 	Then the Documentary check page should be displayed
 	When the user selects "Satisfactory" for the documentary check and clicks Save and continue
