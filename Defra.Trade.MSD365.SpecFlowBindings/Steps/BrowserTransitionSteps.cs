@@ -178,7 +178,22 @@ public class BrowserTransitionSteps : PowerAppsStepDefiner
     }
 
     /// <summary>
-    /// Returns true if the given window handle still exists in the driver's open windows.
+    /// For scenarios where the Exporter Portal (Browser 1) and Dynamics (Browser 2) are separate
+    /// browsers. No driver hand-off is needed; this only restores Dynamics reporting ownership
+    /// so that a failing Dynamics step is screenshotted from Browser 2.
+    /// </summary>
+    [When("I switch back to the Dynamics window")]
+    public void WhenISwitchBackToTheDynamicsWindow()
+    {
+        SignInPromptHelper.DismissSignInPrompts(Driver, "post-switch-to-dynamics-window");
+
+        _scenarioContext["IsDynamicsActive"] = true;
+
+        Console.WriteLine($"[BrowserTransition] Dynamics reporting restored. URL: {Driver.Url}");
+    }
+
+    /// <summary>
+    /// Returns true if the given window handle still exists
     /// Uses a safe check rather than relying on the driver throwing when the handle is invalid,
     /// which varies by browser/driver version.
     /// </summary>

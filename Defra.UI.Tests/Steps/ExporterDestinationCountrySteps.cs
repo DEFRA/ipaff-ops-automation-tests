@@ -9,14 +9,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
     public class ExporterDestinationCountrySteps
     {
         private readonly IObjectContainer _objectContainer;
+        private readonly ScenarioContext _scenarioContext;
 
         private IExporterDestinationCountryPage? exporterDestinationCountryPage =>
             _objectContainer.IsRegistered<IExporterDestinationCountryPage>()
                 ? _objectContainer.Resolve<IExporterDestinationCountryPage>()
                 : null;
 
-        public ExporterDestinationCountrySteps(IObjectContainer container)
+        public ExporterDestinationCountrySteps(ScenarioContext context, IObjectContainer container)
         {
+            _scenarioContext = context;
             _objectContainer = container;
         }
 
@@ -29,6 +31,15 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [When(@"^the user searches for destination country '([^']*)' and clicks the Continue button$")]
         public void WhenTheUserSearchesForDestinationCountryAndClicksTheContinueButton(string country)
         {
+            _scenarioContext["ExporterDestinationCountry"] = country;
+            exporterDestinationCountryPage?.SearchAndSelectCountry(country);
+            exporterDestinationCountryPage?.ClickContinueButton();
+        }
+
+        [When(@"^the user searches for destination country '([^']*)' and clicks the Save and continue button$")]
+        public void WhenTheUserSearchesForDestinationCountryAndClicksTheSaveAndContinueButton(string country)
+        {
+            _scenarioContext["ExporterDestinationCountry"] = country;
             exporterDestinationCountryPage?.SearchAndSelectCountry(country);
             exporterDestinationCountryPage?.ClickContinueButton();
         }

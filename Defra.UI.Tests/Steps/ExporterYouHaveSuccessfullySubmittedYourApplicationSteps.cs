@@ -28,10 +28,47 @@ namespace Defra.UI.Tests.Steps.IPAFF
             Assert.True(exporterYouHaveSuccessfullySubmittedYourApplicationPage?.IsPageLoaded(), "Submission confirmation page is not displayed");
         }
 
+        [Then("the You have successfully submitted your application for a phytosanitary certificate page is displayed")]
+        public void ThenTheYouHaveSuccessfullySubmittedYourApplicationForAPhytosanitaryCertificatePageIsDisplayed()
+        {
+            Assert.True(exporterYouHaveSuccessfullySubmittedYourApplicationPage?.IsPhytosanitaryConfirmationPageLoaded(), "Phytosanitary certificate submission confirmation page is not displayed");
+        }
+
+        [Then("the You have successfully submitted your seed sampling application page is displayed")]
+        public void ThenTheYouHaveSuccessfullySubmittedYourSeedSamplingApplicationPageIsDisplayed()
+        {
+            Assert.True(exporterYouHaveSuccessfullySubmittedYourApplicationPage?.IsSeedSamplingConfirmationPageLoaded(), "Seed sampling submission confirmation page is not displayed");
+        }
+
+        [Then("the Application complete page is displayed")]
+        public void ThenTheApplicationCompletePageIsDisplayed()
+        {
+            Assert.True(exporterYouHaveSuccessfullySubmittedYourApplicationPage?.IsPhytosanitaryConfirmationPageLoaded(), "Application complete page is not displayed");
+        }
+
         [Then("the user records the APHA reference number for {string}")]
-        public void ThenTheUserRecordsTheAPHAReferenceNumberForSPS9510(string iterationName)
+        public void ThenTheUserRecordsTheAPHAReferenceNumberFor(string iterationName)
         {
             _scenarioContext[$"{iterationName}_APHAReference"] = exporterYouHaveSuccessfullySubmittedYourApplicationPage?.GetAphaReferenceNumber();
+        }
+
+        [Then("the user records the APHA reference number")]
+        public void ThenTheUserRecordsTheAPHAReferenceNumber()
+        {
+            var reference = exporterYouHaveSuccessfullySubmittedYourApplicationPage?.GetAphaReferenceNumber();
+            _scenarioContext["APHAReference"] = reference;
+        }
+
+        [Then("the guidance {string} is displayed on the Application complete page")]
+        public void ThenTheGuidanceIsDisplayedOnTheApplicationCompletePage(string guidance)
+        {
+            Assert.True(exporterYouHaveSuccessfullySubmittedYourApplicationPage?.IsGuidanceDisplayed(guidance), $"Guidance '{guidance}' is not displayed on the Application complete page");
+        }
+
+        [When("the user clicks the View your applications button")]
+        public void WhenTheUserClicksTheViewYourApplicationsButton()
+        {
+            exporterYouHaveSuccessfullySubmittedYourApplicationPage?.ClickViewYourApplicationsButton();
         }
     }
 }

@@ -84,6 +84,7 @@ namespace Defra.UI.Tests.Steps.IPAFF
         }
 
         [Then("I should see type of Gateway login page")]
+        [Then("the How do you want to sign in page? is displayed")]
         public void ThenIShouldSeeTypeOfGatewayLoginPage()
         {
             Assert.True(governmentGatewayTypePage?.IsPageLoaded("How do you want to sign in?"), "How do you want to sign in? page not loaded");
@@ -104,9 +105,16 @@ namespace Defra.UI.Tests.Steps.IPAFF
         [Then(@"I should be redirected to the Exporter Portal Sign in using Government Gateway page")]
         [Then(@"I should redirected to the BTMS Sign in using Government Gateway page")]
         [Then(@"I should redirected to the IPAFF Sign in using Government Gateway page")]
+        [Then(@"I should be redirected to the Sign in using Government Gateway page")]
         public void ThenIShouldRedirectedToTheIPAFFSignInUsingGovernmentGatewayPage()
         {
             Assert.True(_signInPage?.IsPageLoaded(), "Application page not loaded");
+        }
+
+        [When("the user clicks Create sign in details on the Government Gateway sign in page")]
+        public void WhenTheUserClicksCreateSignInDetailsOnTheGovernmentGatewaySignInPage()
+        {
+            _signInPage?.ClickCreateSignInDetailsLink();
         }
 
         [When(@"I have provided the IPAFF credentials and signin")]

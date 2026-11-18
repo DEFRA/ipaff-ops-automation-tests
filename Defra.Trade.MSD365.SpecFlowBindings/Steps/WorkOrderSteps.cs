@@ -1,4 +1,4 @@
-﻿// <copyright file="AlertSteps.cs" company="DEFRA">
+// <copyright file="AlertSteps.cs" company="DEFRA">
 // Copyright (c) DEFRA. All rights reserved.
 // </copyright>
 
@@ -18,11 +18,13 @@ using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Tooling.Connector;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
+using OpenQA.Selenium.Support.UI;
 using Polly;
 using Reqnroll;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading;
 
@@ -173,6 +175,98 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
             $"Expected Substatus to be 'Assigned' but found '{substatusText}'.");
     }
 
+    [Then(@"the Substatus of the Work Order should be '(.*)'")]
+    public void ThenTheSubstatusOfTheWorkOrderShouldBe(string expectedSubstatus)
+    {
+        Driver.WaitForTransaction();
+
+        var headerHelper = new DynamicsHeaderHelper(Driver);
+        var substatusText = headerHelper.GetHeaderFieldValueText("header_msdyn_substatus", "msdyn_substatus");
+
+        substatusText.Should().NotBeNull(
+            $"Substatus '{expectedSubstatus}' could not be found in the Work Order header, even after expanding " +
+            "the 'More Header Editable Fields' overflow flyout.");
+
+        substatusText.Should().Be(expectedSubstatus,
+            $"Expected Substatus to be '{expectedSubstatus}' but found '{substatusText}'.");
+    }
+
+    /// <summary>
+    /// Verifies that the specified Work Order Task is no longer present in the
+    /// Active Work Order Service Tasks - Exports subgrid. Refreshes the subgrid between
+    /// attempts as task deactivation is processed asynchronously.
+    /// </summary>
+    /// <param name="taskName">The name of the task e.g. 'Seed Sampling Inspection Task'.</param>
+    [Then(@"the '(.*)' is no longer visible in the Active Work Order Service Tasks - Exports subgrid")]
+    public void ThenTheTaskIsNoLongerVisibleInTheActiveWorkOrderServiceTasksExportsSubgrid(string taskName)
+    {
+        Driver.WaitForTransaction();
+
+        var taskLinkXPath = $"//div[@data-id='dataSetRoot_workorderservicetasksgrid']//div[@col-id='msdyn_name']//a[@role='link' and @aria-label='{taskName}']";
+
+        var remaining = Policy
+            .Handle<Exception>()
+            .OrResult<int>(count => count > 0)
+            .WaitAndRetry(6, _ =>
+            {
+                XrmApp.Entity.SubGrid.ClickCommand("workorderservicetasksgrid", "Refresh");
+                Driver.WaitForTransaction();
+                return TimeSpan.FromSeconds(5);
+            })
+            .Execute(() =>
+            {
+                Driver.WaitForTransaction();
+
+                Driver.WaitUntilAvailable(
+                    By.XPath("//div[@data-id='dataSetRoot_workorderservicetasksgrid']"),
+                    "Work Order Service Tasks grid could not be found.");
+
+                return Driver.FindElements(By.XPath(taskLinkXPath)).Count;
+            });
+
+        remaining.Should().Be(0,
+            $"Expected Work Order Task '{taskName}' to no longer be visible in the Active Work Order Service Tasks - Exports subgrid " +
+            $"but it was still present after retrying.");
+    }
+
+    /// <summary>
+    /// Clicks the Export Application lookup link in the Application &amp; Inspection Address section
+    /// of the Work Order. Scrolls the field into view first as the lookup tag is lazy-rendered.
+    /// </summary>
+    [When("I click the Export Application link in the Application & Inspection Address section")]
+    public void WhenIClickTheExportApplicationLinkInTheApplicationInspectionAddressSection()
+    {
+        Driver.WaitForTransaction();
+
+        Policy
+            .Handle<StaleElementReferenceException>()
+            .Or<NoSuchElementException>()
+            .Or<WebDriverTimeoutException>()
+            .Or<InvalidOperationException>()
+            .Or<ElementClickInterceptedException>()
+            .WaitAndRetry(5, _ => TimeSpan.FromSeconds(3))
+            .Execute(() =>
+            {
+                var fieldContainers = Driver.FindElements(By.XPath("//div[@data-id='trd_exportapplicationid']"));
+
+                if (fieldContainers.Count > 0)
+                {
+                    Driver.ExecuteScript("arguments[0].scrollIntoView({block:'center'});", fieldContainers[0]);
+                    Driver.WaitForTransaction();
+                }
+
+                var exportApplicationLink = Driver.WaitUntilAvailable(
+                    By.XPath("//div[@data-id='trd_exportapplicationid.fieldControl-LookupResultsDropdown_trd_exportapplicationid_selected_tag_text']"),
+                    "Export Application link could not be found in the Application & Inspection Address section.");
+
+                exportApplicationLink.Click();
+            });
+
+        Driver.WaitForTransaction();
+
+        SignInPromptHelper.DismissSignInPrompts(Driver, "post-navigation");
+    }
+
     [Then("the Owner of the Work Order should be me")]
     public void ThenTheOwnerOfTheWorkOrderShouldBeMe()
     {
@@ -192,6 +286,682 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
 
         ownerText.Should().Contain(expectedOwner,
             $"Expected Owner to contain '{expectedOwner}' but found '{ownerText}'.");
+    }
+
+    [Then(@"the Owner of the Work Order should be '(.*)'")]
+    public void ThenTheOwnerOfTheWorkOrderShouldBe(string expectedOwner)
+    {
+        Driver.WaitForTransaction();
+
+        var headerHelper = new DynamicsHeaderHelper(Driver);
+        var ownerText = headerHelper.GetHeaderFieldValueText("header_ownerid", "ownerid");
+
+        ownerText.Should().NotBeNull(
+            $"Owner '{expectedOwner}' could not be found in the Work Order header, even after expanding " +
+            "the 'More Header Editable Fields' overflow flyout.");
+
+        ownerText.Should().Be(expectedOwner,
+            $"Expected Owner to be '{expectedOwner}' but found '{ownerText}'.");
+    }
+
+    /// <summary>
+    /// Verifies the Work Order page is displayed for the named application, using the APHA
+    /// reference stored in the scenario context as '{applicationName}_APHAReference'.
+    /// </summary>
+    /// <param name="applicationName">The application name e.g. 'Phytosanitary Certificate Application'.</param>
+    [Then(@"the Work Order page is displayed for the '(.*)' created in the Exporter Portal")]
+    public void ThenTheWorkOrderPageIsDisplayedForTheApplicationCreatedInTheExporterPortal(string applicationName)
+    {
+        Driver.WaitForTransaction();
+
+        SignInPromptHelper.DismissSignInPrompts(Driver, "post-navigation");
+
+        scenarioContext.TryGetValue($"{applicationName}_APHAReference", out string expectedAphaReference);
+
+        if (string.IsNullOrEmpty(expectedAphaReference))
+        {
+            scenarioContext.TryGetValue("APHAReference", out expectedAphaReference);
+        }
+
+        expectedAphaReference.Should().NotBeNullOrEmpty(
+            $"No APHA reference was found in the scenario context under '{applicationName}_APHAReference'.");
+
+        var pageHeader = Driver.WaitUntilAvailable(
+            By.XPath("//span[@data-id='entity_name_span']"),
+            "Work Order page header could not be found.");
+
+        var actualPageHeader = pageHeader.Text.Trim();
+        actualPageHeader.Should().Be("Work Order",
+            $"Expected page header to be 'Work Order' but found '{actualPageHeader}'.");
+
+        var referenceHeader = Driver.WaitUntilAvailable(
+            By.XPath("//h1[@data-id='header_title']"),
+            "Application reference header could not be found on the Work Order page.");
+
+        var actualReference = (referenceHeader.GetAttribute("title") ?? referenceHeader.Text)
+            .Replace("- Saved", string.Empty)
+            .Trim();
+
+        actualReference.Should().Be(expectedAphaReference,
+            $"Expected Work Order header to be '{expectedAphaReference}' but found '{actualReference}'.");
+    }
+
+    [Then(@"the Application Type should be '(.*)' in the General section")]
+    public void ThenTheApplicationTypeShouldBeInTheGeneralSection(string expectedApplicationType)
+    {
+        var actual = GetLookupSelectedTagText(
+            "msdyn_workordertype",
+            "msdyn_workordertype.fieldControl-LookupResultsDropdown_msdyn_workordertype_selected_tag_text");
+
+        actual.Should().Be(expectedApplicationType,
+            $"Expected Application Type to be '{expectedApplicationType}' but found '{actual}'.");
+    }
+
+    [Then(@"the Commodity Group should be '(.*)' in the General section")]
+    public void ThenTheCommodityGroupShouldBeInTheGeneralSection(string expectedCommodityGroup)
+    {
+        var actual = GetLookupSelectedTagText(
+            "msdyn_primaryincidenttype",
+            "msdyn_primaryincidenttype.fieldControl-LookupResultsDropdown_msdyn_primaryincidenttype_selected_tag_text");
+
+        actual.Should().Be(expectedCommodityGroup,
+            $"Expected Commodity Group to be '{expectedCommodityGroup}' but found '{actual}'.");
+    }
+
+    /// <summary>
+    /// Clicks the Work Order lookup link in the Application Details section of the Export Application.
+    /// The Work Order is linked asynchronously, so the record is refreshed between attempts.
+    /// </summary>
+    [When("I click the Work Order link in the Application Details section")]
+    public void WhenIClickTheWorkOrderLinkInTheApplicationDetailsSection()
+    {
+        Driver.WaitForTransaction();
+
+        Policy
+            .Handle<StaleElementReferenceException>()
+            .Or<NoSuchElementException>()
+            .Or<WebDriverTimeoutException>()
+            .Or<ElementClickInterceptedException>()
+            .Or<InvalidOperationException>()
+            .WaitAndRetry(
+                retryCount: 10,
+                sleepDurationProvider: _ => TimeSpan.FromSeconds(10),
+                onRetry: (_, _, _, _) =>
+                {
+                    CommandSteps.WhenISelectTheCommand("Refresh");
+                    Driver.WaitForTransaction();
+                    SignInPromptHelper.DismissSignInPrompts(Driver, "post-refresh");
+                })
+            .Execute(() =>
+            {
+                var fieldContainers = Driver.FindElements(By.XPath("//div[@data-id='trd_workorderid']"));
+
+                if (fieldContainers.Count > 0)
+                {
+                    Driver.ExecuteScript("arguments[0].scrollIntoView({block:'center'});", fieldContainers[0]);
+                    Driver.WaitForTransaction();
+                }
+
+                var workOrderLink = Driver.WaitUntilAvailable(
+                    By.XPath("//div[@data-id='trd_workorderid.fieldControl-LookupResultsDropdown_trd_workorderid_selected_tag_text']"),
+                    TimeSpan.FromSeconds(10),
+                    "Work Order link could not be found in the Application Details section.");
+
+                workOrderLink.Click();
+            });
+
+        Driver.WaitForTransaction();
+
+        SignInPromptHelper.DismissSignInPrompts(Driver, "post-navigation");
+    }
+
+    private const string StockRequestsSubGridName = "stockrequests_subgrid";
+    private const string StockRequestsSubgridXPath = "//div[@data-id='stockrequests_subgrid-powerapps_onegrid_control_container']";
+    private const string CommodityLinesSubgridXPath = "//div[@data-control-name='subgrid_selected_commodities' or starts-with(@data-id,'PhytoCommodities-subgrid_selected_commodities')]";
+    private const string WorkOrderCommodityLinesSubgridXPath = "//div[@data-id='dataSetRoot_Commoditylines']";
+    private const string StockRequestsStockColumnId = "trd_stock";
+    private const string StockRequestsStatusReasonColumnId = "statuscode";
+    private const string StockRequestsRowStatusColumnId = "__row_status";
+
+    private static readonly By PotatoCommodityGrid = By.CssSelector("[data-id='dataSetRoot_Commoditylines']");
+    private static readonly Dictionary<string, string> PotatoCommodityColumnIds = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["Potato Type"] = "trd_potatotype",
+        ["Variety"] = "trd_variety",
+        ["Quantity Exported"] = "trd_finalweight",
+        ["Lot Reference"] = "trd_lotreference",
+        ["Soil Sampling/Stock Number"] = "trd_soilsampleapplicationnumber",
+        ["GSI Number"] = "trd_gsinumber",
+        ["Stock Number"] = "trd_stocknumber",
+        ["Chemicals Used"] = "trd_chemicalused",
+    };
+
+    /// <summary>
+    /// Maps each column name to its Dynamics schema col-id, scrolls the Commodity Lines grid horizontally until that header renders,
+    /// then asserts the header label text exactly matches the expected column name.
+    /// </summary>
+    [Then("I can see the following columns in the Commodity Lines subgrid {string} {string} {string} {string} {string} {string} {string} {string}")]
+    public void ThenICanSeeTheFollowingColumnsInTheCommodityLinesSubgrid(string column1, string column2, string column3, string column4, string column5, string column6, string column7, string column8)
+    {
+        foreach (var column in new[] { column1, column2, column3, column4, column5, column6, column7, column8 })
+        {
+            var text = Policy.Handle<StaleElementReferenceException>().Or<NoSuchElementException>()
+                .WaitAndRetry(4, _ => TimeSpan.FromSeconds(1))
+                .Execute(() => ScrollPotatoCommodityGridUntilColumnVisible(PotatoCommodityColumnIds[column])
+                    .FindElement(By.CssSelector("[data-testid='columnHeader'] label")).Text.Trim());
+            text.Should().Be(column, $"Commodity Lines should contain column '{column}'");
+        }
+    }
+
+    /// <summary>
+    /// Scrolls the Commodity Lines grid to the Potato Type column, then performs a real mouse double-click (Selenium Actions)
+    /// on the first row's Potato Type cell to open the Commodity Line record.
+    /// </summary>
+    [When("I double click on a commodity line in the Commodity Lines subgrid")]
+    public void WhenIDoubleClickOnACommodityLineInTheCommodityLinesSubgrid()
+    {
+        Policy.Handle<StaleElementReferenceException>().Or<NoSuchElementException>().Or<ElementClickInterceptedException>()
+            .WaitAndRetry(4, _ => TimeSpan.FromSeconds(1)).Execute(() =>
+            {
+                ScrollPotatoCommodityGridUntilColumnVisible("trd_potatotype");
+                var cell = Driver.FindElement(PotatoCommodityGrid)
+                    .FindElement(By.CssSelector("[role='row'][row-index='0'] [role='gridcell'][col-id='trd_potatotype']"));
+                new Actions(Driver).MoveToElement(cell).DoubleClick().Perform();
+            });
+        Driver.WaitForTransaction();
+    }
+
+    private IWebElement ScrollPotatoCommodityGridUntilColumnVisible(string columnId)
+    {
+        for (var attempt = 0; attempt < 40; attempt++)
+        {
+            Driver.WaitForTransaction();
+            var grid = Driver.WaitUntilAvailable(PotatoCommodityGrid, "Commodity Lines grid was not found.");
+            if (grid.FindElements(By.CssSelector("[aria-busy='true'], .ag-overlay-loading-center" )).Any(e => e.Displayed))
+            {
+                Thread.Sleep(250);
+                continue;
+            }
+            var header = grid.FindElements(By.CssSelector($"[role='columnheader'][col-id='{columnId}']"))
+                .FirstOrDefault(e => e.Displayed);
+            if (header != null)
+            {
+                Driver.ExecuteScript("arguments[0].scrollIntoView({block:'nearest', inline:'center'});", header);
+                return Driver.FindElement(PotatoCommodityGrid).FindElement(By.CssSelector($"[role='columnheader'][col-id='{columnId}']"));
+            }
+            Driver.ExecuteScript(@"
+                var root = arguments[0].querySelector('.ag-body-horizontal-scroll-viewport');
+                if (root) { root.scrollLeft = arguments[1] === 0 ? 0 : root.scrollLeft + 250; }", grid, attempt);
+            Thread.Sleep(250);
+        }
+        throw new NoSuchElementException($"Commodity Lines column '{columnId}' was not rendered after scrolling.");
+    }
+
+    private static readonly Dictionary<string, string> StockRequestsColumnIds = new()
+    {
+        ["Stock"] = StockRequestsStockColumnId,
+        ["Status Reason"] = StockRequestsStatusReasonColumnId,
+    };
+
+    /// <summary>
+    /// Verifies the number of rows in the Stock Requests subgrid, refreshing the subgrid between
+    /// attempts to allow asynchronously created stock requests to render.
+    /// </summary>
+    [Then(@"I can see (\d+) rows? in the Stock Requests subgrid")]
+    public void ThenICanSeeRowInTheStockRequestsSubgrid(int expectedRowCount)
+    {
+        var actualRowCount = GetStockRequestsRowCountWithRefresh(expectedRowCount);
+
+        actualRowCount.Should().Be(expectedRowCount,
+            $"Expected {expectedRowCount} row(s) in the Stock Requests subgrid but found {actualRowCount}.");
+    }
+
+    [Then("I cannot see any row in the Stock Requests subgrid")]
+    public void ThenICannotSeeAnyRowInTheStockRequestsSubgrid()
+    {
+        var actualRowCount = GetStockRequestsRowCountWithRefresh(0);
+
+        actualRowCount.Should().Be(0,
+            $"Expected no rows in the Stock Requests subgrid but found {actualRowCount}.");
+    }
+
+    [Then(@"I can see (\d+) rows? in the Commodity Lines subgrid")]
+    public void ThenICanSeeRowInTheCommodityLinesSubgrid(int expectedRowCount)
+    {
+        Driver.WaitForTransaction();
+
+        var actualRowCount = Policy
+            .Handle<Exception>()
+            .OrResult<int?>(count => count != expectedRowCount)
+            .WaitAndRetry(6, _ => TimeSpan.FromSeconds(5))
+            .Execute(() =>
+            {
+                Driver.WaitForTransaction();
+                var containerXPath = Driver.FindElements(By.XPath(CommodityLinesSubgridXPath)).Any(e => e.Displayed)
+                    ? CommodityLinesSubgridXPath
+                    : WorkOrderCommodityLinesSubgridXPath;
+                return GetSubgridRowCount(containerXPath);
+            });
+
+        actualRowCount.Should().Be(expectedRowCount,
+            $"Expected {expectedRowCount} row(s) in the Commodity Lines subgrid but found {actualRowCount}.");
+    }
+
+    /// <summary>
+    /// Verifies the Status Reason column of the Stock Requests subgrid row for the stock reference
+    /// created in the Exporter Portal.
+    /// </summary>
+    [Then("the Status Reason of the Stock Request in the Stock Requests subgrid should be {string}")]
+    public void ThenTheStatusReasonOfTheStockRequestInTheStockRequestsSubgridShouldBe(string expectedStatusReason)
+    {
+        Driver.WaitForTransaction();
+
+        string actual = null;
+
+        Policy
+            .Handle<Exception>()
+            .OrResult<string>(value => value != expectedStatusReason)
+            .WaitAndRetry(6, _ =>
+            {
+                XrmApp.Entity.SubGrid.ClickCommand(StockRequestsSubGridName, "Refresh");
+                Driver.WaitForTransaction();
+                return TimeSpan.FromSeconds(5);
+            })
+            .Execute(() =>
+            {
+                Driver.WaitForTransaction();
+                return actual = GetStockRequestRowCell(StockRequestsStatusReasonColumnId).Text.Trim();
+            });
+
+        actual.Should().Be(expectedStatusReason,
+            $"Expected Stock Request Status Reason to be '{expectedStatusReason}' but found '{actual}' after retrying.");
+    }
+
+    [When("I select the record for the stock reference created in the Exporter Portal")]
+    public void WhenISelectTheRecordForTheStockReferenceCreatedInTheExporterPortal()
+    {
+        Driver.WaitForTransaction();
+
+        Policy
+            .Handle<StaleElementReferenceException>()
+            .Or<NoSuchElementException>()
+            .Or<WebDriverTimeoutException>()
+            .Or<InvalidOperationException>()
+            .Or<ElementClickInterceptedException>()
+            .WaitAndRetry(5, _ => TimeSpan.FromSeconds(2))
+            .Execute(() =>
+            {
+                var row = GetStockRequestRow();
+
+                if (row.GetAttribute("aria-selected") != "true")
+                {
+                    GetStockRequestRowCell(StockRequestsRowStatusColumnId).Click();
+                }
+            });
+
+        Driver.WaitForTransaction();
+    }
+
+    [Then("the Accept Request button should be displayed")]
+    public void ThenTheAcceptRequestButtonShouldBeDisplayed()
+    {
+        Driver.WaitForTransaction();
+
+        var acceptRequestButton = Driver.WaitUntilAvailable(
+            By.XPath("//button[@data-id='trd_stockrequest|NoRelationship|SubGridStandard|trd.trd_stockrequest.AcceptRequest.Button']"),
+            "Accept Request button could not be found above the Stock Requests subgrid.");
+
+        acceptRequestButton.Displayed.Should().BeTrue("Expected the Accept Request button to be displayed.");
+    }
+
+    [When("I click the Accept Request button")]
+    public void WhenIClickTheAcceptRequestButton()
+    {
+        Driver.WaitForTransaction();
+
+        var acceptRequestButton = Driver.WaitUntilAvailable(
+            By.XPath("//button[@data-id='trd_stockrequest|NoRelationship|SubGridStandard|trd.trd_stockrequest.AcceptRequest.Button']"),
+            "Accept Request button could not be found above the Stock Requests subgrid.");
+
+        Driver.ExecuteScript("arguments[0].click();", acceptRequestButton);
+        Driver.WaitForTransaction();
+    }
+
+    /// <summary>
+    /// Clicks the link in the given column of the Stock Requests subgrid row for the stock
+    /// reference created in the Exporter Portal.
+    /// </summary>
+    /// <param name="columnName">The column display name e.g. 'Stock'.</param>
+    [When(@"I click the link in the '(.*)' column")]
+    public void WhenIClickTheLinkInTheColumn(string columnName)
+    {
+        StockRequestsColumnIds.TryGetValue(columnName, out var colId).Should().BeTrue(
+            $"No col-id mapping is defined for Stock Requests column '{columnName}'.");
+
+        Driver.WaitForTransaction();
+
+        Policy
+            .Handle<StaleElementReferenceException>()
+            .Or<NoSuchElementException>()
+            .Or<WebDriverTimeoutException>()
+            .Or<InvalidOperationException>()
+            .Or<ElementClickInterceptedException>()
+            .WaitAndRetry(5, _ => TimeSpan.FromSeconds(2))
+            .Execute(() =>
+            {
+                var link = GetStockRequestRowCell(colId).FindElement(By.XPath(".//a"));
+                link.Click();
+            });
+
+        Driver.WaitForTransaction();
+
+        SignInPromptHelper.DismissSignInPrompts(Driver, "post-navigation");
+    }
+
+    /// <summary>
+    /// Switches the Stock Requests subgrid to the specified view.
+    /// </summary>
+    /// <param name="viewName">The name of the view e.g. 'All Stock Requests'.</param>
+    [When(@"I change the view to '(.*)' in the Stock Requests subgrid")]
+    public void WhenIChangeTheViewToInTheStockRequestsSubgrid(string viewName)
+    {
+        Driver.WaitForTransaction();
+
+        XrmApp.Entity.SubGrid.SwitchView(StockRequestsSubGridName, viewName);
+
+        Driver.WaitForTransaction();
+    }
+
+    /// <summary>
+    /// Switches the Work Order Tasks subgrid to the specified view.
+    /// </summary>
+    /// <param name="viewName">The name of the view e.g. 'All Work Order Service Tasks'.</param>
+    [When(@"I change the view to '(.*)' in the Work Order Tasks subgrid")]
+    public void WhenIChangeTheViewToInTheWorkOrderTasksSubgrid(string viewName)
+    {
+        Driver.WaitForTransaction();
+
+        XrmApp.Entity.SubGrid.SwitchView("workorderservicetasksgrid", viewName);
+
+        Driver.WaitForTransaction();
+    }
+
+    [When("I select a row in the Commodity Lines subgrid")]
+    public void WhenISelectARowInTheCommodityLinesSubgrid()
+    {
+        Driver.WaitForTransaction();
+
+        Policy
+            .Handle<StaleElementReferenceException>()
+            .Or<NoSuchElementException>()
+            .Or<WebDriverTimeoutException>()
+            .Or<InvalidOperationException>()
+            .Or<ElementClickInterceptedException>()
+            .WaitAndRetry(5, _ => TimeSpan.FromSeconds(2))
+            .Execute(() =>
+            {
+                var rowCheckMark = Driver.WaitUntilAvailable(
+                    By.XPath("(//div[@data-id='Commoditylines-powerapps_onegrid_control_container']//div[@role='row'][.//div[@role='gridcell']]//i[@data-icon-name='CheckMark'])[1]"),
+                    "Row selector checkbox could not be found in the Commodity Lines subgrid.");
+
+                var row = rowCheckMark.FindElement(By.XPath("./ancestor::div[@role='row'][1]"));
+                if (row.GetAttribute("aria-selected") != "true")
+                {
+                    var checkbox = rowCheckMark.FindElement(By.XPath("./ancestor::*[contains(@class,'ms-Checkbox')][1]"));
+                    checkbox.Click();
+                }
+            });
+
+        Driver.WaitForTransaction();
+    }
+
+    [When("I click the Create Stock button")]
+    public void WhenIClickTheCreateStockButton()
+    {
+        Driver.WaitForTransaction();
+
+        var createStockButton = Driver.WaitUntilAvailable(
+            By.XPath("//button[@data-id='trd_consignmentitem|NoRelationship|SubGridStandard|trd.trd_consignmentitem.CreateStock.Button']"),
+            "Create Stock button could not be found above the Commodity Lines subgrid.");
+
+        Driver.ExecuteScript("arguments[0].click();", createStockButton);
+        Driver.WaitForTransaction();
+    }
+
+    [Then(@"the '(.*)' view is displayed in the Stock Requests subgrid")]
+    public void ThenTheViewIsDisplayedInTheStockRequestsSubgrid(string expectedViewName)
+    {
+        Driver.WaitForTransaction();
+
+        string actualViewName = null;
+
+        Policy
+            .Handle<StaleElementReferenceException>()
+            .Or<NoSuchElementException>()
+            .Or<WebDriverTimeoutException>()
+            .Or<InvalidOperationException>()
+            .OrResult<string>(value => value != expectedViewName)
+            .WaitAndRetry(5, _ => TimeSpan.FromSeconds(2))
+            .Execute(() =>
+            {
+                var viewLabel = Driver.WaitUntilAvailable(
+                    By.XPath($"{StockRequestsSubgridXPath}/ancestor::div[.//div[starts-with(@data-id,'ViewSelector_')]][1]//span[contains(@id,'ViewSelector_') and contains(@id,'_text-value')]"),
+                    "Stock Requests subgrid view selector could not be found.");
+
+                return actualViewName = viewLabel.Text.Trim();
+            });
+
+        actualViewName.Should().Be(expectedViewName,
+            $"Expected Stock Requests subgrid view to be '{expectedViewName}' but found '{actualViewName}'.");
+    }
+
+    [When("I open the record for the stock reference created in the Exporter Portal")]
+    public void WhenIOpenTheRecordForTheStockReferenceCreatedInTheExporterPortal()
+    {
+        Driver.WaitForTransaction();
+
+        Policy
+            .Handle<StaleElementReferenceException>()
+            .Or<NoSuchElementException>()
+            .Or<WebDriverTimeoutException>()
+            .Or<InvalidOperationException>()
+            .Or<ElementClickInterceptedException>()
+            .WaitAndRetry(5, _ => TimeSpan.FromSeconds(2))
+            .Execute(() =>
+            {
+                var cell = GetStockRequestRowCell(StockRequestsStatusReasonColumnId);
+                new Actions(Driver).DoubleClick(cell).Perform();
+            });
+
+        Driver.WaitForTransaction();
+
+        SignInPromptHelper.DismissSignInPrompts(Driver, "post-navigation");
+    }
+
+    private int? GetStockRequestsRowCountWithRefresh(int expectedRowCount)
+    {
+        Driver.WaitForTransaction();
+
+        return Policy
+            .Handle<Exception>()
+            .OrResult<int?>(count => count != expectedRowCount)
+            .WaitAndRetry(6, _ =>
+            {
+                XrmApp.Entity.SubGrid.ClickCommand(StockRequestsSubGridName, "Refresh");
+                Driver.WaitForTransaction();
+                return TimeSpan.FromSeconds(5);
+            })
+            .Execute(() =>
+            {
+                Driver.WaitForTransaction();
+                return GetSubgridRowCount(StockRequestsSubgridXPath);
+            });
+    }
+
+    /// <summary>
+    /// Returns the row count of a subgrid, preferring the "Rows: X" footer, falling back to
+    /// the rendered data rows. Returns null if the subgrid grid has not rendered yet.
+    /// </summary>
+    private int? GetSubgridRowCount(string containerXPath)
+    {
+        var containers = Driver.FindElements(By.XPath(containerXPath)).Where(e => e.Displayed).ToList();
+
+        if (containers.Count == 0 || containers[^1].FindElements(By.XPath(".//div[@role='grid' or @role='treegrid']")).Count == 0)
+        {
+            return null;
+        }
+
+        var container = containers[^1];
+
+        var footerElements = container.FindElements(
+            By.XPath(".//span[contains(@class,'statusTextContainer') and contains(text(),'Rows:')]"));
+
+        if (footerElements.Count > 0 &&
+            int.TryParse(footerElements[0].Text.Replace("Rows:", string.Empty).Trim(), out var footerCount))
+        {
+            return footerCount;
+        }
+
+        if (container.FindElements(By.XPath(".//div[contains(@class,'ag-center-cols-container')]")).Count > 0)
+        {
+            return container.FindElements(
+                By.XPath(".//div[contains(@class,'ag-center-cols-container')]//div[@role='row']")).Count;
+        }
+
+        return container.FindElements(By.XPath(".//div[@role='row'][.//div[@role='gridcell']]")).Count;
+    }
+
+    /// <summary>
+    /// Locates the Stock Requests subgrid row whose Stock column matches the stock reference
+    /// stored in the scenario context as 'StockRequestName'.
+    /// </summary>
+    private IWebElement GetStockRequestRow()
+    {
+        var stockName = scenarioContext.Get<string>("StockRequestName");
+
+        return Driver.WaitUntilAvailable(
+            By.XPath($"{StockRequestsSubgridXPath}//div[@col-id='{StockRequestsStockColumnId}' and " +
+                     $"(normalize-space(.)='{stockName}' or .//a[@aria-label='{stockName}'])]/ancestor::div[@role='row'][1]"),
+            $"Stock Requests subgrid row for stock reference '{stockName}' could not be found.");
+    }
+
+    /// <summary>
+    /// Returns the cell for the given col-id in the Stock Requests subgrid row for the stock reference.
+    /// AG grid renders pinned and centre columns in separate row elements sharing the same row-index,
+    /// so the cell is resolved by row-index rather than within the matched row element.
+    /// </summary>
+    private IWebElement GetStockRequestRowCell(string colId)
+    {
+        ScrollStockRequestsGridUntilColumnVisible(colId);
+
+        var row = GetStockRequestRow();
+        var rowIndex = row.GetAttribute("row-index");
+
+        if (string.IsNullOrEmpty(rowIndex))
+        {
+            return row.FindElement(By.XPath($".//div[@col-id='{colId}']"));
+        }
+
+        return Driver.WaitUntilAvailable(
+            By.XPath($"{StockRequestsSubgridXPath}//div[@role='row' and @row-index='{rowIndex}']//div[@col-id='{colId}']"),
+            $"Cell '{colId}' could not be found in the Stock Requests subgrid row {rowIndex}.");
+    }
+
+    /// <summary>
+    /// Horizontally scrolls the Stock Requests AG grid until a cell for the given col-id is rendered.
+    /// </summary>
+    private void ScrollStockRequestsGridUntilColumnVisible(string colId)
+    {
+        var findAndCheckScript = $@"
+            var container = document.querySelector('div[data-control-name=""{StockRequestsSubGridName}""]');
+            if (!container) return null;
+            var viewport = container.querySelector('.ag-body-horizontal-scroll-viewport')
+                || container.querySelector('.ag-center-cols-viewport');
+            if (!viewport) return null;
+            return container.querySelector('div[role=""row""] div[col-id=""{colId}""]') !== null ? 'visible' : 'hidden';";
+
+        var scrollIncrementScript = $@"
+            var container = document.querySelector('div[data-control-name=""{StockRequestsSubGridName}""]');
+            if (!container) return;
+            var viewport = container.querySelector('.ag-body-horizontal-scroll-viewport')
+                || container.querySelector('.ag-center-cols-viewport');
+            if (viewport) {{ viewport.scrollLeft += 300; }}";
+
+        const int gridReadyAttempts = 20;
+        const int maxScrollAttempts = 40;
+
+        string result = null;
+        for (var waitAttempt = 0; waitAttempt < gridReadyAttempts && result == null; waitAttempt++)
+        {
+            result = Driver.ExecuteScript(findAndCheckScript) as string;
+
+            if (result == null)
+            {
+                Driver.WaitForTransaction();
+            }
+        }
+
+        if (result == null)
+        {
+            throw new InvalidOperationException(
+                $"The Stock Requests subgrid scroll container could not be found after waiting " +
+                $"{gridReadyAttempts} attempts. The grid may not have finished rendering.");
+        }
+
+        for (var scrollAttempt = 0; scrollAttempt < maxScrollAttempts; scrollAttempt++)
+        {
+            if (result == "visible")
+            {
+                return;
+            }
+
+            Driver.ExecuteScript(scrollIncrementScript);
+            Driver.WaitForTransaction();
+
+            result = Driver.ExecuteScript(findAndCheckScript) as string
+                ?? throw new InvalidOperationException(
+                    "The Stock Requests subgrid scroll container disappeared during scrolling.");
+        }
+
+        throw new InvalidOperationException(
+            $"Could not scroll the Stock Requests subgrid to show column '{colId}' after {maxScrollAttempts} scroll attempts.");
+    }
+
+    /// <summary>
+    /// Reads the selected tag text of a lookup field.
+    /// as the lookup tag is lazy-rendered, retrying on stale elements.
+    /// </summary>
+    private string GetLookupSelectedTagText(string fieldSchemaName, string selectedTagTextDataId)
+    {
+        Driver.WaitForTransaction();
+
+        string text = null;
+
+        Policy
+            .Handle<StaleElementReferenceException>()
+            .Or<NoSuchElementException>()
+            .Or<WebDriverTimeoutException>()
+            .Or<InvalidOperationException>()
+            .OrResult<string>(string.IsNullOrWhiteSpace)
+            .WaitAndRetry(5, _ => TimeSpan.FromSeconds(3))
+            .Execute(() =>
+            {
+                var fieldContainers = Driver.FindElements(By.XPath($"//div[@data-id='{fieldSchemaName}']"));
+
+                if (fieldContainers.Count > 0)
+                {
+                    Driver.ExecuteScript("arguments[0].scrollIntoView({block:'center'});", fieldContainers[0]);
+                    Driver.WaitForTransaction();
+                }
+
+                var tag = Driver.WaitUntilAvailable(
+                    By.XPath($"//div[@data-id='{selectedTagTextDataId}']"),
+                    $"Lookup value '{selectedTagTextDataId}' could not be found.");
+
+                return text = tag.Text.Trim();
+            });
+
+        return text;
     }
 
     [When(@"I check that the Commodity Lines frame shows '(.*)'")]
@@ -218,512 +988,6 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
     [Then(@"all the Commodity Lines should be validated with the values given in the input")]
     public void ThenAllTheCommodityLinesShouldBeValidatedWithTheValuesGivenInTheInput()
     {
-        if (!scenarioContext.ContainsKey("AllCommodityDetails"))
-        {
-            var tempTable = new Table("Commodity code", "Genus and Species", "EPPO code");
-            tempTable.AddRow("06012030", "Calanthe biloba", "CLPBI");
-            tempTable.AddRow("06012030", "Brassavola sp.", "BSVSS");
-            tempTable.AddRow("06011010", "Albuca bracteata", "ABWBR");
-            tempTable.AddRow("06029045", "Abelia engleriana", "ABEEN");
-            tempTable.AddRow("06029045", "Abelia graebneriana", "ABEGR");
-            tempTable.AddRow("06029045", "Abelia integrifolia", "ABEIN");
-            tempTable.AddRow("06029045", "Abelia ionandra", "ABEIO");
-            tempTable.AddRow("06029045", "Abelia schumannii", "ABESC");
-            tempTable.AddRow("06029045", "Abelia sp.", "ABESS");
-            tempTable.AddRow("06029045", "Abelia triflora", "ABETR");
-            tempTable.AddRow("06029045", "Abelia umbellata", "ABEUM");
-            tempTable.AddRow("06029045", "Abelia uniflora", "ABEUN");
-            tempTable.AddRow("06029045", "Abelia x grandiflora", "ABEGF");
-            tempTable.AddRow("06029045", "Abelia zanderi", "ABEZA");
-            tempTable.AddRow("06029045", "Abeliophyllum distichum", "ABLDI");
-            tempTable.AddRow("06029045", "Abeliophyllum sp.", "ABLSS");
-            tempTable.AddRow("06029045", "Abelmoschus caillei", "ABMCA");
-            tempTable.AddRow("06011010", "Albuca fibrotunicata", "ABWFI");
-            tempTable.AddRow("06029045", "Abelmoschus ficulneus", "HIBFC");
-            tempTable.AddRow("06029045", "Abelmoschus glutino-textilis", "ABMGT");
-            tempTable.AddRow("06029045", "Abelmoschus manihot", "HIBMA");
-            tempTable.AddRow("06029045", "Abelmoschus mindanensis", "ABMMI");
-            tempTable.AddRow("06029045", "Abelmoschus moschatus", "ABMMO");
-            tempTable.AddRow("06029045", "Abelmoschus sp.", "ABMSS");
-            tempTable.AddRow("06029045", "Abies alba", "ABIAL");
-            tempTable.AddRow("06029045", "Abies amabilis", "ABIAM");
-            tempTable.AddRow("06029045", "Abies balsamea", "ABIBA");
-            tempTable.AddRow("06029045", "Abies balsamea var. phanerolepis", "ABIPH");
-            tempTable.AddRow("06029045", "Abies borisii-regis", "ABIBO");
-            tempTable.AddRow("06029045", "Abies bracteata", "ABIBT");
-            tempTable.AddRow("06029045", "Abies cephalonica", "ABICE");
-            tempTable.AddRow("06029045", "Abies chengii", "ABICN");
-            tempTable.AddRow("06029045", "Abies chensiensis", "ABICH");
-            tempTable.AddRow("06029045", "Abies cilicica", "ABICI");
-            tempTable.AddRow("06029045", "Abies concolor", "ABICO");
-            tempTable.AddRow("06029045", "Abies concolor var. lowiana", "ABICL");
-            tempTable.AddRow("06029045", "Abies delavayi", "ABIDE");
-            tempTable.AddRow("06029045", "Abies densa", "ABIDN");
-            tempTable.AddRow("06029045", "Abies durangensis", "ABIDU");
-            tempTable.AddRow("06029045", "Abies fabri", "ABIFA");
-            tempTable.AddRow("06029045", "Abies fabri subsp. minensis", "ABIMI");
-            tempTable.AddRow("06029045", "Abies fargesii", "ABIFG");
-            tempTable.AddRow("06029045", "Abies firma", "ABIFI");
-            tempTable.AddRow("06029045", "Abies forrestii", "ABIFO");
-            tempTable.AddRow("06029045", "Abies fraseri", "ABIFR");
-            tempTable.AddRow("06029045", "Abies grandis", "ABIGR");
-            tempTable.AddRow("06029045", "Abies guatemalensis", "ABIGU");
-            tempTable.AddRow("06029045", "Abies guatemalensis var. jaliscana", "ABIFL");
-            tempTable.AddRow("06029045", "Abies hickelii", "ABIHI");
-            tempTable.AddRow("06029045", "Abies holophylla", "ABIHL");
-            tempTable.AddRow("06029045", "Abies homolepis", "ABIHO");
-            tempTable.AddRow("06029045", "Abies kawakamii", "ABIKA");
-            tempTable.AddRow("06029045", "Abies koreana", "ABIKO");
-            tempTable.AddRow("06029045", "Abies lasiocarpa", "ABILA");
-            tempTable.AddRow("06029045", "Abies lasiocarpa var. arizonica", "ABILZ");
-            tempTable.AddRow("06029045", "Abies magnifica", "ABIMA");
-            tempTable.AddRow("06029045", "Abies mariesii", "ABIMR");
-            tempTable.AddRow("06029045", "Abies nebrodensis", "ABINB");
-            tempTable.AddRow("06029045", "Abies nephrolepis", "ABINE");
-            tempTable.AddRow("06029045", "Abies nordmanniana", "ABINO");
-            tempTable.AddRow("06029045", "Abies nordmanniana subsp. equitrojani", "ABIBR");
-            tempTable.AddRow("06029045", "Abies numidica", "ABINU");
-            tempTable.AddRow("06029045", "Abies pindrow", "ABIPI");
-            tempTable.AddRow("06029045", "Abies pindrow var. brevifolia", "ABIGA");
-            tempTable.AddRow("06029045", "Abies pinsapo", "ABIPN");
-            tempTable.AddRow("06029045", "Abies pinsapo var. marocana", "ABIMC");
-            tempTable.AddRow("06029045", "Abies procera", "ABIPR");
-            tempTable.AddRow("06029045", "Abies recurvata", "ABIRE");
-            tempTable.AddRow("06029045", "Abies recurvata var. ernestii", "ABIER");
-            tempTable.AddRow("06029045", "Abies religiosa", "ABIRG");
-            tempTable.AddRow("06029045", "Abies sachalinensis", "ABISA");
-            tempTable.AddRow("06029045", "Abies sachalinensis var. gracilis", "ABISG");
-            tempTable.AddRow("06029045", "Abies sachalinensis var. mayriana", "ABISM");
-            tempTable.AddRow("06029045", "Abies sachalinensis var. nemorensis", "ABISN");
-            tempTable.AddRow("06029045", "Abies sibirica", "ABISB");
-            tempTable.AddRow("06029045", "Abies sibirica subsp. semenovii", "ABISE");
-            tempTable.AddRow("06029045", "Abies sp.", "ABISS");
-            tempTable.AddRow("06029045", "Abies spectabilis", "ABISP");
-            tempTable.AddRow("06029045", "Abies squamata", "ABISQ");
-            tempTable.AddRow("06029045", "Abies veitchii", "ABIVE");
-            tempTable.AddRow("06029045", "Abies vejarii", "ABIVJ");
-            tempTable.AddRow("06029045", "Abies vejarii subsp. mexicana", "ABIME");
-            tempTable.AddRow("06029045", "Abies x arnoldiana", "ABIAR");
-            tempTable.AddRow("06029045", "Abies x insignis", "ABIIN");
-            tempTable.AddRow("06029045", "Abies x vasconcellosiana", "ABIVA");
-            tempTable.AddRow("06029045", "Abies x vilmorinii", "ABIVI");
-            tempTable.AddRow("06029045", "Abrus precatorius", "ABRPR");
-            tempTable.AddRow("06029045", "Abrus precatorius subsp. africanus", "ABRPA");
-            tempTable.AddRow("06029045", "Abrus melanospermus", "ABRPP");
-            tempTable.AddRow("06029045", "Abrus melanospermus subsp. Suffruticosus", "ABRPS");
-            tempTable.AddRow("06029045", "Abrus sp.", "ABRSS");
-            tempTable.AddRow("06029045", "Abutilon angulatum", "ABUAN");
-            tempTable.AddRow("06029045", "Abutilon asiaticum", "ABUAS");
-            tempTable.AddRow("06029045", "Abutilon fruticosum", "ABUFR");
-            tempTable.AddRow("06029045", "Abutilon grandifolium", "ABUMO");
-            tempTable.AddRow("06029045", "Abutilon graveolens", "ABUGR");
-            tempTable.AddRow("06029045", "Abutilon guineense", "ABUGU");
-            tempTable.AddRow("06029045", "Abutilon hemsleyanum", "ABUHE");
-            tempTable.AddRow("06029045", "Abutilon hybrids", "ABUHY");
-            tempTable.AddRow("06029045", "Abutilon indicum", "ABUIN");
-            tempTable.AddRow("06029045", "Abutilon inflatum", "ABUIF");
-            tempTable.AddRow("06029045", "Abutilon ochsenii", "ABUOC");
-            tempTable.AddRow("06029045", "Abutilon oxycarpum", "ABUOX");
-            tempTable.AddRow("06029045", "Abutilon pannosum", "ABUGL");
-            tempTable.AddRow("06029045", "Abutilon pauciflorum", "ABUPF");
-            tempTable.AddRow("06029045", "Abutilon ramosum", "ABURA");
-            tempTable.AddRow("06029045", "Abutilon sonneratianum", "ABUSO");
-            tempTable.AddRow("06029045", "Pseudabutilon sp.", "PSDSS");
-            tempTable.AddRow("06029045", "Abutilon theophrasti", "ABUTH");
-            tempTable.AddRow("06029045", "Abutilon trisulcatum", "ABUTR");
-            tempTable.AddRow("06029045", "Abutilon vitifolium", "ABUVI");
-            tempTable.AddRow("06029045", "Acacia alata", "ACAAL");
-            tempTable.AddRow("06029045", "Acacia anceps", "ACAGL");
-            tempTable.AddRow("06029045", "Acacia aneura", "ACAAN");
-            tempTable.AddRow("06029045", "Acacia argyrodendron", "ACAAD");
-            tempTable.AddRow("06029045", "Acacia aulacocarpa", "ACAAU");
-            tempTable.AddRow("06029045", "Acacia auriculiformis", "ACAAF");
-            tempTable.AddRow("06029045", "Acacia baileyana", "ACABA");
-            tempTable.AddRow("06029045", "Acacia brachystachya", "ACABR");
-            tempTable.AddRow("06029045", "Acacia burrowii", "ACABU");
-            tempTable.AddRow("06029045", "Acacia cambagei", "ACACB");
-            tempTable.AddRow("06029045", "Acacia cana", "ACACN");
-            tempTable.AddRow("06029045", "Acacia cardiophylla", "ACACD");
-            tempTable.AddRow("06029045", "Acacia catenulata", "ACACE");
-            tempTable.AddRow("06029045", "Acacia concurrens", "ACACH");
-            tempTable.AddRow("06029045", "Acacia confusa", "ACACU");
-            tempTable.AddRow("06029045", "Acacia coriacea", "ACACR");
-            tempTable.AddRow("06029045", "Acacia cultriformis", "ACACL");
-            tempTable.AddRow("06029045", "Acacia curvinervia", "ACACQ");
-            tempTable.AddRow("06029045", "Acacia cyclops", "ACACC");
-            tempTable.AddRow("06029045", "Acacia cyperophylla", "ACACP");
-            tempTable.AddRow("06029045", "Acacia dealbata", "ACADA");
-            tempTable.AddRow("06029045", "Acacia deanei", "ACADN");
-            tempTable.AddRow("06029045", "Acacia decurrens", "ACADC");
-            tempTable.AddRow("06029045", "Acacia doratoxylon", "ACADO");
-            tempTable.AddRow("06029045", "Acacia ericifolia", "ACAER");
-            tempTable.AddRow("06029045", "Acacia excelsa", "ACAEX");
-            tempTable.AddRow("06029045", "Acacia flavescens", "ACAFL");
-            tempTable.AddRow("06029045", "Acacia genistifolia", "ACADI");
-            tempTable.AddRow("06029045", "Acacia georginae", "ACAGG");
-            tempTable.AddRow("06029045", "Acacia glaucoptera", "ACAGP");
-            tempTable.AddRow("06029045", "Acacia harpophylla", "ACAHA");
-            tempTable.AddRow("06029045", "Acacia homalophylla", "ACAHM");
-            tempTable.AddRow("06029045", "Acacia implexa", "ACAIM");
-            tempTable.AddRow("06029045", "Acacia ixiophylla", "ACAIX");
-            tempTable.AddRow("06029045", "Acacia koa", "ACAKO");
-            tempTable.AddRow("06029045", "Acacia leiocalyx", "ACALE");
-            tempTable.AddRow("06029045", "Acacia leptocarpa", "ACALC");
-            tempTable.AddRow("06029045", "Acacia longifolia", "ACALO");
-            tempTable.AddRow("06029045", "Acacia macracantha", "ACAMA");
-            tempTable.AddRow("06029045", "Acacia maidenii", "ACAMN");
-            tempTable.AddRow("06029045", "Acacia mangium", "ACAMG");
-            tempTable.AddRow("06029045", "Acacia mearnsii", "ACAMR");
-            tempTable.AddRow("06029045", "Acacia melanoxylon", "ACAME");
-            tempTable.AddRow("06029045", "Acacia mellifera subsp. detinens", "ACAMD");
-            tempTable.AddRow("06029045", "Acacia mucronata", "ACAMU");
-            tempTable.AddRow("06029045", "Acacia oswaldii", "ACAOS");
-            tempTable.AddRow("06029045", "Acacia paniculata", "ACAPA");
-            tempTable.AddRow("06029045", "Acacia paradoxa", "ACAAR");
-            tempTable.AddRow("06029045", "Acacia pendula", "ACAPD");
-            tempTable.AddRow("06029045", "Acacia penninervis", "ACAPN");
-            tempTable.AddRow("06029045", "Acacia permixta", "ACAPX");
-            tempTable.AddRow("06029045", "Acacia peuce", "ACAPC");
-            tempTable.AddRow("06029045", "Acacia plumosa", "ACAPL");
-            tempTable.AddRow("06029045", "Acacia podalyriifolia", "ACAPF");
-            tempTable.AddRow("06029045", "Acacia polyphylla", "ACAPO");
-            tempTable.AddRow("06029045", "Acacia pravissima", "ACAPR");
-            tempTable.AddRow("06029045", "Acacia pulchella", "ACAPU");
-            tempTable.AddRow("06029045", "Acacia pycnantha", "ACAPY");
-            tempTable.AddRow("06029045", "Acacia redolens", "ACARD");
-            tempTable.AddRow("06029045", "Acacia reficiens", "ACARF");
-            tempTable.AddRow("06029045", "Acacia retinodes", "ACART");
-            tempTable.AddRow("06029045", "Acacia riceana", "ACARC");
-            tempTable.AddRow("06029045", "Acacia rigidula", "ACARI");
-            tempTable.AddRow("06029045", "Acacia salicina", "ACASC");
-            tempTable.AddRow("06029045", "Acacia saligna", "ACASA");
-            tempTable.AddRow("06029045", "Acacia senegal var. leiorhachis", "ACASL");
-            tempTable.AddRow("06029045", "Acacia senegal var. rostrata", "ACASO");
-            tempTable.AddRow("06029045", "Acacia seyal var. fistula", "ACASF");
-            tempTable.AddRow("06029045", "Acacia shirleyi", "ACASH");
-            tempTable.AddRow("06029045", "Vachellia sieberiana var. woodii", "ACASW");
-            tempTable.AddRow("06029045", "Acacia sp.", "ACASS");
-            tempTable.AddRow("06029045", "Acacia sparsiflora", "ACASQ");
-            tempTable.AddRow("06029045", "Acacia spirocarpa", "ACASR");
-            tempTable.AddRow("06029045", "Acacia stenophylla", "ACAST");
-            tempTable.AddRow("06029045", "Acacia stuhlmannii", "ACASM");
-            tempTable.AddRow("06029045", "Acacia sutherlandii", "ACASU");
-            tempTable.AddRow("06029045", "Acacia tenuifolia", "ACATF");
-            tempTable.AddRow("06029045", "Acacia tenuispina", "ACATS");
-            tempTable.AddRow("06029045", "Acacia terminalis", "ACATM");
-            tempTable.AddRow("06029045", "Acacia tetragonophylla", "ACATE");
-            tempTable.AddRow("06029045", "Acacia tortilis subsp. raddiana", "ACATR");
-            tempTable.AddRow("06029045", "Acacia truncata", "ACADE");
-            tempTable.AddRow("06029045", "Acacia unijuga", "ACAUN");
-            tempTable.AddRow("06029045", "Acacia vernicosa", "ACAVC");
-            tempTable.AddRow("06029045", "Acacia verticillata", "ACAVE");
-            tempTable.AddRow("06029045", "Acacia victoriae", "ACAVI");
-            tempTable.AddRow("06029045", "Acacia welwitschii subsp. delagoensis", "ACAWD");
-            tempTable.AddRow("06029045", "Acacia wrightii", "ACAWR");
-            tempTable.AddRow("06029045", "Acaciella angustissima", "ACAAG");
-            tempTable.AddRow("06029045", "Acalypha guatemalensis", "ACCGU");
-            tempTable.AddRow("06029045", "Acalypha havanensis", "ACCHA");
-            tempTable.AddRow("06029045", "Acalypha hispida", "ACCHI");
-            tempTable.AddRow("06029045", "Acalypha indica", "ACCIN");
-            tempTable.AddRow("06029045", "Acalypha macrostachya", "ACCMA");
-            tempTable.AddRow("06029045", "Acalypha malabarica", "ACCMB");
-            tempTable.AddRow("06029045", "Acalypha neomexicana", "ACCNE");
-            tempTable.AddRow("06029045", "Acalypha persimilis", "ACCOS");
-            tempTable.AddRow("06029045", "Acalypha pendula", "ACCPN");
-            tempTable.AddRow("06029045", "Acalypha poirettii", "ACCPO");
-            tempTable.AddRow("06029045", "Acalypha polystachya", "ACCPY");
-            tempTable.AddRow("06029045", "Acalypha pseudoalopecuroides", "ACCPS");
-            tempTable.AddRow("06029045", "Acalypha racemosa", "ACCRA");
-            tempTable.AddRow("06029045", "Acalypha rhomboidea", "ACCRH");
-            tempTable.AddRow("06029045", "Acalypha schiedana", "ACCSC");
-            tempTable.AddRow("06029045", "Acalypha segetalis", "ACCSE");
-            tempTable.AddRow("06029045", "Acalypha setosa", "ACCST");
-            tempTable.AddRow("06029045", "Acalypha sp.", "ACCSS");
-            tempTable.AddRow("06029045", "Acalypha villicaulis", "ACCPE");
-            tempTable.AddRow("06029045", "Acalypha virginica", "ACCVI");
-            tempTable.AddRow("06029045", "Acalypha wilkesiana", "ACCWI");
-            tempTable.AddRow("06029045", "Acantholimon acerosum", "ACLAC");
-            tempTable.AddRow("06029045", "Acantholimon armenum", "ACLAR");
-            tempTable.AddRow("06029045", "Acantholimon caryophyllaceum", "ACLCA");
-            tempTable.AddRow("06029045", "Acantholimon diapensioides", "ACLDI");
-            tempTable.AddRow("06029045", "Acantholimon glumaceum", "ACLGL");
-            tempTable.AddRow("06029045", "Acantholimon kotschyi", "ACLKO");
-            tempTable.AddRow("06029045", "Acantholimon libanoticum", "ACLLI");
-            tempTable.AddRow("06029045", "Acantholimon melananthum", "ACLME");
-            tempTable.AddRow("06029045", "Acantholimon olivieri", "ACLOL");
-            tempTable.AddRow("06029045", "Acantholimon sp.", "ACLSS");
-            tempTable.AddRow("06029045", "Acantholimon ulicinum", "ACLAN");
-            tempTable.AddRow("06029045", "Acanthoprasium frutescens", "BLLFR");
-            tempTable.AddRow("06029045", "Acanthosicyos horridus", "ACWHO");
-            tempTable.AddRow("06029045", "Acanthosicyos sp.", "ACWSS");
-            tempTable.AddRow("06029045", "Acanthospermum australe", "ACNAU");
-            tempTable.AddRow("06029045", "Acanthospermum glabratum", "ACNGL");
-            tempTable.AddRow("06011010", "Bellevalia ciliata", "BLVCI");
-            tempTable.AddRow("06029045", "Acanthospermum humile", "ACNHU");
-            tempTable.AddRow("06029045", "Acanthospermum sp.", "ACNSS");
-            tempTable.AddRow("06029045", "Acanthostyles buniifolius", "EUPBU");
-            tempTable.AddRow("06029045", "Acanthosyris faclata", "AHSFA");
-            tempTable.AddRow("06029045", "Acanthosyris paulo-alvimii", "AHSPA");
-            tempTable.AddRow("06029045", "Acanthosyris sp.", "AHSSS");
-            tempTable.AddRow("06029045", "Acca sellowiana", "FEJSE");
-            tempTable.AddRow("06029045", "Acer acuminatum", "ACRAC");
-            tempTable.AddRow("06029045", "Acer albopurpurascens", "ACRAL");
-            tempTable.AddRow("06029045", "Acer amplum", "ACRAM");
-            tempTable.AddRow("06029045", "Acer argutum", "ACRAR");
-            tempTable.AddRow("06029045", "Acer barbatum", "ACRBA");
-            tempTable.AddRow("06029045", "Acer barbinerve", "ACRBB");
-            tempTable.AddRow("06029045", "Acer buergerianum", "ACRBU");
-            tempTable.AddRow("06029045", "Acer caesium", "ACRCE");
-            tempTable.AddRow("06029045", "Acer caesium subsp. giraldii", "ACRCI");
-            tempTable.AddRow("06029045", "Acer campbellii", "ACRCB");
-            tempTable.AddRow("06029045", "Acer campestre", "ACRCA");
-            tempTable.AddRow("06029045", "Acer capillipes", "ACRCL");
-            tempTable.AddRow("06029045", "Acer cappadocicum", "ACRCP");
-            tempTable.AddRow("06029045", "Acer carpinifolium", "ACRCR");
-            tempTable.AddRow("06029045", "Acer catalpifolium", "ACRCT");
-            tempTable.AddRow("06029045", "Acer caudatifolium", "ACRCF");
-            tempTable.AddRow("06029045", "Acer caudatum", "ACRCD");
-            tempTable.AddRow("06029045", "Acer caudatum subsp. ukurunduense", "ACRUK");
-            tempTable.AddRow("06029045", "Acer caudatum var. multiserratum", "ACRCM");
-            tempTable.AddRow("06029045", "Acer circinatum", "ACRCJ");
-            tempTable.AddRow("06029045", "Acer cissifolium", "ACRCS");
-            tempTable.AddRow("06029045", "Acer cordatum", "ACRCO");
-            tempTable.AddRow("06029045", "Acer coriaceifolium", "ACRCC");
-            tempTable.AddRow("06029045", "Acer crataegifolium", "ACRCG");
-            tempTable.AddRow("06029045", "Acer davidii", "ACRDA");
-            tempTable.AddRow("06029045", "Acer davidii subsp. grosseri", "ACRGO");
-            tempTable.AddRow("06029045", "Acer diabolicum", "ACRDI");
-            tempTable.AddRow("06029045", "Acer discolor", "ACRDS");
-            tempTable.AddRow("06029045", "Acer distylum", "ACRDT");
-            tempTable.AddRow("06029045", "Acer divergens", "ACRDV");
-            tempTable.AddRow("06029045", "Acer erianthum", "ACRER");
-            tempTable.AddRow("06029045", "Acer fabri", "ACRFA");
-            tempTable.AddRow("06029045", "Acer fargesii", "ACRFG");
-            tempTable.AddRow("06029045", "Acer flabellatum", "ACRFL");
-            tempTable.AddRow("06029045", "Acer forrestii", "ACRFO");
-            tempTable.AddRow("06029045", "Acer franchetii", "ACRFR");
-            tempTable.AddRow("06029045", "Acer glabrum", "ACRGL");
-            tempTable.AddRow("06029045", "Acer granatense", "ACRGR");
-            tempTable.AddRow("06029045", "Acer griseum", "ACRGS");
-            tempTable.AddRow("06029045", "Acer heldreichii", "ACRHE");
-            tempTable.AddRow("06029045", "Acer henryi", "ACRHN");
-            tempTable.AddRow("06029045", "Acer hypoleucum", "ACRHL");
-            tempTable.AddRow("06029045", "Acer hyrcanum", "ACRHR");
-            tempTable.AddRow("06029045", "Acer japonicum", "ACRJA");
-            tempTable.AddRow("06029045", "Acer laevigatum", "ACRLA");
-            tempTable.AddRow("06029045", "Acer laevigatum var. salweense", "ACRLS");
-            tempTable.AddRow("06029045", "Acer laurinum", "ACRGA");
-            tempTable.AddRow("06029045", "Acer laxiflorum", "ACRLX");
-            tempTable.AddRow("06029045", "Acer leucoderme", "ACRLE");
-            tempTable.AddRow("06029045", "Acer litseifolium", "ACRLI");
-            tempTable.AddRow("06029045", "Acer lobelii", "ACRLB");
-            tempTable.AddRow("06029045", "Acer longipes", "ACRLO");
-            tempTable.AddRow("06029045", "Acer macrophyllum", "ACRMA");
-            tempTable.AddRow("06029045", "Acer mandshuricum", "ACRMN");
-            tempTable.AddRow("06029045", "Acer maximowiczii", "ACRMX");
-            tempTable.AddRow("06029045", "Acer mayrii", "ACRMY");
-            tempTable.AddRow("06029045", "Acer micranthum", "ACRMR");
-            tempTable.AddRow("06029045", "Acer miyabei", "ACRMI");
-            tempTable.AddRow("06029045", "Acer monspessulanum", "ACRMS");
-            tempTable.AddRow("06029045", "Acer monspessulanum subsp. cinerascens", "ACRMC");
-            tempTable.AddRow("06029045", "Acer multiserratum", "ACRMU");
-            tempTable.AddRow("06029045", "Acer negundo", "ACRNE");
-            tempTable.AddRow("06029045", "Acer negundo var. californicum", "ACRNC");
-            tempTable.AddRow("06029045", "Acer nikoense", "ACRNK");
-            tempTable.AddRow("06029045", "Acer nipponicum", "ACRNP");
-            tempTable.AddRow("06029045", "Acer oblongum", "ACROB");
-            tempTable.AddRow("06029045", "Acer obtusatum", "ACROT");
-            tempTable.AddRow("06029045", "Acer obtusifolium", "ACROF");
-            tempTable.AddRow("06029045", "Acer okamotoanum", "ACROK");
-            tempTable.AddRow("06029045", "Acer oliverianum", "ACROL");
-            tempTable.AddRow("06029045", "Acer opalus", "ACROP");
-            tempTable.AddRow("06029045", "Acer osmastonii", "ACROS");
-            tempTable.AddRow("06029045", "Acer palmatum", "ACRPA");
-            tempTable.AddRow("06029045", "Acer paxii", "ACRPX");
-            tempTable.AddRow("06029045", "Acer pectinatum", "ACRPC");
-            tempTable.AddRow("06029045", "Acer pensylvanicum", "ACRPE");
-            tempTable.AddRow("06029045", "Acer pentapomicum", "ACRPT");
-            tempTable.AddRow("06029045", "Acer pictum subsp. mono", "ACRMO");
-            tempTable.AddRow("06029045", "Acer pilosum", "ACRPI");
-            tempTable.AddRow("06029045", "Acer platanoides", "ACRPL");
-            tempTable.AddRow("06029045", "Acer pseudoplatanus", "ACRPP");
-            tempTable.AddRow("06029045", "Acer pseudosieboldianum", "ACRPS");
-            tempTable.AddRow("06029045", "Acer pubipalmatum", "ACRPB");
-            tempTable.AddRow("06029045", "Acer pycnanthum", "ACRPY");
-            tempTable.AddRow("06029045", "Acer ramosum", "ACRRA");
-            tempTable.AddRow("06029045", "Acer robustum", "ACRRO");
-            tempTable.AddRow("06029045", "Acer rubrum", "ACRRB");
-            tempTable.AddRow("06029045", "Acer rufinerve", "ACRRU");
-            tempTable.AddRow("06029045", "Acer saccharinum", "ACRSA");
-            tempTable.AddRow("06029045", "Acer saccharum", "ACRSC");
-            tempTable.AddRow("06029045", "Acer saccharum subsp. grandidentatum", "ACRSG");
-            tempTable.AddRow("06029045", "Acer saccharum subsp. nigrum", "ACRSN");
-            tempTable.AddRow("06029045", "Acer schneiderianum", "ACRSD");
-            tempTable.AddRow("06029045", "Acer semenovii", "ACRSM");
-            tempTable.AddRow("06029045", "Acer sempervirens", "ACRSV");
-            tempTable.AddRow("06029045", "Acer shirasawanum", "ACRSH");
-            tempTable.AddRow("06029045", "Acer sieboldianum", "ACRSB");
-            tempTable.AddRow("06029045", "Acer sikkimense", "ACRHO");
-            tempTable.AddRow("06029045", "Acer sinense", "ACRSI");
-            tempTable.AddRow("06029045", "Acer sino-oblongum", "ACRSO");
-            tempTable.AddRow("06029045", "Acer sino-purpurascens", "ACRSR");
-            tempTable.AddRow("06029045", "Acer sp.", "ACRSS");
-            tempTable.AddRow("06029045", "Acer spicatum", "ACRSP");
-            tempTable.AddRow("06029045", "Acer stachyophyllum", "ACRST");
-            tempTable.AddRow("06029045", "Acer sterculiaceum", "ACRSQ");
-            tempTable.AddRow("06029045", "Acer sutchuense", "ACRSU");
-            tempTable.AddRow("06029045", "Acer taronense", "ACRTN");
-            tempTable.AddRow("06029045", "Acer tataricum", "ACRTA");
-            tempTable.AddRow("06029045", "Acer tataricum subsp. ginnala", "ACRGN");
-            tempTable.AddRow("06029045", "Acer tegmentosum", "ACRTG");
-            tempTable.AddRow("06029045", "Acer thomsonii", "ACRTH");
-            tempTable.AddRow("06029045", "Acer tibetense", "ACRTI");
-            tempTable.AddRow("06029045", "Acer tonkinense", "ACRTO");
-            tempTable.AddRow("06029045", "Acer trautvetteri", "ACRTR");
-            tempTable.AddRow("06029045", "Acer triflorum", "ACRTF");
-            tempTable.AddRow("06029045", "Acer truncatum", "ACRTU");
-            tempTable.AddRow("06029045", "Acer tschonoskii", "ACRTS");
-            tempTable.AddRow("06029045", "Acer platanoides subsp. Turkestanicum", "ACRTK");
-            tempTable.AddRow("06029045", "Acer tutcheri", "ACRTC");
-            tempTable.AddRow("06029045", "Acer velutinum", "ACRVL");
-            tempTable.AddRow("06029045", "Acer wardii", "ACRWA");
-            tempTable.AddRow("06029045", "Acer wilsonii", "ACRWI");
-            tempTable.AddRow("06029045", "Acer x bornmuelleri", "ACRBO");
-            tempTable.AddRow("06029045", "Acer x boscii", "ACRBS");
-            tempTable.AddRow("06029045", "Acer x coriaceum", "ACRCU");
-            tempTable.AddRow("06029045", "Acer x dieckii", "ACRDK");
-            tempTable.AddRow("06029045", "Acer x freemanii", "ACRFE");
-            tempTable.AddRow("06029045", "Acer x hybridum", "ACRHY");
-            tempTable.AddRow("06029045", "Acer x rotundilobum", "ACRRT");
-            tempTable.AddRow("06029045", "Acer x senecaense", "ACRSE");
-            tempTable.AddRow("06029045", "Acer x sericeum", "ACRSJ");
-            tempTable.AddRow("06029045", "Acer x veitchii", "ACRVE");
-            tempTable.AddRow("06029045", "Acer x zoeschense", "ACRZO");
-            tempTable.AddRow("06029045", "Acer yuii", "ACRYU");
-            tempTable.AddRow("06011010", "Bellevalia sp.", "BLVSS");
-            tempTable.AddRow("06029045", "Achillea alpina", "ACHSI");
-            tempTable.AddRow("06029045", "Achillea borealis", "ACHBO");
-            tempTable.AddRow("06029045", "Achillea distans", "ACHDI");
-            tempTable.AddRow("06011010", "Bowiea sp.", "BWASS");
-            tempTable.AddRow("06029045", "Achillea micrantha", "ACHMC");
-            tempTable.AddRow("06011010", "Camassia cusickii", "CDSCU");
-            tempTable.AddRow("06029045", "Achillea millefolium var. occidentalis", "ACHLA");
-            tempTable.AddRow("06011010", "Dipcadi bakeriana", "DPDBA");
-            tempTable.AddRow("06011010", "Dipcadi erythraeum", "DPDER");
-            tempTable.AddRow("06029045", "Achillea santolina", "ACHSA");
-            tempTable.AddRow("06029045", "Achillea setacea", "ACHSE");
-            tempTable.AddRow("06029045", "Achillea sp.", "ACHSS");
-            tempTable.AddRow("06011010", "Drimia maritima", "URGMA");
-            tempTable.AddRow("06029045", "Achyrocline satureioides", "ACOSA");
-            tempTable.AddRow("06029045", "Achyrocline sp.", "ACOSS");
-            tempTable.AddRow("06029045", "Acilepis divergens", "VENDV");
-            tempTable.AddRow("06029045", "Acis autumnalis", "LEJAU");
-            tempTable.AddRow("06029045", "Acmella alba", "SPLOC");
-            tempTable.AddRow("06029045", "Acmella brachyglossa", "SPLLI");
-            tempTable.AddRow("06029045", "Acmella caulirhiza", "SPLMR");
-            tempTable.AddRow("06029045", "Acmella ciliata", "SPLCI");
-            tempTable.AddRow("06029045", "Acmella oleracea", "SPLOL");
-            tempTable.AddRow("06029045", "Acmella paniculata", "SPLPA");
-            tempTable.AddRow("06029045", "Acmopyle pancheri", "ACMPA");
-            tempTable.AddRow("06029045", "Acmopyle sp.", "ACMSS");
-            tempTable.AddRow("06029045", "Acnistus arborescens", "AKSAR");
-            tempTable.AddRow("06029045", "Acnistus sp.", "AKSSS");
-            tempTable.AddRow("06029045", "Acoelorraphe sp.", "AEQSS");
-            tempTable.AddRow("06029045", "Acokanthera oblongifolia", "CISSP");
-            tempTable.AddRow("06029045", "Acokanthera oppositifolia", "CISAK");
-            tempTable.AddRow("06029045", "Acradenia frankliniae", "ARNFR");
-            tempTable.AddRow("06029045", "Acradenia sp.", "ARNSS");
-            tempTable.AddRow("06029045", "Acrocarpus fraxinifolius", "AOCFR");
-            tempTable.AddRow("06029045", "Acrocarpus sp.", "AOCSS");
-            tempTable.AddRow("06029045", "Acrocomia aculeata", "AARSC");
-            tempTable.AddRow("06029045", "Acrocomia sp.", "AARSS");
-            tempTable.AddRow("06029045", "Acroptilon repens", "CENRE");
-            tempTable.AddRow("06029045", "Acrostichum aureum", "AOHAU");
-            tempTable.AddRow("06029045", "Acrostichum sp.", "AOHSS");
-            tempTable.AddRow("06029045", "Acrotome inflata", "AFTIN");
-            tempTable.AddRow("06029045", "Acrotome sp.", "AFTSS");
-            tempTable.AddRow("06029045", "Actaea rubra", "AATSR");
-            tempTable.AddRow("06029045", "Actaea sp.", "AATSS");
-            tempTable.AddRow("06029045", "Actaea spicata", "AATSP");
-            tempTable.AddRow("06029045", "Actinodaphne sp.", "AHDSS");
-            tempTable.AddRow("06029045", "Actinostemma lobatum", "ACVLO");
-            tempTable.AddRow("06029045", "Actinostemma sp.", "ACVSS");
-            tempTable.AddRow("06029045", "Actinostrobus acuminatus", "ACJAC");
-            tempTable.AddRow("06029045", "Actinostrobus pyramidalis", "ACJPY");
-            tempTable.AddRow("06029045", "Actinostrobus sp.", "ACJSS");
-            tempTable.AddRow("06029045", "Adansonia digitata", "AADDI");
-            tempTable.AddRow("06029045", "Adansonia sp.", "AADSS");
-            tempTable.AddRow("06029045", "Adenandra fragrans", "ADDFR");
-            tempTable.AddRow("06029045", "Adenandra sp.", "ADDSS");
-            tempTable.AddRow("06029045", "Adenandra umbellata", "ADDUM");
-            tempTable.AddRow("06029045", "Adenandra uniflora", "ADDUN");
-            tempTable.AddRow("06029045", "Adenanthera pavonina", "ADEPA");
-            tempTable.AddRow("06029045", "Adenanthera sp.", "ADESS");
-            tempTable.AddRow("06029045", "Adenia cissampeloides", "ADJCI");
-            tempTable.AddRow("06029045", "Adenia digitata", "ADJDI");
-            tempTable.AddRow("06029045", "Adenia gracilis", "ADJGR");
-            tempTable.AddRow("06029045", "Adenia mannii", "ADJMA");
-            tempTable.AddRow("06029045", "Adenia rumicifolia", "ADJRU");
-            tempTable.AddRow("06029045", "Adenia rumicifolia var. miegei", "ADJRM");
-            tempTable.AddRow("06029045", "Adenia rumicifolia var. rumicifolia", "ADJRR");
-            tempTable.AddRow("06029045", "Adenia sp.", "ADJSS");
-            tempTable.AddRow("06029045", "Adenia staudtii", "ADJST");
-            tempTable.AddRow("06029045", "Adenium obesum", "ADFOB");
-            tempTable.AddRow("06029045", "Adenium sp.", "ADFSS");
-            tempTable.AddRow("06029045", "Adenocalymma alliaceum", "ADNAL");
-            tempTable.AddRow("06029045", "Adenocalymma bracteatum", "ADNBR");
-            tempTable.AddRow("06029045", "Adenocalymma sp.", "ADNSS");
-            tempTable.AddRow("06029045", "Adenocarpus anagyrifolius", "ADCAN");
-            tempTable.AddRow("06029045", "Adenocarpus complicatus", "ADCCO");
-            tempTable.AddRow("06029045", "Adenocarpus decorticans", "ADCDE");
-            tempTable.AddRow("06029045", "Adenocarpus foliosus", "ADCFO");
-            tempTable.AddRow("06029045", "Adenocarpus hispanicus", "ADCHI");
-            tempTable.AddRow("06029045", "Adenocarpus sp.", "ADCSS");
-            tempTable.AddRow("06029045", "Adenocarpus telonensis", "ADCTE");
-            tempTable.AddRow("06029045", "Adenocarpus viscosus", "ADCVI");
-            tempTable.AddRow("06029045", "Adenocaulon bicolor", "ADKBI");
-            tempTable.AddRow("06029045", "Adenocaulon sp.", "ADKSS");
-            tempTable.AddRow("06029045", "Adenodolichos rhomboideus", "AOORH");
-            tempTable.AddRow("06029045", "Adenodolichos sp.", "AOOSS");
-            tempTable.AddRow("06029045", "Adenostemma brasilianum", "AOSBR");
-            tempTable.AddRow("06029045", "Adenostemma sp.", "AOSSS");
-            tempTable.AddRow("06029045", "Adenostemma viscosum", "AOSLA");
-            tempTable.AddRow("06029045", "Adenostoma fasciculatum", "ADSFA");
-            tempTable.AddRow("06029045", "Adenostoma sp.", "ADSSS");
-            tempTable.AddRow("06029045", "Adenostoma sparsifolium", "ADSSP");
-            tempTable.AddRow("06029045", "Adenostyles alliariae", "ADTAL");
-            tempTable.AddRow("06029045", "Adenostyles sp.", "ADTSS");
-            tempTable.AddRow("06029045", "Adesmia muricata", "AIMMU");
-            tempTable.AddRow("06029045", "Adesmia sp.", "AIMSS");
-            tempTable.AddRow("06029045", "Adiantum capillus-veneris", "ADICV");
-            tempTable.AddRow("06029045", "Adiantum concinnum", "ADICO");
-            tempTable.AddRow("06029045", "Adiantum cristatum", "ADICR");
-            tempTable.AddRow("06029045", "Adiantum fulvum", "ADIFU");
-            tempTable.AddRow("06029045", "Adiantum hispidulum", "ADIHI");
-            tempTable.AddRow("06029045", "Adiantum pedatum", "ADIPE");
-            tempTable.AddRow("06029045", "Adiantum raddianum", "ADIRA");
-            tempTable.AddRow("06029045", "Adiantum sp.", "ADISS");
-            tempTable.AddRow("06029045", "Adiantum tenerum", "ADITE");
-            tempTable.AddRow("06029045", "Adiantum trapeziforme", "ADITR");
-            tempTable.AddRow("06029045", "Adiantum venustum", "ADIVE");
-            tempTable.AddRow("06029045", "Adonidia merrillii", "VTHME");
-            tempTable.AddRow("06029045", "Adriana acerifola", "ADBAC");
-            tempTable.AddRow("06029045", "Adriana sp.", "ADBSS");
-            tempTable.AddRow("06029045", "Aechmea candida", "AEMCA");
-            tempTable.AddRow("06029045", "Aechmea chantinii", "AEMCH");
-            tempTable.AddRow("06029045", "Aechmea fasciata", "AEMFA");
-            tempTable.AddRow("06029045", "Aechmea fulgens", "AEMFU");
-            tempTable.AddRow("06029045", "Aechmea magdalenae", "AEMMA");
-            tempTable.AddRow("06029045", "Aechmea mexicana", "AEMME");
-            tempTable.AddRow("06029045", "Aechmea servitensis", "AEMSE");
-            tempTable.AddRow("06029045", "Aechmea sp.", "AEMSS");
-            tempTable.AddRow("06011010", "Scilla nana", "CIXNA");
-            tempTable.AddRow("06011010", "Scilla peruviana", "SLLPE");
-            tempTable.AddRow("0709999020", "Abelmoschus esculentus", "ABMES");
-            tempTable.AddRow("0810907590", "Ardisia crenata", "ADACN");
-            scenarioContext["AllCommodityDetails"] = tempTable;
-        }
-
         Driver.WaitForTransaction();
 
         var inputTable = scenarioContext["AllCommodityDetails"] as Table;
@@ -1685,6 +1949,121 @@ public sealed class WorkOrderSteps : PowerAppsStepDefiner
         Driver.LastWindow();
         var actualURL = Driver.Url;
         actualURL.Should().Contain(expectedURL);
+    }
+
+    /// <summary>
+    /// Clicks View Phyto in the Work Order ribbon and switches the Dynamics driver to the new
+    /// tab containing the Phytosanitary certificate PDF. The PDF stays in Browser 2, so
+    /// IsDynamicsActive remains true and the Dynamics hooks keep ownership of screenshots.
+    /// </summary>
+    [When("I click View Phyto command from the header ribbon")]
+    public void WhenIClickViewPhytoCommandFromTheHeaderRibbon()
+    {
+        Driver.WaitForTransaction();
+        var dynamicsHandle = Driver.CurrentWindowHandle;
+        var handlesBefore = Driver.WindowHandles.ToList();
+
+        const int maxAttempts = 2;
+        for (var attempt = 1; attempt <= maxAttempts; attempt++)
+        {
+            SignInPromptHelper.DismissSignInPrompts(Driver, "pre-view-phyto-click");
+
+            CommandSteps.WhenISelectTheCommand("View Phyto");
+            Driver.WaitForTransaction();
+
+            try
+            {
+                new WebDriverWait(Driver, TimeSpan.FromSeconds(30))
+                    .Until(d => d.WindowHandles.Count > handlesBefore.Count);
+                break;
+            }
+            catch (WebDriverTimeoutException) when (attempt < maxAttempts)
+            {
+                Console.WriteLine("[ViewPhyto] Phyto certificate tab did not open within 30s, retrying ribbon click.");
+            }
+        }
+
+        var phytoHandle = Driver.WindowHandles.Except(handlesBefore).Single();
+        Driver.SwitchTo().Window(phytoHandle);
+
+        scenarioContext["DynamicsWindowHandle"] = dynamicsHandle;
+        scenarioContext["PhytoCertificateWindowHandle"] = phytoHandle;
+    }
+
+    [Then("the Phytosanitary certificate for {string} is displayed in a new window")]
+    public void ThenThePhytosanitaryCertificateForIsDisplayedInANewWindow(string applicationName)
+    {
+        var phytoHandle = scenarioContext.Get<string>("PhytoCertificateWindowHandle");
+        Driver.CurrentWindowHandle.Should().Be(phytoHandle, "the driver should be focused on the Phytosanitary certificate tab");
+
+        var reference = scenarioContext.Get<string>($"{applicationName}_APHAReference");
+        var expectedUrlPattern = new System.Text.RegularExpressions.Regex(
+            $@"/protected/application/{System.Text.RegularExpressions.Regex.Escape(reference)}/r-numbers/\d+/certificate/?(\?.*)?$",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+        try
+        {
+            new WebDriverWait(Driver, TimeSpan.FromSeconds(60)).Until(d =>
+                expectedUrlPattern.IsMatch(d.Url)
+                && ((IJavaScriptExecutor)d).ExecuteScript("return document.readyState").ToString() == "complete");
+        }
+        catch (WebDriverTimeoutException)
+        {
+            throw new InvalidOperationException(
+                $"The Phytosanitary certificate window did not load the certificate URL for application '{reference}'. Actual URL: {Driver.Url}");
+        }
+
+        // Chromium (Chrome / Edge) renders a PDF as a viewer document wrapping an <embed type='application/pdf'>,
+        // so check both the document content type and the embedded viewer.
+        var isPdf = (bool)((IJavaScriptExecutor)Driver).ExecuteScript(
+            "return document.contentType === 'application/pdf' || !!document.querySelector(\"embed[type='application/pdf']\");");
+        isPdf.Should().BeTrue($"the new window should display the Phytosanitary certificate PDF. URL: {Driver.Url}");
+
+        scenarioContext["PhytoCertificateUrl"] = Driver.Url;
+    }
+
+    /// <summary>
+    /// Downloads the certificate PDF via PdfDownloadHelper, which re-uses the driver session cookies
+    /// from the test host. Works locally and against the Selenium Grid (no browser download needed).
+    /// The file path is stored under PhytoCertificatePdfPath for the PDF validation step in Defra.UI.Tests.
+    /// </summary>
+    [When("I download the Phytosanitary certificate PDF for {string}")]
+    public void WhenIDownloadThePhytosanitaryCertificatePdfFor(string applicationName)
+    {
+        var pdfUrl = scenarioContext.TryGetValue("PhytoCertificateUrl", out string url) ? url : Driver.Url;
+        var reference = scenarioContext.Get<string>($"{applicationName}_APHAReference");
+
+        var pdfPath = PdfDownloadHelper.DownloadPdfUsingSession(Driver, pdfUrl, $"{reference}-certificate");
+
+        scenarioContext["PDFDownloadedDirectory"] = Path.GetDirectoryName(pdfPath);
+        scenarioContext["PhytoCertificatePdfPath"] = pdfPath;
+    }
+
+    [When("I close the PDF window")]
+    public void WhenIClosePdfWindow()
+    {
+        var phytoHandle = scenarioContext.Get<string>("PhytoCertificateWindowHandle");
+        var dynamicsHandle = scenarioContext.Get<string>("DynamicsWindowHandle");
+
+        if (Driver.WindowHandles.Contains(phytoHandle))
+        {
+            Driver.SwitchTo().Window(phytoHandle);
+            Driver.Close();
+        }
+
+        Driver.SwitchTo().Window(dynamicsHandle);
+        Driver.WaitForTransaction();
+        SignInPromptHelper.DismissSignInPrompts(Driver, "post-close-phyto-window");
+    }
+
+    [Then("the window is closed")]
+    public void ThenTheWindowIsClosed()
+    {
+        var phytoHandle = scenarioContext.Get<string>("PhytoCertificateWindowHandle");
+        var dynamicsHandle = scenarioContext.Get<string>("DynamicsWindowHandle");
+
+        Driver.WindowHandles.Should().NotContain(phytoHandle, "the Phytosanitary certificate window should be closed");
+        Driver.CurrentWindowHandle.Should().Be(dynamicsHandle, "focus should return to the Dynamics window");
     }
 
     [Then(@"I open and view the phyto certificate")]

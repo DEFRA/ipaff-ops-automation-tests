@@ -227,7 +227,7 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterYourApplicationPage, IExporterYourApplicationPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterHowDoYouWantToAddCommoditiesToYourConsignmentPage, IExporterHowDoYouWantToAddCommoditiesToYourConsignmentPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterWhatAreYouExportingSelectOneCommodityAtATimePage, IExporterWhatAreYouExportingSelectOneCommodityAtATimePage>());
-            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterAddCommoditiesToYourConsignmentPage, IExporterAddCommoditiesToYourConsignmentPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterAddToYourConsignmentPage, IExporterAddToYourConsignmentPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterYourCommoditiesPage, IExporterYourCommoditiesPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterWhatAreTheInspectionDetailsPage, IExporterWhatAreTheInspectionDetailsPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterDoYouWantToSelectThisInspectionAddressPage, IExporterDoYouWantToSelectThisInspectionAddressPage>());
@@ -239,6 +239,51 @@ namespace Defra.UI.Tests.Hooks
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterWhenDoYouNeedTheCertificatePage, IExporterWhenDoYouNeedTheCertificatePage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterDeclarationPage, IExporterDeclarationPage>());
             _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterYouHaveSuccessfullySubmittedYourApplicationPage, IExporterYouHaveSuccessfullySubmittedYourApplicationPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterRegulationsForExportingPage, IExporterRegulationsForExportingPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterIsThisTheExporterAddressPage, IExporterIsThisTheExporterAddressPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterWhenWillTheConsignmentBeReadyPage, IExporterWhenWillTheConsignmentBeReadyPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterWhoAreYouSendingThisConsignmentToPage, IExporterWhoAreYouSendingThisConsignmentToPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterSupportingDocumentsPage, IExporterSupportingDocumentsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterYourApplicationForSeedSamplingPage, IExporterYourApplicationForSeedSamplingPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterHowDoYouWantToAddCommoditiesToThisApplicationPage, IExporterHowDoYouWantToAddCommoditiesToThisApplicationPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterUploadAFilePage, IExporterUploadAFilePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterWhereAreTheSeedsPage, IExporterWhereAreTheSeedsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterWhenWillTheSeedsBeReadyForSamplingPage, IExporterWhenWillTheSeedsBeReadyForSamplingPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterManageApplicationPage, IExporterManageApplicationPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterDoYouWantToApplyUnderThePheatsPage, IExporterDoYouWantToApplyUnderThePheatsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterStockDetailsPage, IExporterStockDetailsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterDoYouWantToReuseTheSameApplicationReferencePage, IExporterDoYouWantToReuseTheSameApplicationReferencePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterHowMuchStockAreYouExportingPage, IExporterHowMuchStockAreYouExportingPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterUploadSupportingPhotographsPage, IExporterUploadSupportingPhotographsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterMakeChangesToYourApplicationPage, IExporterMakeChangesToYourApplicationPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterAreYouSureYouWantToCopyThisApplicationPage, IExporterAreYouSureYouWantToCopyThisApplicationPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<ExporterTermsAndConditionsPage, IExporterTermsAndConditionsPage>());
+
+            // IDM registration pages
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmEnterYourEmailAddressPage, IIdmEnterYourEmailAddressPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmEnterCodeToConfirmYourEmailAddressPage, IIdmEnterCodeToConfirmYourEmailAddressPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmEmailAddressConfirmedPage, IIdmEmailAddressConfirmedPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmWhatIsYourFullNamePage, IIdmWhatIsYourFullNamePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmCreatePasswordPage, IIdmCreatePasswordPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmYourGovernmentGatewayUserIdIsPage, IIdmYourGovernmentGatewayUserIdIsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmYouNeedToRegisterForADefraAccountPage, IIdmYouNeedToRegisterForADefraAccountPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmYourDefraAccountTermsAndConditionsPage, IIdmYourDefraAccountTermsAndConditionsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmWhatWeNeedFromYouPage, IIdmWhatWeNeedFromYouPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmAreYouRegisteringAsABusinessOrOrganisationPage, IIdmAreYouRegisteringAsABusinessOrOrganisationPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmIsTheBusinessRegisteredToTradeInTheUKPage, IIdmIsTheBusinessRegisteredToTradeInTheUKPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmDoYouHaveACompanyRegistrationNumberPage, IIdmDoYouHaveACompanyRegistrationNumberPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmWhatKindOfBusinessOrOrganisationAreYouPage, IIdmWhatKindOfBusinessOrOrganisationAreYouPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmWhatIsTheNameOfYourBusinessPage, IIdmWhatIsTheNameOfYourBusinessPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmWhatsThePostcodeForYourBusinessPage, IIdmWhatsThePostcodeForYourBusinessPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmSelectYourAddressPage, IIdmSelectYourAddressPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmWhatIsYourBusinessAddressPage, IIdmWhatIsYourBusinessAddressPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmWhatAreTheBusinessContactDetailsPage, IIdmWhatAreTheBusinessContactDetailsPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmWhatIsYourNamePage, IIdmWhatIsYourNamePage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmWhatIsYourPhoneNumberPage, IIdmWhatIsYourPhoneNumberPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmCreateMemorableWordPage, IIdmCreateMemorableWordPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmCheckYourAnswersPage, IIdmCheckYourAnswersPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmManageAccountPage, IIdmManageAccountPage>());
+            _objectContainer.RegisterInstanceAs(GetBaseWithContainer<IdmYourDefraAccountPage, IIdmYourDefraAccountPage>());
 
             //Read Email
             _objectContainer.RegisterInstanceAs(GetBaseWithScenarioContext<FetchCodeFromEmail, IFetchCodeFromEmail>());

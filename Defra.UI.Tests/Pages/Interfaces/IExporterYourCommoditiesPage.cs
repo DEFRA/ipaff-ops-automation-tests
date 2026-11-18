@@ -6,5 +6,9 @@
         bool IsCommodityLineDisplayed(string commodityName);
         void SelectFinishedAddingCommoditiesOption(string option);
         void ClickSaveAndContinueButton();
+        List<string> GetCommodityTableHeaders();
+        bool IsAddMoreQuestionDisplayed(string question);
+        bool AreAddMoreRadioButtonsPresent();
+        bool IsSaveAndContinueLaterDisplayed();
     }
 }

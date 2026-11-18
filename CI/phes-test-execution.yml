@@ -1,0 +1,78 @@
+trigger: none
+pr: none
+
+parameters:
+  - name: environment
+    displayName: Environment
+    type: string
+    default: 'pre'
+  - name: seleniumGrid
+    displayName: Selenium Grid URL
+    type: string
+    default: 'http://localhost:4444'
+  - name: deviceName
+    displayName: Device Name
+    type: string
+    default: 'Windows'
+  - name: bsOSVersion
+    displayName: BrowserStack OS Version
+    type: string
+    default: '11'
+  - name: bsBrowserVersion
+    displayName: BrowserStack Browser Version
+    type: string
+    default: 'latest'
+  - name: target
+    displayName: Target Browser
+    type: string
+    default: 'Chrome'
+  - name: isEmulationEnabled
+    displayName: Enable Emulation
+    type: string
+    default: 'false'
+  - name: emulateDeviceInfo
+    displayName: Emulated Device Info
+    type: string
+    default: 'iPhone 12 Pro'
+  - name: isAccessibilityEnabled
+    displayName: Is Accessibility Run Enabled
+    type: boolean
+    default: false
+  - name: enableRetry
+    displayName: Enable Failed Test Retry
+    type: boolean
+    default: false
+  - name: featureFilter
+    displayName: 'Run specific scenario(s) by tag (e.g. SPS-4289 or SPS-4289,PHES-Happy-Path). Leave as "all" to run all PHES tests.'
+    type: string
+    default: 'all'
+
+stages:
+
+  - stage: OPS_PHES_REGRESSION
+    ${{ if eq(parameters.featureFilter, 'all') }}:
+      displayName: OPS PHES Regression
+    ${{ else }}:
+      displayName: 'OPS PHES Regression - ${{ parameters.featureFilter }}'
+    variables:
+      - template: 'variables/IPAFF/${{ parameters.environment }}.yml'
+    jobs:
+      - template: run-test-template.yml
+        parameters:
+          jobName: OPS_PHES_REGRESSION
+          environment: ${{ parameters.environment }}
+          branchName: $(Build.SourceBranch)
+          seleniumGrid: ${{ parameters.seleniumGrid }}
+          deviceName: ${{ parameters.deviceName }}
+          bsOSVersion: ${{ parameters.bsOSVersion }}
+          workers: '1'
+          bsBrowserVersion: ${{ parameters.bsBrowserVersion }}
+          target: ${{ parameters.target }}
+          isEmulationEnabled: ${{ parameters.isEmulationEnabled }}
+          emulateDeviceInfo: ${{ parameters.emulateDeviceInfo }}
+          isAccessibilityEnabled: ${{ parameters.isAccessibilityEnabled }}
+          enableRetry: ${{ parameters.enableRetry }}
+          application: 'IPAFF'
+          dependsOn: ''
+          filterTestCases: 'TestCategory=PHES'
+          featureFilter: ${{ parameters.featureFilter }}

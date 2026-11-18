@@ -3616,9 +3616,9 @@ Scenario: New HMI export commodity rule for CHEDPP - SPS-9509
 	When the user selects 'Manually, by adding one at a time' and clicks the Continue button on the How do you want to add commodities to your consignment? page
 	Then the What are you exporting? page is displayed
 	When the user selects commodity 'Apple' and clicks the Continue button
-	Then the Add commodities to your consignment page is displayed
+	Then the Add 'commodities' to your consignment page is displayed
 	When the user enters commodity details with variety 'Variety', specific variety 'Fuji', quality class 'Class I', country of origin 'United Kingdom', net weight per package '100', number of packages '10', type of packaging 'Box' and reusable packaging 'Yes'
-	And the user clicks the Save and continue button on the Add commodities to your consignment page
+	And the user clicks the Save and continue button on the Add 'commodities' to your consignment page
 	Then the Your commodities page is displayed with the commodity line just entered
 	When the user selects 'No, I have finished adding commodities' and clicks the Save and continue button on the Your commodities page
 	Then the Your application page is displayed
@@ -3669,9 +3669,9 @@ Scenario: New HMI export commodity rule for CHEDPP - SPS-9509
 	When the user selects 'Manually, by adding one at a time' and clicks the Continue button on the How do you want to add commodities to your consignment? page
 	Then the What are you exporting? page is displayed
 	When the user selects commodity 'Apple' and clicks the Continue button
-	Then the Add commodities to your consignment page is displayed
+	Then the Add 'commodities' to your consignment page is displayed
 	When the user enters commodity details with variety 'Variety', specific variety 'Fuji', quality class 'Class I', country of origin 'United Kingdom', net weight per package '100', number of packages '10', type of packaging 'Box' and reusable packaging 'Yes'
-	And the user clicks the Save and continue button on the Add commodities to your consignment page
+	And the user clicks the Save and continue button on the Add 'commodities' to your consignment page
 	Then the Your commodities page is displayed with the commodity line just entered
 	When the user selects 'No, I have finished adding commodities' and clicks the Save and continue button on the Your commodities page
 	Then the Your application page is displayed
@@ -3722,9 +3722,9 @@ Scenario: New HMI export commodity rule for CHEDPP - SPS-9509
 	When the user selects 'Manually, by adding one at a time' and clicks the Continue button on the How do you want to add commodities to your consignment? page
 	Then the What are you exporting? page is displayed
 	When the user selects commodity 'Apple' and clicks the Continue button
-	Then the Add commodities to your consignment page is displayed
+	Then the Add 'commodities' to your consignment page is displayed
 	When the user enters commodity details with variety 'Variety', specific variety 'Fuji', quality class 'Class I', country of origin 'United Kingdom', net weight per package '100', number of packages '10', type of packaging 'Box' and reusable packaging 'Yes'
-	And the user clicks the Save and continue button on the Add commodities to your consignment page
+	And the user clicks the Save and continue button on the Add 'commodities' to your consignment page
 	Then the Your commodities page is displayed with the commodity line just entered
 	When the user selects 'No, I have finished adding commodities' and clicks the Save and continue button on the Your commodities page
 	Then the Your application page is displayed
@@ -3775,9 +3775,9 @@ Scenario: New HMI export commodity rule for CHEDPP - SPS-9509
 	When the user selects 'Manually, by adding one at a time' and clicks the Continue button on the How do you want to add commodities to your consignment? page
 	Then the What are you exporting? page is displayed
 	When the user selects commodity 'Apple' and clicks the Continue button
-	Then the Add commodities to your consignment page is displayed
+	Then the Add 'commodities' to your consignment page is displayed
 	When the user enters commodity details with variety 'Variety', specific variety 'Fuji', quality class 'Class I', country of origin 'United Kingdom', net weight per package '100', number of packages '10', type of packaging 'Box' and reusable packaging 'Yes'
-	And the user clicks the Save and continue button on the Add commodities to your consignment page
+	And the user clicks the Save and continue button on the Add 'commodities' to your consignment page
 	Then the Your commodities page is displayed with the commodity line just entered
 	When the user selects 'No, I have finished adding commodities' and clicks the Save and continue button on the Your commodities page
 	Then the Your application page is displayed
@@ -3925,9 +3925,9 @@ Scenario: New exporter application for a certificate of conformity - SPS-9510
 	When the user selects 'Manually, by adding one at a time' and clicks the Continue button on the How do you want to add commodities to your consignment? page
 	Then the What are you exporting? page is displayed
 	When the user selects commodity 'Apple' and clicks the Continue button
-	Then the Add commodities to your consignment page is displayed
+	Then the Add 'commodities' to your consignment page is displayed
 	When the user enters commodity details with variety 'Variety', specific variety 'Gala', quality class 'Class I', country of origin 'United Kingdom', net weight per package '100', number of packages '10', type of packaging 'Box' and reusable packaging 'Yes'
-	And the user clicks the Save and continue button on the Add commodities to your consignment page
+	And the user clicks the Save and continue button on the Add 'commodities' to your consignment page
 	Then the Your commodities page is displayed with the commodity line just entered
 	When the user selects 'No, I have finished adding commodities' and clicks the Save and continue button on the Your commodities page
 	Then the Your application page is displayed
@@ -4478,9 +4478,9 @@ Scenario: New Global inspection rules for GMS Export CHED PP - SPS-9513
 	When the user selects 'Manually, by adding one at a time' and clicks the Continue button on the How do you want to add commodities to your consignment? page
 	Then the What are you exporting? page is displayed
 	When the user selects commodity 'General marketing standards (GMS) commodity' and clicks the Continue button
-	Then the Add commodities to your consignment page is displayed
+	Then the Add 'commodities' to your consignment page is displayed
 	When the user describes the commodity with common name 'Avocado', botanical name 'PEBAM', country of origin 'Spain', net weight per package '1', number of packages '10', type of packaging 'Box', reusable packaging 'Yes'
-	And the user clicks the Save and continue button on the Add commodities to your consignment page
+	And the user clicks the Save and continue button on the Add 'commodities' to your consignment page
 	Then the Your commodities page is displayed with the commodity line just entered
 	When the user selects 'No, I have finished adding commodities' and clicks the Save and continue button on the Your commodities page
 	Then the Your application page is displayed
@@ -4531,9 +4531,9 @@ Scenario: New Global inspection rules for GMS Export CHED PP - SPS-9513
 	When the user selects 'Manually, by adding one at a time' and clicks the Continue button on the How do you want to add commodities to your consignment? page
 	Then the What are you exporting? page is displayed
 	When the user selects commodity 'General marketing standards (GMS) commodity' and clicks the Continue button
-	Then the Add commodities to your consignment page is displayed
+	Then the Add 'commodities' to your consignment page is displayed
 	When the user describes the commodity with common name 'Avocado', botanical name 'PEBAM', country of origin 'Spain', net weight per package '1', number of packages '10', type of packaging 'Box', reusable packaging 'Yes'
-	And the user clicks the Save and continue button on the Add commodities to your consignment page
+	And the user clicks the Save and continue button on the Add 'commodities' to your consignment page
 	Then the Your commodities page is displayed with the commodity line just entered
 	When the user selects 'No, I have finished adding commodities' and clicks the Save and continue button on the Your commodities page
 	Then the Your application page is displayed
@@ -4584,9 +4584,9 @@ Scenario: New Global inspection rules for GMS Export CHED PP - SPS-9513
 	When the user selects 'Manually, by adding one at a time' and clicks the Continue button on the How do you want to add commodities to your consignment? page
 	Then the What are you exporting? page is displayed
 	When the user selects commodity 'General marketing standards (GMS) commodity' and clicks the Continue button
-	Then the Add commodities to your consignment page is displayed
+	Then the Add 'commodities' to your consignment page is displayed
 	When the user describes the commodity with common name 'Avocado', botanical name 'PEBAM', country of origin 'Spain', net weight per package '1', number of packages '10', type of packaging 'Box', reusable packaging 'Yes'
-	And the user clicks the Save and continue button on the Add commodities to your consignment page
+	And the user clicks the Save and continue button on the Add 'commodities' to your consignment page
 	Then the Your commodities page is displayed with the commodity line just entered
 	When the user selects 'No, I have finished adding commodities' and clicks the Save and continue button on the Your commodities page
 	Then the Your application page is displayed
@@ -4637,9 +4637,9 @@ Scenario: New Global inspection rules for GMS Export CHED PP - SPS-9513
 	When the user selects 'Manually, by adding one at a time' and clicks the Continue button on the How do you want to add commodities to your consignment? page
 	Then the What are you exporting? page is displayed
 	When the user selects commodity 'General marketing standards (GMS) commodity' and clicks the Continue button
-	Then the Add commodities to your consignment page is displayed
+	Then the Add 'commodities' to your consignment page is displayed
 	When the user describes the commodity with common name 'Avocado', botanical name 'PEBAM', country of origin 'Spain', net weight per package '1', number of packages '10', type of packaging 'Box', reusable packaging 'Yes'
-	And the user clicks the Save and continue button on the Add commodities to your consignment page
+	And the user clicks the Save and continue button on the Add 'commodities' to your consignment page
 	Then the Your commodities page is displayed with the commodity line just entered
 	When the user selects 'No, I have finished adding commodities' and clicks the Save and continue button on the Your commodities page
 	Then the Your application page is displayed
@@ -4828,9 +4828,9 @@ Scenario: New Global inspection rules for SMS Export CHED PP - SPS-9514
 	When the user selects 'Manually, by adding one at a time' and clicks the Continue button on the How do you want to add commodities to your consignment? page
 	Then the What are you exporting? page is displayed
 	When the user selects commodity 'Apple' and clicks the Continue button
-	Then the Add commodities to your consignment page is displayed
+	Then the Add 'commodities' to your consignment page is displayed
 	When the user enters commodity details with variety 'Variety', specific variety 'Braeburn', quality class 'Class I', country of origin 'United Kingdom', net weight per package '100', number of packages '10', type of packaging 'Box' and reusable packaging 'Yes'
-	And the user clicks the Save and continue button on the Add commodities to your consignment page
+	And the user clicks the Save and continue button on the Add 'commodities' to your consignment page
 	Then the Your commodities page is displayed with the commodity line just entered
 	When the user selects 'No, I have finished adding commodities' and clicks the Save and continue button on the Your commodities page
 	Then the Your application page is displayed
@@ -4881,9 +4881,9 @@ Scenario: New Global inspection rules for SMS Export CHED PP - SPS-9514
 	When the user selects 'Manually, by adding one at a time' and clicks the Continue button on the How do you want to add commodities to your consignment? page
 	Then the What are you exporting? page is displayed
 	When the user selects commodity 'Apple' and clicks the Continue button
-	Then the Add commodities to your consignment page is displayed
+	Then the Add 'commodities' to your consignment page is displayed
 	When the user enters commodity details with variety 'Variety', specific variety 'Braeburn', quality class 'Class I', country of origin 'United Kingdom', net weight per package '100', number of packages '10', type of packaging 'Box' and reusable packaging 'Yes'
-	And the user clicks the Save and continue button on the Add commodities to your consignment page
+	And the user clicks the Save and continue button on the Add 'commodities' to your consignment page
 	Then the Your commodities page is displayed with the commodity line just entered
 	When the user selects 'No, I have finished adding commodities' and clicks the Save and continue button on the Your commodities page
 	Then the Your application page is displayed
@@ -4934,9 +4934,9 @@ Scenario: New Global inspection rules for SMS Export CHED PP - SPS-9514
 	When the user selects 'Manually, by adding one at a time' and clicks the Continue button on the How do you want to add commodities to your consignment? page
 	Then the What are you exporting? page is displayed
 	When the user selects commodity 'Apple' and clicks the Continue button
-	Then the Add commodities to your consignment page is displayed
+	Then the Add 'commodities' to your consignment page is displayed
 	When the user enters commodity details with variety 'Variety', specific variety 'Braeburn', quality class 'Class I', country of origin 'United Kingdom', net weight per package '100', number of packages '10', type of packaging 'Box' and reusable packaging 'Yes'
-	And the user clicks the Save and continue button on the Add commodities to your consignment page
+	And the user clicks the Save and continue button on the Add 'commodities' to your consignment page
 	Then the Your commodities page is displayed with the commodity line just entered
 	When the user selects 'No, I have finished adding commodities' and clicks the Save and continue button on the Your commodities page
 	Then the Your application page is displayed
@@ -4987,9 +4987,9 @@ Scenario: New Global inspection rules for SMS Export CHED PP - SPS-9514
 	When the user selects 'Manually, by adding one at a time' and clicks the Continue button on the How do you want to add commodities to your consignment? page
 	Then the What are you exporting? page is displayed
 	When the user selects commodity 'Apple' and clicks the Continue button
-	Then the Add commodities to your consignment page is displayed
+	Then the Add 'commodities' to your consignment page is displayed
 	When the user enters commodity details with variety 'Variety', specific variety 'Braeburn', quality class 'Class I', country of origin 'United Kingdom', net weight per package '100', number of packages '10', type of packaging 'Box' and reusable packaging 'Yes'
-	And the user clicks the Save and continue button on the Add commodities to your consignment page
+	And the user clicks the Save and continue button on the Add 'commodities' to your consignment page
 	Then the Your commodities page is displayed with the commodity line just entered
 	When the user selects 'No, I have finished adding commodities' and clicks the Save and continue button on the Your commodities page
 	Then the Your application page is displayed
