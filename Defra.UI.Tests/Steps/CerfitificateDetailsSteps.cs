@@ -289,8 +289,8 @@ namespace Defra.UI.Tests.Steps
             _scenarioContext["HealthCertificateReference"] = notificationDetails.CertificateReferenceNumber;
             _scenarioContext["HealthCertificateDateOfIssue"] = notificationDetails.CertificateDateOfIssue.Replace("/"," ");
             _scenarioContext["CountryOfOrigin"] = notificationDetails.CountryOfOriginOfCertificate;
-            _scenarioContext["TotalNetWeight"] = (double.Parse(notificationDetails.NetWeight) * 2).ToString();
-            _scenarioContext["TotalPackages"] = (double.Parse(notificationDetails.Packages) * 2).ToString();
+            _scenarioContext["TotalNetWeight"] = double.Parse(notificationDetails.NetWeight).ToString();
+            _scenarioContext["TotalPackages"] = double.Parse(notificationDetails.Packages).ToString();
             _scenarioContext["Temperature"] = notificationDetails.Temperature;
             _scenarioContext["Container"] = notificationDetails.Container;
             _scenarioContext["SealNumber"] = notificationDetails.SealNumber;
