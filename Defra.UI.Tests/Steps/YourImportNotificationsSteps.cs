@@ -1466,8 +1466,10 @@ namespace Defra.UI.Tests.Steps.IPAFF
 
             if (contextKey is "Packages" or "NetWeight")
             {
-                double numericValue = Convert.ToDouble(property?.GetValue(details));
-                expectedValue = (numericValue * 2).ToString();
+                var totalKey = contextKey == "NetWeight" ? "TotalNetWeight" : "TotalPackages";
+                expectedValue = _scenarioContext.TryGetValue(totalKey, out var total) && total is string totalValue
+                    ? totalValue.Trim()
+                    : Convert.ToDouble(property?.GetValue(details)).ToString();
             }
 
             if (string.IsNullOrEmpty(expectedValue))

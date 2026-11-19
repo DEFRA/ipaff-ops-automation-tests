@@ -94,21 +94,21 @@ namespace Defra.UI.Tests.Pages.Classes
         {
             return new NotificationDetails
             {
-                CertificateReferenceNumber = "NZL2026/AGL18/13",
-                CertificateDateOfIssue = "23/07/2026",
+                CertificateReferenceNumber = "NZL2026/AEX000304/31",
+                CertificateDateOfIssue = "18/11/2026",
                 CountryOfOriginOfCertificate = "New Zealand",
-                ConsignorConsigneeOrImporterName = "ALLIANCE GROUP (NZ) LTD",
+                ConsignorConsigneeOrImporterName = "ANZCO FOODS UK LIMITED",
                 PurposeOfTheConsignment = "Human Consumption",
-                CommodityCode = "02044210",
-                Description = "Short forequarters",
+                CommodityCode = "02044250",
+                Description = "Legs",
                 GenusAndSpecies = "Ovis aries",
-                NetWeightWithUnits = "25200.9 kgs/units",
-                NetWeight = "25200.9",
-                Packages = "1255",
+                NetWeightWithUnits = "22389.59 kgs/units",
+                NetWeight = "22389.59",
+                Packages = "1002",
                 TypeOfPackage = "Carton",
                 Temperature = "Frozen",
-                Container = "MNBU4285672",
-                SealNumber= "NZMPI01354359",
+                Container = "CGMU5733765",
+                SealNumber= "NZMPI01831381",
                 DocumentType= "Veterinary health certificate"
             };
         }
